@@ -1,0 +1,24 @@
+/* ── SOCELLE Font Manifest ─────────────────────────────────────────────────
+   Authority: SOCELLE_CANONICAL_DOCTRINE.md §4 (updated 2026-03-06)
+
+   BASE SYSTEM — loaded via <link> in index.html (Tailwind font-sans / font-mono):
+   · General Sans  — Fontshare CDN  — Tailwind: font-sans  (ALL public page text)
+   · JetBrains Mono — Google Fonts  — Tailwind: font-mono  (data values, timestamps)
+
+   CLEAN ROOM UI SYSTEM — loaded below (--scl-font-* variables only):
+   · Cormorant Garamond — display headings  — --scl-font-display
+   · DM Sans            — SCL body/UI text  — --scl-font-sans
+   · DM Mono            — SCL data/labels   — --scl-font-mono
+
+   SCOPE: --scl-font-* applies ONLY to .scl-* component classes.
+   Base system fonts (General Sans, JetBrains Mono) remain authoritative
+   for all Tailwind-class surfaces. Do NOT apply --scl-font-* to public
+   page headings or body copy that uses Tailwind classes directly.
+
+   BANNED as direct Tailwind overrides on public pages (CANONICAL_DOCTRINE §4):
+   · DM Serif Display, Playfair Display, Inter (as primary)
+   · Cormorant Garamond / DM Sans / DM Mono outside --scl-font-* namespace
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Clean Room UI System fonts — Google Fonts ─────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');

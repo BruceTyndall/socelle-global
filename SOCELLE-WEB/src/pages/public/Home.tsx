@@ -71,7 +71,7 @@ export default function PublicHome() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-page-main)] font-sans antialiased selection:bg-[#47201c] selection:text-[#f8f6f2]">
+    <div className="min-h-screen bg-[#F6F3EF] font-sans antialiased selection:bg-[#47201c] selection:text-[#f8f6f2]">
       {/* ━━ 8. SEO + Structured Data Engineer ━━━━━━━━━━━━━━━━━━━ */}
       <Helmet>
         <title>Socelle — Professional Beauty Intelligence</title>
@@ -123,13 +123,13 @@ export default function PublicHome() {
             aria-hidden="true"
           />
           {/* Aesthetic grading gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-page-main)] via-[var(--bg-page-main)]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#F6F3EF] via-[#F6F3EF]/80 to-transparent" />
         </div>
 
         <div className="relative z-10 section-container w-full flex flex-col items-center text-center px-4">
           <BlockReveal className="mb-8 delay-100">
             {/* 7. Copy Director: Intelligence-first framing */}
-            <GlassChip className="text-[var(--color-primary-cocoa)] border-[var(--color-primary-cocoa)]/20 shadow-sm">
+            <GlassChip className="text-[#141418] border-[#141418]/20 shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
               Intelligence Platform 2.0
             </GlassChip>
@@ -139,11 +139,11 @@ export default function PublicHome() {
             text="Market Truth for Aesthetic Leaders."
             as="h1"
             className="max-w-4xl mb-6 justify-center"
-            wordClassName="font-serif font-light text-hero text-[var(--color-primary-cocoa)] tracking-tight leading-[1.05]"
+            wordClassName="font-sans font-light text-hero text-[#141418] tracking-tight leading-[1.05]"
           />
 
           <BlockReveal delay={400} className="max-w-2xl mb-12">
-            <p className="text-xl md:text-2xl text-[var(--color-primary-cocoa)]/70 font-sans font-light leading-relaxed">
+            <p className="text-xl md:text-2xl text-[#141418]/70 font-sans font-light leading-relaxed">
               Stop guessing. Procure, prescribe, and scale backed by real-time clinical data and verified purchasing intelligence.
             </p>
           </BlockReveal>
@@ -162,7 +162,7 @@ export default function PublicHome() {
                 </span>
               </button>
 
-              <Link to="/request-access" className="px-8 py-[18px] rounded-[30px] border border-[var(--color-primary-cocoa)]/20 text-[var(--color-primary-cocoa)] font-medium bg-transparent hover:bg-[var(--color-primary-cocoa)]/5 transition-all duration-300">
+              <Link to="/request-access" className="px-8 py-[18px] rounded-[30px] border border-[#141418]/20 text-[#141418] font-medium bg-transparent hover:bg-[#141418]/5 transition-all duration-300">
                 Request Access
               </Link>
             </div>
@@ -171,21 +171,21 @@ export default function PublicHome() {
 
         {/* 2. Motion Designer: Subtle scroll cue */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
-          <span className="text-[10px] uppercase tracking-widest font-medium text-[var(--color-primary-cocoa)]">Scroll</span>
-          <ChevronDown className="w-4 h-4 text-[var(--color-primary-cocoa)] animate-bounce" />
+          <span className="text-[10px] uppercase tracking-widest font-medium text-[#141418]">Scroll</span>
+          <ChevronDown className="w-4 h-4 text-[#141418] animate-bounce" />
         </div>
       </section>
 
       {/* ━━ 5. Page Composition: TENSION (Live Data Integration) ━━━━━━━━ */}
-      <section className="relative py-24 lg:py-32 bg-[var(--bg-page-main)]">
+      <section className="relative py-24 lg:py-32 bg-[#F6F3EF]">
         <div className="section-container">
           <BlockReveal>
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div className="max-w-xl">
-                <h2 className="font-serif font-light text-4xl md:text-5xl text-[var(--color-primary-cocoa)] leading-tight mb-4">
+                <h2 className="font-sans font-light text-4xl md:text-5xl text-[#141418] leading-tight mb-4">
                   The pulse of professional beauty.
                 </h2>
-                <p className="text-lg text-[var(--color-primary-cocoa)]/60 font-light">
+                <p className="text-lg text-[#141418]/60 font-light">
                   Direct signals pulled from verified wholesale transactions. Not surveys. Not marketing hype.
                 </p>
               </div>
@@ -206,30 +206,30 @@ export default function PublicHome() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {signals.map((signal, idx) => (
               <BlockReveal key={signal.id} delay={idx * 150}>
-                <div className="group bg-white rounded-3xl p-6 border border-[var(--color-primary-cocoa)]/5 shadow-sm hover:shadow-panel transition-all duration-500 hover:-translate-y-1">
+                <div className="group bg-white rounded-3xl p-6 border border-[#141418]/5 shadow-sm hover:shadow-panel transition-all duration-500 hover:-translate-y-1">
                   <div className="flex justify-between items-start mb-6">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-primary-cocoa)]/40">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#141418]/40">
                       {signal.label}
                     </span>
                     <TrendingUp className={`w-4 h-4 ${signal.trend === 'up' ? 'text-emerald-500' : 'text-rose-400'} opacity-80 group-hover:opacity-100 transition-opacity`} />
                   </div>
 
                   <div className="mb-4">
-                    <span className="font-mono text-3xl font-semibold tracking-tight text-[var(--color-primary-cocoa)]">
+                    <span className="font-mono text-3xl font-semibold tracking-tight text-[#141418]">
                       {signal.value}
                     </span>
                   </div>
 
-                  <p className="text-sm text-[var(--color-primary-cocoa)]/70 leading-relaxed mb-6 font-light">
+                  <p className="text-sm text-[#141418]/70 leading-relaxed mb-6 font-light">
                     {signal.insight}
                   </p>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-[var(--color-primary-cocoa)]/5">
+                  <div className="flex items-center justify-between pt-4 border-t border-[#141418]/5">
                     <div className="flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[var(--color-primary-cocoa)]/40" />
-                      <span className="text-[10px] uppercase font-medium tracking-wide text-[var(--color-primary-cocoa)]/40">{signal.confidence}</span>
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#141418]/40" />
+                      <span className="text-[10px] uppercase font-medium tracking-wide text-[#141418]/40">{signal.confidence}</span>
                     </div>
-                    <span className="text-[10px] uppercase font-medium tracking-wide text-[var(--color-primary-cocoa)]/40">{signal.updated}</span>
+                    <span className="text-[10px] uppercase font-medium tracking-wide text-[#141418]/40">{signal.updated}</span>
                   </div>
                 </div>
               </BlockReveal>
@@ -239,7 +239,7 @@ export default function PublicHome() {
       </section>
 
       {/* ━━ 5. Page Composition: PROOF & CAPABILITY ━━━━━━━━━━━━━ */}
-      <section className="py-24 lg:py-32 bg-[var(--bg-page-near-white)]">
+      <section className="py-24 lg:py-32 bg-[#F9F7F4]">
         <div className="section-container">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
@@ -259,7 +259,7 @@ export default function PublicHome() {
                 <div className="absolute bottom-6 left-6 right-6">
                   <GlassCard className="!p-6 !rounded-[24px]">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-[var(--color-primary-cocoa)] flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-[#141418] flex items-center justify-center">
                         <Activity className="w-5 h-5 text-[#f8f6f2]" />
                       </div>
                       <div>
@@ -275,33 +275,33 @@ export default function PublicHome() {
             {/* Copy Column */}
             <div className="order-1 lg:order-2">
               <BlockReveal>
-                <h2 className="font-serif font-light text-4xl md:text-6xl text-[var(--color-primary-cocoa)] leading-[1.1] mb-8">
+                <h2 className="font-sans font-light text-4xl md:text-6xl text-[#141418] leading-[1.1] mb-8">
                   Engineered for the business of aesthetics.
                 </h2>
                 <div className="space-y-8">
                   <div>
-                    <h3 className="text-xl font-medium text-[var(--color-primary-cocoa)] mb-2">Peer Benchmarking</h3>
-                    <p className="text-[var(--color-primary-cocoa)]/60 font-light leading-relaxed">
+                    <h3 className="text-xl font-medium text-[#141418] mb-2">Peer Benchmarking</h3>
+                    <p className="text-[#141418]/60 font-light leading-relaxed">
                       Compare your menu mix, equipment ROI, and backbar spend against top-performing practices in identical zip code tiers.
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-xl font-medium text-[var(--color-primary-cocoa)] mb-2">Verified Commerce</h3>
-                    <p className="text-[var(--color-primary-cocoa)]/60 font-light leading-relaxed">
+                    <h3 className="text-xl font-medium text-[#141418] mb-2">Verified Commerce</h3>
+                    <p className="text-[#141418]/60 font-light leading-relaxed">
                       A single intelligent cart for all your brand partners. Transparent pricing, allocation alerts, and data-backed product discovery.
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-xl font-medium text-[var(--color-primary-cocoa)] mb-2">Clinical Protocol Ledger</h3>
-                    <p className="text-[var(--color-primary-cocoa)]/60 font-light leading-relaxed">
+                    <h3 className="text-xl font-medium text-[#141418] mb-2">Clinical Protocol Ledger</h3>
+                    <p className="text-[#141418]/60 font-light leading-relaxed">
                       Stop cobbling together treatments. Access our evidence-backed protocol library, mapped to the SKUs you already carry.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-12">
-                  <Link to="/how-it-works" className="inline-flex items-center gap-2 text-[var(--color-primary-cocoa)] font-medium hover:opacity-70 transition-opacity">
-                    <span className="border-b border-[var(--color-primary-cocoa)] pb-0.5">Explore platform architecture</span>
+                  <Link to="/how-it-works" className="inline-flex items-center gap-2 text-[#141418] font-medium hover:opacity-70 transition-opacity">
+                    <span className="border-b border-[#141418] pb-0.5">Explore platform architecture</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -325,7 +325,7 @@ export default function PublicHome() {
 
               <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
                 <ShieldCheck className="w-10 h-10 text-[#f8f6f2]/50 mb-6" />
-                <h2 className="font-serif font-light text-4xl md:text-5xl text-[#f8f6f2] mb-6 leading-tight">
+                <h2 className="font-sans font-light text-4xl md:text-5xl text-[#f8f6f2] mb-6 leading-tight">
                   Join the cohort defining the future of aesthetics.
                 </h2>
                 <p className="text-lg text-[#f8f6f2]/70 font-light mb-10 max-w-lg mx-auto">

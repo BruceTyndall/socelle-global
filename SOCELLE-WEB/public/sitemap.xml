@@ -1,30 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SITEMAP INDEX — socelle.com
+  Updated: 2026-03-06 (W12-09)
+
+  All sub-sitemaps are served by the sitemap-generator Supabase Edge Function.
+  Static routes are content-stable. Dynamic routes (brands, protocols, jobs) are LIVE from DB.
+
+  Cloudflare _redirects required (add after deploying the edge function):
+    /sitemap-static.xml    https://<project_ref>.supabase.co/functions/v1/sitemap-generator?type=static    200
+    /sitemap-brands.xml    https://<project_ref>.supabase.co/functions/v1/sitemap-generator?type=brands    200
+    /sitemap-protocols.xml https://<project_ref>.supabase.co/functions/v1/sitemap-generator?type=protocols 200
+    /sitemap-jobs.xml      https://<project_ref>.supabase.co/functions/v1/sitemap-generator?type=jobs      200
+
+  Or point search engines directly to the edge function index:
+    https://<project_ref>.supabase.co/functions/v1/sitemap-generator
+-->
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Static public pages (core routes, updated manually) -->
+  <!-- Static public routes (Home, Intelligence, Brands, Events, Jobs, Education, etc.) -->
   <sitemap>
     <loc>https://socelle.com/sitemap-static.xml</loc>
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-03-06</lastmod>
   </sitemap>
 
-  <!-- Dynamic brand profiles (generated from Supabase at build time) -->
-  <!-- TODO: Replace with Netlify Edge Function when brand count > 50 -->
+  <!-- Dynamic brand profiles — LIVE from `brands` table (status='active') -->
   <sitemap>
     <loc>https://socelle.com/sitemap-brands.xml</loc>
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-03-06</lastmod>
   </sitemap>
 
-  <!-- Active job postings (generated from Supabase, excludes expired) -->
-  <!-- TODO: Replace with Netlify Edge Function when job count > 100 -->
+  <!-- Canonical protocols — LIVE from `canonical_protocols` table -->
+  <sitemap>
+    <loc>https://socelle.com/sitemap-protocols.xml</loc>
+    <lastmod>2026-03-06</lastmod>
+  </sitemap>
+
+  <!-- Active job postings — LIVE from `job_postings` table (status='active') -->
   <sitemap>
     <loc>https://socelle.com/sitemap-jobs.xml</loc>
-    <lastmod>2026-03-05</lastmod>
-  </sitemap>
-
-  <!-- Intelligence + category hub pages -->
-  <sitemap>
-    <loc>https://socelle.com/sitemap-intel.xml</loc>
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-03-06</lastmod>
   </sitemap>
 
 </sitemapindex>

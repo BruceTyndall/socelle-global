@@ -244,22 +244,6 @@ export default function AIAdvisor() {
               </div>
             </div>
 
-            {/* Recent Signals */}
-            <div className="bg-white rounded-xl border border-pro-stone p-5">
-              <h3 className="font-serif text-sm text-pro-navy mb-3">Recent Signals</h3>
-              <div className="space-y-3">
-                {RECENT_SIGNALS.map((signal, i) => {
-                  const Icon = signal.icon;
-                  return (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <Icon className={`w-4 h-4 flex-shrink-0 mt-0.5 ${signal.color}`} />
-                      <p className="text-xs text-pro-charcoal font-sans leading-snug">{signal.label}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Suggested Questions */}
             <div className="bg-white rounded-xl border border-pro-stone p-5">
               <h3 className="font-serif text-sm text-pro-navy mb-3">Suggested Questions</h3>

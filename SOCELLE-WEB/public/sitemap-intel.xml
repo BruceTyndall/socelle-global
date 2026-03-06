@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  sitemap-intel.xml — Intelligence hub static routes
+  These routes do not change between deployments and require no DB query.
+  Last updated: 2026-03-06
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://socelle.com/intelligence</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://socelle.com/intelligence/briefing</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://socelle.com/intelligence/signals</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://socelle.com/intelligence/trends</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://socelle.com/intelligence/categories</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.82</priority>
+  </url>
+
+</urlset>

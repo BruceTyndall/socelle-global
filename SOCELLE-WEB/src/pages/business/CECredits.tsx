@@ -84,9 +84,12 @@ export default function CECredits() {
             Continuing Education
           </span>
         </div>
-        <h1 className="font-serif text-2xl text-pro-charcoal">
-          CE Credit Tracker
-        </h1>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h1 className="font-serif text-2xl text-pro-charcoal">
+            CE Credit Tracker
+          </h1>
+          <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+        </div>
         <p className="text-sm font-sans text-pro-warm-gray mt-1">
           Track your progress toward your renewal period CE requirements.
         </p>

@@ -492,7 +492,7 @@ export default function Brands() {
                       heroImageUrl={brand.hero_image_url}
                       category={brand.category ?? undefined}
                       href={getAuthAwareHref(brand)}
-                      keyStat={adoptionCount > 0 ? `Added by ${adoptionCount} spas this quarter` : undefined}
+                      keyStat={undefined}
                     />
                     {/* Intelligence overlay — trending badge */}
                     {trending && (

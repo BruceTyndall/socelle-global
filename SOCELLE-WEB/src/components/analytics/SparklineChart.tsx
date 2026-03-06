@@ -112,7 +112,7 @@ export default function SparklineChart({ data, color = '#1E3A5F', height = 180, 
             textAnchor="end"
             fontSize="10"
             fill="#6B6560"
-            fontFamily="Inter, system-ui, sans-serif"
+            fontFamily="General Sans, system-ui, sans-serif"
           >
             {v.toLocaleString()}
           </text>
@@ -129,7 +129,7 @@ export default function SparklineChart({ data, color = '#1E3A5F', height = 180, 
               textAnchor="middle"
               fontSize="10"
               fill="#6B6560"
-              fontFamily="Inter, system-ui, sans-serif"
+              fontFamily="General Sans, system-ui, sans-serif"
             >
               {d.date.slice(5)}
             </text>

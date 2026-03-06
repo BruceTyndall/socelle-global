@@ -174,7 +174,10 @@ export default function BenchmarkDashboard() {
       <div className="space-y-8">
         {/* ── Header ──────────────────────────────────────────── */}
         <div>
-          <h1 className="font-serif text-3xl text-pro-charcoal">Your Treatment Room Benchmarks</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="font-serif text-3xl text-pro-charcoal">Your Treatment Room Benchmarks</h1>
+            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+          </div>
           <div className="flex items-center gap-2 mt-2">
             <Users className="w-4 h-4 text-pro-warm-gray" />
             <p className="text-sm text-pro-warm-gray font-sans">

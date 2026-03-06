@@ -1,0 +1,213 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOCELLE CLEAN ROOM UI SYSTEM
+   Namespace: --scl-* (additive — does not replace Pearl Mineral V2 tokens)
+   Fonts:     General Sans (locked primary) + JetBrains Mono (locked mono)
+   Colors:    Remapped to Pearl Mineral V2 locked values
+   Authority: SOCELLE_CANONICAL_DOCTRINE.md §3 (color) + §4 (typography)
+   Source:    Extracted from index.css — imported via @import in index.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Fonts — Clean Room UI System (CANONICAL_DOCTRINE §4, approved 2026-03-06) ──
+     These apply ONLY within .scl-* component classes.
+     Base system (General Sans / JetBrains Mono) governs all Tailwind-class surfaces. */
+  --scl-font-display: 'Cormorant Garamond', Georgia, serif;
+  --scl-font-sans:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --scl-font-mono:    'DM Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Colors (Pearl Mineral V2 locked values — CANONICAL_DOCTRINE §3) ── */
+  --scl-ink-1:    246 13% 9%;   /* #141418 graphite — locked primary text */
+  --scl-ink-2:    240 6% 22%;   /* ~#343438 secondary */
+  --scl-ink-3:    240 4% 44%;   /* ~#6E6E74 muted */
+  --scl-paper-1:  33 19% 95%;   /* #F6F3EF — locked background */
+  --scl-paper-2:  30 16% 91%;   /* #EFEBE6 — tinted surface */
+  --scl-paper-3:  28 14% 85%;   /* ~#DDD8D2 — borders */
+  --scl-surface-1: 0 0% 100%;   /* #FFFFFF cards */
+  --scl-surface-2: 34 22% 96%;  /* ~#F8F5F1 alt surface */
+  --scl-accent-1: 206 17% 52%;  /* #6E879B mineral slate — locked accent */
+  --scl-accent-2: 246 13% 9%;   /* #141418 depth */
+
+  /* ── Semantic ── */
+  --scl-border: hsl(var(--scl-paper-3) / 0.7);
+  --scl-ring:   hsl(var(--scl-accent-1) / 0.65);
+
+  /* ── Type scale ── */
+  --scl-step-0: clamp(0.92rem, 0.22vw + 0.86rem, 1.03rem);
+  --scl-step-1: clamp(1.05rem, 0.35vw + 0.98rem, 1.18rem);
+  --scl-step-2: clamp(1.28rem, 0.6vw  + 1.1rem,  1.52rem);
+  --scl-step-3: clamp(1.6rem,  1vw    + 1.25rem,  2.1rem);
+  --scl-step-4: clamp(2.1rem,  1.7vw  + 1.35rem,  3rem);
+  --scl-step-5: clamp(2.8rem,  2.8vw  + 1.4rem,   4.2rem);
+
+  /* ── Spacing ── */
+  --scl-1: 0.25rem; --scl-2: 0.5rem;   --scl-3: 0.75rem;
+  --scl-4: 1rem;    --scl-5: 1.25rem;  --scl-6: 1.5rem;
+  --scl-8: 2rem;    --scl-10: 2.5rem;  --scl-12: 3rem;
+  --scl-16: 4rem;
+
+  /* ── Radius ── */
+  --scl-r1:   10px;
+  --scl-r2:   16px;
+  --scl-r3:   26px;
+  --scl-pill: 999px;
+
+  /* ── Shadow ── */
+  --scl-sh-1: 0 1px 0 hsl(var(--scl-ink-1)/0.05), 0 10px 30px hsl(var(--scl-ink-1)/0.07);
+  --scl-sh-2: 0 2px 0 hsl(var(--scl-ink-1)/0.05), 0 18px 60px hsl(var(--scl-ink-1)/0.12);
+
+  /* ── Motion ── */
+  --scl-ease: cubic-bezier(.2,.9,.2,1);
+  --scl-fast: 160ms;
+  --scl-med:  260ms;
+  --scl-slow: 520ms;
+
+  /* ── Layout ── */
+  --scl-max:    1200px;
+  --scl-gutter: clamp(1rem, 3.5vw, 3rem);
+  --scl-nav-h:  76px;
+}
+
+@media (min-width: 1024px) {
+  :root { --scl-nav-h: 84px; }
+}
+
+/* ── SCL Component Classes — additive, no collision with existing ────────── */
+
+.scl-kicker {
+  font-family: var(--scl-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: hsl(var(--scl-ink-3));
+}
+
+.scl-title-xl { font-size: var(--scl-step-5); font-weight: 300; letter-spacing: -0.02em; line-height: 1.08; }
+.scl-title-lg { font-size: var(--scl-step-4); font-weight: 300; letter-spacing: -0.02em; line-height: 1.08; }
+.scl-title-md { font-size: var(--scl-step-3); font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
+
+.scl-lede {
+  font-size: var(--scl-step-1);
+  color: hsl(var(--scl-ink-2));
+  max-width: 58ch;
+  line-height: 1.6;
+}
+
+.scl-container {
+  width: 100%;
+  max-width: var(--scl-max);
+  margin: 0 auto;
+  padding: 0 var(--scl-gutter);
+}
+
+.scl-section { padding: clamp(3.5rem, 8vw, 7.5rem) 0; }
+
+.scl-surface {
+  background: hsl(var(--scl-surface-1));
+  border: 1px solid var(--scl-border);
+  border-radius: var(--scl-r3);
+  box-shadow: var(--scl-sh-1);
+}
+
+/* Pearl Glass panel */
+.scl-glass {
+  background: hsl(var(--scl-paper-1) / 0.72);
+  backdrop-filter: blur(14px) brightness(1.03);
+  -webkit-backdrop-filter: blur(14px) brightness(1.03);
+  border: 1px solid hsl(var(--scl-paper-3) / 0.55);
+  box-shadow:
+    0 4px 24px hsl(var(--scl-ink-1) / 0.06),
+    inset 0 1px 0 hsl(255 100% 100% / 0.35),
+    inset 0 -1px 0 hsl(var(--scl-ink-1) / 0.04);
+  border-radius: var(--scl-r3);
+}
+
+.scl-card {
+  padding: var(--scl-8);
+  border-radius: var(--scl-r3);
+  background: hsl(var(--scl-surface-1));
+  border: 1px solid var(--scl-border);
+  box-shadow: var(--scl-sh-1);
+  transition: transform var(--scl-med) var(--scl-ease), box-shadow var(--scl-med) var(--scl-ease);
+}
+@media (hover: hover) {
+  .scl-card:hover { transform: translateY(-2px); box-shadow: var(--scl-sh-2); }
+}
+
+.scl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: var(--scl-pill);
+  border: 1px solid hsl(var(--scl-paper-3) / 0.9);
+  background: hsl(var(--scl-paper-2) / 0.85);
+  font-family: var(--scl-font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--scl-ink-2));
+}
+.scl-badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 99px;
+  background: hsl(var(--scl-accent-1));
+  flex-shrink: 0;
+}
+
+.scl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--scl-pill);
+  border: 1px solid transparent;
+  font-family: var(--scl-font-sans);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition:
+    transform var(--scl-fast) var(--scl-ease),
+    box-shadow var(--scl-med) var(--scl-ease),
+    background var(--scl-med) var(--scl-ease),
+    border-color var(--scl-med) var(--scl-ease);
+}
+.scl-btn:active { transform: translateY(1px); }
+
+.scl-btn--primary {
+  background: hsl(var(--scl-ink-1));
+  color: hsl(var(--scl-paper-1));
+  box-shadow: 0 10px 26px hsl(var(--scl-ink-1) / 0.22);
+}
+@media (hover: hover) {
+  .scl-btn--primary:hover { background: hsl(var(--scl-accent-1)); }
+}
+
+.scl-btn--outline {
+  background: transparent;
+  border-color: hsl(var(--scl-ink-1) / 0.22);
+  color: hsl(var(--scl-ink-1));
+}
+@media (hover: hover) {
+  .scl-btn--outline:hover {
+    background: hsl(var(--scl-paper-2));
+    border-color: hsl(var(--scl-ink-1) / 0.35);
+  }
+}
+
+.scl-btn--accent {
+  background: hsl(var(--scl-accent-1));
+  color: #fff;
+  box-shadow: 0 14px 34px hsl(var(--scl-accent-1) / 0.28);
+}
+@media (hover: hover) {
+  .scl-btn--accent:hover { filter: brightness(1.06); }
+}
+
+/* ── Utilities ── */
+.u-muted  { color: hsl(var(--scl-ink-3)); }
+.u-center { text-align: center; }
+.u-stack  { display: grid; gap: var(--scl-4); }
+.u-row    { display: flex; gap: var(--scl-3); flex-wrap: wrap; align-items: center; }

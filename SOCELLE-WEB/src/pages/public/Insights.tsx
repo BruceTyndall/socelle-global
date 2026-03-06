@@ -1,39 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Sparkles, ArrowRight, TrendingUp } from 'lucide-react';
+import { Sparkles, ArrowRight, TrendingUp, Newspaper } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { useRssItems } from '../../lib/useRssItems';
 
-// ── Placeholder trend items (replace with API data: NewsAPI, GNews, RSS) ───
-const TREND_PLACEHOLDERS = [
-  {
-    id: '1',
-    title: 'Professional skincare shifts toward biotech actives',
-    summary:
-      'Peptides, fermented ingredients, and exosomes are moving from niche to mainstream in professional channels.',
-    source: 'Industry report',
-    date: 'Q1 2026',
-    category: 'Ingredients',
-  },
-  {
-    id: '2',
-    title: 'Hyperpigmentation solutions see surge in demand',
-    summary:
-      'Treatment-room interest in even skin tone and targeted correction protocols continues to rise quarter-over-quarter.',
-    source: 'Market intelligence',
-    date: 'Q1 2026',
-    category: 'Treatment room',
-  },
-  {
-    id: '3',
-    title: 'Clean formulations become baseline procurement criterion',
-    summary:
-      'Professional buyers are increasingly filtering for ingredient transparency and sustainability during brand evaluation.',
-    source: 'Category pulse',
-    date: 'Q1 2026',
-    category: 'Market',
-  },
-];
+function formatPublishedAt(ts: string | null): string {
+  if (!ts) return '';
+  return new Date(ts).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
 
 const CATEGORIES = [
   { key: 'ingredients', label: 'Ingredients' },
@@ -42,6 +21,8 @@ const CATEGORIES = [
 ];
 
 export default function Insights() {
+  const { items, loading, isLive } = useRssItems(12);
+
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
@@ -102,28 +83,72 @@ export default function Insights() {
           <div className="flex items-center gap-2 mb-10">
             <TrendingUp className="w-5 h-5 text-accent" />
             <h2 className="font-sans font-semibold text-2xl text-graphite">Latest trends</h2>
+            {isLive && (
+              <span className="text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-pill">
+                Live
+              </span>
+            )}
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {TREND_PLACEHOLDERS.map((t) => (
-              <article
-                key={t.id}
-                className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-card hover:shadow-card-hover transition-shadow"
-              >
-                <span className="text-[10px] font-sans font-semibold text-accent uppercase tracking-wider">
-                  {t.category}
-                </span>
-                <h3 className="font-sans font-semibold text-lg text-graphite mt-2 mb-2 leading-snug">
-                  {t.title}
-                </h3>
-                <p className="text-graphite/60 font-sans text-sm font-light leading-relaxed">
-                  {t.summary}
-                </p>
-                <p className="text-graphite/40 text-xs font-sans mt-4">
-                  {t.source} · {t.date}
-                </p>
-              </article>
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl border border-graphite/10 p-6 animate-pulse"
+                >
+                  <div className="h-3 w-20 bg-graphite/10 rounded mb-3" />
+                  <div className="h-5 w-full bg-graphite/10 rounded mb-2" />
+                  <div className="h-5 w-3/4 bg-graphite/10 rounded mb-4" />
+                  <div className="h-3 w-full bg-graphite/5 rounded mb-1" />
+                  <div className="h-3 w-5/6 bg-graphite/5 rounded" />
+                </div>
+              ))}
+            </div>
+          ) : items.length === 0 ? (
+            <div className="text-center py-20">
+              <Newspaper className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
+              <p className="font-sans text-graphite/40 text-sm">
+                No intelligence feeds available yet. Check back soon.
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map((item) => {
+                const card = (
+                  <article className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-card hover:shadow-card-hover transition-shadow h-full flex flex-col">
+                    <span className="text-[10px] font-sans font-semibold text-accent uppercase tracking-wider">
+                      {item.category}
+                    </span>
+                    <h3 className="font-sans font-semibold text-lg text-graphite mt-2 mb-2 leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="text-graphite/60 font-sans text-sm font-light leading-relaxed flex-1">
+                      {item.description}
+                    </p>
+                    <p className="text-graphite/40 text-xs font-sans mt-4 truncate">
+                      {item.attribution_text}
+                      {item.published_at ? ` · ${formatPublishedAt(item.published_at)}` : ''}
+                    </p>
+                  </article>
+                );
+
+                return item.link ? (
+                  <a
+                    key={item.id}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    {card}
+                  </a>
+                ) : (
+                  <div key={item.id}>{card}</div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

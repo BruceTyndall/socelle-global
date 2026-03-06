@@ -1,1 +1,10 @@
+# ── Dynamic sitemap proxy rules ─────────────────────────────────────────────
+# Proxied to sitemap-generator Supabase Edge Function (W12-09)
+# Project ref: rumdmulxzmjtsplsjngi
+/sitemap-static.xml    https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/sitemap-generator?type=static    200
+/sitemap-brands.xml    https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/sitemap-generator?type=brands    200
+/sitemap-protocols.xml https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/sitemap-generator?type=protocols 200
+/sitemap-jobs.xml      https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/sitemap-generator?type=jobs      200
+
+# ── SPA fallback (must remain last) ──────────────────────────────────────────
 /* /index.html 200

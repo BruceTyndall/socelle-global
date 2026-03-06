@@ -93,13 +93,25 @@ The following colors are **permanently banned** from all surfaces:
 
 ## 4. STYLE LOCK — TYPOGRAPHY
 
-### Option C (LOCKED)
+### Base System — Tailwind / Non-SCL Surfaces (LOCKED)
 
 | Tier | Font | Source | Usage | Status |
 |---|---|---|---|---|
-| **Primary** | General Sans | Fontshare CDN | ALL text, ALL public pages, ALL sizes | LOCKED |
-| **Mono** | Geist Mono or JetBrains Mono | System / CDN | Data values, timestamps, deltas, code blocks only | LOCKED |
-| **Serif** | None | — | **BANNED.** No serif font on any public surface. | LOCKED |
+| **Primary** | General Sans | Fontshare CDN | ALL text, ALL public pages using Tailwind `font-sans` | LOCKED |
+| **Mono** | JetBrains Mono | Google Fonts | Data values, timestamps, deltas, code blocks — Tailwind `font-mono` | LOCKED |
+| **Serif** | None | — | **BANNED** on base system. `font-serif` class is never used on public pages. | LOCKED |
+
+### Clean Room UI System — `--scl-font-*` Namespace (APPROVED 2026-03-06)
+
+Owner-approved override for the `--scl-*` CSS variable namespace only. Does NOT affect Tailwind `font-sans`, `font-mono`, or any non-SCL component.
+
+| Tier | Font | Source | CSS Variable | Usage |
+|---|---|---|---|---|
+| **Display** | Cormorant Garamond | Google Fonts | `--scl-font-display` | SCL hero headings, editorial display text |
+| **Sans** | DM Sans | Google Fonts | `--scl-font-sans` | SCL body text, UI labels, buttons |
+| **Mono** | DM Mono | Google Fonts | `--scl-font-mono` | SCL data values, kicker labels, badges |
+
+**Scope:** `--scl-font-*` variables apply only to components using the `.scl-*` class system (`src/styles/socelle-cleanroom.css`). Public pages using Tailwind classes are unaffected. Base system fonts (General Sans, JetBrains Mono) remain authoritative for all non-SCL surfaces.
 
 ### Typography Scale
 
@@ -113,9 +125,11 @@ The following colors are **permanently banned** from all surfaces:
 | `eyebrow` | 0.8125rem | 1.2 | 0.12em (caps) | 500 |
 | `label` | 0.6875rem | 1.2 | 0.06em | 600 |
 
-### BANNED Fonts (public pages)
+### BANNED Fonts (public pages — base system)
 
-DM Serif Display, Playfair Display, Inter (as primary), PPNeueMontreal (unlicensed), SimplonBPMono (unlicensed), any Google Serif font.
+DM Serif Display, Playfair Display, Inter (as primary), PPNeueMontreal (unlicensed), SimplonBPMono (unlicensed), any Google Serif font used outside the `--scl-font-display` variable.
+
+> **Note:** Cormorant Garamond, DM Sans, DM Mono are permitted within the `--scl-font-*` namespace only (SCL components). They remain banned as direct Tailwind class overrides on public page markup.
 
 ---
 

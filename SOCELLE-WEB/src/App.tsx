@@ -32,6 +32,7 @@ const HowItWorks = lazy(() => import('./pages/public/HowItWorks'));
 const RequestAccess = lazy(() => import('./pages/public/RequestAccess'));
 const FAQ = lazy(() => import('./pages/public/FAQ'));
 const Education = lazy(() => import('./pages/public/Education'));
+const Ingredients = lazy(() => import('./pages/public/Ingredients'));
 const Protocols = lazy(() => import('./pages/public/Protocols'));
 const ProtocolDetail = lazy(() => import('./pages/public/ProtocolDetail'));
 
@@ -182,6 +183,7 @@ function App() {
                   <Route path="/how-it-works" element={<HowItWorks />} />
                   <Route path="/request-access" element={<RequestAccess />} />
                   <Route path="/education" element={<Education />} />
+                  <Route path="/ingredients" element={<Ingredients />} />
                   <Route path="/protocols" element={<Protocols />} />
                   <Route path="/protocols/:slug" element={<ProtocolDetail />} />
                   <Route path="/faq" element={<FAQ />} />

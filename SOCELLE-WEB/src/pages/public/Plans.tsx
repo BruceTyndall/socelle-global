@@ -124,7 +124,7 @@ const FAQ_ITEMS = [
     id: 'faq-3',
     question: 'How does brand pricing work?',
     answer:
-      'Brands operate on a 92/8 commission model. You keep 92% of every order. No listing fees, no monthly charges, no setup costs. Payouts are processed via Stripe Connect when orders ship.',
+      'Brands operate on a 92/8 commission model. You keep 92% of every order. No listing fees, no monthly charges, no setup costs. Commission payouts to brand partners are processed on a scheduled basis. Payment processing infrastructure is in active development.',
   },
   {
     id: 'faq-4',
@@ -142,7 +142,7 @@ const FAQ_ITEMS = [
     id: 'faq-6',
     question: 'What payment methods do you accept?',
     answer:
-      'We accept all major credit cards processed through Stripe. Enterprise accounts can arrange invoice billing. All transactions are secured with bank-level encryption.',
+      'We accept all major credit cards. Enterprise accounts can arrange invoice billing. All transactions are processed through PCI-compliant payment infrastructure.',
   },
 ];
 

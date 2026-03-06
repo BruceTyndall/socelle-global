@@ -144,9 +144,12 @@ export default function IntelligenceReport() {
                 <Calendar className="w-4 h-4" />
                 <span>{formatReportDate(report.reportDate)}</span>
               </div>
-              <h1 className="text-2xl font-bold font-playfair text-pro-charcoal">
-                {report.title}
-              </h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl font-bold font-playfair text-pro-charcoal">
+                  {report.title}
+                </h1>
+                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+              </div>
               <p className="text-sm text-pro-warm-gray mt-1">
                 Prepared for <span className="font-medium text-pro-charcoal">{brandName}</span>
                 {' · '}Generated {formatGeneratedDate(report.generatedAt)}

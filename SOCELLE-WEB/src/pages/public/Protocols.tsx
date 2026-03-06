@@ -283,10 +283,6 @@ export default function Protocols() {
                         ) : (
                           <span />
                         )}
-                        <div className="flex items-center gap-1 text-xs font-sans text-[rgba(30,37,43,0.42)]">
-                          <Users className="w-3 h-3" />
-                          {protocol.adoptionCount.toLocaleString()} professionals
-                        </div>
                       </div>
                     </div>
                   </Link>

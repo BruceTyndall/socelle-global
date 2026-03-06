@@ -1,5 +1,8 @@
-/* ── Google Fonts ────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+/* ── Font manifest (see src/styles/fonts.css for full spec) ──── */
+@import './styles/fonts.css';
+
+/* ── Clean Room UI System tokens + component classes ─────────── */
+@import './styles/socelle-cleanroom.css';
 
 @tailwind base;
 @tailwind components;
@@ -8,14 +11,14 @@
 /* ── CSS Custom Properties — Mineral Intelligence System ───── */
 :root {
   /* Core background system */
-  --color-bg:             #F6F4F1;
+  --color-bg:             #F6F3EF;   /* Pearl Mineral V2 locked — CANONICAL_DOCTRINE §3 */
   --color-surface-alt:    #EFEBE6;
   --color-surface-card:   #FFFFFF;
   --color-panel-dark:     #1F2428;
   --color-footer:         #15191D;
 
   /* Text system */
-  --color-text-primary:   #1E252B;
+  --color-text-primary:   #141418;   /* graphite locked — CANONICAL_DOCTRINE §3 */
   --color-text-secondary: rgba(30, 37, 43, 0.62);
   --color-text-muted:     rgba(30, 37, 43, 0.42);
   --color-text-on-dark:   #F7F5F2;
@@ -41,9 +44,11 @@
   --shadow-soft:          0 8px 24px rgba(19, 24, 29, 0.06);
   --shadow-panel:         0 20px 60px rgba(19, 24, 29, 0.12);
 
-  /* Fonts */
-  --font-sans:            'Inter', system-ui, sans-serif;
-  --font-serif:           'DM Serif Display', Georgia, serif;
+  /* Fonts — General Sans locked primary (CANONICAL_DOCTRINE §4) */
+  --font-sans:            'General Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:            'JetBrains Mono', ui-monospace, monospace;
+  /* --font-serif kept for portal backward compat only — BANNED on public pages */
+  --font-serif:           'General Sans', Georgia, sans-serif;
 
   /* Motion */
   --transition-smooth:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -233,22 +238,23 @@
 
   body {
     @apply bg-mn-bg font-sans;
-    color: var(--color-primary-cocoa);
+    color: #141418; /* graphite — CANONICAL_DOCTRINE §3 locked */
     min-height: 100vh;
   }
 
-  /* Headings — DM Serif Display for public, Playfair for portals via font-heading */
-  /* Editorial weight hierarchy: h1/h2 light (300), h3 medium-ish (450) */
+  /* Headings — General Sans for all surfaces (CANONICAL_DOCTRINE §4) */
+  /* Serif is BANNED on public pages. font-sans enforced globally.    */
   h1, h2, h3 {
-    @apply font-serif;
+    @apply font-sans;
   }
 
   h1, h2 {
-    font-weight: var(--font-weight-light); /* 300 — editorial, luxury */
+    font-weight: 300; /* light — editorial weight */
+    letter-spacing: -0.02em;
   }
 
   h3 {
-    font-weight: var(--font-weight-normal); /* 450 — slightly heavier than regular */
+    font-weight: 500;
   }
 
   h4, h5, h6 {
@@ -1162,7 +1168,7 @@ dialog.mobile-nav-dialog {
   max-height: 100%;
   width: 100%;
   height: 100%;
-  background: #F6F4F1;
+  background: #F6F3EF; /* locked Pearl Mineral V2 bg */
   outline: none;
 }
 
@@ -1197,3 +1203,6 @@ dialog.mobile-nav-dialog[open] {
   background: rgba(255, 255, 255, 0.55);
   border-color: rgba(255, 255, 255, 0.30);
 }
+
+/* ── Clean Room UI System loaded via @import at top of this file ── */
+/* See src/styles/socelle-cleanroom.css for all --scl-* tokens     */

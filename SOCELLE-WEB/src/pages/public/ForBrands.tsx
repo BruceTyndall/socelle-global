@@ -273,7 +273,7 @@ export default function ForBrands() {
           <BlockReveal delay={200}>
             <p className="text-body text-[rgba(247,245,242,0.55)] max-w-md mx-auto mb-10">
               Join the intelligence platform connecting professional beauty brands
-              with verified operators. 92/8 commission. No listing fees. No monthly charges.
+              with verified operators. 92/8 commission model planned. No listing fees. No monthly charges.
             </p>
           </BlockReveal>
           <BlockReveal delay={300}>

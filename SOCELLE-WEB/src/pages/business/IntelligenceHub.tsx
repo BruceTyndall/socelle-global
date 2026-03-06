@@ -66,7 +66,10 @@ export default function IntelligenceHub() {
               <Brain className="w-5 h-5 text-intel-accent" />
             </div>
             <div>
-              <h1 className="font-heading text-2xl font-bold text-pro-charcoal">Intelligence Hub</h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-heading text-2xl font-bold text-pro-charcoal">Intelligence Hub</h1>
+                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+              </div>
               <p className="text-sm text-pro-warm-gray font-sans">Personalized signals for your treatment room</p>
             </div>
           </div>
