@@ -66,7 +66,7 @@ function BrandGridSkeleton() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="bg-white rounded-card border border-[rgba(30,37,43,0.08)] overflow-hidden">
+        <div key={i} className="bg-white rounded-card border border-[rgba(20,20,24,0.08)] overflow-hidden">
           <div className="h-36 w-full animate-pulse bg-mn-surface" />
           <div className="p-4 space-y-2">
             <div className="h-5 w-3/4 rounded animate-pulse bg-mn-surface" />
@@ -256,11 +256,11 @@ export default function Brands() {
             <div className="flex flex-wrap justify-center gap-4">
               <button
                 onClick={() => { const el = document.getElementById('search-brands'); if (el) el.focus(); else window.scrollTo(0, 500); }}
-                className="bg-[#F7F5F2] text-graphite rounded-full h-[52px] px-8 font-sans font-medium text-sm transition-all hover:bg-white hover:scale-[1.02]"
+                className="btn-mineral-secondary"
               >
                 Search Brands
               </button>
-              <Link to="/intelligence" className="inline-flex items-center justify-center rounded-full h-[52px] px-8 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] font-sans font-medium text-sm hover:bg-white/15 transition-all duration-200">
+              <Link to="/intelligence" className="btn-mineral-ghost">
                 View Market Pulse
               </Link>
             </div>
@@ -280,7 +280,7 @@ export default function Brands() {
                 flex-shrink-0 px-4 py-2 rounded-pill text-sm font-sans font-medium border transition-all duration-150
                 ${activeCategory === chip.key
                   ? 'bg-[#1F2428] text-[#F7F5F2] border-[#1F2428]'
-                  : 'bg-white text-[rgba(30,37,43,0.62)] border-[rgba(30,37,43,0.12)] hover:border-graphite hover:text-graphite'
+                  : 'bg-white text-[rgba(20,20,24,0.62)] border-[rgba(20,20,24,0.12)] hover:border-graphite hover:text-graphite'
                 }
               `}
             >
@@ -291,7 +291,7 @@ export default function Brands() {
 
         {/* ── Intelligence filter chips ──────────────────────────── */}
         <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1">
-          <span className="flex-shrink-0 text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-[rgba(30,37,43,0.42)] font-sans mr-1">
+          <span className="flex-shrink-0 text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-[rgba(20,20,24,0.42)] font-sans mr-1">
             Intelligence:
           </span>
           {BRAND_INTEL_FILTERS.map((filter) => {
@@ -311,7 +311,7 @@ export default function Brands() {
                   flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-xs font-sans font-medium border transition-all duration-150
                   ${isActive
                     ? 'bg-mn-dark text-[#F7F5F2] border-mn-dark shadow-panel'
-                    : 'bg-white text-[rgba(30,37,43,0.62)] border-[rgba(30,37,43,0.12)] hover:border-accent hover:text-accent'
+                    : 'bg-white text-[rgba(20,20,24,0.62)] border-[rgba(20,20,24,0.12)] hover:border-accent hover:text-accent'
                   }
                 `}
               >
@@ -332,7 +332,7 @@ export default function Brands() {
                 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-sm font-sans font-medium border transition-all
                 ${showFilters || activeFilterCount > 0
                   ? 'bg-[#1F2428] text-[#F7F5F2] border-[#1F2428]'
-                  : 'bg-white text-[rgba(30,37,43,0.62)] border-[rgba(30,37,43,0.12)] hover:border-graphite hover:text-graphite'
+                  : 'bg-white text-[rgba(20,20,24,0.62)] border-[rgba(20,20,24,0.12)] hover:border-graphite hover:text-graphite'
                 }
               `}
             >
@@ -347,7 +347,7 @@ export default function Brands() {
 
             {/* Active filter chips */}
             {filterNew && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-mn-surface text-graphite text-xs font-medium font-sans rounded-pill border border-[rgba(30,37,43,0.12)]">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-mn-surface text-graphite text-xs font-medium font-sans rounded-pill border border-[rgba(20,20,24,0.12)]">
                 New brands
                 <button onClick={() => setFilterNew(false)} className="hover:text-accent transition-colors">
                   <X className="w-3 h-3" />
@@ -365,7 +365,7 @@ export default function Brands() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[rgba(30,37,43,0.42)] font-sans">
+            <span className="text-xs text-[rgba(20,20,24,0.42)] font-sans">
               {filteredBrands.length} brand{filteredBrands.length !== 1 ? 's' : ''}
             </span>
 
@@ -373,7 +373,7 @@ export default function Brands() {
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="text-sm font-sans text-graphite border border-[rgba(30,37,43,0.12)] rounded-lg px-3 py-1.5 bg-white focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none cursor-pointer"
+              className="text-sm font-sans text-graphite border border-[rgba(20,20,24,0.12)] rounded-lg px-3 py-1.5 bg-white focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.key} value={opt.key}>{opt.label}</option>
@@ -384,13 +384,13 @@ export default function Brands() {
 
         {/* ── Filter panel ──────────────────────────────────────── */}
         {showFilters && (
-          <div className="bg-white border border-[rgba(30,37,43,0.08)] rounded-card p-5 mb-6 animate-fade-in">
+          <div className="bg-white border border-[rgba(20,20,24,0.08)] rounded-card p-5 mb-6 animate-fade-in">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-sans font-semibold text-graphite text-sm">Filter brands</h3>
               {activeFilterCount > 0 && (
                 <button
                   onClick={() => { setFilterNew(false); setActiveCategory('all'); setActiveIntelFilter(null); }}
-                  className="text-xs font-medium font-sans text-[rgba(30,37,43,0.42)] hover:text-graphite transition-colors"
+                  className="text-xs font-medium font-sans text-[rgba(20,20,24,0.42)] hover:text-graphite transition-colors"
                 >
                   Clear all
                 </button>
@@ -416,7 +416,7 @@ export default function Brands() {
             <div
               className={`border rounded-card p-6 ${errorType === 'network'
                 ? 'bg-red-50 border-red-200'
-                : 'bg-mn-surface border-[rgba(30,37,43,0.08)]'
+                : 'bg-mn-surface border-[rgba(20,20,24,0.08)]'
                 }`}
             >
               <div className="flex items-start gap-3">
@@ -431,13 +431,13 @@ export default function Brands() {
                   >
                     {errorType === 'network' ? 'Brand discovery unavailable' : 'Content being prepared'}
                   </h3>
-                  <p className={`text-sm font-sans mb-4 ${errorType === 'network' ? 'text-red-700' : 'text-[rgba(30,37,43,0.62)]'
+                  <p className={`text-sm font-sans mb-4 ${errorType === 'network' ? 'text-red-700' : 'text-[rgba(20,20,24,0.62)]'
                     }`}>
                     {error}
                   </p>
                   <button
                     onClick={fetchBrands}
-                    className="bg-[#1F2428] text-[#F7F5F2] rounded-full h-[42px] px-6 font-sans font-medium text-sm transition-colors hover:bg-graphite"
+                    className="btn-mineral-primary btn-mineral-sm"
                   >
                     Try again
                   </button>
@@ -448,10 +448,10 @@ export default function Brands() {
         ) : loading ? (
           <BrandGridSkeleton />
         ) : filteredBrands.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-[rgba(30,37,43,0.12)] rounded-card">
-            <Package className="w-14 h-14 text-[rgba(30,37,43,0.2)] mx-auto mb-4" />
+          <div className="text-center py-20 border border-dashed border-[rgba(20,20,24,0.12)] rounded-card">
+            <Package className="w-14 h-14 text-[rgba(20,20,24,0.2)] mx-auto mb-4" />
             <h3 className="font-sans font-semibold text-subsection text-graphite mb-2">No brands found</h3>
-            <p className="font-sans text-[rgba(30,37,43,0.62)] text-sm mb-4">
+            <p className="font-sans text-[rgba(20,20,24,0.62)] text-sm mb-4">
               {activeCategory !== 'all'
                 ? `No ${activeCategory} brands yet. Try a different category.`
                 : 'No brands available yet. Check back soon.'}
@@ -459,7 +459,7 @@ export default function Brands() {
             {activeCategory !== 'all' && (
               <button
                 onClick={() => setActiveCategory('all')}
-                className="rounded-full h-[42px] px-6 bg-white/65 text-graphite border border-[rgba(30,37,43,0.12)] font-sans font-medium text-sm transition-colors hover:border-graphite"
+                className="rounded-full h-[42px] px-6 bg-white/65 text-graphite border border-[rgba(20,20,24,0.12)] font-sans font-medium text-sm transition-colors hover:border-graphite"
               >
                 View all brands
               </button>
@@ -468,11 +468,11 @@ export default function Brands() {
         ) : (
           <>
             {/* Editorial moment: curated gallery feel */}
-            <div className="mb-10 pb-8 border-b border-[rgba(30,37,43,0.08)]">
+            <div className="mb-10 pb-8 border-b border-[rgba(20,20,24,0.08)]">
               <div className="flex justify-center mb-3">
                 <TrustBadge variant="authorized" size="md" />
               </div>
-              <p className="text-[rgba(30,37,43,0.62)] font-sans text-center text-sm max-w-xl mx-auto">
+              <p className="text-[rgba(20,20,24,0.62)] font-sans text-center text-sm max-w-xl mx-auto">
                 All brands verified and authorized for professional distribution.
               </p>
             </div>

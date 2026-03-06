@@ -80,12 +80,12 @@ function TierCard({
 
       <div className="mb-6">
         <h3 className="text-xl font-sans font-bold text-graphite mb-1">{tier.name}</h3>
-        <p className="text-sm text-[rgba(30,37,43,0.42)] font-sans">{tier.requests}</p>
+        <p className="text-sm text-[rgba(20,20,24,0.42)] font-sans">{tier.requests}</p>
       </div>
 
       <div className="mb-6">
         <span className="text-metric-lg font-sans text-graphite">{tier.price}</span>
-        <span className="text-sm text-[rgba(30,37,43,0.42)] font-sans ml-2">/{tier.priceNote}</span>
+        <span className="text-sm text-[rgba(20,20,24,0.42)] font-sans ml-2">/{tier.priceNote}</span>
       </div>
 
       <ul className="space-y-3 mb-8 flex-1">
@@ -100,17 +100,17 @@ function TierCard({
       {isEnterprise ? (
         <Link
           to="/request-access"
-          className="block w-full text-center rounded-full h-[52px] leading-[52px] px-7 border-2 border-[#1F2428] text-graphite font-sans font-medium text-sm hover:bg-[#1F2428] hover:text-[#F7F5F2] transition-colors"
+          className="btn-mineral-secondary w-full"
         >
           Contact Sales
         </Link>
       ) : (
         <button
           onClick={() => onSelect(tier)}
-          className={`w-full rounded-full h-[52px] px-7 font-sans font-medium text-sm transition-colors ${
+          className={`w-full ${
             tier.highlighted
-              ? 'bg-[#1F2428] text-[#F7F5F2] hover:opacity-90'
-              : 'bg-mn-surface text-graphite hover:bg-[rgba(30,37,43,0.08)]'
+              ? 'btn-mineral-primary'
+              : 'btn-mineral-secondary'
           }`}
         >
           {tier.ctaLabel}
@@ -181,11 +181,11 @@ export default function ApiPricing() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[rgba(30,37,43,0.08)] bg-mn-surface/50">
+                <tr className="border-b border-[rgba(20,20,24,0.08)] bg-mn-surface/50">
                   <th className="text-left py-4 px-6 font-semibold text-graphite font-sans w-1/3">Feature</th>
                   <th className="text-center py-4 px-4 font-semibold text-graphite font-sans">
                     <div className="flex flex-col items-center gap-1">
-                      <Zap className="w-4 h-4 text-[rgba(30,37,43,0.42)]" />
+                      <Zap className="w-4 h-4 text-[rgba(20,20,24,0.42)]" />
                       Starter
                     </div>
                   </th>
@@ -207,7 +207,7 @@ export default function ApiPricing() {
                 {COMPARISON_FEATURES.map((row, i) => (
                   <tr
                     key={row.feature}
-                    className={i < COMPARISON_FEATURES.length - 1 ? 'border-b border-[rgba(30,37,43,0.04)]' : ''}
+                    className={i < COMPARISON_FEATURES.length - 1 ? 'border-b border-[rgba(20,20,24,0.04)]' : ''}
                   >
                     <td className="py-3 px-6 text-graphite font-sans">{row.feature}</td>
                     {(['starter', 'professional', 'enterprise'] as const).map((t) => {
@@ -217,7 +217,7 @@ export default function ApiPricing() {
                           {val === true ? (
                             <CheckCircle className="w-4 h-4 text-accent mx-auto" />
                           ) : val === false ? (
-                            <span className="text-[rgba(30,37,43,0.22)]">&mdash;</span>
+                            <span className="text-[rgba(20,20,24,0.22)]">&mdash;</span>
                           ) : (
                             <span className="text-sm font-semibold text-graphite font-sans">
                               {val}
@@ -246,7 +246,7 @@ export default function ApiPricing() {
           {API_FAQ.map((faq) => (
             <div key={faq.q} className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6">
               <h3 className="text-sm font-semibold text-graphite font-sans mb-2">{faq.q}</h3>
-              <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans leading-relaxed">{faq.a}</p>
+              <p className="text-sm text-[rgba(20,20,24,0.62)] font-sans leading-relaxed">{faq.a}</p>
             </div>
           ))}
         </div>

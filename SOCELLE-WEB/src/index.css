@@ -88,20 +88,24 @@
   --safe-area-bottom:  env(safe-area-inset-bottom, 0px);
   --safe-area-left:    env(safe-area-inset-left, 0px);
 
-  /* ═══════════════════════════════════════════════════════════
-     NEW DESIGN SYSTEM TOKENS — March 2026
-     Warm Cocoa / Premium Glass / Editorial Typography
-     ═══════════════════════════════════════════════════════════ */
+}
 
+/* ═══════════════════════════════════════════════════════════════
+   WARM COCOA DESIGN SYSTEM — PORTAL-SCOPED (W12-25)
+   These tokens are available ONLY inside .portal-context containers.
+   Public pages (src/pages/public/*) must NOT use .portal-context.
+   Authority: SOCELLE_CANONICAL_DOCTRINE.md §3 + CLAUDE.md §C
+   ═══════════════════════════════════════════════════════════════ */
+.portal-context {
   /* ─── CORE COLORS ─── */
-  --color-primary-cocoa:  #47201c;   /* rgb(71, 32, 28)   — primary text & brand */
-  --color-deep-cocoa:     #29120f;   /* rgb(41, 18, 16)   — darkest bg (footer) */
-  --color-neutral-beige:  #ac9b98;   /* rgb(172, 155, 152) — neutral / placeholder */
+  --color-primary-cocoa:  #47201c;
+  --color-deep-cocoa:     #29120f;
+  --color-neutral-beige:  #ac9b98;
 
   /* ─── PAGE BACKGROUNDS ─── */
-  --bg-page-main:         #f8f6f2;   /* warm off-white — main page bg */
-  --bg-page-alt:          #f3e9e3;   /* peach section tint */
-  --bg-page-near-white:   #faf9f5;   /* near-white card bg */
+  --bg-page-main:         #f8f6f2;
+  --bg-page-alt:          #f3e9e3;
+  --bg-page-near-white:   #faf9f5;
 
   /* ─── PALETTE ─── */
   --color-red-400:        #ff6568;
@@ -123,22 +127,17 @@
 
   /* ─── TYPOGRAPHY ─── */
   --font-weight-light:    300;
-  --font-weight-normal:   450;   /* optical weight for variable fonts */
-  --text-2xl:             3rem;  /* line-height: 1.083 */
-  --text-xl:              2rem;  /* line-height: 1.125 */
-  --text-lg:              1.5rem;/* line-height: 1.167 */
-  --text-base:            1.25rem;/* line-height: 1.2  */
+  --font-weight-normal:   450;
+  --text-2xl:             3rem;
+  --text-xl:              2rem;
+  --text-lg:              1.5rem;
+  --text-base:            1.25rem;
 
-  /* ─── BORDER RADIUS — desktop defaults (overridden at mobile/tablet) ─── */
+  /* ─── BORDER RADIUS ─── */
   --border-radius-small:  24px;
   --border-radius-medium: 40px;
   --border-radius-large:  88px;
   --border-radius-card:   48px;
-  /* Tailwind-compatible aliases (override legacy values) */
-  --radius-sm:  1rem;    /* 16px */
-  --radius-xl:  3rem;    /* 48px */
-  --radius-2xl: 4rem;    /* 64px */
-  --radius-3xl: 5.5rem;  /* 88px */
 
   /* ─── BUTTON HEIGHTS ─── */
   --button-pill-height-extra-large:              80px;
@@ -159,24 +158,23 @@
   /* ─── HEADER ─── */
   --header-content-height: 57px;
   --header-gutter:          32px;
-  /* --header-height updated to use new calculation: */
-  --header-height:  calc(var(--header-content-height) + var(--header-gutter) * 2); /* 121px */
+  --header-height:  calc(var(--header-content-height) + var(--header-gutter) * 2);
   --hero-padding-top: calc(var(--header-height) + 32px);
-  --banner-height:    0px;  /* set to actual banner height when banner is shown */
+  --banner-height:    0px;
 
   /* ─── EASING ─── */
-  --ease-snap:     cubic-bezier(0, 0, 1, 1);         /* instant bg/color/border changes */
-  --ease-cinematic:cubic-bezier(0.75, 0, 0.25, 1);   /* scroll reveals, transforms */
-  --ease-default:  cubic-bezier(0.4, 0, 0.2, 1);     /* standard (replaces --transition-*) */
+  --ease-snap:     cubic-bezier(0, 0, 1, 1);
+  --ease-cinematic:cubic-bezier(0.75, 0, 0.25, 1);
+  --ease-default:  cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ─── Z-INDEX STACK ─── */
-  --z-bg:            -1;          /* decorative bg blobs */
-  --z-base:           0;          /* base content */
-  --z-overlay:        1;          /* image overlays */
-  --z-interactive:    3;          /* interactive elements */
-  --z-nav:            4;          /* nav / header */
-  --z-modal-backdrop: 2147483646; /* modal backdrop */
-  --z-modal:          2147483647; /* modal content */
+  --z-bg:            -1;
+  --z-base:           0;
+  --z-overlay:        1;
+  --z-interactive:    3;
+  --z-nav:            4;
+  --z-modal-backdrop: 2147483646;
+  --z-modal:          2147483647;
 }
 
 /* ─── RESPONSIVE BREAKPOINT OVERRIDES ────────────────────────── */
@@ -309,32 +307,38 @@
 /* ── Component Utilities ─────────────────────────────────────── */
 @layer components {
 
-  /* ── Mineral Buttons — pill-shaped, product-grade ── */
+  /* ── Mineral Buttons — pill-shaped, product-grade (W12-27 Pearl Mineral V2) ── */
   .btn-mineral {
     @apply inline-flex items-center justify-center gap-2
            font-sans font-medium text-sm
            h-[52px] px-7 rounded-pill
-           transition-all duration-200;
+           transition-all duration-200
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2;
+  }
+  .btn-mineral:disabled {
+    @apply opacity-40 pointer-events-none;
   }
 
+  /* Size modifiers */
+  .btn-mineral-sm { @apply h-[40px] px-5 text-xs; }
+  .btn-mineral-lg { @apply h-[56px] px-9 text-base; }
+
   .btn-mineral-primary {
-    @apply btn-mineral text-[#f8f6f2]
+    @apply btn-mineral bg-graphite text-white
            hover:scale-[1.01] active:scale-[0.99];
-    background-color: var(--color-primary-cocoa);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
     transition: background 0.2s var(--ease-snap),
                 transform  0.15s var(--ease-snap),
                 box-shadow 0.2s var(--ease-snap);
   }
   .btn-mineral-primary:hover {
-    background-color: color-mix(in srgb, var(--color-primary-cocoa) 85%, #000 15%);
+    background-color: color-mix(in srgb, theme('colors.graphite') 85%, #000 15%);
   }
 
   .btn-mineral-secondary {
-    @apply btn-mineral bg-white/65 hover:bg-white
+    @apply btn-mineral bg-white/65 text-graphite hover:bg-white
            hover:scale-[1.01] active:scale-[0.99];
-    color: var(--color-primary-cocoa);
-    border: 1px solid rgba(71, 32, 28, 0.14);
+    border: 1px solid rgba(20, 20, 24, 0.14);
     transition: background 0.2s var(--ease-snap),
                 transform  0.15s var(--ease-snap);
   }
@@ -347,16 +351,43 @@
   }
 
   .btn-mineral-dark {
-    @apply btn-mineral text-[#f8f6f2]
+    @apply btn-mineral text-white
            hover:scale-[1.01] active:scale-[0.99];
-    background-color: rgba(71, 32, 28, 0.35);
-    border: 1px solid rgba(248, 246, 242, 0.18);
+    background-color: rgba(20, 20, 24, 0.35);
+    border: 1px solid rgba(247, 245, 242, 0.18);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
     transition: background 0.2s var(--ease-snap), transform 0.15s var(--ease-snap);
   }
   .btn-mineral-dark:hover {
-    background-color: rgba(248, 246, 242, 0.15);
+    background-color: rgba(247, 245, 242, 0.15);
+  }
+
+  /* Glass variant — Liquid Glass behavior, Pearl Mineral tokens only */
+  .btn-mineral-glass {
+    @apply btn-mineral text-graphite
+           hover:scale-[1.01] active:scale-[0.99];
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.50);
+    backdrop-filter: blur(16px) saturate(1.8);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: background 0.2s var(--ease-snap), transform 0.15s var(--ease-snap);
+  }
+  .btn-mineral-glass:hover {
+    background: rgba(255, 255, 255, 0.65);
+  }
+
+  /* Ghost variant — transparent with border, for dark backgrounds */
+  .btn-mineral-ghost {
+    @apply btn-mineral text-white
+           hover:scale-[1.01] active:scale-[0.99];
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(247, 245, 242, 0.16);
+    transition: background 0.2s var(--ease-snap), transform 0.15s var(--ease-snap);
+  }
+  .btn-mineral-ghost:hover {
+    background: rgba(255, 255, 255, 0.14);
   }
 
   /* ── Legacy Buttons (portals — backward compat) ── */

@@ -1,7 +1,7 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-06 (Session 34 — Lane A: W10-11 Doc Gate PASS, W12-16 Doc Gate PASS, W12-20 Doc Gate PASS)
-Current Phase: WAVE 12 — Gap Closure
-Next Milestone: W12-19/W12-21/W12-22 (pending Lane B resubmit) → W12-11 (admin hub stubs)
+Last Updated: 2026-03-06 (Session 35 — W12-23/24/25 executed + verified, W12-26 registered, W12-27 registered)
+Current Phase: WAVE 12 — Gap Closure + Design Consistency + Layout Upgrade + UI Kit Normalization
+Next Milestone: W12-26 (media-first layout cutover) → W12-27 (buttons + typography normalization) → W12-19/21/22 QA resubmit → W12-11 (admin hub stubs)
 Doc Gate PASS 2026-03-06 (Session 34 Lane D): W10-11 ✅ (trigger artifact + send-email handler verified), W12-16 ✅ (all 5 functions ACTIVE on rumdmulxzmjtsplsjngi — supabase functions list EXIT:0), W12-20 ✅ (migration applied + rss-to-signals ACTIVE on rumdmulxzmjtsplsjngi — provenance + dedup index + signal_type heuristic verified)
 Completed 2026-03-06 (Session 33 Lane A): W12-16 (intelligence-briefing + jobs-search edge functions)
 Completed 2026-03-06 (Session 33 Lane B): W12-19 (remediation sweep), W12-21 (Insights live RSS wire), W12-22 (Ingredients directory) — ⚠️ IN REVIEW: Doc Gate resubmit required (Session 34)
@@ -241,6 +241,23 @@ Priority: FAIL 4 compliance first → intelligence thesis → revenue → SEO
 | ✅ W12-10 | Marketing site content buildout (4 stub routes → real content) | `apps/marketing-site/src/app/page.tsx`, `professionals/page.tsx`, `for-brands/page.tsx`, `plans/page.tsx` | SEO Agent | Static content — no DB dependency | 8h |
 | W12-11 | Admin hub stubs → functional shells (CRM, Social, Sales, Editorial, Affiliates, Events, Jobs, Recruitment) | `pages/admin/` (8 hub files) | Admin Control Center Agent | List/create CRUD from Supabase tables | 12h |
 | W12-12 | Portal MarketingCalendar → functional | `pages/business/MarketingCalendar.tsx` | Web Agent | Calendar UI with month view + events | 4h |
+
+🔴 FAIL 3 Compliance — Design Lock Violations (owner-approved 2026-03-06, Session 35)
+| # | Task | Scope | Owner Agent | Data Truth | Est |
+|---|------|-------|-------------|------------|-----|
+| W12-23 | Home.tsx Warm Cocoa purge — replace all hardcoded Cocoa hex (#47201c, #29120f, #f8f6f2) + inline gradients with mn-*/graphite/accent tokens | `src/pages/public/Home.tsx` | Web Agent (Lane B) | N/A — token swap only, no data surfaces | 2h |
+| W12-24 | BrandStorefront.tsx token normalization — replace #1E252B→#141418, convert inline palette constants/gradients to approved Tailwind tokens | `src/pages/public/BrandStorefront.tsx` | Web Agent (Lane B) | N/A — token swap only | 2h |
+| W12-25 | Scope Warm Cocoa tokens to portals only — wrap cocoa/page/ds-* CSS vars in `.portal-context` class, prevent global Tailwind utility generation | `src/index.css` (lines 92–180), `tailwind.config.js` (cocoa/page/ds-* entries) | Design Parity Agent (Lane X) | N/A — scoping only, no deletions | 2h |
+
+🟠 Public Page Layout Upgrade (owner-approved 2026-03-06, Session 35)
+| # | Task | Scope | Owner Agent | Data Truth | Est |
+|---|------|-------|-------------|------------|-----|
+| W12-26 | Public Page Layout Upgrade (anti-card, media-first) — replace grid-of-cards layouts with 3 reusable section primitives: HeroMediaRail, SplitFeature, EvidenceStrip. Each main public page gets 1 media surface above fold, 1 mid-page, 1 non-card evidence strip. NO data rewiring — keep existing hooks/queries, change presentation only. Use existing assets in `public/`. Videos must be muted, loop-safe, lazy-loaded, poster fallback. | New components: `src/components/public/HeroMediaRail.tsx`, `SplitFeature.tsx`, `EvidenceStrip.tsx`. Page edits: `src/pages/public/Home.tsx`, `Intelligence.tsx`, `BrandStorefront.tsx`, `ForBrands.tsx`, `Professionals.tsx` | Web Agent (Lane B) | N/A — layout only, no data changes | 16h |
+
+🟠 Public UI Kit Normalization (owner-approved 2026-03-06, Session 35)
+| # | Task | Scope | Owner Agent | Data Truth | Est |
+|---|------|-------|-------------|------------|-----|
+| W12-27 | Public UI Kit Normalization (Buttons + Typography) — Canonicalize all public-page buttons into a single Button component or strict class recipe with variants (primary / secondary / ghost / accent / glass), sizes (sm / md / lg), and normalized height/padding/radius/border/hover/focus/disabled states. Glass variant aligns with Liquid Glass Figma kit behavior using Pearl Mineral tokens only. Canonicalize typography: enforce font-sans (General Sans) for all body/labels/buttons, font-mono (JetBrains Mono) for data values/timestamps/deltas only. Remove all ad-hoc inline button styles and one-off Tailwind classes causing drift. No font-serif, no font-display, no Inter as primary. No new hex colors in inline styles. Figma reference (guidance only, not authority): Liquid Glass Buttons kit. | New: `src/components/public/Button.tsx` (or class recipe in `index.css`). Edits: `src/pages/public/Home.tsx`, `Intelligence.tsx`, `ForBrands.tsx`, `Professionals.tsx`, `BrandStorefront.tsx`, `HowItWorks.tsx`, `Pricing.tsx`, `FAQ.tsx`, `RequestAccess.tsx`, plus `src/components/public/*`. Forbidden: portal routes, auth.tsx, useCart.ts, commerce flow. | Web Agent (Lane B) — preceded by Lane X audit | N/A — UI normalization only, no data changes | 12h |
 
 🔵 Quality + Optimization
 | # | Task | Scope | Owner Agent | Data Truth | Est |

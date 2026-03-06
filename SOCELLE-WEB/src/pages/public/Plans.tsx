@@ -197,7 +197,7 @@ export default function Pricing() {
               className="font-sans font-semibold text-hero text-graphite mb-7 justify-center"
             />
             <BlockReveal delay={200}>
-              <p className="text-body-lg text-[rgba(30,37,43,0.62)] max-w-xl mx-auto mb-10">
+              <p className="text-body-lg text-[rgba(20,20,24,0.62)] max-w-xl mx-auto mb-10">
                 Choose your access level. Upgrade when you need deeper intelligence and benchmarks.
               </p>
             </BlockReveal>
@@ -248,11 +248,11 @@ export default function Pricing() {
                       <span className="font-sans font-semibold text-[2.5rem] text-graphite leading-none">
                         {tier.price}
                       </span>
-                      <span className="text-sm text-[rgba(30,37,43,0.42)] font-sans">
+                      <span className="text-sm text-[rgba(20,20,24,0.42)] font-sans">
                         {tier.period}
                       </span>
                     </div>
-                    <p className="text-sm text-[rgba(30,37,43,0.62)] leading-relaxed mb-8">
+                    <p className="text-sm text-[rgba(20,20,24,0.62)] leading-relaxed mb-8">
                       {tier.description}
                     </p>
 
@@ -267,9 +267,9 @@ export default function Pricing() {
 
                     <Link
                       to={tier.ctaLink}
-                      className={`w-full inline-flex items-center justify-center gap-2 rounded-full h-[52px] px-7 font-sans font-medium text-sm transition-all duration-200 ${tier.featured
-                        ? 'bg-[#1F2428] text-[#F7F5F2] hover:scale-[1.01]'
-                        : 'bg-white/80 text-graphite border border-[rgba(30,37,43,0.12)] hover:bg-white'
+                      className={`w-full ${tier.featured
+                        ? 'btn-mineral-primary'
+                        : 'btn-mineral-secondary'
                         }`}
                     >
                       {tier.cta}
@@ -303,7 +303,7 @@ export default function Pricing() {
             <div className="max-w-4xl mx-auto overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b border-[rgba(30,37,43,0.08)]">
+                  <tr className="border-b border-[rgba(20,20,24,0.08)]">
                     <th className="py-4 pr-8 text-sm font-sans font-medium text-graphite/40 uppercase tracking-wider">
                       Feature
                     </th>
@@ -322,18 +322,18 @@ export default function Pricing() {
                   {COMPARISON.map((row) => (
                     <tr
                       key={row.feature}
-                      className="border-b border-[rgba(30,37,43,0.06)]"
+                      className="border-b border-[rgba(20,20,24,0.06)]"
                     >
                       <td className="py-4 pr-8 text-sm font-sans text-graphite">
                         {row.feature}
                       </td>
-                      <td className="py-4 px-4 text-sm font-sans text-[rgba(30,37,43,0.52)] text-center">
+                      <td className="py-4 px-4 text-sm font-sans text-[rgba(20,20,24,0.52)] text-center">
                         {row.essentials}
                       </td>
                       <td className="py-4 px-4 text-sm font-sans text-graphite font-medium text-center">
                         {row.professional}
                       </td>
-                      <td className="py-4 px-4 text-sm font-sans text-[rgba(30,37,43,0.52)] text-center">
+                      <td className="py-4 px-4 text-sm font-sans text-[rgba(20,20,24,0.52)] text-center">
                         {row.enterprise}
                       </td>
                     </tr>
@@ -366,7 +366,7 @@ export default function Pricing() {
               <GlassAccordion items={FAQ_ITEMS} />
             </BlockReveal>
             <BlockReveal delay={300}>
-              <p className="text-center text-sm text-[rgba(30,37,43,0.62)] font-sans mt-10">
+              <p className="text-center text-sm text-[rgba(20,20,24,0.62)] font-sans mt-10">
                 More questions?{' '}
                 <a
                   href="mailto:hello@socelle.com"
@@ -407,7 +407,7 @@ export default function Pricing() {
               </Link>
               <Link
                 to="/brand/apply"
-                className="rounded-full h-[52px] px-7 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] inline-flex items-center justify-center font-sans font-medium text-sm hover:bg-white/15 transition-all duration-200"
+                className="btn-mineral-ghost"
               >
                 Apply as a brand
               </Link>

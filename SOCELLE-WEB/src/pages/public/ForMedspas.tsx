@@ -272,7 +272,7 @@ export default function ForMedspas() {
       </section>
 
       {/* ── Cross-link ────────────────────────────────────────────── */}
-      <section className="bg-mn-bg py-12 border-y border-[rgba(30,37,43,0.06)]">
+      <section className="bg-mn-bg py-12 border-y border-[rgba(20,20,24,0.06)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-graphite/50 font-sans">
             Not a medspa?{' '}
@@ -304,7 +304,7 @@ export default function ForMedspas() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/request-access"
-                className="inline-flex items-center justify-center gap-2 bg-[#F7F5F2] text-[#1F2428] rounded-full h-[52px] px-7 font-sans font-medium text-sm hover:scale-[1.01] transition-all duration-200"
+                className="btn-mineral-secondary"
               >
                 Request Access
                 <ArrowRight className="w-4 h-4" />

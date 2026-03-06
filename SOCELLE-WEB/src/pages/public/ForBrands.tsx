@@ -6,10 +6,12 @@ import {
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
-import WordReveal from '../../components/motion/WordReveal';
 import GradientMark from '../../components/motion/GradientMark';
 import SplitPanel from '../../components/sections/SplitPanel';
 import SiteFooter from '../../components/sections/SiteFooter';
+import HeroMediaRail from '../../components/public/HeroMediaRail';
+import EvidenceStrip from '../../components/public/EvidenceStrip';
+import SplitFeature from '../../components/public/SplitFeature';
 
 /* ══════════════════════════════════════════════════════════════════
    ForBrands — Liquid Glass Visual System
@@ -76,56 +78,26 @@ export default function ForBrands() {
       </Helmet>
       <MainNav />
 
-      {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative py-20 lg:py-28 overflow-hidden bg-mn-bg">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/tube.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(160deg, rgba(246,244,241,0.91) 0%, rgba(246,244,241,0.78) 50%, rgba(246,244,241,0.90) 100%)',
-          }}
-          aria-hidden="true"
-        />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
-                FOR BRANDS
-              </p>
-            </BlockReveal>
-            <WordReveal
-              text="For Brands"
-              as="h1"
-              className="font-sans font-semibold text-hero text-graphite mb-7 justify-center"
-            />
-            <BlockReveal delay={200}>
-              <p className="text-body-lg text-[rgba(30,37,43,0.62)] max-w-2xl mx-auto mb-10">
-                SOCELLE already tracks your footprint. Claim your page to control your narrative, publish education, and convert demand into orders.
-              </p>
-            </BlockReveal>
-            <BlockReveal delay={350}>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/brand/apply" className="btn-mineral-primary">
-                  Claim Your Brand Page
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
-                <Link to="/brand/apply" className="btn-mineral-secondary">
-                  Request Brand Access
-                </Link>
-              </div>
-            </BlockReveal>
-          </div>
-        </div>
-      </section>
+      {/* ── Hero (HeroMediaRail — W12-26) ──────────────────────────── */}
+      <HeroMediaRail
+        videoSrc="/videos/tube.mp4"
+        overlay="light"
+        minHeight="70svh"
+        headline="For Brands"
+        subtitle="SOCELLE already tracks your footprint. Claim your page to control your narrative, publish education, and convert demand into orders."
+        eyebrow={<p className="mn-eyebrow">FOR BRANDS</p>}
+        cta={
+          <>
+            <Link to="/brand/apply" className="btn-mineral-primary">
+              Claim Your Brand Page
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+            <Link to="/brand/apply" className="btn-mineral-secondary">
+              Request Brand Access
+            </Link>
+          </>
+        }
+      />
 
       {/* ── SplitPanel 1: Market Position ─────────────────────────── */}
       <SplitPanel imagePosition="right" bgColor="bg-mn-surface" className="mx-4 lg:mx-8 mb-6">
@@ -137,7 +109,7 @@ export default function ForBrands() {
           <GradientMark>share of wallet</GradientMark>,{' '}
           brand perception
         </h2>
-        <p className="text-body text-[rgba(30,37,43,0.62)] mb-6">
+        <p className="text-body text-[rgba(20,20,24,0.62)] mb-6">
           Understand where your brand stands in every category you compete in.
           Category-level benchmarks reveal your share, growth trajectory, and the
           competitive landscape — so you know exactly where to invest.
@@ -179,7 +151,7 @@ export default function ForBrands() {
           <GradientMark>A/B testing</GradientMark>,{' '}
           conversion analytics
         </h2>
-        <p className="text-body text-[rgba(30,37,43,0.62)] mb-6">
+        <p className="text-body text-[rgba(20,20,24,0.62)] mb-6">
           Target operators by segment, location, and purchase history. Multi-step
           campaigns with audience segmentation, scheduling, and performance
           tracking tied to real operator conversions and reorder revenue.
@@ -190,72 +162,59 @@ export default function ForBrands() {
         </Link>
       </SplitPanel>
 
-      {/* ── Feature Grid ─────────────────────────────────────────── */}
-      <section className="bg-mn-bg py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
-                Brand Intelligence Suite
-              </p>
-            </BlockReveal>
-            <BlockReveal delay={100}>
-              <h2 className="font-sans font-semibold text-section text-graphite mb-5">
-                Everything you need to grow your channel
-              </h2>
-            </BlockReveal>
-            <BlockReveal delay={200}>
-              <p className="text-body text-[rgba(30,37,43,0.62)] max-w-lg mx-auto">
-                Six intelligence layers that turn market data into distribution
-                growth for professional beauty brands.
-              </p>
-            </BlockReveal>
-          </div>
+      {/* ── Brand Intelligence (EvidenceStrip — W12-26) ───────────── */}
+      <EvidenceStrip
+        title="Brand Intelligence Suite"
+        bg="dark"
+        isLive={false}
+        items={FEATURES.slice(0, 6).map(f => ({
+          label: f.title,
+          value: f.body.split('.')[0],
+          source: 'Intelligence',
+        }))}
+      />
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-            {FEATURES.map((card, i) => (
-              <BlockReveal key={card.title} delay={i * 80}>
-                <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-8 h-full hover:shadow-[0_4px_24px_rgba(19,24,29,0.06)] transition-shadow duration-300">
-                  <div className="w-11 h-11 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
-                    <card.icon className="w-5 h-5 text-accent" />
+      {/* ── Mid-page media (SplitFeature — W12-26) ────────────────── */}
+      <SplitFeature
+        videoSrc="/videos/yellow-drops.mp4"
+        mediaPosition="right"
+        bg="surface"
+      >
+        <BlockReveal>
+          <p className="mn-eyebrow mb-4">Brand Intelligence Suite</p>
+          <h2 className="font-sans font-semibold text-section text-graphite mb-6">
+            Everything you need to grow your channel
+          </h2>
+          <div className="space-y-5">
+            {FEATURES.slice(0, 3).map(card => {
+              const Icon = card.icon;
+              return (
+                <div key={card.title} className="flex gap-4">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/10 flex-shrink-0">
+                    <Icon className="w-5 h-5 text-accent" />
                   </div>
-                  <h3 className="font-sans font-semibold text-graphite text-base mb-2">
-                    {card.title}
-                  </h3>
-                  <p className="text-sm text-[rgba(30,37,43,0.62)] leading-relaxed">
-                    {card.body}
-                  </p>
+                  <div>
+                    <h3 className="font-sans text-base font-semibold text-graphite">{card.title}</h3>
+                    <p className="text-sm text-graphite/60 font-sans leading-relaxed mt-1">{card.body}</p>
+                  </div>
                 </div>
-              </BlockReveal>
-            ))}
+              );
+            })}
           </div>
-        </div>
-      </section>
+        </BlockReveal>
+      </SplitFeature>
 
-      {/* ── Metrics Row ──────────────────────────────────────────── */}
-      <section className="bg-mn-surface py-16 lg:py-20 border-y border-[rgba(30,37,43,0.06)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* W12-01: DEMO badge — stats are hardcoded, not DB-connected */}
-          <div className="flex justify-center mb-8">
-            <span className="inline-flex items-center gap-2 text-xs font-medium text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 font-sans">
-              <span className="inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
-              Preview Data
-            </span>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto text-center">
-            {STATS.map((s) => (
-              <BlockReveal key={s.label}>
-                <p className="font-sans font-bold text-[2.5rem] text-graphite mb-1">
-                  {s.value}
-                </p>
-                <p className="text-sm text-[rgba(30,37,43,0.52)] font-sans">
-                  {s.label}
-                </p>
-              </BlockReveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── Metrics (EvidenceStrip — W12-26) ──────────────────────── */}
+      <EvidenceStrip
+        title="Platform Metrics"
+        bg="surface"
+        isLive={false}
+        items={STATS.map(s => ({
+          label: s.label,
+          value: s.value,
+          source: 'Preview',
+        }))}
+      />
 
       {/* ── Dark CTA ─────────────────────────────────────────────── */}
       <section className="bg-mn-dark rounded-section mx-4 lg:mx-8 py-24 lg:py-32 my-20">

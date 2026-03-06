@@ -181,10 +181,10 @@ export default function Events() {
 
           <BlockReveal delay={200}>
             <div className="flex flex-wrap gap-4 mb-10">
-              <Link to="/portal/signup" className="inline-flex items-center justify-center h-[48px] px-7 bg-accent text-white font-sans font-semibold text-sm rounded-full transition-all hover:bg-accent-hover hover:-translate-y-[1px]">
+              <Link to="/portal/signup" className="btn-mineral-accent">
                 Get Event Alerts
               </Link>
-              <button onClick={() => window.scrollTo({ top: 500, behavior: 'smooth' })} className="inline-flex items-center justify-center rounded-full h-[48px] px-7 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] font-sans font-medium text-sm hover:bg-white/15 transition-all duration-200">
+              <button onClick={() => window.scrollTo({ top: 500, behavior: 'smooth' })} className="btn-mineral-ghost">
                 Browse by Specialty
               </button>
             </div>
