@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "..",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts", "../shared/src/**/*.ts", "../gap_engine/src/**/*.ts"]
+}

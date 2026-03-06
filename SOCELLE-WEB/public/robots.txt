@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /portal/
+Disallow: /brand/
+Disallow: /admin/
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /claim/
+
+Sitemap: https://socelle.com/sitemap.xml

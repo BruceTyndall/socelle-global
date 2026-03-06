@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOCELLE — Beauty Intelligence Platform</title>
+<style>
+/* ═══════════════════════════════════════════════
+   SOCELLE ZERO v3 — Pearl Mineral Design System
+   Softness pass applied. Beauty-led. Live data.
+═══════════════════════════════════════════════ */
+
+:root {
+  /* Pearl Mineral Palette */
+  --ink: #141418;
+  --ink-80: rgba(20,20,24,0.80);
+  --ink-60: rgba(20,20,24,0.60);
+  --ink-30: rgba(20,20,24,0.30);
+  --ink-10: rgba(20,20,24,0.10);
+  --ash: #F6F3EF;
+  --ash-alt: #EEEAE6;
+  --white: #FFFFFF;
+  --void: #08080C;
+  --void-80: rgba(8,8,12,0.80);
+  --void-45: rgba(8,8,12,0.45);
+  --void-55: rgba(8,8,12,0.55);
+
+  /* Pearl Glass — sensorial diffusion, not generic blur */
+  --glass-bg: rgba(255,255,255,0.78);
+  --glass-blur: blur(26px) saturate(1.5) brightness(1.04);
+  --glass-border: rgba(255,255,255,0.70);
+  --glass-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    inset 0 -1px 0 rgba(200,195,190,0.25),
+    0 4px 24px rgba(20,20,28,0.10),
+    0 1px 4px rgba(20,20,28,0.06);
+
+  /* Dark Glass — for void sections */
+  --dark-glass-bg: rgba(8,8,12,0.55);
+  --dark-glass-border: rgba(255,255,255,0.10);
+
+  /* Typography */
+  --font-sans: 'GeneralSans-Variable', 'GeneralSans-Medium', -apple-system, 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Type scale */
+  --hero-size: clamp(40px, 5.5vw, 74px);
+  --display-size: clamp(32px, 4vw, 54px);
+  --title-size: clamp(20px, 2.5vw, 32px);
+  --body-lg: 18px;
+  --body: 16px;
+  --small: 13px;
+
+  /* Geometry */
+  --r-pill: 40px;
+  --r-card: 22px;
+  --r-tag: 8px;
+
+  /* Shadows */
+  --sh-xs: 0 1px 4px rgba(20,20,28,0.07);
+  --sh-sm: 0 2px 10px rgba(20,20,28,0.08);
+  --sh-md: 0 8px 32px rgba(20,20,28,0.10), 0 2px 8px rgba(20,20,28,0.06);
+  --sh-lg: 0 24px 64px rgba(20,20,28,0.12), 0 4px 16px rgba(20,20,28,0.08);
+
+  /* Motion */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 150ms;
+  --dur-base: 280ms;
+  --dur-slow: 480ms;
+  --dur-lazy: 720ms;
+
+  /* Signal (data context only — never UI chrome) */
+  --signal-up: #5F8A72;
+  --signal-warn: #A97A4C;
+  --signal-down: #8E6464;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--body);
+  color: var(--ink);
+  background: var(--ash);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Atmospheric background — subtle pearl gradient always present */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(230,224,215,0.60) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 30%, rgba(215,220,228,0.40) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(232,228,220,0.50) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════
+   PEARL GLASS COMPONENT
+═══════════════════════════════ */
+.pearl-glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.dark-glass {
+  background: var(--dark-glass-bg);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--dark-glass-border);
+}
+
+/* ═══════════════════════════════
+   FLOATING NAV — Three Pills
+═══════════════════════════════ */
+nav {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 12px;
+}
+
+.nav-logo {
+  border-radius: var(--r-pill);
+  padding: 10px 20px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo .logo-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav-logo .logo-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  border-radius: var(--r-pill);
+  padding: 8px 6px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-links a {
+  padding: 7px 16px;
+  border-radius: var(--r-pill);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-80);
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.nav-links a:hover {
+  background: var(--ink-10);
+  color: var(--ink);
+}
+
+.nav-cta {
+  border-radius: var(--r-pill);
+  padding: 8px 6px;
+}
+
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: background var(--dur-fast), transform var(--dur-fast);
+}
+
+.btn-nav:hover { background: #2A2A30; transform: scale(1.02); }
+
+/* ═══════════════════════════════
+   BUTTONS
+═══════════════════════════════ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--r-pill);
+  background: white;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: transform var(--dur-base) var(--ease-spring), box-shadow var(--dur-base);
+  box-shadow: var(--sh-sm);
+}
+
+.btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: var(--sh-md); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 22px;
+  border-radius: var(--r-pill);
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.20);
+  transition: background var(--dur-base), transform var(--dur-base);
+}
+
+.btn-ghost:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
+
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: background var(--dur-base), transform var(--dur-base) var(--ease-spring);
+}
+
+.btn-dark:hover { background: #2A2A30; transform: translateY(-2px); }
+
+/* ═══════════════════════════════
+   LAYOUT UTILITIES
+═══════════════════════════════ */
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+section { position: relative; z-index: 1; }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--r-tag);
+  background: var(--ink-10);
+  font-size: var(--small);
+  font-weight: 600;
+  color: var(--ink-60);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--dur-slow) var(--ease-smooth), transform var(--dur-slow) var(--ease-smooth);
+}
+
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════
+   HERO SECTION — dropper.mp4
+═══════════════════════════════ */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(8,8,12,0.55) 0%, rgba(8,8,12,0.35) 50%, rgba(8,8,12,0.65) 100%),
+    radial-gradient(ellipse 70% 80% at 60% 40%, transparent 0%, rgba(8,8,12,0.30) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 32px;
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-card {
+  max-width: 600px;
+  border-radius: 28px;
+  padding: 44px 48px;
+  background: rgba(255,255,255,0.10) !important;
+  backdrop-filter: blur(28px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.4) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    0 24px 64px rgba(0,0,0,0.30),
+    0 4px 16px rgba(0,0,0,0.20) !important;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.80);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5F8A72;
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(95,138,114,0.6); }
+  50% { box-shadow: 0 0 0 4px rgba(95,138,114,0); }
+}
+
+.hero-h1 {
+  font-size: var(--hero-size);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: white;
+  margin-bottom: 18px;
+}
+
+.hero-sub {
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-stat-strip {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 18px 24px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  width: fit-content;
+}
+
+.hero-stat { text-align: center; }
+.hero-stat-val {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.03em;
+}
+.hero-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.50);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.hero-stat-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.12); }
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.40);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(5px); }
+}
+
+.scroll-arrow {
+  width: 20px;
+  height: 20px;
+  border-right: 1.5px solid rgba(255,255,255,0.35);
+  border-bottom: 1.5px solid rgba(255,255,255,0.35);
+  transform: rotate(45deg);
+}
+
+/* ═══════════════════════════════
+   MARKET PULSE — Live Data
+═══════════════════════════════ */
+#market-pulse {
+  background: var(--ash);
+  padding: 120px 0;
+}
+
+.pulse-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 56px;
+  gap: 24px;
+}
+
+.pulse-title {
+  font-size: var(--display-size);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.1;
+  max-width: 500px;
+}
+
+.pulse-meta {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.pulse-freshness {
+  font-size: 13px;
+  color: var(--ink-60);
+  margin-bottom: 4px;
+}
+
+.pulse-freshness span { color: var(--signal-up); font-weight: 600; }
+
+.pulse-total {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+
+.pulse-total-label { font-size: 12px; color: var(--ink-60); margin-top: 2px; }
+
+/* Signal Grid */
+.signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Skeleton loading */
+.signal-skeleton {
+  border-radius: var(--r-card);
+  overflow: hidden;
+  height: 280px;
+  background: rgba(255,255,255,0.50);
+  position: relative;
+}
+
+.signal-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.80) 50%, transparent 100%);
+  animation: shimmer 1.5s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Signal Card */
+.signal-card {
+  border-radius: var(--r-card);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-smooth), box-shadow var(--dur-base);
+}
+
+.signal-card:hover { transform: translateY(-4px); box-shadow: var(--sh-lg); }
+
+.signal-thumb {
+  height: 180px;
+  overflow: hidden;
+  position: relative;
+}
+
+.signal-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-smooth);
+}
+
+.signal-card:hover .signal-thumb img { transform: scale(1.04); }
+
+.signal-conf {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.conf-high {
+  background: rgba(95,138,114,0.15);
+  color: #4A7A62;
+  border: 1px solid rgba(95,138,114,0.25);
+}
+
+.conf-med {
+  background: rgba(169,122,76,0.15);
+  color: #8A6030;
+  border: 1px solid rgba(169,122,76,0.25);
+}
+
+.conf-low {
+  background: rgba(142,100,100,0.12);
+  color: #7A5050;
+  border: 1px solid rgba(142,100,100,0.20);
+}
+
+.signal-body {
+  padding: 20px 22px 18px;
+}
+
+.signal-category {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+  margin-bottom: 8px;
+}
+
+.signal-headline {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.signal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signal-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.signal-delta.up { color: var(--signal-up); }
+.signal-delta.down { color: var(--signal-down); }
+.signal-delta.warn { color: var(--signal-warn); }
+
+.signal-time {
+  font-size: 11px;
+  color: var(--ink-30);
+  letter-spacing: 0.02em;
+}
+
+/* Expandable detail */
+.signal-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--dur-slow) var(--ease-smooth);
+  border-top: 1px solid var(--ink-10);
+  margin: 0 22px;
+}
+
+.signal-detail.open { max-height: 120px; }
+
+.signal-detail-inner {
+  padding: 14px 0 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-60);
+}
+
+.signal-why-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-60);
+  padding: 8px 22px 14px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color var(--dur-fast);
+}
+
+.signal-why-btn:hover { color: var(--ink); }
+
+.signal-why-btn .why-arrow {
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.signal-why-btn.open .why-arrow { transform: rotate(90deg); }
+
+/* Demo data notice */
+.demo-notice {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--r-tag);
+  background: rgba(169,122,76,0.10);
+  border: 1px solid rgba(169,122,76,0.20);
+  font-size: 13px;
+  color: var(--signal-warn);
+  margin-bottom: 24px;
+}
+
+.demo-notice.visible { display: flex; }
+
+/* ═══════════════════════════════
+   KPI PROOF STRIP
+═══════════════════════════════ */
+#kpi-strip {
+  background: var(--ash-alt);
+  padding: 80px 0;
+  border-top: 1px solid rgba(20,20,24,0.06);
+  border-bottom: 1px solid rgba(20,20,24,0.06);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.kpi-item {
+  padding: 0 40px;
+  border-right: 1px solid rgba(20,20,24,0.08);
+  text-align: center;
+}
+
+.kpi-item:last-child { border-right: none; }
+.kpi-item:first-child { padding-left: 0; }
+
+.kpi-value {
+  font-family: var(--font-mono);
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--ink-60);
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* ═══════════════════════════════
+   HOW IT WORKS — Video + Steps
+═══════════════════════════════ */
+#how-it-works {
+  background: var(--void);
+  padding: 130px 0;
+  overflow: hidden;
+}
+
+.works-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.works-video-panel {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 9 / 14;
+}
+
+.works-video-panel video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.works-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(8,8,12,0.40) 0%, transparent 40%);
+}
+
+.works-steps { display: flex; flex-direction: column; gap: 20px; }
+
+.works-header {
+  margin-bottom: 16px;
+}
+
+.works-title {
+  font-size: var(--display-size);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.works-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+  max-width: 380px;
+}
+
+.step-card {
+  border-radius: 18px;
+  padding: 24px 26px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  transition: transform var(--dur-base) var(--ease-smooth);
+}
+
+.step-card:hover { transform: translateX(4px); }
+
+.step-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.70);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.step-content p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.55;
+}
+
+/* ═══════════════════════════════
+   BEFORE / AFTER SCRUBBER
+═══════════════════════════════ */
+#before-after {
+  background: var(--ash);
+  padding: 120px 0;
+}
+
+.scrubber-wrapper {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 16 / 8;
+  cursor: col-resize;
+  user-select: none;
+  box-shadow: var(--sh-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.scrubber-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.scrubber-after {
+  z-index: 1;
+}
+
+.scrubber-before {
+  z-index: 2;
+  clip-path: inset(0 50% 0 0);
+}
+
+.scrubber-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrubber-label {
+  position: absolute;
+  top: 20px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  z-index: 4;
+}
+
+.scrubber-label.before-label {
+  left: 20px;
+  background: rgba(255,255,255,0.90);
+  color: var(--ink-60);
+}
+
+.scrubber-label.after-label {
+  right: 20px;
+  background: var(--ink);
+  color: white;
+}
+
+.scrubber-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  background: white;
+  z-index: 3;
+  transform: translateX(-50%);
+}
+
+.scrubber-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 1px 4px rgba(0,0,0,0.15);
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════
+   OUTCOME SIMULATOR
+═══════════════════════════════ */
+#simulator {
+  background: var(--ash-alt);
+  padding: 120px 0;
+}
+
+.sim-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.sim-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sim-header { margin-bottom: 8px; }
+.sim-title {
+  font-size: var(--display-size);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.sim-sub {
+  font-size: 16px;
+  color: var(--ink-60);
+  line-height: 1.6;
+}
+
+.sim-input-group { display: flex; flex-direction: column; gap: 8px; }
+
+.sim-input-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.sim-input-name { font-size: 14px; font-weight: 500; color: var(--ink-80); }
+.sim-input-val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+input[type=range] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(20,20,24,0.12);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: var(--sh-sm);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.sim-result {
+  border-radius: var(--r-card);
+  padding: 36px;
+}
+
+.sim-result-header {
+  margin-bottom: 28px;
+}
+
+.sim-result-label { font-size: 13px; color: var(--ink-60); margin-bottom: 6px; letter-spacing: 0.03em; text-transform: uppercase; }
+
+.sim-result-total {
+  font-family: var(--font-mono);
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+}
+
+.sim-bars { display: flex; flex-direction: column; gap: 14px; }
+
+.sim-bar-row { display: flex; flex-direction: column; gap: 6px; }
+
+.sim-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.sim-bar-name { font-size: 13px; color: var(--ink-60); }
+.sim-bar-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--ink); }
+
+.sim-bar-track {
+  height: 8px;
+  background: rgba(20,20,24,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sim-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--ink);
+  width: 0%;
+  transition: width 0.6s var(--ease-smooth);
+}
+
+.sim-bar-fill.accent { background: #7A9AAE; }
+.sim-bar-fill.warm { background: #A97A6A; }
+
+/* ═══════════════════════════════
+   BRAND SHOWCASE
+═══════════════════════════════ */
+#brands {
+  background: var(--ash);
+  padding: 120px 0;
+}
+
+.brands-intro {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.brands-title {
+  font-size: var(--display-size);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.brands-sub {
+  font-size: 17px;
+  color: var(--ink-60);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.brand-swatch-card {
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-smooth), box-shadow var(--dur-base);
+}
+
+.brand-swatch-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: var(--sh-lg); }
+
+.brand-swatch-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-swatch-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(8,8,12,0.55) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--dur-base);
+}
+
+.brand-swatch-card:hover .brand-swatch-overlay { opacity: 1; }
+
+.brand-swatch-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════
+   CALENDAR HEATMAP
+═══════════════════════════════ */
+#heatmap {
+  background: var(--ash-alt);
+  padding: 100px 0;
+}
+
+.heatmap-title {
+  font-size: var(--title-size);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.heatmap-sub {
+  font-size: 15px;
+  color: var(--ink-60);
+  margin-bottom: 36px;
+}
+
+.heatmap-grid {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.heatmap-week { display: flex; flex-direction: column; gap: 3px; }
+
+.heatmap-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform var(--dur-fast);
+  position: relative;
+}
+
+.heatmap-cell:hover { transform: scale(1.3); z-index: 2; }
+
+.hm-0 { background: rgba(20,20,24,0.06); }
+.hm-1 { background: rgba(95,138,114,0.20); }
+.hm-2 { background: rgba(95,138,114,0.38); }
+.hm-3 { background: rgba(95,138,114,0.56); }
+.hm-4 { background: rgba(95,138,114,0.74); }
+.hm-5 { background: rgba(95,138,114,0.92); }
+
+.heatmap-tooltip {
+  display: none;
+  position: fixed;
+  background: var(--ink);
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* ═══════════════════════════════
+   PROOF / TESTIMONIALS
+═══════════════════════════════ */
+#proof {
+  position: relative;
+  padding: 130px 0;
+  overflow: hidden;
+}
+
+.proof-video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.proof-video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.proof-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,12,0.62);
+}
+
+.proof-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 64px;
+  align-items: center;
+  max-width: 860px;
+}
+
+.proof-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.20);
+  flex-shrink: 0;
+}
+
+.proof-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.proof-quote {
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 500;
+  color: white;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.proof-attr {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+}
+
+.proof-attr strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+/* ═══════════════════════════════
+   LIVE TICKER
+═══════════════════════════════ */
+.ticker-strip {
+  background: var(--ink);
+  padding: 14px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-inner {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: ticker-scroll 32s linear infinite;
+  width: max-content;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 28px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  border-right: 1px solid rgba(255,255,255,0.10);
+  letter-spacing: 0.01em;
+}
+
+.ticker-item .ticker-delta { font-family: var(--font-mono); font-weight: 600; }
+.ticker-item .ticker-delta.up { color: var(--signal-up); }
+.ticker-item .ticker-delta.down { color: var(--signal-down); }
+.ticker-item .ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════
+   CTA SECTION
+═══════════════════════════════ */
+#cta {
+  position: relative;
+  padding: 140px 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.cta-video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.cta-video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cta-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,12,0.65);
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.60);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.cta-headline {
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+
+.cta-sub {
+  font-size: 18px;
+  color: rgba(255,255,255,0.60);
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.cta-form {
+  display: flex;
+  gap: 10px;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.cta-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: var(--r-pill);
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.10);
+  color: white;
+  font-size: 15px;
+  outline: none;
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+  font-family: var(--font-sans);
+  backdrop-filter: blur(10px);
+}
+
+.cta-input::placeholder { color: rgba(255,255,255,0.40); }
+.cta-input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.14); }
+
+.cta-submit {
+  padding: 14px 26px;
+  border-radius: var(--r-pill);
+  background: white;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: background var(--dur-fast), transform var(--dur-base) var(--ease-spring);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+.cta-submit:hover { background: #f0f0f0; transform: scale(1.02); }
+
+/* ═══════════════════════════════
+   FOOTER
+═══════════════════════════════ */
+footer {
+  background: var(--void);
+  padding: 64px 0 40px;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .logo-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.footer-brand p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.40);
+  line-height: 1.6;
+  max-width: 240px;
+}
+
+.footer-links { display: flex; gap: 64px; }
+.footer-col h4 { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.50); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+.footer-col a { display: block; font-size: 14px; color: rgba(255,255,255,0.45); text-decoration: none; margin-bottom: 10px; transition: color var(--dur-fast); }
+.footer-col a:hover { color: rgba(255,255,255,0.85); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.30); }
+.footer-bottom a { color: rgba(255,255,255,0.30); text-decoration: none; }
+.footer-bottom a:hover { color: rgba(255,255,255,0.60); }
+
+/* ═══════════════════════════════
+   TOOLTIP
+═══════════════════════════════ */
+.tooltip {
+  display: none;
+  position: fixed;
+  background: var(--ink);
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 500;
+  box-shadow: var(--sh-md);
+}
+
+/* ═══════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .ticker-inner { animation: none; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     FLOATING NAV — THREE PILLS
+═══════════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo pearl-glass">
+    <div class="logo-mark">S</div>
+    <span class="logo-text">Socelle</span>
+  </a>
+
+  <div class="nav-links pearl-glass">
+    <a href="#market-pulse">Intelligence</a>
+    <a href="#how-it-works">Platform</a>
+    <a href="#brands">Brands</a>
+    <a href="#simulator">ROI</a>
+  </div>
+
+  <div class="nav-cta pearl-glass">
+    <a href="#cta" class="btn-nav">Request Access ↗</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════
+     LIVE TICKER
+═══════════════════════════════════ -->
+<div class="ticker-strip">
+  <div class="ticker-inner" id="tickerTrack">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     HERO — dropper.mp4
+═══════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-media">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="./public/videos/dropper.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="hero-content container" style="padding-top:60px;">
+    <div class="hero-card reveal">
+      <div class="hero-eyebrow">
+        <span class="hero-live-dot"></span>
+        Intelligence Platform
+      </div>
+
+      <h1 class="hero-h1">
+        Where beauty<br>professionals<br>see what's next.
+      </h1>
+
+      <p class="hero-sub">
+        Real-time market signals, peer benchmarks, and revenue intelligence for today's top operators.
+      </p>
+
+      <div class="hero-cta-row">
+        <a href="#cta" class="btn-primary">Request Access</a>
+        <a href="#how-it-works" class="btn-ghost">See How It Works →</a>
+      </div>
+    </div>
+
+    <div class="hero-stat-strip reveal" style="transition-delay:0.15s">
+      <div class="hero-stat">
+        <span class="hero-stat-val" id="heroSig">—</span>
+        <span class="hero-stat-label">Signals today</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">847</span>
+        <span class="hero-stat-label">Operators</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">340+</span>
+        <span class="hero-stat-label">Brands tracked</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     MARKET PULSE — Live API Data
+═══════════════════════════════════ -->
+<section id="market-pulse">
+  <div class="container">
+    <div class="pulse-header reveal">
+      <div>
+        <div class="section-label">
+          <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--signal-up);animation:pulse-green 2s ease-in-out infinite;"></span>
+          Market Pulse
+        </div>
+        <h2 class="pulse-title">What's moving<br>in professional beauty.</h2>
+      </div>
+      <div class="pulse-meta">
+        <div class="pulse-freshness">Signals refreshed <span id="pulseAge">loading…</span></div>
+        <div class="pulse-total"><span id="pulseTotalCount">—</span></div>
+        <div class="pulse-total-label">signals tracked today</div>
+      </div>
+    </div>
+
+    <div class="demo-notice" id="demoNotice">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Sample data — <a href="#cta" style="color:inherit;font-weight:600;text-decoration:underline;">sign in for live signals</a>
+    </div>
+
+    <div class="signal-grid" id="signalGrid">
+      <div class="signal-skeleton"></div>
+      <div class="signal-skeleton"></div>
+      <div class="signal-skeleton"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     KPI STRIP — Count-up on scroll
+═══════════════════════════════════ -->
+<section id="kpi-strip">
+  <div class="container">
+    <div class="kpi-grid">
+      <div class="kpi-item reveal">
+        <span class="kpi-value" data-target="2.4" data-suffix="B+" data-prefix="$">$0</span>
+        <div class="kpi-label">Market intelligence<br>opportunity tracked</div>
+      </div>
+      <div class="kpi-item reveal" style="transition-delay:0.1s">
+        <span class="kpi-value" data-target="340" data-suffix="+">0</span>
+        <div class="kpi-label">Brands with live<br>intelligence feeds</div>
+      </div>
+      <div class="kpi-item reveal" style="transition-delay:0.2s">
+        <span class="kpi-value" data-target="93" data-suffix="%">0</span>
+        <div class="kpi-label">Operator revenue<br>opportunity identified</div>
+      </div>
+      <div class="kpi-item reveal" style="transition-delay:0.3s">
+        <span class="kpi-value" data-target="4.2" data-suffix="x">0</span>
+        <div class="kpi-label">Avg. ROI on<br>intelligence investment</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     HOW IT WORKS — foundation.mp4
+═══════════════════════════════════ -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="works-inner">
+      <div class="works-video-panel reveal">
+        <video autoplay muted loop playsinline>
+          <source src="./public/videos/foundation.mp4" type="video/mp4">
+        </video>
+        <div class="works-video-overlay"></div>
+      </div>
+
+      <div class="works-steps">
+        <div class="works-header reveal">
+          <div class="section-label" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.50);">How It Works</div>
+          <h2 class="works-title">Intelligence that<br>drives decisions.</h2>
+          <p class="works-sub">From raw market signals to revenue-ready recommendations — in one platform.</p>
+        </div>
+
+        <div class="step-card dark-glass reveal" style="transition-delay:0.1s">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Aggregate market signals</h3>
+            <p>We track ingredient adoption, competitor moves, brand performance, and operator benchmarks across 340+ brands and 6 treatment categories.</p>
+          </div>
+        </div>
+
+        <div class="step-card dark-glass reveal" style="transition-delay:0.2s">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Score and contextualize</h3>
+            <p>Every signal is confidence-scored, freshness-stamped, and enriched with revenue context. Not data dumps — curated intelligence.</p>
+          </div>
+        </div>
+
+        <div class="step-card dark-glass reveal" style="transition-delay:0.3s">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Act on recommendations</h3>
+            <p>Benchmarks, gap analyses, and treatment protocol recommendations tied directly to your inventory and service menu.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     BEFORE / AFTER SCRUBBER
+═══════════════════════════════════ -->
+<section id="before-after">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:48px;">
+      <div class="section-label" style="margin:0 auto 16px;">Intelligence Impact</div>
+      <h2 style="font-size:var(--display-size);font-weight:600;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;margin-bottom:12px;">
+        From fragmented guesswork<br>to clear market position.
+      </h2>
+      <p style="font-size:17px;color:var(--ink-60);max-width:460px;margin:0 auto;line-height:1.6;">
+        Drag to reveal the difference intelligence makes.
+      </p>
+    </div>
+
+    <div class="scrubber-wrapper reveal" id="scrubberWrap">
+      <div class="scrubber-layer scrubber-after">
+        <img src="./public/images/photo-5.svg" alt="After: Intelligence-led operations">
+      </div>
+      <div class="scrubber-layer scrubber-before" id="scrubberBefore">
+        <img src="./public/images/photo-4.svg" alt="Before: Without intelligence">
+      </div>
+
+      <div class="scrubber-label before-label">Without Intelligence</div>
+      <div class="scrubber-label after-label">With Socelle</div>
+
+      <div class="scrubber-handle" id="scrubberHandle">
+        <div class="scrubber-knob">⟺</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     OUTCOME SIMULATOR
+═══════════════════════════════════ -->
+<section id="simulator">
+  <div class="container">
+    <div class="sim-inner">
+      <div class="sim-controls reveal">
+        <div class="sim-header">
+          <div class="section-label">Revenue Simulator</div>
+          <h2 class="sim-title">See your<br>opportunity.</h2>
+          <p class="sim-sub">Adjust your practice parameters to model intelligence-driven upside.</p>
+        </div>
+
+        <div class="sim-input-group">
+          <div class="sim-input-label">
+            <span class="sim-input-name">Treatment rooms</span>
+            <span class="sim-input-val" id="roomsVal">4</span>
+          </div>
+          <input type="range" min="1" max="20" value="4" id="roomsSlider">
+        </div>
+
+        <div class="sim-input-group">
+          <div class="sim-input-label">
+            <span class="sim-input-name">Avg. service ticket</span>
+            <span class="sim-input-val" id="ticketVal">$180</span>
+          </div>
+          <input type="range" min="80" max="600" step="20" value="180" id="ticketSlider">
+        </div>
+
+        <div class="sim-input-group">
+          <div class="sim-input-label">
+            <span class="sim-input-name">Retail attach rate</span>
+            <span class="sim-input-val" id="attachVal">22%</span>
+          </div>
+          <input type="range" min="5" max="60" value="22" id="attachSlider">
+        </div>
+      </div>
+
+      <div class="sim-result pearl-glass reveal" style="transition-delay:0.15s">
+        <div class="sim-result-header">
+          <div class="sim-result-label">Annual Revenue Opportunity</div>
+          <div class="sim-result-total" id="simTotal">$0</div>
+        </div>
+
+        <div class="sim-bars">
+          <div class="sim-bar-row">
+            <div class="sim-bar-meta">
+              <span class="sim-bar-name">Service revenue</span>
+              <span class="sim-bar-val" id="simSvc">$0</span>
+            </div>
+            <div class="sim-bar-track"><div class="sim-bar-fill" id="simSvcBar"></div></div>
+          </div>
+
+          <div class="sim-bar-row">
+            <div class="sim-bar-meta">
+              <span class="sim-bar-name">Retail uplift (intelligence-driven)</span>
+              <span class="sim-bar-val" id="simRetail">$0</span>
+            </div>
+            <div class="sim-bar-track"><div class="sim-bar-fill accent" id="simRetailBar"></div></div>
+          </div>
+
+          <div class="sim-bar-row">
+            <div class="sim-bar-meta">
+              <span class="sim-bar-name">New protocol revenue</span>
+              <span class="sim-bar-val" id="simProto">$0</span>
+            </div>
+            <div class="sim-bar-track"><div class="sim-bar-fill warm" id="simProtoBar"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     BRANDS GRID — Skincare Swatches
+═══════════════════════════════════ -->
+<section id="brands">
+  <div class="container">
+    <div class="brands-intro reveal">
+      <div class="section-label" style="margin:0 auto 16px;">Brand Intelligence</div>
+      <h2 class="brands-title">340+ brands.<br>Live adoption data.</h2>
+      <p class="brands-sub">Track which products are gaining traction in your market — before your competitors do.</p>
+    </div>
+
+    <div class="brands-grid">
+      <div class="brand-swatch-card reveal" style="transition-delay:0.05s">
+        <img src="./public/images/swatches/1.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+        <div class="brand-swatch-tag pearl-glass" style="font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-60);">Trending ↑</div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.10s">
+        <img src="./public/images/swatches/2.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.15s">
+        <img src="./public/images/swatches/3.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+        <div class="brand-swatch-tag pearl-glass" style="font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-60);">New</div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.20s">
+        <img src="./public/images/swatches/4.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.25s">
+        <img src="./public/images/swatches/5.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.30s">
+        <img src="./public/images/swatches/6.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+        <div class="brand-swatch-tag pearl-glass" style="font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-60);">Watch</div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.35s">
+        <img src="./public/images/swatches/7.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+      </div>
+      <div class="brand-swatch-card reveal" style="transition-delay:0.40s">
+        <img src="./public/images/swatches/8.svg" alt="Brand product">
+        <div class="brand-swatch-overlay"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SIGNAL HEATMAP
+═══════════════════════════════════ -->
+<section id="heatmap">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Signal Cadence</div>
+      <div class="heatmap-title">Market intelligence, every day.</div>
+      <div class="heatmap-sub">Signal density across the last 52 weeks — click any cell to see the briefing.</div>
+    </div>
+    <div class="heatmap-grid reveal" id="heatmapGrid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     PROOF — air-bubbles.mp4
+═══════════════════════════════════ -->
+<section id="proof">
+  <div class="proof-video-bg">
+    <video autoplay muted loop playsinline>
+      <source src="./public/videos/air-bubbles.mp4" type="video/mp4">
+    </video>
+    <div class="proof-overlay"></div>
+  </div>
+
+  <div class="container">
+    <div class="proof-content reveal">
+      <div class="proof-avatar">
+        <img src="./public/images/photo-6.svg" alt="Spa owner">
+      </div>
+      <div>
+        <p class="proof-quote">
+          "We added $68K in new protocol revenue in our first quarter using Socelle. The ingredient trend data alone changed how we build our treatment menu."
+        </p>
+        <div class="proof-attr">
+          <strong>Dana M.</strong> — Owner, Studio M Aesthetics & Spa · Dallas, TX
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     CTA — air-bubbles.mp4
+═══════════════════════════════════ -->
+<section id="cta">
+  <div class="cta-video-bg">
+    <video autoplay muted loop playsinline>
+      <source src="./public/videos/tube.mp4" type="video/mp4">
+    </video>
+    <div class="cta-overlay"></div>
+  </div>
+
+  <div class="container">
+    <div class="cta-content reveal">
+      <div class="cta-eyebrow">Early Access Open</div>
+      <h2 class="cta-headline">See what's moving<br>in your market.</h2>
+      <p class="cta-sub">Join 800+ operators using Socelle to stay ahead of trends, benchmark their practice, and identify new revenue.</p>
+
+      <form class="cta-form" onsubmit="handleCtaSubmit(event)">
+        <input type="email" class="cta-input" placeholder="your@email.com" required>
+        <button type="submit" class="cta-submit">Get Access →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     FOOTER
+═══════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark">S</div>
+        <p>Beauty intelligence platform for professional operators and the brands that serve them.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="#">Intelligence Hub</a>
+          <a href="#">Brand Marketplace</a>
+          <a href="#">Education</a>
+          <a href="#">Protocols</a>
+        </div>
+        <div class="footer-col">
+          <h4>For</h4>
+          <a href="#">Medspas</a>
+          <a href="#">Salons</a>
+          <a href="#">Brands</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Request Access</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Socelle. All rights reserved.</p>
+      <p><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
+    </div>
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ═══════════════════════════════
+   A4 — LIVE DATA ARCHITECTURE
+   Endpoint schema + fetch + fallback
+═══════════════════════════════ */
+
+// ── API SCHEMA ──────────────────────────────────────────
+// GET /api/intelligence/market-pulse
+// Response shape:
+// {
+//   briefing: string,
+//   total_tracked_today: number,
+//   updated_at: ISO8601 string,
+//   signals: Signal[],
+// }
+//
+// Signal {
+//   id: string,
+//   category: "ingredient" | "treatment" | "brand" | "market" | "regulatory",
+//   headline: string,
+//   delta: number,              // e.g. 18.4
+//   direction: "up" | "down" | "neutral",
+//   confidence: "high" | "med" | "low",
+//   updated_at: ISO8601 string,
+//   image_url: string,          // relative path
+//   detail: string,             // 1-2 sentence context
+// }
+
+// ── DEMO DATA (schema-compliant, clearly labeled) ────────
+const now = new Date();
+const mins = (m) => new Date(now - m * 60000).toISOString();
+
+const DEMO_PAYLOAD = {
+  briefing: "Three ingredient adoption signals and one regulatory watch item this cycle.",
+  total_tracked_today: 2847,
+  updated_at: mins(4),
+  signals: [
+    {
+      id: "sig-001",
+      category: "ingredient",
+      headline: "Bakuchiol adoption accelerating in clinical practices",
+      delta: 18.4,
+      direction: "up",
+      confidence: "high",
+      updated_at: mins(4),
+      image_url: "./public/images/photo-1.svg",
+      detail: "Demand driven by retinol-sensitive clients seeking alternatives. Highest velocity in dermatology-adjacent medspas. 3 major brand launches pending Q2."
+    },
+    {
+      id: "sig-002",
+      category: "treatment",
+      headline: "Microneedling collagen induction services rebounding post-plateau",
+      delta: 9.2,
+      direction: "up",
+      confidence: "high",
+      updated_at: mins(22),
+      image_url: "./public/images/photo-2.svg",
+      detail: "Combination protocols with growth factor serums driving the uplift. Average service ticket up 14% YoY in top-performing practices."
+    },
+    {
+      id: "sig-003",
+      category: "brand",
+      headline: "Peptide-forward brand tier seeing slower reorder velocity",
+      delta: -6.1,
+      direction: "down",
+      confidence: "med",
+      updated_at: mins(47),
+      image_url: "./public/images/photo-3.svg",
+      detail: "Category saturation may be a factor. Watch for reformulations or price adjustments from top 3 players. Opportunity for alternative positioning."
+    }
+  ]
+};
+
+// ── FRESHNESS HELPER ─────────────────────────────────────
+function timeAgo(isoString) {
+  const diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return `${Math.floor(diff/86400)}d ago`;
+}
+
+// ── RENDER SIGNAL CARDS ──────────────────────────────────
+function renderSignals(signals, opts = {}) {
+  const grid = document.getElementById('signalGrid');
+  if (!grid) return;
+
+  if (opts.isDemo) {
+    document.getElementById('demoNotice').classList.add('visible');
+  }
+
+  grid.innerHTML = signals.map(sig => {
+    const confClass = sig.confidence === 'high' ? 'conf-high' : sig.confidence === 'med' ? 'conf-med' : 'conf-low';
+    const confLabel = sig.confidence === 'high' ? 'High Confidence' : sig.confidence === 'med' ? 'Medium' : 'Low';
+    const deltaClass = sig.direction === 'up' ? 'up' : sig.direction === 'down' ? 'down' : 'warn';
+    const deltaSign = sig.direction === 'up' ? '+' : '';
+    const arrow = sig.direction === 'up' ? '↑' : sig.direction === 'down' ? '↓' : '→';
+
+    return `
+      <div class="signal-card pearl-glass" onclick="toggleSignalDetail('${sig.id}')">
+        <div class="signal-thumb">
+          <img src="${sig.image_url}" alt="${sig.category} signal" loading="lazy">
+          <div class="signal-conf ${confClass}">${confLabel}</div>
+        </div>
+        <div class="signal-body">
+          <div class="signal-category">${sig.category}</div>
+          <div class="signal-headline">${sig.headline}</div>
+          <div class="signal-footer">
+            <span class="signal-delta ${deltaClass}">${arrow} ${deltaSign}${sig.delta}%</span>
+            <span class="signal-time">Updated ${timeAgo(sig.updated_at)}</span>
+          </div>
+        </div>
+        <button class="signal-why-btn" id="why-${sig.id}" onclick="event.stopPropagation();toggleSignalDetail('${sig.id}')">
+          <span>Why this moved</span>
+          <span class="why-arrow">›</span>
+        </button>
+        <div class="signal-detail" id="detail-${sig.id}">
+          <div class="signal-detail-inner">${sig.detail}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleSignalDetail(id) {
+  const detail = document.getElementById(`detail-${id}`);
+  const btn = document.getElementById(`why-${id}`);
+  if (!detail) return;
+  const isOpen = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  if (btn) btn.classList.toggle('open', !isOpen);
+}
+
+// ── FETCH MARKET PULSE ───────────────────────────────────
+async function fetchMarketPulse() {
+  const ageEl = document.getElementById('pulseAge');
+  const totalEl = document.getElementById('pulseTotalCount');
+  const heroSigEl = document.getElementById('heroSig');
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
+    const res = await fetch('/api/intelligence/market-pulse', {
+      signal: controller.signal,
+      headers: { 'Accept': 'application/json' }
+    });
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    renderSignals(data.signals);
+    if (ageEl) ageEl.textContent = timeAgo(data.updated_at);
+    if (totalEl) totalEl.textContent = data.total_tracked_today.toLocaleString();
+    if (heroSigEl) heroSigEl.textContent = data.total_tracked_today.toLocaleString();
+    updateTicker(data.signals);
+
+  } catch (e) {
+    // Graceful fallback to demo data
+    renderSignals(DEMO_PAYLOAD.signals, { isDemo: true });
+    if (ageEl) ageEl.textContent = timeAgo(DEMO_PAYLOAD.updated_at);
+    if (totalEl) totalEl.textContent = DEMO_PAYLOAD.total_tracked_today.toLocaleString();
+    if (heroSigEl) heroSigEl.textContent = DEMO_PAYLOAD.total_tracked_today.toLocaleString();
+    updateTicker(DEMO_PAYLOAD.signals);
+  }
+}
+
+// ── TICKER ────────────────────────────────────────────────
+function updateTicker(signals) {
+  const track = document.getElementById('tickerTrack');
+  if (!track) return;
+
+  const items = [
+    ...signals.map(s => ({
+      label: s.headline.slice(0, 60) + (s.headline.length > 60 ? '…' : ''),
+      delta: `${s.direction === 'up' ? '+' : ''}${s.delta}%`,
+      direction: s.direction
+    })),
+    { label: "New peptide protocols added to marketplace", delta: "+12", direction: "up" },
+    { label: "AHA exfoliant category — watch inventory", delta: "watch", direction: "warn" },
+    { label: "Retinol adjacents gaining medspa traction", delta: "+9.8%", direction: "up" },
+    { label: "Clean beauty regulatory compliance update", delta: "new", direction: "neutral" },
+    { label: "Summer seasonal treatment demand forecast", delta: "+22%", direction: "up" },
+  ];
+
+  const html = items.map(item => `
+    <span class="ticker-item">
+      ${item.label}
+      <span class="ticker-delta ${item.direction}">${item.delta}</span>
+      <span class="ticker-dot"></span>
+    </span>
+  `).join('');
+
+  // Duplicate for seamless loop
+  track.innerHTML = html + html;
+}
+
+/* ═══════════════════════════════
+   SCRUBBER
+═══════════════════════════════ */
+(function initScrubber() {
+  const wrap = document.getElementById('scrubberWrap');
+  const before = document.getElementById('scrubberBefore');
+  const handle = document.getElementById('scrubberHandle');
+  if (!wrap || !before || !handle) return;
+
+  let isDragging = false;
+
+  function setPos(pct) {
+    const clamped = Math.max(5, Math.min(95, pct));
+    before.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
+    handle.style.left = clamped + '%';
+  }
+
+  function getPct(e) {
+    const rect = wrap.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    return (x / rect.width) * 100;
+  }
+
+  wrap.addEventListener('mousedown', e => { isDragging = true; setPos(getPct(e)); });
+  wrap.addEventListener('touchstart', e => { isDragging = true; setPos(getPct(e)); }, { passive: true });
+  document.addEventListener('mousemove', e => { if (isDragging) setPos(getPct(e)); });
+  document.addEventListener('touchmove', e => { if (isDragging) setPos(getPct(e)); }, { passive: true });
+  document.addEventListener('mouseup', () => isDragging = false);
+  document.addEventListener('touchend', () => isDragging = false);
+})();
+
+/* ═══════════════════════════════
+   COUNT-UP
+═══════════════════════════════ */
+function animateCountUp(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const prefix = el.dataset.prefix || '';
+  const isDecimal = target % 1 !== 0;
+  const duration = 1800;
+  const start = performance.now();
+
+  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function tick(now) {
+    const elapsed = now - start;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = easeOutQuart(t);
+    const val = target * eased;
+    el.textContent = prefix + (isDecimal ? val.toFixed(1) : Math.round(val).toLocaleString()) + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/* ═══════════════════════════════
+   INTERSECTION OBSERVER — Reveals + Count-ups
+═══════════════════════════════ */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+const kpiObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && entry.target.dataset.target) {
+      animateCountUp(entry.target);
+      kpiObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+document.querySelectorAll('[data-target]').forEach(el => kpiObserver.observe(el));
+
+/* ═══════════════════════════════
+   SIMULATOR
+═══════════════════════════════ */
+function formatCurrency(n) {
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function updateSim() {
+  const rooms = parseInt(document.getElementById('roomsSlider').value);
+  const ticket = parseInt(document.getElementById('ticketSlider').value);
+  const attach = parseInt(document.getElementById('attachSlider').value);
+
+  document.getElementById('roomsVal').textContent = rooms;
+  document.getElementById('ticketVal').textContent = '$' + ticket;
+  document.getElementById('attachVal').textContent = attach + '%';
+
+  // Model: 5 days/week, 50 weeks, 6 services/room/day
+  const annualSvc = rooms * 6 * 5 * 50 * ticket;
+  const retailUplift = annualSvc * (attach / 100) * 0.28; // 28% margin uplift from intel
+  const protoRevenue = rooms * 4 * 50 * 85; // new protocols at $85 avg add-on
+
+  const total = annualSvc + retailUplift + protoRevenue;
+  const maxVal = total;
+
+  document.getElementById('simTotal').textContent = formatCurrency(total);
+  document.getElementById('simSvc').textContent = formatCurrency(annualSvc);
+  document.getElementById('simRetail').textContent = formatCurrency(retailUplift);
+  document.getElementById('simProto').textContent = formatCurrency(protoRevenue);
+
+  document.getElementById('simSvcBar').style.width = Math.round((annualSvc/maxVal)*100) + '%';
+  document.getElementById('simRetailBar').style.width = Math.round((retailUplift/maxVal)*100) + '%';
+  document.getElementById('simProtoBar').style.width = Math.round((protoRevenue/maxVal)*100) + '%';
+}
+
+['roomsSlider','ticketSlider','attachSlider'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateSim);
+});
+
+updateSim();
+
+/* ═══════════════════════════════
+   HEATMAP
+═══════════════════════════════ */
+(function buildHeatmap() {
+  const grid = document.getElementById('heatmapGrid');
+  const tooltip = document.getElementById('tooltip');
+  if (!grid) return;
+
+  const categories = ['Ingredient', 'Treatment', 'Brand Move', 'Regulatory', 'Market Shift'];
+  const intensityWeights = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5];
+
+  for (let w = 0; w < 52; w++) {
+    const weekEl = document.createElement('div');
+    weekEl.className = 'heatmap-week';
+
+    for (let d = 0; d < 7; d++) {
+      const cell = document.createElement('div');
+      const intensity = intensityWeights[Math.floor(Math.random() * intensityWeights.length)];
+      cell.className = `heatmap-cell hm-${intensity}`;
+
+      const weekAgo = 52 - w;
+      const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d];
+      const cat = categories[Math.floor(Math.random() * categories.length)];
+      const count = intensity * Math.floor(Math.random() * 8 + 2);
+      cell.dataset.tip = `${weekAgo}w ago · ${dayName} · ${count} ${cat} signals`;
+
+      cell.addEventListener('mouseenter', e => {
+        tooltip.textContent = cell.dataset.tip;
+        tooltip.style.display = 'block';
+      });
+      cell.addEventListener('mousemove', e => {
+        tooltip.style.top = (e.clientY - 36) + 'px';
+        tooltip.style.left = (e.clientX + 10) + 'px';
+      });
+      cell.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+      weekEl.appendChild(cell);
+    }
+    grid.appendChild(weekEl);
+  }
+})();
+
+/* ═══════════════════════════════
+   CTA FORM
+═══════════════════════════════ */
+function handleCtaSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.cta-submit');
+  btn.textContent = '✓ You\'re on the list';
+  btn.style.background = '#5F8A72';
+  btn.style.color = 'white';
+}
+
+/* ═══════════════════════════════
+   INIT
+═══════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  fetchMarketPulse();
+});
+
+/* ═══════════════════════════════
+   ANALYTICS EVENT MAP
+═══════════════════════════════ */
+// Events to implement in production:
+// page_view, hero_video_play, scroll_depth (25/50/75/90),
+// signal_card_expand, scrubber_interact, simulator_interact,
+// simulator_complete, brand_card_hover, cta_email_submit,
+// demo_notice_click, heatmap_hover
+
+</script>
+</body>
+</html>

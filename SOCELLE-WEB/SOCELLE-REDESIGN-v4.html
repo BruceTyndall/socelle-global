@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Socelle — Professional Beauty Intelligence</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   SOCELLE v4 — EXACT SPEC PALETTE. NO SERIF. CORRECT SECTIONS.
+   Sources: tailwind.config.js + Home.tsx + user spec brief
+════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── SURFACES (exact from spec) */
+  --bg:           #F6F3EF;
+  --surface-alt:  #EEEAE6;
+  --card:         #FFFFFF;
+  --panel-dark:   #1F2428;
+  --footer:       #15191D;
+
+  /* ── TEXT */
+  --text-primary:           #141418;
+  --text-secondary:         rgba(20,20,24,0.62);
+  --text-muted:             rgba(20,20,24,0.42);
+  --text-on-dark:           #F7F5F2;
+  --text-on-dark-secondary: rgba(247,245,242,0.72);
+  --text-on-dark-muted:     rgba(247,245,242,0.45);
+
+  /* ── ACCENT */
+  --accent:       #6E879B;
+  --accent-hover: #5E7588;
+  --accent-tint:  rgba(110,135,155,0.10);
+  --focus-ring:   rgba(110,135,155,0.35);
+
+  /* ── SIGNALS (data context only) */
+  --signal-up:   #5F8A72;
+  --signal-warn: #A97A4C;
+  --signal-down: #8E6464;
+
+  /* ── PEARL GLASS */
+  --glass-bg:     rgba(255,255,255,0.76);
+  --glass-blur:   blur(24px) saturate(1.5) brightness(1.03);
+  --glass-border: rgba(255,255,255,0.68);
+  --glass-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.92),
+    inset 0 -1px 0 rgba(200,196,190,0.22),
+    0 4px 20px rgba(20,20,24,0.08),
+    0 1px 4px rgba(20,20,24,0.05);
+
+  /* ── DARK GLASS */
+  --dark-glass-bg:     rgba(31,36,40,0.72);
+  --dark-glass-border: rgba(247,245,242,0.08);
+
+  /* ── TYPE — General Sans. Zero serif. */
+  --font: 'GeneralSans-Variable','GeneralSans-Medium',
+          -apple-system,'Helvetica Neue',Arial,sans-serif;
+  --mono: 'JetBrains Mono','Geist Mono','Courier New',monospace;
+
+  /* ── SCALE */
+  --hero-size:    clamp(38px,5.2vw,70px);
+  --display-size: clamp(28px,3.6vw,48px);
+  --title-size:   clamp(18px,2.2vw,28px);
+  --body-lg:      18px;
+  --body:         16px;
+  --small:        13px;
+  --eyebrow:      11px;
+
+  /* ── GEOMETRY */
+  --r-pill:  40px;
+  --r-card:  20px;
+  --r-tag:   8px;
+  --r-inner: 14px;
+
+  /* ── SHADOW SCALE */
+  --sh-xs: 0 1px 3px rgba(20,20,24,0.06);
+  --sh-sm: 0 2px 10px rgba(20,20,24,0.08);
+  --sh-md: 0 6px 28px rgba(20,20,24,0.09), 0 2px 8px rgba(20,20,24,0.06);
+  --sh-lg: 0 20px 56px rgba(20,20,24,0.11), 0 4px 14px rgba(20,20,24,0.07);
+
+  /* ── MOTION */
+  --ease:   cubic-bezier(0.22,1,0.36,1);
+  --spring: cubic-bezier(0.34,1.56,0.64,1);
+  --fast:   150ms;
+  --base:   280ms;
+  --slow:   480ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font);
+  font-size: var(--body);
+  color: var(--text-primary);
+  background: var(--bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Subtle atmospheric pearl gradient — always behind content */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 15% 5%,  rgba(228,222,212,0.50) 0%,transparent 60%),
+    radial-gradient(ellipse 65% 40% at 85% 25%, rgba(210,218,226,0.35) 0%,transparent 55%),
+    radial-gradient(ellipse 75% 50% at 50% 110%,rgba(230,226,218,0.45) 0%,transparent 60%);
+  pointer-events: none;
+}
+
+/* ─────────────────── PEARL GLASS ─────────────────── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+.dark-glass {
+  background: var(--dark-glass-bg);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid var(--dark-glass-border);
+}
+
+/* ─────────────────── LAYOUT ─────────────────── */
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+section { position: relative; z-index: 1; }
+
+/* ─────────────────── EYEBROW ─────────────────── */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--eyebrow); font-weight: 600;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: var(--r-tag);
+  background: rgba(20,20,24,0.06);
+  margin-bottom: 18px;
+}
+.eyebrow-light {
+  color: var(--text-on-dark-muted);
+  background: rgba(247,245,242,0.08);
+}
+
+/* ─────────────────── SCROLL REVEAL ─────────────────── */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ────────────────────────────────────────────────────────
+   NAV — Three floating pills
+──────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 18px; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-logo {
+  border-radius: var(--r-pill); padding: 9px 18px;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 9px;
+}
+.nav-mark {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--text-primary);
+  color: white; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: -0.02em;
+}
+.nav-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--text-primary); letter-spacing: -0.02em;
+}
+.nav-links { border-radius: var(--r-pill); padding: 7px 5px; display: flex; gap: 2px; }
+.nav-links a {
+  padding: 7px 15px; border-radius: var(--r-pill);
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: var(--text-secondary);
+  transition: background var(--fast), color var(--fast);
+}
+.nav-links a:hover { background: rgba(20,20,24,0.07); color: var(--text-primary); }
+.nav-cta { border-radius: var(--r-pill); padding: 7px 5px; }
+.btn-nav {
+  padding: 9px 18px; border-radius: var(--r-pill);
+  background: var(--text-primary); color: white;
+  font-size: 13px; font-weight: 600; text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: background var(--fast), transform var(--base) var(--spring);
+}
+.btn-nav:hover { background: #2A2A30; transform: scale(1.02); }
+
+/* ────────────────────────────────────────────────────────
+   LIVE TICKER
+──────────────────────────────────────────────────────── */
+.ticker-bar {
+  background: var(--panel-dark);
+  padding: 11px 0; overflow: hidden; position: relative; z-index: 1;
+}
+.ticker-track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: ticker 30s linear infinite;
+  width: max-content;
+}
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.t-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 24px; font-size: 12px; letter-spacing: 0.02em;
+  color: var(--text-on-dark-muted);
+  border-right: 1px solid rgba(247,245,242,0.08);
+}
+.t-item .t-delta { font-family: var(--mono); font-weight: 600; font-size: 12px; }
+.t-delta.up   { color: var(--signal-up); }
+.t-delta.down { color: var(--signal-down); }
+.t-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(247,245,242,0.20); }
+
+/* ────────────────────────────────────────────────────────
+   §1 HERO — Light pearl overlay, dropper.mp4
+   Source: codebase uses rgba(246,244,241,0.88) light overlay
+──────────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh; position: relative;
+  display: flex; align-items: center;
+  overflow: hidden;
+}
+.hero-media { position: absolute; inset: 0; z-index: 0; }
+.hero-video { width: 100%; height: 100%; object-fit: cover; }
+
+/* LIGHT overlay — pearl mineral tint, video visible beneath */
+.hero-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    155deg,
+    rgba(246,243,239,0.91) 0%,
+    rgba(246,243,239,0.75) 42%,
+    rgba(246,243,239,0.87) 100%
+  );
+}
+
+.hero-inner {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 1160px; margin: 0 auto;
+  padding: 100px 32px 80px;
+}
+.hero-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center;
+}
+.hero-text {}
+.hero-eyebrow-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+}
+.live-indicator {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 20px;
+  background: rgba(95,138,114,0.10); border: 1px solid rgba(95,138,114,0.18);
+  font-size: 11px; font-weight: 600; color: #4A7A62;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--signal-up);
+  animation: live-pulse 2s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(95,138,114,0.6); }
+  50% { box-shadow: 0 0 0 4px rgba(95,138,114,0); }
+}
+
+.hero-h1 {
+  font-size: var(--hero-size); font-weight: 560;
+  line-height: 1.07; letter-spacing: -0.03em;
+  color: var(--text-primary); margin-bottom: 22px;
+}
+.hero-h1 em { font-style: normal; color: var(--accent); }
+
+.hero-body {
+  font-size: var(--body-lg); line-height: 1.58;
+  color: var(--text-secondary); margin-bottom: 36px;
+  max-width: 420px;
+}
+.hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 13px 24px; border-radius: var(--r-pill);
+  background: var(--text-primary); color: white;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: background var(--base), transform var(--base) var(--spring);
+  box-shadow: var(--sh-sm);
+}
+.btn-primary:hover { background: #2A2A30; transform: translateY(-2px); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 13px 22px; border-radius: var(--r-pill);
+  font-size: 14px; font-weight: 500; text-decoration: none;
+  color: var(--text-secondary); border: 1px solid rgba(20,20,24,0.15);
+  transition: border-color var(--fast), color var(--fast);
+}
+.btn-secondary:hover { border-color: rgba(20,20,24,0.30); color: var(--text-primary); }
+
+/* Hero stat panel — pearl glass */
+.hero-stat-panel {
+  border-radius: 20px; padding: 32px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+.hero-stat-panel h3 {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
+}
+.hero-signal-list { display: flex; flex-direction: column; gap: 12px; }
+.hero-signal-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: var(--r-inner);
+  background: rgba(20,20,24,0.03);
+  transition: background var(--fast);
+}
+.hero-signal-row:hover { background: rgba(20,20,24,0.06); }
+.hero-signal-label { font-size: 13px; color: var(--text-secondary); }
+.hero-signal-val {
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+}
+.hero-signal-val.up   { color: var(--signal-up); }
+.hero-signal-val.down { color: var(--signal-down); }
+.hero-signal-val.warn { color: var(--signal-warn); }
+.hero-signal-period { font-size: 11px; color: var(--text-muted); margin-left: 6px; }
+
+.hero-freshness {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-muted);
+  padding-top: 4px; border-top: 1px solid rgba(20,20,24,0.06);
+}
+.fresh-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--signal-up); }
+
+/* ────────────────────────────────────────────────────────
+   §2 MARKET PULSE — Live API signals w/ photos + timestamps
+──────────────────────────────────────────────────────── */
+#market-pulse {
+  background: var(--surface-alt);
+  padding: 110px 0; border-top: 1px solid rgba(20,20,24,0.05);
+}
+.pulse-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 52px; gap: 24px;
+}
+.pulse-h2 {
+  font-size: var(--display-size); font-weight: 560;
+  letter-spacing: -0.025em; color: var(--text-primary); line-height: 1.1;
+}
+.pulse-meta { text-align: right; }
+.pulse-updated { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+.pulse-updated strong { color: var(--signal-up); font-weight: 600; }
+.pulse-count {
+  font-family: var(--mono); font-size: 22px; font-weight: 600;
+  color: var(--text-primary); letter-spacing: -0.03em;
+}
+.pulse-count-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Demo notice */
+.demo-notice {
+  display: none; align-items: center; gap: 8px;
+  padding: 9px 14px; border-radius: var(--r-tag); margin-bottom: 24px;
+  background: rgba(169,122,76,0.08); border: 1px solid rgba(169,122,76,0.18);
+  font-size: 13px; color: var(--signal-warn);
+}
+.demo-notice.show { display: flex; }
+.demo-notice a { color: inherit; font-weight: 600; }
+
+.signal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+
+/* Skeleton */
+.sig-skeleton {
+  height: 290px; border-radius: var(--r-card);
+  background: rgba(255,255,255,0.50); position: relative; overflow: hidden;
+}
+.sig-skeleton::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.75) 50%,transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+/* Signal card */
+.sig-card {
+  border-radius: var(--r-card); overflow: hidden;
+  cursor: pointer; background: var(--card);
+  box-shadow: var(--sh-xs);
+  transition: transform var(--base) var(--ease), box-shadow var(--base);
+}
+.sig-card:hover { transform: translateY(-4px); box-shadow: var(--sh-lg); }
+.sig-thumb { height: 170px; overflow: hidden; position: relative; }
+.sig-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+.sig-card:hover .sig-thumb img { transform: scale(1.04); }
+.sig-conf {
+  position: absolute; top: 10px; right: 10px;
+  padding: 3px 9px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.c-hi { background: rgba(95,138,114,0.14); color: #4A7A62; border: 1px solid rgba(95,138,114,0.22); }
+.c-md { background: rgba(169,122,76,0.14); color: #8A6030; border: 1px solid rgba(169,122,76,0.22); }
+.c-lo { background: rgba(142,100,100,0.10); color: #7A5050; border: 1px solid rgba(142,100,100,0.18); }
+.sig-body { padding: 18px 20px 16px; }
+.sig-cat {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 7px;
+}
+.sig-headline {
+  font-size: 14px; font-weight: 580; line-height: 1.38; letter-spacing: -0.01em;
+  color: var(--text-primary); margin-bottom: 14px;
+}
+.sig-footer { display: flex; align-items: center; justify-content: space-between; }
+.sig-delta {
+  font-family: var(--mono); font-size: 14px; font-weight: 700;
+  letter-spacing: -0.02em;
+  display: inline-flex; align-items: center; gap: 3px;
+}
+.sig-delta.up   { color: var(--signal-up); }
+.sig-delta.down { color: var(--signal-down); }
+.sig-time { font-size: 11px; color: var(--text-muted); }
+.sig-why {
+  all: unset; display: flex; align-items: center; gap: 5px; cursor: pointer;
+  font-size: 12px; font-weight: 500; color: var(--text-muted);
+  padding: 8px 20px 14px;
+  transition: color var(--fast);
+}
+.sig-why:hover { color: var(--text-primary); }
+.sig-why .arr { transition: transform var(--base) var(--spring); }
+.sig-why.open .arr { transform: rotate(90deg); }
+.sig-detail {
+  max-height: 0; overflow: hidden; border-top: 1px solid rgba(20,20,24,0.07);
+  margin: 0 20px;
+  transition: max-height var(--slow) var(--ease);
+}
+.sig-detail.open { max-height: 120px; }
+.sig-detail-body { padding: 12px 0 16px; font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+
+/* ────────────────────────────────────────────────────────
+   §3 WHAT YOU GET — 3 pillars on dark panel
+──────────────────────────────────────────────────────── */
+#pillars {
+  background: var(--panel-dark);
+  padding: 110px 0;
+}
+.pillars-header { text-align: center; margin-bottom: 64px; }
+.pillars-h2 {
+  font-size: var(--display-size); font-weight: 560;
+  letter-spacing: -0.025em; color: var(--text-on-dark); line-height: 1.1;
+  margin-bottom: 14px;
+}
+.pillars-sub { font-size: var(--body-lg); color: var(--text-on-dark-secondary); max-width: 460px; margin: 0 auto; line-height: 1.6; }
+.pillars-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.pillar {
+  border-radius: var(--r-card); padding: 36px 32px;
+  background: rgba(247,245,242,0.05); border: 1px solid rgba(247,245,242,0.07);
+  transition: background var(--base), transform var(--base) var(--ease);
+}
+.pillar:hover { background: rgba(247,245,242,0.08); transform: translateY(-3px); }
+.pillar-num {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-on-dark-muted); margin-bottom: 20px;
+}
+.pillar-word {
+  font-size: 30px; font-weight: 560; letter-spacing: -0.025em;
+  color: var(--text-on-dark); margin-bottom: 14px; line-height: 1;
+}
+.pillar-body { font-size: 14px; line-height: 1.65; color: var(--text-on-dark-secondary); margin-bottom: 24px; }
+.pillar-link {
+  font-size: 13px; font-weight: 500; color: var(--accent);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+  transition: color var(--fast);
+}
+.pillar-link:hover { color: #7FA0B5; }
+
+/* ────────────────────────────────────────────────────────
+   §4 BRAND INTELLIGENCE PREVIEW
+──────────────────────────────────────────────────────── */
+#brand-intelligence {
+  background: var(--bg); padding: 110px 0;
+}
+.brand-header { margin-bottom: 56px; }
+.brand-h2 {
+  font-size: var(--display-size); font-weight: 560;
+  letter-spacing: -0.025em; color: var(--text-primary); line-height: 1.1;
+  max-width: 520px; margin-bottom: 14px;
+}
+.brand-sub { font-size: var(--body-lg); color: var(--text-secondary); max-width: 440px; line-height: 1.6; }
+.brand-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: start; }
+.brand-swatch-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.swatch-card {
+  border-radius: 16px; overflow: hidden; aspect-ratio: 3/4; position: relative; cursor: pointer;
+  box-shadow: var(--sh-xs);
+  transition: transform var(--base) var(--ease), box-shadow var(--base);
+}
+.swatch-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: var(--sh-lg); }
+.swatch-card img { width: 100%; height: 100%; object-fit: cover; }
+.swatch-card .swatch-hover {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(31,36,40,0.55) 0%, transparent 50%);
+  opacity: 0; transition: opacity var(--base);
+}
+.swatch-card:hover .swatch-hover { opacity: 1; }
+.swatch-tag {
+  position: absolute; top: 8px; left: 8px;
+  padding: 3px 8px; border-radius: 5px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+.brand-info { display: flex; flex-direction: column; gap: 24px; justify-content: center; }
+.brand-stat-row { display: flex; flex-direction: column; gap: 14px; }
+.brand-stat-item {
+  padding: 20px 22px; border-radius: var(--r-inner);
+  background: var(--card); box-shadow: var(--sh-xs);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand-stat-label { font-size: 13px; color: var(--text-secondary); }
+.brand-stat-val {
+  font-family: var(--mono); font-size: 16px; font-weight: 600;
+  color: var(--text-primary); letter-spacing: -0.02em;
+}
+.brand-stat-val.up   { color: var(--signal-up); }
+.brand-stat-val.down { color: var(--signal-down); }
+.brand-stat-val.warn { color: var(--signal-warn); }
+.brand-cta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ────────────────────────────────────────────────────────
+   §5 CATEGORY / TREATMENT INTELLIGENCE PREVIEW
+──────────────────────────────────────────────────────── */
+#category-intel {
+  background: var(--surface-alt); padding: 110px 0;
+  border-top: 1px solid rgba(20,20,24,0.05);
+}
+.cat-header { margin-bottom: 52px; }
+.cat-h2 {
+  font-size: var(--display-size); font-weight: 560;
+  letter-spacing: -0.025em; color: var(--text-primary); line-height: 1.1; margin-bottom: 12px;
+}
+.cat-sub { font-size: var(--body-lg); color: var(--text-secondary); max-width: 440px; line-height: 1.6; }
+.cat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.cat-card {
+  border-radius: var(--r-card); padding: 24px 24px 22px;
+  background: var(--card); box-shadow: var(--sh-xs);
+  transition: transform var(--base) var(--ease), box-shadow var(--base);
+}
+.cat-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); }
+.cat-card-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 10px;
+}
+.cat-card-title {
+  font-size: 17px; font-weight: 580; letter-spacing: -0.015em;
+  color: var(--text-primary); margin-bottom: 10px; line-height: 1.3;
+}
+.cat-card-body { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 18px; }
+.cat-card-foot { display: flex; align-items: center; justify-content: space-between; }
+.cat-delta {
+  font-family: var(--mono); font-size: 14px; font-weight: 700; letter-spacing: -0.02em;
+}
+.cat-delta.up   { color: var(--signal-up); }
+.cat-delta.down { color: var(--signal-down); }
+.cat-link { font-size: 12px; color: var(--accent); text-decoration: none; transition: color var(--fast); }
+.cat-link:hover { color: var(--accent-hover); }
+
+/* ────────────────────────────────────────────────────────
+   §6 EVENTS + EDUCATION PREVIEW
+──────────────────────────────────────────────────────── */
+#edu-events {
+  background: var(--bg); padding: 110px 0;
+}
+.edu-header { margin-bottom: 52px; }
+.edu-h2 {
+  font-size: var(--display-size); font-weight: 560;
+  letter-spacing: -0.025em; color: var(--text-primary); line-height: 1.1; margin-bottom: 12px;
+}
+.edu-sub { font-size: var(--body-lg); color: var(--text-secondary); max-width: 440px; line-height: 1.6; }
+.edu-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 16px; }
+
+.edu-card {
+  border-radius: var(--r-card); overflow: hidden;
+  background: var(--card); box-shadow: var(--sh-xs);
+  transition: transform var(--base) var(--ease), box-shadow var(--base);
+  text-decoration: none; color: inherit; display: flex; flex-direction: column;
+}
+.edu-card:hover { transform: translateY(-4px); box-shadow: var(--sh-md); }
+.edu-thumb { height: 200px; overflow: hidden; position: relative; }
+.edu-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+.edu-card:hover .edu-thumb img { transform: scale(1.04); }
+.edu-thumb-video { width: 100%; height: 100%; object-fit: cover; }
+.edu-type {
+  position: absolute; top: 12px; left: 12px;
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.edu-type.course { background: rgba(110,135,155,0.12); color: #4A6A80; border: 1px solid rgba(110,135,155,0.20); }
+.edu-type.event  { background: rgba(95,138,114,0.12); color: #3A6A50; border: 1px solid rgba(95,138,114,0.20); }
+.edu-type.protocol { background: rgba(169,122,76,0.12); color: #7A5828; border: 1px solid rgba(169,122,76,0.20); }
+.edu-body { padding: 20px 22px; flex: 1; display: flex; flex-direction: column; }
+.edu-card-title {
+  font-size: 15px; font-weight: 580; line-height: 1.35; letter-spacing: -0.01em;
+  color: var(--text-primary); margin-bottom: 8px;
+}
+.edu-card-meta { font-size: 12px; color: var(--text-muted); margin-top: auto; padding-top: 12px; }
+.edu-ce {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--accent-tint); color: var(--accent);
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 5px;
+  letter-spacing: 0.04em;
+}
+
+/* ────────────────────────────────────────────────────────
+   §7 KPI STRIP — Count-up
+──────────────────────────────────────────────────────── */
+#kpi-strip {
+  background: var(--surface-alt);
+  padding: 80px 0;
+  border-top: 1px solid rgba(20,20,24,0.06);
+  border-bottom: 1px solid rgba(20,20,24,0.06);
+}
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; }
+.kpi-item {
+  padding: 0 36px; text-align: center;
+  border-right: 1px solid rgba(20,20,24,0.07);
+}
+.kpi-item:first-child { padding-left: 0; text-align: left; }
+.kpi-item:last-child  { border-right: none; }
+.kpi-val {
+  font-family: var(--mono); font-size: clamp(32px,3.6vw,48px);
+  font-weight: 600; letter-spacing: -0.04em;
+  color: var(--text-primary); display: block; margin-bottom: 6px;
+}
+.kpi-label { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+
+/* ────────────────────────────────────────────────────────
+   §8 CONVERSION CLOSE — tube.mp4, dark panel
+──────────────────────────────────────────────────────── */
+#conversion {
+  position: relative; padding: 140px 0; overflow: hidden; text-align: center;
+}
+.conv-media { position: absolute; inset: 0; z-index: 0; }
+.conv-video { width: 100%; height: 100%; object-fit: cover; }
+.conv-veil  { position: absolute; inset: 0; background: rgba(31,36,40,0.72); }
+
+.conv-inner {
+  position: relative; z-index: 1;
+  max-width: 580px; margin: 0 auto;
+}
+.conv-h2 {
+  font-size: clamp(32px,4.5vw,54px); font-weight: 560;
+  letter-spacing: -0.03em; color: var(--text-on-dark); line-height: 1.1;
+  margin-bottom: 16px;
+}
+.conv-body { font-size: var(--body-lg); color: var(--text-on-dark-secondary); line-height: 1.6; margin-bottom: 40px; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+.conv-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto 28px; }
+.conv-input {
+  flex: 1; padding: 13px 16px; border-radius: var(--r-pill);
+  background: rgba(247,245,242,0.10); border: 1px solid rgba(247,245,242,0.18);
+  color: var(--text-on-dark); font-size: 14px; font-family: var(--font);
+  outline: none; backdrop-filter: blur(8px);
+  transition: border-color var(--fast), background var(--fast);
+}
+.conv-input::placeholder { color: rgba(247,245,242,0.38); }
+.conv-input:focus { border-color: rgba(247,245,242,0.35); background: rgba(247,245,242,0.14); }
+.conv-submit {
+  padding: 13px 22px; border-radius: var(--r-pill);
+  background: var(--text-on-dark); color: var(--panel-dark);
+  font-size: 14px; font-weight: 600; font-family: var(--font);
+  border: none; cursor: pointer; white-space: nowrap;
+  transition: background var(--fast), transform var(--base) var(--spring);
+}
+.conv-submit:hover { background: white; transform: scale(1.02); }
+.conv-trust { font-size: 12px; color: var(--text-on-dark-muted); }
+.conv-trust a { color: var(--text-on-dark-muted); text-decoration: underline; }
+
+/* ────────────────────────────────────────────────────────
+   FOOTER
+──────────────────────────────────────────────────────── */
+footer {
+  background: var(--footer); padding: 60px 0 36px;
+}
+.footer-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 40px; margin-bottom: 48px;
+}
+.footer-brand-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: rgba(247,245,242,0.09);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-on-dark); font-size: 12px; font-weight: 700;
+  margin-bottom: 12px;
+}
+.footer-brand p { font-size: 13px; color: var(--text-on-dark-muted); max-width: 220px; line-height: 1.6; }
+.footer-cols { display: flex; gap: 56px; }
+.footer-col h4 {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(247,245,242,0.38); margin-bottom: 14px;
+}
+.footer-col a {
+  display: block; font-size: 14px; color: rgba(247,245,242,0.50);
+  text-decoration: none; margin-bottom: 9px;
+  transition: color var(--fast);
+}
+.footer-col a:hover { color: rgba(247,245,242,0.82); }
+.footer-bottom {
+  padding-top: 22px; border-top: 1px solid rgba(247,245,242,0.07);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { font-size: 12px; color: rgba(247,245,242,0.28); }
+.footer-bottom a { color: rgba(247,245,242,0.28); text-decoration: none; }
+.footer-bottom a:hover { color: rgba(247,245,242,0.60); }
+
+/* ────────────────────────────────────────────────────────
+   TOOLTIP
+──────────────────────────────────────────────────────── */
+#tip {
+  display: none; position: fixed; z-index: 500;
+  background: var(--text-primary); color: white;
+  font-size: 12px; padding: 5px 10px; border-radius: 6px;
+  pointer-events: none; white-space: nowrap;
+  box-shadow: var(--sh-md);
+}
+
+/* ────────────────────────────────────────────────────────
+   REDUCED MOTION
+──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+  .ticker-track { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <a href="#" class="nav-logo glass">
+    <div class="nav-mark">S</div>
+    <span class="nav-name">Socelle</span>
+  </a>
+  <div class="nav-links glass">
+    <a href="#market-pulse">Intelligence</a>
+    <a href="#pillars">Platform</a>
+    <a href="#brand-intelligence">Brands</a>
+    <a href="#edu-events">Education</a>
+  </div>
+  <div class="nav-cta glass">
+    <a href="#conversion" class="btn-nav">Get Intelligence Access</a>
+  </div>
+</nav>
+
+<!-- ─── LIVE TICKER ──────────────────────────────────────── -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack"><!-- JS --></div>
+</div>
+
+<!-- ─── §1 HERO ──────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-media">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="./public/videos/dropper.mp4" type="video/mp4">
+    </video>
+    <div class="hero-veil"></div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-layout">
+      <div class="hero-text reveal">
+        <div class="hero-eyebrow-row">
+          <div class="live-indicator">
+            <span class="live-dot"></span>Live Intelligence
+          </div>
+          <span class="eyebrow" style="background:none;padding:0;color:var(--text-muted);">Professional Beauty</span>
+        </div>
+
+        <h1 class="hero-h1">
+          Know what's moving.<br>
+          Know what sells.<br>
+          Know before <em>everyone else.</em>
+        </h1>
+
+        <p class="hero-body">
+          Market signals, peer benchmarks, and protocol intelligence for the operators and brands who lead professional beauty.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="#conversion" class="btn-primary">
+            Get Intelligence Access
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#market-pulse" class="btn-secondary">View Today's Briefing →</a>
+        </div>
+      </div>
+
+      <!-- Live signal preview panel -->
+      <div class="hero-stat-panel glass reveal" style="transition-delay:0.12s">
+        <div>
+          <h3>Today's Market Pulse</h3>
+          <div class="hero-signal-list" id="heroSignals">
+            <div class="hero-signal-row">
+              <span class="hero-signal-label">Retinol Demand</span>
+              <span><span class="hero-signal-val up">+18%</span><span class="hero-signal-period">This quarter</span></span>
+            </div>
+            <div class="hero-signal-row">
+              <span class="hero-signal-label">LED Therapy Adoption</span>
+              <span><span class="hero-signal-val up">+24%</span><span class="hero-signal-period">vs. last qtr</span></span>
+            </div>
+            <div class="hero-signal-row">
+              <span class="hero-signal-label">Avg. Order Value</span>
+              <span><span class="hero-signal-val up">$847</span><span class="hero-signal-period">Benchmark</span></span>
+            </div>
+            <div class="hero-signal-row">
+              <span class="hero-signal-label">Peptide Serums</span>
+              <span><span class="hero-signal-val down">−4%</span><span class="hero-signal-period">Reorder rate</span></span>
+            </div>
+            <div class="hero-signal-row">
+              <span class="hero-signal-label">Exosome Protocols</span>
+              <span><span class="hero-signal-val up">+31%</span><span class="hero-signal-period">Adoption rate</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-freshness">
+          <span class="fresh-dot"></span>
+          <span>Updated <span id="heroAge">—</span> · <span id="heroTotal">—</span> signals tracked today</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §2 MARKET PULSE ───────────────────────────────────── -->
+<section id="market-pulse">
+  <div class="wrap">
+    <div class="pulse-header reveal">
+      <div>
+        <div class="eyebrow">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--signal-up);display:inline-block;animation:live-pulse 2s ease-in-out infinite;"></span>
+          Market Pulse
+        </div>
+        <h2 class="pulse-h2">What's moving<br>in professional beauty.</h2>
+      </div>
+      <div class="pulse-meta">
+        <div class="pulse-updated">Refreshed <strong id="pulseAge">loading…</strong></div>
+        <div class="pulse-count"><span id="pulseTotal">—</span></div>
+        <div class="pulse-count-label">signals tracked today</div>
+      </div>
+    </div>
+
+    <div class="demo-notice" id="demoNotice">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Sample data — <a href="#conversion">sign in for live signals</a>
+    </div>
+
+    <div class="signal-grid" id="signalGrid">
+      <div class="sig-skeleton"></div>
+      <div class="sig-skeleton"></div>
+      <div class="sig-skeleton"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §3 WHAT YOU GET — 3 PILLARS ──────────────────────── -->
+<section id="pillars">
+  <div class="wrap">
+    <div class="pillars-header reveal">
+      <div class="eyebrow eyebrow-light">Platform</div>
+      <h2 class="pillars-h2">Signals. Benchmarks. Decisions.</h2>
+      <p class="pillars-sub">Three capabilities, one intelligence layer. Built for operators and brands who need more than a data dump.</p>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar reveal" style="transition-delay:0.05s">
+        <div class="pillar-num">01 / Signals</div>
+        <div class="pillar-word">Signals</div>
+        <p class="pillar-body">Live market signals across 34 tracked dimensions — ingredient adoption, treatment velocity, reorder risk, and category demand shifts. Freshness-stamped. Confidence-scored. No guesswork.</p>
+        <a href="#market-pulse" class="pillar-link">See Market Pulse →</a>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.12s">
+        <div class="pillar-num">02 / Benchmarks</div>
+        <div class="pillar-word">Benchmarks</div>
+        <p class="pillar-body">How does your purchase mix compare to peer operators in your segment? What are the top-performing medspas buying? Anonymized benchmarks from verified practices — not surveys.</p>
+        <a href="#" class="pillar-link">Benchmark Your Practice →</a>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.19s">
+        <div class="pillar-num">03 / Decisions</div>
+        <div class="pillar-word">Decisions</div>
+        <p class="pillar-body">Gap analysis, reorder recommendations, and protocol intelligence tied to your actual inventory — so you act on intelligence, not instinct. Every recommendation has a data source.</p>
+        <a href="#" class="pillar-link">Explore the Platform →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §4 BRAND INTELLIGENCE PREVIEW ────────────────────── -->
+<section id="brand-intelligence">
+  <div class="wrap">
+    <div class="brand-layout">
+      <div>
+        <div class="brand-header reveal">
+          <div class="eyebrow">Brand Intelligence</div>
+          <h2 class="brand-h2">340+ brands.<br>Every adoption curve visible.</h2>
+          <p class="brand-sub">Unclaimed brand profiles already look like this. Brands that take ownership get direct visibility into who's buying — and who stopped.</p>
+        </div>
+        <div class="brand-swatch-grid reveal" style="transition-delay:0.1s">
+          <div class="swatch-card">
+            <img src="./public/images/swatches/1.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+            <div class="swatch-tag glass" style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);">Trending ↑</div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/2.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/3.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+            <div class="swatch-tag glass" style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);">New</div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/4.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/5.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+            <div class="swatch-tag glass" style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);">Watch</div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/6.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/7.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+          </div>
+          <div class="swatch-card">
+            <img src="./public/images/swatches/8.svg" alt="Brand">
+            <div class="swatch-hover"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="brand-info reveal" style="transition-delay:0.15s">
+        <div>
+          <h3 style="font-size:var(--title-size);font-weight:560;letter-spacing:-0.02em;color:var(--text-primary);margin-bottom:8px;line-height:1.2;">Live brand metrics.</h3>
+          <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px;">What operators see when they look at your brand profile — right now, without your input.</p>
+        </div>
+        <div class="brand-stat-row">
+          <div class="brand-stat-item">
+            <span class="brand-stat-label">Operator reorder rate</span>
+            <span class="brand-stat-val up">+68%</span>
+          </div>
+          <div class="brand-stat-item">
+            <span class="brand-stat-label">Category adoption velocity</span>
+            <span class="brand-stat-val up">+22% MoM</span>
+          </div>
+          <div class="brand-stat-item">
+            <span class="brand-stat-label">Avg. basket size (wholesale)</span>
+            <span class="brand-stat-val">$1,240</span>
+          </div>
+          <div class="brand-stat-item">
+            <span class="brand-stat-label">Peer market share</span>
+            <span class="brand-stat-val warn">Watch</span>
+          </div>
+        </div>
+        <div class="brand-cta-row" style="margin-top:8px;">
+          <a href="#conversion" class="btn-primary" style="font-size:13px;padding:11px 20px;">Claim Your Brand Page</a>
+          <a href="#" class="btn-secondary" style="font-size:13px;padding:11px 18px;">Explore Brand Intelligence →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §5 CATEGORY / TREATMENT INTELLIGENCE ─────────────── -->
+<section id="category-intel">
+  <div class="wrap">
+    <div class="cat-header reveal">
+      <div class="eyebrow">Treatment Intelligence</div>
+      <h2 class="cat-h2">Intelligence across every treatment category.</h2>
+      <p class="cat-sub">Which protocols are gaining ground. Which ingredients are peaking. What your clients are about to ask for.</p>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card reveal" style="transition-delay:0.04s">
+        <div class="cat-card-label">Ingredient</div>
+        <div class="cat-card-title">Bakuchiol adoption accelerating in clinical practices</div>
+        <p class="cat-card-body">Retinol-sensitive client demand driving shift. Highest velocity in dermatology-adjacent medspas. Three major brand launches expected Q2.</p>
+        <div class="cat-card-foot">
+          <span class="cat-delta up">↑ +18.4%</span>
+          <a href="#" class="cat-link">Full briefing →</a>
+        </div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.10s">
+        <div class="cat-card-label">Treatment</div>
+        <div class="cat-card-title">Microneedling collagen induction rebounding post-plateau</div>
+        <p class="cat-card-body">Combination protocols with growth factor serums driving uplift. Avg. service ticket up 14% YoY in top-performing practices.</p>
+        <div class="cat-card-foot">
+          <span class="cat-delta up">↑ +9.2%</span>
+          <a href="#" class="cat-link">Full briefing →</a>
+        </div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.16s">
+        <div class="cat-card-label">Category Watch</div>
+        <div class="cat-card-title">Peptide-forward tier showing slower reorder velocity</div>
+        <p class="cat-card-body">Category saturation may be a factor. Watch for reformulations from top-three players. Potential positioning opportunity for alternatives.</p>
+        <div class="cat-card-foot">
+          <span class="cat-delta down">↓ −6.1%</span>
+          <a href="#" class="cat-link">Full briefing →</a>
+        </div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.22s">
+        <div class="cat-card-label">Medspa</div>
+        <div class="cat-card-title">Exosome protocols entering mainstream clinical adoption</div>
+        <p class="cat-card-body">Provider education driving adoption curve acceleration. Signal strongest in multi-location practices with in-house medical directors.</p>
+        <div class="cat-card-foot">
+          <span class="cat-delta up">↑ +31%</span>
+          <a href="#" class="cat-link">Full briefing →</a>
+        </div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.28s">
+        <div class="cat-card-label">Salon</div>
+        <div class="cat-card-title">Scalp care as a premium service category gaining traction</div>
+        <p class="cat-card-body">Biomimetic and probiotic scalp formulas driving a new revenue tier for high-volume salons. Average add-on ticket: $65.</p>
+        <div class="cat-card-foot">
+          <span class="cat-delta up">↑ +12.8%</span>
+          <a href="#" class="cat-link">Full briefing →</a>
+        </div>
+      </div>
+      <div class="cat-card reveal" style="transition-delay:0.34s">
+        <div class="cat-card-label">Regulatory</div>
+        <div class="cat-card-title">MoCRA cosmetics enforcement timeline clarified by FDA</div>
+        <p class="cat-card-body">Facility registration and product listing deadlines now confirmed. Compliance requirements vary by practice type. Review your product formulary.</p>
+        <div class="cat-card-foot">
+          <span class="cat-delta warn">⚑ Action required</span>
+          <a href="#" class="cat-link">Read update →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §6 EVENTS + EDUCATION PREVIEW ────────────────────── -->
+<section id="edu-events">
+  <div class="wrap">
+    <div class="edu-header reveal">
+      <div class="eyebrow">Education &amp; Events</div>
+      <h2 class="edu-h2">Stay ahead of the category.<br>Earn credit. Build authority.</h2>
+      <p class="edu-sub">CE-eligible courses, treatment protocols, and industry events — all connected to the intelligence you're already using.</p>
+    </div>
+    <div class="edu-grid">
+      <!-- Featured: video-backed -->
+      <div class="edu-card reveal">
+        <div class="edu-thumb" style="height:240px">
+          <video class="edu-thumb-video" autoplay muted loop playsinline>
+            <source src="./public/videos/foundation.mp4" type="video/mp4">
+          </video>
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(31,36,40,0.5) 0%,transparent 50%)"></div>
+          <span class="edu-type course">Course</span>
+        </div>
+        <div class="edu-body">
+          <div class="edu-card-title">Bakuchiol vs. Retinol: Clinical Evidence &amp; Protocol Integration</div>
+          <div class="edu-card-meta">
+            <span class="edu-ce">1.5 CE Credits</span>&nbsp;&nbsp;
+            <span>45 min · Ingredient Science</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-card reveal" style="transition-delay:0.1s">
+        <div class="edu-thumb">
+          <img src="./public/images/photo-2.svg" alt="Event">
+          <span class="edu-type event">Event</span>
+        </div>
+        <div class="edu-body">
+          <div class="edu-card-title">IECSC New York — Spring 2026</div>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-top:6px;">The professional beauty industry's largest trade show. SOCELLE is tracking 14 brand launches and 8 protocol debuts.</p>
+          <div class="edu-card-meta">Apr 6–7, 2026 · Javits Center, NYC</div>
+        </div>
+      </div>
+
+      <div class="edu-card reveal" style="transition-delay:0.2s">
+        <div class="edu-thumb">
+          <img src="./public/images/photo-3.svg" alt="Protocol">
+          <span class="edu-type protocol">Protocol</span>
+        </div>
+        <div class="edu-body">
+          <div class="edu-card-title">Exosome + Microneedling Combination Protocol</div>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-top:6px;">Step-by-step protocol with product mappings, contraindication flags, and adoption data from verified practices.</p>
+          <div class="edu-card-meta">
+            <span class="edu-ce">2.0 CE Credits</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §7 KPI STRIP ─────────────────────────────────────── -->
+<section id="kpi-strip">
+  <div class="wrap">
+    <div class="kpi-row">
+      <div class="kpi-item reveal">
+        <span class="kpi-val" data-target="3200" data-suffix="+">0</span>
+        <div class="kpi-label">Verified operators<br>on the platform</div>
+      </div>
+      <div class="kpi-item reveal" style="transition-delay:0.08s">
+        <span class="kpi-val" data-target="2.4" data-suffix="B" data-prefix="$">$0</span>
+        <div class="kpi-label">Market intelligence<br>data tracked</div>
+      </div>
+      <div class="kpi-item reveal" style="transition-delay:0.16s">
+        <span class="kpi-val" data-target="340" data-suffix="+">0</span>
+        <div class="kpi-label">Professional brands<br>with live profiles</div>
+      </div>
+      <div class="kpi-item reveal" style="transition-delay:0.24s">
+        <span class="kpi-val" data-target="47">0</span>
+        <div class="kpi-label">States with active<br>operator coverage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §8 CONVERSION CLOSE ──────────────────────────────── -->
+<section id="conversion">
+  <div class="conv-media">
+    <video class="conv-video" autoplay muted loop playsinline>
+      <source src="./public/videos/tube.mp4" type="video/mp4">
+    </video>
+    <div class="conv-veil"></div>
+  </div>
+  <div class="wrap">
+    <div class="conv-inner reveal">
+      <div class="eyebrow eyebrow-light" style="margin:0 auto 24px;">Early Access Open</div>
+      <h2 class="conv-h2">Intelligence for the practices<br>that set the benchmark.</h2>
+      <p class="conv-body">Join 3,200+ operators and 340+ brands building their strategy on verified market data — not distributor reports.</p>
+      <form class="conv-form" onsubmit="handleSubmit(event)">
+        <input type="email" class="conv-input" placeholder="your@practice.com" required>
+        <button type="submit" class="conv-submit">Get Intelligence Access →</button>
+      </form>
+      <p class="conv-trust">Operator access is reviewed within 48h. <a href="#">Privacy policy.</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ───────────────────────────────────────────── -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-mark">S</div>
+        <p>Beauty intelligence platform for professional operators and the brands that serve them.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="#">Intelligence Hub</a>
+          <a href="#">Brand Marketplace</a>
+          <a href="#">Protocols</a>
+          <a href="#">Education</a>
+        </div>
+        <div class="footer-col">
+          <h4>For</h4>
+          <a href="#">Medspas</a>
+          <a href="#">Salons</a>
+          <a href="#">Brands</a>
+          <a href="#">Buyers</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Request Access</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Socelle. All rights reserved.</p>
+      <p><a href="#">Privacy</a> · <a href="#">Terms</a></p>
+    </div>
+  </div>
+</footer>
+
+<div id="tip"></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   LIVE DATA — A4 Architecture
+   Schema: GET /api/intelligence/market-pulse
+   Response: { briefing, total_tracked_today, updated_at, signals[] }
+   Signal: { id, category, headline, delta, direction, confidence,
+             updated_at, image_url, detail }
+══════════════════════════════════════════════════ */
+
+const _now = () => new Date();
+const _ago = (m) => new Date(Date.now() - m*60000).toISOString();
+
+const DEMO = {
+  total_tracked_today: 2847,
+  updated_at: _ago(4),
+  signals: [
+    { id:'s1', category:'Ingredient',  headline:'Bakuchiol adoption accelerating in clinical practices',
+      delta:18.4, direction:'up', confidence:'high', updated_at:_ago(4),
+      image_url:'./public/images/photo-1.svg',
+      detail:'Demand driven by retinol-sensitive clients seeking alternatives. Highest velocity in dermatology-adjacent medspas. Three brand launches expected Q2.' },
+    { id:'s2', category:'Treatment',   headline:'Microneedling collagen induction rebounding post-plateau',
+      delta:9.2,  direction:'up', confidence:'high', updated_at:_ago(22),
+      image_url:'./public/images/photo-2.svg',
+      detail:'Combination protocols with growth factor serums driving the uplift. Average service ticket up 14% YoY in top-performing practices.' },
+    { id:'s3', category:'Category',    headline:'Peptide-forward tier showing slower reorder velocity',
+      delta:6.1,  direction:'down', confidence:'med', updated_at:_ago(47),
+      image_url:'./public/images/photo-3.svg',
+      detail:'Category saturation may be a factor. Watch for reformulations or price adjustments from top three players. Opportunity for alternative positioning.' },
+  ]
+};
+
+function timeAgo(iso) {
+  const s = Math.floor((Date.now() - new Date(iso))/1000);
+  if (s<60) return `${s}s ago`;
+  if (s<3600) return `${Math.floor(s/60)}m ago`;
+  if (s<86400) return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+}
+
+function renderSignals(signals, demo=false) {
+  const grid = document.getElementById('signalGrid');
+  if (!grid) return;
+  if (demo) document.getElementById('demoNotice').classList.add('show');
+  grid.innerHTML = signals.map(s => {
+    const cClass = s.confidence==='high'?'c-hi':s.confidence==='med'?'c-md':'c-lo';
+    const cLabel = s.confidence==='high'?'High confidence':s.confidence==='med'?'Medium':'Low';
+    const dClass = s.direction==='up'?'up':s.direction==='down'?'down':'warn';
+    const arrow  = s.direction==='up'?'↑':s.direction==='down'?'↓':'→';
+    const sign   = s.direction==='up'?'+':'';
+    return `<div class="sig-card">
+      <div class="sig-thumb">
+        <img src="${s.image_url}" alt="${s.category}" loading="lazy">
+        <div class="sig-conf ${cClass}">${cLabel}</div>
+      </div>
+      <div class="sig-body">
+        <div class="sig-cat">${s.category}</div>
+        <div class="sig-headline">${s.headline}</div>
+        <div class="sig-footer">
+          <span class="sig-delta ${dClass}">${arrow} ${sign}${s.delta}%</span>
+          <span class="sig-time">Updated ${timeAgo(s.updated_at)}</span>
+        </div>
+      </div>
+      <button class="sig-why" onclick="toggleDetail('${s.id}',this)">
+        <span>Why this moved</span><span class="arr">›</span>
+      </button>
+      <div class="sig-detail" id="det-${s.id}">
+        <div class="sig-detail-body">${s.detail}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDetail(id, btn) {
+  const el = document.getElementById('det-'+id);
+  if (!el) return;
+  el.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+
+async function fetchPulse() {
+  const ageEl   = document.getElementById('pulseAge');
+  const totalEl = document.getElementById('pulseTotal');
+  const hAgeEl  = document.getElementById('heroAge');
+  const hTotEl  = document.getElementById('heroTotal');
+  try {
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(),5000);
+    const r = await fetch('/api/intelligence/market-pulse',{signal:ctrl.signal,headers:{'Accept':'application/json'}});
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    renderSignals(d.signals);
+    if (ageEl)   ageEl.textContent   = timeAgo(d.updated_at);
+    if (totalEl) totalEl.textContent = d.total_tracked_today.toLocaleString();
+    if (hAgeEl)  hAgeEl.textContent  = timeAgo(d.updated_at);
+    if (hTotEl)  hTotEl.textContent  = d.total_tracked_today.toLocaleString();
+    buildTicker(d.signals);
+  } catch(e) {
+    renderSignals(DEMO.signals, true);
+    if (ageEl)   ageEl.textContent   = timeAgo(DEMO.updated_at);
+    if (totalEl) totalEl.textContent = DEMO.total_tracked_today.toLocaleString();
+    if (hAgeEl)  hAgeEl.textContent  = timeAgo(DEMO.updated_at);
+    if (hTotEl)  hTotEl.textContent  = DEMO.total_tracked_today.toLocaleString();
+    buildTicker(DEMO.signals);
+  }
+}
+
+/* ── Ticker ───────────────────────────────────────────────────── */
+function buildTicker(signals) {
+  const track = document.getElementById('tickerTrack');
+  if (!track) return;
+  const items = [
+    ...signals.map(s=>({ label:s.headline.slice(0,55)+(s.headline.length>55?'…':''), delta:(s.direction==='up'?'+':'')+s.delta+'%', dir:s.direction })),
+    {label:'AHA exfoliant category — monitor inventory',delta:'watch',dir:'warn'},
+    {label:'Clean beauty regulatory update — MoCRA enforcement',delta:'new',dir:'warn'},
+    {label:'Summer seasonal treatment demand forecast',delta:'+22%',dir:'up'},
+    {label:'Retinol adjacents gaining medspa traction',delta:'+9.8%',dir:'up'},
+    {label:'New peptide protocols added to marketplace',delta:'+12',dir:'up'},
+    {label:'Scalp wellness service category accelerating',delta:'+15.4%',dir:'up'},
+  ];
+  const html = items.map(i=>`<span class="t-item"><span>${i.label}</span><span class="t-delta ${i.dir}">${i.delta}</span><span class="t-dot"></span></span>`).join('');
+  track.innerHTML = html + html;
+}
+
+/* ── Count-up ─────────────────────────────────────────────────── */
+function countUp(el) {
+  const target  = parseFloat(el.dataset.target);
+  const suffix  = el.dataset.suffix||'';
+  const prefix  = el.dataset.prefix||'';
+  const decimal = target%1!==0;
+  const dur = 1800, start = performance.now();
+  const ease = t => 1-Math.pow(1-t,4);
+  (function tick(now){
+    const t = Math.min((now-start)/dur,1);
+    const v = target*ease(t);
+    el.textContent = prefix+(decimal?v.toFixed(1):Math.round(v).toLocaleString())+suffix;
+    if (t<1) requestAnimationFrame(tick);
+  })(start);
+}
+
+/* ── Intersection Observers ───────────────────────────────────── */
+const revObs = new IntersectionObserver(ee=>{
+  ee.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('in');revObs.unobserve(e.target);} });
+},{threshold:0.10});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+const kpiObs = new IntersectionObserver(ee=>{
+  ee.forEach(e=>{ if(e.isIntersecting&&e.target.dataset.target){countUp(e.target);kpiObs.unobserve(e.target);} });
+},{threshold:0.5});
+document.querySelectorAll('[data-target]').forEach(el=>kpiObs.observe(el));
+
+/* ── CTA form ─────────────────────────────────────────────────── */
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.conv-submit');
+  btn.textContent = '✓ Application received';
+  btn.style.background = '#5F8A72'; btn.style.color = 'white';
+}
+
+/* ── Init ─────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', fetchPulse);
+</script>
+</body>
+</html>

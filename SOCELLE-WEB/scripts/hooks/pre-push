@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# pre-push hook — SOCELLE-WEB
+#
+# Runs before every `git push`. Blocks the push if TypeScript or the
+# production build fails. This mirrors the CI typecheck + build jobs so
+# failures are caught locally before they hit the remote.
+#
+# To skip in an emergency (not recommended):
+#   git push --no-verify
+#
+# Doc Gate policy: Do NOT push to main while Doc Gate FAIL is active.
+# Production deploy is gated in CI (release/* → staging only).
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+echo ""
+echo "╔══════════════════════════════════════════════════╗"
+echo "║  pre-push: running local checks before push...  ║"
+echo "╚══════════════════════════════════════════════════╝"
+echo ""
+
+# ── 1. TypeScript type check ──────────────────────────────────────────────────
+echo "▶ [1/2] TypeScript type check (npx tsc --noEmit)..."
+if ! npx tsc --noEmit; then
+  echo ""
+  echo "✖ TypeScript errors found. Push blocked."
+  echo "  Fix type errors before pushing."
+  exit 1
+fi
+echo "✔ TypeScript OK"
+echo ""
+
+# ── 2. Production build ───────────────────────────────────────────────────────
+echo "▶ [2/2] Production build (npm run build)..."
+if ! npm run build -- --logLevel warn 2>&1 | grep -v "^$"; then
+  echo ""
+  echo "✖ Build failed. Push blocked."
+  echo "  Fix build errors before pushing."
+  exit 1
+fi
+echo "✔ Build OK"
+echo ""
+
+# ── Doc Gate reminder (non-blocking) ─────────────────────────────────────────
+CURRENT_BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null || echo 'unknown')"
+if [ "$CURRENT_BRANCH" = "main" ]; then
+  echo "⚠  WARNING: You are pushing directly to main."
+  echo "   Production deploy will trigger if CI passes."
+  echo "   Ensure Doc Gate PASS + owner GO LIVE before merging."
+  echo ""
+fi
+
+echo "╔══════════════════════════════════════════════════╗"
+echo "║  pre-push: all checks passed — push proceeding  ║"
+echo "╚══════════════════════════════════════════════════╝"
+echo ""
+exit 0

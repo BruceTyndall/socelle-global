@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Static public pages (core routes, updated manually) -->
+  <sitemap>
+    <loc>https://socelle.com/sitemap-static.xml</loc>
+    <lastmod>2026-03-05</lastmod>
+  </sitemap>
+
+  <!-- Dynamic brand profiles (generated from Supabase at build time) -->
+  <!-- TODO: Replace with Netlify Edge Function when brand count > 50 -->
+  <sitemap>
+    <loc>https://socelle.com/sitemap-brands.xml</loc>
+    <lastmod>2026-03-05</lastmod>
+  </sitemap>
+
+  <!-- Active job postings (generated from Supabase, excludes expired) -->
+  <!-- TODO: Replace with Netlify Edge Function when job count > 100 -->
+  <sitemap>
+    <loc>https://socelle.com/sitemap-jobs.xml</loc>
+    <lastmod>2026-03-05</lastmod>
+  </sitemap>
+
+  <!-- Intelligence + category hub pages -->
+  <sitemap>
+    <loc>https://socelle.com/sitemap-intel.xml</loc>
+    <lastmod>2026-03-05</lastmod>
+  </sitemap>
+
+</sitemapindex>

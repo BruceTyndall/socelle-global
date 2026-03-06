@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function docOwner() {
+      return isSignedIn() && resource.data.user_id == request.auth.uid;
+    }
+
+    function newDocOwner() {
+      return isSignedIn() && request.resource.data.user_id == request.auth.uid;
+    }
+
+    // ── User profile ────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, create, update, delete: if isOwner(uid);
+
+      // Server-written computed metrics — read-only for the owning user
+      match /metricsLatest/{doc} {
+        allow read: if isOwner(uid);
+        allow write: if false; // Admin SDK only
+      }
+
+      // Analytics events — append-only for the owning user; no read
+      match /events/{eventId} {
+        allow create: if isOwner(uid);
+        allow read, update, delete: if false;
+      }
+
+      // Email idempotency store — server writes only
+      match /email_idempotency/{keyId} {
+        allow read: if isOwner(uid);
+        allow write: if false; // Admin SDK only
+      }
+    }
+
+    // ── Gaps ────────────────────────────────────────────────────────────
+    match /gaps/{docId} {
+      allow read: if docOwner();
+      allow create: if newDocOwner();
+      allow update: if docOwner() && request.resource.data.user_id == resource.data.user_id;
+      allow delete: if docOwner();
+    }
+
+    // ── Intentional rules ───────────────────────────────────────────────
+    match /intentional_rules/{docId} {
+      allow read: if docOwner();
+      allow create: if newDocOwner();
+      allow update: if docOwner() && request.resource.data.user_id == resource.data.user_id;
+      allow delete: if docOwner();
+    }
+
+    // ── Weekly reports (server-derived) ─────────────────────────────────
+    match /weekly_reports/{docId} {
+      allow read: if docOwner();
+      allow write: if false; // Admin SDK only
+    }
+
+    // ── Notification state ──────────────────────────────────────────────
+    // Contains push cooldowns, daily counts, framing rotation.
+    // Written by Cloud Functions only; readable by the owning user.
+    match /notification_state/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false; // Admin SDK only
+    }
+
+    // ── FCM tokens ──────────────────────────────────────────────────────
+    // The mobile client writes its own FCM token; server sends pushes.
+    match /fcm_tokens/{uid} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Weekly summaries ────────────────────────────────────────────────
+    match /weekly_summaries/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false; // Admin SDK only
+    }
+
+    // ── Support queue ───────────────────────────────────────────────────
+    // Written by Cloud Functions when a user cancels with reason=no_results.
+    // No client read access (internal support tool).
+    match /support_queue/{docId} {
+      allow read, write: if false; // Admin SDK only
+    }
+  }
+}

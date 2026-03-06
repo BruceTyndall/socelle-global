@@ -1,0 +1,64 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "BP Brand Platform" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e10]: BP
+          - generic [ref=e11]: Brand Platform
+        - generic [ref=e12]:
+          - link "Home" [ref=e13] [cursor=pointer]:
+            - /url: /
+            - img [ref=e14]
+            - generic [ref=e17]: Home
+          - link "Explore Brands" [ref=e18] [cursor=pointer]:
+            - /url: /brands
+            - img [ref=e19]
+            - generic [ref=e21]: Explore Brands
+          - link "Upload Menu" [ref=e22] [cursor=pointer]:
+            - /url: /portal/login?returnTo=/portal/plans/new
+            - img [ref=e23]
+            - generic [ref=e26]: Upload Menu
+      - generic [ref=e27]:
+        - link "Login" [ref=e28] [cursor=pointer]:
+          - /url: /portal/login
+          - img [ref=e29]
+          - generic [ref=e32]: Login
+        - link "Sign Up" [ref=e33] [cursor=pointer]:
+          - /url: /portal/signup
+          - img [ref=e34]
+          - generic [ref=e37]: Sign Up
+  - generic [ref=e39]:
+    - link "Back to Home" [ref=e40] [cursor=pointer]:
+      - /url: /
+      - img [ref=e41]
+      - generic [ref=e44]: Back to Home
+    - generic [ref=e45]:
+      - img [ref=e48]
+      - heading "Welcome Back" [level=1] [ref=e51]
+      - paragraph [ref=e52]: Log in to access your plans and dashboard
+      - generic [ref=e53]:
+        - img [ref=e54]
+        - paragraph [ref=e56]: Invalid login credentials
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - generic [ref=e59]: Email Address
+          - textbox "Email Address" [ref=e60]:
+            - /placeholder: you@business.com
+            - text: test-business@platform.dev
+        - generic [ref=e61]:
+          - generic [ref=e62]: Password
+          - textbox "Password" [ref=e63]:
+            - /placeholder: ••••••••
+            - text: TestPass123!
+        - link "Forgot Password?" [ref=e65] [cursor=pointer]:
+          - /url: /forgot-password
+        - button "Log In" [ref=e66] [cursor=pointer]
+      - paragraph [ref=e68]:
+        - text: Don't have an account?
+        - link "Sign up" [ref=e69] [cursor=pointer]:
+          - /url: /portal/signup
+```

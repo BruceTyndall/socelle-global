@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOCELLE — Clean Room UI Preview (Token-Corrected)</title>
+
+<!-- General Sans — locked primary font (Fontshare CDN) -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&display=swap" rel="stylesheet">
+<!-- JetBrains Mono — locked mono font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─────────────────────────────────────────────────────────
+   CLEAN ROOM UI SYSTEM — TOKEN-CORRECTED PREVIEW
+   Fonts remapped to Pearl Mineral V2 locked stack:
+     Display/Body → General Sans (Fontshare)
+     Mono         → JetBrains Mono (Google)
+     Serif        → BANNED (Cormorant Garamond removed)
+   Colors remapped to locked values (CANONICAL_DOCTRINE §3)
+───────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; }
+img, svg, video { display: block; max-width: 100%; }
+button, input, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+:root {
+  /* ── FONTS (locked stack) ── */
+  --scl-font-display: "General Sans", system-ui, -apple-system, sans-serif;
+  --scl-font-sans:    "General Sans", system-ui, -apple-system, sans-serif;
+  --scl-font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  /* ── COLORS (remapped to Pearl Mineral V2 locked values) ── */
+  /* graphite = #141418 (locked) */
+  --scl-ink-1: 246 13% 9%;      /* #141418 — primary text */
+  --scl-ink-2: 240 8% 20%;      /* ~#2F2F36 — secondary */
+  --scl-ink-3: 240 5% 42%;      /* ~#696974 — muted */
+
+  /* mn.bg = #F6F3EF (locked) */
+  --scl-paper-1: 33 19% 95%;    /* #F6F3EF — page background */
+  --scl-paper-2: 30 16% 91%;    /* #EFEBE6 — tinted surface */
+  --scl-paper-3: 28 14% 85%;    /* ~#DDD8D2 — borders */
+
+  --scl-surface-1: 0 0% 100%;   /* #FFFFFF — cards */
+  --scl-surface-2: 34 22% 96%;  /* ~#F8F5F1 — alt surface */
+
+  /* accent = #6E879B (locked mineral slate blue) */
+  --scl-accent-1: 206 17% 52%;  /* #6E879B — mineral slate */
+  --scl-accent-2: 246 13% 9%;   /* #141418 — ink depth (was espresso, mapped to graphite) */
+
+  /* Semantic */
+  --scl-border: hsl(var(--scl-paper-3) / 0.7);
+  --scl-ring:   hsl(var(--scl-accent-1) / 0.65);
+
+  /* ── TYPE SCALE ── */
+  --scl-step-0: clamp(0.92rem, 0.22vw + 0.86rem, 1.03rem);
+  --scl-step-1: clamp(1.05rem, 0.35vw + 0.98rem, 1.18rem);
+  --scl-step-2: clamp(1.28rem, 0.6vw  + 1.1rem,  1.52rem);
+  --scl-step-3: clamp(1.6rem,  1vw    + 1.25rem,  2.1rem);
+  --scl-step-4: clamp(2.1rem,  1.7vw  + 1.35rem,  3rem);
+  --scl-step-5: clamp(2.8rem,  2.8vw  + 1.4rem,   4.2rem);
+
+  /* ── SPACING ── */
+  --scl-1: 0.25rem; --scl-2: 0.5rem;  --scl-3: 0.75rem;
+  --scl-4: 1rem;    --scl-5: 1.25rem; --scl-6: 1.5rem;
+  --scl-8: 2rem;    --scl-10: 2.5rem; --scl-12: 3rem;
+  --scl-16: 4rem;
+
+  /* ── RADIUS ── */
+  --scl-r1: 10px;
+  --scl-r2: 16px;
+  --scl-r3: 26px;
+  --scl-pill: 999px;
+
+  /* ── SHADOW ── */
+  --scl-sh-1: 0 1px 0 hsl(var(--scl-ink-1)/0.05), 0 10px 30px hsl(var(--scl-ink-1)/0.07);
+  --scl-sh-2: 0 2px 0 hsl(var(--scl-ink-1)/0.05), 0 18px 60px hsl(var(--scl-ink-1)/0.12);
+
+  /* ── MOTION ── */
+  --scl-ease: cubic-bezier(.2,.9,.2,1);
+  --scl-fast: 160ms;
+  --scl-med:  260ms;
+  --scl-slow: 520ms;
+
+  /* ── LAYOUT ── */
+  --scl-max: 1200px;
+  --scl-gutter: clamp(1rem, 3.5vw, 3rem);
+  --scl-nav-h: 76px;
+}
+
+@media (min-width: 1024px) { :root { --scl-nav-h: 84px; } }
+
+/* ── BASE ── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--scl-font-sans);
+  font-weight: 400;
+  font-size: var(--scl-step-0);
+  line-height: 1.55;
+  color: hsl(var(--scl-ink-1));
+  background: hsl(var(--scl-paper-1));
+  overflow-x: hidden;
+}
+:focus-visible {
+  outline: 2px solid var(--scl-ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+h1, h2, h3 {
+  font-family: var(--scl-font-display);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0;
+}
+.scl-kicker {
+  font-family: var(--scl-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: hsl(var(--scl-ink-3));
+}
+.scl-title-xl { font-size: var(--scl-step-5); }
+.scl-title-lg { font-size: var(--scl-step-4); }
+.scl-title-md { font-size: var(--scl-step-3); }
+.scl-lede {
+  font-size: var(--scl-step-1);
+  color: hsl(var(--scl-ink-2));
+  max-width: 58ch;
+}
+.scl-container {
+  width: 100%;
+  max-width: var(--scl-max);
+  margin: 0 auto;
+  padding: 0 var(--scl-gutter);
+}
+.scl-section { padding: clamp(3.5rem, 8vw, 7.5rem) 0; }
+.scl-surface {
+  background: hsl(var(--scl-surface-1));
+  border: 1px solid var(--scl-border);
+  border-radius: var(--scl-r3);
+  box-shadow: var(--scl-sh-1);
+}
+.scl-signature-corner {
+  border-radius: var(--scl-r3) var(--scl-r3) var(--scl-r3) 6px;
+}
+
+/* ── NAV ── */
+.scl-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--scl-nav-h);
+  display: flex;
+  align-items: center;
+  background: hsl(var(--scl-paper-1) / 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid hsl(var(--scl-paper-3) / 0.6);
+}
+.scl-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--scl-6);
+  width: 100%;
+}
+.scl-nav__links {
+  display: none;
+  gap: var(--scl-2);
+  align-items: center;
+}
+@media (min-width: 1024px) { .scl-nav__links { display: flex; } }
+.scl-nav__link {
+  padding: 10px 14px;
+  border-radius: var(--scl-pill);
+  color: hsl(var(--scl-ink-3));
+  font-weight: 500;
+  font-size: 0.92rem;
+  transition: background var(--scl-med) var(--scl-ease), color var(--scl-med) var(--scl-ease);
+}
+.scl-nav__link:hover {
+  background: hsl(var(--scl-paper-2));
+  color: hsl(var(--scl-ink-1));
+}
+.scl-nav__link--active {
+  background: hsl(var(--scl-paper-2));
+  color: hsl(var(--scl-ink-1));
+}
+.scl-wordmark {
+  font-family: var(--scl-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--scl-ink-1));
+}
+
+/* ── BUTTONS ── */
+.scl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--scl-pill);
+  border: 1px solid transparent;
+  font-family: var(--scl-font-sans);
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    transform var(--scl-fast) var(--scl-ease),
+    box-shadow var(--scl-med) var(--scl-ease),
+    background var(--scl-med) var(--scl-ease),
+    border-color var(--scl-med) var(--scl-ease),
+    color var(--scl-med) var(--scl-ease);
+}
+.scl-btn:active { transform: translateY(1px); }
+.scl-btn--primary {
+  background: hsl(var(--scl-ink-1));
+  color: hsl(var(--scl-paper-1));
+  box-shadow: 0 10px 26px hsl(var(--scl-ink-1) / 0.22);
+}
+.scl-btn--primary:hover { background: hsl(var(--scl-accent-1)); }
+.scl-btn--outline {
+  background: transparent;
+  border-color: hsl(var(--scl-ink-1) / 0.22);
+  color: hsl(var(--scl-ink-1));
+}
+.scl-btn--outline:hover {
+  background: hsl(var(--scl-paper-2));
+  border-color: hsl(var(--scl-ink-1) / 0.35);
+}
+.scl-btn--accent {
+  background: hsl(var(--scl-accent-1));
+  color: hsl(var(--scl-surface-1));
+  box-shadow: 0 14px 34px hsl(var(--scl-accent-1) / 0.28);
+}
+.scl-btn--accent:hover { filter: brightness(1.06); }
+.scl-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* ── CARD ── */
+.scl-card {
+  padding: var(--scl-8);
+  border-radius: var(--scl-r3);
+  background: hsl(var(--scl-surface-1));
+  border: 1px solid var(--scl-border);
+  box-shadow: var(--scl-sh-1);
+  transition: transform var(--scl-med) var(--scl-ease), box-shadow var(--scl-med) var(--scl-ease);
+}
+.scl-card:hover { transform: translateY(-2px); box-shadow: var(--scl-sh-2); }
+.scl-card__eyebrow {
+  font-family: var(--scl-font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: hsl(var(--scl-ink-3));
+  margin-bottom: var(--scl-3);
+}
+.scl-card__title {
+  font-family: var(--scl-font-display);
+  font-size: var(--scl-step-2);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin-bottom: var(--scl-3);
+}
+.scl-card__body { color: hsl(var(--scl-ink-2)); font-size: var(--scl-step-0); }
+.scl-card__meta {
+  margin-top: var(--scl-6);
+  display: flex;
+  align-items: center;
+  gap: var(--scl-3);
+}
+
+/* ── BADGE ── */
+.scl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: var(--scl-pill);
+  border: 1px solid hsl(var(--scl-paper-3) / 0.9);
+  background: hsl(var(--scl-paper-2) / 0.85);
+  font-family: var(--scl-font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--scl-ink-2));
+}
+.scl-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: hsl(var(--scl-accent-1));
+  flex-shrink: 0;
+}
+.scl-badge--live::before { background: #5F8A72; }
+.scl-badge--demo::before { background: #A97A4C; }
+
+/* ── FORM ── */
+.scl-field { display: grid; gap: 8px; }
+.scl-label {
+  font-family: var(--scl-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--scl-ink-3));
+}
+.scl-input, .scl-textarea, .scl-select {
+  width: 100%;
+  border-radius: var(--scl-r2);
+  border: 1px solid hsl(var(--scl-paper-3) / 0.95);
+  background: hsl(var(--scl-surface-1) / 0.8);
+  padding: 12px 14px;
+  color: hsl(var(--scl-ink-1));
+  font-family: var(--scl-font-sans);
+  font-size: var(--scl-step-0);
+  transition:
+    border-color var(--scl-med) var(--scl-ease),
+    box-shadow var(--scl-med) var(--scl-ease),
+    background var(--scl-med) var(--scl-ease);
+}
+.scl-input::placeholder, .scl-textarea::placeholder { color: hsl(var(--scl-ink-3)); }
+.scl-input:focus, .scl-textarea:focus {
+  outline: none;
+  border-color: hsl(var(--scl-accent-1) / 0.7);
+  box-shadow: 0 0 0 4px hsl(var(--scl-accent-1) / 0.18);
+  background: hsl(var(--scl-surface-1));
+}
+.scl-textarea { min-height: 120px; resize: vertical; }
+
+/* ── HERO ── */
+.scl-hero {
+  padding: clamp(4rem, 10vw, 8rem) 0 clamp(3rem, 8vw, 6rem);
+  position: relative;
+  overflow: hidden;
+}
+.scl-hero__bg {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 25% 20%, hsl(var(--scl-accent-1) / 0.14), transparent 60%),
+    radial-gradient(55% 35% at 70% 55%, hsl(140 20% 45% / 0.08), transparent 62%),
+    radial-gradient(60% 50% at 60% 110%, hsl(var(--scl-ink-1) / 0.04), transparent 60%);
+  filter: blur(2px);
+}
+.scl-hero__grid {
+  display: grid;
+  gap: var(--scl-10);
+  align-items: center;
+  position: relative;
+}
+@media (min-width: 960px) {
+  .scl-hero__grid { grid-template-columns: 1.15fr 0.85fr; }
+}
+.scl-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--scl-3);
+  margin-top: var(--scl-8);
+  align-items: center;
+}
+
+/* ── SIGNAL CARD ── */
+.scl-signal {
+  background: hsl(var(--scl-surface-1));
+  border: 1px solid var(--scl-border);
+  border-radius: var(--scl-r2);
+  padding: var(--scl-5) var(--scl-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--scl-2);
+}
+.scl-signal__value {
+  font-family: var(--scl-font-mono);
+  font-size: var(--scl-step-3);
+  font-weight: 500;
+  color: hsl(var(--scl-ink-1));
+  letter-spacing: -0.02em;
+}
+.scl-signal__label { font-size: 0.78rem; color: hsl(var(--scl-ink-3)); }
+.scl-signal__delta {
+  font-family: var(--scl-font-mono);
+  font-size: 0.72rem;
+  color: #5F8A72;
+  font-weight: 500;
+}
+.scl-signal__delta--down { color: #8E6464; }
+
+/* ── GLASS PANEL (Pearl Glass spec) ── */
+.scl-glass {
+  background: hsl(var(--scl-paper-1) / 0.72);
+  backdrop-filter: blur(14px) brightness(1.03);
+  -webkit-backdrop-filter: blur(14px) brightness(1.03);
+  border: 1px solid hsl(var(--scl-paper-3) / 0.55);
+  box-shadow:
+    0 4px 24px hsl(var(--scl-ink-1) / 0.06),
+    inset 0 1px 0 hsl(255 100% 100% / 0.35),
+    inset 0 -1px 0 hsl(var(--scl-ink-1) / 0.04);
+  border-radius: var(--scl-r3);
+  padding: var(--scl-8);
+}
+
+/* ── FOOTER ── */
+.scl-footer {
+  margin: var(--scl-4);
+  padding: var(--scl-16) var(--scl-gutter) var(--scl-8);
+  border-radius: var(--scl-r3);
+  background: hsl(var(--scl-ink-1));
+  color: hsl(var(--scl-paper-1));
+}
+.scl-footer a { color: hsl(var(--scl-paper-1) / 0.6); }
+.scl-footer a:hover { color: hsl(var(--scl-paper-1)); }
+
+/* ── GRID HELPERS ── */
+.scl-grid-3 {
+  display: grid;
+  gap: var(--scl-6);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) { .scl-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .scl-grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+.scl-grid-4 {
+  display: grid;
+  gap: var(--scl-4);
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 1024px) { .scl-grid-4 { grid-template-columns: repeat(4, 1fr); } }
+
+/* ── UTILITIES ── */
+.u-muted  { color: hsl(var(--scl-ink-3)); }
+.u-center { text-align: center; }
+.u-stack  { display: grid; gap: var(--scl-4); }
+.u-row    { display: flex; gap: var(--scl-3); flex-wrap: wrap; align-items: center; }
+.u-divider { height: 1px; background: hsl(var(--scl-paper-3) / 0.8); border: 0; margin: 0; }
+.u-mt-4   { margin-top: var(--scl-4); }
+.u-mt-8   { margin-top: var(--scl-8); }
+
+/* ── PREVIEW BANNER ── */
+.preview-banner {
+  background: hsl(var(--scl-accent-1) / 0.12);
+  border-bottom: 1px solid hsl(var(--scl-accent-1) / 0.25);
+  padding: 10px var(--scl-gutter);
+  font-family: var(--scl-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--scl-ink-2));
+  text-align: center;
+}
+.preview-banner strong { color: hsl(var(--scl-ink-1)); }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: var(--scl-font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: hsl(var(--scl-ink-3) / 0.6);
+  border-bottom: 1px solid hsl(var(--scl-paper-3) / 0.5);
+  padding-bottom: var(--scl-3);
+  margin-bottom: var(--scl-8);
+}
+</style>
+</head>
+<body>
+
+<!-- PREVIEW BANNER -->
+<div class="preview-banner">
+  <strong>Design Preview</strong> — Clean Room UI System · Token-Corrected · General Sans + JetBrains Mono · Pearl Mineral V2 colors · Not production
+</div>
+
+<!-- ─── NAV ─────────────────────────────────────── -->
+<nav class="scl-nav">
+  <div class="scl-container">
+    <div class="scl-nav__inner">
+      <span class="scl-wordmark">Socelle</span>
+      <nav class="scl-nav__links">
+        <a href="#" class="scl-nav__link scl-nav__link--active">Intelligence</a>
+        <a href="#" class="scl-nav__link">Brands</a>
+        <a href="#" class="scl-nav__link">Education</a>
+        <a href="#" class="scl-nav__link">Events</a>
+        <a href="#" class="scl-nav__link">Jobs</a>
+        <a href="#" class="scl-nav__link">For Buyers</a>
+        <a href="#" class="scl-nav__link">For Brands</a>
+        <a href="#" class="scl-nav__link">Pricing</a>
+      </nav>
+      <div class="u-row">
+        <button class="scl-btn scl-btn--outline" style="height:38px; padding: 0 14px; font-size: 0.85rem;">Sign In</button>
+        <button class="scl-btn scl-btn--primary" style="height:38px; padding: 0 14px; font-size: 0.85rem;">Request Access</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────── -->
+<section class="scl-hero">
+  <div class="scl-hero__bg"></div>
+  <div class="scl-container">
+    <div class="scl-hero__grid">
+      <div>
+        <p class="scl-kicker" style="margin-bottom: 1.25rem;">Professional Beauty Intelligence</p>
+        <h1 class="scl-title-xl">Market signals for the treatment room.</h1>
+        <p class="scl-lede" style="margin-top: 1.25rem;">
+          Category benchmarks, adoption velocity, and reorder risk — sourced from verified operator procurement data across the $60B US professional beauty market.
+        </p>
+        <div class="scl-hero__actions">
+          <button class="scl-btn scl-btn--primary">Get Intelligence Access</button>
+          <button class="scl-btn scl-btn--outline">View Brands</button>
+          <span class="scl-badge scl-badge--live">Live Market Feed</span>
+        </div>
+      </div>
+      <div class="u-stack">
+        <div class="scl-glass">
+          <p class="scl-kicker" style="margin-bottom: var(--scl-5);">Category Signals — This Week</p>
+          <div class="scl-grid-4" style="gap: var(--scl-4);">
+            <div class="scl-signal">
+              <span class="scl-signal__value">2,847</span>
+              <span class="scl-signal__label">Active operators</span>
+              <span class="scl-signal__delta">+12% 30d</span>
+            </div>
+            <div class="scl-signal">
+              <span class="scl-signal__value">94</span>
+              <span class="scl-signal__label">Brands tracked</span>
+              <span class="scl-signal__delta">+3 new</span>
+            </div>
+            <div class="scl-signal">
+              <span class="scl-signal__value">68%</span>
+              <span class="scl-signal__label">Reorder rate</span>
+              <span class="scl-signal__delta scl-signal__delta--down">-2pts</span>
+            </div>
+            <div class="scl-signal">
+              <span class="scl-signal__value">4.1x</span>
+              <span class="scl-signal__label">Peptide demand</span>
+              <span class="scl-signal__delta">+0.6x</span>
+            </div>
+          </div>
+          <p class="scl-badge scl-badge--demo" style="margin-top: var(--scl-5);">Demo — not live data</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="u-divider">
+
+<!-- ─── INTELLIGENCE CARDS ─────────────────────────── -->
+<section class="scl-section" style="padding-top: clamp(2.5rem, 6vw, 5rem);">
+  <div class="scl-container">
+    <p class="section-label">Components — Cards</p>
+    <div class="scl-grid-3">
+      <div class="scl-card">
+        <p class="scl-card__eyebrow">Adoption Velocity</p>
+        <h3 class="scl-card__title">Peptide Complexes</h3>
+        <p class="scl-card__body">
+          Protocol adoption up 41% across medspa operators in Q1. Reorder cadence suggests high clinical confidence in outcomes.
+        </p>
+        <div class="scl-card__meta">
+          <span class="scl-badge scl-badge--live">Live</span>
+          <span class="u-muted" style="font-size: 0.78rem; font-family: var(--scl-font-mono);">Updated 4m ago</span>
+        </div>
+      </div>
+      <div class="scl-card">
+        <p class="scl-card__eyebrow">Margin Intelligence</p>
+        <h3 class="scl-card__title">Retinol Category Gaps</h3>
+        <p class="scl-card__body">
+          3 of 8 tracked brands show reorder risk in the professional retinol segment. Category gap detected across 220+ spas.
+        </p>
+        <div class="scl-card__meta">
+          <span class="scl-badge scl-badge--demo">Demo</span>
+          <span class="u-muted" style="font-size: 0.78rem; font-family: var(--scl-font-mono);">Preview data</span>
+        </div>
+      </div>
+      <div class="scl-card scl-signature-corner" style="background: hsl(var(--scl-ink-1)); color: hsl(var(--scl-paper-1)); border-color: transparent;">
+        <p class="scl-card__eyebrow" style="color: hsl(var(--scl-paper-1)/0.55);">Intelligence Access</p>
+        <h3 class="scl-card__title" style="color: hsl(var(--scl-paper-1));">Full signal stack for operators.</h3>
+        <p class="scl-card__body" style="color: hsl(var(--scl-paper-1)/0.7); margin-top: var(--scl-3);">
+          Benchmark your formulary against verified peer sets. See what's moving before your distributor rep does.
+        </p>
+        <div style="margin-top: var(--scl-8);">
+          <button class="scl-btn scl-btn--accent">Get Intelligence Access</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="u-divider">
+
+<!-- ─── BUTTONS ─────────────────────────────────────── -->
+<section class="scl-section" style="padding-top: clamp(2.5rem, 6vw, 5rem);">
+  <div class="scl-container">
+    <p class="section-label">Components — Buttons + Badges</p>
+    <div class="u-row" style="gap: var(--scl-4); margin-bottom: var(--scl-8);">
+      <button class="scl-btn scl-btn--primary">Primary</button>
+      <button class="scl-btn scl-btn--outline">Outline</button>
+      <button class="scl-btn scl-btn--accent">Accent</button>
+      <button class="scl-btn scl-btn--primary" disabled>Disabled</button>
+    </div>
+    <div class="u-row" style="gap: var(--scl-3);">
+      <span class="scl-badge">Intelligence</span>
+      <span class="scl-badge scl-badge--live">Live Signal</span>
+      <span class="scl-badge scl-badge--demo">Demo Data</span>
+      <span class="scl-badge">Adoption Velocity</span>
+      <span class="scl-badge">Verified Operator</span>
+    </div>
+  </div>
+</section>
+
+<hr class="u-divider">
+
+<!-- ─── TYPOGRAPHY ─────────────────────────────────── -->
+<section class="scl-section" style="padding-top: clamp(2.5rem, 6vw, 5rem);">
+  <div class="scl-container">
+    <p class="section-label">Typography — General Sans (Locked Primary Font)</p>
+    <div class="u-stack" style="gap: var(--scl-6); max-width: 720px;">
+      <div>
+        <p class="scl-kicker" style="margin-bottom: var(--scl-2);">Display / Hero</p>
+        <h1 class="scl-title-xl">Market intelligence for the treatment room.</h1>
+      </div>
+      <div>
+        <p class="scl-kicker" style="margin-bottom: var(--scl-2);">Section Heading</p>
+        <h2 class="scl-title-lg">Adoption signals by category.</h2>
+      </div>
+      <div>
+        <p class="scl-kicker" style="margin-bottom: var(--scl-2);">Subsection</p>
+        <h3 class="scl-title-md">Reorder risk across peer set.</h3>
+      </div>
+      <div>
+        <p class="scl-kicker" style="margin-bottom: var(--scl-2);">Lede / Body Large</p>
+        <p class="scl-lede">Category benchmarks, adoption velocity, and reorder risk — sourced from verified operator procurement data across the $60B US professional beauty market.</p>
+      </div>
+      <div>
+        <p class="scl-kicker" style="margin-bottom: var(--scl-2);">Mono / Data (JetBrains Mono)</p>
+        <p style="font-family: var(--scl-font-mono); font-size: var(--scl-step-1); color: hsl(var(--scl-ink-2));">
+          +41% adoption · 4.1x demand · Updated 4m ago · Confidence: HIGH
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="u-divider">
+
+<!-- ─── FORM ─────────────────────────────────────── -->
+<section class="scl-section" style="padding-top: clamp(2.5rem, 6vw, 5rem);">
+  <div class="scl-container">
+    <p class="section-label">Components — Form Inputs</p>
+    <div style="max-width: 520px; display: grid; gap: var(--scl-5);">
+      <div class="scl-field">
+        <label class="scl-label">Practice Name</label>
+        <input class="scl-input" type="text" placeholder="Aria Medspa & Wellness">
+      </div>
+      <div class="scl-field">
+        <label class="scl-label">Role</label>
+        <select class="scl-select scl-input">
+          <option>Spa Owner / Director</option>
+          <option>Esthetician</option>
+          <option>Medspa Operator</option>
+          <option>Purchasing Manager</option>
+        </select>
+      </div>
+      <div class="scl-field">
+        <label class="scl-label">Tell us about your practice</label>
+        <textarea class="scl-textarea" placeholder="Treatment focus, team size, current brands..."></textarea>
+      </div>
+      <button class="scl-btn scl-btn--primary" style="justify-self: start;">Request Intelligence Access</button>
+    </div>
+  </div>
+</section>
+
+<hr class="u-divider">
+
+<!-- ─── GLASS PANEL ─────────────────────────────────── -->
+<section class="scl-section" style="padding-top: clamp(2.5rem, 6vw, 5rem); background: linear-gradient(160deg, hsl(var(--scl-accent-1)/0.06) 0%, transparent 50%);">
+  <div class="scl-container">
+    <p class="section-label">Components — Glass Panel (Pearl Diffusion spec)</p>
+    <div style="max-width: 680px;">
+      <div class="scl-glass">
+        <p class="scl-kicker" style="margin-bottom: var(--scl-4);">Intelligence Preview</p>
+        <h2 class="scl-title-md" style="margin-bottom: var(--scl-4);">Your peer set is reordering peptides at 4.1x velocity.</h2>
+        <p class="scl-lede" style="margin-bottom: var(--scl-6);">
+          223 operators in your tier have added a peptide complex to their primary formulary in the last 30 days.
+          Your current protocol has a 68% reorder confidence score.
+        </p>
+        <div class="u-row">
+          <button class="scl-btn scl-btn--primary">View Full Signal Stack</button>
+          <span class="scl-badge scl-badge--demo">Demo — Sign in for live data</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="u-divider">
+
+<!-- ─── FOOTER ─────────────────────────────────────── -->
+<footer class="scl-footer">
+  <div class="scl-container" style="max-width: var(--scl-max); margin: 0 auto;">
+    <div style="display: grid; gap: var(--scl-12); grid-template-columns: 1fr; margin-bottom: var(--scl-12);">
+      <div style="max-width: 420px;">
+        <span class="scl-wordmark" style="color: hsl(var(--scl-paper-1)); display: block; margin-bottom: var(--scl-4);">Socelle</span>
+        <p style="color: hsl(var(--scl-paper-1)/0.6); font-size: 0.92rem; line-height: 1.6;">
+          Professional beauty intelligence for operators who demand precision. Verified signals. Operator-sourced benchmarks.
+        </p>
+      </div>
+    </div>
+    <hr style="border: none; border-top: 1px solid hsl(var(--scl-paper-1)/0.1); margin-bottom: var(--scl-8);">
+    <div class="u-row" style="justify-content: space-between;">
+      <p style="color: hsl(var(--scl-paper-1)/0.4); font-size: 0.78rem; font-family: var(--scl-font-mono); margin: 0;">
+        © 2026 Socelle Global. All rights reserved.
+      </p>
+      <div class="u-row" style="gap: var(--scl-6);">
+        <a href="#" style="font-size: 0.82rem;">Privacy</a>
+        <a href="#" style="font-size: 0.82rem;">Terms</a>
+        <a href="#" style="font-size: 0.82rem;">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

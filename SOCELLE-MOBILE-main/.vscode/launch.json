@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Socelle Mobile (Supabase Connected)",
+      "request": "launch",
+      "type": "dart",
+      "program": "apps/mobile/lib/main.dart",
+      "args": [
+        "--dart-define=SOCELLE_SUPABASE_URL=https://rumdmulxzmjtsplsjngi.supabase.co",
+        "--dart-define=SOCELLE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1bWRtdWx4em1qdHNwbHNqbmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjI4NDksImV4cCI6MjA4Nzc5ODg0OX0.2ri_IjtYp3U3EuyvHp6iNZ69C9zyP-8WmKJlvFBJb_E"
+      ],
+      "flutterMode": "debug"
+    },
+    {
+      "name": "Socelle Mobile (Mock Data / No Supabase)",
+      "request": "launch",
+      "type": "dart",
+      "program": "apps/mobile/lib/main.dart",
+      "flutterMode": "debug"
+    },
+    {
+      "name": "Socelle Mobile (Release Build)",
+      "request": "launch",
+      "type": "dart",
+      "program": "apps/mobile/lib/main.dart",
+      "args": [
+        "--dart-define=SOCELLE_SUPABASE_URL=https://rumdmulxzmjtsplsjngi.supabase.co",
+        "--dart-define=SOCELLE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1bWRtdWx4em1qdHNwbHNqbmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjI4NDksImV4cCI6MjA4Nzc5ODg0OX0.2ri_IjtYp3U3EuyvHp6iNZ69C9zyP-8WmKJlvFBJb_E"
+      ],
+      "flutterMode": "release"
+    }
+  ]
+}

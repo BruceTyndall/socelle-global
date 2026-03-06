@@ -1,0 +1,24 @@
+{
+  "jobs": [
+    {
+      "name": "jobspy-scraper",
+      "schedule": "0 */6 * * *",
+      "command": "python main.py jobspy"
+    },
+    {
+      "name": "career-pages",
+      "schedule": "0 3 * * 1",
+      "command": "python main.py careers"
+    },
+    {
+      "name": "niche-boards",
+      "schedule": "0 4 * * 3",
+      "command": "python main.py niche"
+    },
+    {
+      "name": "cleanup",
+      "schedule": "0 */6 * * *",
+      "command": "python main.py cleanup"
+    }
+  ]
+}

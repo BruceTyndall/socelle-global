@@ -1,0 +1,207 @@
+================================================================================
+SOCELLE LIVE DATA INTEGRITY AUDIT — EXECUTIVE SUMMARY
+================================================================================
+Audit Date: March 5, 2026
+Overall Status: CRITICAL GAPS IDENTIFIED
+
+================================================================================
+AUDIT FINDINGS
+================================================================================
+
+1. INFRASTRUCTURE MISSING (BLOCKING)
+   - 8 critical Supabase tables don't exist
+   - 2 edge functions not implemented
+   - No data ingestion pipeline
+
+2. MISLEADING CLAIMS
+   - Insights page: "Updated every 5 minutes" (false — no refresh mechanism)
+   - Home page: "Updated 3 min ago" (honest disclaimer shown)
+   - Intelligence page: "Updated weekly" (no data shown, no disclaimer)
+
+3. HONEST IMPLEMENTATIONS
+   - Home Market Pulse: Shows preview disclaimer correctly
+   - Admin Signals: Real data, accurate labels
+   - Market Pulse Bar: Shows 0 values honestly
+
+================================================================================
+MISSING INFRASTRUCTURE
+================================================================================
+
+Tables NOT Created:
+  ❌ socelle.rss_items (RSS feed items)
+  ❌ socelle.rss_sources (Feed registry)
+  ❌ socelle.mv_brand_health (Brand trends view)
+  ❌ socelle.mv_ingredient_emerging (Ingredient trends view)
+  ❌ socelle.safety_events (Safety alerts)
+  ❌ socelle.jobs (Job postings)
+  ❌ socelle.mv_job_demand (Job market trends view)
+  ❌ socelle.mv_market_snapshot (Geographic market metrics)
+
+Edge Functions NOT Implemented:
+  ❌ /functions/intelligence-briefing (aggregated signals endpoint)
+  ❌ /functions/jobs-search (job search with demand context)
+
+Data Ingestion:
+  ❌ No RSS feed parsers
+  ❌ No sentiment analysis pipeline
+  ❌ No brand/ingredient extraction
+  ❌ No pg_cron jobs for hourly refresh
+
+================================================================================
+PAGES AFFECTED
+================================================================================
+
+Intelligence Page (/intelligence)
+  - Claims: "Market intelligence in real time" + "Updated weekly"
+  - Current: Shows "0 signals" when empty
+  - Problem: No disclaimer that it's preview/demo
+  - Users think platform is broken, not in preview
+
+Insights Page (/insights)
+  - Claims: "Live intelligence · Updated every 5 minutes"
+  - Current: Shows FALLBACK_SIGNALS (hardcoded preview data)
+  - Problem: Fallback looks real, no disclaimer
+  - User sees "Industry intelligence" source and trusts it
+
+Home Page (/home)
+  - Claims: "Updated 3 min ago"
+  - Current: Shows FALLBACK_SIGNALS with disclaimer
+  - Verdict: ✅ ACCEPTABLE (honest about preview)
+
+Admin Signals Page (/admin/signals)
+  - Data: Real brand_interest_signals + business_interest_signals tables
+  - Verdict: ✅ PASS (real, auditable data)
+
+================================================================================
+REQUIRED FIXES
+================================================================================
+
+IMMEDIATE (1 hour):
+  1. Add "Preview Mode" dismissible banner to Intelligence page
+  2. Update Insights copy from "live" to "preview"
+  3. Import isSupabaseConfigured on pages showing fake data
+
+SHORT-TERM (3-5 days):
+  1. Create 8 Supabase tables with migrations
+  2. Create 2 edge functions (intelligence-briefing, jobs-search)
+  3. Set up RLS policies on all new tables
+  4. Implement materialized view refresh logic
+
+MID-TERM (ongoing):
+  1. Build RSS feed parser (130+ sources)
+  2. Integrate sentiment analysis API
+  3. Build brand/ingredient mention extraction
+  4. Set up pg_cron ingestion jobs (hourly refresh)
+  5. Load historical job data
+  6. Build safety event database
+
+================================================================================
+DATA SOURCE MAPPING
+================================================================================
+
+Where Code Tries to Fetch From:
+  src/lib/intelligence/socelleApi.ts
+  ├─ fetchLatestSignals() → rss_items table [DOESN'T EXIST]
+  ├─ fetchTrendingBrands() → mv_brand_health view [DOESN'T EXIST]
+  ├─ fetchEmergingIngredients() → mv_ingredient_emerging [DOESN'T EXIST]
+  ├─ fetchSafetyEvents() → safety_events table [DOESN'T EXIST]
+  ├─ fetchJobDemand() → mv_job_demand view [DOESN'T EXIST]
+  ├─ searchJobs() → /functions/jobs-search endpoint [DOESN'T EXIST]
+  └─ fetchIntelligenceBriefing() → /functions/intelligence-briefing [DOESN'T EXIST]
+
+What Actually Works:
+  ✅ Admin signals pages use brand_interest_signals (real table with RLS)
+  ✅ Brand discovery uses brands table (real data)
+  ✅ Business portal uses businesses table (real data)
+
+================================================================================
+FALLBACK STRATEGIES IN PLACE
+================================================================================
+
+Home Page:
+  ✅ Shows FALLBACK_SIGNALS with "Preview data — live pipeline activates at launch"
+  ✅ Correctly detects isSupabaseConfigured
+  ✅ Users know they're seeing preview
+
+Insights Page:
+  ⚠️  Shows FALLBACK_SIGNALS but NO disclaimer
+  ⚠️  Copy says "Updated every 5 minutes" (false)
+  ⚠️  Realistic data makes it look real
+
+Intelligence Page:
+  ⚠️  Returns empty arrays, NO fallback
+  ⚠️  Shows "0 signals" (honest count, but confusing)
+  ⚠️  No disclaimer
+
+================================================================================
+BUILD VERIFICATION
+================================================================================
+
+Current Build Status: ✅ PASSES
+  - No TypeScript errors
+  - All components render
+  - API calls gracefully degrade to empty data
+
+After Phase 1 Fixes: ✅ SHOULD PASS
+  - Just adding disclaimer banners
+  - No structural changes
+
+After Phase 2 Fixes: ⚠️ REQUIRES TESTING
+  - New tables + views
+  - RLS policy verification
+  - Edge function testing
+
+================================================================================
+AUDIT RULE COMPLIANCE
+================================================================================
+
+Rule: "Any UI surface that says 'live', 'updated X ago', 'market pulse', 
+       'signals', 'trending', 'benchmarks', 'freshness' must be wired to a 
+       real data source or clearly marked as PREVIEW/DEMO."
+
+Compliance Matrix:
+  Home Market Pulse         ✅ PREVIEW/DEMO labeled
+  Intelligence Hub          ⚠️  FAILS — no label
+  Insights Page             ⚠️  FAILS — claims live without backend
+  Admin Signals             ✅ REAL DATA
+  Market Pulse Bar          ✅ HONEST (shows 0s)
+  Brand Directory           ✅ REAL DATA
+  Jobs Pages                ⚠️  FAILS — no data, no label
+
+================================================================================
+RECOMMENDATION
+================================================================================
+
+DO NOT LAUNCH with Intelligence/Insights/Jobs pages in current state.
+
+BEFORE LAUNCH:
+  1. Apply Phase 1 (labeling) — 1 hour
+  2. Create missing tables (Phase 2) — 3-5 days
+  3. Build ingestion pipeline (Phase 3) — 1-2 weeks
+
+Minimum viable for launch:
+  - Intelligence page shows "Coming Soon" banner
+  - Insights page shows "Preview: Real data available at launch"
+  - Jobs pages disabled or hidden from nav
+  - Admin signals working with real data ✅
+
+Risk Assessment:
+  - Current state: Medium risk (some pages misleading)
+  - With Phase 1: Low risk (honest previews)
+  - With Phase 1+2: Zero risk (real data)
+
+================================================================================
+AUDIT COMPLETE
+================================================================================
+
+Full audit report: /sessions/affectionate-hopeful-mccarthy/mnt/SOCELLE-WEB/LIVE_DATA_AUDIT.md
+
+Next steps:
+  1. Review this summary
+  2. Read full audit report
+  3. Implement Phase 1 (immediate)
+  4. Plan Phase 2 infrastructure
+  5. Coordinate Phase 3 ingestion pipeline
+
+Auditor: Agent 5 (Live Data Integrity)
+Date: 2026-03-05
