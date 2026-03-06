@@ -1,0 +1,1 @@
+-- Remote migration applied before local tracking. Stub only.

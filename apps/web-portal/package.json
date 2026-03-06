@@ -1,0 +1,12 @@
+{
+    "name": "web-portal",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Authenticated operator and brand portal. Source: SOCELLE-WEB/src/pages/portal and SOCELLE-WEB/src/pages/admin.",
+    "scripts": {
+        "dev": "echo 'Run: cd ../../SOCELLE-WEB && npm run dev'",
+        "build": "echo 'Run: cd ../../SOCELLE-WEB && npm run build'",
+        "typecheck": "echo 'Run: cd ../../SOCELLE-WEB && npm run typecheck'"
+    },
+    "note": "This app is currently co-located in SOCELLE-WEB. The portal pages will be extracted here in Wave 2 of the monorepo migration."
+}
