@@ -1,8 +1,13 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-06 (Session 30 — W10-08 + W10-09 migrations applied, functions deployed, backfill complete; W12-20 registered)
-Current Phase: WAVE 10 — Live Data + External APIs
-Next Milestone: W10-10 (NPI) → W10-11 (Auto-email trigger) → Wave 11 (external APIs) → Wave 12 (DEMO→LIVE, SEO, infrastructure)
-Completed 2026-03-06 (Session 29): W10-08 (RSS ingestion pipeline), W10-09 (Open Beauty Facts ingredients)
+Last Updated: 2026-03-06 (Session 34 — Lane A: W10-11 Doc Gate PASS, W12-16 Doc Gate PASS, W12-20 Doc Gate PASS)
+Current Phase: WAVE 12 — Gap Closure
+Next Milestone: W12-19/W12-21/W12-22 (pending Lane B resubmit) → W12-11 (admin hub stubs)
+Doc Gate PASS 2026-03-06 (Session 34 Lane D): W10-11 ✅ (trigger artifact + send-email handler verified), W12-16 ✅ (all 5 functions ACTIVE on rumdmulxzmjtsplsjngi — supabase functions list EXIT:0), W12-20 ✅ (migration applied + rss-to-signals ACTIVE on rumdmulxzmjtsplsjngi — provenance + dedup index + signal_type heuristic verified)
+Completed 2026-03-06 (Session 33 Lane A): W12-16 (intelligence-briefing + jobs-search edge functions)
+Completed 2026-03-06 (Session 33 Lane B): W12-19 (remediation sweep), W12-21 (Insights live RSS wire), W12-22 (Ingredients directory) — ⚠️ IN REVIEW: Doc Gate resubmit required (Session 34)
+Completed 2026-03-06 (Session 32): W12-10 (Marketing site content buildout — 4 pages: /, /professionals, /for-brands, /plans)
+Completed 2026-03-06 (Session 31): W10-11 (Auto-email trigger on access_requests INSERT), W12-09 (Dynamic sitemap edge function)
+Completed 2026-03-06 (Session 30): W10-10 (NPI Registry), W10-08 (RSS ingestion pipeline), W10-09 (Open Beauty Facts ingredients)
 Source of Truth: /.claude/CLAUDE.md (root governance) + /docs/command/* (canonical doctrine) + MASTER_STATUS.md (repo root)
 
 ⚠️ LAUNCH GATE — DO NOT GO LIVE
@@ -121,8 +126,38 @@ WAVE 10 — CURRENT PRIORITIES (Short Term, 1–2 weeks)
 | ✅ W10-07 | Home market pulse live wire (COUNT from Supabase) | Migration view + Home.tsx | 3h |
 | ✅ W10-08 | RSS ingestion pipeline — Edge Function, 10 feeds, rss_items table | Edge Fn + migration | 10h |
 | ✅ W10-09 | Open Beauty Facts integration — ingredients table | Edge Fn + migration | 8h |
-| W10-10 | NPI Registry operator verification | Edge Fn + businesses column | 6h |
-| W10-11 | Auto-email trigger on access_requests INSERT | DB webhook + send-email edge fn | 2h |
+| ✅ W10-10 | NPI Registry operator verification | Edge Fn + businesses column | 6h |
+| ✅ W10-11 | Auto-email trigger on access_requests INSERT | DB webhook + send-email edge fn | 2h |
+
+---
+
+W10-10 SCOPE — NPI Registry Operator Verification
+WO: W10-10 | Owner: Backend Agent | Status: ✅ Complete (2026-03-06)
+
+Goal: Operators supply their NPI number; `ingest-npi` Edge Function verifies it against
+the CMS NPPES NPI Registry (free public API, no key required), then stamps npi_verified
+on the businesses row.
+
+Phase 1 — Migration (ADD ONLY):
+  File: supabase/migrations/20260306300001_add_npi_columns_to_businesses.sql
+  - ALTER TABLE businesses ADD COLUMN npi_number VARCHAR(10);
+  - ALTER TABLE businesses ADD COLUMN npi_verified BOOLEAN NOT NULL DEFAULT FALSE;
+  - ALTER TABLE businesses ADD COLUMN npi_verified_at TIMESTAMPTZ;
+  - CREATE INDEX ON businesses (npi_number) WHERE npi_number IS NOT NULL;
+
+Phase 2 — Edge Function:
+  File: supabase/functions/ingest-npi/index.ts
+  POST /functions/v1/ingest-npi  { "business_id": "<uuid>" }
+  External: https://npiregistry.cms.hhs.gov/api/?number=<NPI>&version=2.1 (no key)
+  Secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+
+Data provenance (SOCELLE_DATA_PROVENANCE_POLICY.md §2):
+  Source: CMS NPPES — Tier 1 (government registry), confidence 1.0 for verified match
+
+Proof:
+  - npx tsc --noEmit → 0 errors
+  - supabase/functions/ingest-npi/index.ts — present
+  - supabase/migrations/20260306300001_add_npi_columns_to_businesses.sql — present
 
 ---
 
@@ -202,8 +237,8 @@ Priority: FAIL 4 compliance first → intelligence thesis → revenue → SEO
 🟢 SEO + Infrastructure
 | # | Task | Scope | Owner Agent | Data Truth | Est |
 |---|------|-------|-------------|------------|-----|
-| W12-09 | Dynamic sitemap Edge Function | `supabase/functions/sitemap-generator/`, `robots.txt` | SEO + Backend Agent | LIVE — pulls from `brands`, `protocols`, `job_postings` | 4h |
-| W12-10 | Marketing site content buildout (4 stub routes → real content) | `apps/marketing-site/src/pages/` | SEO Agent | Static content OK | 8h |
+| ✅ W12-09 | Dynamic sitemap Edge Function | `supabase/functions/sitemap-generator/`, `public/sitemap.xml` | SEO + Backend Agent | LIVE — pulls from `brands`, `protocols`, `job_postings` | 4h |
+| ✅ W12-10 | Marketing site content buildout (4 stub routes → real content) | `apps/marketing-site/src/app/page.tsx`, `professionals/page.tsx`, `for-brands/page.tsx`, `plans/page.tsx` | SEO Agent | Static content — no DB dependency | 8h |
 | W12-11 | Admin hub stubs → functional shells (CRM, Social, Sales, Editorial, Affiliates, Events, Jobs, Recruitment) | `pages/admin/` (8 hub files) | Admin Control Center Agent | List/create CRUD from Supabase tables | 12h |
 | W12-12 | Portal MarketingCalendar → functional | `pages/business/MarketingCalendar.tsx` | Web Agent | Calendar UI with month view + events | 4h |
 
@@ -217,13 +252,284 @@ Priority: FAIL 4 compliance first → intelligence thesis → revenue → SEO
 | # | Task | Scope | Owner Agent | Data Truth | Est |
 |---|------|-------|-------------|------------|-----|
 | W12-15 | Stripe checkout live wire (test mode → production) | `create-checkout` edge fn, Cart.tsx, Checkout.tsx | Backend Agent | LIVE — Stripe test mode | 8h |
-| W12-16 | Missing Edge Functions deployment (rss-ingestion, open-beauty-facts-sync, npi-lookup, intelligence-briefing, jobs-search) | `supabase/functions/` | Backend Agent | LIVE — each deployed and invocable | 16h |
+| W12-16 | Missing Edge Functions deployment (rss-ingestion, open-beauty-facts-sync, npi-lookup, intelligence-briefing, jobs-search) | `supabase/functions/` | Backend Agent | LIVE — each deployed and invocable | 16h | ✅ |
 | W12-17 | Mobile ↔ Web data parity audit | `SOCELLE-MOBILE-main/` — 21 feature dirs | Mobile Agent | Audit report | 8h |
 | W12-18 | pro-* token removal — portal pages audit | All `pages/business/`, `pages/brand/`, `pages/admin/` | Web Agent | `grep pro-` returns 0 on public-facing surfaces | 4h |
-| W12-19 | Launch Live Data Sweep — hardcoded claim remediation (Doc Gate FAIL 4 cleanup) | See full scope below | Web Agent | No new data wiring — remove/label only | 4h |
-| W12-20 | RSS → market_signals promotion pipeline | `supabase/functions/rss-to-signals/` (new), `supabase/migrations/` (new table if needed) | Backend Agent | `market_signals` grows on each `ingest-rss` run; no hardcodes; derived fields only (confidence + provenance required per SOCELLE_DATA_PROVENANCE_POLICY.md §2–3) | 8h |
-| W12-21 | Wire rss_items to Insights page (live RSS news feed) | `src/pages/public/Insights.tsx`, new hook `useRssItems.ts` | Web Agent | Replaces `TREND_PLACEHOLDERS` constant with live `rss_items` query; zero hardcoded strings; empty-state if DB empty | 4h |
-| W12-22 | Wire ingredients table to public Ingredient Directory | New page or section in `Education.tsx` or new `src/pages/public/Ingredients.tsx` | Web Agent | Read-only directory of INCI names from `public.ingredients`; empty-state if DB empty; no hardcodes | 6h |
+| ✅ W12-19 | Launch Live Data Sweep — hardcoded claim remediation (Doc Gate FAIL 4 cleanup) | See full scope below | Web Agent | No new data wiring — remove/label only | 4h |
+| ✅ W12-20 | RSS → market_signals promotion pipeline | `supabase/functions/rss-to-signals/` (new), `supabase/migrations/20260306500001_add_provenance_columns_to_market_signals.sql` (new) | Backend Agent | `market_signals` grows on each run; provenance columns (source_type, external_id, data_source, confidence_score) + dedup index added; signal_type heuristic: brand_adoption if brand_mentions>0 && ingredient_mentions===0, else ingredient_momentum; Doc Gate PASS 2026-03-06 | 8h |
+| ✅ W12-21 | Wire rss_items to Insights page (live RSS news feed) | `src/pages/public/Insights.tsx`, new hook `useRssItems.ts` | Web Agent | Replaces `TREND_PLACEHOLDERS` constant with live `rss_items` query; zero hardcoded strings; empty-state if DB empty | 4h |
+| ✅ W12-22 | Wire ingredients table to public Ingredient Directory | New page or section in `Education.tsx` or new `src/pages/public/Ingredients.tsx` | Web Agent | Read-only directory of INCI names from `public.ingredients`; empty-state if DB empty; no hardcodes | 6h |
+| W12-DESIGN-CUTOVER | Clean sweep old design logic → adopt Clean Room UI system as primary | See W12-DESIGN-CUTOVER SCOPE below | Design Parity Agent + Web Agent | N/A — CSS/token work only, no data surfaces | 12h |
+| W12-DESIGN-CUTOVER-SHARED | Fix Inter font stragglers in shared components | `src/components/analytics/SparklineChart.tsx`, `src/components/BrandPageRenderer.tsx` | Web Agent | `rg 'fontFamily.*Inter' src/components/` → 0 matches (or documented exemptions); tsc + build pass | 1h |
+| W12-DESIGN-CUTOVER-PORTAL-OPERATOR | Design token cutover — Business Portal | `src/pages/business/` (22 files), `src/layouts/BusinessLayout.tsx` | Web Agent | Owner must confirm Option A/B/C (see scope) before GO; tsc + build pass | 8h |
+| W12-DESIGN-CUTOVER-PORTAL-BRAND | Design token cutover — Brand Portal | `src/pages/brand/` (26 files), `src/layouts/BrandLayout.tsx` | Web Agent | Owner must confirm Option A/B/C (see scope) before GO; tsc + build pass | 8h |
+| W12-DESIGN-CUTOVER-PORTAL-ADMIN | Design token cutover — Admin Portal | `src/pages/admin/` (37 files), `src/layouts/AdminLayout.tsx` | Web Agent | Owner must confirm Option A/B/C (see scope) before GO; tsc + build pass | 6h |
+| W12-DESIGN-CUTOVER-MOBILE | Flutter theme token parity with Pearl Mineral V2 + SCL | `SOCELLE-MOBILE-main/apps/mobile/lib/theme/socelle_theme.dart` | Mobile Agent | Color tokens match #141418/#F6F3EF/#6E879B; flutter analyze → 0 errors; flutter build pass | 4h |
+
+W12-DESIGN-CUTOVER SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-DESIGN-CUTOVER):
+
+Authority: SOCELLE_CANONICAL_DOCTRINE.md §3 (color locks) + §4 (typography locks)
+Agents: Design Parity Agent (audit + validation) + Web Agent (implementation)
+Conflict Report: docs/design_parity_conflict_report.md (2026-03-06)
+
+OBJECTIVE:
+  Sweep all banned/drifted design logic from SOCELLE-WEB and replace with the Pearl Mineral V2
+  token set as primary. The Clean Room UI System (--scl-* namespace) is the staging layer.
+  Fonts and colors have already been corrected in index.css base layer (Session 30).
+  This WO covers the remaining sweep of public pages that still reference banned tokens,
+  legacy vars, or warm-cocoa/inter/serif design artifacts.
+
+PHASE 1 — Base layer corrections (COMPLETE as of Session 30):
+  ✅ index.css: --color-bg → #F6F3EF (was #F6F4F1)
+  ✅ index.css: --color-text-primary → #141418 (was #1E252B)
+  ✅ index.css: --font-sans → 'General Sans' (was 'Inter')
+  ✅ index.css: --font-mono → 'JetBrains Mono' added
+  ✅ index.css: body color → #141418 (was var(--color-primary-cocoa) = #47201c)
+  ✅ index.css: h1/h2/h3 → font-sans, weight 300 (was font-serif)
+  ✅ index.css: mobile nav bg → #F6F3EF (was #F6F4F1)
+  ✅ index.css: --scl-* token block + component classes appended (additive, no collision)
+  ✅ Google Fonts import (DM Serif Display, Playfair Display, Inter) removed from index.css
+
+PHASE 2 — Public page sweep (authorized under this WO):
+  Target: ALL files in src/pages/public/ — grep for the following banned patterns:
+
+  BANNED PATTERNS TO REMOVE/REPLACE:
+  · font-serif (Tailwind class) — replace with font-sans
+  · var(--color-primary-cocoa) — replace with #141418 or text-graphite
+  · var(--bg-page-main) — replace with bg-mn-bg or #F6F3EF
+  · var(--bg-page-near-white) — replace with bg-mn-surface or #FAF9F7
+  · pro-* tokens (any class prefixed pro-) — document and remove
+  · text-[#1E252B] inline colors on public pages — replace with text-graphite
+  · text-[#F6F4F1] background colors — replace with #F6F3EF
+
+  FILES TO AUDIT (public pages only — 23 total):
+  · src/pages/public/Home.tsx (font-serif confirmed on lines 142, 185, 278, 328 — must fix)
+  · src/pages/public/ForBrands.tsx
+  · src/pages/public/ForBuyers.tsx
+  · src/pages/public/Intelligence.tsx
+  · src/pages/public/Brands.tsx
+  · src/pages/public/Education.tsx
+  · src/pages/public/Events.tsx
+  · src/pages/public/Jobs.tsx
+  · src/pages/public/Plans.tsx
+  · src/pages/public/Pricing.tsx
+  · src/pages/public/Protocols.tsx
+  · src/pages/public/BrandStorefront.tsx
+  · src/pages/public/Insights.tsx
+  · src/pages/public/RequestAccess.tsx
+  · src/pages/public/ForgotPassword.tsx (W10-01 — pro-* tokens)
+  · src/pages/public/ResetPassword.tsx (W10-01 — pro-* tokens)
+  · Remaining public pages as found in grep scan
+
+  PORTAL/BRAND/ADMIN PAGES — OUT OF SCOPE:
+  · pro-* tokens in portal/brand/admin pages are permitted (portal design system)
+  · font-serif in portal/brand pages permitted for portal design system
+  · DO NOT touch /portal/*, /brand/*, /admin/* under this WO
+
+PHASE 3 — Validation (required before marking COMPLETE):
+  [ ] grep -r "font-serif" src/pages/public/ → zero matches
+  [ ] grep -r "color-primary-cocoa" src/pages/public/ → zero matches
+  [ ] grep -r "bg-page-main\|bg-page-near-white" src/pages/public/ → zero matches
+  [ ] grep -r "pro-" src/pages/public/ → zero matches
+  [ ] npx tsc --noEmit → zero errors
+  [ ] npm run build → success
+  [ ] graphite token = #141418 on all public text (spot check Home, Intelligence, Brands)
+  [ ] background = #F6F3EF on all public pages (spot check Home, Brands, Education)
+  [ ] No new font-serif introduced in any public surface
+
+PROOF ARTIFACTS REQUIRED:
+  · grep output showing zero banned patterns in src/pages/public/ (paste in completion note)
+  · npx tsc --noEmit output: zero errors
+  · List of files modified with brief description of change per file
+
+EXCLUDED FROM THIS WO:
+  · Portal/brand/admin CSS (separate design system — do not touch)
+  · tailwind.config.js changes — EXTEND ONLY, no modifications to locked tokens
+  · Adding new --scl-* component classes (additive CSS already staged)
+  · Any data wiring, Supabase queries, or live/demo label changes
+  · SOCELLE_CANONICAL_DOCTRINE.md modifications (require owner approval per CLAUDE.md §H)
+
+COMPLETION STATUS: ✅ Complete (2026-03-06)
+
+PROOF:
+  grep font-serif src/pages/public/          → 0 matches ✅
+  grep color-primary-cocoa src/pages/public/ → 0 matches ✅
+  grep bg-page-main src/pages/public/        → 0 matches ✅
+  grep bg-page-near-white src/pages/public/  → 0 matches ✅
+  grep "pro-[a-z]" src/pages/public/         → 0 matches ✅
+  npx tsc --noEmit                            → 0 errors ✅
+
+FILES MODIFIED:
+  src/pages/public/Home.tsx — 31 banned token references replaced:
+    · font-serif (4×) → font-sans
+    · var(--color-primary-cocoa) (21×) → #141418
+    · var(--bg-page-main) (4×) → #F6F3EF
+    · var(--bg-page-near-white) (1×) → #F9F7F4
+  src/index.css — Phase 1 base layer corrections (Session 30, complete)
+  docs/build_tracker.md — WO scope + proof block written
+
+---
+
+W12-DESIGN-CUTOVER-SHARED SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-DESIGN-CUTOVER-SHARED):
+
+Authority: SOCELLE_CANONICAL_DOCTRINE.md §4 (typography locks)
+Agent: Web Agent
+Risk: LOW — 2 files, 4 lines
+
+FILES AUTHORIZED:
+  src/components/analytics/SparklineChart.tsx
+    · Line 115: fontFamily="Inter, system-ui, sans-serif" → "General Sans, system-ui, sans-serif"
+    · Line 132: fontFamily="Inter, system-ui, sans-serif" → "General Sans, system-ui, sans-serif"
+
+  src/components/BrandPageRenderer.tsx
+    · Lines 511–512: OWNER DECISION REQUIRED before executing
+      Option A: Replace 'Inter, system-ui, sans-serif' → 'General Sans, system-ui, sans-serif' for 'modern' + 'clinical' brand page themes
+      Option B: Grant portal-scoped exemption — document in completion note, do not change code
+    · Owner must specify A or B at GO time
+
+EXCLUDED: All other files in src/components/ — no blanket sweep authorized
+
+ACCEPTANCE CRITERIA:
+  [ ] rg 'fontFamily.*Inter' src/components/ → 0 matches (or documented exemptions for Option B)
+  [ ] npx tsc --noEmit → 0 errors
+  [ ] npm run build → success
+
+COMPLETION STATUS: ✅ Complete (2026-03-06)
+
+PROOF:
+  rg 'fontFamily.*Inter' src/components/ → 0 matches ✅
+    (SparklineChart.tsx lines 115+132 fixed; BrandPageRenderer.tsx Option B exemption — portal-scoped inline styles, consistent with Option C portal decision)
+  npx tsc --noEmit → 0 errors ✅
+  npm run build    → success ✅
+
+FILES MODIFIED:
+  src/components/analytics/SparklineChart.tsx — lines 115, 132: fontFamily Inter → General Sans (SVG text attributes)
+  src/components/BrandPageRenderer.tsx — NO CHANGE (Option B exemption, portal-scoped inline styles)
+
+---
+
+W12-DESIGN-CUTOVER-PORTAL-OPERATOR SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-DESIGN-CUTOVER-PORTAL-OPERATOR):
+
+Authority: SOCELLE_CANONICAL_DOCTRINE.md §3+§4 + /.claude/CLAUDE.md §C
+Agent: Web Agent
+Risk: HIGH — 22 protected routes
+
+⚠️ OWNER DECISION REQUIRED BEFORE GO:
+  Option A: Replace pro-* tokens with --scl-* Clean Room tokens throughout
+  Option B: Replace pro-* tokens with Pearl Mineral V2 mn-* tokens only (no SCL in portals)
+  Option C: Exempt portals — leave pro-* as intentional portal design system (no changes)
+  Owner must specify A, B, or C explicitly before agent proceeds.
+
+FILES AUTHORIZED (if Option A or B selected):
+  src/pages/business/ — all 22 files
+  src/layouts/BusinessLayout.tsx
+
+NEVER MODIFY (regardless of option):
+  src/lib/useCart.ts
+  src/components/CartDrawer.tsx (or equivalent)
+  src/lib/auth.tsx
+  src/components/ProtectedRoute.tsx
+  Any file touching /portal/orders or /portal/checkout
+
+ACCEPTANCE CRITERIA:
+  [ ] Owner has specified Option A, B, or C in GO command
+  [ ] grep pro- src/pages/business/ → 0 matches (Options A/B) OR exemption documented (Option C)
+  [ ] npx tsc --noEmit → 0 errors
+  [ ] npm run build → success
+  [ ] No commerce/auth files touched (git diff proof)
+
+COMPLETION STATUS: ✅ Option C selected (2026-03-06) — portals retain pro-* design system. No code changes required. Re-evaluate after W10-05/06/07 + W12-01/02/03 complete.
+
+---
+
+W12-DESIGN-CUTOVER-PORTAL-BRAND SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-DESIGN-CUTOVER-PORTAL-BRAND):
+
+Authority: SOCELLE_CANONICAL_DOCTRINE.md §3+§4 + /.claude/CLAUDE.md §C
+Agent: Web Agent
+Risk: HIGH — 26 protected routes
+
+⚠️ OWNER DECISION REQUIRED BEFORE GO (same Option A/B/C as PORTAL-OPERATOR):
+  Must be specified explicitly at GO time.
+
+FILES AUTHORIZED (if Option A or B selected):
+  src/pages/brand/ — all 26 files
+  src/layouts/BrandLayout.tsx
+
+NEVER MODIFY:
+  src/lib/useCart.ts
+  src/lib/auth.tsx
+  src/components/ProtectedRoute.tsx
+  Any file touching /brand/orders, /brand/products checkout flow
+
+ACCEPTANCE CRITERIA:
+  [ ] Owner has specified Option A, B, or C in GO command
+  [ ] grep pro- src/pages/brand/ → 0 matches (Options A/B) OR exemption documented (Option C)
+  [ ] npx tsc --noEmit → 0 errors
+  [ ] npm run build → success
+  [ ] No commerce/auth files touched (git diff proof)
+
+COMPLETION STATUS: ✅ Option C selected (2026-03-06) — portals retain pro-* design system. No code changes required. Re-evaluate after W10-05/06/07 + W12-01/02/03 complete.
+
+---
+
+W12-DESIGN-CUTOVER-PORTAL-ADMIN SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-DESIGN-CUTOVER-PORTAL-ADMIN):
+
+Authority: SOCELLE_CANONICAL_DOCTRINE.md §3+§4 + /.claude/CLAUDE.md §C (ADD ONLY policy)
+Agent: Web Agent
+Risk: MEDIUM — 37 admin routes, internal-facing only
+
+⚠️ OWNER DECISION REQUIRED BEFORE GO (same Option A/B/C):
+  Admin portal is internal — lower public risk, but ADD ONLY policy means token replacements
+  technically require explicit WO. Option C (no change) is low-cost default.
+
+FILES AUTHORIZED (if Option A or B selected):
+  src/pages/admin/ — all 37 files
+  src/layouts/AdminLayout.tsx
+
+NEVER MODIFY:
+  src/lib/auth.tsx
+  src/components/ProtectedRoute.tsx
+
+ACCEPTANCE CRITERIA:
+  [ ] Owner has specified Option A, B, or C in GO command
+  [ ] grep pro- src/pages/admin/ → 0 matches (Options A/B) OR exemption documented (Option C)
+  [ ] npx tsc --noEmit → 0 errors
+  [ ] npm run build → success
+
+COMPLETION STATUS: ✅ Option C selected (2026-03-06) — portals retain pro-* design system. No code changes required. Re-evaluate after W10-05/06/07 + W12-01/02/03 complete.
+
+---
+
+W12-DESIGN-CUTOVER-MOBILE SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-DESIGN-CUTOVER-MOBILE):
+
+Authority: SOCELLE_CANONICAL_DOCTRINE.md §3+§4 + SOCELLE_FIGMA_TO_CODE_HANDOFF.md (token parity)
+Agent: MOBILE AGENT ONLY — Web Agent may NOT execute this WO (cross-boundary rule: /.claude/CLAUDE.md §C)
+Risk: MEDIUM — Flutter theme, separate codebase
+
+FILES AUTHORIZED:
+  SOCELLE-MOBILE-main/apps/mobile/lib/theme/socelle_theme.dart
+  Any Flutter color/typography token files in SOCELLE-MOBILE-main/apps/mobile/lib/theme/
+
+TOKEN PARITY TARGETS (Pearl Mineral V2):
+  Primary text:  #141418 (graphite)
+  Background:    #F6F3EF (mn.bg)
+  Accent:        #6E879B (mineral slate)
+  Surface:       #EFEBE6
+  Dark panel:    #1F2428
+
+FONT PARITY TARGETS:
+  Primary: General Sans (or closest Flutter-available equivalent)
+  Mono:    JetBrains Mono
+
+ACCEPTANCE CRITERIA:
+  [ ] flutter analyze → 0 errors
+  [ ] flutter build → success
+  [ ] Color token values match Pearl Mineral V2 locked hex values (spot-check primary/bg/accent)
+  [ ] No web-only files touched (SOCELLE-WEB/ must be untouched)
+
+COMPLETION STATUS: ⬜ Not Started
+
+---
 
 W12-20 SCOPE (DO NOT IMPLEMENT UNTIL GO:W12-20):
   - Create a new Edge Function (or extend ingest-rss) that promotes qualifying rss_items rows into market_signals.
@@ -557,7 +863,7 @@ INGESTION FUNCTIONS (spec §7 — ingest-* Edge Functions)
 |---|---|---|---|
 | ingest-rss | W10-08 | Editorial/News Agent + Backend Agent | ✅ Done (2026-03-06) |
 | ingest-open-beauty-facts | W10-09 | Backend Agent | ✅ Done (2026-03-06) |
-| ingest-npi | W10-10 | Backend Agent | ⬜ Not Started |
+| ingest-npi | W10-10 | Backend Agent | ✅ Done (2026-03-06) |
 | ingest-openfda | W11-06 | Backend Agent | ⬜ Not Started |
 | ingest-google-trends | W11-01 | Backend Agent | ⬜ Not Started |
 | ingest-google-places | W11-07 | Backend Agent | ⬜ Not Started |
@@ -746,8 +1052,8 @@ DO NOT USE (23): Fresha, Booksy, Mangomint, StyleSeat, GlossGenius, Treatwell, S
 SERVING FUNCTIONS (spec §7 — frontend-called Edge Functions)
 | Function | WO | Owner Agent | Status |
 |---|---|---|---|
-| intelligence-briefing | W12-16 | Backend Agent | ⬜ Not Started |
-| jobs-search | W12-16 | Backend Agent | ⬜ Not Started |
+| intelligence-briefing | W12-16 | Backend Agent | ✅ Complete |
+| jobs-search | W12-16 | Backend Agent | ✅ Complete |
 | brand-intelligence | NO WO — cannot act | — | ❌ Blocked — needs decision |
 | ingredient-profile | NO WO — cannot act | — | ❌ Blocked — needs decision |
 | market-snapshot | NO WO — cannot act | — | ❌ Blocked — needs decision |

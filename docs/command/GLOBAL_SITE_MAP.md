@@ -18,6 +18,7 @@ SOCELLE PLATFORM
 │   ├── Intelligence Hub
 │   ├── Brands Directory + Brand Profiles
 │   ├── Education + Protocols
+│   ├── Ingredient Directory
 │   ├── Events
 │   ├── Jobs + Job Detail
 │   ├── Landing Pages (For Buyers, For Brands, For Medspas, For Salons)
@@ -166,6 +167,7 @@ Product browsing in BrandStorefront (`/brands/:slug`) and BrandDetail (`/portal/
 | Forgot Password | `/forgot-password` | `pages/public/ForgotPassword.tsx` | Public | LIVE (⚠️ design) | `supabase.auth` | Password recovery |
 | Reset Password | `/reset-password` | `pages/public/ResetPassword.tsx` | Public | LIVE (⚠️ design) | `supabase.auth` | Password reset |
 | Insights redirect | `/insights` | → `/intelligence` | Public | LIVE | — | Redirect (W10-06) |
+| Ingredient Directory | `/ingredients` | `pages/public/Ingredients.tsx` | Public | **LIVE** | `public.ingredients` (Open Beauty Facts — W10-09) | INCI name ingredient directory; empty-state if DB empty (W12-22) |
 
 ### Claim Flows
 
@@ -435,7 +437,7 @@ No `/studio/*` routes exist in the current codebase. The following are planned p
 
 | Surface | Count |
 |---|---|
-| Public routes | 30 (incl. 2 redirects, 1 orphaned) |
+| Public routes | 31 (incl. 2 redirects, 1 orphaned) |
 | Claim flows | 2 |
 | Operator Portal | 22 |
 | Brand Portal | 26 |

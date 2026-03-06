@@ -6,6 +6,7 @@
  *   - plan_complete: sent when a plan analysis finishes
  *   - order_status: sent when an order status changes (to reseller; recipient resolved from order_id when to is omitted)
  *   - new_order: sent to brand when a reseller places an order
+ *   - access_request: sent to admin (ADMIN_EMAIL) when a new access request is submitted
  *
  * Uses Resend (https://resend.com) as the email provider.
  * Requires RESEND_API_KEY and FROM_EMAIL to be set as Supabase secrets.
@@ -21,8 +22,8 @@ const CORS_HEADERS = {
 };
 
 interface EmailPayload {
-  type: 'welcome' | 'plan_complete' | 'order_status' | 'new_order';
-  to?: string; // optional for order_status when data.order_id is provided (recipient resolved server-side)
+  type: 'welcome' | 'plan_complete' | 'order_status' | 'new_order' | 'access_request';
+  to?: string; // optional for order_status (resolved from order_id) and access_request (resolved from ADMIN_EMAIL)
   data?: Record<string, any>;
 }
 
@@ -234,6 +235,70 @@ function buildNewOrderEmail(data: Record<string, any>): { subject: string; html:
   };
 }
 
+function buildAccessRequestEmail(data: Record<string, any>): { subject: string; html: string } {
+  const contactName  = data.contact_name  || 'Unknown';
+  const businessName = data.business_name || 'Unknown';
+  const businessType = data.business_type || '—';
+  const email        = data.email         || '—';
+  const referral     = data.referral_source || '—';
+  const createdAt    = data.created_at    || 'just now';
+  const requestId    = data.request_id    || '';
+  const adminUrl     = Deno.env.get('APP_URL') || 'https://app.socelle.com';
+
+  return {
+    subject: `New access request — ${businessName} (${email})`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+        <div style="margin-bottom: 24px;">
+          <span style="font-family: Georgia, serif; font-size: 22px; font-weight: 700; color: #8C6B6E;">socelle</span><span style="color: #D4A44C; font-family: Georgia, serif; font-size: 22px;">.</span>
+        </div>
+        <h1 style="color: #141418; margin-bottom: 8px; font-size: 22px;">New access request</h1>
+        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+          A new operator has requested intelligence access. Review and approve in the admin portal.
+        </p>
+        <div style="background: #F6F3EF; border: 1px solid #D4A44C40; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="font-size: 12px; color: #8C6B6E; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0 2px;">Contact</td>
+              <td style="font-size: 15px; color: #141418; padding: 6px 0 2px;">${contactName}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px; color: #8C6B6E; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0 2px;">Business</td>
+              <td style="font-size: 15px; color: #141418; padding: 6px 0 2px;">${businessName}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px; color: #8C6B6E; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0 2px;">Type</td>
+              <td style="font-size: 15px; color: #141418; padding: 6px 0 2px;">${businessType}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px; color: #8C6B6E; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0 2px;">Email</td>
+              <td style="font-size: 15px; color: #141418; padding: 6px 0 2px;">${email}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px; color: #8C6B6E; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0 2px;">Referral</td>
+              <td style="font-size: 15px; color: #141418; padding: 6px 0 2px;">${referral}</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px; color: #8C6B6E; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0 2px;">Submitted</td>
+              <td style="font-size: 15px; color: #141418; padding: 6px 0 2px;">${createdAt}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="margin: 24px 0;">
+          <a href="${adminUrl}/admin/access-requests${requestId ? `?highlight=${requestId}` : ''}"
+             style="background: #8C6B6E; color: white; padding: 14px 28px; border-radius: 12px;
+                    text-decoration: none; font-weight: 600; display: inline-block; font-size: 15px;">
+            Review in Admin Portal →
+          </a>
+        </div>
+        <p style="color: #94a3b8; font-size: 12px; margin-top: 32px;">
+          This is an automated notification from the Socelle access request system.
+        </p>
+      </div>
+    `,
+  };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS });
@@ -243,6 +308,17 @@ serve(async (req) => {
     const payload: EmailPayload = await req.json();
     const { type, data = {} } = payload;
     let { to } = payload;
+
+    // access_request: recipient is ADMIN_EMAIL env var (falls back to FROM_EMAIL)
+    if (type === 'access_request' && !to) {
+      to = Deno.env.get('ADMIN_EMAIL') || Deno.env.get('FROM_EMAIL');
+      if (!to) {
+        return new Response(JSON.stringify({ error: 'ADMIN_EMAIL not configured for access_request notifications' }), {
+          status: 500,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        });
+      }
+    }
 
     // order_status: resolve recipient from order_id when to is not provided
     if (type === 'order_status' && !to && data.order_id) {
@@ -298,6 +374,8 @@ serve(async (req) => {
       ({ subject, html } = buildOrderStatusEmail(data));
     } else if (type === 'new_order') {
       ({ subject, html } = buildNewOrderEmail(data));
+    } else if (type === 'access_request') {
+      ({ subject, html } = buildAccessRequestEmail(data));
     } else {
       return new Response(JSON.stringify({ error: `Unknown email type: ${type}` }), {
         status: 400,
