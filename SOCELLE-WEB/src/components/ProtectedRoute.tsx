@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { useAuth } from '../lib/auth';
+
+const AUTH_TIMEOUT_MS = 8000;
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,8 +15,16 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children, requireAdmin = false, requireRole, redirectTo }: ProtectedRouteProps) {
   const { user, loading, profileError, effectiveRole } = useAuth();
   const location = useLocation();
+  const [timedOut, setTimedOut] = useState(false);
 
-  if (loading) {
+  // Safety timeout — if auth loading hangs (stale tokens, network issue), redirect to login
+  useEffect(() => {
+    if (!loading) { setTimedOut(false); return; }
+    const timer = setTimeout(() => setTimedOut(true), AUTH_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  if (loading && !timedOut) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-pro-stone">
         <div className="text-center">
@@ -22,6 +33,11 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
         </div>
       </div>
     );
+  }
+
+  // If timed out, treat as unauthenticated
+  if (timedOut && !user) {
+    return <Navigate to={redirectTo || '/portal/login'} state={{ from: location }} replace />;
   }
 
   if (!user) {
