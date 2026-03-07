@@ -146,7 +146,7 @@ export default function HeroMediaRail({
 
           {/* V2 structured CTAs */}
           {(primaryCTA || secondaryCTA) && (
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 justify-center">
               {primaryCTA && renderCTA(primaryCTA, 'primary')}
               {secondaryCTA && renderCTA(secondaryCTA, 'secondary')}
             </div>

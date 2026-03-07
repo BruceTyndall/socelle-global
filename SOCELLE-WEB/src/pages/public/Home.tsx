@@ -28,6 +28,7 @@ import { ImageMosaic } from '../../components/modules/ImageMosaic';
 import { KPIStrip } from '../../components/modules/KPIStrip';
 import { FeaturedCardGrid } from '../../components/modules/FeaturedCardGrid';
 import { EditorialScroll } from '../../components/modules/EditorialScroll';
+import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { CTASection } from '../../components/modules/CTASection';
 import { StickyConversionBar } from '../../components/modules/StickyConversionBar';
@@ -302,6 +303,7 @@ export default function Home() {
         <link rel="canonical" href={SITE_URL} />
       </Helmet>
       <JsonLd data={[buildOrganizationSchema(), buildWebSiteSchema()]} />
+      <MainNav noSpacer />
 
       {/* ── Hero: Cinematic video background with Pearl Mineral glass overlay ── */}
       <HeroMediaRail

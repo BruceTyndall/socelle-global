@@ -8,6 +8,7 @@ import { useCart } from '../../lib/useCart';
 import { sendNewOrderEmail } from '../../lib/emailService';
 import CartDrawer from '../../components/CartDrawer';
 import BlockReveal from '../../components/motion/BlockReveal';
+import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import {
   getBrandProtocols,
@@ -1029,6 +1030,7 @@ export default function BrandStorefront() {
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
+      <MainNav />
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />

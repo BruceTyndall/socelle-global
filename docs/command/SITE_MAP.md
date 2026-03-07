@@ -5,7 +5,7 @@
 
 ---
 
-## WEB PUBLIC (30 routes)
+## WEB PUBLIC (34 routes)
 
 | # | Route | File | Data Source |
 |---|---|---|---|
@@ -38,7 +38,11 @@
 | 27 | `/api/pricing` | `pages/public/ApiPricing.tsx` | Static |
 | 28 | `/claim/brand/:slug` | `pages/claim/ClaimBrand.tsx` | LIVE |
 | 29 | `/claim/business/:slug` | `pages/claim/ClaimBusiness.tsx` | LIVE |
-| 30 | (orphaned) | `pages/public/Insights.tsx` | **DEMO** — TREND_PLACEHOLDERS (route redirected) |
+| 30 | `/stories` | `pages/public/StoriesIndex.tsx` | **LIVE** — `supabase.from('stories')` |
+| 31 | `/stories/:slug` | `pages/public/StoryDetail.tsx` | **LIVE** — `supabase.from('stories')` |
+| 32 | `/ingredients` | `pages/public/Ingredients.tsx` | **LIVE** — ingredients data |
+| 33 | `/for-buyers` | → redirect `/professionals` | — |
+| 34 | (orphaned) | `pages/public/Insights.tsx` | **DEMO** — TREND_PLACEHOLDERS (route redirected) |
 
 ---
 
@@ -104,7 +108,7 @@
 
 ---
 
-## WEB ADMIN (29 routes + 8 brand-hub, `/admin/*`)
+## WEB ADMIN (46 routes + 8 brand-hub, `/admin/*`)
 
 | # | Route | File |
 |---|---|---|
@@ -145,6 +149,23 @@
 | 29f | `.../retailers` | `brand-hub/HubRetailers.tsx` |
 | 29g | `.../analytics` | `brand-hub/HubAnalytics.tsx` |
 | 29h | `.../settings` | `brand-hub/HubSettings.tsx` |
+| 30 | `/admin/crm` | `pages/admin/CrmHub.tsx` |
+| 31 | `/admin/social` | `pages/admin/SocialHub.tsx` |
+| 32 | `/admin/sales` | `pages/admin/SalesHub.tsx` |
+| 33 | `/admin/editorial` | `pages/admin/EditorialHub.tsx` |
+| 34 | `/admin/affiliates` | `pages/admin/AffiliatesHub.tsx` |
+| 35 | `/admin/events` | `pages/admin/EventsHub.tsx` |
+| 36 | `/admin/jobs` | `pages/admin/JobsHub.tsx` |
+| 37 | `/admin/recruitment` | `pages/admin/RecruitmentHub.tsx` |
+| 38 | `/admin/feeds` | `pages/admin/AdminFeedsHub.tsx` |
+| 39 | `/admin/blog` | `pages/admin/AdminBlogHub.tsx` |
+| 40 | `/admin/pages` | `pages/admin/AdminPagesHub.tsx` |
+| 41 | `/admin/media` | `pages/admin/AdminMediaHub.tsx` |
+| 42 | `/admin/seo` | `pages/admin/AdminSeoHub.tsx` |
+| 43 | `/admin/live-data` | `pages/admin/AdminLiveDataHub.tsx` |
+| 44 | `/admin/api-control` | `pages/admin/AdminApiControlHub.tsx` |
+| 45 | `/admin/api-sitemap` | `pages/admin/AdminApiSitemapHub.tsx` |
+| 46 | `/admin/settings` | `pages/admin/AdminSettingsHub.tsx` |
 
 ---
 
@@ -207,14 +228,14 @@
 
 | Surface | Routes/Features |
 |---|---|
-| Web Public | 30 |
+| Web Public | 34 |
 | Web Business Portal | 22 |
 | Web Brand Portal | 26 |
-| Web Admin | 37 (29 + 8 hub) |
+| Web Admin | 54 (46 + 8 hub) |
 | Web Legacy Redirects | 9 |
 | Marketing Site | 4 |
 | Mobile Features | 21 dirs |
-| **TOTAL** | **149+** |
+| **TOTAL** | **170+** |
 
 ---
 

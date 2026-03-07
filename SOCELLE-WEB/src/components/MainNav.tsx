@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { to: '/plans', label: 'Pricing' },
 ] as const;
 
-export default function MainNav() {
+export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {}) {
   const { user, profile, signOut, loading, effectiveRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -183,7 +183,7 @@ export default function MainNav() {
       </div>
 
       {/* ── Spacer to offset fixed nav ── */}
-      <div className="h-[72px] sm:h-[80px]" />
+      {!noSpacer && <div className="h-[72px] sm:h-[80px]" />}
 
       {/* ── Mobile full-screen dialog ── */}
       <dialog

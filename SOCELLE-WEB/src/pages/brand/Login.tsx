@@ -93,7 +93,7 @@ export default function BrandLogin() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
-                placeholder="brand@naturopathica.com"
+                placeholder="brand@socelle.com"
               />
             </div>
 

@@ -7,6 +7,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import MainNav from '../../components/MainNav';
 import JsonLd from '../../components/seo/JsonLd';
 import {
   SITE_URL, DEFAULT_OG_IMAGE,
@@ -216,6 +217,7 @@ export default function Intelligence() {
         description: 'Market signals, ingredient science, clinical citations, and regulatory changes for professional beauty operators.',
         url: buildCanonical('/intelligence'),
       })} />
+      <MainNav noSpacer />
 
       {/* ═══ HERO: Video background with glass overlay ═══════════ */}
       <HeroMediaRail
