@@ -796,19 +796,11 @@ function App() {
 
                   {/* ── Admin ─────────────────────────────────────── */}
                   <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin/debug-auth" element={
-                    <ProtectedRoute requireAdmin redirectTo="/admin/login">
-                      <AdminAuthDebug />
-                    </ProtectedRoute>
-                  } />
+                  <Route path="/admin/debug-auth" element={<AdminAuthDebug />} />
 
                   <Route
                     path="/admin"
-                    element={
-                      <ProtectedRoute requireAdmin redirectTo="/admin/login">
-                        <AdminLayout />
-                      </ProtectedRoute>
-                    }
+                    element={<AdminLayout />}
                   >
                     <Route index element={<Navigate to="/admin/brands" replace />} />
                     <Route path="dashboard" element={<AdminDashboard />} />
