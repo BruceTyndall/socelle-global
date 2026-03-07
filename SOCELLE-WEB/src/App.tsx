@@ -117,6 +117,16 @@ const AdminReportsLibrary = lazy(() => import('./pages/admin/ReportsLibrary'));
 const AdminApiDashboard = lazy(() => import('./pages/admin/ApiDashboard'));
 const AdminRegionManagement = lazy(() => import('./pages/admin/RegionManagement'));
 
+// ── Admin Hubs (W12-11)
+const AdminCrmHub = lazy(() => import('./pages/admin/CrmHub'));
+const AdminSocialHub = lazy(() => import('./pages/admin/SocialHub'));
+const AdminSalesHub = lazy(() => import('./pages/admin/SalesHub'));
+const AdminEditorialHub = lazy(() => import('./pages/admin/EditorialHub'));
+const AdminAffiliatesHub = lazy(() => import('./pages/admin/AffiliatesHub'));
+const AdminEventsHub = lazy(() => import('./pages/admin/EventsHub'));
+const AdminJobsHub = lazy(() => import('./pages/admin/JobsHub'));
+const AdminRecruitmentHub = lazy(() => import('./pages/admin/RecruitmentHub'));
+
 // ── Brand Hub (brand-centric admin)
 const BrandHub = lazy(() => import('./pages/admin/BrandHub'));
 const HubProducts = lazy(() => import('./pages/admin/brand-hub/HubProducts'));
@@ -404,6 +414,16 @@ function App() {
                     <Route path="reports" element={<AdminReportsLibrary />} />
                     <Route path="api" element={<AdminApiDashboard />} />
                     <Route path="regions" element={<AdminRegionManagement />} />
+
+                    {/* ── Admin Hubs (W12-11) ── */}
+                    <Route path="crm" element={<AdminCrmHub />} />
+                    <Route path="social" element={<AdminSocialHub />} />
+                    <Route path="sales" element={<AdminSalesHub />} />
+                    <Route path="editorial" element={<AdminEditorialHub />} />
+                    <Route path="affiliates" element={<AdminAffiliatesHub />} />
+                    <Route path="events" element={<AdminEventsHub />} />
+                    <Route path="jobs" element={<AdminJobsHub />} />
+                    <Route path="recruitment" element={<AdminRecruitmentHub />} />
 
                     {/* ── Brand list ── */}
                     <Route path="brands" element={<AdminBrandList />} />

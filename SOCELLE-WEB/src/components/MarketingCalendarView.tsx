@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { Calendar, Sparkles, Video, Package, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { Calendar, Sparkles, Video, Package, FileText, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 
 interface MarketingMonth {
   id: string;
@@ -22,6 +22,7 @@ export default function MarketingCalendarView() {
   const [selectedQuarter, setSelectedQuarter] = useState<number>(1);
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
   const [loading, setLoading] = useState(true);
+  const [isLive, setIsLive] = useState(false);
 
   useEffect(() => {
     fetchCalendarData();
@@ -31,6 +32,14 @@ export default function MarketingCalendarView() {
   }, []);
 
   const fetchCalendarData = async () => {
+    if (!isSupabaseConfigured) {
+      // No Supabase — show empty state with DEMO badge
+      setCalendarData([]);
+      setIsLive(false);
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('marketing_calendar')
@@ -39,9 +48,17 @@ export default function MarketingCalendarView() {
         .order('month');
 
       if (error) throw error;
-      setCalendarData(data || []);
+
+      if (data && data.length > 0) {
+        setCalendarData(data);
+        setIsLive(true);
+      } else {
+        setCalendarData([]);
+        setIsLive(false);
+      }
     } catch (error) {
       console.error('Error fetching calendar:', error);
+      setIsLive(false);
     } finally {
       setLoading(false);
     }
@@ -68,11 +85,23 @@ export default function MarketingCalendarView() {
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-8 h-8" />
           <h1 className="text-3xl font-bold">2026 Marketing Calendar</h1>
+          {!isLive && (
+            <span className="text-[10px] font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">Preview</span>
+          )}
         </div>
         <p className="text-white text-lg">
           Strategic planning for seasonal protocols, product launches, and promotional campaigns
         </p>
       </div>
+
+      {!isLive && !loading && (
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-signal-warn/10 rounded-lg border border-signal-warn/20 mb-6">
+          <AlertTriangle className="w-4 h-4 text-signal-warn flex-shrink-0" />
+          <p className="text-xs font-sans text-signal-warn">
+            <span className="font-semibold">Preview</span> — Calendar data is seeded. Live data activates when the marketing_calendar table is populated with current entries.
+          </p>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl shadow-sm border border-pro-stone p-6 mb-6">
         <div className="flex items-center justify-between">

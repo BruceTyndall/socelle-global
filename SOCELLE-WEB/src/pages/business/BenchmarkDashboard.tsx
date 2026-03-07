@@ -12,12 +12,8 @@ import {
   Users,
   Target,
 } from 'lucide-react';
-import {
-  computeOverallBenchmark,
-  getCategoryCoverage,
-  getReorderHealth,
-  getPeerGroupInfo,
-} from '../../lib/intelligence/computeBenchmarks';
+import { useBenchmarkData } from '../../lib/intelligence/useBenchmarkData';
+import { useAuth } from '../../lib/auth';
 import type { BenchmarkDimension, BenchmarkScore } from '../../lib/intelligence/benchmarkTypes';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -158,10 +154,8 @@ function DimensionCard({ dim }: { dim: BenchmarkScore }) {
 // ── Main Page ───────────────────────────────────────────────────────
 
 export default function BenchmarkDashboard() {
-  const benchmark = computeOverallBenchmark();
-  const categories = getCategoryCoverage();
-  const reorderItems = getReorderHealth();
-  const peerGroup = getPeerGroupInfo();
+  const { profile } = useAuth();
+  const { benchmark, categories, reorderItems, peerGroup, loading: benchmarkLoading, isLive } = useBenchmarkData(profile?.business_id ?? undefined);
 
   const belowPeerDimensions = benchmark.dimensions.filter((d) => d.recommendation);
 
@@ -176,7 +170,9 @@ export default function BenchmarkDashboard() {
         <div>
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="font-serif text-3xl text-pro-charcoal">Your Treatment Room Benchmarks</h1>
-            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+            {!isLive && (
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+            )}
           </div>
           <div className="flex items-center gap-2 mt-2">
             <Users className="w-4 h-4 text-pro-warm-gray" />

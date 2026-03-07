@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react';
 import { Eye, Zap, ShoppingBag, DollarSign, Package } from 'lucide-react';
-import { getBrandAnalytics, type BrandAnalyticsData } from '../../lib/analyticsService';
+import { useBrandAnalytics } from '../../lib/intelligence/useBrandAnalytics';
 import MetricCard from './MetricCard';
 import SparklineChart from './SparklineChart';
-import { createScopedLogger } from '../../lib/logger';
-
-const log = createScopedLogger('BrandDashboard');
 
 function SkeletonRow() {
   return (
@@ -26,29 +22,24 @@ interface BrandDashboardProps {
 }
 
 export default function BrandDashboard({ brandId }: BrandDashboardProps) {
-  const [data, setData] = useState<BrandAnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!brandId) return;
-    getBrandAnalytics(brandId)
-      .then(setData)
-      .catch((err) => log.error('Failed to load brand analytics', { err }))
-      .finally(() => setLoading(false));
-  }, [brandId]);
+  // W12-08: Live wiring via useBrandAnalytics hook with isLive flag
+  const { data, loading, isLive } = useBrandAnalytics(brandId);
 
   if (loading) return <SkeletonRow />;
-  if (!data) return (
-    <div className="text-center py-10 text-pro-warm-gray font-sans text-sm">
-      Analytics data not available yet.
-    </div>
-  );
 
   const formatCurrency = (v: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
 
   return (
     <div className="space-y-6">
+      {/* ── W12-08: DEMO badge when not live ──────────────────── */}
+      {!isLive && (
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+          <span className="font-sans text-xs text-pro-warm-gray">Analytics will populate as orders are placed</span>
+        </div>
+      )}
+
       {/* ── KPI row ────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <MetricCard label="Total Views"       kpi={data.kpis.totalViews}      icon={<Eye className="w-4 h-4" />} />

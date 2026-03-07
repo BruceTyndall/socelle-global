@@ -1,11 +1,13 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-06 (Session 36 — W12-28/29/30/31/32/33/34/35/36/37/38/39 ALL executed + verified)
+Last Updated: 2026-03-06 (Session 37 — 4-lane parallel: W12-04/05/06/07/08/11/12 + W10-12 executed, W12-19/21/22 Doc Gate PASS)
 Current Phase: WAVE 12 — Gap Closure + Design Consistency + Layout Upgrade + UI Kit Normalization
-Next Milestone: W12-19/21/22 QA resubmit → W12-11 (admin hub stubs)
-Completed 2026-03-06 (Session 36): W12-28 (Home warm cocoa purge), W12-29 (EvidenceStrip CSS fix), W12-30 (Home signals live wire), W12-31 (usePlatformStats hook), W12-32 (platform stats wiring), W12-33 (Brands+Events video heroes), W12-34 (useSignalCategories hook — live counts wired into Intelligence), W12-35 (Jobs hero video+live count), W12-36 (AnimatedCounter — IntersectionObserver+rAF, wired into ForMedspas), W12-37 (inline button normalization — 14 instances across 9 pages), W12-38 (index.css dead code cleanup), W12-39 (video poster frames — 6 posters for all video elements)
+Next Milestone: Wave 11 external APIs (W11-01 through W11-12)
+Completed 2026-03-06 (Session 37 — 4 parallel lanes): W12-04 (brandIntelligence DB wiring), W12-05 (Portal IntelligenceHub live), W12-06 (BenchmarkDashboard live aggregates), W12-07 (Brand Intelligence+Report live), W12-08 (Brand Analytics live), W12-11 (8 admin hub functional shells — 5 LIVE, 3 DEMO), W12-12 (MarketingCalendar isLive), W10-12 (ProtocolDetail adoptionCount DEMO badge)
+Doc Gate PASS 2026-03-06 (Session 37 Lane A): W12-19 ✅ (all 13 remediation items verified), W12-21 ✅ (useRssItems→rss_items, isLive gates rendering), W12-22 ✅ (useIngredients→ingredients table, isLive gates count+timestamps)
 Doc Gate PASS 2026-03-06 (Session 34 Lane D): W10-11 ✅ (trigger artifact + send-email handler verified), W12-16 ✅ (all 5 functions ACTIVE on rumdmulxzmjtsplsjngi — supabase functions list EXIT:0), W12-20 ✅ (migration applied + rss-to-signals ACTIVE on rumdmulxzmjtsplsjngi — provenance + dedup index + signal_type heuristic verified)
+Completed 2026-03-06 (Session 36): W12-28/29/30/31/32/33/34/35/36/37/38/39 (complete Wave 12 public page redesign — tsc 0 errors, build 3.64s)
 Completed 2026-03-06 (Session 33 Lane A): W12-16 (intelligence-briefing + jobs-search edge functions)
-Completed 2026-03-06 (Session 33 Lane B): W12-19 (remediation sweep), W12-21 (Insights live RSS wire), W12-22 (Ingredients directory) — ⚠️ IN REVIEW: Doc Gate resubmit required (Session 34)
+Completed 2026-03-06 (Session 33 Lane B): W12-19 (remediation sweep), W12-21 (Insights live RSS wire), W12-22 (Ingredients directory) — ✅ Doc Gate PASS confirmed Session 37
 Completed 2026-03-06 (Session 32): W12-10 (Marketing site content buildout — 4 pages: /, /professionals, /for-brands, /plans)
 Completed 2026-03-06 (Session 31): W10-11 (Auto-email trigger on access_requests INSERT), W12-09 (Dynamic sitemap edge function)
 Completed 2026-03-06 (Session 30): W10-10 (NPI Registry), W10-08 (RSS ingestion pipeline), W10-09 (Open Beauty Facts ingredients)
@@ -129,6 +131,7 @@ WAVE 10 — CURRENT PRIORITIES (Short Term, 1–2 weeks)
 | ✅ W10-09 | Open Beauty Facts integration — ingredients table | Edge Fn + migration | 8h |
 | ✅ W10-10 | NPI Registry operator verification | Edge Fn + businesses column | 6h |
 | ✅ W10-11 | Auto-email trigger on access_requests INSERT | DB webhook + send-email edge fn | 2h |
+| ✅ W10-12 | ProtocolDetail adoptionCount DEMO badge | `pages/public/ProtocolDetail.tsx` | Web Agent | Added DEMO badges next to adoptionCount in hero + sidebar — no live wiring, label-only | 2h |
 
 ---
 
@@ -229,19 +232,19 @@ Priority: FAIL 4 compliance first → intelligence thesis → revenue → SEO
 🟡 Intelligence Thesis (subscribers/partners seeing mock data)
 | # | Task | Scope | Owner Agent | Data Truth | Est |
 |---|------|-------|-------------|------------|-----|
-| W12-04 | brandIntelligence.ts → DB wiring (PEER_DATA_MAP, ADOPTION_MAP, ALSO_BOUGHT_MAP) | `src/lib/brandIntelligence.ts`, `BrandStorefront.tsx` | Backend + Web Agent | Purchase-correlation queries from `orders` + `brands` | 8h |
-| W12-05 | Portal Intelligence Hub → live market_signals | `pages/business/IntelligenceHub.tsx` | Web Agent | `useIntelligence()` pattern with `isLive` flag | 4h |
-| W12-06 | Portal Benchmark Dashboard → live aggregates | `pages/business/BenchmarkDashboard.tsx`, migration | Backend + Web Agent | `COUNT(*)`/`AVG()` from `businesses` + `orders` | 8h |
-| W12-07 | Brand Intelligence + Report → live signal data | `pages/brand/BrandIntelligence.tsx`, `IntelligenceReport.tsx` | Web Agent | `market_signals` + brand-scoped queries | 6h |
-| W12-08 | Brand Analytics → live order/product aggregates | `pages/brand/BrandAnalytics.tsx`, migration | Backend + Web Agent | Aggregates from `orders` + `products` | 6h |
+| ✅ W12-04 | brandIntelligence.ts → DB wiring (PEER_DATA_MAP, ADOPTION_MAP, ALSO_BOUGHT_MAP) | `src/lib/intelligence/useBrandIntelligence.ts` (new), `BrandStorefront.tsx` | Backend + Web Agent | LIVE when orders exist / DEMO with PREVIEW badge on mock fallback | 8h |
+| ✅ W12-05 | Portal Intelligence Hub → live market_signals | `pages/business/IntelligenceHub.tsx` | Web Agent | useIntelligence() wired, isLive + PREVIEW banner on mock fallback | 4h |
+| ✅ W12-06 | Portal Benchmark Dashboard → live aggregates | `src/lib/intelligence/useBenchmarkData.ts` (new), `BenchmarkDashboard.tsx` | Backend + Web Agent | LIVE when business has orders / DEMO badge on fallback | 8h |
+| ✅ W12-07 | Brand Intelligence + Report → live signal data | `BrandIntelligenceHub.tsx`, `IntelligenceReport.tsx` | Web Agent | useIntelligence() wired, isLive + PREVIEW banners on both pages | 6h |
+| ✅ W12-08 | Brand Analytics → live order/product aggregates | `src/lib/intelligence/useBrandAnalytics.ts` (new), `BrandDashboard.tsx` | Backend + Web Agent | LIVE when KPIs > 0 / DEMO badge on fallback. No migration needed. | 6h |
 
 🟢 SEO + Infrastructure
 | # | Task | Scope | Owner Agent | Data Truth | Est |
 |---|------|-------|-------------|------------|-----|
 | ✅ W12-09 | Dynamic sitemap Edge Function | `supabase/functions/sitemap-generator/`, `public/sitemap.xml` | SEO + Backend Agent | LIVE — pulls from `brands`, `protocols`, `job_postings` | 4h |
 | ✅ W12-10 | Marketing site content buildout (4 stub routes → real content) | `apps/marketing-site/src/app/page.tsx`, `professionals/page.tsx`, `for-brands/page.tsx`, `plans/page.tsx` | SEO Agent | Static content — no DB dependency | 8h |
-| W12-11 | Admin hub stubs → functional shells (CRM, Social, Sales, Editorial, Affiliates, Events, Jobs, Recruitment) | `pages/admin/` (8 hub files) | Admin Control Center Agent | List/create CRUD from Supabase tables | 12h |
-| W12-12 | Portal MarketingCalendar → functional | `pages/business/MarketingCalendar.tsx` | Web Agent | Calendar UI with month view + events | 4h |
+| ✅ W12-11 | Admin hub stubs → functional shells (CRM, Social, Sales, Editorial, Affiliates, Events, Jobs, Recruitment) | `pages/admin/` (8 hub files) | Admin Control Center Agent | 8 shells: CrmHub (LIVE access_requests), SalesHub (LIVE orders), EditorialHub (LIVE rss_items), EventsHub (LIVE events), JobsHub (LIVE job_postings), SocialHub (DEMO), AffiliatesHub (DEMO), RecruitmentHub (DEMO). Routes in App.tsx. tsc 0 errors | 12h |
+| ✅ W12-12 | Portal MarketingCalendar → isLive flag | `components/MarketingCalendarView.tsx` | Web Agent | Added isLive state + isSupabaseConfigured check + conditional DEMO badge. tsc 0 errors | 4h |
 
 🔴 FAIL 3 Compliance — Design Lock Violations (owner-approved 2026-03-06, Session 35)
 | # | Task | Scope | Owner Agent | Data Truth | Est |

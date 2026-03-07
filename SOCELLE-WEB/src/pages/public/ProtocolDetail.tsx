@@ -179,6 +179,7 @@ export default function ProtocolDetail() {
               <div className="flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-accent" />
                 <span>{protocol.adoptionCount.toLocaleString()} professionals <span className="text-[rgba(30,37,43,0.4)] text-xs font-sans">(est.)</span></span>
+                <span className="text-[9px] font-semibold bg-signal-warn/10 text-signal-warn px-1.5 py-0.5 rounded-full">Demo</span>
               </div>
             </div>
           </div>
@@ -353,7 +354,7 @@ export default function ProtocolDetail() {
                 </div>
               )}
 
-              {/* Social Proof */}
+              {/* Social Proof — DEMO: adoptionCount is hardcoded in mockProtocols, no DB source */}
               <div className="bg-white rounded-card border border-[rgba(30,37,43,0.06)] p-6 text-center shadow-soft">
                 <Users className="w-6 h-6 text-accent mx-auto mb-2" />
                 <p className="text-metric-md font-sans text-graphite">
@@ -362,6 +363,7 @@ export default function ProtocolDetail() {
                 <p className="text-sm font-sans text-[rgba(30,37,43,0.62)] mt-1">
                   professionals use this protocol <span className="text-[rgba(30,37,43,0.4)] text-xs">(est.)</span>
                 </p>
+                <span className="inline-block mt-2 text-[9px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">Demo Data</span>
               </div>
 
               {/* Related Protocols */}

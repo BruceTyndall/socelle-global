@@ -21,6 +21,7 @@ import {
 import { useAuth } from '../../lib/auth';
 import { getMonthlyReport, getAllReports } from '../../lib/brandTiers/mockTierData';
 import type { IntelligenceReport as IReport, ReportSection } from '../../lib/brandTiers/types';
+import { AlertTriangle } from 'lucide-react';
 
 // ── Section icon mapping ─────────────────────────────────────────
 
@@ -172,6 +173,14 @@ export default function IntelligenceReport() {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* DEMO: All report data is mock — no live intelligence_reports table yet */}
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-signal-warn/10 rounded-lg border border-signal-warn/20">
+          <AlertTriangle className="w-4 h-4 text-signal-warn flex-shrink-0" />
+          <p className="text-xs font-sans text-signal-warn">
+            <span className="font-semibold">Preview Data</span> — This report uses sample intelligence data. Live reports will be generated from real market_signals and brand analytics.
+          </p>
         </div>
 
         {/* ── Report Sections ─────────────────────────────────── */}

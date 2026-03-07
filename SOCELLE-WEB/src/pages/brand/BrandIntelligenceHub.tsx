@@ -21,8 +21,8 @@ import {
   getResellerIntelligence,
   getBrandCategoryPosition,
   getBrandMarketPosition,
-  getBrandTopSignals,
 } from '../../lib/intelligence/brandPortalIntelligence';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import type {
   SKUPerformance,
   OperatorData,
@@ -71,7 +71,13 @@ export default function BrandIntelligenceHub() {
   const metrics = getBrandPerformanceMetrics(slug);
   const resellers = getResellerIntelligence(slug);
   const categoryData = getBrandCategoryPosition(slug);
-  const topSignals = getBrandTopSignals(slug);
+
+  // W12-07: Wire market signals via useIntelligence() — live from market_signals table
+  const { signals: allSignals, isLive: signalsIsLive, loading: signalsLoading } = useIntelligence();
+  // Filter signals relevant to this brand (by related_brands array)
+  const topSignals = allSignals.filter(
+    (s) => s.related_brands && s.related_brands.length > 0
+  ).slice(0, 4);
 
   // WO-24: Tier gating
   const { isFeatureLocked } = useBrandTier();
@@ -89,7 +95,9 @@ export default function BrandIntelligenceHub() {
           <div className="flex items-center gap-3 mb-1">
             <Brain className="w-6 h-6 text-pro-gold" />
             <h1 className="font-heading text-2xl font-bold text-pro-charcoal">Brand Intelligence</h1>
-            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">
+              {signalsIsLive ? 'Live Signals + Demo Metrics' : 'Preview'}
+            </span>
           </div>
           <p className="text-sm text-pro-warm-gray font-sans">
             Market position, operator insights, and category intelligence for your brand.
@@ -254,9 +262,24 @@ export default function BrandIntelligenceHub() {
               </div>
             </div>
 
-            {/* Top Signals for this brand */}
-            {topSignals.length > 0 && (
+            {/* Top Signals for this brand — LIVE via useIntelligence() when market_signals populated */}
+            {signalsLoading ? (
+              <div className="animate-pulse space-y-3">
+                <div className="h-5 bg-pro-cream rounded w-64" />
+                <div className="grid gap-3 md:grid-cols-2">
+                  {[1, 2].map((i) => <div key={i} className="h-28 bg-pro-cream rounded-lg" />)}
+                </div>
+              </div>
+            ) : topSignals.length > 0 ? (
               <div className="space-y-3">
+                {!signalsIsLive && (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-signal-warn/10 rounded-lg border border-signal-warn/20">
+                    <AlertTriangle className="w-3.5 h-3.5 text-signal-warn flex-shrink-0" />
+                    <p className="text-[10px] font-sans text-signal-warn">
+                      <span className="font-semibold">Preview</span> — Sample signals shown. Live data activates when market_signals is populated.
+                    </p>
+                  </div>
+                )}
                 <h3 className="font-sans font-semibold text-sm text-pro-charcoal flex items-center gap-2">
                   <Brain className="w-4 h-4 text-pro-gold" />
                   Market Signals Relevant to Your Brand
@@ -289,7 +312,7 @@ export default function BrandIntelligenceHub() {
                   ))}
                 </div>
               </div>
-            )}
+            ) : null}
           </TabPanel>
 
           {/* ── Tab 2: Reseller Intelligence ──────────────────── */}

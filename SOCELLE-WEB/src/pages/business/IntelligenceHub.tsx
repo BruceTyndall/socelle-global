@@ -25,7 +25,6 @@ import {
 import {
   getOperatorPerformance,
   getProductIntelligence,
-  getMarketSignalsForOperator,
   getRelevantEducation,
   getOperatorInsights,
 } from '../../lib/intelligence/businessIntelligence';
@@ -38,6 +37,7 @@ import type {
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
 import type { EducationContent } from '../../lib/education/types';
 import { useOperatorEnrichment } from '../../lib/enrichment/useEnrichment';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 type TabId = 'performance' | 'products' | 'market' | 'education';
 
@@ -50,6 +50,7 @@ const TABS: { id: TabId; label: string; icon: typeof BarChart3 }[] = [
 
 export default function IntelligenceHub() {
   const [activeTab, setActiveTab] = useState<TabId>('performance');
+  const { isLive: marketIsLive } = useIntelligence();
 
   return (
     <>
@@ -68,7 +69,9 @@ export default function IntelligenceHub() {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="font-heading text-2xl font-bold text-pro-charcoal">Intelligence Hub</h1>
-                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+                {!marketIsLive && (
+                  <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Preview</span>
+                )}
               </div>
               <p className="text-sm text-pro-warm-gray font-sans">Personalized signals for your treatment room</p>
             </div>
@@ -403,7 +406,7 @@ function UpsellCard({ suggestion }: { suggestion: UpsellSuggestion }) {
 // ── Tab 3: Market Intelligence ─────────────────────────────────────
 
 function MarketIntelligenceTab() {
-  const signals = getMarketSignalsForOperator();
+  const { signals, loading, isLive, activeFilter, setActiveFilter } = useIntelligence();
   const [filter, setFilter] = useState<string>('all');
 
   const signalTypes = ['all', ...new Set(signals.map(s => s.signal_type))];
@@ -424,8 +427,33 @@ function MarketIntelligenceTab() {
     education: 'Education',
   };
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-pro-cream rounded w-64" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-40 bg-pro-cream rounded-xl" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* LIVE / PREVIEW indicator */}
+      {!isLive && (
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-signal-warn/10 rounded-lg border border-signal-warn/20">
+          <AlertTriangle className="w-4 h-4 text-signal-warn flex-shrink-0" />
+          <p className="text-xs font-sans text-signal-warn">
+            <span className="font-semibold">Preview Data</span> — Showing sample market signals. Live data activates when the market_signals table is populated.
+          </p>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex flex-wrap gap-2">
         {signalTypes.map((type) => (
