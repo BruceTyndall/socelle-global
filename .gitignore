@@ -5,3 +5,6 @@ dist
 out
 *.env.local
 .DS_Store
+
+# Quarantined legacy files — safe to delete after build verification
+.archive/
