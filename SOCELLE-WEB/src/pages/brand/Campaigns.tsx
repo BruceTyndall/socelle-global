@@ -19,7 +19,7 @@ import { Modal, ModalBody, ModalFooter } from '../../components/ui/Modal';
 import { Tabs, TabList, Tab, TabPanel } from '../../components/ui/Tabs';
 import { useToast } from '../../components/Toast';
 import { useCampaigns } from '../../lib/campaigns/useCampaigns';
-import { MOCK_PRODUCTS } from '../../lib/campaigns/mockCampaigns';
+import { useProducts } from '../../lib/shop/useProducts';
 import type { Campaign, CampaignStatus, DiscountType, OperatorTier } from '../../lib/campaigns/types';
 
 const STATUS_BADGE: Record<CampaignStatus, { variant: 'green' | 'gold' | 'amber' | 'gray' | 'navy'; label: string }> = {
@@ -53,6 +53,7 @@ export default function BrandCampaigns() {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { campaigns, addCampaign, updateCampaign, deleteCampaign } = useCampaigns();
+  const { products: catalogProducts } = useProducts({ per_page: 200, sort: 'featured' });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -141,7 +142,7 @@ export default function BrandCampaigns() {
 
   const getProductNames = (ids: string[]) => {
     return ids
-      .map((id) => MOCK_PRODUCTS.find((p) => p.id === id)?.name)
+      .map((id) => catalogProducts.find((p) => p.id === id)?.name)
       .filter(Boolean)
       .join(', ');
   };
@@ -416,26 +417,32 @@ export default function BrandCampaigns() {
             <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
               Eligible Products
             </label>
-            <div className="grid sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-              {MOCK_PRODUCTS.map((product) => (
-                <label
-                  key={product.id}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors text-xs font-sans ${
-                    form.eligibleProducts.includes(product.id)
-                      ? 'border-pro-navy bg-pro-navy/5 text-pro-navy'
-                      : 'border-pro-stone text-pro-warm-gray hover:border-pro-navy/30'
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={form.eligibleProducts.includes(product.id)}
-                    onChange={() => toggleProduct(product.id)}
-                    className="sr-only"
-                  />
-                  <span className="truncate">{product.name}</span>
-                </label>
-              ))}
-            </div>
+            {catalogProducts.length === 0 ? (
+              <p className="text-xs text-pro-warm-gray font-sans">
+                No active products found. Add products in Brand Storefront before creating targeted campaigns.
+              </p>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+                {catalogProducts.map((product) => (
+                  <label
+                    key={product.id}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors text-xs font-sans ${
+                      form.eligibleProducts.includes(product.id)
+                        ? 'border-pro-navy bg-pro-navy/5 text-pro-navy'
+                        : 'border-pro-stone text-pro-warm-gray hover:border-pro-navy/30'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={form.eligibleProducts.includes(product.id)}
+                      onChange={() => toggleProduct(product.id)}
+                      className="sr-only"
+                    />
+                    <span className="truncate">{product.name}</span>
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
 
           <Input
