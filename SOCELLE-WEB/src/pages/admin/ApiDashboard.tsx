@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   Code,
-  Users,
   Activity,
-  DollarSign,
   Eye,
   EyeOff,
   Plus,
-  X,
+  RefreshCw,
+  ShieldOff,
+  Power,
+  PowerOff,
+  TestTube2,
   AlertTriangle,
-  BarChart3,
-  Zap,
+  CheckCircle2,
+  Clock3,
+  X,
 } from 'lucide-react';
 import {
   Badge,
@@ -32,421 +35,554 @@ import {
   Td,
 } from '../../components/ui';
 import { useToast } from '../../components/Toast';
-import {
-  getApiClients,
-  getApiUsage,
-  getApiUsageSummary,
-} from '../../lib/api/mockApiData';
-import type { ApiClient, ApiUsage, ApiTier } from '../../lib/api/types';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
-// ─── Tier badge variant map ──────────────────────────────────────
-const TIER_VARIANT: Record<ApiTier, 'default' | 'gold' | 'navy'> = {
-  starter: 'default',
-  professional: 'gold',
-  enterprise: 'navy',
+type ApiCategory =
+  | 'payments'
+  | 'ai'
+  | 'search'
+  | 'analytics'
+  | 'email'
+  | 'storage'
+  | 'auth'
+  | 'monitoring'
+  | 'other';
+
+type ApiEnvironment = 'development' | 'staging' | 'production';
+type ApiTestStatus = 'pass' | 'fail' | 'timeout' | 'untested' | null;
+
+interface ApiRegistryRow {
+  id: string;
+  name: string;
+  provider: string;
+  category: ApiCategory;
+  base_url: string | null;
+  docs_url: string | null;
+  environment: ApiEnvironment;
+  api_key_vault_ref: string | null;
+  is_active: boolean;
+  last_tested_at: string | null;
+  last_test_status: ApiTestStatus;
+  last_test_latency_ms: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface CreateIntegrationInput {
+  name: string;
+  provider: string;
+  category: ApiCategory;
+  base_url: string;
+  docs_url: string;
+  environment: ApiEnvironment;
+  api_key_vault_ref: string;
+  notes: string;
+}
+
+const SAFE_COLUMNS =
+  'id,name,provider,category,base_url,docs_url,environment,api_key_vault_ref,is_active,last_tested_at,last_test_status,last_test_latency_ms,notes,created_at,updated_at';
+
+const CATEGORIES: ApiCategory[] = [
+  'payments',
+  'ai',
+  'search',
+  'analytics',
+  'email',
+  'storage',
+  'auth',
+  'monitoring',
+  'other',
+];
+
+const STATUS_BADGE: Record<Exclude<ApiTestStatus, null>, 'green' | 'red' | 'amber' | 'gray'> = {
+  pass: 'green',
+  fail: 'red',
+  timeout: 'amber',
+  untested: 'gray',
 };
 
-// ─── Create Client Modal ─────────────────────────────────────────
-function CreateClientModal({
+function formatDateTime(value: string | null): string {
+  if (!value) return 'Never';
+  return new Date(value).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function maskVaultRef(ref: string | null, revealed: boolean): string {
+  if (!ref) return 'not configured';
+  if (revealed) return ref;
+  if (ref.length <= 8) return '********';
+  return `${ref.slice(0, 4)}••••${ref.slice(-4)}`;
+}
+
+function CreateIntegrationModal({
   open,
   onClose,
+  onCreated,
 }: {
   open: boolean;
   onClose: () => void;
+  onCreated: () => Promise<void>;
 }) {
   const { addToast } = useToast();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [tier, setTier] = useState<ApiTier>('starter');
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState<CreateIntegrationInput>({
+    name: '',
+    provider: '',
+    category: 'other',
+    base_url: '',
+    docs_url: '',
+    environment: 'production',
+    api_key_vault_ref: '',
+    notes: '',
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addToast(`API client "${name}" created (mock). Key provisioning coming soon.`, 'success');
-    setName('');
-    setEmail('');
-    setTier('starter');
-    onClose();
+  const update = <K extends keyof CreateIntegrationInput>(key: K, value: CreateIntegrationInput[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const reset = () => {
+    setForm({
+      name: '',
+      provider: '',
+      category: 'other',
+      base_url: '',
+      docs_url: '',
+      environment: 'production',
+      api_key_vault_ref: '',
+      notes: '',
+    });
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!isSupabaseConfigured) {
+      addToast('Supabase is not configured', 'error');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.from('api_registry').insert({
+        name: form.name.trim(),
+        provider: form.provider.trim(),
+        category: form.category,
+        base_url: form.base_url.trim() || null,
+        docs_url: form.docs_url.trim() || null,
+        environment: form.environment,
+        api_key_vault_ref: form.api_key_vault_ref.trim() || null,
+        is_active: true,
+        last_test_status: 'untested',
+        notes: form.notes.trim() || null,
+      });
+
+      if (error) throw error;
+
+      addToast(`Integration "${form.name}" created`, 'success');
+      reset();
+      await onCreated();
+      onClose();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to create integration';
+      addToast(message, 'error');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!open) return null;
 
   return (
-    <Modal open={open} onClose={onClose} title="Create API Client">
+    <Modal open={open} onClose={onClose} title="Add API Integration">
       <form onSubmit={handleSubmit}>
         <ModalBody>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-pro-charcoal mb-1 font-sans">
-                Client Name
-              </label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Acme Beauty Analytics"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-pro-charcoal mb-1 font-sans">
-                Contact Email
-              </label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="dev@example.com"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-pro-charcoal mb-1 font-sans">
-                Tier
-              </label>
+          <div className="space-y-3">
+            <Input
+              value={form.name}
+              onChange={(e) => update('name', e.target.value)}
+              placeholder="Integration name"
+              required
+            />
+            <Input
+              value={form.provider}
+              onChange={(e) => update('provider', e.target.value)}
+              placeholder="Provider"
+              required
+            />
+            <div className="grid grid-cols-2 gap-2">
               <select
-                value={tier}
-                onChange={(e) => setTier(e.target.value as ApiTier)}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                value={form.category}
+                onChange={(e) => update('category', e.target.value as ApiCategory)}
+                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal"
               >
-                <option value="starter">Starter — $199/mo</option>
-                <option value="professional">Professional — $499/mo</option>
-                <option value="enterprise">Enterprise — Custom</option>
+                {CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={form.environment}
+                onChange={(e) => update('environment', e.target.value as ApiEnvironment)}
+                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal"
+              >
+                <option value="development">development</option>
+                <option value="staging">staging</option>
+                <option value="production">production</option>
               </select>
             </div>
+            <Input
+              value={form.base_url}
+              onChange={(e) => update('base_url', e.target.value)}
+              placeholder="Base URL"
+            />
+            <Input
+              value={form.docs_url}
+              onChange={(e) => update('docs_url', e.target.value)}
+              placeholder="Docs URL"
+            />
+            <Input
+              value={form.api_key_vault_ref}
+              onChange={(e) => update('api_key_vault_ref', e.target.value)}
+              placeholder="Vault key reference"
+            />
+            <Input
+              value={form.notes}
+              onChange={(e) => update('notes', e.target.value)}
+              placeholder="Notes"
+            />
           </div>
         </ModalBody>
         <ModalFooter>
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit">Create Client</Button>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? 'Saving...' : 'Create'}
+          </Button>
         </ModalFooter>
       </form>
     </Modal>
   );
 }
 
-// ─── Client Detail Panel ─────────────────────────────────────────
-function ClientDetail({
-  client,
-  usage,
-  onClose,
-}: {
-  client: ApiClient;
-  usage: ApiUsage[];
-  onClose: () => void;
-}) {
-  // Aggregate usage by endpoint
-  const byEndpoint = usage.reduce<Record<string, { requests: number; errors: number }>>(
-    (acc, u) => {
-      if (!acc[u.endpoint]) acc[u.endpoint] = { requests: 0, errors: 0 };
-      acc[u.endpoint].requests += u.requestCount;
-      acc[u.endpoint].errors += u.errorCount;
-      return acc;
-    },
-    {}
-  );
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{client.clientName} — Usage Detail</CardTitle>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-cream transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      </CardHeader>
-      <div className="px-6 pb-6 space-y-6">
-        {/* Info row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <p className="text-xs text-pro-warm-gray font-sans mb-1">Tier</p>
-            <Badge variant={TIER_VARIANT[client.tier]}>{client.tier}</Badge>
-          </div>
-          <div>
-            <p className="text-xs text-pro-warm-gray font-sans mb-1">Rate Limit</p>
-            <p className="text-sm font-semibold text-pro-charcoal font-sans">
-              {client.rateLimitPerMinute}/min
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-pro-warm-gray font-sans mb-1">Monthly Quota</p>
-            <p className="text-sm font-semibold text-pro-charcoal font-sans">
-              {client.monthlyQuota === -1 ? 'Unlimited' : client.monthlyQuota.toLocaleString()}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-pro-warm-gray font-sans mb-1">Monthly Used</p>
-            <p className="text-sm font-semibold text-pro-charcoal font-sans">
-              {client.monthlyUsed.toLocaleString()}
-            </p>
-          </div>
-        </div>
-
-        {/* Requests by endpoint */}
-        <div>
-          <h4 className="text-sm font-semibold text-pro-charcoal mb-3 font-sans">
-            Requests by Endpoint
-          </h4>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <Th>Endpoint</Th>
-                <Th>Requests</Th>
-                <Th>Errors</Th>
-                <Th>Error Rate</Th>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.entries(byEndpoint).map(([endpoint, data]) => {
-                const errorRate =
-                  data.requests > 0
-                    ? ((data.errors / data.requests) * 100).toFixed(2)
-                    : '0.00';
-                return (
-                  <TableRow key={endpoint}>
-                    <Td>
-                      <code className="text-xs font-mono text-pro-navy">{endpoint}</code>
-                    </Td>
-                    <Td>{data.requests.toLocaleString()}</Td>
-                    <Td>
-                      {data.errors > 0 ? (
-                        <span className="text-red-600 font-semibold">{data.errors}</span>
-                      ) : (
-                        <span className="text-pro-warm-gray">0</span>
-                      )}
-                    </Td>
-                    <Td>
-                      <span
-                        className={
-                          parseFloat(errorRate) > 1
-                            ? 'text-red-600 font-semibold'
-                            : 'text-pro-warm-gray'
-                        }
-                      >
-                        {errorRate}%
-                      </span>
-                    </Td>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-// ─── Main Page ───────────────────────────────────────────────────
 export default function ApiDashboard() {
-  const clients = getApiClients();
-  const allUsage = getApiUsage();
-  const summary = getApiUsageSummary();
-
-  const [showCreate, setShowCreate] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<ApiClient | null>(null);
-  const [revealedKeys, setRevealedKeys] = useState<Set<string>>(new Set());
   const { addToast } = useToast();
 
-  const toggleKeyVisibility = (clientId: string) => {
-    setRevealedKeys((prev) => {
+  const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [query, setQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | ApiCategory>('all');
+  const [rows, setRows] = useState<ApiRegistryRow[]>([]);
+  const [routeCount, setRouteCount] = useState(0);
+  const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [{ data, error }, { count, error: routeError }] = await Promise.all([
+        supabase.from('api_registry').select(SAFE_COLUMNS).order('name', { ascending: true }),
+        supabase.from('api_route_map').select('*', { count: 'exact', head: true }),
+      ]);
+
+      if (error) throw error;
+      if (routeError) throw routeError;
+
+      setRows((data as ApiRegistryRow[]) ?? []);
+      setRouteCount(count ?? 0);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load API registry';
+      addToast(message, 'error');
+      setRows([]);
+      setRouteCount(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [addToast]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      setRows([]);
+      return;
+    }
+
+    void load();
+  }, [load]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter((row) => {
+      const matchesCategory = categoryFilter === 'all' || row.category === categoryFilter;
+      const matchesQuery =
+        q.length === 0 ||
+        row.name.toLowerCase().includes(q) ||
+        row.provider.toLowerCase().includes(q) ||
+        (row.notes ?? '').toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [categoryFilter, query, rows]);
+
+  const summary = useMemo(() => {
+    const active = rows.filter((row) => row.is_active).length;
+    const healthy = rows.filter((row) => row.last_test_status === 'pass').length;
+    const failing = rows.filter((row) => row.last_test_status === 'fail' || row.last_test_status === 'timeout').length;
+    return {
+      totalIntegrations: rows.length,
+      activeIntegrations: active,
+      healthyIntegrations: healthy,
+      failingIntegrations: failing,
+      routeCount,
+    };
+  }, [routeCount, rows]);
+
+  const toggleReveal = (id: string) => {
+    setRevealed((prev) => {
       const next = new Set(prev);
-      if (next.has(clientId)) {
-        next.delete(clientId);
+      if (next.has(id)) {
+        next.delete(id);
       } else {
-        next.add(clientId);
+        next.add(id);
       }
       return next;
     });
   };
 
-  const toggleClientStatus = (client: ApiClient) => {
-    addToast(
-      `${client.clientName} ${client.active ? 'deactivated' : 'activated'} (mock).`,
-      'info'
-    );
+  const toggleActive = async (row: ApiRegistryRow) => {
+    setBusyId(row.id);
+    try {
+      const { error } = await supabase
+        .from('api_registry')
+        .update({
+          is_active: !row.is_active,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', row.id);
+
+      if (error) throw error;
+      await load();
+      addToast(`${row.name} ${row.is_active ? 'deactivated' : 'activated'}`, 'info');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update integration status';
+      addToast(message, 'error');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const revokeKey = async (row: ApiRegistryRow) => {
+    setBusyId(row.id);
+    try {
+      const { error } = await supabase
+        .from('api_registry')
+        .update({
+          api_key_vault_ref: null,
+          is_active: false,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', row.id);
+
+      if (error) throw error;
+      await load();
+      addToast(`Key revoked for ${row.name}`, 'success');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to revoke key';
+      addToast(message, 'error');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const testConnection = async (row: ApiRegistryRow) => {
+    setBusyId(row.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('test-api-connection', {
+        body: { registry_id: row.id },
+      });
+
+      if (error) throw error;
+      await load();
+      const status = (data as { status?: string })?.status ?? 'UNKNOWN';
+      addToast(`${row.name} test status: ${status}`, 'info');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to run connection test';
+      addToast(message, 'error');
+    } finally {
+      setBusyId(null);
+    }
   };
 
   return (
     <>
       <Helmet>
-        <title>API Management | Socelle Admin</title>
+        <title>API Control Center | Socelle Admin</title>
       </Helmet>
 
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-serif font-bold text-pro-charcoal flex items-center gap-2">
               <Code className="w-6 h-6 text-pro-navy" />
-              API Management
+              API Control Center
             </h1>
             <p className="text-sm text-pro-warm-gray font-sans mt-1">
-              Monitor API clients, usage, and revenue from the Enterprise Intelligence API.
+              Live registry-backed key management, health checks, and revoke controls.
             </p>
           </div>
-          <Button onClick={() => setShowCreate(true)}>
-            <Plus className="w-4 h-4 mr-1.5" />
-            Create Client
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={() => void load()} disabled={loading}>
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button onClick={() => setShowCreate(true)}>
+              <Plus className="w-4 h-4 mr-1.5" />
+              Add Integration
+            </Button>
+          </div>
         </div>
 
-        {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard
-            title="Active Clients"
-            value={summary.totalClients.toString()}
-            icon={Users}
-          />
-          <StatCard
-            title="Total Requests"
-            value={summary.totalRequests.toLocaleString()}
-            icon={Activity}
-          />
-          <StatCard
-            title="Monthly Revenue"
-            value={`$${summary.monthlyRevenue.toLocaleString()}`}
-            icon={DollarSign}
-          />
-          <StatCard
-            title="Avg Latency"
-            value={`${summary.avgLatency}ms`}
-            icon={Zap}
-          />
-        </div>
-
-        {/* Error rate notice */}
-        {parseFloat(summary.errorRate) > 0.5 && (
+        {!isSupabaseConfigured && (
           <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
             <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <p className="text-sm text-amber-800 font-sans">
-              Platform error rate is {summary.errorRate}% — above the 0.5% threshold. Investigate
-              high-error endpoints below.
+              Supabase is not configured. API registry controls require `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
             </p>
           </div>
         )}
 
-        {/* Client Table */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <StatCard label="Integrations" value={summary.totalIntegrations.toString()} icon={Activity} />
+          <StatCard label="Active" value={summary.activeIntegrations.toString()} icon={CheckCircle2} />
+          <StatCard label="Healthy" value={summary.healthyIntegrations.toString()} icon={CheckCircle2} />
+          <StatCard label="Failing" value={summary.failingIntegrations.toString()} icon={AlertTriangle} />
+          <StatCard label="Mapped Routes" value={summary.routeCount.toString()} icon={Clock3} />
+        </div>
+
         <Card>
           <CardHeader>
-            <CardTitle>API Clients</CardTitle>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <CardTitle>API Registry</CardTitle>
+              <div className="flex gap-2">
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search integrations"
+                />
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value as 'all' | ApiCategory)}
+                  className="border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal"
+                >
+                  <option value="all">All categories</option>
+                  {CATEGORIES.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </CardHeader>
           <div className="px-6 pb-6">
             <div className="overflow-x-auto">
               <Table>
                 <TableHead>
                   <TableRow>
-                    <Th>Client</Th>
-                    <Th>Tier</Th>
-                    <Th>API Key</Th>
-                    <Th>Rate Limit</Th>
-                    <Th>Monthly Usage</Th>
+                    <Th>Integration</Th>
+                    <Th>Category</Th>
+                    <Th>Key Ref</Th>
                     <Th>Status</Th>
+                    <Th>Last Test</Th>
                     <Th>Actions</Th>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {clients.map((client) => {
-                    const revealed = revealedKeys.has(client.id);
-                    const usagePercent =
-                      client.monthlyQuota > 0
-                        ? Math.round((client.monthlyUsed / client.monthlyQuota) * 100)
-                        : null;
+                  {filtered.map((row) => {
+                    const show = revealed.has(row.id);
+                    const disabled = busyId === row.id;
 
                     return (
-                      <TableRow key={client.id}>
+                      <TableRow key={row.id}>
                         <Td>
                           <div>
-                            <p className="font-semibold text-pro-charcoal font-sans text-sm">
-                              {client.clientName}
-                            </p>
-                            <p className="text-xs text-pro-warm-gray font-sans">
-                              {client.contactEmail}
-                            </p>
+                            <p className="font-semibold text-pro-charcoal font-sans text-sm">{row.name}</p>
+                            <p className="text-xs text-pro-warm-gray font-sans">{row.provider}</p>
                           </div>
                         </Td>
                         <Td>
-                          <Badge variant={TIER_VARIANT[client.tier]}>{client.tier}</Badge>
+                          <Badge variant="default">{row.category}</Badge>
                         </Td>
                         <Td>
                           <div className="flex items-center gap-2">
                             <code className="text-xs font-mono text-pro-warm-gray">
-                              {revealed ? client.apiKey : 'sk_live_•••••••••'}
+                              {maskVaultRef(row.api_key_vault_ref, show)}
                             </code>
                             <button
-                              onClick={() => toggleKeyVisibility(client.id)}
+                              onClick={() => toggleReveal(row.id)}
                               className="p-1 rounded text-pro-warm-gray hover:text-pro-charcoal transition-colors"
-                              title={revealed ? 'Hide key' : 'Reveal key'}
+                              title={show ? 'Hide key reference' : 'Reveal key reference'}
                             >
-                              {revealed ? (
-                                <EyeOff className="w-3.5 h-3.5" />
-                              ) : (
-                                <Eye className="w-3.5 h-3.5" />
-                              )}
+                              {show ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                             </button>
                           </div>
                         </Td>
                         <Td>
-                          <span className="text-sm font-mono text-pro-charcoal">
-                            {client.rateLimitPerMinute}/min
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={row.is_active ? 'green' : 'gray'}>
+                              {row.is_active ? 'active' : 'inactive'}
+                            </Badge>
+                            <Badge variant={STATUS_BADGE[row.last_test_status ?? 'untested']}>
+                              {row.last_test_status ?? 'untested'}
+                            </Badge>
+                          </div>
                         </Td>
                         <Td>
-                          <div className="space-y-1">
-                            <p className="text-sm font-semibold text-pro-charcoal font-sans">
-                              {client.monthlyUsed.toLocaleString()}
-                              {client.monthlyQuota > 0 && (
-                                <span className="text-pro-warm-gray font-normal">
-                                  {' '}
-                                  / {client.monthlyQuota.toLocaleString()}
-                                </span>
-                              )}
-                              {client.monthlyQuota === -1 && (
-                                <span className="text-pro-warm-gray font-normal"> / unlimited</span>
-                              )}
-                            </p>
-                            {usagePercent !== null && (
-                              <div className="w-24 h-1.5 bg-pro-stone rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full rounded-full transition-all ${
-                                    usagePercent > 90
-                                      ? 'bg-red-500'
-                                      : usagePercent > 70
-                                        ? 'bg-amber-500'
-                                        : 'bg-pro-gold'
-                                  }`}
-                                  style={{ width: `${Math.min(usagePercent, 100)}%` }}
-                                />
-                              </div>
+                          <div>
+                            <p className="text-xs text-pro-warm-gray">{formatDateTime(row.last_tested_at)}</p>
+                            {row.last_test_latency_ms !== null && (
+                              <p className="text-[11px] text-pro-warm-gray">{row.last_test_latency_ms}ms</p>
                             )}
                           </div>
                         </Td>
                         <Td>
-                          <button
-                            onClick={() => toggleClientStatus(client)}
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                              client.active ? 'bg-emerald-500' : 'bg-pro-stone'
-                            }`}
-                            title={client.active ? 'Active — click to deactivate' : 'Inactive — click to activate'}
-                          >
-                            <span
-                              className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
-                                client.active ? 'translate-x-4' : 'translate-x-0.5'
-                              }`}
-                            />
-                          </button>
-                        </Td>
-                        <Td>
-                          <button
-                            onClick={() => setSelectedClient(client)}
-                            className="text-xs font-semibold text-pro-navy hover:text-pro-charcoal transition-colors font-sans"
-                          >
-                            View Details
-                          </button>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => void testConnection(row)}
+                              disabled={disabled}
+                            >
+                              <TestTube2 className="w-3.5 h-3.5 mr-1" />
+                              Test
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => void toggleActive(row)}
+                              disabled={disabled}
+                            >
+                              {row.is_active ? (
+                                <PowerOff className="w-3.5 h-3.5 mr-1" />
+                              ) : (
+                                <Power className="w-3.5 h-3.5 mr-1" />
+                              )}
+                              {row.is_active ? 'Deactivate' : 'Activate'}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => void revokeKey(row)}
+                              disabled={disabled || !row.api_key_vault_ref}
+                            >
+                              <ShieldOff className="w-3.5 h-3.5 mr-1" />
+                              Revoke
+                            </Button>
+                          </div>
                         </Td>
                       </TableRow>
                     );
@@ -454,43 +590,21 @@ export default function ApiDashboard() {
                 </TableBody>
               </Table>
             </div>
-          </div>
-        </Card>
 
-        {/* Usage Chart Placeholder */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-pro-navy" />
-              Usage Over Time
-            </CardTitle>
-          </CardHeader>
-          <div className="px-6 pb-6">
-            <div className="h-48 bg-pro-ivory rounded-xl border border-pro-stone/50 flex items-center justify-center">
-              <div className="text-center">
-                <BarChart3 className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">
-                  Chart visualization coming soon
-                </p>
-                <p className="text-xs text-pro-warm-gray/60 font-sans mt-1">
-                  Historical request volume, error rates, and latency trends
-                </p>
+            {!loading && filtered.length === 0 && (
+              <div className="text-center py-10">
+                <X className="w-8 h-8 text-pro-stone mx-auto mb-2" />
+                <p className="text-sm text-pro-warm-gray">No integrations matched your filters.</p>
               </div>
-            </div>
+            )}
           </div>
         </Card>
 
-        {/* Client Detail Panel */}
-        {selectedClient && (
-          <ClientDetail
-            client={selectedClient}
-            usage={allUsage.filter((u) => u.clientId === selectedClient.id)}
-            onClose={() => setSelectedClient(null)}
-          />
-        )}
-
-        {/* Create Client Modal */}
-        <CreateClientModal open={showCreate} onClose={() => setShowCreate(false)} />
+        <CreateIntegrationModal
+          open={showCreate}
+          onClose={() => setShowCreate(false)}
+          onCreated={load}
+        />
       </div>
     </>
   );

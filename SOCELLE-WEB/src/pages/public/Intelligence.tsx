@@ -1,24 +1,23 @@
 /* ═══════════════════════════════════════════════════════════════
    Intelligence — WO-OVERHAUL-03 Phase 3: Crown Jewel Page
    LIVE surface: market_signals via useIntelligence() hook
-   PREVIEW banner when isLive === false (mock fallback)
+   PREVIEW banner when live feeds are not yet populated
    Pearl Mineral V2 tokens only — no hardcoded hex, no pro-*
    ═══════════════════════════════════════════════════════════════ */
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import MainNav from '../../components/MainNav';
 import JsonLd from '../../components/seo/JsonLd';
 import {
-  SITE_URL, DEFAULT_OG_IMAGE,
+  DEFAULT_OG_IMAGE,
   buildWebPageSchema,
   buildCanonical,
 } from '../../lib/seo';
 import {
-  ArrowRight,
   TrendingUp,
   TrendingDown,
   Minus,
+  Search,
   Filter,
   BarChart3,
   Shield,
@@ -83,7 +82,12 @@ const SIGNAL_CATEGORIES = [
 ] as const;
 
 /* ─── Ingredient Trend Mock (DEMO) ────────────────────────────── */
-const INGREDIENT_TRENDS = [
+const INGREDIENT_TRENDS: Array<{
+  swatch: string;
+  name: string;
+  shift: string;
+  direction: 'up' | 'down' | 'stable';
+}> = [
   { swatch: SWATCH_IMAGES[0], name: 'Bakuchiol', shift: '+34%', direction: 'up' as const },
   { swatch: SWATCH_IMAGES[1], name: 'Niacinamide 10%', shift: '+28%', direction: 'up' as const },
   { swatch: SWATCH_IMAGES[2], name: 'Peptide Stacks', shift: '+22%', direction: 'up' as const },
@@ -110,11 +114,19 @@ function DirectionIcon({ dir }: { dir: string }) {
 /* ═══════════════════════════════════════════════════════════════ */
 export default function Intelligence() {
   const { signals, isLive, loading } = useIntelligence();
-  const { totalFeeds, totalSignals, avgConfidence, isLive: feedsLive } = useDataFeedStats();
+  const {
+    totalFeeds,
+    totalSignals,
+    enabledFeeds,
+    avgConfidence,
+    lastOrchestratorRun,
+    isLive: feedsLive,
+  } = useDataFeedStats();
   const { stories: editorialStories } = useStories({ limit: 6 });
   const { user } = useAuth();
 
   const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   /* W15-08: Track signal_viewed when signals load */
   useEffect(() => {
@@ -125,13 +137,37 @@ export default function Intelligence() {
 
   /* ── Category-filtered signals ──────────────────────────────── */
   const filteredSignals = useMemo(() => {
-    if (activeCategory === 'all') return signals;
-    return signals.filter(
-      (s) =>
-        s.category?.toLowerCase().replace(/\s+/g, '-') === activeCategory ||
-        s.signal_type?.toLowerCase().replace(/\s+/g, '-') === activeCategory
-    );
-  }, [signals, activeCategory]);
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    let result = signals;
+
+    if (activeCategory !== 'all') {
+      result = result.filter(
+        (s) =>
+          s.category?.toLowerCase().replace(/\s+/g, '-') === activeCategory ||
+          s.signal_type?.toLowerCase().replace(/\s+/g, '-') === activeCategory
+      );
+    }
+
+    if (!normalizedQuery) {
+      return result;
+    }
+
+    return result.filter((signal) => {
+      const fields = [
+        signal.title,
+        signal.signal_type,
+        signal.source,
+        signal.source_name,
+        ...(signal.related_brands ?? []),
+        ...(signal.related_products ?? []),
+      ];
+
+      return fields.some((field) =>
+        typeof field === 'string' && field.toLowerCase().includes(normalizedQuery)
+      );
+    });
+  }, [signals, activeCategory, searchQuery]);
 
   /* ── Editorial items (LIVE from stories table) ──────────────── */
   const editorialItems = useMemo(() => {
@@ -151,15 +187,17 @@ export default function Intelligence() {
     ];
   }, [editorialStories]);
 
+  const confidenceDisplay = avgConfidence === null ? '--' : `${Math.round(avgConfidence)}%`;
+
   /* ── KPIs ───────────────────────────────────────────────────── */
   const kpis = useMemo(
     () => [
-      { id: 'ik1', value: feedsLive ? totalSignals : 847000, label: 'Daily Signals', delta: 12.3 },
-      { id: 'ik2', value: feedsLive ? totalFeeds : 342, label: 'Verified Sources', delta: 5.2 },
-      { id: 'ik3', value: feedsLive ? Math.round(avgConfidence) : 96, label: 'Avg Confidence %', delta: 0.8 },
-      { id: 'ik4', value: 3, label: 'Latency (min)', delta: -0.5 },
+      { id: 'ik1', value: feedsLive ? totalSignals : '--', label: 'Signals Ingested' },
+      { id: 'ik2', value: feedsLive ? totalFeeds : '--', label: 'Verified Sources' },
+      { id: 'ik3', value: confidenceDisplay, label: 'Avg Confidence' },
+      { id: 'ik4', value: feedsLive ? enabledFeeds : '--', label: 'Enabled Feeds' },
     ],
-    [feedsLive, totalSignals, totalFeeds, avgConfidence]
+    [feedsLive, totalSignals, totalFeeds, enabledFeeds, confidenceDisplay]
   );
 
   /* ── Ticker items ───────────────────────────────────────────── */
@@ -183,11 +221,22 @@ export default function Intelligence() {
         magnitude: s.magnitude,
         direction: s.direction as 'up' | 'down' | 'stable',
         category: s.category || 'General',
-        source: s.source || 'Socelle Intelligence',
+        source: s.source_name || s.source || 'Unknown source',
         updated_at: s.updated_at,
       })),
     [filteredSignals]
   );
+
+  const spotlightTrends = useMemo(() => {
+    if (signals.length === 0) {
+      return [{ label: 'No live trend data', value: '--', trend: 'stable' as const }];
+    }
+    return signals.slice(0, 3).map((signal) => ({
+      label: signal.title.length > 26 ? `${signal.title.slice(0, 26)}...` : signal.title,
+      value: signal.direction === 'stable' ? '0%' : `${signal.direction === 'up' ? '+' : '-'}${Math.abs(signal.magnitude)}%`,
+      trend: signal.direction as 'up' | 'down' | 'stable',
+    }));
+  }, [signals]);
 
   /* ── Auth-aware CTA targets ─────────────────────────────────── */
   const dashboardHref = user ? '/portal/intelligence' : '/request-access';
@@ -230,7 +279,7 @@ export default function Intelligence() {
         primaryCTA={{ label: 'Read the Feed', href: '#signal-feed' }}
         secondaryCTA={{ label: dashboardLabel, href: dashboardHref }}
         overlayMetric={{
-          value: feedsLive ? totalSignals.toLocaleString() : '847K',
+          value: feedsLive ? totalSignals.toLocaleString() : '--',
           label: 'Signals Ingested Today',
         }}
       />
@@ -241,9 +290,7 @@ export default function Intelligence() {
           tickerItems.length > 0
             ? tickerItems
             : [
-                { tag: 'Market Signal', headline: 'Retinol alternative demand surges 34% in Q1', timestamp: '3m' },
-                { tag: 'Clinical', headline: 'LED panel efficacy meta-analysis published', timestamp: '14m' },
-                { tag: 'Pricing', headline: 'HA filler wholesale cost adjusts across distributors', timestamp: '19m' },
+                { tag: 'Feed Status', headline: 'No live signal headlines available yet', timestamp: 'now' },
               ]
         }
         speed={35}
@@ -252,7 +299,7 @@ export default function Intelligence() {
       {/* ═══ PREVIEW BANNER (when not live) ═══════════════════════ */}
       {!isLive && (
         <div className="bg-signal-warn/10 text-signal-warn text-xs font-medium px-4 py-2 text-center">
-          PREVIEW — This data is for demonstration purposes. Sign in for live intelligence.
+          PREVIEW — Live intelligence appears once feeds are enabled and market signals are ingested.
         </div>
       )}
 
@@ -264,10 +311,10 @@ export default function Intelligence() {
         backgroundImage={LAB_IMAGE}
         eyebrow="Signal Infrastructure"
         stats={[
-          { value: feedsLive ? totalSignals.toLocaleString() : '847K', label: 'Daily Signals' },
-          { value: feedsLive ? totalFeeds.toString() : '342', label: 'Verified Sources' },
-          { value: feedsLive ? `${Math.round(avgConfidence)}%` : '96%', label: 'Avg Confidence Score' },
-          { value: '<3m', label: 'Latency' },
+          { value: feedsLive ? totalSignals.toLocaleString() : '--', label: 'Daily Signals' },
+          { value: feedsLive ? totalFeeds.toString() : '--', label: 'Verified Sources' },
+          { value: confidenceDisplay, label: 'Avg Confidence Score' },
+          { value: lastOrchestratorRun ? timeAgo(lastOrchestratorRun) : '--', label: 'Last Feed Run' },
         ]}
       />
 
@@ -282,6 +329,19 @@ export default function Intelligence() {
                 DEMO
               </span>
             )}
+          </div>
+
+          <div className="max-w-xl mx-auto mb-5">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/35" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search title, type, brands, ingredients, or source..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-graphite/12 bg-white text-sm font-sans text-graphite placeholder:text-graphite/40 focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none transition-colors"
+              />
+            </div>
           </div>
 
           {/* Filter pills */}
@@ -307,7 +367,13 @@ export default function Intelligence() {
           <p className="text-center text-graphite/50 text-sm mb-2">
             {loading
               ? 'Loading signals\u2026'
-              : `${filteredSignals.length} signal${filteredSignals.length !== 1 ? 's' : ''} ${activeCategory !== 'all' ? `in ${SIGNAL_CATEGORIES.find((c) => c.key === activeCategory)?.label ?? activeCategory}` : 'active'}`}
+              : `${filteredSignals.length} signal${filteredSignals.length !== 1 ? 's' : ''} ${
+                  searchQuery.trim()
+                    ? `matching "${searchQuery.trim()}"`
+                    : activeCategory !== 'all'
+                      ? `in ${SIGNAL_CATEGORIES.find((c) => c.key === activeCategory)?.label ?? activeCategory}`
+                      : 'active'
+                }`}
           </p>
         </div>
       </section>
@@ -317,7 +383,6 @@ export default function Intelligence() {
         <SignalTable
           signals={tableSignals}
           title="Active Signals"
-          isLive={isLive}
           onClickRow={(s) => trackSignalClicked(s.id, s.signal_type)}
         />
       )}
@@ -386,7 +451,7 @@ export default function Intelligence() {
         eyebrow="The Feed"
         headline="Every Signal Has a Source. Every Source Has a Score."
         metric={{
-          value: feedsLive ? `${Math.round(avgConfidence)}%` : '96%',
+          value: confidenceDisplay,
           label: 'Average Confidence',
         }}
         bullets={[
@@ -395,11 +460,7 @@ export default function Intelligence() {
           'Provenance tiers: Tier 1 (direct), Tier 2 (public/structured), Tier 3 (aggregated)',
         ]}
         cta={{ label: 'Explore Sources', href: dashboardHref }}
-        trending={[
-          { label: 'Bakuchiol', value: '+34%', trend: 'up' },
-          { label: 'LED 633nm', value: '+22%', trend: 'up' },
-          { label: 'Peptide stacks', value: '+18%', trend: 'up' },
-        ]}
+        trending={spotlightTrends}
       />
 
       {/* ═══ IMAGE MOSAIC ═════════════════════════════════════════ */}

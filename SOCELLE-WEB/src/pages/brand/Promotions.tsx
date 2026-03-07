@@ -26,8 +26,22 @@ const TIER_CONFIG: Record<OperatorTier, { icon: typeof Shield; label: string; co
 
 export default function BrandPromotions() {
   const { addToast } = useToast();
-  const { tierDiscounts, addTierDiscount, updateTierDiscount, deleteTierDiscount } = useTierDiscounts();
-  const { volumeDiscounts, addVolumeDiscount, updateVolumeDiscount, deleteVolumeDiscount } = useVolumeDiscounts();
+  const {
+    tierDiscounts,
+    addTierDiscount,
+    updateTierDiscount,
+    deleteTierDiscount,
+    loading: tierLoading,
+    error: tierError,
+  } = useTierDiscounts();
+  const {
+    volumeDiscounts,
+    addVolumeDiscount,
+    updateVolumeDiscount,
+    deleteVolumeDiscount,
+    loading: volumeLoading,
+    error: volumeError,
+  } = useVolumeDiscounts();
 
   // Tier discount modal state
   const [tierModalOpen, setTierModalOpen] = useState(false);
@@ -50,6 +64,7 @@ export default function BrandPromotions() {
 
   // Confirm delete
   const [confirmDelete, setConfirmDelete] = useState<{ type: 'tier' | 'volume'; id: string } | null>(null);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
 
   // Tier discount handlers
   const openCreateTier = () => {
@@ -71,7 +86,7 @@ export default function BrandPromotions() {
     setTierModalOpen(true);
   };
 
-  const handleSaveTier = () => {
+  const handleSaveTier = async () => {
     if (!tierForm.description.trim()) {
       addToast('Description is required', 'error');
       return;
@@ -82,14 +97,28 @@ export default function BrandPromotions() {
       minUnits: tierForm.minUnits || undefined,
       description: tierForm.description,
     };
+    setBusyAction(editingTierId ?? 'create-tier');
     if (editingTierId) {
-      updateTierDiscount(editingTierId, payload);
-      addToast('Tier discount updated', 'success');
+      const ok = await updateTierDiscount(editingTierId, payload);
+      if (ok) {
+        addToast('Tier discount updated', 'success');
+      } else {
+        addToast('Unable to update tier discount', 'error');
+        setBusyAction(null);
+        return;
+      }
     } else {
-      addTierDiscount(payload);
-      addToast('Tier discount created', 'success');
+      const created = await addTierDiscount(payload);
+      if (created) {
+        addToast('Tier discount created', 'success');
+      } else {
+        addToast('Unable to create tier discount', 'error');
+        setBusyAction(null);
+        return;
+      }
     }
     setTierModalOpen(false);
+    setBusyAction(null);
   };
 
   // Volume discount handlers
@@ -111,7 +140,7 @@ export default function BrandPromotions() {
     setVolumeModalOpen(true);
   };
 
-  const handleSaveVolume = () => {
+  const handleSaveVolume = async () => {
     if (volumeForm.minUnits <= 0) {
       addToast('Minimum units must be greater than 0', 'error');
       return;
@@ -121,26 +150,52 @@ export default function BrandPromotions() {
       maxUnits: volumeForm.maxUnits ? Number(volumeForm.maxUnits) : undefined,
       discountPercent: volumeForm.discountPercent,
     };
+    setBusyAction(editingVolumeId ?? 'create-volume');
     if (editingVolumeId) {
-      updateVolumeDiscount(editingVolumeId, payload);
-      addToast('Volume discount updated', 'success');
+      const ok = await updateVolumeDiscount(editingVolumeId, payload);
+      if (ok) {
+        addToast('Volume discount updated', 'success');
+      } else {
+        addToast('Unable to update volume discount', 'error');
+        setBusyAction(null);
+        return;
+      }
     } else {
-      addVolumeDiscount(payload);
-      addToast('Volume discount created', 'success');
+      const created = await addVolumeDiscount(payload);
+      if (created) {
+        addToast('Volume discount created', 'success');
+      } else {
+        addToast('Unable to create volume discount', 'error');
+        setBusyAction(null);
+        return;
+      }
     }
     setVolumeModalOpen(false);
+    setBusyAction(null);
   };
 
   // Delete handler
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!confirmDelete) return;
+    setBusyAction(confirmDelete.id);
     if (confirmDelete.type === 'tier') {
-      deleteTierDiscount(confirmDelete.id);
+      const ok = await deleteTierDiscount(confirmDelete.id);
+      if (!ok) {
+        addToast('Unable to delete tier discount', 'error');
+        setBusyAction(null);
+        return;
+      }
     } else {
-      deleteVolumeDiscount(confirmDelete.id);
+      const ok = await deleteVolumeDiscount(confirmDelete.id);
+      if (!ok) {
+        addToast('Unable to delete volume discount', 'error');
+        setBusyAction(null);
+        return;
+      }
     }
     setConfirmDelete(null);
     addToast('Discount deleted', 'success');
+    setBusyAction(null);
   };
 
   return (
@@ -150,6 +205,12 @@ export default function BrandPromotions() {
       </Helmet>
 
       <div className="space-y-8">
+        {(tierError || volumeError) && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {tierError ?? volumeError}
+          </div>
+        )}
+
         {/* Header */}
         <div>
           <h1 className="font-serif text-2xl text-pro-navy">Pricing & Promotions</h1>
@@ -177,7 +238,11 @@ export default function BrandPromotions() {
             </Button>
           </div>
 
-          {tierDiscounts.length === 0 ? (
+          {tierLoading ? (
+            <Card padding="lg" className="text-center">
+              <p className="text-pro-warm-gray font-sans text-sm">Loading tier discounts...</p>
+            </Card>
+          ) : tierDiscounts.length === 0 ? (
             <Card padding="lg" className="text-center">
               <p className="text-pro-warm-gray font-sans text-sm">
                 No tier discounts configured. Add pricing tiers to incentivize your top-performing operators.
@@ -256,7 +321,11 @@ export default function BrandPromotions() {
             </Button>
           </div>
 
-          {volumeDiscounts.length === 0 ? (
+          {volumeLoading ? (
+            <Card padding="lg" className="text-center">
+              <p className="text-pro-warm-gray font-sans text-sm">Loading volume discounts...</p>
+            </Card>
+          ) : volumeDiscounts.length === 0 ? (
             <Card padding="lg" className="text-center">
               <p className="text-pro-warm-gray font-sans text-sm">
                 No volume discounts configured. Add quantity-based pricing to encourage larger orders.
@@ -398,7 +467,7 @@ export default function BrandPromotions() {
           <Button variant="ghost" size="sm" onClick={() => setTierModalOpen(false)}>
             Cancel
           </Button>
-          <Button variant="primary" size="sm" onClick={handleSaveTier}>
+          <Button variant="primary" size="sm" onClick={() => void handleSaveTier()} disabled={busyAction !== null}>
             {editingTierId ? 'Update' : 'Add'} Tier Discount
           </Button>
         </ModalFooter>
@@ -448,7 +517,7 @@ export default function BrandPromotions() {
           <Button variant="ghost" size="sm" onClick={() => setVolumeModalOpen(false)}>
             Cancel
           </Button>
-          <Button variant="primary" size="sm" onClick={handleSaveVolume}>
+          <Button variant="primary" size="sm" onClick={() => void handleSaveVolume()} disabled={busyAction !== null}>
             {editingVolumeId ? 'Update' : 'Add'} Volume Discount
           </Button>
         </ModalFooter>
@@ -470,7 +539,7 @@ export default function BrandPromotions() {
           <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(null)}>
             Cancel
           </Button>
-          <Button variant="danger" size="sm" onClick={handleDelete}>
+          <Button variant="danger" size="sm" onClick={() => void handleDelete()} disabled={busyAction !== null}>
             Delete Discount
           </Button>
         </ModalFooter>

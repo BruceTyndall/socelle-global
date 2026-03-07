@@ -49,6 +49,15 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Route Manifest Drift Check
+        run: npm run routes:check
+
+      - name: E2E Route Table Drift Check
+        run: npm run routes:e2e-check
+
+      - name: Fake-Live Regression Guard
+        run: npm run fakelive:check
+
   # ── 3a. Build (production — TEST_MODE off) ───────────────────
   build:
     name: Build

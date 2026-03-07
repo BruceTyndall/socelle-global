@@ -54,7 +54,7 @@ export default function BrandDashboard({ brandId }: BrandDashboardProps) {
           <h3 className="font-sans font-semibold text-pro-charcoal text-sm mb-4">
             Businesses Reached — Last 30 Days
           </h3>
-          <SparklineChart data={data.businessesReachedTrend} color="#1E3A5F" height={140} />
+          <SparklineChart data={data.businessesReachedTrend} color="var(--color-accent)" height={140} />
         </div>
 
         {/* ── Match rate ────────────────────────────────────── */}

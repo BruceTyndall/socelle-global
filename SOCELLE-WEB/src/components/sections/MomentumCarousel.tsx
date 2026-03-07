@@ -51,14 +51,14 @@ export default function MomentumCarousel({
         <div className="flex items-center justify-end gap-2 mt-6">
           <button
             onClick={scrollPrev}
-            className="w-10 h-10 rounded-full border border-[rgba(30,37,43,0.12)] bg-white/80 flex items-center justify-center hover:bg-white transition-colors"
+            className="w-10 h-10 rounded-full border border-graphite/10 bg-mn-card/80 flex items-center justify-center hover:bg-mn-card transition-colors"
             aria-label="Previous"
           >
             <ChevronLeft size={18} className="text-graphite" />
           </button>
           <button
             onClick={scrollNext}
-            className="w-10 h-10 rounded-full border border-[rgba(30,37,43,0.12)] bg-white/80 flex items-center justify-center hover:bg-white transition-colors"
+            className="w-10 h-10 rounded-full border border-graphite/10 bg-mn-card/80 flex items-center justify-center hover:bg-mn-card transition-colors"
             aria-label="Next"
           >
             <ChevronRight size={18} className="text-graphite" />

@@ -22,19 +22,18 @@ export interface UsePlatformStatsReturn {
   isLive: boolean;
 }
 
-/* Mock fallback — matches current hardcoded values across public pages */
-const MOCK_STATS: PlatformStats = {
-  brandsCount: 120,
-  operatorsCount: 500,
-  signalsCount: 34,
-  protocolsCount: 48,
-  jobsCount: 12,
-  eventsCount: 8,
-  dataSourcesCount: 102,
+const EMPTY_STATS: PlatformStats = {
+  brandsCount: 0,
+  operatorsCount: 0,
+  signalsCount: 0,
+  protocolsCount: 0,
+  jobsCount: 0,
+  eventsCount: 0,
+  dataSourcesCount: 0,
 };
 
 export function usePlatformStats(): UsePlatformStatsReturn {
-  const [stats, setStats] = useState<PlatformStats>(MOCK_STATS);
+  const [stats, setStats] = useState<PlatformStats>(EMPTY_STATS);
   const [loading, setLoading] = useState(true);
   const [isLive, setIsLive] = useState(false);
 
@@ -45,7 +44,7 @@ export function usePlatformStats(): UsePlatformStatsReturn {
       setLoading(true);
 
       if (!isSupabaseConfigured) {
-        setStats(MOCK_STATS);
+        setStats(EMPTY_STATS);
         setIsLive(false);
         setLoading(false);
         return;
@@ -66,28 +65,34 @@ export function usePlatformStats(): UsePlatformStatsReturn {
 
         if (cancelled) return;
 
-        // Use live data if any table returned a count > 0
-        const hasData = [brands, signals, protocols, jobs, events, operators, dataSources]
-          .some(r => !r.error && (r.count ?? 0) > 0);
+        const countOrNull = (result: { error: unknown; count: number | null }) =>
+          result.error ? null : (result.count ?? 0);
 
-        if (hasData) {
-          setStats({
-            brandsCount: brands.count ?? MOCK_STATS.brandsCount,
-            signalsCount: signals.count ?? MOCK_STATS.signalsCount,
-            protocolsCount: protocols.count ?? MOCK_STATS.protocolsCount,
-            jobsCount: jobs.count ?? MOCK_STATS.jobsCount,
-            eventsCount: events.count ?? MOCK_STATS.eventsCount,
-            operatorsCount: operators.count ?? MOCK_STATS.operatorsCount,
-            dataSourcesCount: dataSources.count ?? MOCK_STATS.dataSourcesCount,
-          });
-          setIsLive(true);
-        } else {
-          setStats(MOCK_STATS);
-          setIsLive(false);
-        }
+        const liveCounts = {
+          brandsCount: countOrNull(brands),
+          signalsCount: countOrNull(signals),
+          protocolsCount: countOrNull(protocols),
+          jobsCount: countOrNull(jobs),
+          eventsCount: countOrNull(events),
+          operatorsCount: countOrNull(operators),
+          dataSourcesCount: countOrNull(dataSources),
+        };
+
+        const hasAnyLiveSource = Object.values(liveCounts).some((v) => v !== null);
+
+        setStats({
+          brandsCount: liveCounts.brandsCount ?? 0,
+          signalsCount: liveCounts.signalsCount ?? 0,
+          protocolsCount: liveCounts.protocolsCount ?? 0,
+          jobsCount: liveCounts.jobsCount ?? 0,
+          eventsCount: liveCounts.eventsCount ?? 0,
+          operatorsCount: liveCounts.operatorsCount ?? 0,
+          dataSourcesCount: liveCounts.dataSourcesCount ?? 0,
+        });
+        setIsLive(hasAnyLiveSource);
       } catch {
         if (!cancelled) {
-          setStats(MOCK_STATS);
+          setStats(EMPTY_STATS);
           setIsLive(false);
         }
       } finally {

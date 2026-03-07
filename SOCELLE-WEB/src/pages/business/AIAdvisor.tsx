@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { useChatSession } from '../../lib/ai/useChatSession';
 import type { ChatAction } from '../../lib/ai/types';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { useAuth } from '../../lib/auth';
 
 /* ── Action icon mapping ──────────────────────────────── */
 function actionIcon(type: ChatAction['type']) {
@@ -28,12 +30,48 @@ const SUGGESTED_QUESTIONS = [
   'Show me trending professional brands',
 ];
 
-/* ── Mock Signals ─────────────────────────────────────── */
-const RECENT_SIGNALS = [
-  { icon: TrendingUp, label: 'LED therapy demand up 47% in your region', color: 'text-green-600' },
-  { icon: Zap, label: '3 new products from your top brands this week', color: 'text-blue-600' },
-  { icon: AlertCircle, label: 'Vitamin C serum stock running low', color: 'text-amber-600' },
-];
+interface ContextSignal {
+  id: string;
+  title: string;
+  direction: 'up' | 'down' | 'stable' | null;
+  source: string;
+  confidenceScore: number | null;
+  updatedAt: string;
+}
+
+interface BusinessLocation {
+  city: string | null;
+  state: string | null;
+}
+
+function parseLocation(location: string | null | undefined): BusinessLocation {
+  if (!location) return { city: null, state: null };
+  const [cityRaw, stateRaw] = location.split(',').map((v) => v.trim());
+  return {
+    city: cityRaw || null,
+    state: stateRaw || null,
+  };
+}
+
+function signalPresentation(direction: ContextSignal['direction']) {
+  if (direction === 'up') return { Icon: TrendingUp, color: 'text-green-600' };
+  if (direction === 'down') return { Icon: AlertCircle, color: 'text-amber-600' };
+  return { Icon: Zap, color: 'text-blue-600' };
+}
+
+function formatSignalTimestamp(isoDate: string): string {
+  const ms = Date.now() - new Date(isoDate).getTime();
+  const hours = Math.max(1, Math.round(ms / (1000 * 60 * 60)));
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  return `${days}d ago`;
+}
+
+function formatConfidence(score: number | null): string {
+  if (score === null || Number.isNaN(score)) return 'confidence pending';
+  const value = score <= 1 ? score * 100 : score;
+  return `${Math.round(value)}% confidence`;
+}
 
 /* ── Typing Indicator ─────────────────────────────────── */
 function TypingIndicator() {
@@ -55,8 +93,12 @@ function TypingIndicator() {
 
 /* ── Main Component ───────────────────────────────────── */
 export default function AIAdvisor() {
+  const { profile } = useAuth();
   const [input, setInput] = useState('');
   const [contextOpen, setContextOpen] = useState(true);
+  const [businessLocation, setBusinessLocation] = useState<BusinessLocation>({ city: null, state: null });
+  const [recentSignals, setRecentSignals] = useState<ContextSignal[]>([]);
+  const [signalsLoading, setSignalsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -68,6 +110,100 @@ export default function AIAdvisor() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchBusinessContext() {
+      if (!isSupabaseConfigured || !profile?.business_id) return;
+
+      const { data } = await supabase
+        .from('businesses')
+        .select('city,state,location')
+        .eq('id', profile.business_id)
+        .maybeSingle();
+
+      if (cancelled || !data) return;
+      const parsed = parseLocation(data.location as string | null);
+      setBusinessLocation({
+        city: (data.city as string | null) ?? parsed.city,
+        state: (data.state as string | null) ?? parsed.state,
+      });
+    }
+
+    void fetchBusinessContext();
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.business_id]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchSignals() {
+      setSignalsLoading(true);
+
+      if (!isSupabaseConfigured) {
+        setRecentSignals([]);
+        setSignalsLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('market_signals')
+        .select('id,title,direction,updated_at,source,source_name,region,confidence_score')
+        .eq('active', true)
+        .eq('is_duplicate', false)
+        .order('updated_at', { ascending: false })
+        .limit(36);
+
+      if (cancelled) return;
+      if (error || !data || data.length === 0) {
+        setRecentSignals([]);
+        setSignalsLoading(false);
+        return;
+      }
+
+      const cityNeedle = businessLocation.city?.toLowerCase() ?? '';
+      const stateNeedle = businessLocation.state?.toLowerCase() ?? '';
+
+      const rows = data as Array<{
+        id: string;
+        title: string;
+        direction: 'up' | 'down' | 'stable' | null;
+        updated_at: string;
+        source: string | null;
+        source_name: string | null;
+        region: string | null;
+        confidence_score: number | null;
+      }>;
+
+      const regional = rows.filter((row) => {
+        const haystack = (row.region ?? '').toLowerCase();
+        if (!haystack) return false;
+        return (cityNeedle && haystack.includes(cityNeedle)) || (stateNeedle && haystack.includes(stateNeedle));
+      });
+
+      const selected = (regional.length > 0 ? regional : rows)
+        .slice(0, 3)
+        .map((row) => ({
+          id: row.id,
+          title: row.title,
+          direction: row.direction,
+          source: row.source_name ?? row.source ?? 'Unknown source',
+          confidenceScore: row.confidence_score,
+          updatedAt: row.updated_at,
+        }));
+
+      setRecentSignals(selected);
+      setSignalsLoading(false);
+    }
+
+    void fetchSignals();
+    return () => {
+      cancelled = true;
+    };
+  }, [businessLocation.city, businessLocation.state]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -231,7 +367,11 @@ export default function AIAdvisor() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-pro-warm-gray">Location</span>
-                  <span className="text-pro-charcoal font-medium">Austin, TX</span>
+                  <span className="text-pro-charcoal font-medium">
+                    {businessLocation.city && businessLocation.state
+                      ? `${businessLocation.city}, ${businessLocation.state}`
+                      : 'Not configured'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-pro-warm-gray">Active Brands</span>
@@ -242,6 +382,41 @@ export default function AIAdvisor() {
                   <span className="text-pro-gold font-medium">Premium</span>
                 </div>
               </div>
+            </div>
+
+            {/* Live Market Signals */}
+            <div className="bg-white rounded-xl border border-pro-stone p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-serif text-sm text-pro-navy">Regional Signals</h3>
+                <span className="text-[10px] font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  Live
+                </span>
+              </div>
+
+              {signalsLoading ? (
+                <p className="text-xs text-pro-warm-gray font-sans">Loading market signals...</p>
+              ) : recentSignals.length === 0 ? (
+                <p className="text-xs text-pro-warm-gray font-sans">
+                  No active signals available yet. Enable feeds in Admin to populate this panel.
+                </p>
+              ) : (
+                <div className="space-y-2.5">
+                  {recentSignals.map((signal) => {
+                    const { Icon, color } = signalPresentation(signal.direction);
+                    return (
+                      <div key={signal.id} className="rounded-lg border border-pro-stone/60 bg-pro-ivory/40 px-3 py-2.5">
+                        <div className="flex items-start gap-2">
+                          <Icon className={`w-3.5 h-3.5 mt-0.5 ${color} flex-shrink-0`} />
+                          <p className="text-xs text-pro-charcoal font-sans leading-snug">{signal.title}</p>
+                        </div>
+                        <p className="text-[10px] font-sans text-pro-warm-gray mt-1.5">
+                          {signal.source} | {formatSignalTimestamp(signal.updatedAt)} | {formatConfidence(signal.confidenceScore)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Suggested Questions */}

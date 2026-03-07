@@ -8,11 +8,15 @@ interface SparklineChartProps {
   label?: string;
 }
 
+const DEFAULT_SPARKLINE_COLOR = 'var(--color-accent)';
+const SPARKLINE_LABEL_COLOR = 'var(--color-text-muted)';
+const SPARKLINE_GRID_COLOR = 'var(--color-surface-alt)';
+
 /**
  * Lightweight inline SVG sparkline — no Recharts dependency for the small
  * trend indicators. For full charts, use the Recharts LineChart below.
  */
-export function Sparkline({ data, color = '#C5A572', height = 32 }: SparklineChartProps) {
+export function Sparkline({ data, color = DEFAULT_SPARKLINE_COLOR, height = 32 }: SparklineChartProps) {
   if (!data || data.length < 2) {
     return <div className="skeleton" style={{ height }} />;
   }
@@ -49,7 +53,7 @@ export function Sparkline({ data, color = '#C5A572', height = 32 }: SparklineCha
  * Full line chart using a simple SVG approach (no Recharts import needed at this point).
  * For advanced charts, Recharts <LineChart> can be dropped in here later.
  */
-export default function SparklineChart({ data, color = '#1E3A5F', height = 180, label }: SparklineChartProps) {
+export default function SparklineChart({ data, color = DEFAULT_SPARKLINE_COLOR, height = 180, label }: SparklineChartProps) {
   if (!data || data.length < 2) {
     return <div className="skeleton rounded-lg" style={{ height }} />;
   }
@@ -111,7 +115,7 @@ export default function SparklineChart({ data, color = '#1E3A5F', height = 180, 
             y={toY(v) + 4}
             textAnchor="end"
             fontSize="10"
-            fill="#6B6560"
+            fill={SPARKLINE_LABEL_COLOR}
             fontFamily="General Sans, system-ui, sans-serif"
           >
             {v.toLocaleString()}
@@ -128,7 +132,7 @@ export default function SparklineChart({ data, color = '#1E3A5F', height = 180, 
               y={svgHeight - 4}
               textAnchor="middle"
               fontSize="10"
-              fill="#6B6560"
+              fill={SPARKLINE_LABEL_COLOR}
               fontFamily="General Sans, system-ui, sans-serif"
             >
               {d.date.slice(5)}
@@ -144,7 +148,7 @@ export default function SparklineChart({ data, color = '#1E3A5F', height = 180, 
             y1={toY(v)}
             x2={svgWidth - paddingRight}
             y2={toY(v)}
-            stroke="#E8E3DA"
+            stroke={SPARKLINE_GRID_COLOR}
             strokeWidth="1"
           />
         ))}

@@ -20,6 +20,9 @@ import {
   Brain,
   Bot,
   CreditCard,
+  FileText,
+  Bell,
+  CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { RouteErrorBoundary } from '../components/RouteErrorBoundary';
@@ -27,25 +30,50 @@ import { Avatar } from '../components/ui';
 import ChatPanel from '../components/ai/ChatPanel';
 import NotificationCenter from '../components/notifications/NotificationCenter';
 
-const PRIMARY_NAV = [
-  { path: '/brand/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/brand/intelligence', label: 'Intelligence', icon: Brain },
-  { path: '/brand/advisor', label: 'AI Advisor', icon: Bot },
-  { path: '/brand/orders',    label: 'Orders',    icon: ShoppingBag },
-  { path: '/brand/products',  label: 'Products',  icon: Package },
-  { path: '/brand/performance', label: 'Performance', icon: BarChart2 },
-  { path: '/brand/messages',  label: 'Messages',  icon: MessageSquare },
-  { path: '/brand/customers', label: 'Retailers', icon: Users },
-  { path: '/brand/pipeline',  label: 'Pipeline',  icon: Target },
-  { path: '/brand/storefront', label: 'Storefront', icon: Store },
-  { path: '/brand/campaigns',   label: 'Campaigns',   icon: Megaphone },
-  { path: '/brand/automations', label: 'Automations', icon: Zap },
-  { path: '/brand/promotions',  label: 'Promotions',  icon: Tag },
-  { path: '/brand/intelligence-pricing', label: 'Plans', icon: CreditCard },
+const NAV_SECTIONS = [
+  {
+    label: 'Intelligence',
+    items: [
+      { path: '/brand/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { path: '/brand/intelligence', label: 'Intelligence Hub', icon: Brain },
+      { path: '/brand/advisor', label: 'AI Advisor', icon: Bot },
+      { path: '/brand/intelligence-report', label: 'Intelligence Report', icon: FileText },
+      { path: '/brand/intelligence-pricing', label: 'Intelligence Pricing', icon: CreditCard },
+    ],
+  },
+  {
+    label: 'Commerce',
+    items: [
+      { path: '/brand/orders', label: 'Orders', icon: ShoppingBag },
+      { path: '/brand/products', label: 'Products', icon: Package },
+      { path: '/brand/customers', label: 'Retailers', icon: Users },
+      { path: '/brand/storefront', label: 'Storefront', icon: Store },
+    ],
+  },
+  {
+    label: 'Growth',
+    items: [
+      { path: '/brand/performance', label: 'Performance', icon: BarChart2 },
+      { path: '/brand/campaigns', label: 'Campaigns', icon: Megaphone },
+      { path: '/brand/automations', label: 'Automations', icon: Zap },
+      { path: '/brand/promotions', label: 'Promotions', icon: Tag },
+      { path: '/brand/pipeline', label: 'Pipeline', icon: Target },
+      { path: '/brand/leads', label: 'Leads', icon: Users },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { path: '/brand/messages', label: 'Messages', icon: MessageSquare },
+      { path: '/brand/notifications', label: 'Notifications', icon: Bell },
+      { path: '/brand/onboarding', label: 'Onboarding', icon: Sparkles },
+      { path: '/brand/claim/review', label: 'Claim Review', icon: CheckCircle2 },
+      { path: '/brand/plans', label: 'Plans', icon: CreditCard },
+    ],
+  },
 ];
 
-
-const ALL_NAV = PRIMARY_NAV;
+const ALL_NAV = NAV_SECTIONS.flatMap((section) => section.items);
 
 export default function BrandLayout() {
   const { user, signOut, brandId } = useAuth();
@@ -57,13 +85,13 @@ export default function BrandLayout() {
   useEffect(() => {
     if (!brandId) return;
     supabase
-      .from('brand_messages')
-      .select('business_id')
+      .from('conversations')
+      .select('id', { count: 'exact', head: true })
       .eq('brand_id', brandId)
-      .eq('sender_type', 'business')
-      .then(({ data }) => {
-        const unique = new Set((data || []).map(m => m.business_id));
-        setMsgCount(unique.size);
+      .eq('is_archived', false)
+      .then(({ count, error }) => {
+        if (error) return;
+        setMsgCount(count ?? 0);
       });
   }, [brandId]);
 
@@ -93,30 +121,37 @@ export default function BrandLayout() {
 
       {/* Primary nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
-        {PRIMARY_NAV.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.path);
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium font-sans transition-colors ${
-                active
-                  ? 'bg-pro-navy text-white'
-                  : 'text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-cream'
-              }`}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              <span>{item.label}</span>
-              {item.label === 'Messages' && msgCount > 0 && (
-                <span className="ml-auto min-w-[20px] h-5 px-1 rounded-full bg-pro-gold text-white text-[10px] font-bold flex items-center justify-center">
-                  {msgCount > 99 ? '99+' : msgCount}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.label} className="pb-2">
+            <p className="px-3 py-2 text-[10px] font-semibold tracking-wider uppercase text-pro-warm-gray/70 font-sans">
+              {section.label}
+            </p>
+            {section.items.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path) || location.pathname.startsWith(`${item.path}/`);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium font-sans transition-colors ${
+                    active
+                      ? 'bg-pro-navy text-white'
+                      : 'text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-cream'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span>{item.label}</span>
+                  {item.label === 'Messages' && msgCount > 0 && (
+                    <span className="ml-auto min-w-[20px] h-5 px-1 rounded-full bg-pro-gold text-white text-[10px] font-bold flex items-center justify-center">
+                      {msgCount > 99 ? '99+' : msgCount}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
 
 
       </nav>

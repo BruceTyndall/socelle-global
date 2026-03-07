@@ -19,7 +19,6 @@ import {
 import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
-import { useToast } from '../../components/Toast';
 import { getProtocolBySlug, getProtocols } from '../../lib/protocols/mockProtocols';
 import { CATEGORY_LABELS, SKILL_LABELS } from '../../lib/protocols/useProtocols';
 import type { ProtocolCategory, SkillLevel } from '../../lib/protocols/types';
@@ -58,7 +57,6 @@ const CATEGORY_ICONS: Record<ProtocolCategory, React.ElementType> = {
 
 export default function ProtocolDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { addToast } = useToast();
 
   const protocol = slug ? getProtocolBySlug(slug) : undefined;
 
@@ -86,14 +84,6 @@ export default function ProtocolDetail() {
             .slice(0, 3 - related.length),
         ]
       : related;
-
-  const handleAddAllToCart = () => {
-    addToast('Cart integration coming soon', 'info');
-  };
-
-  const handleDownloadCertificate = () => {
-    addToast('Certificate generation coming soon', 'info');
-  };
 
   // Collect all unique products
   const allProducts = protocol.steps.flatMap((s) => s.products);
@@ -269,16 +259,12 @@ export default function ProtocolDetail() {
                                     {product.usage}
                                   </p>
                                 </div>
-                                <a
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    addToast('Product page coming soon', 'info');
-                                  }}
-                                  className="flex-shrink-0 text-xs font-sans font-medium text-accent hover:text-accent-hover transition-colors flex items-center gap-1 mt-0.5"
+                                <span
+                                  className="flex-shrink-0 text-xs font-sans font-medium text-graphite/40 flex items-center gap-1 mt-0.5 cursor-not-allowed"
+                                  title="Direct product detail is not available for this protocol item yet."
                                 >
-                                  View <ExternalLink className="w-3 h-3" />
-                                </a>
+                                  Unavailable <ExternalLink className="w-3 h-3" />
+                                </span>
                               </div>
                             ))}
                           </div>
@@ -294,13 +280,13 @@ export default function ProtocolDetail() {
             <aside className="lg:w-80 flex-shrink-0 space-y-5">
               {/* Add All to Cart */}
               <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6">
-                <button
-                  onClick={handleAddAllToCart}
+                <Link
+                  to="/shop"
                   className="w-full inline-flex items-center justify-center gap-2 bg-mn-dark text-mn-bg font-sans font-medium rounded-full h-[48px] px-6 text-sm transition-opacity hover:opacity-90"
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  Add All Products to Cart
-                </button>
+                  Browse Products in Shop
+                </Link>
                 <p className="text-xs font-sans text-graphite/40 text-center mt-3">
                   {uniqueProducts.length} products from {protocol.steps.length} steps
                 </p>
@@ -322,10 +308,11 @@ export default function ProtocolDetail() {
                     credits upon completion
                   </p>
                   <button
-                    onClick={handleDownloadCertificate}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-accent/15 hover:bg-accent/25 text-graphite font-sans font-medium px-4 py-2.5 rounded-full text-sm transition-colors"
+                    disabled
+                    title="Certificate download is disabled until LMS completion tracking is connected."
+                    className="w-full inline-flex items-center justify-center gap-2 bg-accent/10 text-graphite/45 font-sans font-medium px-4 py-2.5 rounded-full text-sm cursor-not-allowed"
                   >
-                    Download Certificate
+                    Certificate Unavailable
                   </button>
                 </div>
               )}

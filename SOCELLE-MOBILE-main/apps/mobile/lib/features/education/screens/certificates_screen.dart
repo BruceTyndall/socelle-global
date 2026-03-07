@@ -132,9 +132,7 @@ class CertificatesScreen extends ConsumerWidget {
                       icon: Icon(Icons.share_outlined,
                           size: 20, color: SocelleTheme.accent),
                       onPressed: () {
-                        SharePlus.instance.share(
-                          ShareParams(text: 'I earned my ${cert['course_title']} certificate on SOCELLE!'),
-                        );
+                        Share.share('I earned my ${cert['course_title']} certificate on SOCELLE!');
                       },
                     ),
                   ],

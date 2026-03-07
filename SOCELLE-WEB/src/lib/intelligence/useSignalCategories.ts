@@ -28,10 +28,10 @@ export interface SignalCategory {
 }
 
 // ── Static metadata per signal_type ──────────────────────────────────
-const CATEGORY_META: Record<
+const CATEGORY_META: Partial<Record<
   SignalType,
   { icon: React.ElementType; title: string; description: string }
-> = {
+>> = {
   product_velocity: {
     icon: BarChart3,
     title: 'Product Velocity',
@@ -109,7 +109,11 @@ export function useSignalCategories(
     }, {});
 
     return DISPLAY_TYPES.map((type) => {
-      const meta = CATEGORY_META[type];
+      const meta = CATEGORY_META[type] ?? {
+        icon: BarChart3,
+        title: type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        description: 'Live intelligence signal from active data feeds.',
+      };
       const s = stats[type] ?? { count: 0, up: 0, down: 0, stable: 0 };
 
       // Dominant direction: whichever has the most signals

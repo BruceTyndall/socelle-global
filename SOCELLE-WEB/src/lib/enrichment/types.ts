@@ -13,6 +13,15 @@ export type EnrichmentSource =
 
 export type EnrichmentConfidence = 'high' | 'medium' | 'low';
 
+export interface EnrichmentProvenanceEntry {
+  source: EnrichmentSource;
+  provider: string;
+  fetched_at: string;
+  endpoint: string | null;
+  confidence: EnrichmentConfidence;
+  status: 'ok' | 'degraded' | 'missing';
+}
+
 // ── Operator Enrichment Profile ────────────────────────────────────
 
 export interface OperatorEnrichment {
@@ -46,6 +55,8 @@ export interface OperatorEnrichment {
   enrichment_date: string;
   /** Confidence level based on data completeness */
   enrichment_confidence: EnrichmentConfidence;
+  /** Source-level provenance for each adapter run */
+  provenance?: EnrichmentProvenanceEntry[];
 }
 
 // ── Brand Enrichment Profile ───────────────────────────────────────

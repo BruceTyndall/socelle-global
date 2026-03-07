@@ -1,0 +1,668 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+
+  /* Pearl Mineral V2 — Locked Public Palette */
+  --background: #FAF9F7;
+  --surface-alt: #F3F0EB;
+  --card: #FFFFFF;
+  --dark-panel: #1F2428;
+  --footer: #15191D;
+  --foreground: #141418;
+  --graphite: #141418;
+  --accent: #3F5465;
+  --accent-hover: #344857;
+  --text-on-dark: #F7F5F2;
+
+  /* Signal Colors */
+  --signal-up: #5F8A72;
+  --signal-warn: #A97A4C;
+  --signal-down: #8E6464;
+
+  --card-foreground: #141418;
+  --popover: #FAF9F7;
+  --popover-foreground: #141418;
+  --primary: #1F2428;
+  --primary-foreground: #F7F5F2;
+  --secondary: #F3F0EB;
+  --secondary-foreground: #141418;
+  --muted: #F3F0EB;
+  --muted-foreground: #717182;
+  --accent-foreground: #F7F5F2;
+  --destructive: #8E6464;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: transparent;
+  --input-background: #F3F0EB;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #3F5465;
+  --chart-1: #3F5465;
+  --chart-2: #141418;
+  --chart-3: #717182;
+  --chart-4: #344857;
+  --chart-5: #F7F5F2;
+  --radius: 0.625rem;
+
+  --sidebar: #FAF9F7;
+  --sidebar-foreground: #141418;
+  --sidebar-primary: #1F2428;
+  --sidebar-primary-foreground: #F7F5F2;
+  --sidebar-accent: #F3F0EB;
+  --sidebar-accent-foreground: #141418;
+  --sidebar-border: rgba(0,0,0,0.08);
+  --sidebar-ring: #3F5465;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-hover: var(--accent-hover);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Palette tokens for utility classes */
+  --color-dark-panel: var(--dark-panel);
+  --color-footer-bg: var(--footer);
+  --color-graphite: var(--graphite);
+  --color-surface-alt: var(--surface-alt);
+  --color-pearl: var(--background);
+  --color-socelle-accent: var(--accent);
+  --color-socelle-accent-hover: var(--accent-hover);
+  --color-text-on-dark: var(--text-on-dark);
+  --color-signal-up: var(--signal-up);
+  --color-signal-warn: var(--signal-warn);
+  --color-signal-down: var(--signal-down);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: 'General Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Mineral Font Size Scale ── */
+  --font-size-hero: clamp(3.5rem, 5.5vw, 5.25rem);
+  --font-size-hero--line-height: 1.04;
+  --font-size-hero--letter-spacing: -0.025em;
+  --font-size-hero--font-weight: 400;
+
+  --font-size-section: clamp(2.5rem, 3.5vw, 3.5rem);
+  --font-size-section--line-height: 1.1;
+  --font-size-section--letter-spacing: -0.02em;
+  --font-size-section--font-weight: 400;
+
+  --font-size-subsection: clamp(1.75rem, 2.5vw, 2.25rem);
+  --font-size-subsection--line-height: 1.15;
+  --font-size-subsection--letter-spacing: -0.015em;
+  --font-size-subsection--font-weight: 500;
+
+  --font-size-body-lg: 1.25rem;
+  --font-size-body-lg--line-height: 1.65;
+  --font-size-body-lg--font-weight: 400;
+
+  --font-size-body: 1.125rem;
+  --font-size-body--line-height: 1.65;
+  --font-size-body--font-weight: 400;
+
+  --font-size-eyebrow: 0.8125rem;
+  --font-size-eyebrow--line-height: 1.2;
+  --font-size-eyebrow--letter-spacing: 0.12em;
+  --font-size-eyebrow--font-weight: 500;
+
+  --font-size-label: 0.6875rem;
+  --font-size-label--line-height: 1.2;
+  --font-size-label--letter-spacing: 0.06em;
+  --font-size-label--font-weight: 600;
+
+  /* ── Intelligence Metric Scale ── */
+  --font-size-metric-xl: 4rem;
+  --font-size-metric-xl--line-height: 1;
+  --font-size-metric-xl--letter-spacing: -0.03em;
+  --font-size-metric-xl--font-weight: 700;
+
+  --font-size-metric-lg: 3rem;
+  --font-size-metric-lg--line-height: 1;
+  --font-size-metric-lg--letter-spacing: -0.025em;
+  --font-size-metric-lg--font-weight: 700;
+
+  --font-size-metric-md: 2.25rem;
+  --font-size-metric-md--line-height: 1.1;
+  --font-size-metric-md--letter-spacing: -0.02em;
+  --font-size-metric-md--font-weight: 700;
+
+  /* ── Mineral Shadows ── */
+  --shadow-soft: 0 8px 24px rgba(19, 24, 29, 0.06);
+  --shadow-panel: 0 20px 60px rgba(19, 24, 29, 0.12);
+  --shadow-card: 0 1px 2px 0 rgba(26, 23, 20, 0.04);
+  --shadow-card-hover: 0 2px 8px 0 rgba(26, 23, 20, 0.06), 0 1px 2px 0 rgba(26, 23, 20, 0.03);
+  --shadow-elevated: 0 4px 16px 0 rgba(26, 23, 20, 0.08), 0 1px 3px 0 rgba(26, 23, 20, 0.04);
+  --shadow-dropdown: 0 8px 24px 0 rgba(26, 23, 20, 0.10), 0 2px 6px 0 rgba(26, 23, 20, 0.04);
+  --shadow-modal: 0 20px 60px -12px rgba(26, 23, 20, 0.16), 0 8px 20px -6px rgba(26, 23, 20, 0.06);
+  --shadow-glass: 0 4px 24px rgba(19, 24, 29, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --shadow-glass-hover: 0 8px 40px rgba(19, 24, 29, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  /* ── Mineral Border Radii ── */
+  --radius-card: 28px;
+  --radius-section: 32px;
+  --radius-pill: 9999px;
+
+  /* ── Transition Timing ── */
+  --ease-brand: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-snap: cubic-bezier(0, 0, 1, 1);
+  --ease-cinematic: cubic-bezier(0.75, 0, 0.25, 1);
+
+  /* ── Animations ── */
+  --animate-fade-in: fade-in 0.35s ease-out forwards;
+  --animate-slide-up: slide-up 0.45s ease-out forwards;
+  --animate-counter-up: counter-up 0.6s ease-out forwards;
+  --animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;
+  --animate-slide-in-right: slide-in-right 0.4s ease-out forwards;
+  --animate-signal-pulse: signal-pulse 3s ease-in-out infinite;
+  --animate-blur-reveal: blur-reveal 0.8s ease-out forwards;
+  --animate-ken-burns: ken-burns 14s ease-out forwards;
+  --animate-gradient-slide: gradient-slide 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-pearl text-graphite;
+    font-family: var(--font-sans);
+  }
+
+  html {
+    font-size: var(--font-size);
+    scroll-behavior: smooth;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
+
+/* Socelle Liquid Glass Button System */
+@layer components {
+  /* Base liquid glass shared styles */
+  .btn-liquid,
+  .btn-liquid-primary,
+  .btn-liquid-accent,
+  .btn-liquid-dark,
+  .btn-liquid-ghost,
+  .btn-liquid-glass,
+  .btn-liquid-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 cursor-pointer;
+    height: 48px;
+    font-weight: 500;
+    letter-spacing: 0.015em;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Size variants */
+  .btn-liquid-sm {
+    height: 36px;
+    @apply px-4 py-1.5 text-sm;
+  }
+
+  .btn-liquid-lg {
+    height: 52px;
+    @apply px-8 py-3.5;
+  }
+
+  /* Primary — frosted dark glass */
+  .btn-liquid-primary {
+    background: rgba(31, 36, 40, 0.75);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #F7F5F2;
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.06),
+      0 2px 8px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .btn-liquid-primary:hover {
+    background: rgba(31, 36, 40, 0.88);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.1),
+      0 4px 16px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  /* Accent — tinted glass with accent color */
+  .btn-liquid-accent {
+    background: rgba(63, 84, 101, 0.2);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(63, 84, 101, 0.35);
+    color: #F7F5F2;
+    box-shadow:
+      0 0 0 0.5px rgba(63, 84, 101, 0.15),
+      0 2px 8px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .btn-liquid-accent:hover {
+    background: rgba(63, 84, 101, 0.35);
+    border-color: rgba(63, 84, 101, 0.5);
+    box-shadow:
+      0 0 0 0.5px rgba(63, 84, 101, 0.25),
+      0 4px 16px rgba(63, 84, 101, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+  }
+
+  /* Dark on dark — subtle glass panel */
+  .btn-liquid-dark {
+    background: rgba(247, 245, 242, 0.08);
+    backdrop-filter: blur(20px) saturate(1.3);
+    -webkit-backdrop-filter: blur(20px) saturate(1.3);
+    border: 1px solid rgba(247, 245, 242, 0.12);
+    color: #F7F5F2;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .btn-liquid-dark:hover {
+    background: rgba(247, 245, 242, 0.15);
+    border-color: rgba(247, 245, 242, 0.2);
+    box-shadow:
+      0 2px 12px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+  }
+
+  /* Ghost — minimal, text-only with subtle hover glass */
+  .btn-liquid-ghost {
+    @apply bg-transparent;
+    color: rgba(247, 245, 242, 0.7);
+    border: 1px solid transparent;
+  }
+  .btn-liquid-ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #F7F5F2;
+  }
+
+  /* Glass — the hero glass button, most prominent translucency */
+  .btn-liquid-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #F7F5F2;
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  }
+  .btn-liquid-glass:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.12),
+      0 8px 24px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+
+  /* Light variant — for use on light backgrounds */
+  .btn-liquid-light {
+    background: rgba(31, 36, 40, 0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(31, 36, 40, 0.1);
+    color: #141418;
+    box-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .btn-liquid-light:hover {
+    background: rgba(31, 36, 40, 0.1);
+    border-color: rgba(31, 36, 40, 0.15);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: translateY(-1px);
+  }
+
+  /* Eyebrow label style */
+  .eyebrow {
+    @apply text-xs tracking-[0.2em] uppercase;
+    font-weight: 600;
+  }
+
+  /* Glass panels */
+  .glass-panel {
+    background: rgba(31, 36, 40, 0.4);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-panel-light {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* Scrollbar hide utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Line clamp */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     Neumorphic Mineral System — dimensional, tactile
+     ═══════════════════════════════════════════════════ */
+
+  /* ── Mineral Button — raised, pillowy, Fjord blue ── */
+  .btn-mineral {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 cursor-pointer;
+    height: 48px;
+    font-weight: 500;
+    letter-spacing: 0.015em;
+    color: #F7F5F2;
+    background: linear-gradient(145deg, #4e6b7f, #35495a);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      10px 10px 24px rgba(20, 20, 24, 0.28),
+      -6px -6px 18px rgba(255, 255, 255, 0.8),
+      0 2px 6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.25),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  .btn-mineral::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 40%, transparent 60%);
+    pointer-events: none;
+  }
+  .btn-mineral::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 15%;
+    right: 15%;
+    height: 40%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .btn-mineral:hover {
+    background: linear-gradient(145deg, #567389, #3b5262);
+    box-shadow:
+      12px 12px 30px rgba(20, 20, 24, 0.32),
+      -8px -8px 22px rgba(255, 255, 255, 0.85),
+      0 4px 12px rgba(0, 0, 0, 0.18),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+  .btn-mineral:active {
+    background: linear-gradient(145deg, #384d5c, #3F5465);
+    box-shadow:
+      3px 3px 8px rgba(20, 20, 24, 0.2),
+      -2px -2px 6px rgba(255, 255, 255, 0.5),
+      inset 0 3px 6px rgba(0, 0, 0, 0.18);
+    transform: translateY(1px);
+  }
+
+  /* Size variants for mineral buttons */
+  .btn-mineral.btn-mineral-sm {
+    height: 36px;
+    @apply px-4 py-1.5 text-sm rounded-xl;
+  }
+  .btn-mineral.btn-mineral-lg {
+    height: 52px;
+    @apply px-8 py-3.5 rounded-2xl;
+  }
+
+  /* Mineral outline variant — ghost with neumorphic depth */
+  .btn-mineral-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 cursor-pointer;
+    height: 48px;
+    font-weight: 500;
+    letter-spacing: 0.015em;
+    color: #3F5465;
+    background: linear-gradient(145deg, #FFFFFF, #EDE9E3);
+    border: 1.5px solid rgba(63, 84, 101, 0.25);
+    box-shadow:
+      8px 8px 20px rgba(20, 20, 24, 0.12),
+      -6px -6px 16px rgba(255, 255, 255, 0.95),
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-mineral-outline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 45%, transparent 60%);
+    pointer-events: none;
+  }
+  .btn-mineral-outline:hover {
+    border-color: rgba(63, 84, 101, 0.4);
+    color: #2d3e4d;
+    box-shadow:
+      10px 10px 26px rgba(20, 20, 24, 0.15),
+      -8px -8px 20px rgba(255, 255, 255, 1),
+      0 2px 6px rgba(0, 0, 0, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+  }
+
+  /* ── Mineral Card — raised, dimensional panel ── */
+  .card-mineral {
+    background: linear-gradient(155deg, #FFFFFF 0%, #F5F2ED 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow:
+      12px 12px 32px rgba(20, 20, 24, 0.1),
+      -8px -8px 24px rgba(255, 255, 255, 0.9),
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .card-mineral::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.15) 35%, transparent 55%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-mineral:hover {
+    box-shadow:
+      16px 16px 40px rgba(20, 20, 24, 0.13),
+      -10px -10px 30px rgba(255, 255, 255, 0.95),
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      inset 0 1px 1px rgba(255, 255, 255, 1);
+    transform: translateY(-3px);
+  }
+
+  /* Mineral card — inset/concave variant */
+  .card-mineral-inset {
+    background: linear-gradient(155deg, #EDE9E3, #F5F2ED);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow:
+      inset 6px 6px 14px rgba(20, 20, 24, 0.07),
+      inset -4px -4px 10px rgba(255, 255, 255, 0.8);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Mineral card on dark backgrounds */
+  .card-mineral-dark {
+    background: linear-gradient(155deg, #2a3035, #1a1e22);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow:
+      12px 12px 32px rgba(0, 0, 0, 0.4),
+      -8px -8px 24px rgba(255, 255, 255, 0.04),
+      inset 0 1px 1px rgba(255, 255, 255, 0.07);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .card-mineral-dark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .card-mineral-dark:hover {
+    box-shadow:
+      16px 16px 40px rgba(0, 0, 0, 0.45),
+      -10px -10px 30px rgba(255, 255, 255, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.09);
+    transform: translateY(-3px);
+  }
+
+  /* Neumorphic metric panel — for KPI/stat displays */
+  .panel-mineral {
+    background: linear-gradient(155deg, #FEFDFB 0%, #EDE9E3 100%);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+      10px 10px 28px rgba(20, 20, 24, 0.09),
+      -7px -7px 20px rgba(255, 255, 255, 0.9),
+      0 2px 5px rgba(0, 0, 0, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    position: relative;
+    overflow: hidden;
+  }
+  .panel-mineral::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 30%, transparent 50%);
+    pointer-events: none;
+  }
+  .panel-mineral::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 20%;
+    right: 20%;
+    height: 35%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}

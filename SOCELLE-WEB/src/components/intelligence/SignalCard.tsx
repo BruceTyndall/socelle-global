@@ -13,7 +13,7 @@ import TrendIndicator from './TrendIndicator';
 import FreshnessLabel from './FreshnessLabel';
 
 // ── Icon map ────────────────────────────────────────────────────────
-const SIGNAL_ICONS: Record<SignalType, React.ElementType> = {
+const SIGNAL_ICONS: Partial<Record<SignalType, React.ElementType>> = {
   product_velocity: BarChart3,
   treatment_trend: TrendingUp,
   ingredient_momentum: FlaskConical,
@@ -24,7 +24,7 @@ const SIGNAL_ICONS: Record<SignalType, React.ElementType> = {
   education: GraduationCap,
 };
 
-const SIGNAL_LABELS: Record<SignalType, string> = {
+const SIGNAL_LABELS: Partial<Record<SignalType, string>> = {
   product_velocity: 'Product Velocity',
   treatment_trend: 'Treatment Trend',
   ingredient_momentum: 'Ingredient Momentum',
@@ -35,13 +35,19 @@ const SIGNAL_LABELS: Record<SignalType, string> = {
   education: 'Education',
 };
 
+function humanizeSignalType(type: SignalType): string {
+  return type
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 interface SignalCardProps {
   signal: IntelligenceSignal;
 }
 
 export default function SignalCard({ signal }: SignalCardProps) {
-  const Icon = SIGNAL_ICONS[signal.signal_type];
-  const typeLabel = SIGNAL_LABELS[signal.signal_type];
+  const Icon = SIGNAL_ICONS[signal.signal_type] ?? BarChart3;
+  const typeLabel = SIGNAL_LABELS[signal.signal_type] ?? humanizeSignalType(signal.signal_type);
 
   return (
     <article className="group relative bg-pro-charcoal rounded-xl border border-white/[0.06] p-5 sm:p-6 transition-all duration-200 hover:border-white/[0.12] hover:shadow-[0_4px_20px_rgba(212,164,76,0.06)] hover:-translate-y-0.5">

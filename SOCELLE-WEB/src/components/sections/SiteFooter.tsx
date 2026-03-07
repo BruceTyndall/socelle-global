@@ -34,10 +34,10 @@ export default function SiteFooter() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 lg:gap-12">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-1">
-            <span className="text-[#F7F5F2] font-sans text-lg font-semibold tracking-[0.12em] uppercase">
+            <span className="text-mn-bg font-sans text-lg font-semibold tracking-[0.12em] uppercase">
               Socelle
             </span>
-            <p className="mt-3 text-sm text-[rgba(247,245,242,0.55)] leading-relaxed max-w-[200px]">
+            <p className="mt-3 text-sm text-mn-bg/55 leading-relaxed max-w-[200px]">
               The intelligence platform for professional beauty.
             </p>
           </div>
@@ -45,7 +45,7 @@ export default function SiteFooter() {
           {/* Link columns */}
           {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
             <div key={heading}>
-              <h4 className="text-[rgba(247,245,242,0.4)] font-sans text-xs font-medium tracking-[0.08em] uppercase mb-4">
+              <h4 className="text-mn-bg/40 font-sans text-xs font-medium tracking-[0.08em] uppercase mb-4">
                 {heading}
               </h4>
               <ul className="space-y-2.5">
@@ -53,7 +53,7 @@ export default function SiteFooter() {
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-[rgba(247,245,242,0.65)] text-sm hover:text-[#F7F5F2] transition-colors duration-200"
+                      className="text-mn-bg/65 text-sm hover:text-mn-bg transition-colors duration-200"
                     >
                       {link.label}
                     </Link>
@@ -65,15 +65,15 @@ export default function SiteFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 pt-6 border-t border-[rgba(247,245,242,0.08)] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-[rgba(247,245,242,0.35)] text-xs">
+        <div className="mt-14 pt-6 border-t border-mn-bg/[0.08] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="text-mn-bg/[0.35] text-xs">
             {new Date().getFullYear()} Socelle. All rights reserved.
           </span>
           <div className="flex items-center gap-6">
-            <Link to="/privacy" className="text-[rgba(247,245,242,0.35)] text-xs hover:text-[rgba(247,245,242,0.6)] transition-colors">
+            <Link to="/privacy" className="text-mn-bg/[0.35] text-xs hover:text-mn-bg/[0.6] transition-colors">
               Privacy
             </Link>
-            <Link to="/terms" className="text-[rgba(247,245,242,0.35)] text-xs hover:text-[rgba(247,245,242,0.6)] transition-colors">
+            <Link to="/terms" className="text-mn-bg/[0.35] text-xs hover:text-mn-bg/[0.6] transition-colors">
               Terms
             </Link>
           </div>

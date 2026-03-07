@@ -28,10 +28,11 @@ const TYPE_CONFIG: Record<AutomationType, { icon: typeof Mail; label: string; va
 
 export default function BrandAutomations() {
   const { addToast } = useToast();
-  const { automations, toggleAutomation, addAutomation, deleteAutomation } = useAutomations();
+  const { automations, toggleAutomation, addAutomation, deleteAutomation, loading, error } = useAutomations();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: '',
     type: 'order_confirmation' as AutomationType,
@@ -51,34 +52,54 @@ export default function BrandAutomations() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name.trim()) {
       addToast('Rule name is required', 'error');
       return;
     }
-    addAutomation({
+
+    setBusyAction('create');
+    const created = await addAutomation({
       name: form.name,
       type: form.type,
       description: form.description,
       enabled: form.enabled,
       triggerDays: form.type === 'reorder_reminder' ? form.triggerDays : undefined,
     });
-    addToast('Automation rule created', 'success');
-    setModalOpen(false);
+
+    if (created) {
+      addToast('Automation rule created', 'success');
+      setModalOpen(false);
+    } else {
+      addToast('Unable to create automation rule', 'error');
+    }
+    setBusyAction(null);
   };
 
-  const handleToggle = (id: string, currentEnabled: boolean) => {
-    toggleAutomation(id);
-    addToast(
-      currentEnabled ? 'Automation rule disabled' : 'Automation rule enabled',
-      'info'
-    );
+  const handleToggle = async (id: string, currentEnabled: boolean) => {
+    setBusyAction(id);
+    const ok = await toggleAutomation(id);
+    if (ok) {
+      addToast(
+        currentEnabled ? 'Automation rule disabled' : 'Automation rule enabled',
+        'info'
+      );
+    } else {
+      addToast('Unable to update automation rule', 'error');
+    }
+    setBusyAction(null);
   };
 
-  const handleDelete = (id: string) => {
-    deleteAutomation(id);
-    setConfirmDeleteId(null);
-    addToast('Automation rule deleted', 'success');
+  const handleDelete = async (id: string) => {
+    setBusyAction(id);
+    const ok = await deleteAutomation(id);
+    if (ok) {
+      setConfirmDeleteId(null);
+      addToast('Automation rule deleted', 'success');
+    } else {
+      addToast('Unable to delete automation rule', 'error');
+    }
+    setBusyAction(null);
   };
 
   const formatDate = (dateStr?: string) => {
@@ -97,6 +118,12 @@ export default function BrandAutomations() {
       </Helmet>
 
       <div className="space-y-6">
+        {error && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -126,7 +153,11 @@ export default function BrandAutomations() {
 
         {/* Automation Rule Cards */}
         <div className="space-y-3">
-          {automations.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-pro-warm-gray font-sans text-sm">Loading automation rules...</p>
+            </div>
+          ) : automations.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-14 h-14 bg-pro-cream rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Zap className="w-7 h-7 text-pro-warm-gray" />
@@ -180,7 +211,8 @@ export default function BrandAutomations() {
                     <div className="flex items-center gap-3 flex-shrink-0">
                       {/* Toggle Switch */}
                       <button
-                        onClick={() => handleToggle(rule.id, rule.enabled)}
+                        onClick={() => void handleToggle(rule.id, rule.enabled)}
+                        disabled={busyAction === rule.id}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 ${
                           rule.enabled ? 'bg-pro-navy' : 'bg-pro-stone'
                         }`}
@@ -311,8 +343,8 @@ export default function BrandAutomations() {
           <Button variant="ghost" size="sm" onClick={() => setModalOpen(false)}>
             Cancel
           </Button>
-          <Button variant="primary" size="sm" onClick={handleSave}>
-            Create Rule
+          <Button variant="primary" size="sm" onClick={() => void handleSave()} disabled={busyAction !== null}>
+            {busyAction === 'create' ? 'Creating...' : 'Create Rule'}
           </Button>
         </ModalFooter>
       </Modal>
@@ -336,7 +368,8 @@ export default function BrandAutomations() {
           <Button
             variant="danger"
             size="sm"
-            onClick={() => confirmDeleteId && handleDelete(confirmDeleteId)}
+            onClick={() => confirmDeleteId && void handleDelete(confirmDeleteId)}
+            disabled={busyAction !== null}
           >
             Delete Rule
           </Button>

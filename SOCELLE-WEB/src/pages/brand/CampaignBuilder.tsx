@@ -113,16 +113,14 @@ export default function CampaignBuilder() {
 
   // Step 4
   const [status, setStatus] = useState<CampaignStatus>('draft');
+  const [saving, setSaving] = useState(false);
 
   // Simulate AI loading when moving to step 2
   useEffect(() => {
     if (step === 2) {
       setAiLoading(true);
-      // Stub: simulates an AI call — in production this would hit the Claude API
-      console.log('[AI STUB] Generating channel recommendations for campaign:', name);
       const timeout = setTimeout(() => {
         setAiLoading(false);
-        // Return mock data (already set in initial state)
       }, 1500);
       return () => clearTimeout(timeout);
     }
@@ -158,8 +156,9 @@ export default function CampaignBuilder() {
     addToast('Print dialog opened. Save as PDF to export this campaign.', 'success');
   };
 
-  const handleSave = () => {
-    const campaign = addCampaign({
+  const handleSave = async () => {
+    setSaving(true);
+    const campaign = await addCampaign({
       name,
       description,
       startDate,
@@ -171,8 +170,13 @@ export default function CampaignBuilder() {
       status,
       targetOperatorCount: 0,
     });
-    addToast(`Campaign "${campaign.name}" saved as ${status}`, 'success');
-    navigate('/brand/campaigns');
+    if (campaign) {
+      addToast(`Campaign "${campaign.name}" saved as ${status}`, 'success');
+      navigate('/brand/campaigns');
+    } else {
+      addToast('Unable to save campaign', 'error');
+    }
+    setSaving(false);
   };
 
   const formatDate = (dateStr: string) => {
@@ -634,9 +638,10 @@ export default function CampaignBuilder() {
                     variant="gold"
                     size="sm"
                     iconLeft={<Save className="w-4 h-4" />}
-                    onClick={handleSave}
+                    onClick={() => void handleSave()}
+                    disabled={saving}
                   >
-                    Save Campaign
+                    {saving ? 'Saving...' : 'Save Campaign'}
                   </Button>
                 </div>
               </div>

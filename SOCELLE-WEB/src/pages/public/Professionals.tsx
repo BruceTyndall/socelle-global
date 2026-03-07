@@ -11,11 +11,13 @@ import GradientMark from '../../components/motion/GradientMark';
 import SiteFooter from '../../components/sections/SiteFooter';
 import AnimatedCounter from '../../components/public/AnimatedCounter';
 import { useCmsPage } from '../../lib/useCmsPage';
+import { usePlatformStats } from '../../lib/usePlatformStats';
+import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
 
 /* ══════════════════════════════════════════════════════════════════
    Professionals — Pearl Mineral V2
    WO-OVERHAUL-03 Phase 3: Site Rebuild
-   All stats are DEMO — hardcoded, not DB-connected.
+   Metrics use live hooks with explicit preview fallback.
    ══════════════════════════════════════════════════════════════════ */
 
 const AUDIENCE_CARDS = [
@@ -62,13 +64,6 @@ const FEATURES = [
   },
 ];
 
-const METRICS = [
-  { value: '340+', label: 'Verified practitioners' },
-  { value: '47', label: 'Active protocols' },
-  { value: '200+', label: 'Data sources monitored' },
-  { value: '96%', label: 'Signal confidence' },
-];
-
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
@@ -80,6 +75,32 @@ const jsonLd = {
 
 export default function Professionals() {
   const { isLive: _cmsLive } = useCmsPage('professionals');
+  const { stats, loading: platformLoading, isLive: platformLive } = usePlatformStats();
+  const {
+    stats: feedStats,
+    loading: feedStatsLoading,
+    isLive: feedStatsLive,
+  } = useDataFeedStats();
+  const metricsLive = platformLive || feedStatsLive;
+
+  const metrics = [
+    {
+      value: platformLoading ? '--' : stats.operatorsCount.toLocaleString(),
+      label: 'Verified practitioners',
+    },
+    {
+      value: platformLoading ? '--' : stats.protocolsCount.toLocaleString(),
+      label: 'Active protocols',
+    },
+    {
+      value: platformLoading ? '--' : stats.dataSourcesCount.toLocaleString(),
+      label: 'Data sources monitored',
+    },
+    {
+      value: feedStatsLoading ? '--' : feedStats.totalSignals.toLocaleString(),
+      label: 'Signals tracked',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
@@ -248,20 +269,26 @@ export default function Professionals() {
         </div>
       </section>
 
-      {/* ── Metrics Row — DEMO ──────────────────────────────────────── */}
+      {/* ── Metrics Row ─────────────────────────────────────────────── */}
       <section className="bg-mn-bg py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center mb-8">
-            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
-              DEMO
+            <span
+              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                metricsLive
+                  ? 'bg-signal-up/10 text-signal-up'
+                  : 'bg-signal-warn/10 text-signal-warn'
+              }`}
+            >
+              {metricsLive ? 'LIVE' : 'PREVIEW'}
             </span>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {METRICS.map((m, idx) => (
+            {metrics.map((m, idx) => (
               <BlockReveal key={m.label} delay={idx * 100}>
                 <div className="text-center">
                   <p className="font-sans font-semibold text-[2.5rem] lg:text-[3rem] text-graphite leading-none mb-2">
-                    <AnimatedCounter value={m.value} />
+                    {m.value === '--' ? m.value : <AnimatedCounter value={m.value} />}
                   </p>
                   <p className="text-sm text-graphite/50 font-sans">
                     {m.label}

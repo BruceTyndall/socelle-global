@@ -31,7 +31,7 @@ class RevenueSnapshot extends StatefulWidget {
         "${currency.format(recoveredRevenue)}.\n\n"
         "If you do appointments, you need this.";
 
-    await SharePlus.instance.share(ShareParams(text: text));
+    await Share.share(text);
   }
 
   @override

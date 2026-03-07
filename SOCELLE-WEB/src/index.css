@@ -62,17 +62,8 @@
   --transition-reveal:    all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   --header-height:        72px;
 
-  /* ── Legacy tokens (portal backward compat) ───────────────── */
-  --color-navy:        #8C6B6E;
-  --color-navy-dark:   #6E5254;
-  --color-gold:        #D4A44C;
-  --color-gold-pale:   #F5EDE0;
-  --color-ivory:       #F5F3F0;
-  --color-cream:       #EDEDE5;
-  --color-stone:       #D6D1C9;
-  --color-charcoal:    #1A1714;
-  --color-warm-gray:   #6B6560;
-
+  /* Legacy palette intentionally removed from :root.
+     Portal-only colors live under .portal-context below. */
   --radius-sm:   6px;
   --radius:      8px;
   --radius-md:   10px;
@@ -101,6 +92,15 @@
   --color-primary-cocoa:  #47201c;
   --color-deep-cocoa:     #29120f;
   --color-neutral-beige:  #ac9b98;
+  --color-navy:           #8C6B6E;
+  --color-navy-dark:      #6E5254;
+  --color-gold:           #D4A44C;
+  --color-gold-pale:      #F5EDE0;
+  --color-ivory:          #F5F3F0;
+  --color-cream:          #EDEDE5;
+  --color-stone:          #D6D1C9;
+  --color-charcoal:       #1A1714;
+  --color-warm-gray:      #6B6560;
 
   /* ─── PAGE BACKGROUNDS ─── */
   --bg-page-main:         #f8f6f2;

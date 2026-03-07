@@ -127,7 +127,7 @@ export default function BusinessDashboard({ businessId }: BusinessDashboardProps
               Retail Revenue — Last 30 Days
             </h3>
           </div>
-          <SparklineChart data={retailRevenueTrend} color="#C5A572" height={120} />
+          <SparklineChart data={retailRevenueTrend} color="var(--color-warn)" height={120} />
         </div>
       </div>
 

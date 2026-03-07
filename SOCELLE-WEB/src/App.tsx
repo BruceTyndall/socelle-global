@@ -18,6 +18,7 @@ import MarketingLayout from './layouts/MarketingLayout';
 const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
 
 // ── Public
+const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
 const PublicHome = lazy(() => import('./pages/public/Home'));
 const PublicBrands = lazy(() => import('./pages/public/Brands'));
 const PublicBrandStorefront = lazy(() => import('./pages/public/BrandStorefront'));
@@ -312,7 +313,9 @@ function App() {
               <Suspense fallback={Fallback}>
                 <Routes>
                   {/* ── Public ─────────────────────────────────── */}
+                  {/* Pre-launch quiz — primary landing during build phase (W14-01) */}
                   <Route path="/" element={<PrelaunchQuiz />} />
+                  {/* Full cinematic home kept accessible for internal preview */}
                   <Route path="/home" element={<PublicHome />} />
                   <Route path="/brands" element={<PublicBrands />} />
                   <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
@@ -803,7 +806,14 @@ function App() {
 
                   <Route
                     path="/admin"
-                    element={<AdminLayout />}
+                    element={
+                      <ProtectedRoute
+                        requireRole={['admin', 'platform_admin']}
+                        redirectTo="/admin/login"
+                      >
+                        <AdminLayout />
+                      </ProtectedRoute>
+                    }
                   >
                     <Route index element={<Navigate to="/admin/brands" replace />} />
                     <Route path="dashboard" element={<AdminDashboard />} />

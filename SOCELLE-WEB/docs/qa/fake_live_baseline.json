@@ -1,0 +1,507 @@
+{
+  "scope": [
+    "src/pages/public",
+    "src/lib"
+  ],
+  "total": 83,
+  "entries": [
+    {
+      "id": "src/lib/ai/mockAdvisor.ts:3:/* ── Intent Classification (keyword-based mock) ─────────────── */",
+      "file": "src/lib/ai/mockAdvisor.ts",
+      "line": 3,
+      "snippet": "/* ── Intent Classification (keyword-based mock) ─────────────── */"
+    },
+    {
+      "id": "src/lib/api/mockApiData.ts:2:* Enterprise Intelligence API — Mock Data",
+      "file": "src/lib/api/mockApiData.ts",
+      "line": 2,
+      "snippet": "* Enterprise Intelligence API — Mock Data"
+    },
+    {
+      "id": "src/lib/api/mockApiData.ts:3:* WO-21: Mock endpoints, clients, and usage statistics.",
+      "file": "src/lib/api/mockApiData.ts",
+      "line": 3,
+      "snippet": "* WO-21: Mock endpoints, clients, and usage statistics."
+    },
+    {
+      "id": "src/lib/api/mockApiData.ts:337:// Mock revenue: starter $199, professional $499, enterprise $2499",
+      "file": "src/lib/api/mockApiData.ts",
+      "line": 337,
+      "snippet": "// Mock revenue: starter $199, professional $499, enterprise $2499"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:1:// ── Mock Tier Data ────────────────────────────────────────────────",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 1,
+      "snippet": "// ── Mock Tier Data ────────────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:175:// ── Mock Current Subscription (Professional tier) ────────────────",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 175,
+      "snippet": "// ── Mock Current Subscription (Professional tier) ────────────────"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:178:brandId: 'mock-brand-001',",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 178,
+      "snippet": "brandId: 'mock-brand-001',"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:186:// ── Mock Intelligence Reports ────────────────────────────────────",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 186,
+      "snippet": "// ── Mock Intelligence Reports ────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:191:brandId: 'mock-brand-001',",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 191,
+      "snippet": "brandId: 'mock-brand-001',"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:262:brandId: 'mock-brand-001',",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 262,
+      "snippet": "brandId: 'mock-brand-001',"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:3:// All data is local mock — no Supabase or Stripe integration",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 3,
+      "snippet": "// All data is local mock — no Supabase or Stripe integration"
+    },
+    {
+      "id": "src/lib/brandTiers/mockTierData.ts:323:brandId: 'mock-brand-001',",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 323,
+      "snippet": "brandId: 'mock-brand-001',"
+    },
+    {
+      "id": "src/lib/brandTiers/useBrandTier.ts:25:/** Stub upgrade function — returns a toast message */",
+      "file": "src/lib/brandTiers/useBrandTier.ts",
+      "line": 25,
+      "snippet": "/** Stub upgrade function — returns a toast message */"
+    },
+    {
+      "id": "src/lib/brandTiers/useBrandTier.ts:52:// STUB — billing integration deferred",
+      "file": "src/lib/brandTiers/useBrandTier.ts",
+      "line": 52,
+      "snippet": "// STUB — billing integration deferred"
+    },
+    {
+      "id": "src/lib/brandTiers/useBrandTier.ts:53:return 'Billing integration coming soon';",
+      "file": "src/lib/brandTiers/useBrandTier.ts",
+      "line": 53,
+      "snippet": "return 'Billing integration coming soon';"
+    },
+    {
+      "id": "src/lib/education/mockContent.ts:3:// ── Mock education content — 22 items across all categories ────────",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 3,
+      "snippet": "// ── Mock education content — 22 items across all categories ────────"
+    },
+    {
+      "id": "src/lib/education/mockContent.ts:302:// ── Mock progress — simulates a user 8/24 CE credits in ─────────",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 302,
+      "snippet": "// ── Mock progress — simulates a user 8/24 CE credits in ─────────"
+    },
+    {
+      "id": "src/lib/enrichment/enrichmentService.ts:312:provider: 'fallback/mock-profile',",
+      "file": "src/lib/enrichment/enrichmentService.ts",
+      "line": 312,
+      "snippet": "provider: 'fallback/mock-profile',"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:1:// ── External Enrichment Pipeline — Mock Data ──────────────────────",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 1,
+      "snippet": "// ── External Enrichment Pipeline — Mock Data ──────────────────────"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:196:// ── Mock Brand Enrichment Profiles ─────────────────────────────────",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 196,
+      "snippet": "// ── Mock Brand Enrichment Profiles ─────────────────────────────────"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:2:// WO-16: Realistic mock enrichment profiles for professional beauty operators + brands",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 2,
+      "snippet": "// WO-16: Realistic mock enrichment profiles for professional beauty operators + brands"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:277:* Falls back to a known mock profile if operatorId isn't matched,",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 277,
+      "snippet": "* Falls back to a known mock profile if operatorId isn't matched,"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:285:// Deterministic fallback: hash operatorId to pick a mock profile",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 285,
+      "snippet": "// Deterministic fallback: hash operatorId to pick a mock profile"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:294:* Falls back to a known mock profile if brandId isn't matched.",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 294,
+      "snippet": "* Falls back to a known mock profile if brandId isn't matched."
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:3:// V1: Static mock data; V2: Supabase enrichment_profiles table queries",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 3,
+      "snippet": "// V1: Static mock data; V2: Supabase enrichment_profiles table queries"
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:308:* Get all mock operator profiles (for admin/debug views).",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 308,
+      "snippet": "* Get all mock operator profiles (for admin/debug views)."
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:315:* Get all mock brand profiles (for admin/debug views).",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 315,
+      "snippet": "* Get all mock brand profiles (for admin/debug views)."
+    },
+    {
+      "id": "src/lib/enrichment/mockEnrichment.ts:7:// ── Mock Operator Enrichment Profiles ──────────────────────────────",
+      "file": "src/lib/enrichment/mockEnrichment.ts",
+      "line": 7,
+      "snippet": "// ── Mock Operator Enrichment Profiles ──────────────────────────────"
+    },
+    {
+      "id": "src/lib/enrichment/types.ts:3:// V1: Mock data layer; V2: real API integrations (Google, Yelp, social)",
+      "file": "src/lib/enrichment/types.ts",
+      "line": 3,
+      "snippet": "// V1: Mock data layer; V2: real API integrations (Google, Yelp, social)"
+    },
+    {
+      "id": "src/lib/enrichment/useEnrichment.ts:3:// V1: Returns mock data synchronously (simulates loading state)",
+      "file": "src/lib/enrichment/useEnrichment.ts",
+      "line": 3,
+      "snippet": "// V1: Returns mock data synchronously (simulates loading state)"
+    },
+    {
+      "id": "src/lib/i18n/currency.ts:28:* Convert an amount between two currencies using mock rates.",
+      "file": "src/lib/i18n/currency.ts",
+      "line": 28,
+      "snippet": "* Convert an amount between two currencies using mock rates."
+    },
+    {
+      "id": "src/lib/i18n/currency.ts:3:// Mock exchange rates (USD base). Replace with live API in production.",
+      "file": "src/lib/i18n/currency.ts",
+      "line": 3,
+      "snippet": "// Mock exchange rates (USD base). Replace with live API in production."
+    },
+    {
+      "id": "src/lib/i18n/currency.ts:7:/** Mock exchange rates relative to USD */",
+      "file": "src/lib/i18n/currency.ts",
+      "line": 7,
+      "snippet": "/** Mock exchange rates relative to USD */"
+    },
+    {
+      "id": "src/lib/i18n/regions.ts:20:/** Regional compliance database (mock) */",
+      "file": "src/lib/i18n/regions.ts",
+      "line": 20,
+      "snippet": "/** Regional compliance database (mock) */"
+    },
+    {
+      "id": "src/lib/i18n/regions.ts:211:* Mock region stats for admin dashboard.",
+      "file": "src/lib/i18n/regions.ts",
+      "line": 211,
+      "snippet": "* Mock region stats for admin dashboard."
+    },
+    {
+      "id": "src/lib/i18n/translations/es.ts:1:// ── Spanish Translations (Stub) ───────────────────────────────────",
+      "file": "src/lib/i18n/translations/es.ts",
+      "line": 1,
+      "snippet": "// ── Spanish Translations (Stub) ───────────────────────────────────"
+    },
+    {
+      "id": "src/lib/i18n/translations/es.ts:3:// Stub — re-exports English until professional translations are provided.",
+      "file": "src/lib/i18n/translations/es.ts",
+      "line": 3,
+      "snippet": "// Stub — re-exports English until professional translations are provided."
+    },
+    {
+      "id": "src/lib/i18n/translations/fr.ts:1:// ── French Translations (Stub) ────────────────────────────────────",
+      "file": "src/lib/i18n/translations/fr.ts",
+      "line": 1,
+      "snippet": "// ── French Translations (Stub) ────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/i18n/translations/fr.ts:3:// Stub — re-exports English until professional translations are provided.",
+      "file": "src/lib/i18n/translations/fr.ts",
+      "line": 3,
+      "snippet": "// Stub — re-exports English until professional translations are provided."
+    },
+    {
+      "id": "src/lib/intelligence/adminIntelligence.ts:1:// ── Admin Intelligence Mock Data — WO-14 ──────────────────────────────────",
+      "file": "src/lib/intelligence/adminIntelligence.ts",
+      "line": 1,
+      "snippet": "// ── Admin Intelligence Mock Data — WO-14 ──────────────────────────────────"
+    },
+    {
+      "id": "src/lib/intelligence/adminIntelligence.ts:2:// Mock data layer for admin portal intelligence features.",
+      "file": "src/lib/intelligence/adminIntelligence.ts",
+      "line": 2,
+      "snippet": "// Mock data layer for admin portal intelligence features."
+    },
+    {
+      "id": "src/lib/intelligence/adminIntelligence.ts:96:// ── Mock Data Functions ────────────────────────────────────────────────────",
+      "file": "src/lib/intelligence/adminIntelligence.ts",
+      "line": 96,
+      "snippet": "// ── Mock Data Functions ────────────────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/intelligence/benchmarkTypes.ts:2:// WO-19: Benchmarking Dashboard — all data mock until enrichment pipeline (WO-16)",
+      "file": "src/lib/intelligence/benchmarkTypes.ts",
+      "line": 2,
+      "snippet": "// WO-19: Benchmarking Dashboard — all data mock until enrichment pipeline (WO-16)"
+    },
+    {
+      "id": "src/lib/intelligence/brandIntelligence.ts:1:// ── Brand Intelligence — Mock Data Layer ──────────────────────────────────────",
+      "file": "src/lib/intelligence/brandIntelligence.ts",
+      "line": 1,
+      "snippet": "// ── Brand Intelligence — Mock Data Layer ──────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/intelligence/brandIntelligence.ts:2:// V1: deterministic mock data based on brand slug",
+      "file": "src/lib/intelligence/brandIntelligence.ts",
+      "line": 2,
+      "snippet": "// V1: deterministic mock data based on brand slug"
+    },
+    {
+      "id": "src/lib/intelligence/brandIntelligence.ts:44:// ── Deterministic hash for consistent mock data per slug ──────────────────────",
+      "file": "src/lib/intelligence/brandIntelligence.ts",
+      "line": 44,
+      "snippet": "// ── Deterministic hash for consistent mock data per slug ──────────────────────"
+    },
+    {
+      "id": "src/lib/intelligence/brandPortalIntelligence.ts:1:// ── Brand Portal Intelligence — Mock Data Layer ────────────────────",
+      "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+      "line": 1,
+      "snippet": "// ── Brand Portal Intelligence — Mock Data Layer ────────────────────"
+    },
+    {
+      "id": "src/lib/intelligence/brandPortalIntelligence.ts:2:// V1: returns mock data shaped for brand portal intelligence views",
+      "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+      "line": 2,
+      "snippet": "// V1: returns mock data shaped for brand portal intelligence views"
+    },
+    {
+      "id": "src/lib/intelligence/brandPortalIntelligence.ts:97:// ── Helper: deterministic \"random\" for consistent mock data ────────",
+      "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+      "line": 97,
+      "snippet": "// ── Helper: deterministic \"random\" for consistent mock data ────────"
+    },
+    {
+      "id": "src/lib/intelligence/businessIntelligence.ts:2:// WO-11 Task 1: Mock data for business portal intelligence features",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 2,
+      "snippet": "// WO-11 Task 1: Mock data for business portal intelligence features"
+    },
+    {
+      "id": "src/lib/intelligence/businessIntelligence.ts:3:// V1: Static mock data; V2: Supabase queries + real operator profiles",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 3,
+      "snippet": "// V1: Static mock data; V2: Supabase queries + real operator profiles"
+    },
+    {
+      "id": "src/lib/intelligence/computeBenchmarks.ts:2:// WO-19: All data is mock — will connect to Supabase post-WO-16",
+      "file": "src/lib/intelligence/computeBenchmarks.ts",
+      "line": 2,
+      "snippet": "// WO-19: All data is mock — will connect to Supabase post-WO-16"
+    },
+    {
+      "id": "src/lib/intelligence/types.ts:2:// V1: typed for mock data; V2: maps to Supabase market_signals table",
+      "file": "src/lib/intelligence/types.ts",
+      "line": 2,
+      "snippet": "// V1: typed for mock data; V2: maps to Supabase market_signals table"
+    },
+    {
+      "id": "src/lib/intelligence/useBenchmarkData.ts:3:// Falls back to mock data from computeBenchmarks.ts when Supabase is",
+      "file": "src/lib/intelligence/useBenchmarkData.ts",
+      "line": 3,
+      "snippet": "// Falls back to mock data from computeBenchmarks.ts when Supabase is"
+    },
+    {
+      "id": "src/lib/intelligence/useBenchmarkData.ts:364:// On error, keep mock data",
+      "file": "src/lib/intelligence/useBenchmarkData.ts",
+      "line": 364,
+      "snippet": "// On error, keep mock data"
+    },
+    {
+      "id": "src/lib/intelligence/useBenchmarkData.ts:54:// No Supabase or no business context — use mock data",
+      "file": "src/lib/intelligence/useBenchmarkData.ts",
+      "line": 54,
+      "snippet": "// No Supabase or no business context — use mock data"
+    },
+    {
+      "id": "src/lib/intelligence/useBenchmarkData.ts:74:// No order history — use mock",
+      "file": "src/lib/intelligence/useBenchmarkData.ts",
+      "line": 74,
+      "snippet": "// No order history — use mock"
+    },
+    {
+      "id": "src/lib/intelligence/useBrandIntelligence.ts:3:// and adoption count data. Falls back to mock maps in brandIntelligence.ts",
+      "file": "src/lib/intelligence/useBrandIntelligence.ts",
+      "line": 3,
+      "snippet": "// and adoption count data. Falls back to mock maps in brandIntelligence.ts"
+    },
+    {
+      "id": "src/lib/intelligence/useBrandIntelligence.ts:46:// No Supabase config — fall back to mock data",
+      "file": "src/lib/intelligence/useBrandIntelligence.ts",
+      "line": 46,
+      "snippet": "// No Supabase config — fall back to mock data"
+    },
+    {
+      "id": "src/lib/intelligence/useIntelligence.ts:191:if (!isLive) return rawSignals; // mock data has no tier_visibility",
+      "file": "src/lib/intelligence/useIntelligence.ts",
+      "line": 191,
+      "snippet": "if (!isLive) return rawSignals; // mock data has no tier_visibility"
+    },
+    {
+      "id": "src/lib/locations/mockLocations.ts:1:// ── Mock Multi-Location Data ───────────────────────────────────────────",
+      "file": "src/lib/locations/mockLocations.ts",
+      "line": 1,
+      "snippet": "// ── Mock Multi-Location Data ───────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/locations/mockLocations.ts:2:// WO-22: Local mock data — no Supabase mutations",
+      "file": "src/lib/locations/mockLocations.ts",
+      "line": 2,
+      "snippet": "// WO-22: Local mock data — no Supabase mutations"
+    },
+    {
+      "id": "src/lib/locations/types.ts:2:// WO-22: All data is mock/local state — no Supabase migrations",
+      "file": "src/lib/locations/types.ts",
+      "line": 2,
+      "snippet": "// WO-22: All data is mock/local state — no Supabase migrations"
+    },
+    {
+      "id": "src/lib/mappingEngine.test.ts:10:vi.mock('./supabase', () => ({",
+      "file": "src/lib/mappingEngine.test.ts",
+      "line": 10,
+      "snippet": "vi.mock('./supabase', () => ({"
+    },
+    {
+      "id": "src/lib/mappingEngine.test.ts:33:// by importing after the mock is set up.",
+      "file": "src/lib/mappingEngine.test.ts",
+      "line": 33,
+      "snippet": "// by importing after the mock is set up."
+    },
+    {
+      "id": "src/lib/mappingEngine.test.ts:36:// This avoids circular mock issues while testing the actual business logic.",
+      "file": "src/lib/mappingEngine.test.ts",
+      "line": 36,
+      "snippet": "// This avoids circular mock issues while testing the actual business logic."
+    },
+    {
+      "id": "src/lib/mappingEngine.test.ts:9:// ── Mock supabase before importing the engine ──────────────────────────────────",
+      "file": "src/lib/mappingEngine.test.ts",
+      "line": 9,
+      "snippet": "// ── Mock supabase before importing the engine ──────────────────────────────────"
+    },
+    {
+      "id": "src/lib/notifications/mockNotifications.ts:1:// ── Mock Notification Data ─────────────────────────────────────────",
+      "file": "src/lib/notifications/mockNotifications.ts",
+      "line": 1,
+      "snippet": "// ── Mock Notification Data ─────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/notifications/useNotifications.ts:31:// STUB: In production, persist to Supabase",
+      "file": "src/lib/notifications/useNotifications.ts",
+      "line": 31,
+      "snippet": "// STUB: In production, persist to Supabase"
+    },
+    {
+      "id": "src/lib/notifications/useNotifications.ts:36:// STUB: In production, batch update in Supabase",
+      "file": "src/lib/notifications/useNotifications.ts",
+      "line": 36,
+      "snippet": "// STUB: In production, batch update in Supabase"
+    },
+    {
+      "id": "src/lib/notifications/useNotifications.ts:42:// STUB: In production, save to Supabase user_preferences",
+      "file": "src/lib/notifications/useNotifications.ts",
+      "line": 42,
+      "snippet": "// STUB: In production, save to Supabase user_preferences"
+    },
+    {
+      "id": "src/lib/notifications/useNotifications.ts:43:// STUB: Email delivery not yet connected",
+      "file": "src/lib/notifications/useNotifications.ts",
+      "line": 43,
+      "snippet": "// STUB: Email delivery not yet connected"
+    },
+    {
+      "id": "src/lib/notifications/useNotifications.ts:45:// noop: email frequency stub — not yet wired to delivery service",
+      "file": "src/lib/notifications/useNotifications.ts",
+      "line": 45,
+      "snippet": "// noop: email frequency stub — not yet wired to delivery service"
+    },
+    {
+      "id": "src/lib/protocols/mockProtocols.ts:3:// ── Mock Treatment Protocols ────────────────────────────────────────",
+      "file": "src/lib/protocols/mockProtocols.ts",
+      "line": 3,
+      "snippet": "// ── Mock Treatment Protocols ────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/protocols/mockProtocols.ts:559:// ── Mock CE Progress Data ───────────────────────────────────────────",
+      "file": "src/lib/protocols/mockProtocols.ts",
+      "line": 559,
+      "snippet": "// ── Mock CE Progress Data ───────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/searchService.test.ts:15:vi.mock('./supabase', () => ({",
+      "file": "src/lib/searchService.test.ts",
+      "line": 15,
+      "snippet": "vi.mock('./supabase', () => ({"
+    },
+    {
+      "id": "src/lib/searchService.test.ts:9:// ── Mock supabase ─────────────────────────────────────────────────────────────",
+      "file": "src/lib/searchService.test.ts",
+      "line": 9,
+      "snippet": "// ── Mock supabase ─────────────────────────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/useIngredients.ts:6:// Empty array if DB is empty — no mock fallback per W12-22 spec.",
+      "file": "src/lib/useIngredients.ts",
+      "line": 6,
+      "snippet": "// Empty array if DB is empty — no mock fallback per W12-22 spec."
+    },
+    {
+      "id": "src/lib/usePlatformStats.ts:4:Follows useIntelligence() canonical pattern: isLive + mock fallback.",
+      "file": "src/lib/usePlatformStats.ts",
+      "line": 4,
+      "snippet": "Follows useIntelligence() canonical pattern: isLive + mock fallback."
+    },
+    {
+      "id": "src/lib/useRssItems.ts:6:// Returns empty array (not mock data) if DB is empty — per W12-21 spec.",
+      "file": "src/lib/useRssItems.ts",
+      "line": 6,
+      "snippet": "// Returns empty array (not mock data) if DB is empty — per W12-21 spec."
+    },
+    {
+      "id": "src/lib/useRssItems.ts:67:// No Supabase config — empty state, no mock fallback (W12-21)",
+      "file": "src/lib/useRssItems.ts",
+      "line": 67,
+      "snippet": "// No Supabase config — empty state, no mock fallback (W12-21)"
+    },
+    {
+      "id": "src/pages/public/ApiPricing.tsx:129:addToast('API access coming soon. We will notify you when self-serve is available.', 'info');",
+      "file": "src/pages/public/ApiPricing.tsx",
+      "line": 129,
+      "snippet": "addToast('API access coming soon. We will notify you when self-serve is available.', 'info');"
+    },
+    {
+      "id": "src/pages/public/CourseDetail.tsx:351:<p className=\"text-sm text-graphite/50\">Curriculum details coming soon.</p>",
+      "file": "src/pages/public/CourseDetail.tsx",
+      "line": 351,
+      "snippet": "<p className=\"text-sm text-graphite/50\">Curriculum details coming soon.</p>"
+    }
+  ]
+}

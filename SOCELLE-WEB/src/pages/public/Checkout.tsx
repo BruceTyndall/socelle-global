@@ -1,6 +1,6 @@
 // Checkout.tsx — /checkout — Multi-step checkout with Stripe Elements (LIVE — orders, carts tables)
 import { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -13,7 +13,8 @@ import { useAuth } from '../../lib/auth';
 import { formatCents } from '../../lib/shop/types';
 import { supabase } from '../../lib/supabase';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder');
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 const STEPS = [
   { key: 'shipping', label: 'Shipping', icon: Truck },
@@ -37,7 +38,6 @@ interface Address {
 const emptyAddress: Address = { name: '', line1: '', line2: '', city: '', state: '', zip: '', country: 'US' };
 
 function CheckoutForm() {
-  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuth();
@@ -331,6 +331,32 @@ function CheckoutForm() {
 }
 
 export default function Checkout() {
+  if (!stripePromise) {
+    return (
+      <>
+        <Helmet>
+          <title>Checkout Unavailable | Socelle</title>
+        </Helmet>
+        <MainNav />
+        <main className="min-h-screen bg-mn-bg">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20 text-center">
+            <p className="text-subsection text-graphite mb-3">Checkout is not configured</p>
+            <p className="text-body text-graphite/60 mb-6">
+              Missing `VITE_STRIPE_PUBLISHABLE_KEY` environment variable. Add the key and redeploy to enable payments.
+            </p>
+            <Link
+              to="/shop"
+              className="inline-flex items-center justify-center h-11 px-6 rounded-pill bg-mn-dark text-white text-sm font-sans font-semibold hover:bg-graphite transition-colors"
+            >
+              Back to Shop
+            </Link>
+          </div>
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
+
   return (
     <>
       <Helmet>

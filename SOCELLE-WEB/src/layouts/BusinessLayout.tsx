@@ -1,5 +1,30 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Home, ShoppingBag, Sparkles, MessageSquare, User, LogOut, ChevronDown, ArrowLeft, Brain, Bot, BarChart3, GraduationCap, MapPin } from 'lucide-react';
+import {
+  Home,
+  ShoppingBag,
+  Sparkles,
+  MessageSquare,
+  User,
+  LogOut,
+  ChevronDown,
+  ArrowLeft,
+  Brain,
+  Bot,
+  BarChart3,
+  GraduationCap,
+  MapPin,
+  CalendarDays,
+  ClipboardList,
+  FileText,
+  CheckCircle2,
+  TrendingUp,
+  Megaphone,
+  Users,
+  Target,
+  Bell,
+  CreditCard,
+  Store,
+} from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useState } from 'react';
 import MainNav from '../components/MainNav';
@@ -20,19 +45,56 @@ export default function BusinessLayout() {
     navigate('/portal');
   };
 
-  const shopNav = [
-    { path: '/portal/dashboard',     label: 'Dashboard',     icon: Home },
-    { path: '/portal/intelligence',  label: 'Intelligence',  icon: Brain },
-    { path: '/portal/advisor',       label: 'AI Advisor',    icon: Bot },
-    { path: '/portal/benchmarks',    label: 'Benchmarks',    icon: BarChart3 },
-    { path: '/portal/locations',     label: 'Locations',     icon: MapPin },
-    { path: '/brands',               label: 'Browse Brands', icon: Sparkles },
-    { path: '/portal/orders',    label: 'My Orders',     icon: ShoppingBag },
-    { path: '/portal/messages',  label: 'Messages',      icon: MessageSquare },
-    { path: '/portal/ce-credits', label: 'CE Credits',    icon: GraduationCap },
-  ];
-  const accountNav = [
-    { path: '/portal/account',   label: 'Account',       icon: User },
+  const navSections = [
+    {
+      label: 'Intelligence',
+      items: [
+        { path: '/portal/dashboard', label: 'Dashboard', icon: Home },
+        { path: '/portal/intelligence', label: 'Intelligence Hub', icon: Brain },
+        { path: '/portal/advisor', label: 'AI Advisor', icon: Bot },
+        { path: '/portal/benchmarks', label: 'Benchmarks', icon: BarChart3 },
+        { path: '/portal/locations', label: 'Locations', icon: MapPin },
+        { path: '/portal/ce-credits', label: 'CE Credits', icon: GraduationCap },
+      ],
+    },
+    {
+      label: 'Operations',
+      items: [
+        { path: '/portal/orders', label: 'Orders', icon: ShoppingBag },
+        { path: '/portal/messages', label: 'Messages', icon: MessageSquare },
+        { path: '/portal/calendar', label: 'Calendar', icon: CalendarDays },
+        { path: '/portal/plans', label: 'Plans', icon: ClipboardList },
+        { path: '/portal/plans/new', label: 'New Plan', icon: ClipboardList },
+        { path: '/portal/plans/compare', label: 'Compare Plans', icon: ClipboardList },
+        { path: '/portal/apply', label: 'Apply', icon: FileText },
+        { path: '/portal/claim/review', label: 'Claim Review', icon: CheckCircle2 },
+      ],
+    },
+    {
+      label: 'Growth',
+      items: [
+        { path: '/portal/sales', label: 'Sales', icon: TrendingUp },
+        { path: '/portal/marketing', label: 'Marketing', icon: Megaphone },
+        { path: '/portal/crm', label: 'CRM', icon: Users },
+        { path: '/portal/booking', label: 'Booking', icon: CalendarDays },
+        { path: '/portal/prospects', label: 'Prospects', icon: Target },
+        { path: '/portal/reseller', label: 'Reseller', icon: Store },
+      ],
+    },
+    {
+      label: 'Discovery',
+      items: [
+        { path: '/brands', label: 'Browse Brands', icon: Sparkles },
+      ],
+    },
+    {
+      label: 'Account',
+      items: [
+        { path: '/portal/notifications', label: 'Notifications', icon: Bell },
+        { path: '/portal/account', label: 'Account', icon: User },
+        { path: '/portal/subscription', label: 'Subscription', icon: CreditCard },
+      ],
+    },
   ];
 
   if (!user) {
@@ -66,46 +128,33 @@ export default function BusinessLayout() {
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Home</span>
             </Link>
-            <p className="text-[10px] font-sans font-semibold text-pro-warm-gray/70 uppercase tracking-wider px-4 pt-4 pb-1">Shop</p>
-            {shopNav.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.path === '/brands'
-                ? location.pathname.startsWith('/brands')
-                : location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors font-sans min-h-touch ${
-                    isActive
-                      ? 'bg-pro-cream text-pro-navy font-medium'
-                      : 'text-pro-warm-gray hover:bg-pro-cream hover:text-pro-navy'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-            <p className="text-[10px] font-sans font-semibold text-pro-warm-gray/70 uppercase tracking-wider px-4 pt-6 pb-1">Account</p>
-            {accountNav.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors font-sans min-h-touch ${
-                    isActive
-                      ? 'bg-pro-cream text-pro-navy font-medium'
-                      : 'text-pro-warm-gray hover:bg-pro-cream hover:text-pro-navy'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+            {navSections.map((section) => (
+              <div key={section.label}>
+                <p className="text-[10px] font-sans font-semibold text-pro-warm-gray/70 uppercase tracking-wider px-4 pt-4 pb-1">
+                  {section.label}
+                </p>
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = item.path === '/brands'
+                    ? location.pathname.startsWith('/brands')
+                    : location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors font-sans min-h-touch ${
+                        isActive
+                          ? 'bg-pro-cream text-pro-navy font-medium'
+                          : 'text-pro-warm-gray hover:bg-pro-cream hover:text-pro-navy'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
 
           <div className="p-4 border-t border-pro-stone">

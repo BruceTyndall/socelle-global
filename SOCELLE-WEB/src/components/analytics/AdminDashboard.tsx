@@ -87,7 +87,7 @@ export default function AdminDashboard() {
           <h3 className="font-sans font-semibold text-pro-charcoal text-sm mb-4">
             DAU — Last 30 Days
           </h3>
-          <SparklineChart data={dauMauTrend} color="#1E3A5F" height={130} />
+          <SparklineChart data={dauMauTrend} color="var(--color-accent)" height={130} />
         </div>
 
         {/* ── New registrations ──────────────────────────────── */}
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
           <h3 className="font-sans font-semibold text-pro-charcoal text-sm mb-4">
             New Registrations — By Week
           </h3>
-          <SparklineChart data={registrationsByWeek} color="#C5A572" height={130} />
+          <SparklineChart data={registrationsByWeek} color="var(--color-warn)" height={130} />
         </div>
       </div>
 

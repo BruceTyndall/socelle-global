@@ -253,31 +253,27 @@ export default function Home() {
   const { stats: feedStats, loading: feedsLoading, isLive: feedsLive } = useDataFeedStats();
   const { isLive: cmsLive } = useCmsPage('home');
 
-  /* KPI data — LIVE when hooks connect, DEMO fallback */
+  /* KPI data — live when hooks connect, preview otherwise */
   const kpis = [
     {
       id: 'k1',
-      value: feedsLive ? feedStats.totalSignals : 847000,
+      value: feedsLoading ? '--' : feedStats.totalSignals,
       label: 'Signals Tracked',
-      delta: 12.3,
     },
     {
       id: 'k2',
-      value: feedsLive ? feedStats.totalFeeds : 342,
+      value: feedsLoading ? '--' : feedStats.totalFeeds,
       label: 'Data Sources',
-      delta: 5.2,
     },
     {
       id: 'k3',
-      value: statsLive ? stats.protocolsCount : 48,
+      value: statsLoading ? '--' : stats.protocolsCount,
       label: 'Verified Protocols',
-      delta: 2.1,
     },
     {
       id: 'k4',
-      value: statsLoading ? 120 : stats.brandsCount,
+      value: statsLoading ? '--' : stats.brandsCount,
       label: 'Verified Brands',
-      delta: 3.1,
     },
   ];
 
@@ -317,20 +313,19 @@ export default function Home() {
         primaryCTA={{ label: 'Get Intelligence Access', href: '/request-access' }}
         secondaryCTA={{ label: 'Explore Intelligence', href: '/intelligence' }}
         overlayMetric={{
-          value: statsLoading ? '120' : stats.brandsCount.toLocaleString(),
+          value: statsLoading ? '--' : stats.brandsCount.toLocaleString(),
           label: 'Verified Brands',
         }}
       />
 
-      {/* ── News Ticker: DEMO — hardcoded signal headlines ── */}
+      {/* ── News Ticker ───────────────────────────────────────────── */}
       <NewsTicker
-        items={[
-          { tag: 'Market Signal', headline: 'Retinol alternative demand surges 34% in Q1 -- bakuchiol leads', timestamp: '3m' },
-          { tag: 'Brand Intel', headline: 'SkinCeuticals reformulates C E Ferulic -- practitioners report texture shift', timestamp: '8m' },
-          { tag: 'Clinical', headline: 'LED panel efficacy meta-analysis: 633nm up 22% vs baseline', timestamp: '14m' },
-          { tag: 'Pricing', headline: 'Hyaluronic acid filler wholesale cost down 8% -- three distributors adjust', timestamp: '19m' },
-          { tag: 'Regulatory', headline: 'California AB-1742 tightens nurse injector supervision ratios', timestamp: '31m' },
-          { tag: 'Event', headline: 'Socelle Intelligence Summit Miami -- early-bird registration open', timestamp: '45m' },
+        items={feedsLive ? [
+          { tag: 'Signal Feed', headline: `${feedStats.totalSignals.toLocaleString()} total signals available in intelligence pipeline`, timestamp: 'now' },
+          { tag: 'Sources', headline: `${feedStats.totalFeeds.toLocaleString()} configured data sources tracked`, timestamp: 'now' },
+          { tag: 'Feeds', headline: `${feedStats.enabledFeeds.toLocaleString()} feeds currently enabled`, timestamp: 'now' },
+        ] : [
+          { tag: 'Preview', headline: 'Enable and run data feeds in Admin to activate live intelligence headlines', timestamp: 'now' },
         ]}
       />
 
@@ -344,7 +339,7 @@ export default function Home() {
         eyebrow="How It Works"
         headline="Clinical Signals, Translated for Buying Decisions"
         metric={{
-          value: feedsLive ? `${feedStats.totalFeeds}+` : '342+',
+          value: feedsLive ? `${feedStats.totalFeeds}+` : '--',
           label: 'Integrated Data Sources',
         }}
         bullets={[

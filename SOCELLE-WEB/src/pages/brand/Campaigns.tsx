@@ -52,13 +52,14 @@ const EMPTY_FORM: Omit<Campaign, 'id' | 'createdAt'> = {
 export default function BrandCampaigns() {
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { campaigns, addCampaign, updateCampaign, deleteCampaign } = useCampaigns();
+  const { campaigns, addCampaign, updateCampaign, deleteCampaign, loading, error } = useCampaigns();
   const { products: catalogProducts } = useProducts({ per_page: 200, sort: 'featured' });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
 
   const openCreate = () => {
     setEditingId(null);
@@ -83,30 +84,55 @@ export default function BrandCampaigns() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name.trim()) {
       addToast('Campaign name is required', 'error');
       return;
     }
+
+    setBusyAction(editingId ?? 'create');
+
     if (editingId) {
-      updateCampaign(editingId, form);
-      addToast('Campaign updated successfully', 'success');
+      const ok = await updateCampaign(editingId, form);
+      if (ok) {
+        addToast('Campaign updated successfully', 'success');
+        setModalOpen(false);
+      } else {
+        addToast('Unable to update campaign', 'error');
+      }
     } else {
-      addCampaign(form);
-      addToast('Campaign created successfully', 'success');
+      const created = await addCampaign(form);
+      if (created) {
+        addToast('Campaign created successfully', 'success');
+        setModalOpen(false);
+      } else {
+        addToast('Unable to create campaign', 'error');
+      }
     }
-    setModalOpen(false);
+    setBusyAction(null);
   };
 
-  const handleDelete = (id: string) => {
-    deleteCampaign(id);
-    setConfirmDeleteId(null);
-    addToast('Campaign deleted', 'success');
+  const handleDelete = async (id: string) => {
+    setBusyAction(id);
+    const ok = await deleteCampaign(id);
+    if (ok) {
+      setConfirmDeleteId(null);
+      addToast('Campaign deleted', 'success');
+    } else {
+      addToast('Unable to delete campaign', 'error');
+    }
+    setBusyAction(null);
   };
 
-  const handleArchive = (id: string) => {
-    updateCampaign(id, { status: 'archived' });
-    addToast('Campaign archived', 'success');
+  const handleArchive = async (id: string) => {
+    setBusyAction(id);
+    const ok = await updateCampaign(id, { status: 'archived' });
+    if (ok) {
+      addToast('Campaign archived', 'success');
+    } else {
+      addToast('Unable to archive campaign', 'error');
+    }
+    setBusyAction(null);
   };
 
   const toggleTier = (tier: OperatorTier) => {
@@ -133,6 +159,7 @@ export default function BrandCampaigns() {
   };
 
   const formatDate = (dateStr: string) => {
+    if (!dateStr) return 'TBD';
     return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -218,7 +245,8 @@ export default function BrandCampaigns() {
           </button>
           {campaign.status !== 'archived' && (
             <button
-              onClick={() => handleArchive(campaign.id)}
+              onClick={() => void handleArchive(campaign.id)}
+              disabled={busyAction === campaign.id}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-sans text-pro-warm-gray hover:text-amber-600 hover:bg-amber-50/50 transition-colors"
             >
               <Archive className="w-3 h-3" />
@@ -244,6 +272,12 @@ export default function BrandCampaigns() {
       </Helmet>
 
       <div className="space-y-6">
+        {error && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -284,7 +318,11 @@ export default function BrandCampaigns() {
 
           {['all', 'active', 'scheduled', 'draft', 'completed'].map((status) => (
             <TabPanel key={status} id={status} className="pt-5">
-              {filterCampaigns(status).length === 0 ? (
+              {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-pro-warm-gray font-sans text-sm">Loading campaigns...</p>
+                </div>
+              ) : filterCampaigns(status).length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-pro-warm-gray font-sans text-sm">
                     No {status === 'all' ? '' : status} campaigns found.
@@ -461,7 +499,7 @@ export default function BrandCampaigns() {
           <Button variant="ghost" size="sm" onClick={() => setModalOpen(false)}>
             Cancel
           </Button>
-          <Button variant="primary" size="sm" onClick={handleSave}>
+          <Button variant="primary" size="sm" onClick={() => void handleSave()} disabled={busyAction !== null}>
             {editingId ? 'Update Campaign' : 'Create Campaign'}
           </Button>
         </ModalFooter>
@@ -486,7 +524,8 @@ export default function BrandCampaigns() {
           <Button
             variant="danger"
             size="sm"
-            onClick={() => confirmDeleteId && handleDelete(confirmDeleteId)}
+            onClick={() => confirmDeleteId && void handleDelete(confirmDeleteId)}
+            disabled={busyAction !== null}
           >
             Delete Campaign
           </Button>

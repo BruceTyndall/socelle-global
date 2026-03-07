@@ -23,7 +23,7 @@ class FillSlotFlow {
     final message = _composeMessage(gap);
 
     // 2. Open share sheet
-    await SharePlus.instance.share(ShareParams(text: message));
+    await Share.share(message);
 
     // Track share-sheet use for paywall trigger 3 (repeated share use)
     final storage = ref.read(settingsStorageProvider);

@@ -1,10 +1,8 @@
-import { type FC } from 'react';
-
 const AVATARS = [
-  '/images/avatars/avatar-1.jpg',
-  '/images/avatars/avatar-2.jpg',
-  '/images/avatars/avatar-3.jpg',
-  '/images/avatars/avatar-4.jpg',
+  '/images/brand/photos/1.svg',
+  '/images/brand/photos/2.svg',
+  '/images/brand/photos/3.svg',
+  '/images/brand/photos/4.svg',
 ];
 
 interface SocialProofProps {

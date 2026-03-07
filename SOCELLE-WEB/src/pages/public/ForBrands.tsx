@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    ForBrands.tsx — "For Brands" Landing Page
    WO-OVERHAUL-03 Phase 3 rebuild
-   Data: DEMO — all stats are from usePlatformStats (mock fallback)
+   Data: usePlatformStats() live counts with explicit preview fallback
    Pearl Mineral V2 tokens only — no pro-*, no font-serif
    Uses brand media from /images/brand/ and /videos/brand/
    ═══════════════════════════════════════════════════════════════ */
@@ -174,9 +174,9 @@ export default function ForBrands() {
           <BlockReveal delay={500}>
             <div className="flex flex-wrap justify-center gap-6 mt-12">
               {[
-                { value: statsLoading ? '120' : stats.brandsCount.toLocaleString(), label: 'Verified Brands' },
-                { value: statsLoading ? '500' : stats.operatorsCount.toLocaleString(), label: 'Active Practitioners' },
-                { value: statsLoading ? '48' : stats.protocolsCount.toLocaleString(), label: 'Protocols' },
+                { value: statsLoading ? '--' : stats.brandsCount.toLocaleString(), label: 'Verified Brands' },
+                { value: statsLoading ? '--' : stats.operatorsCount.toLocaleString(), label: 'Active Practitioners' },
+                { value: statsLoading ? '--' : stats.protocolsCount.toLocaleString(), label: 'Protocols' },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <p className="text-2xl font-sans font-semibold text-white">{stat.value}</p>

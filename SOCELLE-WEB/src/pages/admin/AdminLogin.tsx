@@ -156,7 +156,7 @@ export default function AdminLogin() {
               <p><span className="text-slate-500">Profile Email:</span> {profile?.contact_email || 'none'}</p>
               <p><span className="text-slate-500">Profile Error:</span> {profileError || 'none'}</p>
               <p><span className="text-slate-500">Auth Error:</span> {lastAuthError || 'none'}</p>
-              {user?.email === 'bruetyndallprofessional@gmail.com' && effectiveRole !== 'admin' && effectiveRole !== 'platform_admin' && (
+              {user?.email === 'brucetyndallprofessional@gmail.com' && effectiveRole !== 'admin' && effectiveRole !== 'platform_admin' && (
                 <p className="text-amber-300">
                   This email is signed in but not admin. Run `scripts/grant_bruce_admin.sql` in Supabase SQL Editor.
                 </p>

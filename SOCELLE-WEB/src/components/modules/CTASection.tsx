@@ -13,8 +13,7 @@ export function CTASection({ eyebrow, headline, subtitle, primaryCTA }: CTASecti
     <section className="bg-mn-dark py-20 lg:py-28 relative overflow-hidden">
       {/* Accent glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-[0.06]"
-        style={{ background: 'radial-gradient(circle, #6E879B 0%, transparent 70%)' }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-[0.06] bg-[radial-gradient(circle,var(--color-accent)_0%,transparent_70%)]"
       />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">

@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase, isSupabaseConfigured } from '../supabase';
-import { mockSignals, mockMarketPulse } from './mockSignals';
 import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
 
 // ── useIntelligence — V3 (W15-04): provenance columns + tier gating ──
@@ -86,6 +85,14 @@ const TIER_ACCESS: Record<TierVisibility, TierVisibility[]> = {
   admin: ['free', 'pro', 'admin'],
 };
 
+const EMPTY_MARKET_PULSE: MarketPulse = {
+  total_professionals: 0,
+  total_brands: 0,
+  active_signals: 0,
+  signals_this_week: 0,
+  trending_category: 'No active category',
+};
+
 export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligenceReturn {
   const userTier = options?.userTier ?? 'free';
   const [activeFilter, setActiveFilter] = useState<SignalFilterKey>('all');
@@ -100,8 +107,8 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       setLoading(true);
 
       if (!isSupabaseConfigured) {
-        // No Supabase config — fall back immediately
-        setRawSignals(mockSignals);
+        // No Supabase config — preview empty state
+        setRawSignals([]);
         setIsLive(false);
         setLoading(false);
         return;
@@ -122,8 +129,8 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         if (cancelled) return;
 
         if (error || !data || data.length === 0) {
-          // Table empty or query error — use mock data as preview
-          setRawSignals(mockSignals);
+          // Table empty or query error — preview empty state
+          setRawSignals([]);
           setIsLive(false);
         } else {
           setRawSignals((data as MarketSignalRow[]).map(rowToSignal));
@@ -131,7 +138,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         }
       } catch {
         if (!cancelled) {
-          setRawSignals(mockSignals);
+          setRawSignals([]);
           setIsLive(false);
         }
       } finally {
@@ -145,7 +152,18 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
 
   // ── Derive marketPulse from live signal data ───────────────────────
   const marketPulse = useMemo((): MarketPulse => {
-    if (!isLive) return mockMarketPulse;
+    if (!isLive) {
+      const signalsThisWeek = rawSignals.filter((s) => {
+        const age = Date.now() - new Date(s.updated_at).getTime();
+        return age < 7 * 24 * 60 * 60 * 1000;
+      }).length;
+
+      return {
+        ...EMPTY_MARKET_PULSE,
+        active_signals: rawSignals.length,
+        signals_this_week: signalsThisWeek,
+      };
+    }
 
     // Compute trending_category from most frequent category in live signals
     const catCounts = rawSignals.reduce<Record<string, number>>((acc, s) => {
@@ -154,10 +172,10 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     }, {});
     const trending_category =
       Object.entries(catCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ??
-      mockMarketPulse.trending_category;
+      EMPTY_MARKET_PULSE.trending_category;
 
     return {
-      ...mockMarketPulse,
+      ...EMPTY_MARKET_PULSE,
       active_signals: rawSignals.length,
       signals_this_week: rawSignals.filter((s) => {
         const age = Date.now() - new Date(s.updated_at).getTime();

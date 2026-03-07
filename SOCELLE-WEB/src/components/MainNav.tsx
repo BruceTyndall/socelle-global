@@ -21,7 +21,7 @@ const NAV_LINKS = [
 ] as const;
 
 export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {}) {
-  const { user, profile, signOut, loading, effectiveRole } = useAuth();
+  const { user, signOut, loading, effectiveRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
@@ -61,8 +61,6 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
     if (path !== '/' && location.pathname.startsWith(path)) return true;
     return false;
   };
-
-  const _displayName = profile?.spa_name || user?.email || '';
 
   const scrolledAttr = scrolled ? 'true' : 'false';
 
