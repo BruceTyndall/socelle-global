@@ -7,6 +7,7 @@ import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import GlassAccordion from '../../components/sections/GlassAccordion';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { useCmsPage } from '../../lib/useCmsPage';
 
 /* ── FAQ Data ────────────────────────────────────────────────── */
 type Category = 'general' | 'platform' | 'intelligence' | 'pricing' | 'support';
@@ -176,6 +177,7 @@ const FAQ_JSONLD = {
 
 /* ── Page ─────────────────────────────────────────────────────── */
 export default function FAQPage() {
+  const { isLive: _cmsLive } = useCmsPage('faq');
   const [activeCategory, setActiveCategory] = useState<Category>('general');
 
   const filteredItems = useMemo(
@@ -201,15 +203,24 @@ export default function FAQPage() {
           property="og:description"
           content="Everything operators and brand partners need to know about Socelle intelligence, pricing, security, and commerce."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/faq" />
         <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/faq" />
         <script type="application/ld+json">{JSON.stringify(FAQ_JSONLD)}</script>
       </Helmet>
       <MainNav />
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="min-h-[50vh] flex items-center justify-center py-20 lg:py-28">
-        <div className="section-container text-center">
+      <section className="relative min-h-[50vh] flex items-center justify-center py-20 lg:py-28 overflow-hidden">
+        <img
+          src="/images/brand/photos/22.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none select-none"
+        />
+        <div className="section-container text-center relative z-10">
           <BlockReveal>
             <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
               Frequently Asked Questions
@@ -221,7 +232,7 @@ export default function FAQPage() {
             className="font-sans font-semibold text-hero text-graphite mb-6 max-w-2xl mx-auto justify-center"
           />
           <BlockReveal delay={200}>
-            <p className="text-body-lg text-[rgba(30,37,43,0.62)] max-w-lg mx-auto">
+            <p className="text-body-lg text-graphite/60 max-w-lg mx-auto">
               Answers for operators and brand partners across every part of the
               Socelle intelligence platform.
             </p>
@@ -240,7 +251,7 @@ export default function FAQPage() {
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   className={`rounded-full px-5 py-2.5 text-sm font-sans font-medium transition-all duration-200 ${isActive
-                      ? 'bg-white/60 backdrop-blur-[12px] border border-white/30 text-graphite shadow-[0_2px_12px_rgba(19,24,29,0.06)]'
+                      ? 'bg-white/60 backdrop-blur-[12px] border border-white/30 text-graphite shadow-sm'
                       : 'bg-transparent border border-transparent text-graphite/50 hover:text-graphite hover:bg-white/30'
                     }`}
                 >
@@ -267,7 +278,7 @@ export default function FAQPage() {
               <h2 className="font-sans font-semibold text-section text-graphite mb-4">
                 Still have questions?
               </h2>
-              <p className="text-body text-[rgba(30,37,43,0.62)] max-w-md mx-auto mb-8">
+              <p className="text-body text-graphite/60 max-w-md mx-auto mb-8">
                 Reach out directly and we will get back to you within one
                 business day.
               </p>

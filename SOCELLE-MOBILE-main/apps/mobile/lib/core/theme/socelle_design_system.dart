@@ -28,15 +28,15 @@ import 'package:flutter/services.dart';
 class SocelleColors {
   SocelleColors._();
 
-  // ── Core brand ──
-  static const primaryCocoa = Color(0xFF47201C);   // primary text & brand
-  static const deepCocoa    = Color(0xFF29120F);   // darkest bg (footer, dark sections)
+  // ── Core brand (Pearl Mineral V2 — synced with web tailwind.config.js) ──
+  static const primaryCocoa = Color(0xFF141418);   // graphite — primary text & brand
+  static const deepCocoa    = Color(0xFF15191D);   // mn-footer — darkest bg (footer, dark sections)
   static const neutralBeige = Color(0xFFAC9B98);   // placeholder, muted
 
-  // ── Page backgrounds ──
-  static const bgMain       = Color(0xFFF8F6F2);   // warm off-white scaffold
-  static const bgAlt        = Color(0xFFF3E9E3);   // peach section tint
-  static const bgNearWhite  = Color(0xFFFAF9F5);   // card bg
+  // ── Page backgrounds (Pearl Mineral V2) ──
+  static const bgMain       = Color(0xFFF6F3EF);   // mn-bg — warm off-white scaffold
+  static const bgAlt        = Color(0xFFEFEBE6);   // mn-surface — section tint
+  static const bgNearWhite  = Color(0xFFFFFFFF);   // mn-card — card bg
 
   // ── Palette ──
   static const red400       = Color(0xFFFF6568);
@@ -82,29 +82,29 @@ class SocelleColors {
   // Merged from former socelle_colors.dart — revenue-intelligence palette.
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // ── Ink system ─────────────────────────────────────────────────────────
-  static const ink = Color(0xFF1A1714);           // primary text, CTAs
+  // ── Ink system (Pearl Mineral V2) ──────────────────────────────────────
+  static const ink = Color(0xFF141418);           // graphite — primary text, CTAs
   static const inkMuted = Color(0xFF6E6A66);      // secondary text, labels
   static const inkFaint = Color(0xFF706A65);      // tertiary, disabled — WCAG 2.2 AA ≥4.5:1
 
-  // ── Surface system ─────────────────────────────────────────────────────
-  static const background = Color(0xFFF5F3F0);    // scaffold background
-  static const surface = Color(0xFFFFFFFF);        // card backgrounds
-  static const surfaceMuted = Color(0xFFF0EDEA);   // inset areas, code blocks
+  // ── Surface system (Pearl Mineral V2) ────────────────────────────────
+  static const background = Color(0xFFF6F3EF);    // mn-bg — scaffold background
+  static const surface = Color(0xFFFFFFFF);        // mn-card — card backgrounds
+  static const surfaceMuted = Color(0xFFEFEBE6);   // mn-surface — inset areas, code blocks
   static const borderLight = Color(0xFFE8E5E1);   // card borders, dividers
 
-  // ── Accent — muted deep green ──────────────────────────────────────────
-  static const accent = Color(0xFF3D6B52);         // primary accent
-  static const accentMuted = Color(0xFF5A8A6A);    // softer accent
-  static const accentSurface = Color(0xFFEAF2EC);  // accent background wash
+  // ── Accent — Pearl Mineral V2 steel blue ──────────────────────────────
+  static const accent = Color(0xFF6E879B);         // accent — primary accent
+  static const accentMuted = Color(0xFF5E7588);    // accent-hover — softer accent
+  static const accentSurface = Color(0xFFE8EDF1);  // accent background wash (derived)
 
-  // ── Leakage — muted terracotta ─────────────────────────────────────────
-  static const leakage = Color(0xFFA85038);        // leakage numbers
-  static const leakageMuted = Color(0xFFC47A5A);   // lighter terracotta
-  static const leakageSurface = Color(0xFFFAEDE8); // leakage background wash
+  // ── Leakage — signal-down ─────────────────────────────────────────────
+  static const leakage = Color(0xFF8E6464);        // signal-down — leakage numbers
+  static const leakageMuted = Color(0xFFA88080);   // lighter (derived from signal-down)
+  static const leakageSurface = Color(0xFFF5EDED); // leakage background wash (derived)
 
-  // ── Recovery — sage green ──────────────────────────────────────────────
-  static const recovery = Color(0xFF3D6B52);       // recovery numbers
+  // ── Recovery — signal-up ──────────────────────────────────────────────
+  static const recovery = Color(0xFF5F8A72);       // signal-up — recovery numbers
   static const recoverySurface = Color(0xFFEAF2EC);
 
   // ── System states ──────────────────────────────────────────────────────
@@ -120,15 +120,15 @@ class SocelleColors {
   static const divider = borderLight;
   static const border = borderLight;
   static const primary = accent;
-  static const primaryDark = Color(0xFF2D5040);
+  static const primaryDark = Color(0xFF1F2428);    // mn-dark
   static const primaryLight = accentSurface;          // sage mist — info box backgrounds
   static const leakageRed = leakage;
   static const leakageRedLight = leakageSurface;      // terracotta wash — info box bg
   static const leakageRedDark = Color(0xFF7A3020);    // fired clay — text on light bg
   static const recoveredGreen = recovery;
   static const recoveredGreenLight = recoverySurface;
-  static const recoveredGreenDark = Color(0xFF2D5040);
-  static const intentionalAmber = Color(0xFFD97706);
+  static const recoveredGreenDark = Color(0xFF4A7260);  // darker signal-up
+  static const intentionalAmber = Color(0xFFA97A4C);  // signal-warn
   static const intentionalAmberLight = Color(0xFFFEF3C7);
   static const errorRed = error;
   static const accentBlue = Color(0xFF2563EB);
@@ -150,19 +150,19 @@ class SocelleColors {
   static const glamHeroGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF3D6B52), Color(0xFF5A8A6A)],
+    colors: [Color(0xFF6E879B), Color(0xFF5E7588)],
   );
 
   /// 3-stop: warm ink → forest green → Socelle sage.
   /// Used on the onboarding intro hero card.
   static const glamHeroGradientColors = <Color>[
-    Color(0xFF1A1714),
-    Color(0xFF2D5040),
-    Color(0xFF3D6B52),
+    Color(0xFF141418),    // graphite
+    Color(0xFF1F2428),    // mn-dark
+    Color(0xFF6E879B),    // accent
   ];
 
   /// Used as the `colors:` list inside a LinearGradient widget.
-  static const actionGradient = [Color(0xFF3D6B52), Color(0xFF5A8A6A)];
+  static const actionGradient = [Color(0xFF6E879B), Color(0xFF5E7588)];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

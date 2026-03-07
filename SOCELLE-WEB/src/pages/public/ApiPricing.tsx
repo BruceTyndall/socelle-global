@@ -72,7 +72,7 @@ function TierCard({
     >
       {tier.highlighted && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="bg-accent text-[#F7F5F2] text-xs font-semibold px-4 py-1 rounded-full font-sans tracking-wide">
+          <span className="bg-accent text-mn-bg text-xs font-semibold px-4 py-1 rounded-full font-sans tracking-wide">
             Most Popular
           </span>
         </div>
@@ -80,12 +80,12 @@ function TierCard({
 
       <div className="mb-6">
         <h3 className="text-xl font-sans font-bold text-graphite mb-1">{tier.name}</h3>
-        <p className="text-sm text-[rgba(20,20,24,0.42)] font-sans">{tier.requests}</p>
+        <p className="text-sm text-graphite/40 font-sans">{tier.requests}</p>
       </div>
 
       <div className="mb-6">
         <span className="text-metric-lg font-sans text-graphite">{tier.price}</span>
-        <span className="text-sm text-[rgba(20,20,24,0.42)] font-sans ml-2">/{tier.priceNote}</span>
+        <span className="text-sm text-graphite/40 font-sans ml-2">/{tier.priceNote}</span>
       </div>
 
       <ul className="space-y-3 mb-8 flex-1">
@@ -137,6 +137,12 @@ export default function ApiPricing() {
           name="description"
           content="Choose the Socelle Intelligence API plan that fits your data needs. Starter, Professional, and Enterprise tiers for professional beauty market intelligence."
         />
+        <meta property="og:title" content="API Pricing | Socelle Intelligence" />
+        <meta property="og:description" content="Choose the Socelle Intelligence API plan that fits your data needs." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/api/pricing" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/api/pricing" />
       </Helmet>
       <MainNav />
@@ -181,11 +187,11 @@ export default function ApiPricing() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[rgba(20,20,24,0.08)] bg-mn-surface/50">
+                <tr className="border-b border-graphite/[0.08] bg-mn-surface/50">
                   <th className="text-left py-4 px-6 font-semibold text-graphite font-sans w-1/3">Feature</th>
                   <th className="text-center py-4 px-4 font-semibold text-graphite font-sans">
                     <div className="flex flex-col items-center gap-1">
-                      <Zap className="w-4 h-4 text-[rgba(20,20,24,0.42)]" />
+                      <Zap className="w-4 h-4 text-graphite/40" />
                       Starter
                     </div>
                   </th>
@@ -207,7 +213,7 @@ export default function ApiPricing() {
                 {COMPARISON_FEATURES.map((row, i) => (
                   <tr
                     key={row.feature}
-                    className={i < COMPARISON_FEATURES.length - 1 ? 'border-b border-[rgba(20,20,24,0.04)]' : ''}
+                    className={i < COMPARISON_FEATURES.length - 1 ? 'border-b border-graphite/[0.04]' : ''}
                   >
                     <td className="py-3 px-6 text-graphite font-sans">{row.feature}</td>
                     {(['starter', 'professional', 'enterprise'] as const).map((t) => {
@@ -217,7 +223,7 @@ export default function ApiPricing() {
                           {val === true ? (
                             <CheckCircle className="w-4 h-4 text-accent mx-auto" />
                           ) : val === false ? (
-                            <span className="text-[rgba(20,20,24,0.22)]">&mdash;</span>
+                            <span className="text-graphite/20">&mdash;</span>
                           ) : (
                             <span className="text-sm font-semibold text-graphite font-sans">
                               {val}
@@ -246,7 +252,7 @@ export default function ApiPricing() {
           {API_FAQ.map((faq) => (
             <div key={faq.q} className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6">
               <h3 className="text-sm font-semibold text-graphite font-sans mb-2">{faq.q}</h3>
-              <p className="text-sm text-[rgba(20,20,24,0.62)] font-sans leading-relaxed">{faq.a}</p>
+              <p className="text-sm text-graphite/60 font-sans leading-relaxed">{faq.a}</p>
             </div>
           ))}
         </div>
@@ -256,8 +262,8 @@ export default function ApiPricing() {
       <section className="section-container pb-20">
         <BlockReveal>
           <div className="bg-mn-dark rounded-section p-12 text-center">
-            <h2 className="font-sans font-semibold text-subsection text-[#F7F5F2] mb-4">Need a custom solution?</h2>
-            <p className="text-[rgba(247,245,242,0.55)] font-sans mb-8 max-w-lg mx-auto">
+            <h2 className="font-sans font-semibold text-subsection text-mn-bg mb-4">Need a custom solution?</h2>
+            <p className="text-mn-bg/55 font-sans mb-8 max-w-lg mx-auto">
               Enterprise clients get dedicated support, custom SLAs, white-label options, and
               unlimited access to our intelligence data.
             </p>

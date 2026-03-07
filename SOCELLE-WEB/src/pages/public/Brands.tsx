@@ -1,7 +1,25 @@
+/* ═══════════════════════════════════════════════════════════════
+   Brands.tsx — Brand Directory
+   WO-OVERHAUL-03 Phase 3 rebuild
+   Data: LIVE from Supabase `brands` table via inline fetch
+   Intelligence overlays: DEMO (mock brandIntelligence layer)
+   Pearl Mineral V2 tokens only — no pro-*, no font-serif
+   ═══════════════════════════════════════════════════════════════ */
 import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowRight, Package, AlertCircle, SlidersHorizontal, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Package,
+  AlertCircle,
+  SlidersHorizontal,
+  X,
+  TrendingUp,
+  Zap,
+  Sparkles,
+  Building2,
+  Search,
+} from 'lucide-react';
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { createScopedLogger } from '../../lib/logger';
@@ -19,7 +37,6 @@ import {
   BRAND_INTEL_FILTERS,
 } from '../../lib/intelligence/brandIntelligence';
 import type { BrandIntelFilter } from '../../lib/intelligence/brandIntelligence';
-import { TrendingUp, Zap, Sparkles, Building2 } from 'lucide-react';
 
 const log = createScopedLogger('Brands');
 
@@ -60,13 +77,23 @@ const SORT_OPTIONS = [
 
 type SortKey = 'name' | 'newest' | 'top_rated';
 
+/** Decorative brand photos for the hero collage */
+const HERO_PHOTOS = [7, 8, 9, 10, 11, 12].map(
+  (n) => `/images/brand/photos/${n}.svg`
+);
+
+/** Decorative fallback photos for the grid area */
+const DECORATIVE_PHOTOS = [13, 14, 15, 16, 17, 18].map(
+  (n) => `/images/brand/photos/${n}.svg`
+);
+
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function BrandGridSkeleton() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="bg-white rounded-card border border-[rgba(20,20,24,0.08)] overflow-hidden">
+        <div key={i} className="bg-white rounded-2xl border border-graphite/8 overflow-hidden">
           <div className="h-36 w-full animate-pulse bg-mn-surface" />
           <div className="p-4 space-y-2">
             <div className="h-5 w-3/4 rounded animate-pulse bg-mn-surface" />
@@ -87,6 +114,7 @@ export default function Brands() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<'content' | 'network' | 'generic'>('generic');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Filters
   const [activeCategory, setActiveCategory] = useState('all');
@@ -164,18 +192,29 @@ export default function Brands() {
   const filteredBrands = useMemo(() => {
     let result = [...brands];
 
+    // Search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (b) =>
+          b.name.toLowerCase().includes(q) ||
+          (b.description?.toLowerCase().includes(q) ?? false) ||
+          (b.category?.toLowerCase().includes(q) ?? false)
+      );
+    }
+
     if (activeCategory !== 'all') {
       result = result.filter(
         (b) => b.category?.toLowerCase() === activeCategory.toLowerCase()
       );
     }
 
-    // "New" filter: crude proxy — first 10% alphabetically per category
+    // "New" filter: crude proxy -- first 20% alphabetically per category
     if (filterNew) {
       result = result.slice(0, Math.max(1, Math.ceil(result.length * 0.2)));
     }
 
-    // Intelligence-based filter
+    // Intelligence-based filter (DEMO)
     if (activeIntelFilter) {
       result = result.filter((b) => brandPassesIntelFilter(b.slug, activeIntelFilter));
     }
@@ -185,20 +224,18 @@ export default function Brands() {
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'newest':
-        // No created_at in query yet; reverse alphabetical as placeholder
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case 'top_rated':
-        // No rating data yet; keep as-is
         break;
     }
 
     return result;
-  }, [brands, activeCategory, sortKey, filterNew, activeIntelFilter]);
+  }, [brands, activeCategory, sortKey, filterNew, activeIntelFilter, searchQuery]);
 
   const getAuthAwareHref = (brand: BrandRow) => {
-    const target = `/portal/brands/${brand.slug}`;
-    return user ? target : `/portal/login?returnTo=${encodeURIComponent(target)}`;
+    const target = `/brands/${brand.slug}`;
+    return target;
   };
 
   const activeFilterCount = (activeCategory !== 'all' ? 1 : 0) + (filterNew ? 1 : 0) + (activeIntelFilter ? 1 : 0);
@@ -208,17 +245,21 @@ export default function Brands() {
   return (
     <div className="min-h-screen bg-mn-bg">
       <Helmet>
-        <title>Browse Professional Beauty Brands — Socelle Wholesale</title>
-        <meta name="description" content="Discover verified professional beauty brands offering wholesale pricing to licensed salons, spas, and medspas. Skincare, haircare, wellness, med spa, and more." />
-        <meta property="og:title" content="Browse Professional Beauty Brands — Socelle" />
-        <meta property="og:description" content="Verified wholesale brands for licensed salons, spas, and medspas. Skincare, haircare, body, wellness, and med spa categories." />
+        <title>Discover Professional Beauty Brands | Socelle</title>
+        <meta name="description" content="Explore verified professional beauty brands with intelligence-backed profiles. Skincare, haircare, wellness, med spa, and more -- curated for licensed practitioners." />
+        <meta property="og:title" content="Discover Professional Beauty Brands | Socelle" />
+        <meta property="og:description" content="Intelligence-backed brand profiles for licensed salons, spas, and medspas." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/brands" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/brands" />
         <script type="application/ld+json">{`
           {
             "@context": "https://schema.org",
             "@type": "ItemList",
             "name": "Professional Beauty Brands on Socelle",
-            "description": "Verified professional beauty brands offering wholesale pricing to licensed salons, spas, and medspas.",
+            "description": "Verified professional beauty brands with intelligence profiles for licensed practitioners.",
             "url": "https://socelle.com/brands",
             "numberOfItems": ${filteredBrands.length},
             "itemListElement": ${JSON.stringify(
@@ -234,48 +275,99 @@ export default function Brands() {
       </Helmet>
       <MainNav />
 
-      {/* ── Hero (W12-33: video background) ─────────────────────── */}
-      <div className="relative overflow-hidden bg-mn-dark py-20 lg:py-28 px-4">
-        <video
-          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-luminosity"
-          src="/videos/foundation.mp4"
-          poster="/videos/posters/foundation-poster.jpg"
-          autoPlay muted loop playsInline aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-mn-dark via-mn-dark/70 to-mn-dark/40" />
-        <div className="relative z-10 max-w-7xl mx-auto text-center">
+      {/* ── Hero: Photo Collage + Glass Overlay ──────────────────── */}
+      <section className="relative overflow-hidden bg-graphite">
+        {/* Photo collage grid behind overlay */}
+        <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-1 opacity-40">
+          {HERO_PHOTOS.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-cover"
+              loading={i < 3 ? 'eager' : 'lazy'}
+            />
+          ))}
+        </div>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-graphite/60 via-graphite/80 to-graphite" />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36 text-center">
           <BlockReveal>
             <p className="text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-accent font-sans mb-4">
               Curated for professionals
             </p>
           </BlockReveal>
           <WordReveal
-            text="Brand Intelligence"
+            text="Discover Professional Beauty Brands"
             as="h1"
-            className="font-sans font-semibold text-hero text-[#F7F5F2] mb-4 justify-center"
+            className="font-sans font-semibold text-hero text-white mb-5 justify-center"
           />
           <BlockReveal delay={200}>
-            <p className="text-[rgba(247,245,242,0.55)] font-sans text-body max-w-xl mx-auto mb-8">
-              Compare brands by category, adoption velocity, education depth, and operator footprint.
+            <p className="text-white/55 font-sans text-body max-w-2xl mx-auto mb-10">
+              Intelligence-backed profiles for every brand. Compare by category, adoption velocity,
+              education depth, and operator footprint.
             </p>
           </BlockReveal>
           <BlockReveal delay={350}>
             <div className="flex flex-wrap justify-center gap-4">
               <button
-                onClick={() => { const el = document.getElementById('search-brands'); if (el) el.focus(); else window.scrollTo(0, 500); }}
-                className="btn-mineral-secondary"
+                onClick={() => {
+                  const el = document.getElementById('brand-search');
+                  if (el) { el.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => el.focus(), 400); }
+                }}
+                className="btn-mineral-primary"
               >
                 Search Brands
               </button>
-              <Link to="/intelligence" className="btn-mineral-ghost">
+              <Link to="/intelligence" className="btn-mineral-glass">
                 View Market Pulse
               </Link>
             </div>
           </BlockReveal>
         </div>
-      </div>
+
+        {/* Decorative swatch strip */}
+        <div className="relative z-10 flex justify-center gap-2 pb-8 px-4">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <img
+              key={n}
+              src={`/images/brand/swatches/${n}.svg`}
+              alt=""
+              aria-hidden="true"
+              className="w-10 h-10 rounded-full border-2 border-white/20 object-cover"
+              loading="lazy"
+            />
+          ))}
+        </div>
+      </section>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        {/* ── Search bar ──────────────────────────────────────────── */}
+        <div className="mb-6">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
+            <input
+              id="brand-search"
+              type="text"
+              placeholder="Search brands by name or category..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-graphite/12 bg-white text-sm font-sans text-graphite placeholder:text-graphite/40 focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-graphite/40 hover:text-graphite transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* ── Category filter chips ──────────────────────────────── */}
         <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1">
@@ -284,10 +376,10 @@ export default function Brands() {
               key={chip.key}
               onClick={() => setActiveCategory(chip.key)}
               className={`
-                flex-shrink-0 px-4 py-2 rounded-pill text-sm font-sans font-medium border transition-all duration-150
+                flex-shrink-0 px-4 py-2 rounded-full text-sm font-sans font-medium border transition-all duration-150
                 ${activeCategory === chip.key
-                  ? 'bg-[#1F2428] text-[#F7F5F2] border-[#1F2428]'
-                  : 'bg-white text-[rgba(20,20,24,0.62)] border-[rgba(20,20,24,0.12)] hover:border-graphite hover:text-graphite'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite/62 border-graphite/12 hover:border-graphite hover:text-graphite'
                 }
               `}
             >
@@ -296,9 +388,9 @@ export default function Brands() {
           ))}
         </div>
 
-        {/* ── Intelligence filter chips ──────────────────────────── */}
+        {/* ── Intelligence filter chips (DEMO) ────────────────────── */}
         <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1">
-          <span className="flex-shrink-0 text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-[rgba(20,20,24,0.42)] font-sans mr-1">
+          <span className="flex-shrink-0 text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-graphite/42 font-sans mr-1">
             Intelligence:
           </span>
           {BRAND_INTEL_FILTERS.map((filter) => {
@@ -315,10 +407,10 @@ export default function Brands() {
                 key={filter.key}
                 onClick={() => setActiveIntelFilter(isActive ? null : filter.key)}
                 className={`
-                  flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-xs font-sans font-medium border transition-all duration-150
+                  flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-sans font-medium border transition-all duration-150
                   ${isActive
-                    ? 'bg-mn-dark text-[#F7F5F2] border-mn-dark shadow-panel'
-                    : 'bg-white text-[rgba(20,20,24,0.62)] border-[rgba(20,20,24,0.12)] hover:border-accent hover:text-accent'
+                    ? 'bg-graphite text-white border-graphite shadow-sm'
+                    : 'bg-white text-graphite/62 border-graphite/12 hover:border-accent hover:text-accent'
                   }
                 `}
               >
@@ -327,26 +419,29 @@ export default function Brands() {
               </button>
             );
           })}
+          {/* DEMO label for intel filters */}
+          <span className="flex-shrink-0 text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full ml-1">
+            DEMO
+          </span>
         </div>
 
         {/* ── Filter bar ────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Filter toggle button */}
             <button
               onClick={() => setShowFilters((f) => !f)}
               className={`
-                inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-sm font-sans font-medium border transition-all
+                inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-sans font-medium border transition-all
                 ${showFilters || activeFilterCount > 0
-                  ? 'bg-[#1F2428] text-[#F7F5F2] border-[#1F2428]'
-                  : 'bg-white text-[rgba(20,20,24,0.62)] border-[rgba(20,20,24,0.12)] hover:border-graphite hover:text-graphite'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite/62 border-graphite/12 hover:border-graphite hover:text-graphite'
                 }
               `}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               Filters
               {activeFilterCount > 0 && (
-                <span className="ml-0.5 w-4 h-4 bg-accent rounded-full text-[#F7F5F2] text-[10px] flex items-center justify-center">
+                <span className="ml-0.5 w-4 h-4 bg-accent rounded-full text-white text-[10px] flex items-center justify-center">
                   {activeFilterCount}
                 </span>
               )}
@@ -354,7 +449,7 @@ export default function Brands() {
 
             {/* Active filter chips */}
             {filterNew && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-mn-surface text-graphite text-xs font-medium font-sans rounded-pill border border-[rgba(20,20,24,0.12)]">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-mn-surface text-graphite text-xs font-medium font-sans rounded-full border border-graphite/12">
                 New brands
                 <button onClick={() => setFilterNew(false)} className="hover:text-accent transition-colors">
                   <X className="w-3 h-3" />
@@ -362,7 +457,7 @@ export default function Brands() {
               </span>
             )}
             {activeIntelFilter && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-mn-dark text-[#F7F5F2] text-xs font-medium font-sans rounded-pill border border-[rgba(247,245,242,0.15)]">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-graphite text-white text-xs font-medium font-sans rounded-full border border-white/15">
                 {BRAND_INTEL_FILTERS.find((f) => f.key === activeIntelFilter)?.label}
                 <button onClick={() => setActiveIntelFilter(null)} className="hover:text-accent transition-colors">
                   <X className="w-3 h-3" />
@@ -372,7 +467,7 @@ export default function Brands() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[rgba(20,20,24,0.42)] font-sans">
+            <span className="text-xs text-graphite/42 font-sans">
               {filteredBrands.length} brand{filteredBrands.length !== 1 ? 's' : ''}
             </span>
 
@@ -380,7 +475,7 @@ export default function Brands() {
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="text-sm font-sans text-graphite border border-[rgba(20,20,24,0.12)] rounded-lg px-3 py-1.5 bg-white focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none cursor-pointer"
+              className="text-sm font-sans text-graphite border border-graphite/12 rounded-lg px-3 py-1.5 bg-white focus:border-accent focus:ring-1 focus:ring-accent/20 outline-none cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.key} value={opt.key}>{opt.label}</option>
@@ -391,13 +486,13 @@ export default function Brands() {
 
         {/* ── Filter panel ──────────────────────────────────────── */}
         {showFilters && (
-          <div className="bg-white border border-[rgba(20,20,24,0.08)] rounded-card p-5 mb-6 animate-fade-in">
+          <div className="bg-white border border-graphite/8 rounded-2xl p-5 mb-6 animate-fade-in">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-sans font-semibold text-graphite text-sm">Filter brands</h3>
               {activeFilterCount > 0 && (
                 <button
                   onClick={() => { setFilterNew(false); setActiveCategory('all'); setActiveIntelFilter(null); }}
-                  className="text-xs font-medium font-sans text-[rgba(20,20,24,0.42)] hover:text-graphite transition-colors"
+                  className="text-xs font-medium font-sans text-graphite/42 hover:text-graphite transition-colors"
                 >
                   Clear all
                 </button>
@@ -409,7 +504,7 @@ export default function Brands() {
                   type="checkbox"
                   checked={filterNew}
                   onChange={(e) => setFilterNew(e.target.checked)}
-                  className="accent-[#1F2428] w-4 h-4 rounded"
+                  className="accent-graphite w-4 h-4 rounded"
                 />
                 <span className="text-sm font-sans text-graphite">New brands</span>
               </label>
@@ -421,9 +516,9 @@ export default function Brands() {
         {error ? (
           <div className="max-w-2xl mx-auto">
             <div
-              className={`border rounded-card p-6 ${errorType === 'network'
+              className={`border rounded-2xl p-6 ${errorType === 'network'
                 ? 'bg-red-50 border-red-200'
-                : 'bg-mn-surface border-[rgba(20,20,24,0.08)]'
+                : 'bg-mn-surface border-graphite/8'
                 }`}
             >
               <div className="flex items-start gap-3">
@@ -438,7 +533,7 @@ export default function Brands() {
                   >
                     {errorType === 'network' ? 'Brand discovery unavailable' : 'Content being prepared'}
                   </h3>
-                  <p className={`text-sm font-sans mb-4 ${errorType === 'network' ? 'text-red-700' : 'text-[rgba(20,20,24,0.62)]'
+                  <p className={`text-sm font-sans mb-4 ${errorType === 'network' ? 'text-red-700' : 'text-graphite/62'
                     }`}>
                     {error}
                   </p>
@@ -455,18 +550,20 @@ export default function Brands() {
         ) : loading ? (
           <BrandGridSkeleton />
         ) : filteredBrands.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-[rgba(20,20,24,0.12)] rounded-card">
-            <Package className="w-14 h-14 text-[rgba(20,20,24,0.2)] mx-auto mb-4" />
-            <h3 className="font-sans font-semibold text-subsection text-graphite mb-2">No brands found</h3>
-            <p className="font-sans text-[rgba(20,20,24,0.62)] text-sm mb-4">
-              {activeCategory !== 'all'
-                ? `No ${activeCategory} brands yet. Try a different category.`
-                : 'No brands available yet. Check back soon.'}
+          <div className="text-center py-20 border border-dashed border-graphite/12 rounded-2xl">
+            <Package className="w-14 h-14 text-graphite/20 mx-auto mb-4" />
+            <h3 className="font-sans font-semibold text-lg text-graphite mb-2">No brands found</h3>
+            <p className="font-sans text-graphite/62 text-sm mb-4">
+              {searchQuery
+                ? `No brands matching "${searchQuery}". Try a different search.`
+                : activeCategory !== 'all'
+                  ? `No ${activeCategory} brands yet. Try a different category.`
+                  : 'No brands available yet. Check back soon.'}
             </p>
-            {activeCategory !== 'all' && (
+            {(activeCategory !== 'all' || searchQuery) && (
               <button
-                onClick={() => setActiveCategory('all')}
-                className="btn-mineral-secondary btn-mineral-sm"
+                onClick={() => { setActiveCategory('all'); setSearchQuery(''); }}
+                className="btn-mineral-accent btn-mineral-sm"
               >
                 View all brands
               </button>
@@ -475,19 +572,28 @@ export default function Brands() {
         ) : (
           <>
             {/* Editorial moment: curated gallery feel */}
-            <div className="mb-10 pb-8 border-b border-[rgba(20,20,24,0.08)]">
-              <div className="flex justify-center mb-3">
+            <div className="mb-10 pb-8 border-b border-graphite/8">
+              <div className="flex items-center justify-center gap-3 mb-3">
                 <TrustBadge variant="authorized" size="md" />
+                {/* LIVE label: brand data is from Supabase brands table */}
+                <span className="text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-full">
+                  LIVE
+                </span>
               </div>
-              <p className="text-[rgba(20,20,24,0.62)] font-sans text-center text-sm max-w-xl mx-auto">
+              <p className="text-graphite/62 font-sans text-center text-sm max-w-xl mx-auto">
                 All brands verified and authorized for professional distribution.
               </p>
             </div>
+
+            {/* Brand grid — LIVE data from brands table */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
-              {filteredBrands.map((brand) => {
+              {filteredBrands.map((brand, idx) => {
                 const trending = isBrandTrending(brand.slug);
-                const adoptionCount = getBrandAdoptionCount(brand.slug);
                 const tags = getBrandCategoryTags(brand.slug);
+                // Use decorative photo as fallback if no hero image
+                const fallbackImg = !brand.hero_image_url
+                  ? DECORATIVE_PHOTOS[idx % DECORATIVE_PHOTOS.length]
+                  : undefined;
                 return (
                   <div key={brand.id} className="relative group/intel">
                     <BrandCard
@@ -496,28 +602,28 @@ export default function Brands() {
                       slug={brand.slug}
                       description={brand.description}
                       logoUrl={brand.logo_url}
-                      heroImageUrl={brand.hero_image_url}
+                      heroImageUrl={brand.hero_image_url ?? fallbackImg ?? null}
                       category={brand.category ?? undefined}
                       href={getAuthAwareHref(brand)}
                       keyStat={undefined}
                     />
-                    {/* Intelligence overlay — trending badge */}
+                    {/* Intelligence overlay — trending badge (DEMO) */}
                     {trending && (
                       <div className="absolute top-2 right-2 z-10 pointer-events-none">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-mn-dark text-[#F7F5F2] text-[10px] font-sans font-bold tracking-wider uppercase rounded-pill shadow-panel backdrop-blur-sm">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-graphite text-white text-[10px] font-sans font-bold tracking-wider uppercase rounded-full shadow-sm backdrop-blur-sm">
                           <TrendingUp className="w-3 h-3 text-signal-up" />
                           Trending
                         </span>
                       </div>
                     )}
-                    {/* Intelligence overlay — category tags */}
+                    {/* Intelligence overlay — category tags (DEMO) */}
                     {tags.length > 0 && (
                       <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pointer-events-none">
                         <div className="flex flex-wrap gap-1">
                           {tags.slice(0, 2).map((tag) => (
                             <span
                               key={tag}
-                              className="px-2 py-0.5 bg-mn-dark/80 text-[#F7F5F2] text-[10px] font-sans font-medium rounded-pill backdrop-blur-sm"
+                              className="px-2 py-0.5 bg-graphite/80 text-white text-[10px] font-sans font-medium rounded-full backdrop-blur-sm"
                             >
                               {tag}
                             </span>
@@ -532,25 +638,42 @@ export default function Brands() {
           </>
         )}
 
+        {/* ── Decorative photo strip ─────────────────────────────── */}
+        {!loading && !error && filteredBrands.length > 0 && (
+          <div className="mt-16 mb-8">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 rounded-2xl overflow-hidden">
+              {DECORATIVE_PHOTOS.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full aspect-square object-cover"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ── Guest signup CTA ──────────────────────────────────── */}
         {!user && !loading && !error && (
-          <div className="mt-20 bg-mn-dark rounded-card p-10 sm:p-12 text-center shadow-panel">
-            <h2 className="font-sans font-semibold text-section text-[#F7F5F2] mb-4">
-              Ready to order wholesale?
+          <div className="mt-12 bg-graphite rounded-2xl p-10 sm:p-12 text-center shadow-sm">
+            <h2 className="font-sans font-semibold text-2xl text-white mb-4">
+              Get full brand intelligence
             </h2>
-            <p className="font-sans text-[rgba(247,245,242,0.55)] mb-7 max-w-xl mx-auto text-sm leading-relaxed">
-              Create your free account to access all brands, access wholesale pricing,
-              and get personalized protocol recommendations.
+            <p className="font-sans text-white/55 mb-7 max-w-xl mx-auto text-sm leading-relaxed">
+              Create your free account to access detailed brand profiles, adoption velocity data,
+              and personalized protocol recommendations.
             </p>
-            <Link to="/portal/signup" className="btn-mineral-dark">
-              Create free account
+            <Link to="/request-access" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white text-sm font-sans font-medium tracking-wide hover:bg-white/25 transition-all duration-300">
+              Get Intelligence Access
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         )}
       </main>
 
-      {/* ── Footer ───────────────────────────────────────────────── */}
       <SiteFooter />
     </div>
   );

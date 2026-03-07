@@ -1,0 +1,301 @@
+import { useState, useCallback, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Plus,
+  AlertCircle,
+  Loader2,
+  Filter,
+  Search,
+  X,
+  GripVertical,
+} from 'lucide-react';
+import { useDeals, type Deal, type NewDeal } from '../../lib/useDeals';
+import { usePipelines, type Pipeline, type PipelineStage } from '../../lib/usePipelines';
+
+// ── WO-OVERHAUL-14: Pipeline Kanban Board (Business Portal) ──────────────
+// Data source: deals + sales_pipelines + pipeline_stages (LIVE when DB-connected)
+
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
+}
+
+function daysBetween(from: string) {
+  return Math.floor((Date.now() - new Date(from).getTime()) / 86400000);
+}
+
+export default function PipelineBoard() {
+  const { pipelines, loading: pLoading, isLive } = usePipelines();
+  const [selectedPipelineId, setSelectedPipelineId] = useState<string | null>(null);
+
+  const activePipeline: Pipeline | undefined = useMemo(() => {
+    if (selectedPipelineId) return pipelines.find((p) => p.id === selectedPipelineId);
+    return pipelines.find((p) => p.is_default) ?? pipelines[0];
+  }, [pipelines, selectedPipelineId]);
+
+  const { deals, loading: dLoading, moveDeal, createDeal } = useDeals(activePipeline?.id);
+  const loading = pLoading || dLoading;
+
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [ownerFilter, setOwnerFilter] = useState('');
+  const [minValue, setMinValue] = useState('');
+  const [maxValue, setMaxValue] = useState('');
+  const [showAddDeal, setShowAddDeal] = useState<string | null>(null);
+  const [newTitle, setNewTitle] = useState('');
+  const [newValue, setNewValue] = useState('');
+  const dragDealRef = useRef<string | null>(null);
+
+  const filteredDeals = useMemo(() => {
+    return deals.filter((d) => {
+      if (d.status !== 'open') return false;
+      if (ownerFilter && d.owner_id !== ownerFilter) return false;
+      if (minValue && d.value < Number(minValue)) return false;
+      if (maxValue && d.value > Number(maxValue)) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        if (
+          !d.title.toLowerCase().includes(q) &&
+          !(d.contact_name ?? '').toLowerCase().includes(q) &&
+          !(d.company_name ?? '').toLowerCase().includes(q)
+        ) return false;
+      }
+      return true;
+    });
+  }, [deals, ownerFilter, minValue, maxValue, searchQuery]);
+
+  const handleDrop = useCallback(async (stageId: string) => {
+    if (!dragDealRef.current) return;
+    try {
+      await moveDeal(dragDealRef.current, stageId);
+    } catch {
+      // silent -- reload will fix
+    }
+    dragDealRef.current = null;
+  }, [moveDeal]);
+
+  const handleAddDeal = useCallback(async (stageId: string) => {
+    if (!newTitle.trim() || !activePipeline) return;
+    const nd: NewDeal = {
+      pipeline_id: activePipeline.id,
+      stage_id: stageId,
+      title: newTitle.trim(),
+      value: Number(newValue) || 0,
+    };
+    try {
+      await createDeal(nd);
+      setNewTitle('');
+      setNewValue('');
+      setShowAddDeal(null);
+    } catch {
+      // silent
+    }
+  }, [newTitle, newValue, activePipeline, createDeal]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    );
+  }
+
+  const stages: PipelineStage[] = activePipeline?.stages ?? [];
+
+  return (
+    <div className="max-w-[100vw] px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-sans font-semibold text-graphite">Pipeline</h1>
+            {!isLive && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-signal-warn/10 text-signal-warn font-sans">
+                <AlertCircle className="w-3 h-3" />
+                DEMO
+              </span>
+            )}
+          </div>
+          <p className="text-graphite/60 font-sans mt-1">
+            {activePipeline?.name ?? 'No pipeline configured'}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {/* Pipeline selector */}
+          {pipelines.length > 1 && (
+            <select
+              value={activePipeline?.id ?? ''}
+              onChange={(e) => setSelectedPipelineId(e.target.value)}
+              className="h-9 px-3 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
+            >
+              {pipelines.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          )}
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
+            <input
+              type="text"
+              placeholder="Search deals..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 pl-9 pr-3 w-48 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
+            />
+          </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="inline-flex items-center gap-2 h-9 px-4 border border-graphite/15 text-graphite text-sm font-sans rounded-full hover:bg-mn-surface transition-colors"
+          >
+            <Filter className="w-4 h-4" />
+            Filters
+          </button>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      {showFilters && (
+        <div className="flex flex-wrap items-center gap-3 bg-white rounded-xl border border-graphite/8 p-4">
+          <input
+            type="text"
+            placeholder="Owner ID"
+            value={ownerFilter}
+            onChange={(e) => setOwnerFilter(e.target.value)}
+            className="h-9 px-3 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
+          />
+          <input
+            type="number"
+            placeholder="Min value"
+            value={minValue}
+            onChange={(e) => setMinValue(e.target.value)}
+            className="h-9 px-3 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white w-28 focus:outline-none focus:ring-2 focus:ring-accent/30"
+          />
+          <input
+            type="number"
+            placeholder="Max value"
+            value={maxValue}
+            onChange={(e) => setMaxValue(e.target.value)}
+            className="h-9 px-3 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white w-28 focus:outline-none focus:ring-2 focus:ring-accent/30"
+          />
+          <button onClick={() => { setOwnerFilter(''); setMinValue(''); setMaxValue(''); setSearchQuery(''); }} className="text-xs text-accent hover:underline font-sans">
+            Clear
+          </button>
+        </div>
+      )}
+
+      {/* Kanban */}
+      {stages.length === 0 ? (
+        <div className="text-center py-20 text-graphite/50 font-sans">
+          No pipeline stages configured. Set up stages in Admin &rarr; Sales.
+        </div>
+      ) : (
+        <div className="flex gap-4 overflow-x-auto pb-4" style={{ minHeight: '60vh' }}>
+          {stages.map((stage) => {
+            const stageDeals = filteredDeals.filter((d) => d.stage_id === stage.id);
+            const stageValue = stageDeals.reduce((s, d) => s + d.value, 0);
+
+            return (
+              <div
+                key={stage.id}
+                className="flex-shrink-0 w-72 bg-mn-surface/60 rounded-2xl border border-graphite/8"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(stage.id)}
+              >
+                {/* Column header */}
+                <div className="p-4 border-b border-graphite/8">
+                  <div className="flex items-center gap-2 mb-1">
+                    {stage.color && <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: stage.color }} />}
+                    <span className="text-sm font-sans font-semibold text-graphite">{stage.name}</span>
+                    <span className="ml-auto text-xs font-sans text-graphite/40">{stageDeals.length}</span>
+                  </div>
+                  <p className="text-xs font-sans text-graphite/50">{formatCurrency(stageValue)}</p>
+                </div>
+
+                {/* Cards */}
+                <div className="p-2 space-y-2 min-h-[100px]">
+                  {stageDeals.map((deal) => (
+                    <DealCard key={deal.id} deal={deal} onDragStart={() => { dragDealRef.current = deal.id; }} />
+                  ))}
+                </div>
+
+                {/* Add deal */}
+                <div className="p-2 border-t border-graphite/5">
+                  {showAddDeal === stage.id ? (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        placeholder="Deal title"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        className="w-full h-8 px-3 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
+                        autoFocus
+                      />
+                      <input
+                        type="number"
+                        placeholder="Value"
+                        value={newValue}
+                        onChange={(e) => setNewValue(e.target.value)}
+                        className="w-full h-8 px-3 border border-graphite/15 rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleAddDeal(stage.id)}
+                          className="flex-1 h-8 bg-graphite text-white text-xs font-sans font-semibold rounded-lg hover:bg-graphite/90 transition-colors"
+                        >
+                          Add
+                        </button>
+                        <button
+                          onClick={() => setShowAddDeal(null)}
+                          className="h-8 w-8 flex items-center justify-center border border-graphite/15 rounded-lg hover:bg-mn-surface transition-colors"
+                        >
+                          <X className="w-3.5 h-3.5 text-graphite/50" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setShowAddDeal(stage.id); setNewTitle(''); setNewValue(''); }}
+                      className="flex items-center gap-1.5 w-full h-8 px-3 text-xs font-sans text-graphite/50 hover:text-graphite hover:bg-white/60 rounded-lg transition-colors"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add deal
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DealCard({ deal, onDragStart }: { deal: Deal; onDragStart: () => void }) {
+  const daysInStage = daysBetween(deal.updated_at);
+
+  return (
+    <div
+      draggable
+      onDragStart={onDragStart}
+      className="bg-white rounded-xl border border-graphite/8 p-3 cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow"
+    >
+      <div className="flex items-start gap-2">
+        <GripVertical className="w-3.5 h-3.5 text-graphite/20 mt-0.5 flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <Link to={`/portal/sales/deals/${deal.id}`} className="text-sm font-sans font-medium text-graphite hover:text-accent transition-colors line-clamp-1">
+            {deal.title}
+          </Link>
+          <p className="text-lg font-sans font-semibold text-graphite mt-0.5">{formatCurrency(deal.value)}</p>
+          {deal.contact_name && (
+            <p className="text-xs font-sans text-graphite/50 mt-1 truncate">{deal.contact_name}</p>
+          )}
+          <div className="flex items-center gap-3 mt-2 text-xs font-sans text-graphite/40">
+            <span>{deal.probability}% prob</span>
+            <span>{daysInStage}d in stage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

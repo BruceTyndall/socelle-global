@@ -37,7 +37,7 @@ const TIER_LABELS: Record<string, string> = {
 };
 
 const TIER_BADGE: Record<string, string> = {
-  starter: 'bg-mn-surface text-[rgba(30,37,43,0.62)]',
+  starter: 'bg-mn-surface text-graphite/60',
   professional: 'bg-accent/10 text-accent',
   enterprise: 'bg-signal-warn/10 text-signal-warn',
 };
@@ -114,18 +114,18 @@ function EndpointCard({ endpoint }: { endpoint: ApiEndpoint }) {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-[rgba(30,37,43,0.62)] hidden md:block font-sans">{endpoint.summary}</span>
+          <span className="text-sm text-graphite/60 hidden md:block font-sans">{endpoint.summary}</span>
           {expanded ? (
-            <ChevronDown className="w-4 h-4 text-[rgba(30,37,43,0.42)] flex-shrink-0" />
+            <ChevronDown className="w-4 h-4 text-graphite/40 flex-shrink-0" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-[rgba(30,37,43,0.42)] flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-graphite/40 flex-shrink-0" />
           )}
         </div>
       </button>
 
       {expanded && (
-        <div className="border-t border-[rgba(30,37,43,0.06)] px-6 py-5 space-y-5">
-          <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans leading-relaxed">
+        <div className="border-t border-graphite/[0.06] px-6 py-5 space-y-5">
+          <p className="text-sm text-graphite/60 font-sans leading-relaxed">
             {endpoint.description}
           </p>
 
@@ -136,7 +136,7 @@ function EndpointCard({ endpoint }: { endpoint: ApiEndpoint }) {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[rgba(30,37,43,0.08)]">
+                    <tr className="border-b border-graphite/[0.08]">
                       <th className="text-left py-2 pr-4 font-semibold text-graphite font-sans">Name</th>
                       <th className="text-left py-2 pr-4 font-semibold text-graphite font-sans">Type</th>
                       <th className="text-left py-2 pr-4 font-semibold text-graphite font-sans">Required</th>
@@ -145,21 +145,21 @@ function EndpointCard({ endpoint }: { endpoint: ApiEndpoint }) {
                   </thead>
                   <tbody>
                     {endpoint.params.map((param) => (
-                      <tr key={param.name} className="border-b border-[rgba(30,37,43,0.04)]">
+                      <tr key={param.name} className="border-b border-graphite/[0.04]">
                         <td className="py-2 pr-4">
                           <code className="text-xs font-mono text-accent bg-accent/[0.06] px-1.5 py-0.5 rounded">
                             {param.name}
                           </code>
                         </td>
-                        <td className="py-2 pr-4 text-xs text-[rgba(30,37,43,0.42)] font-mono">{param.type}</td>
+                        <td className="py-2 pr-4 text-xs text-graphite/40 font-mono">{param.type}</td>
                         <td className="py-2 pr-4">
                           {param.required ? (
                             <span className="text-xs font-semibold text-signal-warn">Required</span>
                           ) : (
-                            <span className="text-xs text-[rgba(30,37,43,0.42)]">Optional</span>
+                            <span className="text-xs text-graphite/40">Optional</span>
                           )}
                         </td>
-                        <td className="py-2 text-xs text-[rgba(30,37,43,0.62)] font-sans">{param.description}</td>
+                        <td className="py-2 text-xs text-graphite/60 font-sans">{param.description}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -174,13 +174,13 @@ function EndpointCard({ endpoint }: { endpoint: ApiEndpoint }) {
               <h4 className="text-sm font-semibold text-graphite font-sans">Response Example</h4>
               <button
                 onClick={handleCopyResponse}
-                className="flex items-center gap-1.5 text-xs text-[rgba(30,37,43,0.42)] hover:text-graphite transition-colors font-sans"
+                className="flex items-center gap-1.5 text-xs text-graphite/40 hover:text-graphite transition-colors font-sans"
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? 'Copied' : 'Copy'}
               </button>
             </div>
-            <pre className="bg-mn-dark text-[#F7F5F2] rounded-2xl p-5 text-xs font-mono overflow-x-auto leading-relaxed">
+            <pre className="bg-mn-dark text-mn-bg rounded-2xl p-5 text-xs font-mono overflow-x-auto leading-relaxed">
               {endpoint.responseExample}
             </pre>
           </div>
@@ -215,6 +215,12 @@ export default function ApiDocs() {
           name="description"
           content="Explore the Socelle Intelligence API. License professional beauty market signals, trend data, brand analytics, and custom reports programmatically."
         />
+        <meta property="og:title" content="API Documentation | Socelle Intelligence" />
+        <meta property="og:description" content="License professional beauty market signals, trend data, and brand analytics programmatically." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/api/docs" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/api/docs" />
       </Helmet>
       <MainNav />
@@ -248,7 +254,7 @@ export default function ApiDocs() {
       </section>
 
       {/* ── Tab-style section nav ──────────────────────────────────── */}
-      <div className="sticky top-14 z-40 bg-white/80 backdrop-blur-lg border-b border-[rgba(30,37,43,0.08)]">
+      <div className="sticky top-14 z-40 bg-white/80 backdrop-blur-lg border-b border-graphite/[0.08]">
         <div className="section-container">
           <div className="flex gap-1 overflow-x-auto py-2">
             {NAV_SECTIONS.map((sec) => {
@@ -259,8 +265,8 @@ export default function ApiDocs() {
                   onClick={() => scrollToSection(sec.id)}
                   className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-sans font-medium whitespace-nowrap transition-all ${
                     activeSection === sec.id
-                      ? 'bg-[#1F2428] text-[#F7F5F2]'
-                      : 'text-[rgba(30,37,43,0.62)] hover:bg-mn-surface hover:text-graphite'
+                      ? 'bg-mn-dark text-mn-bg'
+                      : 'text-graphite/60 hover:bg-mn-surface hover:text-graphite'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -282,7 +288,7 @@ export default function ApiDocs() {
             <h2 className="font-sans text-subsection text-graphite">Authentication</h2>
           </div>
           <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6 space-y-4">
-            <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans leading-relaxed">
+            <p className="text-sm text-graphite/60 font-sans leading-relaxed">
               All API requests require authentication via a Bearer token in the{' '}
               <code className="text-xs font-mono bg-mn-surface px-1.5 py-0.5 rounded text-accent">
                 Authorization
@@ -291,7 +297,7 @@ export default function ApiDocs() {
               from your dashboard.
             </p>
             <div className="bg-mn-dark rounded-2xl p-4">
-              <code className="text-sm font-mono text-[#F7F5F2]">
+              <code className="text-sm font-mono text-mn-bg">
                 Authorization: Bearer sk_live_your_api_key
               </code>
             </div>
@@ -315,11 +321,11 @@ export default function ApiDocs() {
           </div>
           <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6">
             <div className="bg-mn-dark rounded-2xl p-4">
-              <code className="text-sm font-mono text-[#F7F5F2]">
+              <code className="text-sm font-mono text-mn-bg">
                 https://api.socelle.com
               </code>
             </div>
-            <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans mt-3">
+            <p className="text-sm text-graphite/60 font-sans mt-3">
               All endpoints are relative to this base URL. The API uses HTTPS exclusively and returns
               JSON responses.
             </p>
@@ -334,7 +340,7 @@ export default function ApiDocs() {
             </div>
             <h2 className="font-sans text-subsection text-graphite">Endpoints</h2>
           </div>
-          <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans mb-6">
+          <p className="text-sm text-graphite/60 font-sans mb-6">
             Click any endpoint to expand its full documentation, including parameters and response examples.
           </p>
           <div className="space-y-3">
@@ -353,7 +359,7 @@ export default function ApiDocs() {
             <h2 className="font-sans text-subsection text-graphite">Rate Limiting</h2>
           </div>
           <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6 space-y-4">
-            <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans leading-relaxed">
+            <p className="text-sm text-graphite/60 font-sans leading-relaxed">
               Rate limits are enforced per API key on a per-minute sliding window. When you exceed your
               rate limit, the API returns a{' '}
               <code className="text-xs font-mono bg-mn-surface px-1.5 py-0.5 rounded text-accent">
@@ -368,19 +374,19 @@ export default function ApiDocs() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[rgba(30,37,43,0.08)]">
+                  <tr className="border-b border-graphite/[0.08]">
                     <th className="text-left py-3 pr-6 font-semibold text-graphite font-sans">Tier</th>
                     <th className="text-left py-3 pr-6 font-semibold text-graphite font-sans">Requests/Minute</th>
                     <th className="text-left py-3 font-semibold text-graphite font-sans">Monthly Quota</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-[rgba(30,37,43,0.04)]">
+                  <tr className="border-b border-graphite/[0.04]">
                     <td className="py-3 pr-6 text-graphite font-sans">Starter</td>
                     <td className="py-3 pr-6 font-mono text-sm">30</td>
                     <td className="py-3 font-mono text-sm">10,000</td>
                   </tr>
-                  <tr className="border-b border-[rgba(30,37,43,0.04)]">
+                  <tr className="border-b border-graphite/[0.04]">
                     <td className="py-3 pr-6 text-graphite font-sans">Professional</td>
                     <td className="py-3 pr-6 font-mono text-sm">120</td>
                     <td className="py-3 font-mono text-sm">100,000</td>
@@ -393,7 +399,7 @@ export default function ApiDocs() {
                 </tbody>
               </table>
             </div>
-            <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans">
+            <p className="text-sm text-graphite/60 font-sans">
               Rate limit headers are included in every response:{' '}
               <code className="text-xs font-mono bg-mn-surface px-1.5 py-0.5 rounded text-accent">
                 X-RateLimit-Limit
@@ -421,7 +427,7 @@ export default function ApiDocs() {
           </div>
           <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl overflow-hidden">
             {/* Tab bar */}
-            <div className="flex border-b border-[rgba(30,37,43,0.06)]">
+            <div className="flex border-b border-graphite/[0.06]">
               {codeTabs.map((tab) => (
                 <button
                   key={tab.key}
@@ -429,14 +435,14 @@ export default function ApiDocs() {
                   className={`px-5 py-3 text-sm font-semibold font-sans transition-colors ${
                     activeTab === tab.key
                       ? 'text-accent border-b-2 border-accent bg-accent/[0.04]'
-                      : 'text-[rgba(30,37,43,0.42)] hover:text-graphite'
+                      : 'text-graphite/40 hover:text-graphite'
                   }`}
                 >
                   {tab.label}
                 </button>
               ))}
             </div>
-            <pre className="bg-mn-dark text-[#F7F5F2] p-6 text-sm font-mono overflow-x-auto leading-relaxed rounded-b-card">
+            <pre className="bg-mn-dark text-mn-bg p-6 text-sm font-mono overflow-x-auto leading-relaxed rounded-b-card">
               {CODE_EXAMPLES[activeTab]}
             </pre>
           </div>
@@ -446,8 +452,8 @@ export default function ApiDocs() {
         <section className="text-center py-8">
           <BlockReveal>
             <div className="bg-mn-dark rounded-section p-12 text-center">
-              <h2 className="font-sans font-semibold text-subsection text-[#F7F5F2] mb-4">Ready to integrate?</h2>
-              <p className="text-[rgba(247,245,242,0.55)] font-sans mb-8 max-w-lg mx-auto">
+              <h2 className="font-sans font-semibold text-subsection text-mn-bg mb-4">Ready to integrate?</h2>
+              <p className="text-mn-bg/55 font-sans mb-8 max-w-lg mx-auto">
                 Choose a plan that fits your data needs and start pulling professional beauty intelligence
                 into your applications today.
               </p>

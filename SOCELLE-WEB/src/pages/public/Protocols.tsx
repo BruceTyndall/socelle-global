@@ -90,6 +90,12 @@ export default function Protocols() {
           name="description"
           content="Evidence-based treatment protocols for professional estheticians, spa operators, and medspa clinicians. Step-by-step procedures with CE credit eligibility."
         />
+        <meta property="og:title" content="Treatment Protocols | Socelle" />
+        <meta property="og:description" content="Evidence-based treatment protocols for professional estheticians, spa operators, and medspa clinicians." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/protocols" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/protocols" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
@@ -98,7 +104,15 @@ export default function Protocols() {
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="section-container">
+        {/* Decorative brand photo */}
+        <img
+          src="/images/brand/photos/15.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute right-0 top-0 h-full w-1/3 object-cover opacity-8 pointer-events-none select-none hidden lg:block"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-mn-bg via-mn-bg to-mn-bg/80" />
+        <div className="section-container relative z-10">
           <div className="max-w-3xl">
             <BlockReveal>
               <p className="mn-eyebrow mb-5">Protocol Library</p>
@@ -119,7 +133,7 @@ export default function Protocols() {
 
           {/* Stats bar */}
           <BlockReveal delay={300}>
-            <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-[rgba(30,37,43,0.08)]">
+            <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-graphite/[0.08]">
               <div>
                 <span className="text-metric-md font-sans text-graphite">{allProtocols.length}</span>
                 <p className="text-graphite/40 font-sans text-sm mt-0.5">Protocols</p>
@@ -138,7 +152,7 @@ export default function Protocols() {
       </section>
 
       {/* ── Filter Bar ────────────────────────────────────────────── */}
-      <section className="sticky top-14 z-40 bg-white/80 backdrop-blur-lg border-b border-[rgba(30,37,43,0.08)]">
+      <section className="sticky top-14 z-40 bg-white/80 backdrop-blur-lg border-b border-graphite/[0.08]">
         <div className="section-container py-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             {/* Category pills */}
@@ -152,8 +166,8 @@ export default function Protocols() {
                     onClick={() => setCategory(cat)}
                     className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-sans font-medium transition-all ${
                       active
-                        ? 'bg-[#1F2428] text-[#F7F5F2]'
-                        : 'bg-mn-surface text-[rgba(30,37,43,0.62)] hover:bg-[rgba(30,37,43,0.08)] hover:text-graphite'
+                        ? 'bg-mn-dark text-mn-bg'
+                        : 'bg-mn-surface text-graphite/60 hover:bg-graphite/[0.08] hover:text-graphite'
                     }`}
                   >
                     {Icon && <Icon className="w-3.5 h-3.5" />}
@@ -169,14 +183,14 @@ export default function Protocols() {
                 <select
                   value={filters.skillLevel}
                   onChange={(e) => setSkillLevel(e.target.value as SkillLevel | 'all')}
-                  className="appearance-none bg-white border border-[rgba(30,37,43,0.12)] rounded-full px-4 py-2 pr-8 text-sm font-sans text-graphite focus:outline-none focus:ring-2 focus:ring-accent/30"
+                  className="appearance-none bg-white border border-graphite/[0.12] rounded-full px-4 py-2 pr-8 text-sm font-sans text-graphite focus:outline-none focus:ring-2 focus:ring-accent/30"
                 >
                   <option value="all">All Levels</option>
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
                 </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[rgba(30,37,43,0.42)] pointer-events-none" />
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-graphite/40 pointer-events-none" />
               </div>
 
               {/* CE toggle */}
@@ -185,7 +199,7 @@ export default function Protocols() {
                 className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-sans font-medium border transition-all ${
                   filters.ceEligible
                     ? 'bg-accent/10 border-accent text-graphite'
-                    : 'bg-white border-[rgba(30,37,43,0.12)] text-[rgba(30,37,43,0.62)] hover:border-accent/50'
+                    : 'bg-white border-graphite/[0.12] text-graphite/60 hover:border-accent/50'
                 }`}
               >
                 <GraduationCap className="w-3.5 h-3.5" />
@@ -194,13 +208,13 @@ export default function Protocols() {
 
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(30,37,43,0.42)]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
                 <input
                   type="text"
                   placeholder="Search protocols..."
                   value={filters.search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 pr-4 py-2 bg-white border border-[rgba(30,37,43,0.12)] rounded-full text-sm font-sans text-graphite placeholder:text-[rgba(30,37,43,0.35)] focus:outline-none focus:ring-2 focus:ring-accent/30 w-56"
+                  className="pl-9 pr-4 py-2 bg-white border border-graphite/[0.12] rounded-full text-sm font-sans text-graphite placeholder:text-graphite/35 focus:outline-none focus:ring-2 focus:ring-accent/30 w-56"
                 />
               </div>
             </div>
@@ -213,11 +227,11 @@ export default function Protocols() {
         <div className="section-container">
           {protocols.length === 0 ? (
             <div className="text-center py-16">
-              <Beaker className="w-10 h-10 text-[rgba(30,37,43,0.22)] mx-auto mb-4" />
-              <p className="text-[rgba(30,37,43,0.62)] font-sans text-lg">
+              <Beaker className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
+              <p className="text-graphite/60 font-sans text-lg">
                 No protocols match your current filters.
               </p>
-              <p className="text-[rgba(30,37,43,0.42)] font-sans text-sm mt-1">
+              <p className="text-graphite/40 font-sans text-sm mt-1">
                 Try adjusting your category, skill level, or search terms.
               </p>
             </div>
@@ -243,7 +257,7 @@ export default function Protocols() {
                         </span>
                       </div>
                       {protocol.subcategory && (
-                        <span className="text-xs font-sans text-[rgba(30,37,43,0.42)]">
+                        <span className="text-xs font-sans text-graphite/40">
                           {protocol.subcategory}
                         </span>
                       )}
@@ -257,7 +271,7 @@ export default function Protocols() {
 
                       {/* Badges */}
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1 text-xs font-sans font-medium text-[rgba(30,37,43,0.62)] bg-mn-surface rounded-full px-2.5 py-1">
+                        <span className="inline-flex items-center gap-1 text-xs font-sans font-medium text-graphite/60 bg-mn-surface rounded-full px-2.5 py-1">
                           <Clock className="w-3 h-3" />
                           {protocol.durationMinutes} min
                         </span>
@@ -267,12 +281,12 @@ export default function Protocols() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm font-sans text-[rgba(30,37,43,0.62)] leading-relaxed line-clamp-2 mb-4">
+                      <p className="text-sm font-sans text-graphite/60 leading-relaxed line-clamp-2 mb-4">
                         {protocol.description}
                       </p>
 
                       {/* Footer */}
-                      <div className="flex items-center justify-between pt-3 border-t border-[rgba(30,37,43,0.06)]">
+                      <div className="flex items-center justify-between pt-3 border-t border-graphite/[0.06]">
                         {protocol.ceEligible && protocol.ceCredits ? (
                           <div className="flex items-center gap-1.5 text-accent">
                             <GraduationCap className="w-4 h-4" />
@@ -303,10 +317,10 @@ export default function Protocols() {
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.08] mx-auto mb-6">
                   <Lock className="w-5 h-5 text-accent" />
                 </div>
-                <h2 className="font-sans font-semibold text-subsection text-[#F7F5F2] mb-4">
+                <h2 className="font-sans font-semibold text-subsection text-mn-bg mb-4">
                   Access the full protocol library with a professional account
                 </h2>
-                <p className="text-[rgba(247,245,242,0.55)] font-sans text-base max-w-xl mx-auto mb-8 leading-relaxed">
+                <p className="text-mn-bg/55 font-sans text-base max-w-xl mx-auto mb-8 leading-relaxed">
                   Professional accounts access step-by-step protocols, CE credit tracking,
                   product ordering directly from protocol pages, and personalized protocol
                   recommendations based on your treatment room.

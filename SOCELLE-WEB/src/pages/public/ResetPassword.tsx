@@ -79,9 +79,12 @@ export default function ResetPassword() {
   if (success) {
     return (
       <div className="min-h-screen bg-mn-bg flex items-center justify-center p-4">
-        <Helmet><title>Password Updated — Socelle</title></Helmet>
+        <Helmet>
+          <title>Password Updated — Socelle</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-lg shadow-sm p-8 border border-[rgba(20,20,24,0.12)]">
+          <div className="bg-white rounded-lg shadow-sm p-8 border border-graphite/[0.12]">
             <div className="flex items-center justify-center mb-6">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -91,7 +94,7 @@ export default function ResetPassword() {
             <h1 className="text-2xl font-bold text-center text-graphite mb-2">
               Password Updated
             </h1>
-            <p className="text-center text-[rgba(20,20,24,0.52)] mb-6">
+            <p className="text-center text-graphite/50 mb-6">
               Your password has been successfully updated. Redirecting to login...
             </p>
           </div>
@@ -102,19 +105,22 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen bg-mn-bg flex items-center justify-center p-4">
-      <Helmet><title>Reset Password — Socelle</title></Helmet>
+      <Helmet>
+        <title>Reset Password — Socelle</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="w-full max-w-md">
         <Link
           to="/"
-          className="flex items-center gap-2 text-[rgba(20,20,24,0.52)] hover:text-graphite mb-6 transition-colors"
+          className="flex items-center gap-2 text-graphite/50 hover:text-graphite mb-6 transition-colors"
         >
           <Home className="w-4 h-4" />
           <span className="text-sm">Back to Home</span>
         </Link>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 border border-[rgba(20,20,24,0.12)]">
+        <div className="bg-white rounded-lg shadow-sm p-8 border border-graphite/[0.12]">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-12 h-12 bg-[rgba(20,20,24,0.06)] rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-graphite/[0.06] rounded-lg flex items-center justify-center">
               <Lock className="w-6 h-6 text-accent" />
             </div>
           </div>
@@ -122,7 +128,7 @@ export default function ResetPassword() {
           <h1 className="text-2xl font-bold text-center text-graphite mb-2">
             Set New Password
           </h1>
-          <p className="text-center text-[rgba(20,20,24,0.52)] mb-6">
+          <p className="text-center text-graphite/50 mb-6">
             Enter your new password below
           </p>
           {checkingSession && (
@@ -159,7 +165,7 @@ export default function ResetPassword() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 disabled={!hasSession}
-                className="w-full px-4 py-2 border border-[rgba(20,20,24,0.12)] rounded-lg focus:ring-2 focus:ring-accent focus:border-accent disabled:bg-mn-surface"
+                className="w-full px-4 py-2 border border-graphite/[0.12] rounded-lg focus:ring-2 focus:ring-accent focus:border-accent disabled:bg-mn-surface"
                 placeholder="••••••••"
               />
             </div>
@@ -175,7 +181,7 @@ export default function ResetPassword() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 disabled={!hasSession}
-                className="w-full px-4 py-2 border border-[rgba(20,20,24,0.12)] rounded-lg focus:ring-2 focus:ring-accent focus:border-accent disabled:bg-mn-surface"
+                className="w-full px-4 py-2 border border-graphite/[0.12] rounded-lg focus:ring-2 focus:ring-accent focus:border-accent disabled:bg-mn-surface"
                 placeholder="••••••••"
               />
             </div>
@@ -183,7 +189,7 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading || !hasSession}
-              className="w-full py-3 bg-mn-dark text-white font-semibold rounded-lg hover:bg-graphite disabled:bg-[rgba(20,20,24,0.25)] disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-mn-dark text-white font-semibold rounded-lg hover:bg-graphite disabled:bg-graphite/25 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Updating...' : 'Submit'}
             </button>

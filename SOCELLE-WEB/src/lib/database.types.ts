@@ -1149,6 +1149,465 @@ export type Database = {
           identifier_value?: string
         }
       }
+      products: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          short_description: string | null
+          price_cents: number
+          compare_at_price_cents: number | null
+          currency: string
+          sku: string | null
+          stock_quantity: number
+          track_inventory: boolean
+          is_active: boolean
+          is_featured: boolean
+          category_id: string | null
+          brand_id: string | null
+          images: Json
+          metadata: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          short_description?: string | null
+          price_cents: number
+          compare_at_price_cents?: number | null
+          currency?: string
+          sku?: string | null
+          stock_quantity?: number
+          track_inventory?: boolean
+          is_active?: boolean
+          is_featured?: boolean
+          category_id?: string | null
+          brand_id?: string | null
+          images?: Json
+          metadata?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          short_description?: string | null
+          price_cents?: number
+          compare_at_price_cents?: number | null
+          currency?: string
+          sku?: string | null
+          stock_quantity?: number
+          track_inventory?: boolean
+          is_active?: boolean
+          is_featured?: boolean
+          category_id?: string | null
+          brand_id?: string | null
+          images?: Json
+          metadata?: Json
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      product_categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          parent_id: string | null
+          sort_order: number
+          image_url: string | null
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          parent_id?: string | null
+          sort_order?: number
+          image_url?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          parent_id?: string | null
+          sort_order?: number
+          image_url?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      product_variants: {
+        Row: {
+          id: string
+          product_id: string
+          name: string
+          sku: string | null
+          price_cents: number
+          stock_quantity: number
+          attributes: Json
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          name: string
+          sku?: string | null
+          price_cents: number
+          stock_quantity?: number
+          attributes?: Json
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          name?: string
+          sku?: string | null
+          price_cents?: number
+          stock_quantity?: number
+          attributes?: Json
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      orders: {
+        Row: {
+          id: string
+          order_number: string
+          user_id: string
+          status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
+          subtotal_cents: number
+          discount_cents: number
+          tax_cents: number
+          shipping_cents: number
+          total_cents: number
+          currency: string
+          stripe_payment_intent_id: string | null
+          stripe_charge_id: string | null
+          shipping_address: Json | null
+          billing_address: Json | null
+          notes: string | null
+          metadata: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_number: string
+          user_id: string
+          status?: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
+          subtotal_cents: number
+          discount_cents?: number
+          tax_cents?: number
+          shipping_cents?: number
+          total_cents: number
+          currency?: string
+          stripe_payment_intent_id?: string | null
+          stripe_charge_id?: string | null
+          shipping_address?: Json | null
+          billing_address?: Json | null
+          notes?: string | null
+          metadata?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_number?: string
+          user_id?: string
+          status?: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
+          subtotal_cents?: number
+          discount_cents?: number
+          tax_cents?: number
+          shipping_cents?: number
+          total_cents?: number
+          currency?: string
+          stripe_payment_intent_id?: string | null
+          stripe_charge_id?: string | null
+          shipping_address?: Json | null
+          billing_address?: Json | null
+          notes?: string | null
+          metadata?: Json
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      order_items: {
+        Row: {
+          id: string
+          order_id: string
+          product_id: string | null
+          variant_id: string | null
+          quantity: number
+          unit_price_cents: number
+          total_price_cents: number
+          product_snapshot: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          product_id?: string | null
+          variant_id?: string | null
+          quantity: number
+          unit_price_cents: number
+          total_price_cents: number
+          product_snapshot: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          variant_id?: string | null
+          quantity?: number
+          unit_price_cents?: number
+          total_price_cents?: number
+          product_snapshot?: Json
+          created_at?: string
+        }
+      }
+      carts: {
+        Row: {
+          id: string
+          user_id: string | null
+          session_id: string | null
+          status: 'active' | 'converted' | 'abandoned'
+          expires_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          session_id?: string | null
+          status?: 'active' | 'converted' | 'abandoned'
+          expires_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          session_id?: string | null
+          status?: 'active' | 'converted' | 'abandoned'
+          expires_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      cart_items: {
+        Row: {
+          id: string
+          cart_id: string
+          product_id: string | null
+          variant_id: string | null
+          quantity: number
+          unit_price_cents: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          cart_id: string
+          product_id?: string | null
+          variant_id?: string | null
+          quantity: number
+          unit_price_cents: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          cart_id?: string
+          product_id?: string | null
+          variant_id?: string | null
+          quantity?: number
+          unit_price_cents?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      discount_codes: {
+        Row: {
+          id: string
+          code: string
+          type: 'percentage' | 'fixed_amount' | 'free_shipping'
+          value_cents: number | null
+          percentage: number | null
+          minimum_order_cents: number | null
+          maximum_uses: number | null
+          current_uses: number
+          is_active: boolean
+          expires_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          code: string
+          type: 'percentage' | 'fixed_amount' | 'free_shipping'
+          value_cents?: number | null
+          percentage?: number | null
+          minimum_order_cents?: number | null
+          maximum_uses?: number | null
+          current_uses?: number
+          is_active?: boolean
+          expires_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          code?: string
+          type?: 'percentage' | 'fixed_amount' | 'free_shipping'
+          value_cents?: number | null
+          percentage?: number | null
+          minimum_order_cents?: number | null
+          maximum_uses?: number | null
+          current_uses?: number
+          is_active?: boolean
+          expires_at?: string | null
+          created_at?: string
+        }
+      }
+      shipping_methods: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          carrier: string | null
+          estimated_days_min: number | null
+          estimated_days_max: number | null
+          base_rate_cents: number
+          per_item_rate_cents: number
+          free_above_cents: number | null
+          is_active: boolean
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          carrier?: string | null
+          estimated_days_min?: number | null
+          estimated_days_max?: number | null
+          base_rate_cents: number
+          per_item_rate_cents?: number
+          free_above_cents?: number | null
+          is_active?: boolean
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          carrier?: string | null
+          estimated_days_min?: number | null
+          estimated_days_max?: number | null
+          base_rate_cents?: number
+          per_item_rate_cents?: number
+          free_above_cents?: number | null
+          is_active?: boolean
+          sort_order?: number
+        }
+      }
+      reviews: {
+        Row: {
+          id: string
+          product_id: string
+          user_id: string
+          order_id: string | null
+          rating: number
+          title: string | null
+          body: string | null
+          is_verified_purchase: boolean
+          is_approved: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          user_id: string
+          order_id?: string | null
+          rating: number
+          title?: string | null
+          body?: string | null
+          is_verified_purchase?: boolean
+          is_approved?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          user_id?: string
+          order_id?: string | null
+          rating?: number
+          title?: string | null
+          body?: string | null
+          is_verified_purchase?: boolean
+          is_approved?: boolean
+          created_at?: string
+        }
+      }
+      wishlists: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          is_public: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name?: string
+          is_public?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          is_public?: boolean
+          created_at?: string
+        }
+      }
+      wishlist_items: {
+        Row: {
+          id: string
+          wishlist_id: string
+          product_id: string | null
+          variant_id: string | null
+          added_at: string
+        }
+        Insert: {
+          id?: string
+          wishlist_id: string
+          product_id?: string | null
+          variant_id?: string | null
+          added_at?: string
+        }
+        Update: {
+          id?: string
+          wishlist_id?: string
+          product_id?: string | null
+          variant_id?: string | null
+          added_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

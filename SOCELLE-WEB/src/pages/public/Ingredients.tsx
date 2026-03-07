@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Search, Beaker, FlaskConical } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Beaker, FlaskConical, Layers, ArrowRight, Clock } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useIngredients } from '../../lib/useIngredients';
 import type { Ingredient } from '../../lib/useIngredients';
+import { useIngredientCollections } from '../../lib/useIngredientCollections';
+import { useIngredientSearch } from '../../lib/useIngredientSearch';
+import { inciToSlug } from '../../lib/useIngredientDetail';
 
 // ── EU status badge ─────────────────────────────────────────────────────────
 
@@ -29,7 +33,10 @@ function EuBadge({ status }: { status: Ingredient['eu_status'] }) {
 
 function IngredientCard({ ingredient }: { ingredient: Ingredient }) {
   return (
-    <article className="bg-white rounded-2xl border border-graphite/10 p-5 shadow-card hover:shadow-card-hover transition-shadow flex flex-col gap-3">
+    <Link
+      to={`/ingredients/${inciToSlug(ingredient.inci_name)}`}
+      className="bg-white rounded-2xl border border-graphite/10 p-5 shadow-card hover:shadow-card-hover transition-shadow flex flex-col gap-3"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p className="font-sans font-semibold text-sm text-graphite leading-snug">
@@ -73,15 +80,29 @@ function IngredientCard({ ingredient }: { ingredient: Ingredient }) {
           CAS {ingredient.cas_number}
         </p>
       )}
-    </article>
+    </Link>
   );
 }
+
+// ── Browse by function categories ───────────────────────────────────────────
+
+const FUNCTION_CATEGORIES = [
+  { label: 'Actives', value: 'actives', icon: '🧪' },
+  { label: 'Humectants', value: 'humectants', icon: '💧' },
+  { label: 'Occlusives', value: 'occlusives', icon: '🛡' },
+  { label: 'Emollients', value: 'emollients', icon: '🧴' },
+  { label: 'Preservatives', value: 'preservatives', icon: '🔬' },
+  { label: 'Exfoliants', value: 'exfoliants', icon: '✨' },
+  { label: 'Antioxidants', value: 'antioxidants', icon: '🍇' },
+];
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function Ingredients() {
   const [searchInput, setSearchInput] = useState('');
   const { ingredients, loading, isLive, total } = useIngredients(searchInput, 60);
+  const { collections: featuredCollections, isLive: collectionsLive } = useIngredientCollections({ featured: true });
+  const { results: recentIngredients, isLive: recentLive } = useIngredientSearch({ q: '', limit: 8 });
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
@@ -96,22 +117,41 @@ export default function Ingredients() {
           property="og:description"
           content="INCI ingredient reference for professional beauty operators. EU status, functions, and safety intelligence."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/ingredients" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/ingredients" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Ingredient Directory — INCI Reference | Socelle',
+          description: 'Professional beauty ingredient reference. Search the INCI registry for functions, EU regulatory status, and safety data.',
+          url: 'https://socelle.com/ingredients',
+          isPartOf: { '@type': 'WebSite', url: 'https://socelle.com', name: 'Socelle' },
+        })}</script>
       </Helmet>
       <MainNav />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative bg-mn-dark py-20 lg:py-28 overflow-hidden">
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.08]"
+          aria-hidden="true"
+        >
+          <source src="/videos/brand/blue drops.mp4" type="video/mp4" />
+        </video>
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-        <div className="section-container text-center relative">
+        <div className="section-container text-center relative z-10">
           <p className="text-accent text-[11px] font-sans font-medium tracking-[0.25em] uppercase mb-4">
             Ingredient Intelligence
           </p>
-          <h1 className="font-sans font-semibold text-4xl lg:text-5xl text-[#F7F5F2] leading-tight tracking-tight mb-5">
+          <h1 className="font-sans font-semibold text-4xl lg:text-5xl text-mn-bg leading-tight tracking-tight mb-5">
             INCI Ingredient Directory
           </h1>
           <div className="mx-auto w-10 h-px bg-accent/40 mb-6" />
-          <p className="text-[rgba(247,245,242,0.60)] font-sans font-light text-lg max-w-xl mx-auto">
+          <p className="text-mn-bg/60 font-sans font-light text-lg max-w-xl mx-auto">
             Search the professional beauty ingredient registry — functions, EU regulatory status,
             and provenance sourced from Open Beauty Facts.
           </p>
@@ -198,6 +238,127 @@ export default function Ingredients() {
           )}
         </div>
       </section>
+
+      {/* ── Featured Collections ─────────────────────────────────────── */}
+      {featuredCollections.length > 0 && (
+        <section className="py-16 lg:py-20 bg-mn-surface border-t border-graphite/10">
+          <div className="section-container">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <Layers className="w-5 h-5 text-accent" />
+                <h2 className="font-sans font-semibold text-2xl text-graphite">Featured Collections</h2>
+                {collectionsLive ? (
+                  <span className="text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-pill">LIVE</span>
+                ) : (
+                  <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">DEMO</span>
+                )}
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {featuredCollections.map((col) => (
+                <Link
+                  key={col.id}
+                  to={`/ingredients/collections/${col.slug}`}
+                  className="bg-white rounded-2xl border border-graphite/10 p-5 shadow-card hover:shadow-card-hover transition-shadow flex flex-col gap-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-sans font-semibold text-sm text-graphite">{col.name}</h3>
+                    <ArrowRight className="w-4 h-4 text-graphite/30" />
+                  </div>
+                  {col.description && (
+                    <p className="text-graphite/50 font-sans text-xs line-clamp-2">{col.description}</p>
+                  )}
+                  <div className="flex items-center gap-2 mt-auto pt-2">
+                    {col.collection_type && (
+                      <span className="text-[10px] font-sans font-medium bg-accent/10 text-accent px-2 py-0.5 rounded-pill capitalize">
+                        {col.collection_type}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-sans text-graphite/40">
+                      {col.item_count ?? 0} ingredients
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Browse by Function ─────────────────────────────────────────── */}
+      <section className="py-16 lg:py-20 border-t border-graphite/10">
+        <div className="section-container">
+          <div className="flex items-center gap-3 mb-8">
+            <FlaskConical className="w-5 h-5 text-accent" />
+            <h2 className="font-sans font-semibold text-2xl text-graphite">Browse by Function</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+            {FUNCTION_CATEGORIES.map((cat) => (
+              <Link
+                key={cat.value}
+                to={`/ingredients/collections/${cat.value}`}
+                className="bg-white rounded-2xl border border-graphite/10 p-4 text-center shadow-card hover:shadow-card-hover transition-shadow"
+              >
+                <span className="text-2xl block mb-2" role="img" aria-label={cat.label}>{cat.icon}</span>
+                <span className="font-sans font-medium text-sm text-graphite">{cat.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Recently Added ─────────────────────────────────────────────── */}
+      {recentIngredients.length > 0 && !searchInput && (
+        <section className="py-16 lg:py-20 bg-mn-surface border-t border-graphite/10">
+          <div className="section-container">
+            <div className="flex items-center gap-3 mb-8">
+              <Clock className="w-5 h-5 text-accent" />
+              <h2 className="font-sans font-semibold text-2xl text-graphite">Trending Ingredients</h2>
+              {recentLive ? (
+                <span className="text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-pill">LIVE</span>
+              ) : (
+                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">DEMO</span>
+              )}
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {recentIngredients.map((ing) => (
+                <Link
+                  key={ing.id}
+                  to={`/ingredients/${inciToSlug(ing.inci_name)}`}
+                  className="bg-white rounded-2xl border border-graphite/10 p-5 shadow-card hover:shadow-card-hover transition-shadow flex flex-col gap-2"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-sans font-semibold text-sm text-graphite leading-snug">{ing.inci_name}</p>
+                    {ing.ewg_score != null && (
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-pill ${
+                        ing.ewg_score <= 2
+                          ? 'bg-signal-up/10 text-signal-up'
+                          : ing.ewg_score <= 6
+                            ? 'bg-signal-warn/10 text-signal-warn'
+                            : 'bg-signal-down/10 text-signal-down'
+                      }`}>
+                        EWG {ing.ewg_score}
+                      </span>
+                    )}
+                  </div>
+                  {ing.common_name && (
+                    <p className="text-graphite/50 font-sans text-xs">{ing.common_name}</p>
+                  )}
+                  {ing.benefits.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {ing.benefits.slice(0, 2).map((b) => (
+                        <span key={b} className="text-[10px] font-sans font-medium bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-pill">
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Provenance ───────────────────────────────────────────────── */}
       <section className="py-10 border-t border-graphite/10 bg-mn-surface">

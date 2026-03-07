@@ -15,25 +15,7 @@ import {
 import { useBrandIntelligence } from '../../lib/intelligence/useBrandIntelligence';
 import type { BrandPeerData, ProfessionalAlsoBought } from '../../lib/intelligence/brandIntelligence';
 
-// ── Mineral design system color constants ─────────────────────────────────────
-const MN = {
-  graphite: '#1E252B',
-  textSec: 'rgba(30,37,43,0.62)',
-  textMuted: 'rgba(30,37,43,0.42)',
-  bg: '#F6F4F1',
-  surface: '#EFEBE6',
-  card: '#FFFFFF',
-  dark: '#1F2428',
-  footer: '#15191D',
-  accent: '#6E879B',
-  signalUp: '#5F8A72',
-  signalWarn: '#A97A4C',
-  border: 'rgba(30,37,43,0.08)',
-  borderMed: 'rgba(30,37,43,0.12)',
-  onDark: '#F7F5F2',
-  onDarkSec: 'rgba(247,245,242,0.55)',
-  onDarkMuted: 'rgba(247,245,242,0.35)',
-};
+// ── MN color constants removed — use Tailwind tokens (text-graphite, bg-mn-bg, text-accent, etc.) ──
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -118,11 +100,11 @@ function StorefrontSkeleton() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 border-t border-b border-[rgba(30,37,43,0.08)] bg-mn-surface">
+          <div className="grid grid-cols-4 border-t border-b border-graphite/[0.08] bg-mn-surface">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="py-5 flex flex-col items-center gap-2">
-                <div className="h-8 w-12 rounded animate-pulse bg-[rgba(30,37,43,0.08)]" />
-                <div className="h-2.5 w-16 rounded animate-pulse bg-[rgba(30,37,43,0.08)]" />
+                <div className="h-8 w-12 rounded animate-pulse bg-graphite/[0.08]" />
+                <div className="h-2.5 w-16 rounded animate-pulse bg-graphite/[0.08]" />
               </div>
             ))}
           </div>
@@ -137,11 +119,11 @@ function StorefrontSkeleton() {
 function TrustBanner({ status, brandSlug }: { status: string | null; brandSlug: string }) {
   if (status === 'verified') {
     return (
-      <div className="flex items-center gap-3 px-8 py-3 text-sm bg-[#E8F5ED] border-b border-[#C2DEC9] text-[#2B5A35]">
+      <div className="flex items-center gap-3 px-8 py-3 text-sm bg-signal-up/10 border-b border-signal-up/30 text-signal-up">
         <span className="bg-signal-up text-white text-[10px] font-bold tracking-wider uppercase py-1 px-3 rounded-pill font-sans">
           Verified
         </span>
-        <span className="flex-1 font-sans text-[#2B5A35]">
+        <span className="flex-1 font-sans text-signal-up">
           Verified professional brand. Wholesale ordering, education, and implementation support are active.
         </span>
       </div>
@@ -149,11 +131,11 @@ function TrustBanner({ status, brandSlug }: { status: string | null; brandSlug: 
   }
   if (status === 'pending_verification') {
     return (
-      <div className="flex items-center gap-3 px-8 py-3 text-sm bg-mn-surface border-b border-[rgba(30,37,43,0.08)]">
+      <div className="flex items-center gap-3 px-8 py-3 text-sm bg-mn-surface border-b border-graphite/[0.08]">
         <span className="bg-signal-warn text-white text-[10px] font-bold tracking-wider uppercase py-1 px-3 rounded-pill font-sans">
           Under Review
         </span>
-        <span className="flex-1 font-sans text-[rgba(30,37,43,0.62)]">
+        <span className="flex-1 font-sans text-graphite/60">
           This brand has applied to join Socelle and is currently being reviewed.
         </span>
       </div>
@@ -161,11 +143,11 @@ function TrustBanner({ status, brandSlug }: { status: string | null; brandSlug: 
   }
   // Unverified
   return (
-    <div className="flex items-center gap-3 px-8 py-3 text-sm bg-mn-surface border-b border-[rgba(30,37,43,0.08)]">
+    <div className="flex items-center gap-3 px-8 py-3 text-sm bg-mn-surface border-b border-graphite/[0.08]">
       <span className="bg-signal-warn text-white text-[10px] font-bold tracking-wider uppercase py-1 px-3 rounded-pill font-sans">
         Unverified
       </span>
-      <span className="flex-1 font-sans text-[rgba(30,37,43,0.62)]">
+      <span className="flex-1 font-sans text-graphite/60">
         This page was created from publicly available information. This brand has not yet joined Socelle.
       </span>
       <Link
@@ -199,7 +181,7 @@ function BrandHero({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-6 sm:gap-9 py-10 px-8 lg:py-12 lg:px-10">
       {/* Logo */}
-      <div className={`w-[140px] h-[140px] rounded-2xl flex-shrink-0 flex items-center justify-center border border-[rgba(30,37,43,0.08)] font-sans font-semibold text-4xl font-medium overflow-hidden ${isVerified ? 'bg-mn-dark text-accent' : 'bg-mn-surface text-accent'}`}>
+      <div className={`w-[140px] h-[140px] rounded-2xl flex-shrink-0 flex items-center justify-center border border-graphite/[0.08] font-sans font-semibold text-4xl font-medium overflow-hidden ${isVerified ? 'bg-mn-dark text-accent' : 'bg-mn-surface text-accent'}`}>
         {brand.logo_url
           ? <img src={brand.logo_url} alt={`${brand.name} brand logo`} className="w-full h-full object-contain p-3" />
           : logoInitials}
@@ -212,22 +194,22 @@ function BrandHero({
         </h1>
 
         {tagline && (
-          <p className="font-sans text-base italic text-[rgba(30,37,43,0.62)] mt-1">
+          <p className="font-sans text-base italic text-graphite/60 mt-1">
             &ldquo;{tagline}&rdquo;
           </p>
         )}
 
         {/* Meta pills */}
         <div className="flex flex-wrap gap-2 mt-4">
-          <span className="text-[11px] font-medium font-sans px-3.5 py-1.5 rounded-pill bg-mn-surface text-[rgba(30,37,43,0.62)] border border-[rgba(30,37,43,0.04)]">
+          <span className="text-[11px] font-medium font-sans px-3.5 py-1.5 rounded-pill bg-mn-surface text-graphite/60 border border-graphite/[0.04]">
             Professional Grade
           </span>
           {isVerified && (
             <>
-              <span className="text-[11px] font-medium font-sans px-3.5 py-1.5 rounded-pill bg-[#E8F5ED] text-signal-up border border-[rgba(95,138,114,0.12)]">
+              <span className="text-[11px] font-medium font-sans px-3.5 py-1.5 rounded-pill bg-signal-up/10 text-signal-up border border-signal-up/10">
                 Verified Brand
               </span>
-              <span className="text-[11px] font-medium font-sans px-3.5 py-1.5 rounded-pill bg-[#E8F5ED] text-signal-up border border-[rgba(95,138,114,0.12)]">
+              <span className="text-[11px] font-medium font-sans px-3.5 py-1.5 rounded-pill bg-signal-up/10 text-signal-up border border-signal-up/10">
                 Ships 24-48 hrs
               </span>
             </>
@@ -269,7 +251,7 @@ function BrandHero({
 }
 
 function SocialPill({ label, href, highlight }: { label: string; href?: string; highlight?: boolean }) {
-  const base = "inline-flex items-center gap-1.5 text-xs font-medium font-sans px-3.5 py-1.5 rounded-pill bg-mn-surface border border-[rgba(30,37,43,0.04)] transition-all text-[rgba(30,37,43,0.62)] no-underline hover:border-[rgba(30,37,43,0.12)]";
+  const base = "inline-flex items-center gap-1.5 text-xs font-medium font-sans px-3.5 py-1.5 rounded-pill bg-mn-surface border border-graphite/[0.04] transition-all text-graphite/60 no-underline hover:border-graphite/[0.12]";
   const content = highlight
     ? label.split(/\s{2,}/)
       .map((part, i) => i === 1
@@ -285,13 +267,13 @@ function SocialPill({ label, href, highlight }: { label: string; href?: string; 
 
 function StatsBar({ stats }: { stats: { num: string; label: string }[] }) {
   return (
-    <div className={`grid border-t border-b border-[rgba(30,37,43,0.08)] bg-mn-surface`} style={{ gridTemplateColumns: `repeat(${stats.length}, 1fr)` }}>
+    <div className={`grid border-t border-b border-graphite/[0.08] bg-mn-surface`} style={{ gridTemplateColumns: `repeat(${stats.length}, 1fr)` }}>
       {stats.map((s, i) => (
-        <div key={i} className={`text-center py-5 px-4 relative ${i < stats.length - 1 ? 'border-r border-[rgba(30,37,43,0.08)]' : ''}`}>
+        <div key={i} className={`text-center py-5 px-4 relative ${i < stats.length - 1 ? 'border-r border-graphite/[0.08]' : ''}`}>
           <div className="font-sans font-semibold text-[28px] font-medium text-graphite">
             {s.num}
           </div>
-          <div className="font-sans text-[10px] font-semibold uppercase tracking-[1.2px] text-[rgba(30,37,43,0.42)] mt-1">
+          <div className="font-sans text-[10px] font-semibold uppercase tracking-[1.2px] text-graphite/40 mt-1">
             {s.label}
           </div>
         </div>
@@ -320,7 +302,7 @@ function SectionHead({
           {title}
         </span>
         {source && (
-          <span className="font-sans text-[10px] font-semibold text-accent bg-[rgba(110,135,155,0.1)] px-2 py-0.5 rounded-md tracking-[0.3px]">
+          <span className="font-sans text-[10px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-md tracking-[0.3px]">
             {source}
           </span>
         )}
@@ -356,18 +338,18 @@ function PressMentions({ mentions, isVerified }: { mentions: PressMention[]; isV
             target="_blank"
             rel="noopener noreferrer"
             className={`flex-shrink-0 w-60 p-5 rounded-2xl border no-underline block transition-all hover:shadow-soft ${m.featured
-              ? 'bg-[#E8F5ED] border-[rgba(95,138,114,0.15)]'
-              : 'bg-white border-[rgba(30,37,43,0.08)]'
+              ? 'bg-signal-up/10 border-signal-up/15'
+              : 'bg-white border-graphite/[0.08]'
               }`}
           >
-            <div className={`font-sans text-[10px] font-bold uppercase tracking-[1px] ${m.featured ? 'text-signal-up' : 'text-[rgba(30,37,43,0.42)]'}`}>
+            <div className={`font-sans text-[10px] font-bold uppercase tracking-[1px] ${m.featured ? 'text-signal-up' : 'text-graphite/40'}`}>
               {m.source}
             </div>
             <div className="font-sans font-semibold text-sm font-medium text-graphite mt-2 mb-2.5 leading-[1.45] line-clamp-3">
               {m.headline}
             </div>
             {m.date && (
-              <div className="font-sans text-[11px] text-[rgba(30,37,43,0.32)]">
+              <div className="font-sans text-[11px] text-graphite/30">
                 {m.date}
               </div>
             )}
@@ -389,7 +371,7 @@ function IndustryPresence({ badges, isVerified }: { badges: TrustBadgeItem[]; is
       </div>
       <div className="flex flex-wrap gap-2 px-8 lg:px-10 pb-7">
         {badges.map((b, i) => (
-          <span key={i} className="inline-flex items-center gap-1.5 font-sans text-[11px] font-medium tracking-[0.1px] px-4 py-2 rounded-pill bg-mn-surface text-accent border border-[rgba(110,135,155,0.12)]">
+          <span key={i} className="inline-flex items-center gap-1.5 font-sans text-[11px] font-medium tracking-[0.1px] px-4 py-2 rounded-pill bg-mn-surface text-accent border border-accent/[0.12]">
             <span className="text-signal-up font-bold">&#10003;</span>
             {b.label}
           </span>
@@ -431,7 +413,7 @@ function ProductTile({
   const tierLabel = type === 'pro' ? 'PRO' : 'Retail';
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-[rgba(30,37,43,0.08)] bg-white transition-all duration-200 cursor-pointer hover:shadow-soft hover:-translate-y-0.5">
+    <div className="rounded-2xl overflow-hidden border border-graphite/[0.08] bg-white transition-all duration-200 cursor-pointer hover:shadow-soft hover:-translate-y-0.5">
       {/* Image */}
       <div
         className="aspect-square relative overflow-hidden flex items-center justify-center"
@@ -440,7 +422,7 @@ function ProductTile({
         {/* Type badge */}
         <div className="absolute top-2 left-2">
           <span className={`font-sans text-[10px] font-semibold tracking-[0.3px] px-2 py-0.5 rounded-md ${type === 'pro'
-            ? 'bg-mn-dark text-[#F7F5F2]'
+            ? 'bg-mn-dark text-mn-bg'
             : 'bg-mn-surface text-accent'
             }`}>
             {tierLabel}
@@ -459,7 +441,7 @@ function ProductTile({
           {name}
         </p>
         {category && (
-          <p className="font-sans text-[11px] text-[rgba(30,37,43,0.42)] mt-1">
+          <p className="font-sans text-[11px] text-graphite/40 mt-1">
             {category}
           </p>
         )}
@@ -470,17 +452,17 @@ function ProductTile({
               {price != null ? `$${price.toFixed(2)}` : '\u2014'}
             </div>
             {msrp != null && (
-              <div className="font-sans text-[11px] text-[rgba(30,37,43,0.42)] mt-0.5">
+              <div className="font-sans text-[11px] text-graphite/40 mt-0.5">
                 MSRP ${msrp.toFixed(2)}
               </div>
             )}
-            <span className="inline-block mt-1.5 font-sans text-[10px] font-semibold tracking-[0.3px] px-2 py-0.5 rounded-md bg-[#E8F5ED] text-signal-up">
+            <span className="inline-block mt-1.5 font-sans text-[10px] font-semibold tracking-[0.3px] px-2 py-0.5 rounded-md bg-signal-up/10 text-signal-up">
               Active Tier
             </span>
             {onAddToCart && (
               <button
                 onClick={onAddToCart}
-                className="w-full mt-2.5 py-2.5 border-none rounded-lg font-sans text-xs font-semibold tracking-[0.3px] cursor-pointer bg-[#1F2428] text-[#F7F5F2] transition-colors hover:bg-graphite"
+                className="w-full mt-2.5 py-2.5 border-none rounded-lg font-sans text-xs font-semibold tracking-[0.3px] cursor-pointer bg-mn-dark text-mn-bg transition-colors hover:bg-graphite"
               >
                 Add to Cart
               </button>
@@ -488,8 +470,8 @@ function ProductTile({
           </div>
         ) : (
           <div className="mt-2.5 flex items-center gap-1.5">
-            <Lock size={10} className="text-[rgba(30,37,43,0.25)]" />
-            <span className="font-sans text-[11px] text-[rgba(30,37,43,0.32)]">
+            <Lock size={10} className="text-graphite/25" />
+            <span className="font-sans text-[11px] text-graphite/30">
               Pricing available when brand joins
             </span>
           </div>
@@ -548,11 +530,11 @@ function BrandCTA({
   interestCount: number;
 }) {
   return (
-    <div className="py-11 px-10 bg-mn-surface border-t border-[rgba(30,37,43,0.08)] text-center">
+    <div className="py-11 px-10 bg-mn-surface border-t border-graphite/[0.08] text-center">
       <h3 className="font-sans font-semibold text-2xl font-medium text-graphite m-0">
         {isVerified ? `Ready to Carry ${brand.name}?` : `Interested in Carrying ${brand.name}?`}
       </h3>
-      <p className="font-sans text-sm text-[rgba(30,37,43,0.62)] mt-2 max-w-[480px] mx-auto leading-relaxed">
+      <p className="font-sans text-sm text-graphite/60 mt-2 max-w-[480px] mx-auto leading-relaxed">
         {isVerified
           ? 'Apply to become an authorized reseller. Unlock verified wholesale pricing, education, and implementation support.'
           : `Let us know and we'll notify you when they join Socelle and access wholesale ordering.`
@@ -571,13 +553,13 @@ function BrandCTA({
           <>
             <Link
               to={`/portal/signup?interest=${brand.id}`}
-              className="inline-flex items-center bg-[#1F2428] text-[#F7F5F2] rounded-full h-[52px] px-9 font-sans text-sm font-medium no-underline transition-colors hover:bg-graphite"
+              className="inline-flex items-center bg-mn-dark text-mn-bg rounded-full h-[52px] px-9 font-sans text-sm font-medium no-underline transition-colors hover:bg-graphite"
             >
               Express Interest
             </Link>
             <Link
               to={`/portal/signup?notify=${brand.id}`}
-              className="inline-flex items-center rounded-full h-[52px] px-9 bg-white/65 text-graphite border border-[rgba(30,37,43,0.12)] font-sans text-sm font-medium no-underline transition-colors hover:border-graphite"
+              className="inline-flex items-center rounded-full h-[52px] px-9 bg-white/65 text-graphite border border-graphite/[0.12] font-sans text-sm font-medium no-underline transition-colors hover:border-graphite"
             >
               Notify Me
             </Link>
@@ -586,7 +568,7 @@ function BrandCTA({
       </div>
 
       {!isVerified && interestCount > 0 && (
-        <p className="font-sans text-[13px] text-[rgba(30,37,43,0.62)] mt-4">
+        <p className="font-sans text-[13px] text-graphite/60 mt-4">
           <strong className="text-graphite font-semibold">{interestCount} professionals</strong> have already expressed interest
         </p>
       )}
@@ -601,10 +583,11 @@ function TreatmentProtocolsSection({ brandSlug, brandName }: { brandSlug: string
   const protocols = getBrandProtocols(brandSlug);
   if (protocols.length === 0) return null;
 
-  const popularityColors: Record<string, { bg: string; text: string }> = {
-    high: { bg: '#E8F5ED', text: MN.signalUp },
-    medium: { bg: '#FFF8EE', text: MN.signalWarn },
-    low: { bg: 'rgba(110,135,155,0.1)', text: MN.accent },
+  // Tailwind class-based color map (avoids hardcoded hex in inline styles)
+  const popularityClasses: Record<string, string> = {
+    high: 'bg-signal-up/10 text-signal-up',
+    medium: 'bg-signal-warn/10 text-signal-warn',
+    low: 'bg-accent/10 text-accent',
   };
 
   return (
@@ -616,29 +599,28 @@ function TreatmentProtocolsSection({ brandSlug, brandName }: { brandSlug: string
             Used in These Treatment Protocols
           </h3>
         </div>
-        <p className="font-sans text-xs text-[rgba(30,37,43,0.42)] mb-4">
+        <p className="font-sans text-xs text-graphite/40 mb-4">
           Professional protocols featuring {brandName} products across treatment rooms
         </p>
       </div>
       <div className="grid gap-3 px-8 lg:px-10 pb-7" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
         {protocols.map((protocol, i) => {
-          const colors = popularityColors[protocol.popularity] || popularityColors.medium;
+          const cls = popularityClasses[protocol.popularity] || popularityClasses.medium;
           return (
-            <div key={i} className="border border-[rgba(30,37,43,0.08)] rounded-2xl p-4 bg-mn-surface transition-all hover:shadow-soft">
+            <div key={i} className="border border-graphite/[0.08] rounded-2xl p-4 bg-mn-surface transition-all hover:shadow-soft">
               <div className="flex items-center justify-between gap-2">
                 <p className="font-sans text-[13px] font-semibold text-graphite m-0 leading-[1.4]">
                   {protocol.name}
                 </p>
                 {protocol.popularity === 'high' && (
                   <span
-                    className="flex-shrink-0 inline-flex items-center gap-1 font-sans text-[10px] font-semibold px-2 py-0.5 rounded-pill"
-                    style={{ background: colors.bg, color: colors.text }}
+                    className={`flex-shrink-0 inline-flex items-center gap-1 font-sans text-[10px] font-semibold px-2 py-0.5 rounded-pill ${cls}`}
                   >
                     Popular
                   </span>
                 )}
               </div>
-              <p className="font-sans text-[11px] text-[rgba(30,37,43,0.42)] mt-1">
+              <p className="font-sans text-[11px] text-graphite/40 mt-1">
                 {protocol.category}
               </p>
             </div>
@@ -670,27 +652,27 @@ function ProfessionalsAlsoBoughtSection({ alsoBought, isLive }: { alsoBought: Pr
             </span>
           )}
         </div>
-        <p className="font-sans text-xs text-[rgba(30,37,43,0.42)] mb-4">
+        <p className="font-sans text-xs text-graphite/40 mb-4">
           Products commonly paired by licensed professionals in their treatment rooms
         </p>
       </div>
       <div className="grid gap-3 px-8 lg:px-10 pb-7" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
         {alsoBought.map((item, i) => (
-          <div key={i} className="border border-[rgba(30,37,43,0.08)] rounded-2xl p-4 bg-white transition-all hover:shadow-soft">
+          <div key={i} className="border border-graphite/[0.08] rounded-2xl p-4 bg-white transition-all hover:shadow-soft">
             <p className="font-sans text-[13px] font-semibold text-graphite m-0 leading-[1.4]">
               {item.productName}
             </p>
-            <p className="font-sans text-[11px] text-[rgba(30,37,43,0.42)] mt-1">
+            <p className="font-sans text-[11px] text-graphite/40 mt-1">
               {item.brandName} &middot; {item.category}
             </p>
             <div className="mt-2.5 flex items-center gap-1.5">
-              <div className="flex-1 h-1 rounded-full bg-[rgba(30,37,43,0.08)] overflow-hidden">
+              <div className="flex-1 h-1 rounded-full bg-graphite/[0.08] overflow-hidden">
                 <div
                   className="h-full rounded-full bg-accent"
                   style={{ width: `${item.adoptionPercent}%` }}
                 />
               </div>
-              <span className="font-sans text-[10px] font-semibold text-[rgba(30,37,43,0.42)] flex-shrink-0">
+              <span className="font-sans text-[10px] font-semibold text-graphite/40 flex-shrink-0">
                 {item.adoptionPercent}% of buyers
               </span>
             </div>
@@ -719,27 +701,27 @@ function PeerAdoptionBanner({ peerData, trending, adoptionCount, isLive }: {
         </span>
       )}
       <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-full bg-[rgba(110,135,155,0.15)] flex items-center justify-center">
+        <div className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center">
           <Users size={18} className="text-accent" />
         </div>
         <div>
           <p className="font-sans text-sm font-semibold text-graphite m-0">
             Trusted by {peerData.professionalCount.toLocaleString()} licensed professionals
           </p>
-          <p className="font-sans text-xs text-[rgba(30,37,43,0.42)] mt-0.5">
+          <p className="font-sans text-xs text-graphite/40 mt-0.5">
             Most popular with {peerData.primarySegment}
           </p>
         </div>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0">
         {trending && (
-          <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold px-3 py-1 rounded-pill bg-mn-dark text-[#F7F5F2]">
+          <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold px-3 py-1 rounded-pill bg-mn-dark text-mn-bg">
             <TrendingUp size={12} className="text-signal-up" />
             Trending
           </span>
         )}
         {adoptionCount > 0 && (
-          <span className="font-sans text-[11px] font-medium text-[rgba(30,37,43,0.42)]">
+          <span className="font-sans text-[11px] font-medium text-graphite/40">
             +{adoptionCount} this quarter
           </span>
         )}
@@ -751,7 +733,7 @@ function PeerAdoptionBanner({ peerData, trending, adoptionCount, isLive }: {
 // ── Divider ───────────────────────────────────────────────────────────────────
 
 function SectionDivider() {
-  return <div className="h-px bg-[rgba(30,37,43,0.08)] mx-8 lg:mx-10" />;
+  return <div className="h-px bg-graphite/[0.08] mx-8 lg:mx-10" />;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -1067,24 +1049,24 @@ export default function BrandStorefront() {
 
       {/* ── Nav ── */}
       <nav className="bg-mn-dark px-6 sm:px-12 h-16 flex items-center justify-between">
-        <Link to="/" className="font-sans text-[15px] font-semibold tracking-widest text-[#F7F5F2] uppercase no-underline">
+        <Link to="/" className="font-sans text-[15px] font-semibold tracking-widest text-mn-bg uppercase no-underline">
           Socelle
         </Link>
         <div className="flex items-center gap-5">
-          <Link to="/brands" className="inline-flex items-center gap-1.5 text-[rgba(247,245,242,0.55)] font-sans text-[13px] no-underline hover:text-[#F7F5F2] transition-colors">
+          <Link to="/brands" className="inline-flex items-center gap-1.5 text-mn-bg/55 font-sans text-[13px] no-underline hover:text-mn-bg transition-colors">
             <ArrowLeft size={14} />
             All Brands
           </Link>
           {user ? (
-            <Link to="/portal/dashboard" className="text-[rgba(247,245,242,0.55)] font-sans text-[13px] no-underline hover:text-[#F7F5F2] transition-colors">
+            <Link to="/portal/dashboard" className="text-mn-bg/55 font-sans text-[13px] no-underline hover:text-mn-bg transition-colors">
               Go to portal
             </Link>
           ) : (
             <>
-              <Link to="/portal/login" className="text-[rgba(247,245,242,0.55)] font-sans text-[13px] no-underline hover:text-[#F7F5F2] transition-colors">
+              <Link to="/portal/login" className="text-mn-bg/55 font-sans text-[13px] no-underline hover:text-mn-bg transition-colors">
                 Sign in
               </Link>
-              <Link to="/portal/signup" className="bg-[#F7F5F2] text-graphite font-sans text-[13px] font-semibold py-2 px-5 rounded-full no-underline hover:bg-white transition-colors">
+              <Link to="/portal/signup" className="bg-mn-bg text-graphite font-sans text-[13px] font-semibold py-2 px-5 rounded-full no-underline hover:bg-white transition-colors">
                 Get started
               </Link>
             </>
@@ -1134,8 +1116,8 @@ export default function BrandStorefront() {
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className={`px-5 py-2 rounded-pill font-sans text-[13px] font-medium border transition-all duration-200 cursor-pointer ${activeTab === tab.key
-                      ? 'bg-[#1F2428] text-[#F7F5F2] border-[#1F2428]'
-                      : 'bg-white text-[rgba(30,37,43,0.62)] border-[rgba(30,37,43,0.08)] hover:border-graphite hover:text-graphite'
+                      ? 'bg-mn-dark text-mn-bg border-mn-dark'
+                      : 'bg-white text-graphite/60 border-graphite/[0.08] hover:border-graphite hover:text-graphite'
                       }`}
                   >
                     {tab.label}
@@ -1147,8 +1129,8 @@ export default function BrandStorefront() {
 
           {/* Product grid */}
           {(isVerified && filtered.length === 0) || (!isVerified && allProducts.length === 0 && proProducts.length === 0 && retailProducts.length === 0) ? (
-            <div className="mx-8 lg:mx-10 mb-9 py-12 border border-dashed border-[rgba(30,37,43,0.12)] rounded-2xl text-center">
-              <p className="font-sans text-[rgba(30,37,43,0.42)]">No products listed yet.</p>
+            <div className="mx-8 lg:mx-10 mb-9 py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center">
+              <p className="font-sans text-graphite/40">No products listed yet.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 px-8 lg:px-10 pb-9">
@@ -1177,15 +1159,15 @@ export default function BrandStorefront() {
           {/* Sign-up banner for guests on verified brands */}
           {!user && isVerified && allProducts.length > 0 && (
             <div className="mx-8 lg:mx-10 mb-9 bg-mn-dark rounded-card p-8 lg:p-10 text-center">
-              <h2 className="font-sans font-semibold text-[22px] font-medium text-[#F7F5F2] m-0">
+              <h2 className="font-sans font-semibold text-[22px] font-medium text-mn-bg m-0">
                 Ready to order from {brand.name}?
               </h2>
-              <p className="font-sans text-[rgba(247,245,242,0.55)] text-sm mt-2 leading-relaxed">
+              <p className="font-sans text-mn-bg/55 text-sm mt-2 leading-relaxed">
                 Create a free reseller account to access wholesale pricing and place orders.
               </p>
               <Link
                 to="/portal/signup"
-                className="inline-flex items-center mt-5 bg-[#F7F5F2] text-graphite rounded-full h-[48px] px-8 font-sans text-sm font-medium no-underline transition-colors hover:bg-white"
+                className="inline-flex items-center mt-5 bg-mn-bg text-graphite rounded-full h-[48px] px-8 font-sans text-sm font-medium no-underline transition-colors hover:bg-white"
               >
                 Create free account
               </Link>
@@ -1248,7 +1230,7 @@ export default function BrandStorefront() {
       {itemCount > 0 && isReseller && (
         <button
           onClick={() => setCartOpen(true)}
-          className="fixed bottom-6 right-6 z-40 bg-[#1F2428] text-[#F7F5F2] rounded-pill py-3 px-5 border-none flex items-center gap-2 font-sans font-semibold text-sm shadow-panel cursor-pointer transition-colors hover:bg-graphite"
+          className="fixed bottom-6 right-6 z-40 bg-mn-dark text-mn-bg rounded-pill py-3 px-5 border-none flex items-center gap-2 font-sans font-semibold text-sm shadow-panel cursor-pointer transition-colors hover:bg-graphite"
         >
           <ShoppingBag size={20} />
           <span>{itemCount}</span>
@@ -1281,7 +1263,7 @@ export default function BrandStorefront() {
           />
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-card max-w-[420px] w-full p-10 text-center shadow-panel">
-              <div className="w-16 h-16 bg-[#E8F5ED] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-signal-up/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle size={36} className="text-signal-up" />
               </div>
               <h2 className="font-sans font-semibold text-2xl font-medium text-graphite m-0">
@@ -1295,7 +1277,7 @@ export default function BrandStorefront() {
               </p>
               <button
                 onClick={() => setShowSuccess(false)}
-                className="w-full mt-6 bg-[#1F2428] text-[#F7F5F2] rounded-full h-[48px] border-none font-sans text-sm font-semibold cursor-pointer transition-colors hover:bg-graphite"
+                className="w-full mt-6 bg-mn-dark text-mn-bg rounded-full h-[48px] border-none font-sans text-sm font-semibold cursor-pointer transition-colors hover:bg-graphite"
               >
                 Continue Shopping
               </button>

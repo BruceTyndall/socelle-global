@@ -6,6 +6,7 @@ import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import GlassAccordion from '../../components/sections/GlassAccordion';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { useCmsPage } from '../../lib/useCmsPage';
 
 /* ══════════════════════════════════════════════════════════════════
    Pricing — Liquid Glass Visual System
@@ -147,6 +148,8 @@ const FAQ_ITEMS = [
 ];
 
 export default function Pricing() {
+  const { isLive: _cmsLive } = useCmsPage('plans');
+
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
@@ -160,7 +163,11 @@ export default function Pricing() {
           property="og:description"
           content="Transparent pricing for professional beauty intelligence. Start free, scale when ready."
         />
-        <link rel="canonical" href="https://socelle.com/pricing" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/plans" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://socelle.com/plans" />
         <script type="application/ld+json">{`
           {
             "@context": "https://schema.org",
@@ -183,8 +190,14 @@ export default function Pricing() {
       <MainNav />
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="bg-mn-bg py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-mn-bg py-20 lg:py-28 overflow-hidden">
+        <img
+          src="/images/brand/photos/21.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none select-none"
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <BlockReveal>
               <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
@@ -197,7 +210,7 @@ export default function Pricing() {
               className="font-sans font-semibold text-hero text-graphite mb-7 justify-center"
             />
             <BlockReveal delay={200}>
-              <p className="text-body-lg text-[rgba(20,20,24,0.62)] max-w-xl mx-auto mb-10">
+              <p className="text-body-lg text-graphite/60 max-w-xl mx-auto mb-10">
                 Choose your access level. Upgrade when you need deeper intelligence and benchmarks.
               </p>
             </BlockReveal>
@@ -232,8 +245,8 @@ export default function Pricing() {
             {TIERS.map((tier, i) => (
               <BlockReveal key={tier.name} delay={i * 100}>
                 <div
-                  className={`relative flex flex-col h-full rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-[0_4px_24px_rgba(19,24,29,0.06)] ${tier.featured
-                    ? 'bg-white/60 backdrop-blur-[12px] border-2 border-accent/30 shadow-[0_4px_24px_rgba(19,24,29,0.08)]'
+                  className={`relative flex flex-col h-full rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-md ${tier.featured
+                    ? 'bg-white/60 backdrop-blur-[12px] border-2 border-accent/30 shadow-md'
                     : 'bg-white/60 backdrop-blur-[12px] border border-white/30'
                     }`}
                 >
@@ -248,11 +261,11 @@ export default function Pricing() {
                       <span className="font-sans font-semibold text-[2.5rem] text-graphite leading-none">
                         {tier.price}
                       </span>
-                      <span className="text-sm text-[rgba(20,20,24,0.42)] font-sans">
+                      <span className="text-sm text-graphite/40 font-sans">
                         {tier.period}
                       </span>
                     </div>
-                    <p className="text-sm text-[rgba(20,20,24,0.62)] leading-relaxed mb-8">
+                    <p className="text-sm text-graphite/60 leading-relaxed mb-8">
                       {tier.description}
                     </p>
 
@@ -303,7 +316,7 @@ export default function Pricing() {
             <div className="max-w-4xl mx-auto overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b border-[rgba(20,20,24,0.08)]">
+                  <tr className="border-b border-graphite/[0.08]">
                     <th className="py-4 pr-8 text-sm font-sans font-medium text-graphite/40 uppercase tracking-wider">
                       Feature
                     </th>
@@ -322,18 +335,18 @@ export default function Pricing() {
                   {COMPARISON.map((row) => (
                     <tr
                       key={row.feature}
-                      className="border-b border-[rgba(20,20,24,0.06)]"
+                      className="border-b border-graphite/[0.06]"
                     >
                       <td className="py-4 pr-8 text-sm font-sans text-graphite">
                         {row.feature}
                       </td>
-                      <td className="py-4 px-4 text-sm font-sans text-[rgba(20,20,24,0.52)] text-center">
+                      <td className="py-4 px-4 text-sm font-sans text-graphite/50 text-center">
                         {row.essentials}
                       </td>
                       <td className="py-4 px-4 text-sm font-sans text-graphite font-medium text-center">
                         {row.professional}
                       </td>
-                      <td className="py-4 px-4 text-sm font-sans text-[rgba(20,20,24,0.52)] text-center">
+                      <td className="py-4 px-4 text-sm font-sans text-graphite/50 text-center">
                         {row.enterprise}
                       </td>
                     </tr>
@@ -366,7 +379,7 @@ export default function Pricing() {
               <GlassAccordion items={FAQ_ITEMS} />
             </BlockReveal>
             <BlockReveal delay={300}>
-              <p className="text-center text-sm text-[rgba(20,20,24,0.62)] font-sans mt-10">
+              <p className="text-center text-sm text-graphite/60 font-sans mt-10">
                 More questions?{' '}
                 <a
                   href="mailto:hello@socelle.com"
@@ -384,17 +397,17 @@ export default function Pricing() {
       <section className="bg-mn-dark rounded-section mx-4 lg:mx-8 py-24 lg:py-32 mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <BlockReveal>
-            <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-[rgba(247,245,242,0.45)] mb-5">
+            <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-mn-bg/45 mb-5">
               GET STARTED
             </p>
           </BlockReveal>
           <BlockReveal delay={100}>
-            <h2 className="font-sans font-semibold text-section text-[#F7F5F2] mb-5">
+            <h2 className="font-sans font-semibold text-section text-mn-bg mb-5">
               Ready to see the difference?
             </h2>
           </BlockReveal>
           <BlockReveal delay={200}>
-            <p className="text-body text-[rgba(247,245,242,0.55)] max-w-md mx-auto mb-10">
+            <p className="text-body text-mn-bg/55 max-w-md mx-auto mb-10">
               Start with a free Essentials account or apply as a brand partner.
               Intelligence and marketplace access from day one.
             </p>

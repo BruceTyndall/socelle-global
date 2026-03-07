@@ -1,168 +1,105 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, BarChart3, Layers, BookOpen, TrendingUp } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
-import StickyCardStack from '../../components/sections/StickyCardStack';
-import SplitPanel from '../../components/sections/SplitPanel';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { useCmsPage } from '../../lib/useCmsPage';
 
-/* ── Sticky card content ─────────────────────────────────────── */
-function StepCard({
-  number,
-  title,
-  children,
-  dark = false,
-}: {
-  number: string;
-  title: string;
-  children: React.ReactNode;
-  dark?: boolean;
-}) {
-  return (
-    <div className="max-w-xl">
-      <p
-        className={`text-[0.8125rem] tracking-[0.12em] font-medium uppercase mb-4 ${dark ? 'text-[rgba(247,245,242,0.4)]' : 'text-graphite/40'
-          }`}
-      >
-        Step {number}
-      </p>
-      <h2
-        className={`font-sans font-semibold text-section mb-6 ${dark ? 'text-[#F7F5F2]' : 'text-graphite'
-          }`}
-      >
-        {title}
-      </h2>
-      <div
-        className={`text-body leading-relaxed space-y-4 ${dark ? 'text-[rgba(247,245,242,0.65)]' : 'text-[rgba(30,37,43,0.62)]'
-          }`}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
+/* ── Steps ─────────────────────────────────────────────────────── */
+const STEPS = [
+  {
+    number: '01',
+    title: 'Discover',
+    body: 'Create your account and verify your professional credentials. Socelle is exclusively for licensed beauty professionals and authorized brands. Your intelligence profile is built from your business type, location, and specialties.',
+    photo: '/images/brand/photos/15.svg',
+  },
+  {
+    number: '02',
+    title: 'Analyze',
+    body: 'See what is actually trending in treatment rooms. Products gaining velocity, protocols gaining traction, ingredients with momentum. Real signals updated daily -- not marketing.',
+    photo: '/images/brand/photos/16.svg',
+  },
+  {
+    number: '03',
+    title: 'Learn',
+    body: 'Competitive benchmarks segmented by business type, region, and size. Compare your operation against relevant peers, not abstract industry averages.',
+    photo: '/images/brand/photos/17.svg',
+  },
+  {
+    number: '04',
+    title: 'Grow',
+    body: 'Discover products through intelligence, not brand rep pitches. Protocol-linked product pairings, reorder signals, and margin intelligence turn data into procurement decisions.',
+    photo: '/images/brand/photos/18.svg',
+  },
+];
 
-const STICKY_CARDS = [
+/* ── Feature Grid ──────────────────────────────────────────────── */
+const FEATURES = [
   {
-    id: 'step-1',
-    bg: 'bg-white',
-    content: (
-      <StepCard number="01" title="Connect Your Operation">
-        <p>
-          Create your account and verify your professional credentials. Socelle
-          is exclusively for licensed beauty professionals and authorized brands.
-        </p>
-        <p>
-          Once verified, your operation is matched to relevant categories,
-          intelligence signals, and peer benchmarks. Your personalized
-          intelligence profile is built automatically from your business type,
-          location, and specialties.
-        </p>
-      </StepCard>
-    ),
+    icon: BarChart3,
+    title: 'Intelligence',
+    body: 'Market signals, adoption velocity, demand shifts -- surfaced from the treatment room, refreshed daily.',
   },
   {
-    id: 'step-2',
-    bg: 'bg-mn-surface',
-    content: (
-      <StepCard number="02" title="Receive Market Intelligence">
-        <p>
-          See what is actually trending in treatment rooms. Products gaining
-          velocity, protocols gaining traction, ingredients with momentum. Real
-          signals updated daily, not marketing.
-        </p>
-        <p>
-          Competitive benchmarks are segmented by business type, region, and
-          size -- so comparisons are relevant to your specific operation. Track
-          category trends and adoption curves across the professional beauty
-          landscape.
-        </p>
-      </StepCard>
-    ),
+    icon: Layers,
+    title: 'Brands',
+    body: 'Verified brand directory with professional pricing, product catalogs, and performance signals.',
   },
   {
-    id: 'step-3',
-    bg: 'bg-mn-dark',
-    textColor: 'text-[#F7F5F2]',
-    content: (
-      <div data-dark-section>
-        <StepCard number="03" title="Act on Insights" dark>
-          <p>
-            Discover products through intelligence, not brand rep pitches. Browse
-            by treatment protocol, see what your peers are stocking, and compare
-            options across every authorized brand.
-          </p>
-          <p>
-            Actionable recommendations surface procurement optimization
-            opportunities, protocol-linked product pairings, and inventory
-            reorder signals -- so every decision is grounded in data.
-          </p>
-        </StepCard>
-      </div>
-    ),
+    icon: BookOpen,
+    title: 'Protocols',
+    body: 'Canonical treatment protocols linked to products, peer adoption data, and clinical context.',
   },
   {
-    id: 'step-4',
-    bg: 'bg-white',
-    content: (
-      <StepCard number="04" title="Grow With Confidence">
-        <p>
-          One cart, every authorized brand. Verified professional pricing.
-          Consolidated procurement across your entire product mix. Order, track,
-          and reorder from a single dashboard.
-        </p>
-        <p>
-          Track performance against your own benchmarks and market-level trends.
-          Measure ROI on procurement decisions. Scale your operation with the
-          clarity that comes from real data.
-        </p>
-      </StepCard>
-    ),
+    icon: TrendingUp,
+    title: 'Education',
+    body: 'Brand-authored training modules, certification tracking, and protocol intelligence for continuing education.',
   },
 ];
 
 /* ── Page ─────────────────────────────────────────────────────── */
 export default function HowItWorks() {
+  const { isLive } = useCmsPage('how-it-works');
+
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
-        <title>How It Works — Socelle</title>
+        <title>How It Works -- Socelle</title>
         <meta
           name="description"
-          content="Four steps: Connect, Receive Intelligence, Act on Insights, Grow. See how Socelle works for professional beauty."
+          content="Four steps: Discover, Analyze, Learn, Grow. See how Socelle works for professional beauty."
         />
-        <meta
-          property="og:title"
-          content="How It Works — Socelle"
-        />
+        <meta property="og:title" content="How It Works -- Socelle" />
         <meta
           property="og:description"
           content="From signal to strategy in four steps. Professional beauty procurement made smarter."
         />
         <meta property="og:image" content="https://socelle.com/og-image.svg" />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/how-it-works" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/how-it-works" />
         <script type="application/ld+json">{`
           {
             "@context": "https://schema.org",
             "@type": "HowTo",
             "name": "How Socelle Works",
-            "description": "Four steps to smarter professional beauty procurement: Connect, Receive Intelligence, Act on Insights, Grow With Confidence.",
+            "description": "Four steps to smarter professional beauty procurement: Discover, Analyze, Learn, Grow.",
             "step": [
-              { "@type": "HowToStep", "position": 1, "name": "Connect Your Operation", "text": "Create your account and verify your professional credentials." },
-              { "@type": "HowToStep", "position": 2, "name": "Receive Market Intelligence", "text": "See what is trending in treatment rooms with real market signals." },
-              { "@type": "HowToStep", "position": 3, "name": "Act on Insights", "text": "Discover products through intelligence and protocol-first discovery." },
-              { "@type": "HowToStep", "position": 4, "name": "Grow With Confidence", "text": "Track performance, measure ROI, and scale with data." }
+              { "@type": "HowToStep", "position": 1, "name": "Discover", "text": "Create your account and verify your professional credentials." },
+              { "@type": "HowToStep", "position": 2, "name": "Analyze", "text": "See what is trending in treatment rooms with real market signals." },
+              { "@type": "HowToStep", "position": 3, "name": "Learn", "text": "Competitive benchmarks segmented by business type and region." },
+              { "@type": "HowToStep", "position": 4, "name": "Grow", "text": "Turn intelligence into procurement decisions and track performance." }
             ]
           }
         `}</script>
       </Helmet>
       <MainNav />
 
-      {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative py-20 lg:py-28 overflow-hidden bg-mn-bg">
+      {/* ── Hero — video background with glass overlay ──────────── */}
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
         <video
           className="absolute inset-0 w-full h-full object-cover"
           src="/videos/yellow-drops.mp4"
@@ -174,14 +111,10 @@ export default function HowItWorks() {
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(160deg, rgba(246,244,241,0.92) 0%, rgba(246,244,241,0.80) 50%, rgba(246,244,241,0.92) 100%)',
-          }}
+          className="absolute inset-0 bg-white/60 backdrop-blur-xl"
           aria-hidden="true"
         />
-        <div className="relative section-container text-center">
+        <div className="relative section-container text-center py-28 lg:py-36">
           <BlockReveal>
             <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
               How It Works
@@ -193,7 +126,7 @@ export default function HowItWorks() {
             className="font-sans font-semibold text-hero text-graphite mb-8 max-w-3xl mx-auto justify-center"
           />
           <BlockReveal delay={200}>
-            <p className="text-body-lg text-[rgba(30,37,43,0.62)] max-w-2xl mx-auto">
+            <p className="text-body-lg text-graphite/60 max-w-2xl mx-auto">
               Intelligence, discovery, and procurement working together to make
               professional beauty purchasing faster, smarter, and more
               transparent.
@@ -202,76 +135,101 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* ── Sticky Steps ──────────────────────────────────────────── */}
-      <StickyCardStack cards={STICKY_CARDS} />
-
-      {/* ── Benefits ──────────────────────────────────────────────── */}
+      {/* ── 4-Step Process ───────────────────────────────────────── */}
       <section className="py-20 lg:py-28">
-        <div className="section-container text-center mb-16">
-          <BlockReveal>
-            <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
-              Built for Professional Beauty
-            </p>
-          </BlockReveal>
-          <BlockReveal delay={100}>
-            <h2 className="font-sans font-semibold text-section text-graphite">
-              Every layer is purpose-built
-            </h2>
-          </BlockReveal>
+        <div className="section-container">
+          {!isLive && (
+            <div className="flex justify-center mb-4">
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
+            </div>
+          )}
+          <div className="text-center mb-16">
+            <BlockReveal>
+              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
+                The Process
+              </p>
+            </BlockReveal>
+            <BlockReveal delay={100}>
+              <h2 className="font-sans font-semibold text-section text-graphite">
+                Four steps to better decisions
+              </h2>
+            </BlockReveal>
+          </div>
+
+          <div className="space-y-16 lg:space-y-24">
+            {STEPS.map((step, i) => (
+              <BlockReveal key={step.number} delay={i * 80}>
+                <div
+                  className={`grid lg:grid-cols-2 gap-10 lg:gap-16 items-center ${
+                    i % 2 === 1 ? 'lg:direction-rtl' : ''
+                  }`}
+                >
+                  {/* Image */}
+                  <div className={`rounded-2xl overflow-hidden ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
+                    <img
+                      src={step.photo}
+                      alt={step.title}
+                      className="w-full h-auto object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  {/* Text */}
+                  <div className={i % 2 === 1 ? 'lg:order-1' : ''}>
+                    <div className="flex items-center gap-4 mb-5">
+                      <span className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent text-sm font-semibold">
+                        {step.number}
+                      </span>
+                      <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40">
+                        Step {step.number}
+                      </p>
+                    </div>
+                    <h3 className="font-sans font-semibold text-subsection text-graphite mb-4">
+                      {step.title}
+                    </h3>
+                    <p className="text-body text-graphite/60 leading-relaxed">
+                      {step.body}
+                    </p>
+                  </div>
+                </div>
+              </BlockReveal>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="space-y-8">
-          <SplitPanel imagePosition="right" bgColor="bg-mn-surface">
+      {/* ── Feature Grid ─────────────────────────────────────────── */}
+      <section className="py-20 lg:py-28 bg-mn-surface">
+        <div className="section-container">
+          <div className="text-center mb-16">
             <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
-                Signals
-              </p>
-              <h3 className="font-sans font-semibold text-subsection text-graphite mb-4">
-                Real-time market signals
-              </h3>
-              <p className="text-body text-[rgba(30,37,43,0.62)]">
-                Socelle Intelligence surfaces real signals from the professional
-                beauty market -- treatment trends, product velocity, ingredient
-                momentum. These are not sponsored placements or paid features.
-                They are derived from actual market activity, refreshed daily,
-                and personalized to your operation.
+              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
+                Built for Professional Beauty
               </p>
             </BlockReveal>
-          </SplitPanel>
-
-          <SplitPanel imagePosition="left" bgColor="bg-accent/5">
-            <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
-                Benchmarks
-              </p>
-              <h3 className="font-sans font-semibold text-subsection text-graphite mb-4">
-                Competitive benchmarking
-              </h3>
-              <p className="text-body text-[rgba(30,37,43,0.62)]">
-                See anonymized data on what operators like you are stocking,
-                spending, and trending toward. Benchmarks are segmented by
-                business type, region, and size so comparisons are relevant to
-                your operation -- not abstract industry averages.
-              </p>
+            <BlockReveal delay={100}>
+              <h2 className="font-sans font-semibold text-section text-graphite">
+                Every layer is purpose-built
+              </h2>
             </BlockReveal>
-          </SplitPanel>
+          </div>
 
-          <SplitPanel imagePosition="right" bgColor="bg-mn-surface">
-            <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
-                Forecasting
-              </p>
-              <h3 className="font-sans font-semibold text-subsection text-graphite mb-4">
-                Predictive analytics
-              </h3>
-              <p className="text-body text-[rgba(30,37,43,0.62)]">
-                Forward-looking intelligence identifies emerging trends before
-                they saturate the market. Reorder predictions, adoption velocity
-                curves, and category momentum indicators help you stay ahead --
-                not reactive.
-              </p>
-            </BlockReveal>
-          </SplitPanel>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FEATURES.map((f, i) => (
+              <BlockReveal key={f.title} delay={i * 80}>
+                <div className="rounded-2xl bg-white/60 backdrop-blur-xl border border-white/30 p-7 shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mb-5">
+                    <f.icon className="w-5 h-5 text-accent" />
+                  </div>
+                  <h3 className="font-sans font-semibold text-graphite mb-2">
+                    {f.title}
+                  </h3>
+                  <p className="text-graphite/60 text-sm leading-relaxed">
+                    {f.body}
+                  </p>
+                </div>
+              </BlockReveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -279,12 +237,12 @@ export default function HowItWorks() {
       <section className="bg-mn-dark py-20 lg:py-24 rounded-section mx-4 lg:mx-8 mb-20">
         <div className="section-container text-center">
           <BlockReveal>
-            <h2 className="font-sans font-semibold text-section text-[#F7F5F2] mb-5">
+            <h2 className="font-sans font-semibold text-section text-mn-bg mb-5">
               Ready to get started?
             </h2>
           </BlockReveal>
           <BlockReveal delay={100}>
-            <p className="text-body text-[rgba(247,245,242,0.65)] max-w-md mx-auto mb-10">
+            <p className="text-body text-mn-bg/65 max-w-md mx-auto mb-10">
               Request access to Socelle and see professional beauty intelligence
               in action.
             </p>

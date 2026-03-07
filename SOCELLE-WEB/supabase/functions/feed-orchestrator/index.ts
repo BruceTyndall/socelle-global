@@ -125,6 +125,7 @@ interface RequestBody {
   category?: string;
   feed_ids?: string[];
   dry_run?: boolean;
+  tier?: number;
 }
 
 // ── RSS Parsing (lightweight — for direct RSS feeds) ──────────────────────────
@@ -445,6 +446,10 @@ Deno.serve(async (req: Request) => {
 
     if (body.feed_ids?.length) {
       query = query.in('id', body.feed_ids);
+    }
+
+    if (typeof body.tier === 'number') {
+      query = query.eq('provenance_tier', body.tier);
     }
 
     const { data: feeds, error: feedsError } = await query;

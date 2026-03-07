@@ -45,6 +45,9 @@ export default function StoryDetail() {
             {story.hero_image_url && <meta property="og:image" content={story.hero_image_url} />}
             <meta property="og:type" content="article" />
             {story.published_at && <meta property="article:published_time" content={story.published_at} />}
+            <meta property="og:url" content={`https://socelle.com/stories/${story.slug}`} />
+            <meta name="robots" content="index, follow" />
+            <link rel="canonical" href={`https://socelle.com/stories/${story.slug}`} />
             {/* W15-06: Article JSON-LD structured data */}
             <script type="application/ld+json">{JSON.stringify({
               '@context': 'https://schema.org',

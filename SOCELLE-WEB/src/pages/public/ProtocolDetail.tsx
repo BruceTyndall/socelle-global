@@ -120,15 +120,36 @@ export default function ProtocolDetail() {
       <Helmet>
         <title>{protocol.title} | Socelle Protocols</title>
         <meta name="description" content={protocol.description.slice(0, 155)} />
+        <meta property="og:title" content={`${protocol.title} | Socelle Protocols`} />
+        <meta property="og:description" content={protocol.description.slice(0, 155)} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://socelle.com/protocols/${protocol.slug}`} />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`https://socelle.com/protocols/${protocol.slug}`} />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Protocols', item: 'https://socelle.com/protocols' },
+            { '@type': 'ListItem', position: 2, name: CATEGORY_LABELS[protocol.category], item: `https://socelle.com/protocols?category=${protocol.category}` },
+            { '@type': 'ListItem', position: 3, name: protocol.title, item: `https://socelle.com/protocols/${protocol.slug}` },
+          ],
+        })}</script>
       </Helmet>
 
       <MainNav />
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="py-12 lg:py-16">
-        <div className="section-container">
+      <section className="relative py-12 lg:py-16 overflow-hidden">
+        <img
+          src="/images/brand/photos/16.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute right-0 top-0 h-full w-1/4 object-cover opacity-[0.06] pointer-events-none select-none hidden lg:block"
+        />
+        <div className="section-container relative z-10">
           {/* Breadcrumb */}
           <BlockReveal>
           <nav className="flex items-center gap-1.5 text-sm font-sans text-graphite/40 mb-8">
@@ -136,7 +157,7 @@ export default function ProtocolDetail() {
               Protocols
             </Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-[rgba(30,37,43,0.62)]">{CATEGORY_LABELS[protocol.category]}</span>
+            <span className="text-graphite/60">{CATEGORY_LABELS[protocol.category]}</span>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-graphite truncate">{protocol.title}</span>
           </nav>
@@ -157,11 +178,11 @@ export default function ProtocolDetail() {
               {protocol.title}
             </h1>
 
-            <p className="text-[rgba(30,37,43,0.62)] font-sans text-body-lg leading-relaxed mb-8">
+            <p className="text-graphite/60 font-sans text-body-lg leading-relaxed mb-8">
               {protocol.description}
             </p>
 
-            <div className="flex flex-wrap gap-5 text-sm font-sans text-[rgba(30,37,43,0.62)]">
+            <div className="flex flex-wrap gap-5 text-sm font-sans text-graphite/60">
               <div className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4 text-accent" />
                 <span>{protocol.durationMinutes} minutes</span>
@@ -178,7 +199,7 @@ export default function ProtocolDetail() {
               )}
               <div className="flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-accent" />
-                <span>{protocol.adoptionCount.toLocaleString()} professionals <span className="text-[rgba(30,37,43,0.4)] text-xs font-sans">(est.)</span></span>
+                <span>{protocol.adoptionCount.toLocaleString()} professionals <span className="text-graphite/40 text-xs font-sans">(est.)</span></span>
                 <span className="text-[9px] font-semibold bg-signal-warn/10 text-signal-warn px-1.5 py-0.5 rounded-full">Demo</span>
               </div>
             </div>
@@ -206,7 +227,7 @@ export default function ProtocolDetail() {
                           {step.stepNumber}
                         </div>
                         {step.stepNumber < protocol.steps.length && (
-                          <div className="w-px h-full bg-[rgba(30,37,43,0.08)] mx-auto mt-2" />
+                          <div className="w-px h-full bg-graphite/[0.08] mx-auto mt-2" />
                         )}
                       </div>
 
@@ -216,20 +237,20 @@ export default function ProtocolDetail() {
                           <h3 className="font-sans text-lg font-semibold text-graphite">
                             {step.title}
                           </h3>
-                          <span className="text-xs font-sans font-medium text-[rgba(30,37,43,0.42)] bg-mn-surface rounded-full px-2.5 py-0.5 flex items-center gap-1">
+                          <span className="text-xs font-sans font-medium text-graphite/40 bg-mn-surface rounded-full px-2.5 py-0.5 flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {step.durationMinutes} min
                           </span>
                         </div>
 
-                        <p className="text-sm font-sans text-[rgba(30,37,43,0.62)] leading-relaxed mb-4">
+                        <p className="text-sm font-sans text-graphite/60 leading-relaxed mb-4">
                           {step.description}
                         </p>
 
                         {/* Products for this step */}
                         {step.products.length > 0 && (
                           <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-4 space-y-3">
-                            <p className="text-xs font-sans font-semibold text-[rgba(30,37,43,0.42)] uppercase tracking-wide">
+                            <p className="text-xs font-sans font-semibold text-graphite/40 uppercase tracking-wide">
                               Products Used
                             </p>
                             {step.products.map((product, pIdx) => (
@@ -244,7 +265,7 @@ export default function ProtocolDetail() {
                                   <p className="text-xs font-sans text-accent font-medium">
                                     {product.brand}
                                   </p>
-                                  <p className="text-xs font-sans text-[rgba(30,37,43,0.42)] mt-0.5">
+                                  <p className="text-xs font-sans text-graphite/40 mt-0.5">
                                     {product.usage}
                                   </p>
                                 </div>
@@ -275,12 +296,12 @@ export default function ProtocolDetail() {
               <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-6">
                 <button
                   onClick={handleAddAllToCart}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-[#1F2428] text-[#F7F5F2] font-sans font-medium rounded-full h-[48px] px-6 text-sm transition-opacity hover:opacity-90"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-mn-dark text-mn-bg font-sans font-medium rounded-full h-[48px] px-6 text-sm transition-opacity hover:opacity-90"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   Add All Products to Cart
                 </button>
-                <p className="text-xs font-sans text-[rgba(30,37,43,0.42)] text-center mt-3">
+                <p className="text-xs font-sans text-graphite/40 text-center mt-3">
                   {uniqueProducts.length} products from {protocol.steps.length} steps
                 </p>
               </div>
@@ -297,7 +318,7 @@ export default function ProtocolDetail() {
                   <p className="text-metric-md font-sans text-graphite mb-1">
                     {protocol.ceCredits}
                   </p>
-                  <p className="text-sm font-sans text-[rgba(30,37,43,0.62)] mb-4">
+                  <p className="text-sm font-sans text-graphite/60 mb-4">
                     credits upon completion
                   </p>
                   <button
@@ -322,7 +343,7 @@ export default function ProtocolDetail() {
                     {protocol.skinConcerns.map((concern) => (
                       <span
                         key={concern}
-                        className="inline-block bg-mn-surface text-[rgba(30,37,43,0.62)] text-xs font-sans font-medium rounded-full px-3 py-1"
+                        className="inline-block bg-mn-surface text-graphite/60 text-xs font-sans font-medium rounded-full px-3 py-1"
                       >
                         {concern}
                       </span>
@@ -355,13 +376,13 @@ export default function ProtocolDetail() {
               )}
 
               {/* Social Proof — DEMO: adoptionCount is hardcoded in mockProtocols, no DB source */}
-              <div className="bg-white rounded-card border border-[rgba(30,37,43,0.06)] p-6 text-center shadow-soft">
+              <div className="bg-white rounded-card border border-graphite/[0.06] p-6 text-center shadow-soft">
                 <Users className="w-6 h-6 text-accent mx-auto mb-2" />
                 <p className="text-metric-md font-sans text-graphite">
                   {protocol.adoptionCount.toLocaleString()}
                 </p>
-                <p className="text-sm font-sans text-[rgba(30,37,43,0.62)] mt-1">
-                  professionals use this protocol <span className="text-[rgba(30,37,43,0.4)] text-xs">(est.)</span>
+                <p className="text-sm font-sans text-graphite/60 mt-1">
+                  professionals use this protocol <span className="text-graphite/40 text-xs">(est.)</span>
                 </p>
                 <span className="inline-block mt-2 text-[9px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">Demo Data</span>
               </div>
@@ -390,12 +411,12 @@ export default function ProtocolDetail() {
                               <p className="text-sm font-sans font-medium text-graphite group-hover:text-accent transition-colors truncate">
                                 {rel.title}
                               </p>
-                              <p className="text-xs font-sans text-[rgba(30,37,43,0.42)]">
+                              <p className="text-xs font-sans text-graphite/40">
                                 {rel.durationMinutes} min
                                 {rel.ceCredits ? ` / ${rel.ceCredits} CE` : ''}
                               </p>
                             </div>
-                            <ArrowRight className="w-3.5 h-3.5 text-[rgba(30,37,43,0.22)] group-hover:text-accent transition-colors flex-shrink-0 mt-0.5" />
+                            <ArrowRight className="w-3.5 h-3.5 text-graphite/20 group-hover:text-accent transition-colors flex-shrink-0 mt-0.5" />
                           </div>
                         </Link>
                       );

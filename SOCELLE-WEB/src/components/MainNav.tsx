@@ -8,13 +8,16 @@ import { useAuth } from '../lib/auth';
    Three independent glass pills floating inside a fixed wrapper.
    ────────────────────────────────────────────────────────────── */
 
-// NAV_LINKS — locked spec (Wave 9). Update only via work order.
+// NAV_LINKS — locked spec per SOCELLE-WEB CLAUDE.md §C. Update only via work order.
 const NAV_LINKS = [
   { to: '/intelligence', label: 'Intelligence' },
-  { to: '/professionals', label: 'Professionals' },
-  { to: '/for-brands', label: 'Brands' },
+  { to: '/brands', label: 'Brands' },
+  { to: '/education', label: 'Education' },
   { to: '/events', label: 'Events' },
   { to: '/jobs', label: 'Jobs' },
+  { to: '/professionals', label: 'For Buyers' },
+  { to: '/for-brands', label: 'For Brands' },
+  { to: '/plans', label: 'Pricing' },
 ] as const;
 
 export default function MainNav() {
@@ -121,7 +124,7 @@ export default function MainNav() {
                   </Link>
                   <Link
                     to="/request-access"
-                    className="inline-flex items-center justify-center h-[36px] px-5 bg-[#1F2428] text-[#F7F5F2] text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-[#2a3038] hover:shadow-[0_4px_16px_rgba(31,36,40,0.25)] hover:-translate-y-[1px] active:translate-y-0"
+                    className="inline-flex items-center justify-center h-[36px] px-5 bg-mn-dark text-mn-bg text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-mn-dark/90 hover:shadow-[0_4px_16px_rgba(31,36,40,0.25)] hover:-translate-y-[1px] active:translate-y-0"
                   >
                     Request Access
                   </Link>
@@ -134,7 +137,7 @@ export default function MainNav() {
                   {(effectiveRole === 'admin' || effectiveRole === 'platform_admin') && (
                     <Link
                       to="/admin"
-                      className="inline-flex items-center justify-center h-[36px] px-4 bg-[#1F2428] text-[#F7F5F2] text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-[#2a3038] hover:-translate-y-[1px]"
+                      className="inline-flex items-center justify-center h-[36px] px-4 bg-mn-dark text-mn-bg text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-mn-dark/90 hover:-translate-y-[1px]"
                     >
                       Admin →
                     </Link>
@@ -142,7 +145,7 @@ export default function MainNav() {
                   {effectiveRole === 'business_user' && (
                     <Link
                       to="/portal/dashboard"
-                      className="inline-flex items-center justify-center h-[36px] px-4 bg-[#1F2428] text-[#F7F5F2] text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-[#2a3038] hover:-translate-y-[1px]"
+                      className="inline-flex items-center justify-center h-[36px] px-4 bg-mn-dark text-mn-bg text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-mn-dark/90 hover:-translate-y-[1px]"
                     >
                       My Portal →
                     </Link>
@@ -150,7 +153,7 @@ export default function MainNav() {
                   {effectiveRole === 'brand_admin' && (
                     <Link
                       to="/brand/dashboard"
-                      className="inline-flex items-center justify-center h-[36px] px-4 bg-[#1F2428] text-[#F7F5F2] text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-[#2a3038] hover:-translate-y-[1px]"
+                      className="inline-flex items-center justify-center h-[36px] px-4 bg-mn-dark text-mn-bg text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-mn-dark/90 hover:-translate-y-[1px]"
                     >
                       Brand Portal →
                     </Link>
@@ -241,7 +244,7 @@ export default function MainNav() {
                 <Link
                   to="/request-access"
                   onClick={closeMobileMenu}
-                  className="flex items-center justify-center h-12 w-full rounded-full bg-[#1F2428] text-[#F7F5F2] text-[15px] font-sans font-semibold transition-all hover:bg-[#2a3038]"
+                  className="flex items-center justify-center h-12 w-full rounded-full bg-mn-dark text-mn-bg text-[15px] font-sans font-semibold transition-all hover:bg-mn-dark/90"
                 >
                   Request Access
                 </Link>
@@ -255,7 +258,7 @@ export default function MainNav() {
                   <Link
                     to="/admin"
                     onClick={closeMobileMenu}
-                    className="flex items-center justify-center h-12 w-full rounded-full bg-[#1F2428] text-[#F7F5F2] text-[15px] font-sans font-semibold transition-all hover:bg-[#2a3038]"
+                    className="flex items-center justify-center h-12 w-full rounded-full bg-mn-dark text-mn-bg text-[15px] font-sans font-semibold transition-all hover:bg-mn-dark/90"
                   >
                     Admin →
                   </Link>
@@ -264,7 +267,7 @@ export default function MainNav() {
                   <Link
                     to="/portal/dashboard"
                     onClick={closeMobileMenu}
-                    className="flex items-center justify-center h-12 w-full rounded-full bg-[#1F2428] text-[#F7F5F2] text-[15px] font-sans font-semibold transition-all hover:bg-[#2a3038]"
+                    className="flex items-center justify-center h-12 w-full rounded-full bg-mn-dark text-mn-bg text-[15px] font-sans font-semibold transition-all hover:bg-mn-dark/90"
                   >
                     My Portal →
                   </Link>
@@ -273,7 +276,7 @@ export default function MainNav() {
                   <Link
                     to="/brand/dashboard"
                     onClick={closeMobileMenu}
-                    className="flex items-center justify-center h-12 w-full rounded-full bg-[#1F2428] text-[#F7F5F2] text-[15px] font-sans font-semibold transition-all hover:bg-[#2a3038]"
+                    className="flex items-center justify-center h-12 w-full rounded-full bg-mn-dark text-mn-bg text-[15px] font-sans font-semibold transition-all hover:bg-mn-dark/90"
                   >
                     Brand Portal →
                   </Link>

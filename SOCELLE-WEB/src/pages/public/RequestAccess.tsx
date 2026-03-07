@@ -86,13 +86,32 @@ export default function RequestAccess() {
           property="og:description"
           content="Join the professional beauty intelligence platform. Licensed professionals only."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/request-access" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/request-access" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Request Access — Socelle',
+          description: 'Request early access to the Socelle intelligence platform for professional beauty operators.',
+          url: 'https://socelle.com/request-access',
+          isPartOf: { '@type': 'WebSite', url: 'https://socelle.com', name: 'Socelle' },
+        })}</script>
       </Helmet>
       <MainNav />
 
       {/* ── Main Content: Split Layout ────────────────────────────── */}
-      <section className="pt-28 pb-20 lg:pt-36 lg:pb-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
+        {/* Subtle brand photo watermark */}
+        <img
+          src="/images/brand/photos/23.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute right-0 top-0 h-full w-1/2 object-cover opacity-[0.04] pointer-events-none select-none hidden lg:block"
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
             {/* ── Left: Content ─────────────────────────────────────── */}
@@ -134,7 +153,7 @@ export default function RequestAccess() {
 
             {/* ── Right: Glass Form Card ────────────────────────────── */}
             <BlockReveal delay={150}>
-              <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-[28px] p-8 lg:p-10">
+              <div className="bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-3xl p-8 lg:p-10">
 
                 {/* ── Success State ── */}
                 {formState === 'success' ? (

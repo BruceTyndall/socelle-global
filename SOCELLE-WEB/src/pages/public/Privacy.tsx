@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import MainNav from '../../components/MainNav';
+import SiteFooter from '../../components/sections/SiteFooter';
+import { useCmsPage } from '../../lib/useCmsPage';
 
 const SECTIONS = [
   {
@@ -30,12 +32,28 @@ const SECTIONS = [
 ];
 
 export default function Privacy() {
+  const { isLive: _cmsLive } = useCmsPage('privacy');
+
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
         <title>Privacy Policy — Socelle</title>
         <meta name="description" content="Socelle privacy policy. Learn how we collect, use, and safeguard your information on our professional beauty wholesale platform." />
+        <meta property="og:title" content="Privacy Policy — Socelle" />
+        <meta property="og:description" content="Learn how Socelle collects, uses, and safeguards your information." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/privacy" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/privacy" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Privacy Policy — Socelle',
+          description: 'Socelle privacy policy. Learn how we collect, use, and safeguard your information on our professional beauty intelligence platform.',
+          url: 'https://socelle.com/privacy',
+          isPartOf: { '@type': 'WebSite', url: 'https://socelle.com', name: 'Socelle' },
+        })}</script>
       </Helmet>
       <MainNav />
 
@@ -70,6 +88,8 @@ export default function Privacy() {
           </Link>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

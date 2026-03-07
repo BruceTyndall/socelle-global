@@ -16,11 +16,11 @@ const FOOTER_LINKS = {
   Company: [
     { to: '/about', label: 'About' },
     { to: '/how-it-works', label: 'How It Works' },
-    { to: '/pricing', label: 'Pricing' },
+    { to: '/plans', label: 'Pricing' },
     { to: '/faq', label: 'FAQ' },
   ],
   Developers: [
-    { to: '/api', label: 'API Docs' },
+    { to: '/api/docs', label: 'API Docs' },
     { to: '/api/pricing', label: 'API Pricing' },
     { to: '/request-access', label: 'Request Access' },
   ],

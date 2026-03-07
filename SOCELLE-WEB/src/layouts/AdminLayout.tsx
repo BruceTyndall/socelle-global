@@ -19,6 +19,27 @@ import {
   FileText,
   Code,
   Globe,
+  FileEdit,
+  BookOpen,
+  Image,
+  Search,
+  Radio,
+  Server,
+  Map,
+  Settings,
+  FlaskConical,
+  Layers,
+  GitMerge,
+  Target,
+  DollarSign,
+  Megaphone,
+  Store,
+  FolderTree,
+  Tag,
+  Truck,
+  Star,
+  MessageSquare,
+  GraduationCap,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { RouteErrorBoundary } from '../components/RouteErrorBoundary';
@@ -49,6 +70,30 @@ const NAV_GROUPS = [
     ],
   },
   {
+    label: 'Ingredients',
+    items: [
+      { path: '/admin/ingredients', label: 'Ingredients', icon: FlaskConical },
+      { path: '/admin/ingredients/collections', label: 'Collections', icon: Layers },
+      { path: '/admin/ingredients/interactions', label: 'Interactions', icon: GitMerge },
+    ],
+  },
+  {
+    label: 'Sales',
+    items: [
+      { path: '/admin/sales', label: 'Sales Hub', icon: Target },
+      { path: '/sales', label: 'Dashboard', icon: TrendingUp },
+      { path: '/sales/pipeline', label: 'Pipeline', icon: Target },
+      { path: '/sales/commissions', label: 'Commissions', icon: DollarSign },
+    ],
+  },
+  {
+    label: 'Marketing',
+    items: [
+      { path: '/admin/marketing', label: 'Marketing Hub', icon: Megaphone },
+      { path: '/marketing', label: 'Campaign Platform', icon: Megaphone },
+    ],
+  },
+  {
     label: 'Commerce',
     items: [
       { path: '/admin/brands', label: 'All Brands', icon: Building2 },
@@ -56,9 +101,39 @@ const NAV_GROUPS = [
     ],
   },
   {
+    label: 'Shop',
+    items: [
+      { path: '/admin/shop/products', label: 'Products', icon: Store },
+      { path: '/admin/shop/categories', label: 'Categories', icon: FolderTree },
+      { path: '/admin/shop/orders', label: 'Shop Orders', icon: ShoppingBag },
+      { path: '/admin/shop/discounts', label: 'Discounts', icon: Tag },
+      { path: '/admin/shop/shipping', label: 'Shipping', icon: Truck },
+      { path: '/admin/shop/reviews', label: 'Reviews', icon: MessageSquare },
+    ],
+  },
+  {
+    label: 'Education',
+    items: [
+      { path: '/admin/education', label: 'Courses', icon: GraduationCap },
+    ],
+  },
+  {
+    label: 'Content',
+    items: [
+      { path: '/admin/pages', label: 'Pages', icon: FileEdit },
+      { path: '/admin/blog', label: 'Blog', icon: BookOpen },
+      { path: '/admin/media', label: 'Media', icon: Image },
+      { path: '/admin/seo', label: 'SEO', icon: Search },
+    ],
+  },
+  {
     label: 'Platform',
     items: [
       { path: '/admin/api', label: 'API', icon: Code },
+      { path: '/admin/live-data', label: 'Live Data', icon: Radio },
+      { path: '/admin/api-control', label: 'API Control', icon: Server },
+      { path: '/admin/api-sitemap', label: 'API Sitemap', icon: Map },
+      { path: '/admin/settings', label: 'Settings', icon: Settings },
     ],
   },
   {

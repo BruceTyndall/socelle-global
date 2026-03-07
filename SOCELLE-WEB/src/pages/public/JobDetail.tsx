@@ -110,7 +110,7 @@ export default function JobDetail() {
                 <div className="h-4 bg-graphite/[0.04] rounded w-4/6" />
               </div>
             </div>
-            <div className="h-64 bg-white rounded-[20px] border border-graphite/8" />
+            <div className="h-64 bg-white rounded-2xl border border-graphite/8" />
           </div>
         </div>
         <SiteFooter />
@@ -187,6 +187,8 @@ export default function JobDetail() {
         <meta property="og:description" content={job.description.slice(0, 160)} />
         <meta property="og:image" content="https://socelle.com/og-image.svg" />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://socelle.com/jobs/${job.slug}`} />
+        <meta name="robots" content="index, follow" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${job.title} at ${job.company}`} />
         <meta name="twitter:description" content={job.description.slice(0, 160)} />
@@ -196,8 +198,16 @@ export default function JobDetail() {
       </Helmet>
       <MainNav />
 
+      <div className="relative">
+        {/* Decorative brand photo */}
+        <img
+          src="/images/brand/photos/17.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute right-0 top-0 h-[480px] w-1/3 object-cover opacity-[0.04] pointer-events-none select-none hidden lg:block"
+        />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 relative z-10">
 
         {/* Back link */}
         <BlockReveal>
@@ -287,7 +297,7 @@ export default function JobDetail() {
 
             {/* Posted by */}
             <BlockReveal delay={200}>
-              <div className="flex items-center gap-3 p-4 rounded-[14px] bg-graphite/[0.04] border border-graphite/8">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-graphite/[0.04] border border-graphite/8">
                 <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
                   <Building2 className="w-4 h-4 text-accent" />
                 </div>
@@ -302,7 +312,7 @@ export default function JobDetail() {
           {/* ── Apply Sidebar ──────────────────────────────────── */}
           <div className="lg:sticky lg:top-28">
             <BlockReveal delay={100}>
-              <div className="bg-white rounded-[20px] border border-graphite/8 p-6 shadow-soft">
+              <div className="bg-white rounded-2xl border border-graphite/8 p-6 shadow-soft">
                 <h3 className="font-sans font-semibold text-[1.0625rem] text-graphite mb-1">
                   Apply for this role
                 </h3>
@@ -312,7 +322,7 @@ export default function JobDetail() {
 
                 <Link
                   to="/portal/signup"
-                  className="flex items-center justify-center gap-2 w-full h-[44px] bg-[#1F2428] text-[#F7F5F2] font-sans font-semibold text-sm rounded-full transition-all hover:bg-[#2a3038] mb-3"
+                  className="flex items-center justify-center gap-2 w-full h-[44px] bg-mn-dark text-mn-bg font-sans font-semibold text-sm rounded-full transition-all hover:bg-mn-dark/90 mb-3"
                 >
                   Apply Now
                   <ArrowRight className="w-4 h-4" />
@@ -355,6 +365,7 @@ export default function JobDetail() {
           </div>
 
         </div>
+      </div>
       </div>
 
       <SiteFooter />

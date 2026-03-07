@@ -36,22 +36,33 @@ export default function Insights() {
           property="og:description"
           content="Trends, ingredients, and market intelligence for professional beauty buyers. Curated for salons, spas, and medspas."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/insights" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/insights" />
       </Helmet>
       <MainNav />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative bg-mn-dark py-20 lg:py-28 overflow-hidden">
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.08]"
+          aria-hidden="true"
+        >
+          <source src="/videos/brand/yellow drops.mp4" type="video/mp4" />
+        </video>
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-        <div className="section-container text-center relative">
+        <div className="section-container text-center relative z-10">
           <p className="text-accent text-[11px] font-sans font-medium tracking-[0.25em] uppercase mb-4">
             Professional beauty intelligence
           </p>
-          <h1 className="font-sans font-semibold text-4xl lg:text-5xl text-[#F7F5F2] leading-tight tracking-tight mb-5">
+          <h1 className="font-sans font-semibold text-4xl lg:text-5xl text-mn-bg leading-tight tracking-tight mb-5">
             Stay ahead of the curve
           </h1>
           <div className="mx-auto w-10 h-px bg-accent/40 mb-6" />
-          <p className="text-[rgba(247,245,242,0.60)] font-sans font-light text-lg max-w-xl mx-auto">
+          <p className="text-mn-bg/60 font-sans font-light text-lg max-w-xl mx-auto">
             Trends, ingredients, and market shifts that matter to professional beauty —
             curated so you can focus on what's next.
           </p>
@@ -156,10 +167,10 @@ export default function Insights() {
       <section className="bg-mn-dark py-16 lg:py-20">
         <div className="section-container text-center">
           <Sparkles className="w-10 h-10 text-accent mx-auto mb-4" />
-          <h2 className="font-sans font-semibold text-2xl text-[#F7F5F2] mb-3">
+          <h2 className="font-sans font-semibold text-2xl text-mn-bg mb-3">
             Ready to connect with professional beauty?
           </h2>
-          <p className="text-[rgba(247,245,242,0.55)] font-sans text-sm font-light max-w-md mx-auto mb-8">
+          <p className="text-mn-bg/55 font-sans text-sm font-light max-w-md mx-auto mb-8">
             Join Socelle to browse verified brands, access wholesale pricing, and streamline procurement.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -172,7 +183,7 @@ export default function Insights() {
             </Link>
             <Link
               to="/portal/signup"
-              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-[#F7F5F2] font-sans font-medium px-6 py-3 rounded-full border border-white/20 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-mn-bg font-sans font-medium px-6 py-3 rounded-full border border-white/20 transition-colors"
             >
               Create free account
             </Link>

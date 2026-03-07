@@ -228,6 +228,125 @@ export function buildEventSchema({
   };
 }
 
+// ── JobPosting schema ─────────────────────────────────────────────────────────
+
+export function buildJobPostingSchema({
+  title,
+  description,
+  company,
+  location,
+  employmentType,
+  salaryMin,
+  salaryMax,
+  salaryCurrency = 'USD',
+  salaryUnit = 'YEAR',
+  datePosted,
+  url,
+}: {
+  title: string;
+  description: string;
+  company: string;
+  location: string;
+  employmentType?: string;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryCurrency?: string;
+  salaryUnit?: string;
+  datePosted: string;
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title,
+    description,
+    datePosted,
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: company,
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: location,
+      },
+    },
+    url,
+    ...(employmentType && { employmentType }),
+    ...((salaryMin || salaryMax) && {
+      baseSalary: {
+        '@type': 'MonetaryAmount',
+        currency: salaryCurrency,
+        value: {
+          '@type': 'QuantitativeValue',
+          ...(salaryMin && salaryMax
+            ? { minValue: salaryMin, maxValue: salaryMax }
+            : salaryMin
+              ? { value: salaryMin }
+              : { value: salaryMax }),
+          unitText: salaryUnit,
+        },
+      },
+    }),
+  };
+}
+
+// ── Course schema ─────────────────────────────────────────────────────────────
+
+export function buildCourseSchema({
+  name,
+  description,
+  provider,
+  url,
+}: {
+  name: string;
+  description: string;
+  provider?: string;
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name,
+    description,
+    url,
+    provider: {
+      '@type': 'Organization',
+      name: provider || SITE_NAME,
+      url: SITE_URL,
+    },
+  };
+}
+
+// ── HowTo schema (for protocols) ─────────────────────────────────────────────
+
+export function buildHowToSchema({
+  name,
+  description,
+  steps,
+  url,
+}: {
+  name: string;
+  description: string;
+  steps: Array<{ name: string; text: string }>;
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    description,
+    url,
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+}
+
 // ── Robots meta helpers ───────────────────────────────────────────────────────
 
 /**

@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import MainNav from '../../components/MainNav';
+import SiteFooter from '../../components/sections/SiteFooter';
+import { useCmsPage } from '../../lib/useCmsPage';
 
 const SECTIONS = [
   {
@@ -42,12 +44,28 @@ const SECTIONS = [
 ];
 
 export default function Terms() {
+  const { isLive: _cmsLive } = useCmsPage('terms');
+
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
         <title>Terms of Service — Socelle</title>
         <meta name="description" content="Socelle terms of service. Read the terms governing your use of the professional beauty wholesale marketplace." />
+        <meta property="og:title" content="Terms of Service — Socelle" />
+        <meta property="og:description" content="Terms governing your use of the Socelle professional beauty intelligence platform." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/terms" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/terms" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Terms of Service — Socelle',
+          description: 'Terms governing your use of the Socelle professional beauty intelligence platform.',
+          url: 'https://socelle.com/terms',
+          isPartOf: { '@type': 'WebSite', url: 'https://socelle.com', name: 'Socelle' },
+        })}</script>
       </Helmet>
       <MainNav />
 
@@ -82,6 +100,8 @@ export default function Terms() {
           </Link>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

@@ -127,6 +127,10 @@ export default function Education() {
           property="og:description"
           content="Treatment protocols, ingredient science, compliance training, and CE-eligible courses built for licensed professionals."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/education" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/education" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
@@ -136,7 +140,19 @@ export default function Education() {
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="section-container text-center">
+        {/* Brand video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-10"
+          aria-hidden="true"
+        >
+          <source src="/videos/brand/dropper.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-mn-bg via-mn-bg/95 to-mn-bg" />
+        <div className="section-container text-center relative z-10">
           <BlockReveal>
             <p className="mn-eyebrow mb-5">Education Hub</p>
           </BlockReveal>
@@ -182,6 +198,21 @@ export default function Education() {
               </div>
             </div>
           </BlockReveal>
+        </div>
+      </section>
+
+      {/* ── Swatch Strip — skincare science imagery ─────────────────── */}
+      <section className="py-4 bg-mn-surface overflow-hidden">
+        <div className="flex gap-3 w-max">
+          {[1,2,3,4,5,6,7,8,9,10,11,12].map((n) => (
+            <img
+              key={n}
+              src={`/images/brand/swatches/${n}.svg`}
+              alt=""
+              aria-hidden="true"
+              className="h-16 w-16 rounded-lg object-cover flex-shrink-0 opacity-60"
+            />
+          ))}
         </div>
       </section>
 
@@ -240,7 +271,7 @@ export default function Education() {
             <h2 className="font-sans text-subsection text-graphite mb-1">
               All Education Content
             </h2>
-            <p className="text-sm text-[rgba(30,37,43,0.62)] font-sans">
+            <p className="text-sm text-graphite/60 font-sans">
               {content.length} result{content.length !== 1 ? 's' : ''}
               {categoryFilter !== 'all' && ` in ${CATEGORY_LABELS[categoryFilter]}`}
             </p>
@@ -271,8 +302,8 @@ export default function Education() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <BookOpen className="w-10 h-10 text-[rgba(30,37,43,0.22)] mx-auto mb-4" />
-              <p className="text-[rgba(30,37,43,0.62)] font-sans">
+              <BookOpen className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
+              <p className="text-graphite/60 font-sans">
                 No content matches your filters. Try adjusting your selection.
               </p>
             </div>
@@ -329,10 +360,10 @@ export default function Education() {
                   </div>
                 </div>
 
-                <h2 className="font-sans font-semibold text-subsection text-[#F7F5F2] mb-4">
+                <h2 className="font-sans font-semibold text-subsection text-mn-bg mb-4">
                   Education powered by intelligence
                 </h2>
-                <p className="text-[rgba(247,245,242,0.55)] font-sans text-base leading-relaxed mb-8 max-w-xl mx-auto">
+                <p className="text-mn-bg/55 font-sans text-base leading-relaxed mb-8 max-w-xl mx-auto">
                   When LED therapy protocols trend +34%, we surface the training.
                   When new ingredients gain momentum, we have the science.
                   Intelligence drives what you learn next.

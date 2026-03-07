@@ -6,10 +6,13 @@ import { ToastProvider } from './components/Toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ConfigCheck } from './components/ConfigCheck';
 import { StagingBanner } from './components/StagingBanner';
+import { ModuleAccessProvider } from './modules/_core/context/ModuleAccessContext';
+import ModuleRoute from './modules/_core/components/ModuleRoute';
 
 import BusinessLayout from './layouts/BusinessLayout';
 import AdminLayout from './layouts/AdminLayout';
 import BrandLayout from './layouts/BrandLayout';
+import MarketingLayout from './layouts/MarketingLayout';
 
 // ── Public
 const PublicHome = lazy(() => import('./pages/public/Home'));
@@ -35,8 +38,42 @@ const RequestAccess = lazy(() => import('./pages/public/RequestAccess'));
 const FAQ = lazy(() => import('./pages/public/FAQ'));
 const Education = lazy(() => import('./pages/public/Education'));
 const Ingredients = lazy(() => import('./pages/public/Ingredients'));
+const IngredientDetail = lazy(() => import('./pages/public/IngredientDetail'));
+const IngredientCollection = lazy(() => import('./pages/public/IngredientCollection'));
 const Protocols = lazy(() => import('./pages/public/Protocols'));
 const ProtocolDetail = lazy(() => import('./pages/public/ProtocolDetail'));
+
+// ── Shop (WO-OVERHAUL-11)
+const Shop = lazy(() => import('./pages/public/Shop'));
+const ShopCategory = lazy(() => import('./pages/public/ShopCategory'));
+const ShopProduct = lazy(() => import('./pages/public/ShopProduct'));
+const ShopCart = lazy(() => import('./pages/public/ShopCart'));
+const ShopCheckout = lazy(() => import('./pages/public/ShopCheckout'));
+const ShopOrders = lazy(() => import('./pages/public/ShopOrders'));
+const ShopOrderDetailPage = lazy(() => import('./pages/public/ShopOrderDetail'));
+const ShopWishlist = lazy(() => import('./pages/public/ShopWishlist'));
+const ProductDetail = lazy(() => import('./pages/public/ProductDetail'));
+const CartPage = lazy(() => import('./pages/public/Cart'));
+const CheckoutPage = lazy(() => import('./pages/public/Checkout'));
+const OrderHistory = lazy(() => import('./pages/public/OrderHistory'));
+const ShopOrderDetail = lazy(() => import('./pages/public/OrderDetail'));
+const WishlistPage = lazy(() => import('./pages/public/WishlistPage'));
+
+// ── Admin Shop (WO-OVERHAUL-11)
+const AdminShopHub = lazy(() => import('./pages/admin/AdminShopHub'));
+const AdminShopProducts = lazy(() => import('./pages/admin/AdminShopProducts'));
+const AdminShopCategories = lazy(() => import('./pages/admin/AdminShopCategories'));
+const AdminShopOrders = lazy(() => import('./pages/admin/AdminShopOrders'));
+const AdminShopDiscounts = lazy(() => import('./pages/admin/AdminShopDiscounts'));
+const AdminShopShipping = lazy(() => import('./pages/admin/AdminShopShipping'));
+const AdminShopReviews = lazy(() => import('./pages/admin/AdminShopReviews'));
+
+// ── Subscription Gating
+const Pricing = lazy(() => import('./pages/public/Pricing'));
+const SubscriptionManagement = lazy(() => import('./pages/business/SubscriptionManagement'));
+const AdminSubscriptionPlans = lazy(() => import('./pages/admin/AdminSubscriptionPlans'));
+const AdminSubscriptionAccounts = lazy(() => import('./pages/admin/AdminSubscriptionAccounts'));
+const AdminSubscriptionMetrics = lazy(() => import('./pages/admin/AdminSubscriptionMetrics'));
 
 // ── Enterprise API (WO-21)
 const ApiDocs = lazy(() => import('./pages/public/ApiDocs'));
@@ -65,6 +102,30 @@ const NotificationPreferences = lazy(() => import('./pages/business/Notification
 const BusinessCECredits = lazy(() => import('./pages/business/CECredits'));
 const LocationsDashboard = lazy(() => import('./pages/business/LocationsDashboard'));
 const BenchmarkDashboard = lazy(() => import('./pages/business/BenchmarkDashboard'));
+
+// ── CRM + Booking + Prospecting
+const CrmDashboard = lazy(() => import('./pages/business/CrmDashboard'));
+const ContactList = lazy(() => import('./pages/business/ContactList'));
+const AddContact = lazy(() => import('./pages/business/AddContact'));
+const ContactDetail = lazy(() => import('./pages/business/ContactDetail'));
+const CompanyList = lazy(() => import('./pages/business/CompanyList'));
+const CompanyDetail = lazy(() => import('./pages/business/CompanyDetail'));
+const BookingDashboard = lazy(() => import('./pages/business/BookingDashboard'));
+const AppointmentCalendar = lazy(() => import('./pages/business/AppointmentCalendar'));
+const AppointmentDetail = lazy(() => import('./pages/business/AppointmentDetail'));
+const ServiceManager = lazy(() => import('./pages/business/ServiceManager'));
+const StaffManager = lazy(() => import('./pages/business/StaffManager'));
+const ClientRecords = lazy(() => import('./pages/business/ClientRecords'));
+const AddServiceRecord = lazy(() => import('./pages/business/AddServiceRecord'));
+const ProspectList = lazy(() => import('./pages/business/ProspectList'));
+const ProspectDetail = lazy(() => import('./pages/business/ProspectDetail'));
+const BookingWidget = lazy(() => import('./pages/public/BookingWidget'));
+
+// ── B2B Reseller Portal
+const ResellerDashboard = lazy(() => import('./pages/business/ResellerDashboard'));
+const ResellerClients = lazy(() => import('./pages/business/ResellerClients'));
+const ResellerRevenue = lazy(() => import('./pages/business/ResellerRevenue'));
+const WhiteLabelConfig = lazy(() => import('./pages/business/WhiteLabelConfig'));
 
 // ── Wave 9 — new public pages
 const Events = lazy(() => import('./pages/public/Events'));
@@ -130,6 +191,61 @@ const AdminJobsHub = lazy(() => import('./pages/admin/JobsHub'));
 const AdminRecruitmentHub = lazy(() => import('./pages/admin/RecruitmentHub'));
 const AdminFeedsHub = lazy(() => import('./pages/admin/AdminFeedsHub'));
 const AdminBlogHub = lazy(() => import('./pages/admin/AdminBlogHub'));
+const AdminResellerHub = lazy(() => import('./pages/admin/AdminResellerHub'));
+
+// ── Sales Platform (WO-OVERHAUL-14)
+const SalesDashboard = lazy(() => import('./pages/sales/SalesDashboard'));
+const PipelineBoard = lazy(() => import('./pages/sales/PipelineBoard'));
+const DealDetail = lazy(() => import('./pages/sales/DealDetail'));
+const ProposalBuilder = lazy(() => import('./pages/sales/ProposalBuilder'));
+const ProposalView = lazy(() => import('./pages/sales/ProposalView'));
+const CommissionDashboard = lazy(() => import('./pages/sales/CommissionDashboard'));
+
+// ── Sales Platform — Business Portal pages (WO-OVERHAUL-14)
+const BusinessSalesDashboard = lazy(() => import('./pages/business/SalesDashboard'));
+const BusinessPipelineBoard = lazy(() => import('./pages/business/PipelineBoard'));
+const BusinessDealDetail = lazy(() => import('./pages/business/DealDetail'));
+const BusinessProposalEditor = lazy(() => import('./pages/business/ProposalEditor'));
+const BusinessCommissionsDashboard = lazy(() => import('./pages/business/CommissionsDashboard'));
+const AdminSalesPlatformHub = lazy(() => import('./pages/admin/AdminSalesPlatformHub'));
+
+// ── Business Portal Marketing (WO-OVERHAUL-15)
+const BusinessMarketingDashboard = lazy(() => import('./pages/business/MarketingDashboard'));
+const BusinessCampaignDetail = lazy(() => import('./pages/business/CampaignDetail'));
+const BusinessCampaignEditor = lazy(() => import('./pages/business/CampaignEditor'));
+const BusinessAudienceSegments = lazy(() => import('./pages/business/AudienceSegments'));
+const BusinessContentTemplates = lazy(() => import('./pages/business/ContentTemplates'));
+const BusinessMarketingAnalytics = lazy(() => import('./pages/business/MarketingAnalytics'));
+
+// ── Marketing Platform (WO-OVERHAUL-15)
+const MarketingDashboard = lazy(() => import('./pages/marketing/MarketingDashboard'));
+const CampaignList = lazy(() => import('./pages/marketing/CampaignList'));
+const CampaignBuilder = lazy(() => import('./pages/marketing/CampaignBuilder'));
+const CampaignDetail = lazy(() => import('./pages/marketing/CampaignDetail'));
+const SegmentList = lazy(() => import('./pages/marketing/SegmentList'));
+const TemplateGallery = lazy(() => import('./pages/marketing/TemplateGallery'));
+const LandingPageList = lazy(() => import('./pages/marketing/LandingPageList'));
+const MktgCalendar = lazy(() => import('./pages/marketing/MarketingCalendar'));
+const AdminMarketingHub = lazy(() => import('./pages/admin/AdminMarketingHub'));
+
+// ── eLearning platform (WO-OVERHAUL-13)
+const EduCourseCatalog = lazy(() => import('./pages/education/CourseCatalog'));
+const EduCourseDetail = lazy(() => import('./pages/education/CourseDetail'));
+const EduCoursePlayer = lazy(() => import('./pages/education/CoursePlayer'));
+const EduMyCertificates = lazy(() => import('./pages/education/MyCertificates'));
+const EduCertificateVerify = lazy(() => import('./pages/education/CertificateVerify'));
+const EduAuthorDashboard = lazy(() => import('./pages/education/author/AuthorDashboard'));
+const EduCourseBuilder = lazy(() => import('./pages/education/author/CourseBuilder'));
+const AdminEducationHub = lazy(() => import('./pages/admin/AdminEducationHub'));
+
+// ── Admin CMS + API Hubs (WO-OVERHAUL-04)
+const AdminPagesHub = lazy(() => import('./pages/admin/AdminPagesHub'));
+const AdminMediaHub = lazy(() => import('./pages/admin/AdminMediaHub'));
+const AdminSeoHub = lazy(() => import('./pages/admin/AdminSeoHub'));
+const AdminLiveDataHub = lazy(() => import('./pages/admin/AdminLiveDataHub'));
+const AdminApiControlHub = lazy(() => import('./pages/admin/AdminApiControlHub'));
+const AdminApiSitemapHub = lazy(() => import('./pages/admin/AdminApiSitemapHub'));
+const AdminSettingsHub = lazy(() => import('./pages/admin/AdminSettingsHub'));
 
 // ── Brand Hub (brand-centric admin)
 const BrandHub = lazy(() => import('./pages/admin/BrandHub'));
@@ -140,6 +256,20 @@ const HubOrders = lazy(() => import('./pages/admin/brand-hub/HubOrders'));
 const HubRetailers = lazy(() => import('./pages/admin/brand-hub/HubRetailers'));
 const HubAnalytics = lazy(() => import('./pages/admin/brand-hub/HubAnalytics'));
 const HubSettings = lazy(() => import('./pages/admin/brand-hub/HubSettings'));
+
+// ── Admin Ingredients (WO-OVERHAUL-12)
+const AdminIngredientsHub = lazy(() => import('./pages/admin/AdminIngredientsHub'));
+const AdminIngredientCollections = lazy(() => import('./pages/admin/AdminIngredientCollections'));
+const AdminIngredientInteractions = lazy(() => import('./pages/admin/AdminIngredientInteractions'));
+
+// ── eLearning Courses (public + admin)
+const CoursesCatalog = lazy(() => import('./pages/public/CoursesCatalog'));
+const CourseDetailPage = lazy(() => import('./pages/public/CourseDetail'));
+const CoursePlayer = lazy(() => import('./pages/public/CoursePlayer'));
+const CertificateVerify = lazy(() => import('./pages/public/CertificateVerify'));
+const MyCertificates = lazy(() => import('./pages/public/MyCertificates'));
+const AdminCoursesHub = lazy(() => import('./pages/admin/AdminCoursesHub'));
+const AdminCourseEditor = lazy(() => import('./pages/admin/AdminCourseEditor'));
 
 // ── Data views
 const IngestionView = lazy(() => import('./components/IngestionView'));
@@ -174,6 +304,7 @@ function App() {
       <ToastProvider>
         <ConfigCheck>
           <AuthProvider>
+            <ModuleAccessProvider>
             <BrowserRouter>
               <Suspense fallback={Fallback}>
                 <Routes>
@@ -187,6 +318,7 @@ function App() {
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/plans" element={<Plans />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/intelligence" element={<Intelligence />} />
                   <Route path="/insights" element={<Navigate to="/intelligence" replace />} />
@@ -196,10 +328,43 @@ function App() {
                   <Route path="/for-brands" element={<ForBrands />} />
                   <Route path="/for-medspas" element={<ForMedspas />} />
                   <Route path="/for-salons" element={<ForSalons />} />
+                  <Route path="/for-buyers" element={<Navigate to="/professionals" replace />} />
                   <Route path="/how-it-works" element={<HowItWorks />} />
                   <Route path="/request-access" element={<RequestAccess />} />
                   <Route path="/education" element={<Education />} />
-                  <Route path="/ingredients" element={<Ingredients />} />
+                  <Route path="/education/courses" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><EduCourseCatalog /></ModuleRoute>} />
+                  <Route path="/education/courses/:slug" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><EduCourseDetail /></ModuleRoute>} />
+                  <Route path="/education/learn/:slug" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_EDUCATION"><EduCoursePlayer /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/education/certificates" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_EDUCATION"><EduMyCertificates /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  {/* Public verification — NOT module-gated */}
+                  <Route path="/education/certificates/verify/:token" element={<EduCertificateVerify />} />
+                  <Route path="/education/author" element={
+                    <ProtectedRoute requireRole={['admin', 'platform_admin']}>
+                      <EduAuthorDashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/education/author/courses/new" element={
+                    <ProtectedRoute requireRole={['admin', 'platform_admin']}>
+                      <EduCourseBuilder />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/education/author/courses/:id/edit" element={
+                    <ProtectedRoute requireRole={['admin', 'platform_admin']}>
+                      <EduCourseBuilder />
+                    </ProtectedRoute>
+                  } />
+                  {/* MODULE_INGREDIENTS gated */}
+                  <Route path="/ingredients" element={<ModuleRoute moduleKey="MODULE_INGREDIENTS"><Ingredients /></ModuleRoute>} />
+                  <Route path="/ingredients/collections/:slug" element={<ModuleRoute moduleKey="MODULE_INGREDIENTS"><IngredientCollection /></ModuleRoute>} />
+                  <Route path="/ingredients/:slug" element={<ModuleRoute moduleKey="MODULE_INGREDIENTS"><IngredientDetail /></ModuleRoute>} />
                   <Route path="/protocols" element={<Protocols />} />
                   <Route path="/protocols/:slug" element={<ProtocolDetail />} />
                   <Route path="/faq" element={<FAQ />} />
@@ -208,8 +373,93 @@ function App() {
                   <Route path="/events" element={<Events />} />
                   <Route path="/jobs" element={<Jobs />} />
                   <Route path="/jobs/:slug" element={<JobDetail />} />
+                  {/* MODULE_EDUCATION gated */}
+                  <Route path="/courses" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><CoursesCatalog /></ModuleRoute>} />
+                  <Route path="/courses/:slug" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><CourseDetailPage /></ModuleRoute>} />
+                  <Route path="/courses/:slug/learn" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_EDUCATION"><CoursePlayer /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  {/* Public verification — NOT module-gated */}
+                  <Route path="/certificates/verify/:token" element={<CertificateVerify />} />
+                  <Route path="/my-certificates" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_EDUCATION"><MyCertificates /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
                   <Route path="/claim/brand/:slug" element={<ClaimBrand />} />
                   <Route path="/claim/business/:slug" element={<ClaimBusiness />} />
+                  <Route path="/book/:slug" element={<BookingWidget />} />
+
+                  {/* ── Shop (WO-OVERHAUL-11) — MODULE_SHOP gated ── */}
+                  <Route path="/shop" element={<ModuleRoute moduleKey="MODULE_SHOP"><Shop /></ModuleRoute>} />
+                  <Route path="/shop/category/:slug" element={<ModuleRoute moduleKey="MODULE_SHOP"><ShopCategory /></ModuleRoute>} />
+                  <Route path="/shop/product/:slug" element={<ModuleRoute moduleKey="MODULE_SHOP"><ShopProduct /></ModuleRoute>} />
+                  <Route path="/shop/cart" element={<ModuleRoute moduleKey="MODULE_SHOP"><ShopCart /></ModuleRoute>} />
+                  <Route path="/shop/checkout" element={<ModuleRoute moduleKey="MODULE_SHOP"><ShopCheckout /></ModuleRoute>} />
+                  <Route path="/shop/orders" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><ShopOrders /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/shop/orders/:id" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><ShopOrderDetailPage /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/shop/wishlist" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><ShopWishlist /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  {/* Legacy shop routes */}
+                  <Route path="/shop/:slug" element={<ModuleRoute moduleKey="MODULE_SHOP"><ProductDetail /></ModuleRoute>} />
+                  <Route path="/cart" element={<ModuleRoute moduleKey="MODULE_SHOP"><CartPage /></ModuleRoute>} />
+                  <Route path="/checkout" element={<ModuleRoute moduleKey="MODULE_SHOP"><CheckoutPage /></ModuleRoute>} />
+                  <Route path="/account/orders" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><OrderHistory /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/account/orders/:id" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><ShopOrderDetail /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/account/wishlist" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><WishlistPage /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+
+                  {/* ── Sales Platform (WO-OVERHAUL-14) — MODULE_SALES gated ── */}
+                  <Route path="/sales" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SALES"><SalesDashboard /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/sales/pipeline" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SALES"><PipelineBoard /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/sales/deals/:id" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SALES"><DealDetail /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/sales/proposals/new" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SALES"><ProposalBuilder /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/sales/proposals/:id/view" element={<ModuleRoute moduleKey="MODULE_SALES"><ProposalView /></ModuleRoute>} />
+                  <Route path="/sales/commissions" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SALES"><CommissionDashboard /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
 
                   {/* ── Business Portal ─────────────────────────── */}
                   <Route path="/portal" element={<BusinessLayout />}>
@@ -272,6 +522,11 @@ function App() {
                         <BusinessAccount />
                       </ProtectedRoute>
                     } />
+                    <Route path="subscription" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <SubscriptionManagement />
+                      </ProtectedRoute>
+                    } />
                     <Route path="messages" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <BusinessMessages />
@@ -305,6 +560,160 @@ function App() {
                     <Route path="benchmarks" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <BenchmarkDashboard />
+                      </ProtectedRoute>
+                    } />
+                    {/* ── B2B Reseller — MODULE_RESELLER gated ── */}
+                    <Route path="reseller" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_RESELLER"><ResellerDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="reseller/clients" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_RESELLER"><ResellerClients /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="reseller/revenue" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_RESELLER"><ResellerRevenue /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="reseller/white-label" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_RESELLER"><WhiteLabelConfig /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    {/* ── Sales Platform (WO-OVERHAUL-14) — MODULE_SALES gated ── */}
+                    <Route path="sales" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SALES"><BusinessSalesDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="sales/pipeline" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SALES"><BusinessPipelineBoard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="sales/deals/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SALES"><BusinessDealDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="sales/proposals/new" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SALES"><BusinessProposalEditor /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="sales/commissions" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SALES"><BusinessCommissionsDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    {/* ── Marketing Platform (WO-OVERHAUL-15) — MODULE_MARKETING gated ── */}
+                    <Route path="marketing" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessMarketingDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/campaigns/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessCampaignDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/campaigns/new" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessCampaignEditor /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/segments" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessAudienceSegments /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/templates" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessContentTemplates /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/analytics" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessMarketingAnalytics /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    {/* ── CRM + Booking + Prospecting — MODULE_CRM gated ── */}
+                    <Route path="crm" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><CrmDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/contacts" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><ContactList /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/contacts/new" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><AddContact /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/contacts/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><ContactDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/companies" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><CompanyList /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/companies/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><CompanyDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="booking" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><BookingDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="booking/calendar" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><AppointmentCalendar /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="booking/appointments/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><AppointmentDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="booking/services" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><ServiceManager /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="booking/staff" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><StaffManager /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/contacts/:id/records" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><ClientRecords /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/contacts/:id/records/new" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><AddServiceRecord /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="prospects" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><ProspectList /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="prospects/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><ProspectDetail /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                   </Route>
@@ -360,6 +769,30 @@ function App() {
                   <Route path="/spa/plans/new" element={<Navigate to="/portal/plans/new" replace />} />
                   <Route path="/spa/plans/:id" element={<SpaPlanIdRedirect />} />
                   <Route path="/spa/*" element={<Navigate to="/portal" replace />} />
+
+                  {/* ── Marketing Platform (WO-OVERHAUL-15) — MODULE_MARKETING gated ── */}
+                  <Route
+                    path="/marketing"
+                    element={
+                      <ProtectedRoute
+                        requireRole={['admin', 'platform_admin', 'brand_admin', 'business_user']}
+                        redirectTo="/portal/login"
+                      >
+                        <ModuleRoute moduleKey="MODULE_MARKETING">
+                          <MarketingLayout />
+                        </ModuleRoute>
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<MarketingDashboard />} />
+                    <Route path="campaigns" element={<CampaignList />} />
+                    <Route path="campaigns/new" element={<CampaignBuilder />} />
+                    <Route path="campaigns/:id" element={<CampaignDetail />} />
+                    <Route path="segments" element={<SegmentList />} />
+                    <Route path="templates" element={<TemplateGallery />} />
+                    <Route path="landing-pages" element={<LandingPageList />} />
+                    <Route path="calendar" element={<MktgCalendar />} />
+                  </Route>
 
                   {/* ── Admin ─────────────────────────────────────── */}
                   <Route path="/admin/login" element={<AdminLogin />} />
@@ -421,6 +854,10 @@ function App() {
                     <Route path="api" element={<AdminApiDashboard />} />
                     <Route path="regions" element={<AdminRegionManagement />} />
 
+                    {/* ── Marketing Hub (WO-OVERHAUL-15) ── */}
+                    <Route path="marketing" element={<AdminMarketingHub />} />
+                    <Route path="marketing-platform" element={<AdminMarketingHub />} />
+
                     {/* ── Admin Hubs (W12-11) ── */}
                     <Route path="crm" element={<AdminCrmHub />} />
                     <Route path="social" element={<AdminSocialHub />} />
@@ -432,6 +869,43 @@ function App() {
                     <Route path="recruitment" element={<AdminRecruitmentHub />} />
                     <Route path="feeds" element={<AdminFeedsHub />} />
                     <Route path="blog" element={<AdminBlogHub />} />
+                    <Route path="sales-platform" element={<AdminSalesPlatformHub />} />
+                    <Route path="reseller" element={<AdminResellerHub />} />
+
+                    {/* ── Education (WO-OVERHAUL-13) ── */}
+                    <Route path="education" element={<AdminEducationHub />} />
+
+                    {/* ── Courses (eLearning CRUD) ── */}
+                    <Route path="courses" element={<AdminCoursesHub />} />
+                    <Route path="courses/:id/edit" element={<AdminCourseEditor />} />
+
+                    {/* ── Ingredients (WO-OVERHAUL-12) ── */}
+                    <Route path="ingredients" element={<AdminIngredientsHub />} />
+                    <Route path="ingredients/collections" element={<AdminIngredientCollections />} />
+                    <Route path="ingredients/interactions" element={<AdminIngredientInteractions />} />
+
+                    {/* ── CMS + API Hubs (WO-OVERHAUL-04) ── */}
+                    <Route path="pages" element={<AdminPagesHub />} />
+                    <Route path="media" element={<AdminMediaHub />} />
+                    <Route path="seo" element={<AdminSeoHub />} />
+                    <Route path="live-data" element={<AdminLiveDataHub />} />
+                    <Route path="api-control" element={<AdminApiControlHub />} />
+                    <Route path="api-sitemap" element={<AdminApiSitemapHub />} />
+                    <Route path="settings" element={<AdminSettingsHub />} />
+
+                    {/* ── Shop Admin (WO-OVERHAUL-11) ── */}
+                    <Route path="shop" element={<AdminShopHub />} />
+                    <Route path="shop/products" element={<AdminShopProducts />} />
+                    <Route path="shop/categories" element={<AdminShopCategories />} />
+                    <Route path="shop/orders" element={<AdminShopOrders />} />
+                    <Route path="shop/discounts" element={<AdminShopDiscounts />} />
+                    <Route path="shop/shipping" element={<AdminShopShipping />} />
+                    <Route path="shop/reviews" element={<AdminShopReviews />} />
+
+                    {/* ── Subscriptions ── */}
+                    <Route path="subscriptions" element={<AdminSubscriptionPlans />} />
+                    <Route path="subscriptions/accounts" element={<AdminSubscriptionAccounts />} />
+                    <Route path="subscriptions/metrics" element={<AdminSubscriptionMetrics />} />
 
                     {/* ── Brand list ── */}
                     <Route path="brands" element={<AdminBrandList />} />
@@ -469,6 +943,7 @@ function App() {
                 </Routes>
               </Suspense>
             </BrowserRouter>
+            </ModuleAccessProvider>
           </AuthProvider>
         </ConfigCheck>
       </ToastProvider>

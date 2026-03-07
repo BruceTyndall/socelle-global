@@ -44,6 +44,13 @@ export default function StoriesIndex() {
       <Helmet>
         <title>Stories — Intelligence Editorial | Socelle</title>
         <meta name="description" content="Curated editorial intelligence from the professional beauty and medical aesthetics industry. Expert analysis, trend reports, and market insights." />
+        <meta property="og:title" content="Stories — Intelligence Editorial | Socelle" />
+        <meta property="og:description" content="Curated editorial intelligence from the professional beauty and medical aesthetics industry." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/stories" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://socelle.com/stories" />
         {/* W15-06: CollectionPage JSON-LD structured data */}
         <script type="application/ld+json">{JSON.stringify({
           '@context': 'https://schema.org',
@@ -67,8 +74,15 @@ export default function StoriesIndex() {
       <MainNav />
 
       {/* Hero */}
-      <section className="bg-mn-dark pt-32 pb-16 lg:pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative bg-mn-dark pt-32 pb-16 lg:pb-20 overflow-hidden">
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.08]"
+          aria-hidden="true"
+        >
+          <source src="/videos/brand/foundation.mp4" type="video/mp4" />
+        </video>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <span className="text-eyebrow text-accent mb-4 block">Editorial Intelligence</span>
           <h1 className="text-section text-mn-bg mb-4">Stories</h1>
           <p className="text-mn-bg/60 max-w-2xl mx-auto text-lg">
