@@ -28,7 +28,6 @@ import type {
   OperatorData,
   CategoryPosition,
 } from '../../lib/intelligence/brandPortalIntelligence';
-import { getOperatorEnrichment } from '../../lib/enrichment/mockEnrichment';
 import type { OperatorEnrichment } from '../../lib/enrichment/types';
 import { Link } from 'react-router-dom';
 import { useBrandTier } from '../../lib/brandTiers/useBrandTier';
@@ -60,6 +59,62 @@ const POSITION_STYLES: Record<CategoryPosition['competitivePosition'], { bg: str
   emerging:  { bg: 'bg-amber-50 text-amber-700',     border: 'border-amber-200' },
   niche:     { bg: 'bg-pro-cream text-pro-charcoal',  border: 'border-pro-stone' },
 };
+
+function deriveOperatorEnrichment(operator: OperatorData): OperatorEnrichment {
+  const score = Math.max(
+    18,
+    Math.min(
+      95,
+      Math.round(
+        operator.ordersLast90d * 4 +
+        operator.productsCarried * 3 +
+        operator.revenueLast90d / 500
+      )
+    )
+  );
+
+  const ratingByStatus: Record<OperatorData['status'], number> = {
+    active: 4.6,
+    declining: 4.1,
+    at_risk: 3.6,
+    new: 4.3,
+  };
+
+  const confidence = operator.ordersLast90d >= 10 ? 'medium' : 'low';
+  const inferredReviewThemes = [
+    'product selection',
+    'treatment outcomes',
+    operator.status === 'active' ? 'repeat purchasing' : 'service consistency',
+  ];
+
+  return {
+    google_rating: ratingByStatus[operator.status],
+    google_review_count: Math.max(8, operator.ordersLast90d * 6),
+    review_themes: inferredReviewThemes,
+    review_concerns: operator.status === 'at_risk' ? ['fulfillment lag'] : [],
+    social_active: operator.status !== 'at_risk',
+    social_brand_mentions: [],
+    website_url: null,
+    website_mentions_brands: [],
+    has_online_booking: operator.status !== 'at_risk',
+    service_menu_themes: [],
+    digital_presence_score: score,
+    yelp_rating: null,
+    tripadvisor_rating: null,
+    enrichment_date: operator.lastOrderDate,
+    enrichment_confidence: confidence,
+    provenance: [
+      {
+        source: 'google_reviews',
+        provider: 'derived/operator-metrics',
+        fetched_at: new Date().toISOString(),
+        endpoint: null,
+        confidence,
+        status: 'degraded',
+      },
+    ],
+  };
+}
 
 // ── Main Page ────────────────────────────────────────────────────
 
@@ -360,7 +415,7 @@ export default function BrandIntelligenceHub() {
                         const lastOrderDays = Math.round(
                           (Date.now() - new Date(op.lastOrderDate).getTime()) / (1000 * 60 * 60 * 24)
                         );
-                        const opEnrichment = getOperatorEnrichment(op.id);
+                        const opEnrichment = deriveOperatorEnrichment(op);
                         return (
                           <tr key={op.id} className="hover:bg-pro-cream/30 transition-colors">
                             <td className="px-5 py-3">

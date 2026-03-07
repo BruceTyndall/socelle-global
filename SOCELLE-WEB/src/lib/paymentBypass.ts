@@ -5,9 +5,8 @@
  * treated as PRO. No Stripe/RevenueCat/subscriptions table is used.
  * See /docs/SOCELLE_Master_Strategy_Build_Directive.md.
  *
- * Set to false when payments are unblocked and PaywallGate/UpgradeGate
- * should enforce again.
+ * Keep this OFF by default. Enable only in explicit preview/dev contexts.
  */
-/** Default true: bypass on unless VITE_PAYMENT_BYPASS=false. */
+/** Default false: bypass only when VITE_PAYMENT_BYPASS=true. */
 export const PAYMENT_BYPASS =
-  import.meta.env.VITE_PAYMENT_BYPASS !== 'false';
+  import.meta.env.VITE_PAYMENT_BYPASS === 'true';
