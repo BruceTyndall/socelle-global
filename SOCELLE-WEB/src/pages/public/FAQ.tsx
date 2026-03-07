@@ -272,18 +272,11 @@ export default function FAQPage() {
                 business day.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link
-                  to="/request-access"
-                  className="inline-flex items-center justify-center gap-2 rounded-full h-[52px] px-7 bg-graphite text-[#F7F5F2] font-sans font-medium text-sm hover:scale-[1.01] transition-all duration-200"
-                  style={{ boxShadow: '0 2px 8px rgba(19,24,29,0.15)' }}
-                >
+                <Link to="/request-access" className="btn-mineral-primary">
                   Request Access
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <a
-                  href="mailto:hello@socelle.com"
-                  className="inline-flex items-center justify-center gap-2 rounded-full h-[52px] px-7 bg-white/60 backdrop-blur-[12px] border border-white/30 text-graphite font-sans font-medium text-sm hover:bg-white/80 hover:scale-[1.01] transition-all duration-200"
-                >
+                <a href="mailto:hello@socelle.com" className="btn-mineral-secondary">
                   Contact Us
                 </a>
               </div>

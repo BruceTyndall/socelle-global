@@ -12,6 +12,7 @@ import SiteFooter from '../../components/sections/SiteFooter';
 import HeroMediaRail from '../../components/public/HeroMediaRail';
 import EvidenceStrip from '../../components/public/EvidenceStrip';
 import SplitFeature from '../../components/public/SplitFeature';
+import { usePlatformStats } from '../../lib/usePlatformStats';
 
 /* ══════════════════════════════════════════════════════════════════
    ForBrands — Liquid Glass Visual System
@@ -52,15 +53,9 @@ const FEATURES = [
   },
 ];
 
-// ── Stats row ───────────────────────────────────────────────────
-const STATS = [
-  { value: '500+', label: 'Licensed operators' },
-  { value: '92%', label: 'Revenue to you' },
-  { value: '68%', label: 'Average reorder rate' },
-  { value: '48h', label: 'Application review' },
-];
-
 export default function ForBrands() {
+  /* W12-32: Live platform stats */
+  const { stats, isLive: statsLive } = usePlatformStats();
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
@@ -81,6 +76,7 @@ export default function ForBrands() {
       {/* ── Hero (HeroMediaRail — W12-26) ──────────────────────────── */}
       <HeroMediaRail
         videoSrc="/videos/tube.mp4"
+        poster="/videos/posters/tube-poster.jpg"
         overlay="light"
         minHeight="70svh"
         headline="For Brands"
@@ -177,6 +173,7 @@ export default function ForBrands() {
       {/* ── Mid-page media (SplitFeature — W12-26) ────────────────── */}
       <SplitFeature
         videoSrc="/videos/yellow-drops.mp4"
+        poster="/videos/posters/yellow-drops-poster.jpg"
         mediaPosition="right"
         bg="surface"
       >
@@ -208,12 +205,13 @@ export default function ForBrands() {
       <EvidenceStrip
         title="Platform Metrics"
         bg="surface"
-        isLive={false}
-        items={STATS.map(s => ({
-          label: s.label,
-          value: s.value,
-          source: 'Preview',
-        }))}
+        isLive={statsLive}
+        items={[
+          { label: 'Licensed operators', value: `${stats.operatorsCount}+`, source: statsLive ? 'Live' : 'Preview' },
+          { label: 'Revenue to you', value: '92%', source: 'Terms' },
+          { label: 'Average reorder rate', value: '68%', source: 'Preview' },
+          { label: 'Application review', value: '48h', source: 'SLA' },
+        ]}
       />
 
       {/* ── Dark CTA ─────────────────────────────────────────────── */}
@@ -241,10 +239,7 @@ export default function ForBrands() {
                 Apply as Brand Partner
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
-              <Link
-                to="/how-it-works"
-                className="rounded-full h-[52px] px-7 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] inline-flex items-center justify-center font-sans font-medium text-sm hover:bg-white/15 transition-all duration-200"
-              >
+              <Link to="/how-it-works" className="btn-mineral-ghost">
                 See how it works
               </Link>
             </div>

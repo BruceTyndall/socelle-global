@@ -1,7 +1,8 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-06 (Session 35 — W12-23/24/25 executed + verified, W12-26 registered, W12-27 registered)
+Last Updated: 2026-03-06 (Session 36 — W12-28/29/30/31/32/33/34/35/36/37/38/39 ALL executed + verified)
 Current Phase: WAVE 12 — Gap Closure + Design Consistency + Layout Upgrade + UI Kit Normalization
-Next Milestone: W12-26 (media-first layout cutover) → W12-27 (buttons + typography normalization) → W12-19/21/22 QA resubmit → W12-11 (admin hub stubs)
+Next Milestone: W12-19/21/22 QA resubmit → W12-11 (admin hub stubs)
+Completed 2026-03-06 (Session 36): W12-28 (Home warm cocoa purge), W12-29 (EvidenceStrip CSS fix), W12-30 (Home signals live wire), W12-31 (usePlatformStats hook), W12-32 (platform stats wiring), W12-33 (Brands+Events video heroes), W12-34 (useSignalCategories hook — live counts wired into Intelligence), W12-35 (Jobs hero video+live count), W12-36 (AnimatedCounter — IntersectionObserver+rAF, wired into ForMedspas), W12-37 (inline button normalization — 14 instances across 9 pages), W12-38 (index.css dead code cleanup), W12-39 (video poster frames — 6 posters for all video elements)
 Doc Gate PASS 2026-03-06 (Session 34 Lane D): W10-11 ✅ (trigger artifact + send-email handler verified), W12-16 ✅ (all 5 functions ACTIVE on rumdmulxzmjtsplsjngi — supabase functions list EXIT:0), W12-20 ✅ (migration applied + rss-to-signals ACTIVE on rumdmulxzmjtsplsjngi — provenance + dedup index + signal_type heuristic verified)
 Completed 2026-03-06 (Session 33 Lane A): W12-16 (intelligence-briefing + jobs-search edge functions)
 Completed 2026-03-06 (Session 33 Lane B): W12-19 (remediation sweep), W12-21 (Insights live RSS wire), W12-22 (Ingredients directory) — ⚠️ IN REVIEW: Doc Gate resubmit required (Session 34)
@@ -1086,6 +1087,44 @@ SERVING FUNCTIONS (spec §7 — frontend-called Edge Functions)
 | GET /intelligence/compliance/:brand_slug | NO WO — cannot act | — | ❌ Proposed (Session 29) — merges FDA + CSCP + EU Safety Gate signals; blocked pending ingest-cscp, ingest-gudid-devices, ingest-eu-safety WOs |
 | GET /intelligence/devices/:device_id | NO WO — cannot act | — | ❌ Proposed (Session 29) — device specs + safety history; blocked pending ingest-gudid-devices WO |
 | GET /market/future-products | NO WO — cannot act | — | ❌ Proposed (Session 29) — trademarks last 30 days, Class 003/044; blocked pending ingest-uspto-daily WO |
+
+---
+
+## WAVE 12 — PUBLIC PAGE REDESIGN (Session 34 — March 2026)
+
+Source: `docs/AUDIT_W12_COMPLETE_REAUDIT.md` + `docs/command/SOCELLE_FIGMA_DESIGN_BRIEF.md`
+
+### WAVE A — STOP THE BLEEDING
+
+| WO | Name | Type | Files | Priority | Status |
+|---|---|---|---|---|---|
+| W12-28 | Home Warm Cocoa Purge + Button Normalization | Token/CSS | Home.tsx | P0 CRITICAL | ✅ Done — tsc 0 errors, build OK |
+| W12-29 | EvidenceStrip CSS Fix | Component fix | EvidenceStrip.tsx | P0 CRITICAL | ✅ Done — overflow-x-auto + snap, tsc 0 errors |
+
+### WAVE B — LIVE DATA
+
+| WO | Name | Type | Files | Priority | Status |
+|---|---|---|---|---|---|
+| W12-30 | Home Signals Live Wire | Hook wiring | Home.tsx | P0 CRITICAL | ✅ Done — useIntelligence() wired, isLive flag drives PREVIEW banner |
+| W12-31 | usePlatformStats() Hook | New hook | src/lib/usePlatformStats.ts | P0 CRITICAL | ✅ Done — brands/signals/operators counts from Supabase, isLive flag |
+| W12-32 | Platform Stats Wiring | Page integration | Professionals.tsx, ForBrands.tsx, Jobs.tsx | P0 CRITICAL | ✅ Done — EvidenceStrip items wired to usePlatformStats across 3 pages |
+
+### WAVE C — VISUAL RHYTHM
+
+| WO | Name | Type | Files | Priority | Status |
+|---|---|---|---|---|---|
+| W12-33 | Brands + Events Video Heroes | Media integration | Brands.tsx, Events.tsx | P1 HIGH | ✅ Done — HeroMediaRail on Brands, inline video on Events |
+| W12-34 | useSignalCategories() Hook | New hook | src/lib/intelligence/useSignalCategories.ts, Intelligence.tsx | P1 HIGH | ✅ Done — live counts per signal_type, wired into EvidenceStrip + SplitFeature |
+| W12-35 | Jobs Hero Video + Live Count | Page fix | Jobs.tsx | P1 HIGH | ✅ Done — HeroMediaRail + live job_postings count via usePlatformStats |
+| W12-36 | Animated Counter Component | New component | src/components/public/AnimatedCounter.tsx | P1 HIGH | ✅ Done — IntersectionObserver + rAF + easeOutCubic, wired into ForMedspas metrics |
+
+### WAVE D — POLISH
+
+| WO | Name | Type | Files | Priority | Status |
+|---|---|---|---|---|---|
+| W12-37 | Inline Button Normalization | CSS cleanup | 9 public pages (About, FAQ, HowItWorks, ForBrands, Professionals, Intelligence, Protocols, BrandStorefront, Brands, Jobs) | P2 MED | ✅ Done — 14 inline buttons → btn-mineral-* classes, 0 remaining |
+| W12-38 | index.css Dead Code Cleanup | CSS cleanup | index.css | P2 MED | ✅ Done — removed dead warm-cocoa refs + unused utility classes |
+| W12-39 | Video Poster Frames | Asset pipeline | public/videos/posters/, all pages with video | P2 MED | ✅ Done — 6 poster JPEGs generated via ffmpeg, all 15+ video elements have poster attr |
 
 ---
 

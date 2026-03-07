@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, DollarSign, Clock, ArrowRight, Briefcase, Building2, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -137,6 +137,10 @@ export default function Jobs() {
     void fetchJobs();
   }, []);
 
+  /* W12-32: Derive market count from live job data */
+  const uniqueMarkets = useMemo(() => new Set(jobs.map(j => j.location)).size, [jobs]);
+  const uniqueVerticals = useMemo(() => new Set(jobs.map(j => j.vertical)).size, [jobs]);
+
   const filtered = jobs.filter((job) => {
     const vMatch = verticalFilter === 'all' || job.vertical === verticalFilter;
     const tMatch = typeFilter === 'all' || job.type === typeFilter;
@@ -166,9 +170,16 @@ export default function Jobs() {
       </Helmet>
       <MainNav />
 
-      {/* ── Dark Hero ────────────────────────────────────────────── */}
-      <section className="bg-mn-dark pt-24 pb-16 lg:pt-32 lg:pb-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ── Dark Hero (W12-35: video background) ─────────────────── */}
+      <section className="relative overflow-hidden bg-mn-dark pt-24 pb-16 lg:pt-32 lg:pb-20">
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-luminosity"
+          src="/videos/dropper.mp4"
+          poster="/videos/posters/dropper-poster.jpg"
+          autoPlay muted loop playsInline aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-mn-dark via-mn-dark/70 to-mn-dark/40" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <BlockReveal>
             <p className="text-[0.75rem] tracking-[0.18em] font-medium uppercase text-white/30 mb-5">
               CAREER INTELLIGENCE
@@ -187,10 +198,10 @@ export default function Jobs() {
 
           <BlockReveal delay={200}>
             <div className="flex flex-wrap gap-4 mb-10">
-              <Link to="/portal/signup" className="inline-flex items-center justify-center h-[48px] px-7 bg-accent text-white font-sans font-semibold text-sm rounded-full transition-all hover:bg-accent-hover hover:-translate-y-[1px]">
+              <Link to="/portal/signup" className="btn-mineral-accent">
                 Create Your Profile
               </Link>
-              <Link to="/jobs" className="inline-flex items-center justify-center rounded-full h-[48px] px-7 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] font-sans font-medium text-sm hover:bg-white/15 transition-all duration-200">
+              <Link to="/jobs" className="btn-mineral-ghost">
                 View Job Demand
               </Link>
             </div>
@@ -206,11 +217,15 @@ export default function Jobs() {
                 <p className="text-[0.8125rem] text-white/40 mt-0.5">open roles</p>
               </div>
               <div>
-                <p className="font-mono text-2xl font-bold text-[#F7F5F2]">12</p>
+                <p className="font-mono text-2xl font-bold text-[#F7F5F2]">
+                  {loading ? '—' : uniqueMarkets}
+                </p>
                 <p className="text-[0.8125rem] text-white/40 mt-0.5">markets</p>
               </div>
               <div>
-                <p className="font-mono text-2xl font-bold text-[#F7F5F2]">4</p>
+                <p className="font-mono text-2xl font-bold text-[#F7F5F2]">
+                  {loading ? '—' : uniqueVerticals}
+                </p>
                 <p className="text-[0.8125rem] text-white/40 mt-0.5">verticals</p>
               </div>
             </div>

@@ -12,6 +12,7 @@ import SiteFooter from '../../components/sections/SiteFooter';
 import HeroMediaRail from '../../components/public/HeroMediaRail';
 import EvidenceStrip from '../../components/public/EvidenceStrip';
 import SplitFeature from '../../components/public/SplitFeature';
+import { usePlatformStats } from '../../lib/usePlatformStats';
 
 /* ══════════════════════════════════════════════════════════════════
    ForBuyers — Liquid Glass Visual System
@@ -52,15 +53,9 @@ const FEATURES = [
   },
 ];
 
-// ── Stats row ───────────────────────────────────────────────────
-const STATS = [
-  { value: '120+', label: 'Authorized brands' },
-  { value: '34', label: 'Market signals' },
-  { value: '500+', label: 'Licensed operators' },
-  { value: '1', label: 'Cart, every brand' },
-];
-
 export default function ForBuyers() {
+  /* W12-32: Live platform stats */
+  const { stats, isLive: statsLive } = usePlatformStats();
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
       <Helmet>
@@ -81,6 +76,7 @@ export default function ForBuyers() {
       {/* ── Hero (HeroMediaRail — W12-26) ──────────────────────────── */}
       <HeroMediaRail
         videoSrc="/videos/blue-drops.mp4"
+        poster="/videos/posters/blue-drops-poster.jpg"
         overlay="light"
         minHeight="70svh"
         headline="For Professionals"
@@ -176,6 +172,7 @@ export default function ForBuyers() {
       {/* ── Mid-page media (SplitFeature — W12-26) ────────────────── */}
       <SplitFeature
         videoSrc="/videos/foundation.mp4"
+        poster="/videos/posters/foundation-poster.jpg"
         mediaPosition="left"
         bg="surface"
       >
@@ -207,12 +204,13 @@ export default function ForBuyers() {
       <EvidenceStrip
         title="Platform Metrics"
         bg="surface"
-        isLive={false}
-        items={STATS.map(s => ({
-          label: s.label,
-          value: s.value,
-          source: 'Preview',
-        }))}
+        isLive={statsLive}
+        items={[
+          { label: 'Authorized brands', value: `${stats.brandsCount}+`, source: statsLive ? 'Live' : 'Preview' },
+          { label: 'Market signals', value: String(stats.signalsCount), source: statsLive ? 'Live' : 'Preview' },
+          { label: 'Licensed operators', value: `${stats.operatorsCount}+`, source: statsLive ? 'Live' : 'Preview' },
+          { label: 'Cart, every brand', value: '1', source: 'Platform' },
+        ]}
       />
 
       {/* ── Dark CTA ─────────────────────────────────────────────── */}
@@ -240,10 +238,7 @@ export default function ForBuyers() {
                 Request Access
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
-              <Link
-                to="/how-it-works"
-                className="rounded-full h-[52px] px-7 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] inline-flex items-center justify-center font-sans font-medium text-sm hover:bg-white/15 transition-all duration-200"
-              >
+              <Link to="/how-it-works" className="btn-mineral-ghost">
                 See how it works
               </Link>
             </div>

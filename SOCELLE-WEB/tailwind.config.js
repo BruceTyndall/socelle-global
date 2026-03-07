@@ -92,18 +92,22 @@ export default {
           7: '#F43F5E',
         },
 
-        // ── New Design System — Warm Cocoa Palette (March 2026) ────
+        // ── Warm Cocoa Palette — PORTAL-SCOPED (W12-25) ────────────
+        // These generate Tailwind utilities (bg-cocoa, text-page-main, etc.)
+        // FORBIDDEN on public pages (src/pages/public/*).
+        // CSS vars are scoped to .portal-context in index.css.
+        // Tailwind utilities remain global for portal pages that use them directly.
         cocoa: {
-          DEFAULT: '#47201c',   // primary text & brand
-          deep:    '#29120f',   // darkest (footer / deep panels)
-          neutral: '#ac9b98',   // neutral / placeholder
+          DEFAULT: '#47201c',   // primary text & brand — PORTAL ONLY
+          deep:    '#29120f',   // darkest (footer / deep panels) — PORTAL ONLY
+          neutral: '#ac9b98',   // neutral / placeholder — PORTAL ONLY
         },
         page: {
-          main:       '#f8f6f2',   // warm off-white — main bg
-          alt:        '#f3e9e3',   // peach section tint
-          'near-white':'#faf9f5',  // near-white card bg
+          main:       '#f8f6f2',   // warm off-white — PORTAL ONLY
+          alt:        '#f3e9e3',   // peach section tint — PORTAL ONLY
+          'near-white':'#faf9f5',  // near-white card bg — PORTAL ONLY
         },
-        // Design-system palette swatches
+        // Design-system palette swatches — PORTAL ONLY
         'ds-red':    { 400: '#ff6568' },
         'ds-orange': { 50: '#fff7ed', 400: '#ff8b1a', 700: '#c53c00' },
         'ds-yellow': { 400: '#fac800' },
@@ -154,11 +158,11 @@ export default {
         'card':    '28px',
         'section': '32px',
         'pill':    '9999px',
-        // ── New design system (responsive via CSS vars — these are desktop values) ──
-        'ds-small':  '24px',   // var(--border-radius-small) @ desktop
-        'ds-medium': '40px',   // var(--border-radius-medium) @ desktop
-        'ds-large':  '88px',   // var(--border-radius-large) @ desktop
-        'ds-card':   '48px',   // var(--border-radius-card)
+        // ── Warm Cocoa border radii — PORTAL ONLY (W12-25) ──
+        'ds-small':  '24px',   // var(--border-radius-small) @ desktop — PORTAL ONLY
+        'ds-medium': '40px',   // var(--border-radius-medium) @ desktop — PORTAL ONLY
+        'ds-large':  '88px',   // var(--border-radius-large) @ desktop — PORTAL ONLY
+        'ds-card':   '48px',   // var(--border-radius-card) — PORTAL ONLY
       },
       boxShadow: {
         // ── Mineral shadows ──

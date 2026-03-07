@@ -193,18 +193,11 @@ export default function About() {
           </BlockReveal>
           <BlockReveal delay={200}>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                to="/request-access"
-                className="inline-flex items-center justify-center gap-2 bg-[#F7F5F2] text-mn-dark rounded-full h-[52px] px-7 font-sans font-medium text-sm hover:scale-[1.01] transition-all duration-200"
-                style={{ boxShadow: '0 2px 8px rgba(19,24,29,0.15)' }}
-              >
+              <Link to="/request-access" className="btn-mineral-dark">
                 Request Access
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
-                to="/brand/apply"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 text-[#F7F5F2] border border-[rgba(247,245,242,0.16)] rounded-full h-[52px] px-7 font-sans font-medium text-sm hover:bg-white/15 hover:scale-[1.01] transition-all duration-200"
-              >
+              <Link to="/brand/apply" className="btn-mineral-ghost">
                 Apply as Brand Partner
               </Link>
             </div>

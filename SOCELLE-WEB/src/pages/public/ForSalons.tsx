@@ -92,6 +92,7 @@ export default function ForSalons() {
         <video
           className="absolute inset-0 w-full h-full object-cover"
           src="/videos/foundation.mp4"
+          poster="/videos/posters/foundation-poster.jpg"
           autoPlay
           muted
           loop

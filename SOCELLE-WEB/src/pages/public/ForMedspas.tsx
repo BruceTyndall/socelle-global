@@ -11,6 +11,7 @@ import WordReveal from '../../components/motion/WordReveal';
 import GradientMark from '../../components/motion/GradientMark';
 import SplitPanel from '../../components/sections/SplitPanel';
 import SiteFooter from '../../components/sections/SiteFooter';
+import AnimatedCounter from '../../components/public/AnimatedCounter';
 
 /* ══════════════════════════════════════════════════════════════════
    ForMedspas — Liquid Glass Visual System
@@ -92,6 +93,7 @@ export default function ForMedspas() {
         <video
           className="absolute inset-0 w-full h-full object-cover"
           src="/videos/air-bubbles.mp4"
+          poster="/videos/posters/air-bubbles-poster.jpg"
           autoPlay
           muted
           loop
@@ -259,7 +261,7 @@ export default function ForMedspas() {
               <BlockReveal key={m.label} delay={idx * 100}>
                 <div className="text-center">
                   <p className="font-sans font-semibold text-[2.5rem] lg:text-[3rem] text-graphite leading-none mb-2">
-                    {m.value}
+                    <AnimatedCounter value={m.value} />
                   </p>
                   <p className="text-sm text-graphite/50 font-sans">
                     {m.label}

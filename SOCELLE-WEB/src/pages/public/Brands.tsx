@@ -234,9 +234,16 @@ export default function Brands() {
       </Helmet>
       <MainNav />
 
-      {/* ── Hero ───────────────────────────────────────────────────── */}
-      <div className="bg-mn-dark py-20 lg:py-28 px-4">
-        <div className="max-w-7xl mx-auto text-center">
+      {/* ── Hero (W12-33: video background) ─────────────────────── */}
+      <div className="relative overflow-hidden bg-mn-dark py-20 lg:py-28 px-4">
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-luminosity"
+          src="/videos/foundation.mp4"
+          poster="/videos/posters/foundation-poster.jpg"
+          autoPlay muted loop playsInline aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-mn-dark via-mn-dark/70 to-mn-dark/40" />
+        <div className="relative z-10 max-w-7xl mx-auto text-center">
           <BlockReveal>
             <p className="text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-accent font-sans mb-4">
               Curated for professionals
@@ -459,7 +466,7 @@ export default function Brands() {
             {activeCategory !== 'all' && (
               <button
                 onClick={() => setActiveCategory('all')}
-                className="rounded-full h-[42px] px-6 bg-white/65 text-graphite border border-[rgba(20,20,24,0.12)] font-sans font-medium text-sm transition-colors hover:border-graphite"
+                className="btn-mineral-secondary btn-mineral-sm"
               >
                 View all brands
               </button>
@@ -535,10 +542,7 @@ export default function Brands() {
               Create your free account to access all brands, access wholesale pricing,
               and get personalized protocol recommendations.
             </p>
-            <Link
-              to="/portal/signup"
-              className="inline-flex items-center gap-2 bg-[#F7F5F2] text-graphite rounded-full h-[52px] px-8 font-sans font-medium text-sm transition-colors hover:bg-white"
-            >
+            <Link to="/portal/signup" className="btn-mineral-dark">
               Create free account
               <ArrowRight className="w-4 h-4" />
             </Link>

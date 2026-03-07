@@ -316,10 +316,7 @@ export default function Protocols() {
                     Request Professional Access
                     <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <Link
-                    to="/brand/apply"
-                    className="inline-flex items-center gap-2 rounded-full h-[52px] px-7 bg-white/[0.08] text-[#F7F5F2] font-sans font-medium text-sm border border-white/[0.12] transition-colors hover:bg-white/[0.14]"
-                  >
+                  <Link to="/brand/apply" className="btn-mineral-ghost">
                     Brand Partner Application
                   </Link>
                 </div>

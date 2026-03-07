@@ -160,9 +160,16 @@ export default function Events() {
       </Helmet>
       <MainNav />
 
-      {/* ── Dark Hero ────────────────────────────────────────────── */}
-      <section className="bg-mn-dark pt-24 pb-16 lg:pt-32 lg:pb-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ── Dark Hero (W12-33: video background) ─────────────────── */}
+      <section className="relative overflow-hidden bg-mn-dark pt-24 pb-16 lg:pt-32 lg:pb-20">
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-luminosity"
+          src="/videos/blue-drops.mp4"
+          poster="/videos/posters/blue-drops-poster.jpg"
+          autoPlay muted loop playsInline aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-mn-dark via-mn-dark/70 to-mn-dark/40" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <BlockReveal>
             <p className="text-[0.75rem] tracking-[0.18em] font-medium uppercase text-white/30 mb-5">
               INDUSTRY CALENDAR
