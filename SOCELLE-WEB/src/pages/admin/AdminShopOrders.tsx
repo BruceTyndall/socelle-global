@@ -2,8 +2,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Package, Eye, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { formatCents } from '../../lib/shop/types';
+import type { Tables } from '../../lib/database.types';
+import {
+  formatCents,
+  normalizeShopOrder,
+  normalizeShopOrderItem,
+} from '../../lib/shop/types';
 import type { ShopOrder, ShopOrderItem } from '../../lib/shop/types';
+
+type OrderRow = Tables<'orders'>;
+type OrderItemRow = Tables<'order_items'>;
 
 const STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'] as const;
 
@@ -17,6 +25,11 @@ const STATUS_COLORS: Record<string, string> = {
   refunded: 'bg-red-50 text-red-500',
 };
 
+const DB_STATUS_MAP: Record<string, string> = {
+  pending: 'pending_payment',
+  processing: 'reviewing',
+};
+
 export default function AdminShopOrders() {
   const [orders, setOrders] = useState<ShopOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +38,8 @@ export default function AdminShopOrders() {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-    setOrders((data as ShopOrder[]) ?? []);
+    const rows = (data as OrderRow[] | null) ?? [];
+    setOrders(rows.map(normalizeShopOrder));
     setLoading(false);
   }, []);
 
@@ -33,11 +47,15 @@ export default function AdminShopOrders() {
 
   const openDetail = async (order: ShopOrder) => {
     const { data: items } = await supabase.from('order_items').select('*').eq('order_id', order.id);
-    setDetail({ order, items: (items as ShopOrderItem[]) ?? [] });
+    setDetail({
+      order,
+      items: (((items as OrderItemRow[] | null) ?? []).map(normalizeShopOrderItem) as ShopOrderItem[]),
+    });
   };
 
   const updateStatus = async (orderId: string, status: string) => {
-    await supabase.from('orders').update({ status }).eq('id', orderId);
+    const dbStatus = DB_STATUS_MAP[status] ?? status;
+    await supabase.from('orders').update({ status: dbStatus }).eq('id', orderId);
     if (detail && detail.order.id === orderId) {
       setDetail({ ...detail, order: { ...detail.order, status: status as ShopOrder['status'] } });
     }

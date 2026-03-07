@@ -639,9 +639,13 @@ function OperatorEnrichmentBadges({ enrichment }: { enrichment: OperatorEnrichme
 
       {/* Social Activity Indicator */}
       {enrichment.social_active ? (
-        <Wifi className="w-3 h-3 text-emerald-500" title="Socially active" />
+        <span title="Socially active">
+          <Wifi className="w-3 h-3 text-emerald-500" />
+        </span>
       ) : (
-        <WifiOff className="w-3 h-3 text-pro-stone" title="Socially inactive" />
+        <span title="Socially inactive">
+          <WifiOff className="w-3 h-3 text-pro-stone" />
+        </span>
       )}
     </div>
   );

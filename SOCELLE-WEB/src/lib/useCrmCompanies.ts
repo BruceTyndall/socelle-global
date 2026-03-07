@@ -45,7 +45,7 @@ export interface NewCompany {
   employee_count?: number;
 }
 
-export function useCrmCompanies(businessId?: string) {
+export function useCrmCompanies(businessId?: string | null) {
   const [companies, setCompanies] = useState<CrmCompany[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

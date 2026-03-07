@@ -68,10 +68,11 @@ export function useIngredientSearch(filters: SearchFilters): UseIngredientSearch
         if (filters.vegan) params.set('vegan', 'true');
         if (filters.max_ewg != null) params.set('max_ewg', String(filters.max_ewg));
 
-        const { data, error } = await supabase.functions.invoke('ingredient-search', {
+        const queryString = params.toString();
+        const functionName = queryString ? `ingredient-search?${queryString}` : 'ingredient-search';
+        const { data, error } = await supabase.functions.invoke(functionName, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
-          body: null,
         });
 
         // Edge function invoke doesn't support GET params well — fall back to direct query

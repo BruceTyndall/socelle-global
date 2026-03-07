@@ -2,7 +2,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabase';
 import { useAuth } from '../auth';
-import type { ShopOrder, ShopOrderItem } from './types';
+import type { Tables } from '../database.types';
+import {
+  normalizeShopOrder,
+  normalizeShopOrderItem,
+  type ShopOrder,
+  type ShopOrderItem,
+} from './types';
+
+type OrderRow = Tables<'orders'>;
+type OrderItemRow = Tables<'order_items'>;
 
 export function useOrders() {
   const { user } = useAuth();
@@ -17,10 +26,11 @@ export function useOrders() {
       const { data, error: err } = await supabase
         .from('orders')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('created_by', user.id)
         .order('created_at', { ascending: false });
       if (err) throw err;
-      setOrders((data as ShopOrder[]) ?? []);
+      const rows = (data as OrderRow[] | null) ?? [];
+      setOrders(rows.map(normalizeShopOrder));
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to load orders');
     } finally {
@@ -51,17 +61,20 @@ export function useOrderDetail(orderId: string | undefined) {
           .from('orders')
           .select('*')
           .eq('id', orderId)
-          .eq('user_id', user.id)
+          .eq('created_by', user.id)
           .single();
         if (oErr) throw oErr;
         if (cancelled) return;
-        setOrder(o as ShopOrder);
+        setOrder(normalizeShopOrder(o as OrderRow));
 
         const { data: oi } = await supabase
           .from('order_items')
           .select('*')
           .eq('order_id', orderId);
-        if (!cancelled) setItems((oi as ShopOrderItem[]) ?? []);
+        if (!cancelled) {
+          const rows = (oi as OrderItemRow[] | null) ?? [];
+          setItems(rows.map(normalizeShopOrderItem));
+        }
       } catch (e: unknown) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load order');
       } finally {

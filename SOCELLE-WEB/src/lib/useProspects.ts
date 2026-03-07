@@ -63,7 +63,7 @@ export interface NewTouchpoint {
   created_by?: string;
 }
 
-export function useProspects(businessId?: string) {
+export function useProspects(businessId?: string | null) {
   const [prospects, setProspects] = useState<B2bProspect[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

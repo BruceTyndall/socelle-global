@@ -18,7 +18,13 @@ export function useShippingMethods() {
           .eq('is_active', true)
           .order('sort_order');
         if (err) throw err;
-        if (!cancelled) setMethods((data as ShippingMethod[]) ?? []);
+        if (!cancelled) {
+          const mapped = ((data as ShippingMethod[] | null) ?? []).map((method) => ({
+            ...method,
+            price_cents: method.price_cents ?? method.base_rate_cents,
+          }));
+          setMethods(mapped);
+        }
       } catch (e: unknown) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load shipping methods');
       } finally {

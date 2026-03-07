@@ -4,12 +4,11 @@ import { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   ShoppingBag, Package, Tag, Layers, Star, BarChart3,
-  Plus, Search, RefreshCw, Eye, Edit2, Trash2, Check, X as XIcon,
+  Search, RefreshCw, Eye, Edit2, Check, X as XIcon,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useProducts } from '../../lib/shop/useProducts';
 import { useCategories } from '../../lib/shop/useCategories';
-import { useOrders } from '../../lib/shop/useOrders';
 import { formatCents } from '../../lib/shop/types';
 import type { Product, ProductFilters } from '../../lib/shop/types';
 
@@ -429,8 +428,8 @@ export default function AdminShopHub() {
                         </div>
                       )}
                     </div>
-                    {r.title && <p className="text-sm font-sans font-semibold text-pro-charcoal">{String(r.title)}</p>}
-                    {r.body && <p className="text-sm font-sans text-pro-warm-gray mt-1">{String(r.body)}</p>}
+                    {Boolean(r.title) && <p className="text-sm font-sans font-semibold text-pro-charcoal">{String(r.title)}</p>}
+                    {Boolean(r.body) && <p className="text-sm font-sans text-pro-warm-gray mt-1">{String(r.body)}</p>}
                     <p className="text-xs font-sans text-pro-warm-gray/60 mt-2">
                       {r.created_at ? new Date(String(r.created_at)).toLocaleDateString() : ''}
                     </p>

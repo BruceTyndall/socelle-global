@@ -80,7 +80,7 @@ export interface NewInteraction {
   staff_id?: string;
 }
 
-export function useCrmContacts(businessId?: string) {
+export function useCrmContacts(businessId?: string | null) {
   const [contacts, setContacts] = useState<CrmContact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -232,7 +232,7 @@ export function useCrmInteractions(contactId?: string) {
   return { interactions, loading, error, isLive, reload: load, addInteraction };
 }
 
-export function useRecentInteractions(businessId?: string, limit = 10) {
+export function useRecentInteractions(businessId?: string | null, limit = 10) {
   const [interactions, setInteractions] = useState<(CrmInteraction & { contact_first_name?: string; contact_last_name?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLive, setIsLive] = useState(false);

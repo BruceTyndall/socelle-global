@@ -85,5 +85,14 @@ export function useWishlist() {
     return items.some(i => i.product_id === productId);
   }, [items]);
 
-  return { items, loading, error, addItem, removeItem, isInWishlist, refetch: loadItems };
+  const toggleItem = useCallback(async (productId: string, variantId: string | null = null) => {
+    const existing = items.find((i) => i.product_id === productId && i.variant_id === variantId);
+    if (existing) {
+      await removeItem(existing.id);
+      return;
+    }
+    await addItem(productId, variantId);
+  }, [items, addItem, removeItem]);
+
+  return { items, loading, error, addItem, removeItem, toggleItem, isInWishlist, refetch: loadItems };
 }

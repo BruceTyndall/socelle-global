@@ -8,6 +8,7 @@ import {
   ChevronDown,
   ChevronUp,
   ShoppingCart,
+  DollarSign,
   BookOpen,
   Clock,
   X,

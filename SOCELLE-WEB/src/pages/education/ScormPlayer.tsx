@@ -176,15 +176,16 @@ export default function ScormPlayer({ scormPackageId, enrollmentId, onComplete }
 
     // SCORM 1.2 expects window.API
     const win = iframeRef.current?.contentWindow;
+    const globalWindow = window as unknown as Record<string, unknown>;
     if (win) {
       try {
-        (win as Record<string, unknown>).API = bridge;
+        (win as unknown as Record<string, unknown>).API = bridge;
       } catch {
         // Cross-origin, set on parent instead
-        (window as Record<string, unknown>).API = bridge;
+        globalWindow.API = bridge;
       }
     } else {
-      (window as Record<string, unknown>).API = bridge;
+      globalWindow.API = bridge;
     }
   }, [scormData, scormPackageId, enrollmentId]);
 
@@ -202,7 +203,7 @@ export default function ScormPlayer({ scormPackageId, enrollmentId, onComplete }
     return () => {
       window.removeEventListener('message', handleMessage);
       // Clean up
-      delete (window as Record<string, unknown>).API;
+      delete (window as unknown as Record<string, unknown>).API;
     };
   }, [installBridge, onComplete]);
 

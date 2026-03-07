@@ -35,10 +35,11 @@ interface RssItemRow {
   rss_sources: {
     name: string;
     category: string;
-  } | null;
+  }[] | null;
 }
 
 function rowToItem(row: RssItemRow): RssItem {
+  const source = row.rss_sources?.[0] ?? null;
   return {
     id: row.id,
     title: row.title,
@@ -47,8 +48,8 @@ function rowToItem(row: RssItemRow): RssItem {
     published_at: row.published_at,
     attribution_text: row.attribution_text,
     // Prefer first vertical_tag; fall back to rss_sources.category
-    category: row.vertical_tags?.[0] ?? row.rss_sources?.category ?? 'Beauty',
-    source_name: row.rss_sources?.name ?? '',
+    category: row.vertical_tags?.[0] ?? source?.category ?? 'Beauty',
+    source_name: source?.name ?? '',
   };
 }
 
@@ -64,7 +65,7 @@ export function useRssItems(limit = 12): UseRssItemsReturn {
       setLoading(true);
 
       if (!isSupabaseConfigured) {
-        // No Supabase config — empty state, no mock fallback (W12-21)
+        // No Supabase config — empty state with no demo fallback (W12-21)
         setItems([]);
         setIsLive(false);
         setLoading(false);

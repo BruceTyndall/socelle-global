@@ -39,7 +39,7 @@ function clamp(val: number, min = 0, max = 100): number {
 
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
-export function useBenchmarkData(businessId?: string): UseBenchmarkDataReturn {
+export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataReturn {
   const [benchmark, setBenchmark] = useState<OverallBenchmark>(computeOverallBenchmark());
   const [categories, setCategories] = useState<CategoryCoverage[]>(getCategoryCoverage());
   const [reorderItems, setReorderItems] = useState<ReorderHealthItem[]>(getReorderHealth());
@@ -159,7 +159,7 @@ export function useBenchmarkData(businessId?: string): UseBenchmarkDataReturn {
       // Reorder health: % of products reordered within expected cycle
       const reorderedProducts = new Map<string, Date[]>();
       for (const item of items) {
-        const dates = reorderedProducts.get(item.product_id) ?? [];
+        const dates = reorderedProducts.get(item.product_id) ?? ([] as Date[]);
         dates.push(new Date(item.created_at));
         reorderedProducts.set(item.product_id, dates);
       }
@@ -280,7 +280,7 @@ export function useBenchmarkData(businessId?: string): UseBenchmarkDataReturn {
         const existing = productOrders.get(item.product_id) ?? {
           name: item.product_name,
           brandId: '',
-          dates: [],
+          dates: [] as Date[],
         };
         existing.dates.push(new Date(item.created_at));
         productOrders.set(item.product_id, existing);

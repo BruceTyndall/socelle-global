@@ -143,7 +143,7 @@ export interface NewStaff {
 
 // ── Services ────────────────────────────────────────────────────────────
 
-export function useBookingServices(businessId?: string) {
+export function useBookingServices(businessId?: string | null) {
   const [services, setServices] = useState<BookingService[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -254,7 +254,7 @@ export function useServiceAddons(serviceId?: string) {
 
 // ── Staff ───────────────────────────────────────────────────────────────
 
-export function useBookingStaff(businessId?: string) {
+export function useBookingStaff(businessId?: string | null) {
   const [staff, setStaff] = useState<BookingStaff[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -424,7 +424,7 @@ export function useStaffServices(staffId?: string) {
 
 // ── Appointments ────────────────────────────────────────────────────────
 
-export function useAppointments(businessId?: string, dateRange?: { start: string; end: string }) {
+export function useAppointments(businessId?: string | null, dateRange?: { start: string; end: string }) {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

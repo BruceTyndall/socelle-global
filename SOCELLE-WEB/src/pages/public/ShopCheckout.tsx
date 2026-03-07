@@ -58,7 +58,10 @@ export default function ShopCheckout() {
     [shippingMethods, selectedShipping],
   );
 
-  const shippingCost = selectedMethod?.price_cents ?? 0;
+  const getShippingPrice = (method?: { price_cents?: number; base_rate_cents?: number }) =>
+    method?.price_cents ?? method?.base_rate_cents ?? 0;
+
+  const shippingCost = getShippingPrice(selectedMethod);
   const estimatedTotal = summary.subtotal_cents + shippingCost;
 
   const shippingValid = shipping.first_name.trim() && shipping.last_name.trim() &&
@@ -245,7 +248,7 @@ export default function ShopCheckout() {
                           </div>
                         </div>
                         <span className="text-sm font-sans font-semibold text-graphite">
-                          {m.price_cents === 0 ? 'Free' : formatCents(m.price_cents)}
+                          {getShippingPrice(m) === 0 ? 'Free' : formatCents(getShippingPrice(m))}
                         </span>
                       </label>
                     ))}
@@ -319,7 +322,7 @@ export default function ShopCheckout() {
                 </p>
                 {selectedMethod && (
                   <p className="text-sm font-sans text-graphite/60 mt-1">
-                    {selectedMethod.name} — {selectedMethod.price_cents === 0 ? 'Free' : formatCents(selectedMethod.price_cents)}
+                    {selectedMethod.name} — {getShippingPrice(selectedMethod) === 0 ? 'Free' : formatCents(getShippingPrice(selectedMethod))}
                   </p>
                 )}
               </div>
