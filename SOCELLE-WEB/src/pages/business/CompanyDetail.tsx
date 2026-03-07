@@ -145,8 +145,23 @@ export default function CompanyDetail() {
 
       {tab === 'Deals' && (
         <div className="bg-white rounded-xl border border-pro-stone/30 p-8 text-center">
-          <p className="text-sm text-pro-warm-gray">Deals integration coming soon</p>
-          <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full mt-2 inline-block">PREVIEW</span>
+          <p className="text-sm text-pro-warm-gray mb-4">
+            Deals for this company are managed in the CRM pipeline.
+          </p>
+          <div className="flex items-center justify-center gap-2">
+            <Link
+              to="/portal/crm/deals"
+              className="inline-flex items-center h-9 px-4 rounded-lg border border-pro-stone/40 text-pro-charcoal text-xs font-semibold hover:bg-pro-cream transition-colors"
+            >
+              Open Deals
+            </Link>
+            <Link
+              to="/portal/crm/pipeline"
+              className="inline-flex items-center h-9 px-4 rounded-lg bg-pro-navy text-white text-xs font-semibold hover:bg-pro-navy-dark transition-colors"
+            >
+              Open Pipeline
+            </Link>
+          </div>
         </div>
       )}
     </div>

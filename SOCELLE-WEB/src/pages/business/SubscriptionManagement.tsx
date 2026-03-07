@@ -223,7 +223,7 @@ export default function SubscriptionManagement() {
           <span>No payment method on file</span>
         </div>
         <p className="text-[10px] text-graphite/30 mt-3">
-          Payment processing via Stripe — coming soon
+          Stripe billing is environment-controlled. Configure live billing keys to enable card updates.
         </p>
       </div>
 
