@@ -126,6 +126,7 @@ const AdminAffiliatesHub = lazy(() => import('./pages/admin/AffiliatesHub'));
 const AdminEventsHub = lazy(() => import('./pages/admin/EventsHub'));
 const AdminJobsHub = lazy(() => import('./pages/admin/JobsHub'));
 const AdminRecruitmentHub = lazy(() => import('./pages/admin/RecruitmentHub'));
+const AdminFeedsHub = lazy(() => import('./pages/admin/AdminFeedsHub'));
 
 // ── Brand Hub (brand-centric admin)
 const BrandHub = lazy(() => import('./pages/admin/BrandHub'));
@@ -424,6 +425,7 @@ function App() {
                     <Route path="events" element={<AdminEventsHub />} />
                     <Route path="jobs" element={<AdminJobsHub />} />
                     <Route path="recruitment" element={<AdminRecruitmentHub />} />
+                    <Route path="feeds" element={<AdminFeedsHub />} />
 
                     {/* ── Brand list ── */}
                     <Route path="brands" element={<AdminBrandList />} />

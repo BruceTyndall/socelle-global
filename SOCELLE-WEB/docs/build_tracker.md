@@ -1,7 +1,8 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-06 (Session 37 — 4-lane parallel: W12-04/05/06/07/08/11/12 + W10-12 executed, W12-19/21/22 Doc Gate PASS)
-Current Phase: WAVE 12 — Gap Closure + Design Consistency + Layout Upgrade + UI Kit Normalization
-Next Milestone: Wave 11 external APIs (W11-01 through W11-12)
+Last Updated: 2026-03-06 (Session 38 — Wave 13 complete: data_feeds pipeline + admin feed manager + intelligence wiring)
+Current Phase: WAVE 13 COMPLETE — Admin Feed Manager + Intelligence Wiring
+Next Milestone: Wave 11 external APIs (W11-01 through W11-12) + remaining Wave 12 cleanup (W12-13/14/15/18/23/24/25)
+Completed 2026-03-06 (Session 38 — Wave 13): W13-01 (data_feeds table + RLS + indexes), W13-02 (feed-orchestrator edge function — RSS+API→market_signals), W13-03 (AdminFeedsHub /admin/feeds — full CRUD), W13-04 (102 seed rows across 14 categories), W13-05 (useDataFeedStats + dataSourcesCount in usePlatformStats — full pipeline wired)
 Completed 2026-03-06 (Session 37 — 4 parallel lanes): W12-04 (brandIntelligence DB wiring), W12-05 (Portal IntelligenceHub live), W12-06 (BenchmarkDashboard live aggregates), W12-07 (Brand Intelligence+Report live), W12-08 (Brand Analytics live), W12-11 (8 admin hub functional shells — 5 LIVE, 3 DEMO), W12-12 (MarketingCalendar isLive), W10-12 (ProtocolDetail adoptionCount DEMO badge)
 Doc Gate PASS 2026-03-06 (Session 37 Lane A): W12-19 ✅ (all 13 remediation items verified), W12-21 ✅ (useRssItems→rss_items, isLive gates rendering), W12-22 ✅ (useIngredients→ingredients table, isLive gates count+timestamps)
 Doc Gate PASS 2026-03-06 (Session 34 Lane D): W10-11 ✅ (trigger artifact + send-email handler verified), W12-16 ✅ (all 5 functions ACTIVE on rumdmulxzmjtsplsjngi — supabase functions list EXIT:0), W12-20 ✅ (migration applied + rss-to-signals ACTIVE on rumdmulxzmjtsplsjngi — provenance + dedup index + signal_type heuristic verified)
@@ -256,12 +257,21 @@ Priority: FAIL 4 compliance first → intelligence thesis → revenue → SEO
 🟠 Public Page Layout Upgrade (owner-approved 2026-03-06, Session 35)
 | # | Task | Scope | Owner Agent | Data Truth | Est |
 |---|------|-------|-------------|------------|-----|
-| W12-26 | Public Page Layout Upgrade (anti-card, media-first) — replace grid-of-cards layouts with 3 reusable section primitives: HeroMediaRail, SplitFeature, EvidenceStrip. Each main public page gets 1 media surface above fold, 1 mid-page, 1 non-card evidence strip. NO data rewiring — keep existing hooks/queries, change presentation only. Use existing assets in `public/`. Videos must be muted, loop-safe, lazy-loaded, poster fallback. | New components: `src/components/public/HeroMediaRail.tsx`, `SplitFeature.tsx`, `EvidenceStrip.tsx`. Page edits: `src/pages/public/Home.tsx`, `Intelligence.tsx`, `BrandStorefront.tsx`, `ForBrands.tsx`, `Professionals.tsx` | Web Agent (Lane B) | N/A — layout only, no data changes | 16h |
+| ✅ W12-26 | Public Page Layout Upgrade (anti-card, media-first) — HeroMediaRail, SplitFeature, EvidenceStrip primitives applied to all 5 main public pages | New: `HeroMediaRail.tsx`, `SplitFeature.tsx`, `EvidenceStrip.tsx`. Pages: Home, Intelligence, BrandStorefront, ForBrands, Professionals | Web Agent | Committed `3655319`. tsc 0 errors | 16h |
 
 🟠 Public UI Kit Normalization (owner-approved 2026-03-06, Session 35)
 | # | Task | Scope | Owner Agent | Data Truth | Est |
 |---|------|-------|-------------|------------|-----|
-| W12-27 | Public UI Kit Normalization (Buttons + Typography) — Canonicalize all public-page buttons into a single Button component or strict class recipe with variants (primary / secondary / ghost / accent / glass), sizes (sm / md / lg), and normalized height/padding/radius/border/hover/focus/disabled states. Glass variant aligns with Liquid Glass Figma kit behavior using Pearl Mineral tokens only. Canonicalize typography: enforce font-sans (General Sans) for all body/labels/buttons, font-mono (JetBrains Mono) for data values/timestamps/deltas only. Remove all ad-hoc inline button styles and one-off Tailwind classes causing drift. No font-serif, no font-display, no Inter as primary. No new hex colors in inline styles. Figma reference (guidance only, not authority): Liquid Glass Buttons kit. | New: `src/components/public/Button.tsx` (or class recipe in `index.css`). Edits: `src/pages/public/Home.tsx`, `Intelligence.tsx`, `ForBrands.tsx`, `Professionals.tsx`, `BrandStorefront.tsx`, `HowItWorks.tsx`, `Pricing.tsx`, `FAQ.tsx`, `RequestAccess.tsx`, plus `src/components/public/*`. Forbidden: portal routes, auth.tsx, useCart.ts, commerce flow. | Web Agent (Lane B) — preceded by Lane X audit | N/A — UI normalization only, no data changes | 12h |
+| ✅ W12-27 | Public UI Kit Normalization (Buttons + Typography) — 9 btn-mineral-* class recipes in index.css, font-sans enforced, font-mono for data only | Class recipe in `index.css`. Pages: Home, Intelligence, ForBrands, Professionals, BrandStorefront, HowItWorks, Pricing, FAQ, RequestAccess + public components | Web Agent | Committed `3655319`. tsc 0 errors | 12h |
+
+✅ WAVE 13 — Admin Feed Manager + Intelligence Wiring (Session 38 — COMPLETE)
+| # | Task | Scope | Owner Agent | Data Truth | Est |
+|---|------|-------|-------------|------------|-----|
+| ✅ W13-01 | data_feeds migration — admin-managed feed registry table | `supabase/migrations/20260306600001_create_data_feeds_table.sql` | Backend Agent | LIVE — table + RLS (admin only) + 3 indexes + updated_at trigger | 2h |
+| ✅ W13-02 | feed-orchestrator edge function — reads data_feeds, dispatches to ingestors | `supabase/functions/feed-orchestrator/index.ts` | Backend Agent | LIVE — reads enabled feeds, RSS→market_signals, API→market_signals, webhook/scraper pending | 6h |
+| ✅ W13-03 | /admin/feeds page — functional feed manager (toggle on/off, add new, status) | `src/pages/admin/AdminFeedsHub.tsx` + `App.tsx` route `/admin/feeds` | Admin Control Center Agent | LIVE — full CRUD, toggle is_enabled, category filters, status dots, orchestrator trigger button | 4h |
+| ✅ W13-04 | Seed data_feeds with 100+ free RSS/API sources | `supabase/migrations/20260306600002_seed_data_feeds.sql` | Backend Agent | LIVE — 102 rows across 14 categories, all is_enabled=false (owner toggles ON from admin) | 3h |
+| ✅ W13-05 | Wire intelligence hooks to aggregate signals from data_feeds-sourced pipelines | `src/lib/intelligence/useDataFeedStats.ts` + `src/lib/usePlatformStats.ts` | Web Agent | LIVE — useDataFeedStats hook + dataSourcesCount in usePlatformStats. Pipeline: data_feeds→feed-orchestrator→market_signals→useIntelligence()→Intelligence Hub | 4h |
 
 🔵 Quality + Optimization
 | # | Task | Scope | Owner Agent | Data Truth | Est |

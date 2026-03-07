@@ -13,6 +13,7 @@ export interface PlatformStats {
   protocolsCount: number;
   jobsCount: number;
   eventsCount: number;
+  dataSourcesCount: number;
 }
 
 export interface UsePlatformStatsReturn {
@@ -29,6 +30,7 @@ const MOCK_STATS: PlatformStats = {
   protocolsCount: 48,
   jobsCount: 12,
   eventsCount: 8,
+  dataSourcesCount: 102,
 };
 
 export function usePlatformStats(): UsePlatformStatsReturn {
@@ -52,19 +54,20 @@ export function usePlatformStats(): UsePlatformStatsReturn {
       try {
         const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD for events.date
 
-        const [brands, signals, protocols, jobs, events, operators] = await Promise.all([
+        const [brands, signals, protocols, jobs, events, operators, dataSources] = await Promise.all([
           supabase.from('brands').select('*', { count: 'exact', head: true }).eq('status', 'active'),
           supabase.from('market_signals').select('*', { count: 'exact', head: true }).eq('active', true),
           supabase.from('canonical_protocols').select('*', { count: 'exact', head: true }),
           supabase.from('job_postings').select('*', { count: 'exact', head: true }).eq('status', 'active'),
           supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'active').gte('date', today),
           supabase.from('access_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+          supabase.from('data_feeds').select('*', { count: 'exact', head: true }),
         ]);
 
         if (cancelled) return;
 
         // Use live data if any table returned a count > 0
-        const hasData = [brands, signals, protocols, jobs, events, operators]
+        const hasData = [brands, signals, protocols, jobs, events, operators, dataSources]
           .some(r => !r.error && (r.count ?? 0) > 0);
 
         if (hasData) {
@@ -75,6 +78,7 @@ export function usePlatformStats(): UsePlatformStatsReturn {
             jobsCount: jobs.count ?? MOCK_STATS.jobsCount,
             eventsCount: events.count ?? MOCK_STATS.eventsCount,
             operatorsCount: operators.count ?? MOCK_STATS.operatorsCount,
+            dataSourcesCount: dataSources.count ?? MOCK_STATS.dataSourcesCount,
           });
           setIsLive(true);
         } else {
