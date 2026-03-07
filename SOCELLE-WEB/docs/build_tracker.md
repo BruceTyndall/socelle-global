@@ -1,7 +1,7 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-06 (Session 38 — Wave 13 complete: data_feeds pipeline + admin feed manager + intelligence wiring)
-Current Phase: WAVE 13 COMPLETE — Admin Feed Manager + Intelligence Wiring
-Next Milestone: Wave 11 external APIs (W11-01 through W11-12) + remaining Wave 12 cleanup (W12-13/14/15/18/23/24/25)
+Last Updated: 2026-03-06 (Session 41 — WAVE OVERHAUL: Coordinated Site Overhaul)
+Current Phase: WAVE OVERHAUL — 9-phase coordinated rebuild (Command Center self-execution)
+Next Milestone: Phase 0 ✅ → Phase 1 (Design Parity) → Phase 2 (Backend Schema) → Phase 3 (Site Rebuild) → Phase 4 (Admin CMS) → Phase 5 (SEO) → Phase 6 (Edge Functions) → Phase 7 (API Sitemap) → Phase 8 (Mobile) → Phase 9 (Doc Gate QA)
 Completed 2026-03-06 (Session 38 — Wave 13): W13-01 (data_feeds table + RLS + indexes), W13-02 (feed-orchestrator edge function — RSS+API→market_signals), W13-03 (AdminFeedsHub /admin/feeds — full CRUD), W13-04 (102 seed rows across 14 categories), W13-05 (useDataFeedStats + dataSourcesCount in usePlatformStats — full pipeline wired), W13-06 (100 additional sources from Open Source Beauty & Wellness APIs research — grand total 202 feeds)
 Completed 2026-03-06 (Session 37 — 4 parallel lanes): W12-04 (brandIntelligence DB wiring), W12-05 (Portal IntelligenceHub live), W12-06 (BenchmarkDashboard live aggregates), W12-07 (Brand Intelligence+Report live), W12-08 (Brand Analytics live), W12-11 (8 admin hub functional shells — 5 LIVE, 3 DEMO), W12-12 (MarketingCalendar isLive), W10-12 (ProtocolDetail adoptionCount DEMO badge)
 Doc Gate PASS 2026-03-06 (Session 37 Lane A): W12-19 ✅ (all 13 remediation items verified), W12-21 ✅ (useRssItems→rss_items, isLive gates rendering), W12-22 ✅ (useIngredients→ingredients table, isLive gates count+timestamps)
@@ -273,6 +273,27 @@ Priority: FAIL 4 compliance first → intelligence thesis → revenue → SEO
 | ✅ W13-04 | Seed data_feeds with 100+ free RSS/API sources | `supabase/migrations/20260306600002_seed_data_feeds.sql` | Backend Agent | LIVE — 102 rows across 14 categories, all is_enabled=false (owner toggles ON from admin) | 3h |
 | ✅ W13-05 | Wire intelligence hooks to aggregate signals from data_feeds-sourced pipelines | `src/lib/intelligence/useDataFeedStats.ts` + `src/lib/usePlatformStats.ts` | Web Agent | LIVE — useDataFeedStats hook + dataSourcesCount in usePlatformStats. Pipeline: data_feeds→feed-orchestrator→market_signals→useIntelligence()→Intelligence Hub | 4h |
 | ✅ W13-06 | Seed data_feeds Wave 2 — 100 additional sources from Open Source Beauty & Wellness APIs research | `supabase/migrations/20260306600003_seed_data_feeds_wave2.sql` | Backend Agent | LIVE — 100 new rows (ingredients, market_data, trade_pub, press_release, academic, regulatory, brand_news, social, association, supplier, government, events, regional, jobs). Grand total: 202 feeds. All is_enabled=false | 3h |
+
+WAVE 14 — Figma Page Rebuilds + Blog + Search + Tier Gating (Session 39)
+| # | Task | Scope | Owner Agent | Data Truth | Est |
+|---|------|-------|-------------|------------|-----|
+| W14-01 | ✅ Figma Make page rebuilds — update HeroMediaRail (image+CTA API), rebuild Home + Intelligence + Professionals + Brands + Events + Jobs with 13 new module components | `src/components/public/HeroMediaRail.tsx`, `src/components/modules/*` (13 files), `src/pages/public/Home.tsx`, `Intelligence.tsx`, `Professionals.tsx`, `ForBrands.tsx`, `Events.tsx`, `Jobs.tsx` | Web Agent | DEMO — modules use mock data with DEMO badges; wired to useIntelligence/usePlatformStats where live data exists | 12h |
+| W14-02 | ✅ Blog/editorial CRUD admin — stories migration + admin UI (create/edit story: title/slug/excerpt/body/hero, attach to signals/tags) | `supabase/migrations/20260306700001_create_stories_table.sql`, `src/pages/admin/AdminBlogHub.tsx`, `App.tsx` route `/admin/blog` | Admin Control Center + Backend Agent | LIVE — stories table + RLS (admin write, public read) | 8h |
+| W14-03 | Intelligence search UI — unified query box, server-side search, results tabs (signals + stories) | `src/pages/public/Intelligence.tsx` (search section), `src/components/intelligence/SearchBar.tsx` (new) | Web Agent | LIVE — queries market_signals + stories tables | 6h |
+| W14-04 | Tier gating — free vs pro filter depth (public: curated top signals; free portal: limited query/time; pro: full search + history) | `src/lib/intelligence/useIntelligence.ts` (tier param), entitlement checks | Web Agent | LIVE — tier logic gates query depth per SOCELLE_ENTITLEMENTS_PACKAGING.md | 4h |
+| W14-05 | Blog SEO — sitemap entries for blog routes + Article/NewsArticle schema markup + canonicals | `supabase/functions/sitemap-generator/index.ts` (update), `src/pages/public/` (schema tags) | SEO Agent | LIVE — sitemap reads stories table, schema markup on article pages | 3h |
+
+WAVE 15 — Feeds + Media Merchandising Sprint (Session 40)
+| # | Task | Scope | Owner Agent | Data Truth | Est |
+|---|------|-------|-------------|------------|-----|
+| ✅ W15-01 | Feed Registry Audit — inventory 202 feeds, Phase 1 activation set (25), signal_type map, blocked feeds, infrastructure gaps | `SOCELLE-WEB/docs/FEED_REGISTRY_AUDIT.md` | Backend Agent | Audit only — no code changes | 2h |
+| ✅ W15-02 | Feed Orchestrator upgrade — feed_run_log migration, add source_feed_id + is_duplicate to market_signals, category→signal_type mapping, run logging | `supabase/migrations/20260306800001_create_feed_run_log.sql`, `20260306800002_add_feed_columns_to_market_signals.sql`, `supabase/functions/feed-orchestrator/index.ts` | Backend Agent | LIVE — feed_run_log + enhanced market_signals + category-aware signal_type | 6h |
+| ✅ W15-03 | /admin/feeds Control Center — Test Feed button, bulk enable/disable, search/filter/sort, signal_type+tier columns, expandable run history from feed_run_log, corrected 14-category enum | `src/pages/admin/AdminFeedsHub.tsx` (rewrite) | Admin Control Center | LIVE — reads/writes data_feeds + feed_run_log | 6h |
+| ✅ W15-04 | useIntelligence() V3 — provenance columns (source_url, source_name, source_feed_id, confidence_score, tier_visibility, image_url, is_duplicate) + tier gating (TIER_ACCESS map) + useSignalModules hook (KPIStrip, SignalTable, NewsTicker, SpotlightPanel data shapes) + expanded SignalType union (11 feed-derived types) + TierVisibility type | `src/lib/intelligence/useIntelligence.ts` (update), `src/lib/intelligence/types.ts` (update), `src/lib/intelligence/useSignalModules.ts` (new) | Web Agent | LIVE — modules wired to market_signals with tier_visibility gating | 8h |
+| ✅ W15-05 | Editorial architecture — source_type/reading_time/featured migration on stories, useStories+useStoryDetail hooks, StoriesIndex+StoryDetail public pages (/stories, /stories/:slug), editorial injection into Intelligence page via EditorialScroll (live from stories table, hardcoded fallback) | `supabase/migrations/20260306800003_add_source_type_to_stories.sql` (new), `src/lib/editorial/useStories.ts` (new), `src/pages/public/StoriesIndex.tsx` (new), `src/pages/public/StoryDetail.tsx` (new), `src/pages/public/Intelligence.tsx` (update), `src/App.tsx` (update) | Backend + Web Agent | LIVE — stories table with RLS (public reads published only) | 6h |
+| ✅ W15-06 | SEO + Schema + Sitemaps — sitemap-generator ?type=stories handler (LIVE from stories table), /stories in STATIC_ROUTES, sitemap.xml index updated, Article JSON-LD on StoryDetail, CollectionPage JSON-LD on StoriesIndex | `supabase/functions/sitemap-generator/index.ts` (update), `public/sitemap.xml` (update), `src/pages/public/StoryDetail.tsx` (update), `src/pages/public/StoriesIndex.tsx` (update) | SEO Agent | LIVE — sitemap reads stories table | 3h |
+| ✅ W15-07 | Media Placement Map — full audit of all image/video surfaces across public pages + components. 6 owner videos (3 used, 3 available), 21 unique Unsplash photos (~60 refs across 6 pages), 7 DB-driven image columns (all LIVE), 0 Figma placeholders, 1 issue (SocialProof avatars missing from public/). Output: `MEDIA_PLACEMENT_MAP.md` with placement inventory, source verification, gating rules, recommended storage structure | `docs/MEDIA_PLACEMENT_MAP.md` (new) | Web Agent | Audit only — no code changes | 2h |
+| ✅ W15-08 | Analytics Instrumentation — 8 funnel events (feed_activated, signal_created, signal_viewed, signal_searched, signal_clicked, signal_saved, story_clicked, story_viewed). Provider-agnostic tracking layer via `funnelEvents.ts` (console in dev, CustomEvent dispatch for GA4/Segment/PostHog). Wired into Intelligence (signal_viewed on load, signal_clicked on table row), StoriesIndex (story_clicked on card/featured), StoryDetail (story_viewed on load). SignalTable gets onClickRow callback prop. No PII — IDs, categories, counts only. | `src/lib/analytics/funnelEvents.ts` (new), `src/pages/public/Intelligence.tsx` (update), `src/pages/public/StoriesIndex.tsx` (update), `src/pages/public/StoryDetail.tsx` (update), `src/components/modules/SignalTable.tsx` (update) | Web Agent | LIVE — event firing verified (tsc 0, build 3.69s) | 3h |
 
 🔵 Quality + Optimization
 | # | Task | Scope | Owner Agent | Data Truth | Est |
@@ -1139,6 +1160,86 @@ Source: `docs/AUDIT_W12_COMPLETE_REAUDIT.md` + `docs/command/SOCELLE_FIGMA_DESIG
 | W12-37 | Inline Button Normalization | CSS cleanup | 9 public pages (About, FAQ, HowItWorks, ForBrands, Professionals, Intelligence, Protocols, BrandStorefront, Brands, Jobs) | P2 MED | ✅ Done — 14 inline buttons → btn-mineral-* classes, 0 remaining |
 | W12-38 | index.css Dead Code Cleanup | CSS cleanup | index.css | P2 MED | ✅ Done — removed dead warm-cocoa refs + unused utility classes |
 | W12-39 | Video Poster Frames | Asset pipeline | public/videos/posters/, all pages with video | P2 MED | ✅ Done — 6 poster JPEGs generated via ffmpeg, all 15+ video elements have poster attr |
+
+---
+
+## WAVE OVERHAUL — COORDINATED SITE OVERHAUL (Session 41 — March 2026)
+
+Command Center self-execution order. All WO IDs created by Command Center Agent.
+Authority: /.claude/CLAUDE.md + /docs/command/* + this file.
+GitHub Repo: https://github.com/BruceTyndall/IntegrategithubrepositoryNewLayou.git
+Design System Reference: /design-system (FigmaHandoff.tsx) — Pearl Mineral V2 tokens only.
+
+| WO ID | Title | Scope | Owner | Status | Blocking |
+|---|---|---|---|---|---|
+| WO-OVERHAUL-01 | Design Parity Enforcement | Full token audit across SOCELLE-WEB and SOCELLE-MOBILE-main. Flag banned tokens by file+line. Enforce Pearl Mineral V2 from /design-system. Proof: token summary + flutter analyze PASS + npx tsc --noEmit PASS. | Command Center → Design Parity Agent | 🔄 OPEN | Web Agent, Mobile Agent |
+| WO-OVERHAUL-02 | Backend Schema Foundation | Create cms_pages, blog_posts, media_library, live_data_feeds, sitemap_entries, api_registry, api_route_map tables. RLS: admin r/w on api_registry (api_key_encrypted never exposed to client), public read on api_route_map non-sensitive fields. Seed api_registry + api_route_map with all installed APIs. Regenerate database.types.ts. ADD ONLY — never edit existing migrations. | Command Center → Backend Agent | 🔄 OPEN | Admin Control Center Agent, SEO Agent |
+| WO-OVERHAUL-03 | Site Rebuild (Pearl Mineral V2) | Full site rebuild using Pearl Mineral V2 tokens from /design-system. No hardcoded hex — CSS vars and Tailwind tokens only. Preserve ALL existing photos/videos. Wire public pages to live Supabase data. LIVE/DEMO label every surface. Register all routes in App.tsx. | Command Center → Web Agent | 🔄 OPEN | SEO Agent |
+| WO-OVERHAUL-04 | Admin CMS + Blog Portal + API Control Center | WordPress-inspired CMS: Page Template Editor, Blog Manager (CRUD + rich block editor), SEO Manager (title/meta/OG/schema/sitemap/robots), Media Library (upload to Supabase storage), Live Data Manager (per-feed refresh + cron), API Control Center (/admin/api-control — registry dashboard, detail/edit, route map, API sitemap at /admin/api-sitemap), Settings panel. All content DB-driven, zero hardcoded copy. | Command Center → Admin Control Center Agent | 🔄 OPEN | Backend Agent (Phase 2 must complete first) |
+| WO-OVERHAUL-05 | SEO Infrastructure | Every public route: canonical URLs, Helmet/meta, schema.org JSON-LD (WebPage, BlogPosting, Organization, JobPosting, Event). /sitemap.xml from sitemap_entries table. robots.txt editable from admin. hreflang + breadcrumb schema on detail pages. All schema uses real DB fields. | Command Center → SEO Agent | 🔄 OPEN | Web Agent (Phase 3), Backend Agent (Phase 2) |
+| WO-OVERHAUL-06 | Live Data Edge Functions + Cron | Build refresh-live-data edge function (fetches sources → writes live_data_feeds). Build test-api-connection edge function (pings API by registry_id → writes last_tested_at + status). pg_cron daily refresh 00:00 UTC. Manual trigger POST /refresh-live-data?feed_key=<key> (admin RLS-gated). | Command Center → Backend Agent | 🔄 OPEN | Admin Control Center Agent (Phase 4) |
+| WO-OVERHAUL-07 | API Registry Sitemap + Route Wiring | Verify api_route_map seed covers every route in SITE_MAP.md. Write validation query for gap analysis. Confirm /admin/api-sitemap renders live data with filters + CSV export. Fill any gap routes. | Command Center → Backend Agent + Web Agent | 🔄 OPEN | Backend Agent (Phase 6), Web Agent (Phase 3) |
+| WO-OVERHAUL-08 | Mobile Design Parity | Audit socelle_theme.dart against web tailwind tokens. Replace drift/banned tokens. flutter analyze: zero errors. | Command Center → Mobile Agent | 🔄 OPEN | Design Parity Agent (Phase 1) |
+| WO-OVERHAUL-09 | Doc Gate QA Final Pass | Full Doc Gate audit: FAIL 1–7 across all modified files. Verify LIVE/DEMO labeling. Verify /sitemap.xml covers SITE_MAP.md. Verify /admin/api-sitemap covers api_route_map. Verify api_key_encrypted never exposed. Verify no PII in analytics. Verify no commerce/auth mods. Verify no outreach logic. Verify RLS on all new tables. | Command Center → Doc Gate QA Agent | 🔄 OPEN | All prior phases |
+
+### PRE-FLIGHT REPORT (Phase 0 — Command Center)
+
+**Date:** 2026-03-06 Session 41
+**Executed by:** Command Center Agent (self-execution mode)
+
+#### Pre-Flight Checks
+
+| Check | Result | Detail |
+|---|---|---|
+| FAIL 1: External doc reference as authority | ✅ PASS | No external doc references found in src/ |
+| FAIL 2: New WO/plan doc outside build_tracker | ✅ PASS | WO-OVERHAUL-01–09 created in this file (above) |
+| FAIL 3: Contradiction with command docs | ⚠️ NOTED | SiteFooter "Marketplace" label contradicts FAIL 6 — to be fixed in Phase 3 |
+| FAIL 4: Fake-live claims | ✅ PASS | FreshnessLabel.tsx derives from real updated_at (LIVE) |
+| FAIL 5: Omitted routes vs SITE_MAP.md | ⏳ DEFERRED | Full route coverage verified in Phase 9 |
+| FAIL 6: Ecommerce elevated above Intelligence | ❌ FAIL | SiteFooter.tsx:7 — `{ to: '/brands', label: 'Marketplace' }` — MUST FIX in Phase 3 |
+| FAIL 7: Outreach/cold email content | ✅ PASS | No cold email/outreach copy found |
+| /design-system page accessible | ✅ PASS | Route: /design-system → FigmaHandoff.tsx (SOCELLE-REBUILD repo) — full token system indexed |
+| Supabase migrations ADD-ONLY clean | ✅ PASS | `git diff SOCELLE-WEB/supabase/migrations/` returns empty — no historical edits |
+| Protected files intact | ✅ PASS | auth.tsx, useCart.ts, ProtectedRoute.tsx, create-checkout, stripe-webhook — untouched |
+
+#### APIs Identified for Registry Seed (Phase 2)
+
+| API | Provider | Category | Edge Functions / Files |
+|---|---|---|---|
+| Supabase | Supabase | Platform | Auto-injected (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) — all functions |
+| Stripe | Stripe | Payments | stripe-webhook, create-checkout |
+| Anthropic Claude | Anthropic | AI | Server-side secret (ANTHROPIC_API_KEY) |
+| Google Gemini | Google | AI | Server-side secret (GOOGLE_GEMINI_API_KEY) |
+| Feed Orchestrator (RSS/API) | Internal | Data | feed-orchestrator (202 feeds in data_feeds) |
+| Sitemap Generator | Internal | SEO | sitemap-generator |
+| Magic Link | Internal | Auth | magic-link |
+| Jobs Search | Internal | Data | jobs-search |
+| Ingest NPI | Internal | Data | ingest-npi |
+
+#### FAIL 6 Remediation Required
+
+SiteFooter.tsx line 7: `{ to: '/brands', label: 'Marketplace' }` violates /.claude/CLAUDE.md §E.
+Must change to `{ to: '/brands', label: 'Brand Directory' }` or similar intelligence-first label.
+Scheduled for Phase 3 (WO-OVERHAUL-03).
+
+#### Phase Sequence + Dependencies
+
+```
+Phase 0 ✅ → Phase 1 (Design Parity) → Phase 2 (Backend Schema)
+                                              ↓
+                                    Phase 3 (Site Rebuild) → Phase 4 (Admin CMS)
+                                              ↓                      ↓
+                                    Phase 5 (SEO)          Phase 6 (Edge Functions)
+                                              ↓                      ↓
+                                    Phase 7 (API Sitemap Wiring) ←──┘
+                                              ↓
+                                    Phase 8 (Mobile Parity)
+                                              ↓
+                                    Phase 9 (Doc Gate Final)
+```
+
+**PRE-FLIGHT STATUS: PASS (with FAIL 6 noted for Phase 3 remediation)**
+**All 9 WOs created. Ready to begin Phase 1.**
 
 ---
 

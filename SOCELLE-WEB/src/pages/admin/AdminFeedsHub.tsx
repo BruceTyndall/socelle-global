@@ -9,13 +9,20 @@ import {
   X,
   AlertCircle,
   Circle,
+  Search,
+  ChevronDown,
+  ChevronRight,
+  Zap,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
 
-// ── W13-03: Feeds Hub — Admin Control Center ───────────────────────────────
-// Data source: data_feeds table (LIVE)
+// ── W13-03 → W15-03: Feeds Hub — Admin Control Center ──────────────────────
+// Data source: data_feeds + feed_run_log tables (LIVE)
 // isLive = true when DB-connected; false fallback shows DEMO badge
+// Authority: build_tracker.md WO W13-03, W15-03
 
 interface DataFeed {
   id: string;
@@ -29,9 +36,22 @@ interface DataFeed {
   last_fetched_at: string | null;
   last_error: string | null;
   signal_count: number;
-  provenance_tier: string | null;
+  provenance_tier: number | null;
   attribution_label: string | null;
   created_at: string;
+}
+
+interface FeedRunLog {
+  id: string;
+  feed_id: string;
+  started_at: string;
+  finished_at: string | null;
+  status: string;
+  signals_created: number;
+  signals_updated: number;
+  items_fetched: number;
+  duration_ms: number | null;
+  error_message: string | null;
 }
 
 interface NewFeedForm {
@@ -41,35 +61,47 @@ interface NewFeedForm {
   endpoint_url: string;
   api_key_env_var: string;
   poll_interval_minutes: number;
-  provenance_tier: string;
+  provenance_tier: number;
   attribution_label: string;
 }
 
 const EMPTY_FORM: NewFeedForm = {
   name: '',
   feed_type: 'rss',
-  category: 'industry_news',
+  category: 'trade_pub',
   endpoint_url: '',
   api_key_env_var: '',
   poll_interval_minutes: 60,
-  provenance_tier: 'tier_2',
+  provenance_tier: 2,
   attribution_label: '',
 };
 
-const FEED_TYPES = ['rss', 'api', 'scraper', 'webhook', 'manual'] as const;
+const FEED_TYPES = ['rss', 'api', 'scraper', 'webhook'] as const;
+
+// Matches data_feeds CHECK constraint exactly
 const CATEGORIES = [
-  'industry_news',
-  'regulatory',
-  'ingredient_science',
-  'market_data',
-  'social_trends',
-  'brand_intel',
-  'clinical_research',
-  'trade_events',
-  'other',
+  'trade_pub', 'brand_news', 'press_release', 'association',
+  'social', 'jobs', 'events', 'academic', 'government',
+  'ingredients', 'market_data', 'regional', 'regulatory', 'supplier',
 ] as const;
 
-const PROVENANCE_TIERS = ['tier_1', 'tier_2', 'tier_3'] as const;
+// Category → signal_type display (matches feed-orchestrator mapping)
+const CATEGORY_SIGNAL_TYPE: Record<string, string> = {
+  trade_pub: 'industry_news', brand_news: 'brand_update',
+  press_release: 'press_release', association: 'industry_news',
+  social: 'social_trend', jobs: 'job_market', events: 'event_signal',
+  academic: 'research_insight', government: 'regulatory_alert',
+  ingredients: 'ingredient_trend', market_data: 'market_data',
+  regional: 'regional_market', regulatory: 'regulatory_alert',
+  supplier: 'supply_chain',
+};
+
+const CATEGORY_TIER: Record<string, string> = {
+  trade_pub: 'free', brand_news: 'free', press_release: 'free',
+  association: 'free', social: 'free', jobs: 'free', events: 'free',
+  academic: 'pro', government: 'pro', ingredients: 'pro',
+  market_data: 'pro', regional: 'pro', regulatory: 'pro', supplier: 'pro',
+};
 
 function getFreshnessStatus(lastFetchedAt: string | null, lastError: string | null): 'green' | 'yellow' | 'red' {
   if (lastError) return 'red';
@@ -99,12 +131,18 @@ function formatRelativeTime(iso: string | null): string {
   return `${days}d ago`;
 }
 
+function formatCat(cat: string): string {
+  return cat.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export default function AdminFeedsHub() {
   const [rows, setRows] = useState<DataFeed[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newFeed, setNewFeed] = useState<NewFeedForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
@@ -113,6 +151,12 @@ export default function AdminFeedsHub() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [orchestratorRunning, setOrchestratorRunning] = useState(false);
   const [orchestratorResult, setOrchestratorResult] = useState<string | null>(null);
+  const [testingFeedId, setTestingFeedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkAction, setBulkAction] = useState<string | null>(null);
+  const [expandedFeedId, setExpandedFeedId] = useState<string | null>(null);
+  const [runLogs, setRunLogs] = useState<FeedRunLog[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -145,6 +189,36 @@ export default function AdminFeedsHub() {
     loadData();
   }, [loadData]);
 
+  // ── Load run logs for expanded feed ─────────────────────────────────────
+  const loadRunLogs = useCallback(async (feedId: string) => {
+    setLoadingLogs(true);
+    try {
+      const { data, error: logErr } = await supabase
+        .from('feed_run_log')
+        .select('*')
+        .eq('feed_id', feedId)
+        .order('started_at', { ascending: false })
+        .limit(5);
+
+      if (logErr) throw logErr;
+      setRunLogs(data ?? []);
+    } catch {
+      setRunLogs([]);
+    } finally {
+      setLoadingLogs(false);
+    }
+  }, []);
+
+  const handleExpandToggle = (feedId: string) => {
+    if (expandedFeedId === feedId) {
+      setExpandedFeedId(null);
+      setRunLogs([]);
+    } else {
+      setExpandedFeedId(feedId);
+      loadRunLogs(feedId);
+    }
+  };
+
   // ── Toggle is_enabled ──────────────────────────────────────────────────
   const handleToggle = async (feed: DataFeed) => {
     setTogglingId(feed.id);
@@ -166,6 +240,48 @@ export default function AdminFeedsHub() {
     }
   };
 
+  // ── Test single feed ───────────────────────────────────────────────────
+  const handleTestFeed = async (feedId: string) => {
+    setTestingFeedId(feedId);
+    setOrchestratorResult(null);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/feed-orchestrator`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ feed_ids: [feedId] }),
+        }
+      );
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Test returned ${res.status}: ${text}`);
+      }
+
+      const result = await res.json();
+      const feedResult = result.results?.[0];
+      setOrchestratorResult(
+        feedResult
+          ? `Test complete: ${feedResult.status} — ${feedResult.signals_created} signals, ${feedResult.duration_ms}ms`
+          : `Test complete: ${result.signals ?? 0} signals`
+      );
+      await loadData();
+      if (expandedFeedId === feedId) loadRunLogs(feedId);
+    } catch (err: any) {
+      console.error('Test feed error:', err);
+      setOrchestratorResult(`Test error: ${err.message}`);
+    } finally {
+      setTestingFeedId(null);
+    }
+  };
+
   // ── Add Feed ───────────────────────────────────────────────────────────
   const handleAddFeed = async () => {
     if (!newFeed.name.trim() || !newFeed.endpoint_url.trim()) return;
@@ -179,7 +295,7 @@ export default function AdminFeedsHub() {
         poll_interval_minutes: newFeed.poll_interval_minutes,
         provenance_tier: newFeed.provenance_tier,
         attribution_label: newFeed.attribution_label.trim() || null,
-        is_enabled: true,
+        is_enabled: false,
         signal_count: 0,
       };
       if (newFeed.api_key_env_var.trim()) {
@@ -214,11 +330,36 @@ export default function AdminFeedsHub() {
       if (deleteError) throw deleteError;
       setRows((prev) => prev.filter((r) => r.id !== id));
       setConfirmDeleteId(null);
+      setSelectedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     } catch (err: any) {
       console.error('Delete error:', err);
       setError('Failed to delete feed.');
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  // ── Bulk Operations ────────────────────────────────────────────────────
+  const handleBulkAction = async (action: 'enable' | 'disable') => {
+    if (selectedIds.size === 0) return;
+    setBulkAction(action);
+    try {
+      const ids = Array.from(selectedIds);
+      const { error: bulkErr } = await supabase
+        .from('data_feeds')
+        .update({ is_enabled: action === 'enable' })
+        .in('id', ids);
+
+      if (bulkErr) throw bulkErr;
+      setRows((prev) =>
+        prev.map((r) => selectedIds.has(r.id) ? { ...r, is_enabled: action === 'enable' } : r)
+      );
+      setSelectedIds(new Set());
+    } catch (err: any) {
+      console.error('Bulk action error:', err);
+      setError(`Failed to ${action} feeds.`);
+    } finally {
+      setBulkAction(null);
     }
   };
 
@@ -248,7 +389,7 @@ export default function AdminFeedsHub() {
 
       const result = await res.json();
       setOrchestratorResult(
-        `Orchestrator complete: ${result.processed ?? 0} feeds processed, ${result.signals ?? 0} signals generated.`
+        `Orchestrator complete: ${result.processed ?? 0} feeds processed, ${result.signals ?? 0} signals, ${result.errors ?? 0} errors.`
       );
       await loadData();
     } catch (err: any) {
@@ -256,6 +397,23 @@ export default function AdminFeedsHub() {
       setOrchestratorResult(`Orchestrator error: ${err.message}`);
     } finally {
       setOrchestratorRunning(false);
+    }
+  };
+
+  // ── Selection helpers ──────────────────────────────────────────────────
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredRows.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredRows.map((r) => r.id)));
     }
   };
 
@@ -274,8 +432,22 @@ export default function AdminFeedsHub() {
   // ── Derived data ───────────────────────────────────────────────────────
   const enabledCount = rows.filter((r) => r.is_enabled).length;
   const totalSignals = rows.reduce((sum, r) => sum + (r.signal_count || 0), 0);
+  const errorCount = rows.filter((r) => r.last_error).length;
   const categories = ['all', ...Array.from(new Set(rows.map((r) => r.category))).sort()];
-  const filteredRows = categoryFilter === 'all' ? rows : rows.filter((r) => r.category === categoryFilter);
+  const feedTypes = ['all', ...Array.from(new Set(rows.map((r) => r.feed_type))).sort()];
+
+  const filteredRows = rows.filter((r) => {
+    if (categoryFilter !== 'all' && r.category !== categoryFilter) return false;
+    if (typeFilter !== 'all' && r.feed_type !== typeFilter) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return r.name.toLowerCase().includes(q) ||
+        r.category.toLowerCase().includes(q) ||
+        (r.attribution_label?.toLowerCase().includes(q) ?? false) ||
+        (r.endpoint_url?.toLowerCase().includes(q) ?? false);
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -294,7 +466,7 @@ export default function AdminFeedsHub() {
             )}
           </div>
           <p className="text-pro-warm-gray font-sans mt-1">
-            Manage data sources and ingestion feeds
+            Manage data sources, test feeds, and monitor ingestion health
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -305,7 +477,7 @@ export default function AdminFeedsHub() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-pro-navy text-white hover:bg-pro-navy/90 disabled:opacity-60 font-sans text-sm transition-colors"
           >
             <Play className={`w-4 h-4 ${orchestratorRunning ? 'animate-pulse' : ''}`} />
-            Run Orchestrator
+            Run All
           </button>
           <button
             type="button"
@@ -323,7 +495,6 @@ export default function AdminFeedsHub() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
           </button>
         </div>
       </div>
@@ -341,10 +512,12 @@ export default function AdminFeedsHub() {
       {/* Orchestrator result */}
       {orchestratorResult && (
         <div className={`border rounded-xl px-5 py-4 flex items-center justify-between ${
-          orchestratorResult.includes('error') ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
+          orchestratorResult.includes('error') || orchestratorResult.includes('Error')
+            ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
         }`}>
           <p className={`text-sm font-sans ${
-            orchestratorResult.includes('error') ? 'text-red-800' : 'text-green-800'
+            orchestratorResult.includes('error') || orchestratorResult.includes('Error')
+              ? 'text-red-800' : 'text-green-800'
           }`}>{orchestratorResult}</p>
           <button type="button" onClick={() => setOrchestratorResult(null)} className="text-pro-warm-gray hover:text-pro-charcoal">
             <X className="w-4 h-4" />
@@ -354,37 +527,89 @@ export default function AdminFeedsHub() {
 
       {/* Summary strip */}
       {isLive && !loading && (
-        <div className="bg-pro-cream/60 border border-pro-stone rounded-xl px-5 py-4 flex items-center gap-6">
+        <div className="bg-pro-cream/60 border border-pro-stone rounded-xl px-5 py-4 flex items-center gap-6 flex-wrap">
           <div className="flex items-center gap-2">
             <Rss className="w-4 h-4 text-pro-navy flex-shrink-0" />
             <p className="text-sm text-pro-charcoal font-sans font-medium">
-              {enabledCount} feed{enabledCount !== 1 ? 's' : ''} enabled / {rows.length} total
+              {enabledCount}/{rows.length} enabled
             </p>
           </div>
           <div className="w-px h-4 bg-pro-stone" />
           <p className="text-sm text-pro-charcoal font-sans">
-            {totalSignals.toLocaleString()} signals generated
+            {totalSignals.toLocaleString()} signals
+          </p>
+          <div className="w-px h-4 bg-pro-stone" />
+          <p className={`text-sm font-sans ${errorCount > 0 ? 'text-red-600 font-medium' : 'text-pro-charcoal'}`}>
+            {errorCount} error{errorCount !== 1 ? 's' : ''}
           </p>
         </div>
       )}
 
-      {/* Category filter tabs */}
-      {isLive && categories.length > 1 && (
-        <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit flex-wrap">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors whitespace-nowrap ${
-                categoryFilter === cat
-                  ? 'bg-white text-pro-navy shadow-sm'
-                  : 'text-pro-warm-gray hover:text-pro-charcoal'
-              }`}
-            >
-              {cat === 'all' ? 'All' : cat.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-            </button>
-          ))}
+      {/* Search + Filters */}
+      {isLive && (
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search feeds..."
+              className="w-full pl-9 pr-3 py-2 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+            />
+          </div>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat === 'all' ? 'All Categories' : formatCat(cat)}
+              </option>
+            ))}
+          </select>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+          >
+            {feedTypes.map((t) => (
+              <option key={t} value={t}>
+                {t === 'all' ? 'All Types' : t.toUpperCase()}
+              </option>
+            ))}
+          </select>
+
+          {/* Bulk actions */}
+          {selectedIds.size > 0 && (
+            <div className="flex items-center gap-2 ml-auto">
+              <span className="text-xs text-pro-warm-gray font-sans">{selectedIds.size} selected</span>
+              <button
+                type="button"
+                onClick={() => handleBulkAction('enable')}
+                disabled={!!bulkAction}
+                className="px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-sans hover:bg-green-700 disabled:opacity-60 transition-colors"
+              >
+                {bulkAction === 'enable' ? 'Enabling...' : 'Enable'}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleBulkAction('disable')}
+                disabled={!!bulkAction}
+                className="px-3 py-1.5 rounded-lg bg-pro-stone text-pro-charcoal text-xs font-sans hover:bg-pro-stone/80 disabled:opacity-60 transition-colors"
+              >
+                {bulkAction === 'disable' ? 'Disabling...' : 'Disable'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedIds(new Set())}
+                className="text-xs text-pro-warm-gray hover:text-pro-charcoal font-sans"
+              >
+                Clear
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -416,7 +641,7 @@ export default function AdminFeedsHub() {
                 className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
               >
                 {FEED_TYPES.map((t) => (
-                  <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                  <option key={t} value={t}>{t.toUpperCase()}</option>
                 ))}
               </select>
             </div>
@@ -428,9 +653,7 @@ export default function AdminFeedsHub() {
                 className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c.replace(/_/g, ' ').replace(/\b\w/g, (ch) => ch.toUpperCase())}
-                  </option>
+                  <option key={c} value={c}>{formatCat(c)}</option>
                 ))}
               </select>
             </div>
@@ -455,7 +678,7 @@ export default function AdminFeedsHub() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Poll Interval (minutes)</label>
+              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Poll Interval (min)</label>
               <input
                 type="number"
                 min={1}
@@ -468,12 +691,12 @@ export default function AdminFeedsHub() {
               <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Provenance Tier</label>
               <select
                 value={newFeed.provenance_tier}
-                onChange={(e) => setNewFeed({ ...newFeed, provenance_tier: e.target.value })}
+                onChange={(e) => setNewFeed({ ...newFeed, provenance_tier: parseInt(e.target.value) })}
                 className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
               >
-                {PROVENANCE_TIERS.map((t) => (
-                  <option key={t} value={t}>{t.replace('_', ' ').toUpperCase()}</option>
-                ))}
+                <option value={1}>Tier 1 — Direct/Owned</option>
+                <option value={2}>Tier 2 — Public/Structured</option>
+                <option value={3}>Tier 3 — Aggregated/Derived</option>
               </select>
             </div>
             <div>
@@ -516,130 +739,295 @@ export default function AdminFeedsHub() {
           description="data_feeds table not available in this environment. Connect Supabase to activate live feed management."
         />
       ) : filteredRows.length === 0 ? (
-        <EmptyState label={categoryFilter === 'all' ? 'No feeds configured yet.' : `No feeds in category "${categoryFilter.replace(/_/g, ' ')}".`} />
+        <EmptyState label={
+          searchQuery.trim()
+            ? `No feeds matching "${searchQuery}".`
+            : categoryFilter === 'all' ? 'No feeds configured yet.' : `No feeds in category "${formatCat(categoryFilter)}".`
+        } />
       ) : (
         <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm font-sans">
               <thead>
                 <tr className="border-b border-pro-stone bg-pro-cream/50">
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Status</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Name</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Type</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Category</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Enabled</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Interval</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Last Fetched</th>
-                  <th className="text-right px-4 py-3 font-medium text-pro-charcoal">Signals</th>
-                  <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Error</th>
-                  <th className="text-right px-4 py-3 font-medium text-pro-charcoal">Actions</th>
+                  <th className="px-3 py-3 w-8">
+                    <button type="button" onClick={toggleSelectAll} className="text-pro-warm-gray hover:text-pro-navy">
+                      {selectedIds.size === filteredRows.length && filteredRows.length > 0
+                        ? <CheckSquare className="w-4 h-4" />
+                        : <Square className="w-4 h-4" />
+                      }
+                    </button>
+                  </th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal w-6" />
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Name</th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Type</th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Category</th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Signal Type</th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Tier</th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Enabled</th>
+                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Last Run</th>
+                  <th className="text-right px-3 py-3 font-medium text-pro-charcoal">Signals</th>
+                  <th className="text-right px-3 py-3 font-medium text-pro-charcoal">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-pro-stone/50">
                 {filteredRows.map((feed) => {
                   const freshness = getFreshnessStatus(feed.last_fetched_at, feed.last_error);
+                  const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
+                  const tier = CATEGORY_TIER[feed.category] ?? 'free';
+                  const isExpanded = expandedFeedId === feed.id;
+
                   return (
-                    <tr key={feed.id} className="hover:bg-pro-cream/30 transition-colors">
-                      {/* Status dot */}
-                      <td className="px-4 py-3">
-                        <Circle
-                          className={`w-3 h-3 fill-current ${STATUS_DOT_COLORS[freshness]}`}
-                        />
-                      </td>
-                      {/* Name */}
-                      <td className="px-4 py-3 text-pro-navy font-medium">
-                        {feed.name}
-                      </td>
-                      {/* Type */}
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pro-stone text-pro-charcoal">
-                          {feed.feed_type}
-                        </span>
-                      </td>
-                      {/* Category */}
-                      <td className="px-4 py-3 text-pro-charcoal text-xs">
-                        {feed.category.replace(/_/g, ' ')}
-                      </td>
-                      {/* Toggle */}
-                      <td className="px-4 py-3">
-                        <button
-                          type="button"
-                          onClick={() => handleToggle(feed)}
-                          disabled={togglingId === feed.id}
-                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${
-                            feed.is_enabled ? 'bg-green-500' : 'bg-pro-stone'
-                          } ${togglingId === feed.id ? 'opacity-60' : ''}`}
-                          aria-label={feed.is_enabled ? 'Disable feed' : 'Enable feed'}
-                        >
-                          <span
-                            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                              feed.is_enabled ? 'translate-x-4' : 'translate-x-1'
-                            }`}
-                          />
-                        </button>
-                      </td>
-                      {/* Interval */}
-                      <td className="px-4 py-3 text-pro-warm-gray text-xs">
-                        {feed.poll_interval_minutes}m
-                      </td>
-                      {/* Last Fetched */}
-                      <td className="px-4 py-3 text-pro-warm-gray text-xs">
-                        {formatRelativeTime(feed.last_fetched_at)}
-                      </td>
-                      {/* Signal count */}
-                      <td className="px-4 py-3 text-right text-pro-charcoal tabular-nums">
-                        {(feed.signal_count || 0).toLocaleString()}
-                      </td>
-                      {/* Error */}
-                      <td className="px-4 py-3">
-                        {feed.last_error ? (
-                          <span className="text-xs text-red-600 max-w-[200px] truncate block" title={feed.last_error}>
-                            {feed.last_error}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-pro-warm-gray">—</span>
-                        )}
-                      </td>
-                      {/* Actions */}
-                      <td className="px-4 py-3 text-right">
-                        {confirmDeleteId === feed.id ? (
-                          <div className="flex items-center gap-1 justify-end">
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(feed.id)}
-                              disabled={deletingId === feed.id}
-                              className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-60 transition-colors"
-                            >
-                              {deletingId === feed.id ? '...' : 'Confirm'}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setConfirmDeleteId(null)}
-                              className="px-2 py-1 text-xs border border-pro-stone text-pro-charcoal rounded hover:bg-pro-cream transition-colors"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(feed.id)}
-                            className="text-pro-warm-gray hover:text-red-600 transition-colors"
-                            aria-label="Delete feed"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
+                    <FeedRow
+                      key={feed.id}
+                      feed={feed}
+                      freshness={freshness}
+                      signalType={signalType}
+                      tier={tier}
+                      isSelected={selectedIds.has(feed.id)}
+                      isExpanded={isExpanded}
+                      isTesting={testingFeedId === feed.id}
+                      isToggling={togglingId === feed.id}
+                      confirmingDelete={confirmDeleteId === feed.id}
+                      isDeletingFeed={deletingId === feed.id}
+                      runLogs={isExpanded ? runLogs : []}
+                      loadingLogs={isExpanded && loadingLogs}
+                      onSelect={() => toggleSelect(feed.id)}
+                      onExpand={() => handleExpandToggle(feed.id)}
+                      onToggle={() => handleToggle(feed)}
+                      onTest={() => handleTestFeed(feed.id)}
+                      onConfirmDelete={() => setConfirmDeleteId(feed.id)}
+                      onCancelDelete={() => setConfirmDeleteId(null)}
+                      onDelete={() => handleDelete(feed.id)}
+                    />
                   );
                 })}
               </tbody>
             </table>
           </div>
+          <div className="border-t border-pro-stone bg-pro-cream/30 px-4 py-2">
+            <p className="text-xs text-pro-warm-gray font-sans">
+              Showing {filteredRows.length} of {rows.length} feeds
+            </p>
+          </div>
         </div>
       )}
     </div>
+  );
+}
+
+// ── Feed Row ────────────────────────────────────────────────────────────────
+
+interface FeedRowProps {
+  feed: DataFeed;
+  freshness: 'green' | 'yellow' | 'red';
+  signalType: string;
+  tier: string;
+  isSelected: boolean;
+  isExpanded: boolean;
+  isTesting: boolean;
+  isToggling: boolean;
+  confirmingDelete: boolean;
+  isDeletingFeed: boolean;
+  runLogs: FeedRunLog[];
+  loadingLogs: boolean;
+  onSelect: () => void;
+  onExpand: () => void;
+  onToggle: () => void;
+  onTest: () => void;
+  onConfirmDelete: () => void;
+  onCancelDelete: () => void;
+  onDelete: () => void;
+}
+
+function FeedRow({
+  feed, freshness, signalType, tier, isSelected, isExpanded,
+  isTesting, isToggling, confirmingDelete, isDeletingFeed,
+  runLogs, loadingLogs,
+  onSelect, onExpand, onToggle, onTest, onConfirmDelete, onCancelDelete, onDelete,
+}: FeedRowProps) {
+  return (
+    <>
+      <tr className={`hover:bg-pro-cream/30 transition-colors ${isSelected ? 'bg-pro-cream/40' : ''}`}>
+        {/* Checkbox */}
+        <td className="px-3 py-3">
+          <button type="button" onClick={onSelect} className="text-pro-warm-gray hover:text-pro-navy">
+            {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+          </button>
+        </td>
+        {/* Expand + status */}
+        <td className="px-3 py-3">
+          <button type="button" onClick={onExpand} className="flex items-center gap-1 text-pro-warm-gray hover:text-pro-navy">
+            {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+            <Circle className={`w-2.5 h-2.5 fill-current ${STATUS_DOT_COLORS[freshness]}`} />
+          </button>
+        </td>
+        {/* Name */}
+        <td className="px-3 py-3 text-pro-navy font-medium max-w-[200px] truncate" title={feed.name}>
+          {feed.name}
+          {feed.api_key_env_var && (
+            <span className="ml-1.5 text-[10px] text-amber-600 font-normal">KEY</span>
+          )}
+        </td>
+        {/* Type */}
+        <td className="px-3 py-3">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pro-stone text-pro-charcoal">
+            {feed.feed_type}
+          </span>
+        </td>
+        {/* Category */}
+        <td className="px-3 py-3 text-pro-charcoal text-xs">
+          {formatCat(feed.category)}
+        </td>
+        {/* Signal Type */}
+        <td className="px-3 py-3 text-xs text-pro-warm-gray">
+          {signalType.replace(/_/g, ' ')}
+        </td>
+        {/* Tier */}
+        <td className="px-3 py-3">
+          <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase ${
+            tier === 'pro' ? 'bg-indigo-100 text-indigo-700' : 'bg-green-100 text-green-700'
+          }`}>
+            {tier}
+          </span>
+        </td>
+        {/* Toggle */}
+        <td className="px-3 py-3">
+          <button
+            type="button"
+            onClick={onToggle}
+            disabled={isToggling}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${
+              feed.is_enabled ? 'bg-green-500' : 'bg-pro-stone'
+            } ${isToggling ? 'opacity-60' : ''}`}
+            aria-label={feed.is_enabled ? 'Disable feed' : 'Enable feed'}
+          >
+            <span
+              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                feed.is_enabled ? 'translate-x-4' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </td>
+        {/* Last Fetched */}
+        <td className="px-3 py-3 text-pro-warm-gray text-xs">
+          {formatRelativeTime(feed.last_fetched_at)}
+          {feed.last_error && (
+            <span className="block text-[10px] text-red-500 truncate max-w-[120px]" title={feed.last_error}>
+              {feed.last_error}
+            </span>
+          )}
+        </td>
+        {/* Signal count */}
+        <td className="px-3 py-3 text-right text-pro-charcoal tabular-nums">
+          {(feed.signal_count || 0).toLocaleString()}
+        </td>
+        {/* Actions */}
+        <td className="px-3 py-3 text-right">
+          <div className="flex items-center gap-1 justify-end">
+            <button
+              type="button"
+              onClick={onTest}
+              disabled={isTesting}
+              className="p-1 text-pro-warm-gray hover:text-pro-navy transition-colors disabled:opacity-60"
+              title="Test this feed"
+            >
+              <Zap className={`w-4 h-4 ${isTesting ? 'animate-pulse text-amber-500' : ''}`} />
+            </button>
+            {confirmingDelete ? (
+              <>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  disabled={isDeletingFeed}
+                  className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-60 transition-colors"
+                >
+                  {isDeletingFeed ? '...' : 'Yes'}
+                </button>
+                <button
+                  type="button"
+                  onClick={onCancelDelete}
+                  className="px-2 py-1 text-xs border border-pro-stone text-pro-charcoal rounded hover:bg-pro-cream transition-colors"
+                >
+                  No
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={onConfirmDelete}
+                className="p-1 text-pro-warm-gray hover:text-red-600 transition-colors"
+                title="Delete feed"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </td>
+      </tr>
+      {/* Expanded: Run History */}
+      {isExpanded && (
+        <tr>
+          <td colSpan={11} className="bg-pro-cream/20 px-6 py-4">
+            <div className="space-y-2">
+              <h4 className="text-xs font-semibold text-pro-charcoal font-sans uppercase tracking-wider">
+                Recent Runs
+              </h4>
+              {loadingLogs ? (
+                <p className="text-xs text-pro-warm-gray font-sans">Loading...</p>
+              ) : runLogs.length === 0 ? (
+                <p className="text-xs text-pro-warm-gray font-sans">No runs recorded yet.</p>
+              ) : (
+                <table className="w-full text-xs font-sans">
+                  <thead>
+                    <tr className="text-left text-pro-warm-gray">
+                      <th className="pr-4 py-1 font-medium">Started</th>
+                      <th className="pr-4 py-1 font-medium">Status</th>
+                      <th className="pr-4 py-1 font-medium">Items</th>
+                      <th className="pr-4 py-1 font-medium">Signals</th>
+                      <th className="pr-4 py-1 font-medium">Duration</th>
+                      <th className="py-1 font-medium">Error</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-pro-stone/30">
+                    {runLogs.map((log) => (
+                      <tr key={log.id}>
+                        <td className="pr-4 py-1.5 text-pro-charcoal">
+                          {formatRelativeTime(log.started_at)}
+                        </td>
+                        <td className="pr-4 py-1.5">
+                          <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                            log.status === 'success' ? 'bg-green-100 text-green-700' :
+                            log.status === 'error' ? 'bg-red-100 text-red-700' :
+                            log.status === 'running' ? 'bg-blue-100 text-blue-700' :
+                            'bg-pro-stone text-pro-charcoal'
+                          }`}>
+                            {log.status}
+                          </span>
+                        </td>
+                        <td className="pr-4 py-1.5 text-pro-charcoal tabular-nums">{log.items_fetched}</td>
+                        <td className="pr-4 py-1.5 text-pro-charcoal tabular-nums">{log.signals_created}</td>
+                        <td className="pr-4 py-1.5 text-pro-charcoal tabular-nums">
+                          {log.duration_ms != null ? `${log.duration_ms}ms` : '—'}
+                        </td>
+                        <td className="py-1.5 text-red-500 truncate max-w-[200px]" title={log.error_message ?? ''}>
+                          {log.error_message ?? '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              {feed.endpoint_url && (
+                <p className="text-[10px] text-pro-warm-gray mt-2 truncate" title={feed.endpoint_url}>
+                  URL: {feed.endpoint_url}
+                </p>
+              )}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
 

@@ -1,15 +1,25 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { mockSignals, mockMarketPulse } from './mockSignals';
-import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType } from './types';
+import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
 
-// ── useIntelligence — V2: Supabase market_signals with mock fallback ──
+// ── useIntelligence — V3 (W15-04): provenance columns + tier gating ──
 // Fetches live signals from market_signals table (active + non-expired).
 // Falls back to mockSignals when Supabase is unavailable.
 // Returns isLive flag so UI can show DEMO/PREVIEW banners accordingly.
+// V3: selects provenance fields (source_url, source_name, source_feed_id,
+//     confidence_score, tier_visibility, image_url, is_duplicate).
+//     Filters out duplicates. Applies tier gating based on userTier prop.
+
+interface UseIntelligenceOptions {
+  /** User's plan tier — controls which signals are visible. Default: 'free' */
+  userTier?: TierVisibility;
+}
 
 interface UseIntelligenceReturn {
   signals: IntelligenceSignal[];
+  /** All signals before tier gating (for "upgrade to see N more" counts) */
+  totalSignalCount: number;
   marketPulse: MarketPulse;
   loading: boolean;
   isLive: boolean;
@@ -33,6 +43,14 @@ interface MarketSignalRow {
   related_products: string[] | null;
   updated_at: string;
   source: string | null;
+  // W15-04: provenance + tier columns
+  source_url: string | null;
+  source_name: string | null;
+  source_feed_id: string | null;
+  confidence_score: number | null;
+  tier_visibility: TierVisibility | null;
+  image_url: string | null;
+  is_duplicate: boolean;
 }
 
 function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
@@ -50,10 +68,26 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
     related_products: row.related_products ?? [],
     updated_at: row.updated_at,
     source: row.source ?? undefined,
+    // W15-04: provenance fields
+    source_url: row.source_url ?? undefined,
+    source_name: row.source_name ?? undefined,
+    source_feed_id: row.source_feed_id ?? undefined,
+    confidence_score: row.confidence_score ?? undefined,
+    tier_visibility: row.tier_visibility ?? undefined,
+    image_url: row.image_url ?? undefined,
+    is_duplicate: row.is_duplicate,
   };
 }
 
-export function useIntelligence(): UseIntelligenceReturn {
+/** Tier hierarchy for gating: admin sees everything, pro sees pro+free, free sees free only */
+const TIER_ACCESS: Record<TierVisibility, TierVisibility[]> = {
+  free: ['free'],
+  pro: ['free', 'pro'],
+  admin: ['free', 'pro', 'admin'],
+};
+
+export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligenceReturn {
+  const userTier = options?.userTier ?? 'free';
   const [activeFilter, setActiveFilter] = useState<SignalFilterKey>('all');
   const [rawSignals, setRawSignals] = useState<IntelligenceSignal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,9 +111,10 @@ export function useIntelligence(): UseIntelligenceReturn {
         const { data, error } = await supabase
           .from('market_signals')
           .select(
-            'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source'
+            'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_url, source_name, source_feed_id, confidence_score, tier_visibility, image_url, is_duplicate'
           )
           .eq('active', true)
+          .eq('is_duplicate', false)
           .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
           .order('display_order', { ascending: true })
           .order('updated_at', { ascending: false });
@@ -132,18 +167,28 @@ export function useIntelligence(): UseIntelligenceReturn {
     };
   }, [isLive, rawSignals]);
 
+  // ── Tier gating ────────────────────────────────────────────────────
+  const allowedTiers = TIER_ACCESS[userTier];
+  const tieredSignals = useMemo(() => {
+    if (!isLive) return rawSignals; // mock data has no tier_visibility
+    return rawSignals.filter((s) => {
+      const tier = s.tier_visibility ?? 'free';
+      return allowedTiers.includes(tier);
+    });
+  }, [rawSignals, isLive, allowedTiers]);
+
   // ── Filter + sort ──────────────────────────────────────────────────
   const signals = useMemo(() => {
     let filtered: IntelligenceSignal[];
     if (activeFilter === 'all') {
-      filtered = [...rawSignals];
+      filtered = [...tieredSignals];
     } else {
-      filtered = rawSignals.filter((s) => s.signal_type === activeFilter);
+      filtered = tieredSignals.filter((s) => s.signal_type === activeFilter);
     }
     // Sort by magnitude descending (highest impact first)
     filtered.sort((a, b) => Math.abs(b.magnitude) - Math.abs(a.magnitude));
     return filtered;
-  }, [rawSignals, activeFilter]);
+  }, [tieredSignals, activeFilter]);
 
-  return { signals, marketPulse, loading, isLive, activeFilter, setActiveFilter };
+  return { signals, totalSignalCount: rawSignals.length, marketPulse, loading, isLive, activeFilter, setActiveFilter };
 }

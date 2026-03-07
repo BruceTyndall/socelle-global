@@ -24,6 +24,8 @@ const Terms = lazy(() => import('./pages/public/Terms'));
 const Plans = lazy(() => import('./pages/public/Plans'));
 const About = lazy(() => import('./pages/public/About'));
 const Intelligence = lazy(() => import('./pages/public/Intelligence'));
+const StoriesIndex = lazy(() => import('./pages/public/StoriesIndex'));
+const StoryDetail = lazy(() => import('./pages/public/StoryDetail'));
 const Professionals = lazy(() => import('./pages/public/Professionals'));
 const ForBrands = lazy(() => import('./pages/public/ForBrands'));
 const ForMedspas = lazy(() => import('./pages/public/ForMedspas'));
@@ -127,6 +129,7 @@ const AdminEventsHub = lazy(() => import('./pages/admin/EventsHub'));
 const AdminJobsHub = lazy(() => import('./pages/admin/JobsHub'));
 const AdminRecruitmentHub = lazy(() => import('./pages/admin/RecruitmentHub'));
 const AdminFeedsHub = lazy(() => import('./pages/admin/AdminFeedsHub'));
+const AdminBlogHub = lazy(() => import('./pages/admin/AdminBlogHub'));
 
 // ── Brand Hub (brand-centric admin)
 const BrandHub = lazy(() => import('./pages/admin/BrandHub'));
@@ -187,6 +190,8 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/intelligence" element={<Intelligence />} />
                   <Route path="/insights" element={<Navigate to="/intelligence" replace />} />
+                  <Route path="/stories" element={<StoriesIndex />} />
+                  <Route path="/stories/:slug" element={<StoryDetail />} />
                   <Route path="/professionals" element={<Professionals />} />
                   <Route path="/for-brands" element={<ForBrands />} />
                   <Route path="/for-medspas" element={<ForMedspas />} />
@@ -426,6 +431,7 @@ function App() {
                     <Route path="jobs" element={<AdminJobsHub />} />
                     <Route path="recruitment" element={<AdminRecruitmentHub />} />
                     <Route path="feeds" element={<AdminFeedsHub />} />
+                    <Route path="blog" element={<AdminBlogHub />} />
 
                     {/* ── Brand list ── */}
                     <Route path="brands" element={<AdminBrandList />} />

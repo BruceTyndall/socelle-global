@@ -66,7 +66,7 @@ function wrapUrlset(entries: string[]): string {
 function buildSitemapIndex(supabaseUrl: string): string {
   const base = supabaseUrl.replace(/\/rest\/v1$/, '');
   const today = new Date().toISOString().split('T')[0];
-  const types = ['static', 'brands', 'protocols', 'jobs'];
+  const types = ['static', 'brands', 'protocols', 'jobs', 'stories'];
   const sitemaps = types.map(
     (t) =>
       `  <sitemap>\n    <loc>${escapeXml(`${base}/functions/v1/sitemap-generator?type=${t}`)}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`
@@ -86,6 +86,7 @@ const STATIC_ROUTES: Array<{ path: string; changefreq: string; priority: string 
   { path: '/brands',         changefreq: 'daily',   priority: '0.9' },
   { path: '/protocols',      changefreq: 'weekly',  priority: '0.8' },
   { path: '/education',      changefreq: 'weekly',  priority: '0.8' },
+  { path: '/stories',         changefreq: 'daily',   priority: '0.85' },
   { path: '/events',         changefreq: 'daily',   priority: '0.8' },
   { path: '/jobs',           changefreq: 'daily',   priority: '0.8' },
   { path: '/for-buyers',     changefreq: 'monthly', priority: '0.7' },
@@ -190,8 +191,25 @@ serve(async (req) => {
       return new Response(wrapUrlset(entries), { headers: XML_HEADERS });
     }
 
+    // Stories — LIVE from `stories` table (status='published', W15-06)
+    if (type === 'stories') {
+      const { data, error } = await supabase
+        .from('stories')
+        .select('slug, updated_at, published_at')
+        .eq('status', 'published')
+        .not('slug', 'is', null)
+        .order('published_at', { ascending: false });
+
+      if (error) throw error;
+
+      const entries = (data ?? []).map((row: { slug: string; updated_at: string; published_at: string }) =>
+        urlEntry(`${appUrl}/stories/${row.slug}`, toDate(row.updated_at ?? row.published_at), 'weekly', '0.80')
+      );
+      return new Response(wrapUrlset(entries), { headers: XML_HEADERS });
+    }
+
     return new Response(
-      `Unknown type "${type}". Use: brands, protocols, jobs, static, or omit for index.`,
+      `Unknown type "${type}". Use: brands, protocols, jobs, stories, static, or omit for index.`,
       { status: 400, headers: { 'Content-Type': 'text/plain' } }
     );
   } catch (err: any) {

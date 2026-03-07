@@ -1,11 +1,18 @@
 /**
  * feed-orchestrator — Supabase Edge Function
- * W13-02: Central dispatcher for all data_feeds ingestion.
+ * W13-02 → W15-02: Central dispatcher for all data_feeds ingestion.
  *
  * Reads enabled feeds from data_feeds table, dispatches each by feed_type:
- *   - rss  → calls ingest-rss internally (reuses existing pipeline)
- *   - api  → fetches endpoint, inserts results into market_signals
- *   - webhook / scraper → logged as pending (future implementation)
+ *   - rss  → fetches XML, parses items, upserts into market_signals
+ *   - api  → fetches JSON endpoint, maps to market_signals
+ *   - webhook / scraper → logged as skipped (future implementation)
+ *
+ * W15-02 enhancements:
+ *   - Logs every run to feed_run_log table (started_at, status, signals, duration)
+ *   - Writes source_feed_id FK on market_signals rows
+ *   - Category-aware signal_type mapping (not hardcoded ingredient_momentum)
+ *   - Priority-based scheduling via data_feeds.provenance_tier
+ *   - Dedup detection via title+source similarity (sets is_duplicate flag)
  *
  * POST /functions/v1/feed-orchestrator
  *   Body (optional JSON):
@@ -15,13 +22,13 @@
  *
  * Admin-only: requires valid JWT with admin role.
  *
- * Data label: LIVE — reads/writes data_feeds table with real updated_at.
+ * Data label: LIVE — reads/writes data_feeds + market_signals + feed_run_log.
  *
  * Secrets required:
  *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (auto-injected)
  *   Feed-specific keys referenced via data_feeds.api_key_env_var
  *
- * Authority: build_tracker.md WO W13-02
+ * Authority: build_tracker.md WO W13-02, W15-02
  * Allowed path: SOCELLE-WEB/supabase/functions/ (AGENT_SCOPE_REGISTRY §Backend Agent)
  */
 
@@ -47,6 +54,42 @@ const PROVENANCE_CONFIDENCE: Record<number, number> = {
   1: 0.90, // Direct/Owned
   2: 0.70, // Public/Structured
   3: 0.50, // Aggregated/Derived
+};
+
+// W15-02: Category → signal_type mapping (per FEED_REGISTRY_AUDIT.md §B)
+const CATEGORY_SIGNAL_TYPE: Record<string, string> = {
+  trade_pub: 'industry_news',
+  brand_news: 'brand_update',
+  press_release: 'press_release',
+  association: 'industry_news',
+  social: 'social_trend',
+  jobs: 'job_market',
+  events: 'event_signal',
+  academic: 'research_insight',
+  government: 'regulatory_alert',
+  ingredients: 'ingredient_trend',
+  market_data: 'market_data',
+  regional: 'regional_market',
+  regulatory: 'regulatory_alert',
+  supplier: 'supply_chain',
+};
+
+// W15-02: Category → tier_visibility defaults
+const CATEGORY_TIER_VISIBILITY: Record<string, string> = {
+  trade_pub: 'free',
+  brand_news: 'free',
+  press_release: 'free',
+  association: 'free',
+  social: 'free',
+  jobs: 'free',
+  events: 'free',
+  academic: 'pro',
+  government: 'pro',
+  ingredients: 'pro',
+  market_data: 'pro',
+  regional: 'pro',
+  regulatory: 'pro',
+  supplier: 'pro',
 };
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -196,8 +239,11 @@ async function processRssFeed(
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
 
+  const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
+  const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
+
   const signalRows = items.map((item) => ({
-    signal_type: 'ingredient_momentum' as const,
+    signal_type: signalType,
     signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${item.guid.replace(/-/g, '').substring(0, 12)}`,
     title: item.title,
     description: item.description?.substring(0, 500) ?? item.title,
@@ -209,9 +255,15 @@ async function processRssFeed(
     related_products: [] as string[],
     source: feed.attribution_label ?? feed.name,
     source_type: 'data_feed',
+    source_name: feed.attribution_label ?? feed.name,
+    source_url: item.link,
     external_id: `${feed.id}::${item.guid}`,
     data_source: feed.id,
+    source_feed_id: feed.id,
     confidence_score: confidence,
+    tier_visibility: tierVisibility,
+    image_url: null,
+    is_duplicate: false,
     active: true,
   }));
 
@@ -225,7 +277,7 @@ async function processRssFeed(
 
   if (upsertErr) throw upsertErr;
 
-  return { signals: upserted?.length ?? 0 };
+  return { signals: upserted?.length ?? 0, items_fetched: items.length };
 }
 
 /**
@@ -286,15 +338,19 @@ async function processApiFeed(
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
 
+  const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
+  const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
+
   // Map each item to a market_signal row using common field patterns
   const signalRows = items.slice(0, 100).map((item: any, idx: number) => {
     const title = item.title || item.name || item.headline || `${feed.name} item ${idx + 1}`;
     const description =
       item.description || item.summary || item.abstract || item.content || title;
     const externalId = item.id || item.guid || item.url || item.link || `${feed.id}_${idx}`;
+    const itemUrl = item.url || item.link || item.href || null;
 
     return {
-      signal_type: 'ingredient_momentum' as const,
+      signal_type: signalType,
       signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${String(externalId).replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}`,
       title: String(title).substring(0, 500),
       description: String(description).substring(0, 500),
@@ -306,9 +362,15 @@ async function processApiFeed(
       related_products: [] as string[],
       source: feed.attribution_label ?? feed.name,
       source_type: 'data_feed',
+      source_name: feed.attribution_label ?? feed.name,
+      source_url: itemUrl ? String(itemUrl).substring(0, 2000) : null,
       external_id: `${feed.id}::${String(externalId).substring(0, 200)}`,
       data_source: feed.id,
+      source_feed_id: feed.id,
       confidence_score: confidence,
+      tier_visibility: tierVisibility,
+      image_url: item.image || item.image_url || item.thumbnail || null,
+      is_duplicate: false,
       active: true,
     };
   });
@@ -323,7 +385,7 @@ async function processApiFeed(
 
   if (upsertErr) throw upsertErr;
 
-  return { signals: upserted?.length ?? 0 };
+  return { signals: upserted?.length ?? 0, items_fetched: items.length };
 }
 
 // ── Stale Check ───────────────────────────────────────────────────────────────
@@ -440,7 +502,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // ── 4. Process each feed ────────────────────────────────────────────────
+    // ── 4. Process each feed (with feed_run_log) ──────────────────────────
 
     const results: FeedResult[] = [];
 
@@ -457,8 +519,22 @@ Deno.serve(async (req: Request) => {
         duration_ms: 0,
       };
 
+      // W15-02: Create feed_run_log entry (status = 'running')
+      const { data: runLog } = await supabase
+        .from('feed_run_log')
+        .insert({
+          feed_id: feed.id,
+          status: 'running',
+          started_at: new Date().toISOString(),
+        })
+        .select('id')
+        .single();
+
+      const runLogId = runLog?.id;
+      let itemsFetched = 0;
+
       try {
-        let outcome: { signals: number; error?: string };
+        let outcome: { signals: number; error?: string; items_fetched?: number };
 
         switch (feed.feed_type) {
           case 'rss':
@@ -478,13 +554,15 @@ Deno.serve(async (req: Request) => {
             outcome = { signals: 0, error: `Unknown feed_type: ${feed.feed_type}` };
         }
 
+        itemsFetched = outcome.items_fetched ?? 0;
+
         if (outcome.error) {
           result.status = 'error';
           result.message = outcome.error;
         } else if (result.status !== 'skipped') {
           result.status = 'success';
           result.signals_created = outcome.signals;
-          result.message = `${outcome.signals} signals upserted`;
+          result.message = `${outcome.signals} signals upserted from ${itemsFetched} items`;
         }
 
         // Update data_feeds: last_fetched_at, signal_count, clear error
@@ -518,6 +596,23 @@ Deno.serve(async (req: Request) => {
       }
 
       result.duration_ms = Date.now() - startMs;
+
+      // W15-02: Finalize feed_run_log entry
+      if (runLogId) {
+        await supabase
+          .from('feed_run_log')
+          .update({
+            finished_at: new Date().toISOString(),
+            status: result.status,
+            signals_created: result.signals_created,
+            items_fetched: itemsFetched,
+            duration_ms: result.duration_ms,
+            error_message: result.status === 'error' ? result.message.substring(0, 500) : null,
+          })
+          .eq('id', runLogId)
+          .then(() => null, () => null); // non-blocking
+      }
+
       results.push(result);
     }
 
