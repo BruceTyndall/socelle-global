@@ -34,7 +34,7 @@ const FAQS = [
   },
   {
     q: 'Is there an annual billing discount?',
-    a: 'Annual billing is coming soon with a 15% discount. Currently, all plans are billed monthly with no long-term commitment required.',
+    a: 'Yes. Annual billing is available through sales-assisted plans with discounted pricing. Self-serve checkout defaults to monthly billing.',
   },
   {
     q: 'What does "anonymized competitor data" mean?',

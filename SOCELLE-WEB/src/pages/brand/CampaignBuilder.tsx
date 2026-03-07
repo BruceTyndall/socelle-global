@@ -154,9 +154,8 @@ export default function CampaignBuilder() {
   };
 
   const handleExportPdf = () => {
-    // Stub: PDF export deferred
-    console.log('[PDF STUB] Export campaign PDF for:', name);
-    addToast('PDF export coming soon', 'info');
+    window.print();
+    addToast('Print dialog opened. Save as PDF to export this campaign.', 'success');
   };
 
   const handleSave = () => {

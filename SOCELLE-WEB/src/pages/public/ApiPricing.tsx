@@ -12,7 +12,6 @@ import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
-import { useToast } from '../../components/Toast';
 import { getApiPricing } from '../../lib/api/mockApiData';
 import type { ApiPricingTier } from '../../lib/api/types';
 
@@ -123,10 +122,9 @@ function TierCard({
 // ── Main Page ───────────────────────────────────────────────────────
 export default function ApiPricing() {
   const tiers = getApiPricing();
-  const { addToast } = useToast();
 
-  const handleSelect = (_tier: ApiPricingTier) => {
-    addToast('API access coming soon. We will notify you when self-serve is available.', 'info');
+  const handleSelect = (tier: ApiPricingTier) => {
+    window.location.href = `/request-access?surface=api&tier=${tier.tier}`;
   };
 
   return (

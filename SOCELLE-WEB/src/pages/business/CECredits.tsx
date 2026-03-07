@@ -60,8 +60,48 @@ export default function CECredits() {
   });
 
   const handleDownloadCertificate = (creditId: string) => {
-    console.log('PDF certificate generation stub for credit:', creditId);
-    addToast('Certificate generation coming soon', 'info');
+    const credit = progress.credits.find((c) => c.id === creditId);
+    if (!credit) {
+      addToast('Certificate record not found', 'error');
+      return;
+    }
+
+    const protocol = credit.protocolId
+      ? protocols.find((p) => p.id === credit.protocolId)
+      : null;
+    const title = protocol?.title ?? credit.contentId ?? 'Continuing Education';
+    const completedAt = credit.earnedAt
+      ? new Date(credit.earnedAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      : new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+
+    const certificateText = [
+      'SOCELLE Continuing Education Certificate',
+      '',
+      `Credit ID: ${credit.id}`,
+      `Course: ${title}`,
+      `Credits Earned: ${credit.creditsEarned}`,
+      `Completed: ${completedAt}`,
+    ].join('\n');
+
+    const blob = new Blob([certificateText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `socelle-ce-certificate-${credit.id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    addToast('Certificate downloaded', 'success');
   };
 
   // Upcoming CE opportunities

@@ -348,7 +348,7 @@ export default function CourseDetail() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-graphite/50">Curriculum details coming soon.</p>
+            <p className="text-sm text-graphite/50">Curriculum details are provided inside the course player after enrollment.</p>
           )}
         </section>
 
