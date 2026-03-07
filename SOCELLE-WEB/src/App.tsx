@@ -14,6 +14,9 @@ import AdminLayout from './layouts/AdminLayout';
 import BrandLayout from './layouts/BrandLayout';
 import MarketingLayout from './layouts/MarketingLayout';
 
+// ── Pre-launch quiz (primary / route during pre-launch phase — W14-01)
+const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
+
 // ── Public
 const PublicHome = lazy(() => import('./pages/public/Home'));
 const PublicBrands = lazy(() => import('./pages/public/Brands'));
@@ -309,8 +312,8 @@ function App() {
               <Suspense fallback={Fallback}>
                 <Routes>
                   {/* ── Public ─────────────────────────────────── */}
-                  <Route path="/" element={<PublicHome />} />
-                  <Route path="/home" element={<Navigate to="/" replace />} />
+                  <Route path="/" element={<PrelaunchQuiz />} />
+                  <Route path="/home" element={<PublicHome />} />
                   <Route path="/brands" element={<PublicBrands />} />
                   <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
