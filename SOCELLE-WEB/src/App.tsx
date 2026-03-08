@@ -4,6 +4,7 @@ import { AuthProvider } from './lib/auth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastProvider } from './components/Toast';
 import ProtectedRoute from './components/ProtectedRoute';
+import { PrelaunchGuard } from './components/PrelaunchGuard';
 import { ConfigCheck } from './components/ConfigCheck';
 import { StagingBanner } from './components/StagingBanner';
 import { ModuleAccessProvider } from './modules/_core/context/ModuleAccessContext';
@@ -314,14 +315,25 @@ function App() {
                   {/* ── Public ─────────────────────────────────── */}
                   {/* Pre-launch quiz — primary landing during build phase (W14-01) */}
                   <Route path="/" element={<PrelaunchQuiz />} />
-                  {/* Full cinematic home kept accessible for internal preview */}
-                  <Route path="/home" element={<PublicHome />} />
-                  <Route path="/brands" element={<PublicBrands />} />
-                  <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
+                  {/* Always accessible — auth, legal, and access form bypass prelaunch gate */}
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/terms" element={<Terms />} />
+                  <Route path="/request-access" element={<RequestAccess />} />
+                  {/* Public certificate verification — not module-gated, not prelaunch-gated */}
+                  <Route path="/education/certificates/verify/:token" element={<EduCertificateVerify />} />
+                  <Route path="/certificates/verify/:token" element={<CertificateVerify />} />
+
+                  {/* ── Prelaunch-gated public routes ───────────
+                      VITE_PRELAUNCH_MODE=true (Cloudflare Pages production env) →
+                      all routes below redirect to "/" for public visitors.
+                      Local dev (env var unset) → full access for development agents. */}
+                  <Route element={<PrelaunchGuard />}>
+                  {/* Full cinematic home kept accessible for internal preview */}
+                  <Route path="/home" element={<PublicHome />} />
+                  <Route path="/brands" element={<PublicBrands />} />
+                  <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
                   <Route path="/plans" element={<Plans />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/about" element={<About />} />
@@ -335,7 +347,6 @@ function App() {
                   <Route path="/for-salons" element={<ForSalons />} />
                   <Route path="/for-buyers" element={<Navigate to="/professionals" replace />} />
                   <Route path="/how-it-works" element={<HowItWorks />} />
-                  <Route path="/request-access" element={<RequestAccess />} />
                   <Route path="/education" element={<Education />} />
                   <Route path="/education/courses" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><EduCourseCatalog /></ModuleRoute>} />
                   <Route path="/education/courses/:slug" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><EduCourseDetail /></ModuleRoute>} />
@@ -349,8 +360,6 @@ function App() {
                       <ModuleRoute moduleKey="MODULE_EDUCATION"><EduMyCertificates /></ModuleRoute>
                     </ProtectedRoute>
                   } />
-                  {/* Public verification — NOT module-gated */}
-                  <Route path="/education/certificates/verify/:token" element={<EduCertificateVerify />} />
                   <Route path="/education/author" element={
                     <ProtectedRoute requireRole={['admin', 'platform_admin']}>
                       <EduAuthorDashboard />
@@ -386,8 +395,6 @@ function App() {
                       <ModuleRoute moduleKey="MODULE_EDUCATION"><CoursePlayer /></ModuleRoute>
                     </ProtectedRoute>
                   } />
-                  {/* Public verification — NOT module-gated */}
-                  <Route path="/certificates/verify/:token" element={<CertificateVerify />} />
                   <Route path="/my-certificates" element={
                     <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
                       <ModuleRoute moduleKey="MODULE_EDUCATION"><MyCertificates /></ModuleRoute>
@@ -465,6 +472,7 @@ function App() {
                       <ModuleRoute moduleKey="MODULE_SALES"><CommissionDashboard /></ModuleRoute>
                     </ProtectedRoute>
                   } />
+                  </Route>{/* end PrelaunchGuard */}
 
                   {/* ── Business Portal ─────────────────────────── */}
                   <Route path="/portal" element={<BusinessLayout />}>
