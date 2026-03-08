@@ -9,7 +9,6 @@ import {
   Award,
   Download,
   ExternalLink,
-  Loader2,
   GraduationCap,
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
@@ -53,8 +52,23 @@ export default function MyCertificates() {
       <section className="py-8 lg:py-12">
         <div className="section-container">
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 text-accent animate-spin" />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-mn-card rounded-2xl border border-graphite/5 overflow-hidden">
+                  <div className="p-6 bg-mn-surface space-y-3">
+                    <div className="w-12 h-12 bg-graphite/10 rounded-full mx-auto animate-pulse" />
+                    <div className="h-4 w-32 bg-graphite/10 rounded mx-auto animate-pulse" />
+                  </div>
+                  <div className="p-5 space-y-3">
+                    <div className="h-3 w-full bg-graphite/10 rounded animate-pulse" />
+                    <div className="h-3 w-2/3 bg-graphite/10 rounded animate-pulse" />
+                    <div className="flex gap-2 pt-2">
+                      <div className="flex-1 h-8 bg-graphite/10 rounded-lg animate-pulse" />
+                      <div className="flex-1 h-8 bg-graphite/10 rounded-lg animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-20">
@@ -112,14 +126,14 @@ export default function MyCertificates() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-mn-card rounded-2xl border border-graphite/5">
-              <GraduationCap className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
-              <h3 className="font-sans font-semibold text-graphite mb-2">No certificates yet</h3>
-              <p className="text-graphite/60 font-sans text-sm mb-4">
-                Complete courses to earn certificates and CE credits.
-              </p>
-              <Link to="/education/courses" className="btn-mineral-primary">
-                Browse Courses
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-lg font-semibold text-graphite mb-2">No certificates yet</h3>
+              <p className="text-graphite/60 max-w-md mx-auto mb-6">Complete courses to earn certificates and CE credits.</p>
+              <Link to="/education/courses" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+                Browse Courses →
               </Link>
             </div>
           )}

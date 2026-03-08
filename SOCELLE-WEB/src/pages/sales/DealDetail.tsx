@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft,
   AlertCircle,
-  Loader2,
   Phone,
   Mail,
   Calendar,
@@ -16,11 +15,14 @@ import {
   User,
   FileText,
   Edit,
+  Download,
+  Briefcase,
 } from 'lucide-react';
 import { useDeal } from '../../lib/useDeals';
 import { useDealActivities, type NewDealActivity } from '../../lib/useDealActivities';
 import { useProposals } from '../../lib/useProposals';
 import { useDeals } from '../../lib/useDeals';
+import { exportToCSV } from '../../lib/csvExport';
 
 // ── WO-OVERHAUL-14: Deal Detail ─────────────────────────────────────────
 // Data source: deals + deal_activities + proposals (LIVE when DB-connected)
@@ -53,9 +55,9 @@ const ACTIVITY_ICONS: Record<string, typeof Phone> = {
 
 export default function DealDetail() {
   const { id } = useParams<{ id: string }>();
-  const { deal, loading, isLive, reload: reloadDeal } = useDeal(id);
-  const { activities, loading: actLoading, addActivity } = useDealActivities(id);
-  const { proposals } = useProposals(id);
+  const { deal, loading, isLive, error: dealError, reload: reloadDeal } = useDeal(id);
+  const { activities, loading: actLoading, error: actError, reload: actReload, addActivity } = useDealActivities(id);
+  const { proposals, error: propError, reload: propReload } = useProposals(id);
   const { updateDeal } = useDeals();
 
   const [showAddActivity, setShowAddActivity] = useState(false);
@@ -63,6 +65,8 @@ export default function DealDetail() {
   const [actDesc, setActDesc] = useState('');
   const [showOutcome, setShowOutcome] = useState<'won' | 'lost' | null>(null);
   const [outcomeReason, setOutcomeReason] = useState('');
+
+  const error = dealError || actError || propError;
 
   const handleAddActivity = useCallback(async () => {
     if (!actDesc.trim() || !id) return;
@@ -95,10 +99,92 @@ export default function DealDetail() {
     }
   }, [id, outcomeReason, updateDeal, reloadDeal]);
 
+  const handleExport = () => {
+    if (!deal) return;
+    const dealData = [{
+      title: deal.title,
+      value: deal.value,
+      status: deal.status,
+      probability: deal.probability,
+      contact: deal.contact_name ?? '',
+      email: deal.contact_email ?? '',
+      company: deal.company_name ?? '',
+      expected_close: deal.expected_close_date ?? '',
+      won_reason: deal.won_reason ?? '',
+      lost_reason: deal.lost_reason ?? '',
+      created: deal.created_at,
+      updated: deal.updated_at,
+    }];
+    const activityData = activities.map((a) => ({
+      type: a.activity_type,
+      description: a.description,
+      performed_at: a.performed_at,
+    }));
+    exportToCSV([...dealData, ...activityData.map((a) => ({ title: `[Activity] ${a.type}`, value: 0, status: '', probability: 0, contact: a.description, email: '', company: '', expected_close: '', won_reason: '', lost_reason: '', created: a.performed_at, updated: a.performed_at }))], 'deal-detail');
+  };
+
   if (loading || actLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Breadcrumb skeleton */}
+        <div className="h-4 w-28 bg-graphite/8 rounded animate-pulse" />
+        {/* Header skeleton */}
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+          <div>
+            <div className="h-8 w-64 bg-graphite/8 rounded-lg animate-pulse" />
+            <div className="flex gap-3 mt-3">
+              <div className="h-5 w-14 bg-graphite/8 rounded-full animate-pulse" />
+              <div className="h-5 w-20 bg-graphite/5 rounded animate-pulse" />
+              <div className="h-5 w-24 bg-graphite/5 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <div className="h-9 w-20 bg-graphite/8 rounded-full animate-pulse" />
+            <div className="h-9 w-16 bg-signal-up/10 rounded-full animate-pulse" />
+            <div className="h-9 w-16 bg-signal-down/10 rounded-full animate-pulse" />
+          </div>
+        </div>
+        {/* Content skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-graphite/8 p-5 space-y-3">
+              <div className="h-3 w-16 bg-graphite/8 rounded animate-pulse" />
+              <div className="h-4 w-32 bg-graphite/5 rounded animate-pulse" />
+              <div className="h-4 w-40 bg-graphite/5 rounded animate-pulse" />
+            </div>
+            <div className="bg-white rounded-2xl border border-graphite/8 p-5 space-y-3">
+              <div className="h-3 w-20 bg-graphite/8 rounded animate-pulse" />
+              <div className="h-4 w-36 bg-graphite/5 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="lg:col-span-2 space-y-4">
+            <div className="h-6 w-36 bg-graphite/8 rounded animate-pulse" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex gap-3 py-3 border-b border-graphite/5">
+                <div className="w-8 h-8 rounded-full bg-graphite/8 animate-pulse" />
+                <div className="flex-1">
+                  <div className="h-3 w-20 bg-graphite/8 rounded animate-pulse mb-2" />
+                  <div className="h-4 w-full bg-graphite/5 rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !deal) {
+    return (
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-6 text-center">
+          <AlertCircle className="w-8 h-8 text-signal-down mx-auto mb-2" />
+          <p className="text-graphite font-medium">Something went wrong</p>
+          <p className="text-graphite/60 text-sm mt-1">{error}</p>
+          <button onClick={() => { reloadDeal(); actReload(); propReload(); }} className="mt-3 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -106,8 +192,14 @@ export default function DealDetail() {
   if (!deal) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-        <p className="text-graphite/50 font-sans">Deal not found.</p>
-        <Link to="/sales" className="text-accent text-sm font-sans hover:underline mt-2 inline-block">Back to Sales</Link>
+        <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Briefcase className="w-8 h-8 text-accent" />
+        </div>
+        <h3 className="text-lg font-semibold text-graphite mb-2">Deal not found</h3>
+        <p className="text-graphite/60 max-w-md mx-auto mb-6">This deal may have been removed or you may not have access to view it.</p>
+        <Link to="/sales" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+          Back to Sales
+        </Link>
       </div>
     );
   }
@@ -140,31 +232,37 @@ export default function DealDetail() {
           </div>
         </div>
 
-        {deal.status === 'open' && (
-          <div className="flex gap-2">
-            <Link
-              to={`/sales/deals/${id}/edit`}
-              className="inline-flex items-center gap-1.5 h-9 px-4 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full hover:bg-mn-surface transition-colors"
-            >
-              <Edit className="w-4 h-4" />
-              Edit
-            </Link>
-            <button
-              onClick={() => setShowOutcome('won')}
-              className="inline-flex items-center gap-1.5 h-9 px-4 bg-signal-up/10 text-signal-up text-sm font-sans font-semibold rounded-full hover:bg-signal-up/20 transition-colors"
-            >
-              <CheckCircle className="w-4 h-4" />
-              Won
-            </button>
-            <button
-              onClick={() => setShowOutcome('lost')}
-              className="inline-flex items-center gap-1.5 h-9 px-4 bg-signal-down/10 text-signal-down text-sm font-sans font-semibold rounded-full hover:bg-signal-down/20 transition-colors"
-            >
-              <XCircle className="w-4 h-4" />
-              Lost
-            </button>
-          </div>
-        )}
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-accent hover:text-accent-hover border border-accent/20 rounded-lg hover:bg-accent-soft transition-colors">
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+          {deal.status === 'open' && (
+            <>
+              <Link
+                to={`/sales/deals/${id}/edit`}
+                className="inline-flex items-center gap-1.5 h-9 px-4 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full hover:bg-mn-surface transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                Edit
+              </Link>
+              <button
+                onClick={() => setShowOutcome('won')}
+                className="inline-flex items-center gap-1.5 h-9 px-4 bg-signal-up/10 text-signal-up text-sm font-sans font-semibold rounded-full hover:bg-signal-up/20 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Won
+              </button>
+              <button
+                onClick={() => setShowOutcome('lost')}
+                className="inline-flex items-center gap-1.5 h-9 px-4 bg-signal-down/10 text-signal-down text-sm font-sans font-semibold rounded-full hover:bg-signal-down/20 transition-colors"
+              >
+                <XCircle className="w-4 h-4" />
+                Lost
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Outcome modal */}
@@ -317,7 +415,19 @@ export default function DealDetail() {
 
           {/* Timeline */}
           {activities.length === 0 ? (
-            <p className="text-graphite/50 font-sans text-sm py-8 text-center">No activities recorded yet.</p>
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <StickyNote className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-lg font-semibold text-graphite mb-2">No activities recorded yet</h3>
+              <p className="text-graphite/60 max-w-md mx-auto mb-6">Track calls, emails, meetings, and notes to keep a complete history of this deal.</p>
+              <button
+                onClick={() => setShowAddActivity(true)}
+                className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm"
+              >
+                Add first activity
+              </button>
+            </div>
           ) : (
             <div className="space-y-1">
               {activities.map((a) => {

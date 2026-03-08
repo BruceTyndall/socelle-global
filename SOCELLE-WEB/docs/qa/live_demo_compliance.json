@@ -1,0 +1,24 @@
+{
+  "scan_date": "2026-03-09",
+  "session": 48,
+  "skill": "live-demo-detector",
+  "demo_hooks": [
+    {"hook": "useSignalCategories.ts", "reason": "static array, no Supabase query — category config, acceptable"},
+    {"hook": "useSignalModules.ts", "reason": "static array, no Supabase query — module config, acceptable"},
+    {"hook": "useToneSwitch.ts", "reason": "static array — motion utility, not data"},
+    {"hook": "useBrandTier.ts", "reason": "static array — tier config, acceptable"},
+    {"hook": "useCart.ts", "reason": "static array — NEVER MODIFY per doctrine"},
+    {"hook": "useChatSession.ts", "reason": "static array — AI session, no DB yet"},
+    {"hook": "useLocationContext.ts", "reason": "static array — location config"},
+    {"hook": "useProtocols.ts", "reason": "static array — protocol config"},
+    {"hook": "useNotifications.ts", "reason": "static array — notification config"}
+  ],
+  "hooks_with_isLive": 53,
+  "hooks_without_isLive": 33,
+  "isLive_coverage_pct": 61.6,
+  "pages_with_demo_badge": 101,
+  "fake_timestamps": [],
+  "hardcoded_counts": [],
+  "notes": "No fake timestamps detected. Hardcoded count hits are all form inputs (employee_count) or CSS class numbers — not fake data. 9 DEMO hooks are config/utility hooks, not data surfaces.",
+  "compliance": "PASS"
+}

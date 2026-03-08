@@ -86,6 +86,11 @@ const AdminSubscriptionMetrics = lazy(() => import('./pages/admin/AdminSubscript
 const ApiDocs = lazy(() => import('./pages/public/ApiDocs'));
 const ApiPricing = lazy(() => import('./pages/public/ApiPricing'));
 
+// ── Authoring Studio (WO-CMS-05)
+const StudioHome = lazy(() => import('./pages/business/studio/StudioHome'));
+const StudioEditor = lazy(() => import('./pages/business/studio/StudioEditor'));
+const CourseBuilder = lazy(() => import('./pages/business/studio/CourseBuilder'));
+
 // ── Business portal
 const PortalHome = lazy(() => import('./pages/business/PortalHome'));
 const BusinessLogin = lazy(() => import('./pages/business/Login'));
@@ -830,6 +835,32 @@ function App() {
                     <Route path="prospects/:id" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <ModuleRoute moduleKey="MODULE_CRM"><ProspectDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    {/* ── Authoring Studio (WO-CMS-05) ── */}
+                    <Route path="studio" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <StudioHome />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="studio/editor/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <StudioEditor />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="studio/editor" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <StudioEditor />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="studio/course/:id" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <CourseBuilder />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="studio/course" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <CourseBuilder />
                       </ProtectedRoute>
                     } />
                   </Route>

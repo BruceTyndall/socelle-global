@@ -6,14 +6,15 @@ import {
   Target,
   Activity,
   AlertCircle,
-  Loader2,
   ArrowRight,
   Zap,
   BarChart3,
   Plus,
+  Download,
 } from 'lucide-react';
 import { useDeals } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
+import { exportToCSV } from '../../lib/csvExport';
 
 // ── WO-OVERHAUL-14: Sales Dashboard ──────────────────────────────────────
 // Data source: deals + sales_pipelines (LIVE when DB-connected)
@@ -24,10 +25,11 @@ function formatCurrency(amount: number) {
 }
 
 export default function SalesDashboard() {
-  const { deals, loading: dealsLoading, isLive: dealsLive } = useDeals();
-  const { pipelines, loading: pipelinesLoading } = usePipelines();
+  const { deals, loading: dealsLoading, isLive: dealsLive, error: dealsError, reload: dealsReload } = useDeals();
+  const { pipelines, loading: pipelinesLoading, error: pipelinesError, reload: pipelinesReload } = usePipelines();
   const loading = dealsLoading || pipelinesLoading;
   const isLive = dealsLive;
+  const error = dealsError || pipelinesError;
 
   const metrics = useMemo(() => {
     const now = new Date();
@@ -78,10 +80,80 @@ export default function SalesDashboard() {
     return [...deals].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()).slice(0, 10);
   }, [deals]);
 
+  const handleExport = () => {
+    const exportData = stageSummary.map((s) => ({
+      stage: s.name,
+      deals: s.count,
+      value: s.value,
+    }));
+    exportToCSV(exportData, 'sales-pipeline-summary');
+  };
+
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Header skeleton */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="h-8 w-56 bg-graphite/8 rounded-lg animate-pulse" />
+            <div className="h-4 w-72 bg-graphite/5 rounded-lg animate-pulse mt-2" />
+          </div>
+          <div className="flex gap-2">
+            <div className="h-10 w-28 bg-graphite/8 rounded-full animate-pulse" />
+            <div className="h-10 w-36 bg-graphite/5 rounded-full animate-pulse" />
+          </div>
+        </div>
+        {/* Metrics skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-graphite/8 p-5">
+              <div className="h-3 w-20 bg-graphite/8 rounded animate-pulse mb-3" />
+              <div className="h-7 w-28 bg-graphite/5 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+        {/* Pipeline skeleton */}
+        <div>
+          <div className="h-5 w-40 bg-graphite/8 rounded animate-pulse mb-4" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-xl border border-graphite/8 p-4">
+                <div className="h-3 w-16 bg-graphite/8 rounded animate-pulse mb-2" />
+                <div className="h-5 w-20 bg-graphite/5 rounded animate-pulse mb-1" />
+                <div className="h-3 w-14 bg-graphite/5 rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Table skeleton */}
+        <div>
+          <div className="h-5 w-36 bg-graphite/8 rounded animate-pulse mb-4" />
+          <div className="bg-white rounded-2xl border border-graphite/8 p-4 space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-4">
+                <div className="h-4 w-40 bg-graphite/5 rounded animate-pulse" />
+                <div className="h-4 w-20 bg-graphite/5 rounded animate-pulse" />
+                <div className="h-4 w-16 bg-graphite/8 rounded-full animate-pulse" />
+                <div className="h-4 w-20 bg-graphite/5 rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-6 text-center">
+          <AlertCircle className="w-8 h-8 text-signal-down mx-auto mb-2" />
+          <p className="text-graphite font-medium">Something went wrong</p>
+          <p className="text-graphite/60 text-sm mt-1">{error}</p>
+          <button onClick={() => { dealsReload(); pipelinesReload(); }} className="mt-3 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -105,6 +177,10 @@ export default function SalesDashboard() {
           <p className="text-graphite/60 font-sans mt-1">Pipeline performance and revenue metrics.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-accent hover:text-accent-hover border border-accent/20 rounded-lg hover:bg-accent-soft transition-colors">
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
           <Link
             to="/sales/deals/new"
             className="inline-flex items-center gap-2 h-10 px-5 bg-graphite text-white text-sm font-sans font-semibold rounded-full hover:bg-graphite/90 transition-colors"
@@ -184,7 +260,16 @@ export default function SalesDashboard() {
       <div>
         <h2 className="text-lg font-sans font-semibold text-graphite mb-4">Recent Activity</h2>
         {recentDeals.length === 0 ? (
-          <p className="text-graphite/50 font-sans text-sm">No deals yet.</p>
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <TrendingUp className="w-8 h-8 text-accent" />
+            </div>
+            <h3 className="text-lg font-semibold text-graphite mb-2">No deals yet</h3>
+            <p className="text-graphite/60 max-w-md mx-auto mb-6">Start building your pipeline by creating your first deal or discovering opportunities from intelligence signals.</p>
+            <Link to="/sales/opportunities" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+              Find opportunities
+            </Link>
+          </div>
         ) : (
           <div className="bg-white rounded-2xl border border-graphite/8 overflow-hidden">
             <div className="overflow-x-auto">

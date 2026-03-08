@@ -1,0 +1,32 @@
+{
+  "scan_date": "2026-03-09",
+  "session": 48,
+  "skill": "hub-shell-detector",
+  "classifications": {
+    "SHELL": [
+      "src/pages/admin/AffiliatesHub.tsx (0 hooks — DEMO labeled)",
+      "src/pages/admin/RecruitmentHub.tsx (0 hooks — DEMO labeled)",
+      "src/pages/admin/SocialHub.tsx (0 hooks — DEMO labeled)",
+      "src/pages/brand/ApplicationReceived.tsx (0 hooks — static confirmation page)"
+    ],
+    "STUB": [],
+    "LIVE": "All other pages have 1+ data hooks (useQuery/useMutation/useState)"
+  },
+  "coming_soon_pages": [
+    "src/pages/sales/DealEditor.tsx (has 'placeholder' text but 22 hooks — functional)",
+    "src/pages/brand/CampaignBuilder.tsx (has 'placeholder' text but 16 hooks — functional)"
+  ],
+  "total_pages_scanned": 150,
+  "shell_count": 4,
+  "stub_count": 0,
+  "shell_pct": 2.7,
+  "todo_placeholder_count": 2,
+  "hub_summary": {
+    "Intelligence": {"pages": 1, "total_hooks": 5, "verdict": "LIVE"},
+    "Education": {"pages": 12, "total_hooks": 82, "verdict": "LIVE"},
+    "Sales": {"pages": 9, "total_hooks": 105, "verdict": "LIVE"},
+    "Admin": {"pages": 60, "total_hooks": 500, "verdict": "LIVE (3 DEMO shells: Affiliates, Recruitment, Social)"},
+    "Brand": {"pages": 25, "total_hooks": 206, "verdict": "LIVE (1 static: ApplicationReceived)"},
+    "CRM": {"pages": 12, "total_hooks": 101, "verdict": "LIVE"}
+  }
+}

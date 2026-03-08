@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
-import type { CmsAsset, CmsAssetInsert } from './types';
+import type { CmsAsset, CmsAssetInsert, CmsUsageRights } from './types';
 
 // ── useCmsAssets — WO-CMS-02: CMS assets hook ───────────────────────
 // CRUD for cms_assets table + Supabase Storage upload.
@@ -44,8 +44,14 @@ export function useCmsAssets(options: UseCmsAssetsOptions = {}) {
   const error = queryError instanceof Error ? queryError.message : null;
 
   const uploadAsset = useMutation({
-    mutationFn: async (input: { file: File; altText?: string; caption?: string }) => {
-      const { file, altText, caption } = input;
+    mutationFn: async (input: {
+      file: File;
+      altText?: string;
+      caption?: string;
+      tags?: string[];
+      usageRights?: CmsUsageRights;
+    }) => {
+      const { file, altText, caption, tags, usageRights } = input;
       const ext = file.name.split('.').pop() ?? '';
       const storagePath = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
@@ -62,7 +68,11 @@ export function useCmsAssets(options: UseCmsAssetsOptions = {}) {
         size_bytes: file.size,
         alt_text: altText ?? null,
         caption: caption ?? null,
+        tags: tags ?? null,
+        usage_rights: usageRights ?? null,
         uploaded_by: null,
+        width: null,
+        height: null,
       };
 
       const { data, error: insertError } = await supabase
@@ -88,10 +98,28 @@ export function useCmsAssets(options: UseCmsAssetsOptions = {}) {
   });
 
   const updateAsset = useMutation({
-    mutationFn: async ({ id, altText, caption }: { id: string; altText?: string; caption?: string }) => {
+    mutationFn: async ({
+      id,
+      altText,
+      caption,
+      tags,
+      usageRights,
+    }: {
+      id: string;
+      altText?: string;
+      caption?: string;
+      tags?: string[];
+      usageRights?: CmsUsageRights;
+    }) => {
+      const updatePayload: Record<string, unknown> = {};
+      if (altText !== undefined) updatePayload.alt_text = altText;
+      if (caption !== undefined) updatePayload.caption = caption;
+      if (tags !== undefined) updatePayload.tags = tags;
+      if (usageRights !== undefined) updatePayload.usage_rights = usageRights;
+
       const { data, error } = await supabase
         .from('cms_assets')
-        .update({ alt_text: altText, caption })
+        .update(updatePayload)
         .eq('id', id)
         .select()
         .single();

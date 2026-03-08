@@ -98,6 +98,8 @@ export interface CmsPost {
   updated_at: string;
 }
 
+export type CmsUsageRights = 'owner' | 'editorial' | 'brand_supplied' | 'licensed';
+
 export interface CmsAsset {
   id: string;
   storage_path: string;
@@ -108,6 +110,8 @@ export interface CmsAsset {
   height: number | null;
   alt_text: string | null;
   caption: string | null;
+  tags: string[] | null;
+  usage_rights: CmsUsageRights | null;
   uploaded_by: string | null;
   created_at: string;
 }

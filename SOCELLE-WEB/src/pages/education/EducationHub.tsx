@@ -188,11 +188,14 @@ export default function EducationHub() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-mn-card rounded-2xl border border-graphite/5">
-              <GraduationCap className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
-              <p className="text-graphite/60 font-sans">No featured courses available yet.</p>
-              <Link to="/education/courses" className="text-sm text-accent hover:text-accent-hover mt-2 inline-block">
-                Browse all courses
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-lg font-semibold text-graphite mb-2">No featured courses available yet</h3>
+              <p className="text-graphite/60 max-w-md mx-auto mb-6">New courses are being added regularly. Browse the full catalog to find training.</p>
+              <Link to="/education/courses" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+                Browse all courses →
               </Link>
             </div>
           )}

@@ -17,15 +17,16 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowRight,
-  Loader2,
   Shield,
   TrendingUp,
   XCircle,
+  Download,
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useStaffTraining, type StaffTrainingProfile } from '../../lib/education/useStaffTraining';
 import { useAuth } from '../../lib/auth';
+import { exportToCSV } from '../../lib/csvExport';
 
 const COMPLIANCE_BADGE: Record<string, { label: string; color: string; icon: React.ElementType }> = {
   compliant: { label: 'Compliant', color: 'bg-signal-up/10 text-signal-up', icon: CheckCircle },
@@ -47,6 +48,29 @@ export default function StaffTraining() {
     ? staffProfiles
     : staffProfiles.filter(p => p.complianceStatus === filter);
 
+  const handleExportCompliance = () => {
+    if (staffProfiles.length === 0) return;
+    exportToCSV(
+      staffProfiles.map((p: StaffTrainingProfile) => ({
+        name: p.member.full_name ?? p.member.email ?? 'Unknown',
+        status: p.complianceStatus.replace(/_/g, ' '),
+        ce_credits: p.totalCeCredits,
+        completed_courses: p.completedCourses,
+        in_progress: p.inProgressCourses,
+        next_expiry: p.nextExpiry ? new Date(p.nextExpiry).toLocaleDateString() : '—',
+      })),
+      'socelle_staff_compliance',
+      [
+        { key: 'name', label: 'Team Member' },
+        { key: 'status', label: 'Compliance Status' },
+        { key: 'ce_credits', label: 'CE Credits' },
+        { key: 'completed_courses', label: 'Completed Courses' },
+        { key: 'in_progress', label: 'In Progress' },
+        { key: 'next_expiry', label: 'Next Expiry' },
+      ]
+    );
+  };
+
   // Summary stats
   const compliantCount = staffProfiles.filter(p => p.complianceStatus === 'compliant').length;
   const atRiskCount = staffProfiles.filter(p => p.complianceStatus === 'at_risk').length;
@@ -57,11 +81,15 @@ export default function StaffTraining() {
     return (
       <div className="min-h-screen bg-mn-bg font-sans">
         <MainNav />
-        <div className="pt-40 text-center">
-          <Users className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
-          <h1 className="text-2xl font-sans font-semibold text-graphite mb-2">Sign in to view staff training</h1>
-          <p className="text-graphite/60 mb-6">Manage your team's training and compliance status.</p>
-          <Link to="/portal/login" className="btn-mineral-primary">Sign In</Link>
+        <div className="text-center py-16">
+          <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Users className="w-8 h-8 text-accent" />
+          </div>
+          <h3 className="text-lg font-semibold text-graphite mb-2">Sign in to view staff training</h3>
+          <p className="text-graphite/60 max-w-md mx-auto mb-6">Manage your team's training and compliance status.</p>
+          <Link to="/portal/login" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+            Sign In →
+          </Link>
         </div>
         <SiteFooter />
       </div>
@@ -94,9 +122,19 @@ export default function StaffTraining() {
                 Monitor your team's training progress and CE compliance.
               </p>
             </div>
-            {isLive && (
-              <span className="text-[10px] font-semibold text-signal-up bg-signal-up/10 px-2 py-0.5 rounded-full">LIVE</span>
-            )}
+            <div className="flex items-center gap-3">
+              {isLive && (
+                <span className="text-[10px] font-semibold text-signal-up bg-signal-up/10 px-2 py-0.5 rounded-full">LIVE</span>
+              )}
+              {staffProfiles.length > 0 && (
+                <button
+                  onClick={handleExportCompliance}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-accent border border-accent/30 rounded-lg hover:bg-accent/5 transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" /> Export CSV
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -110,8 +148,32 @@ export default function StaffTraining() {
       <section className="py-8 lg:py-12">
         <div className="section-container">
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 text-accent animate-spin" />
+            <div className="space-y-6">
+              {/* Skeleton: summary stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="bg-mn-card rounded-xl border border-graphite/5 p-5 space-y-2">
+                    <div className="h-4 w-5 bg-graphite/10 rounded animate-pulse" />
+                    <div className="h-8 w-12 bg-graphite/10 rounded animate-pulse" />
+                    <div className="h-3 w-20 bg-graphite/10 rounded animate-pulse" />
+                  </div>
+                ))}
+              </div>
+              {/* Skeleton: compliance bar */}
+              <div className="bg-mn-card rounded-2xl border border-graphite/5 p-6 space-y-3">
+                <div className="h-4 w-36 bg-graphite/10 rounded animate-pulse" />
+                <div className="h-3 bg-graphite/10 rounded-full animate-pulse" />
+              </div>
+              {/* Skeleton: staff list */}
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-mn-card rounded-2xl border border-graphite/5 p-5 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-graphite/10 animate-pulse flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 bg-graphite/10 rounded animate-pulse" />
+                    <div className="h-3 w-48 bg-graphite/10 rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-20">
@@ -119,14 +181,14 @@ export default function StaffTraining() {
               <p className="text-graphite/60 text-sm">{error}</p>
             </div>
           ) : staffProfiles.length === 0 ? (
-            <div className="text-center py-20 bg-mn-card rounded-2xl border border-graphite/5">
-              <Users className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
-              <h3 className="font-sans font-semibold text-graphite mb-2">No team members found</h3>
-              <p className="text-graphite/60 text-sm mb-4">
-                Add team members to your business to track their training progress.
-              </p>
-              <Link to="/portal/team" className="btn-mineral-primary">
-                Manage Team
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-lg font-semibold text-graphite mb-2">No team members found</h3>
+              <p className="text-graphite/60 max-w-md mx-auto mb-6">Add team members to your business to track their training progress.</p>
+              <Link to="/portal/team" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+                Manage Team →
               </Link>
             </div>
           ) : (
@@ -363,9 +425,12 @@ export default function StaffTraining() {
               </div>
 
               {filteredProfiles.length === 0 && (
-                <div className="text-center py-12 bg-mn-card rounded-2xl border border-graphite/5">
-                  <Users className="w-8 h-8 text-graphite/20 mx-auto mb-3" />
-                  <p className="text-graphite/60 text-sm">No team members match this filter.</p>
+                <div className="text-center py-16">
+                  <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Users className="w-8 h-8 text-accent" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-graphite mb-2">No team members match this filter</h3>
+                  <p className="text-graphite/60 max-w-md mx-auto mb-6">Try adjusting your filters to see more team members.</p>
                 </div>
               )}
 

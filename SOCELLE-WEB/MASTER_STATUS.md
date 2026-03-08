@@ -1,27 +1,56 @@
 > Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
 
 # SOCELLE — MASTER STATUS DOCUMENT
-**Last Updated:** March 8, 2026 — V1 Master Alignment
+**Last Updated:** March 9, 2026 — V3 Wave 1.5 Complete (Session 48)
 **Purpose:** Single source of truth for all agents. Replaces PLATFORM_STATUS.md and SOCELLE_MASTER_WORK_ORDER.md for current-state tracking.
 **Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
-**Wave Progress:** Waves 1–9 complete. No outstanding Wave 9 items.
+**Wave Progress:** Waves 1–14 complete. V2-TECH FROZEN. V3 Wave 1.5 complete (CMS pipeline + hub upgrades + Authoring Studio + Admin Health + Media Library).
 
 ---
 
-## BUILD STATUS (Verified March 5, 2026)
+## BUILD STATUS (Verified March 9, 2026 — Session 48)
 
 | Check | Status |
 |---|---|
 | `npx tsc --noEmit` | ✅ Zero errors |
-| `npm run build` (Vite) | ✅ Passes — 3.63s |
+| `npm run build` (Vite) | ✅ Passes — 5.08s |
+| React | ✅ 19.2.4 (FROZEN) |
+| Vite | ✅ 6.4.1 (FROZEN) |
+| TypeScript | ✅ strict mode ON |
+| TanStack Query | ✅ v5 on all data hooks |
 | `graphite` token | ✅ `#141418` |
 | `mn-bg` / BG token | ✅ `#F6F3EF` |
+| `accent-hover` token | ✅ `#5A7185` |
+| `accent-soft` token | ✅ `#E8EDF1` |
 | `font-serif` on public pages | ✅ 0 instances |
-| Banned SaaS phrases ("unlock" etc.) | ✅ 0 instances |
+| Banned SaaS phrases | ✅ 0 instances |
 | `pro-*` tokens on public pages | ⚠️ 2 files (ForgotPassword, ResetPassword — auth-critical, low priority) |
-| External API keys wired | 🔴 0 of 90+ cataloged APIs integrated |
-| Supabase migrations | ✅ 74 total — ADD ONLY policy |
-| Edge functions deployed | ✅ 7 (ai-concierge, ai-orchestrator, create-checkout, generate-embeddings, magic-link, send-email, stripe-webhook) |
+| Supabase migrations | ✅ 76+ total — ADD ONLY policy |
+| Edge functions deployed | ✅ 9+ (ai-concierge, ai-orchestrator, create-checkout, generate-embeddings, magic-link, send-email, stripe-webhook, ingest-npi, feed-orchestrator) |
+
+## V3 SESSION 48 — COMPLETED WORK
+
+### CMS Pipeline (WO-CMS-01 through WO-CMS-05) ✅
+- Schema: 8 tables + RLS + indexes + triggers + 10 spaces + 4 templates
+- Hooks: 9 TanStack Query v5 files (types + 7 hooks + barrel)
+- Admin UI: 7 CMS admin pages (dashboard, pages, posts, blocks, media, templates, spaces)
+- PageRenderer: 12 block types + blog + CMS page + help routes
+- Authoring Studio: StudioHome (3 tabs, 9 templates), StudioEditor (3-panel, 17 block types), CourseBuilder (5-step wizard)
+
+### Hub Upgrades (per Hub Feature Spec) ✅
+- CRM: Today View dashboard, intelligence tab wired, churn risk flags, skeleton shimmers
+- Sales: CSV export all pages, error states, skeleton shimmers, Pearl Mineral empty states
+- Education: Intelligence recommendations, CSV export, skeleton shimmers, empty states
+- Commerce: Intelligence-first shop, trending badges, FTC affiliate badges
+- Admin: System Health Dashboard (KPI strip, feed errors, quick actions, feed status)
+- Media Library: Full rewrite (drag-drop, grid/list, preview, metadata editor)
+
+### Remaining (Wave 2+)
+- WO-CMS-06: Hub Integrations
+- V2-INTEL-01..06: Intelligence Cloud, AI tools, feed pipeline, credit economy, affiliate
+- V2-HUBS-01..04, 08, 12, 13: Intelligence, Jobs, Brands, Professionals, Marketing, Credit Economy, Affiliate
+- CRM: rebooking engine, consent audit log
+- Admin: user management, audit log, API registry, feature flags
 
 ---
 

@@ -1,0 +1,23 @@
+{
+  "scan_date": "2026-03-09",
+  "session": 48,
+  "skill": "route-mapper",
+  "total_code_routes": 269,
+  "sitemap_routes_count": 0,
+  "sitemap_notes": "GLOBAL_SITE_MAP.md has no backtick-delimited routes; SITE_MAP.md has 0 routes. Site maps need update.",
+  "duplicate_paths": [
+    "advisor", "calendar", "campaigns", "campaigns/new", "claim/review", "crm",
+    "dashboard", "education", "intelligence", "marketing", "messages", "notifications",
+    "orders", "orders/:id", "plans", "products", "protocols", "reseller", "sales", "settings"
+  ],
+  "duplicate_count": 20,
+  "duplicate_notes": "Duplicates are expected — same relative paths appear under different layout parents (BusinessLayout, BrandLayout, AdminLayout). Not actual conflicts.",
+  "new_routes_this_session": [
+    "/portal/studio", "/portal/studio/editor", "/portal/studio/editor/:id",
+    "/portal/studio/course", "/portal/studio/course/:id",
+    "/portal/crm/tasks", "/portal/crm/segments",
+    "/portal/crm/contacts/:id/edit", "/portal/crm/companies/:id/edit",
+    "/portal/crm/companies/new"
+  ],
+  "coverage_notes": "269 routes in App.tsx. Site maps need refresh to match."
+}

@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import {
   Plus,
   AlertCircle,
-  Loader2,
   Filter,
   X,
   GripVertical,
+  Download,
+  Columns3,
 } from 'lucide-react';
 import { useDeals, type Deal, type NewDeal } from '../../lib/useDeals';
 import { usePipelines, type PipelineStage } from '../../lib/usePipelines';
+import { exportToCSV } from '../../lib/csvExport';
 
 // ── WO-OVERHAUL-14: Pipeline Kanban Board ────────────────────────────────
 // Data source: deals + sales_pipelines + pipeline_stages (LIVE when DB-connected)
@@ -23,10 +25,11 @@ function daysBetween(from: string) {
 }
 
 export default function PipelineBoard() {
-  const { pipelines, loading: pLoading, isLive } = usePipelines();
+  const { pipelines, loading: pLoading, isLive, error: pError, reload: pReload } = usePipelines();
   const defaultPipeline = pipelines.find((p) => p.is_default) ?? pipelines[0];
-  const { deals, loading: dLoading, moveDeal, createDeal } = useDeals(defaultPipeline?.id);
+  const { deals, loading: dLoading, moveDeal, createDeal, error: dError, reload: dReload } = useDeals(defaultPipeline?.id);
   const loading = pLoading || dLoading;
+  const error = pError || dError;
 
   const [showFilters, setShowFilters] = useState(false);
   const [ownerFilter, setOwnerFilter] = useState('');
@@ -46,6 +49,20 @@ export default function PipelineBoard() {
       return true;
     });
   }, [deals, ownerFilter, minValue, maxValue]);
+
+  const handleExport = () => {
+    const exportData = filteredDeals.map((d) => ({
+      title: d.title,
+      value: d.value,
+      status: d.status,
+      probability: d.probability,
+      contact: d.contact_name ?? '',
+      company: d.company_name ?? '',
+      expected_close: d.expected_close_date ?? '',
+      updated: d.updated_at,
+    }));
+    exportToCSV(exportData, 'pipeline-deals');
+  };
 
   const handleDrop = useCallback(async (stageId: string) => {
     if (!dragDealRef.current) return;
@@ -77,8 +94,50 @@ export default function PipelineBoard() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      <div className="max-w-[100vw] px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        {/* Header skeleton */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="h-8 w-40 bg-graphite/8 rounded-lg animate-pulse" />
+            <div className="h-4 w-56 bg-graphite/5 rounded-lg animate-pulse mt-2" />
+          </div>
+          <div className="h-9 w-24 bg-graphite/8 rounded-full animate-pulse" />
+        </div>
+        {/* Kanban skeleton */}
+        <div className="flex gap-4 overflow-x-auto pb-4" style={{ minHeight: '60vh' }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex-shrink-0 w-72 bg-mn-surface/60 rounded-2xl border border-graphite/8">
+              <div className="p-4 border-b border-graphite/8">
+                <div className="h-4 w-24 bg-graphite/8 rounded animate-pulse mb-2" />
+                <div className="h-3 w-16 bg-graphite/5 rounded animate-pulse" />
+              </div>
+              <div className="p-2 space-y-2">
+                {Array.from({ length: 3 - i % 2 }).map((_, j) => (
+                  <div key={j} className="bg-white rounded-xl border border-graphite/8 p-3">
+                    <div className="h-4 w-32 bg-graphite/8 rounded animate-pulse mb-2" />
+                    <div className="h-5 w-20 bg-graphite/5 rounded animate-pulse mb-2" />
+                    <div className="h-3 w-24 bg-graphite/5 rounded animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-[100vw] px-4 sm:px-6 lg:px-8 py-10">
+        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-6 text-center">
+          <AlertCircle className="w-8 h-8 text-signal-down mx-auto mb-2" />
+          <p className="text-graphite font-medium">Something went wrong</p>
+          <p className="text-graphite/60 text-sm mt-1">{error}</p>
+          <button onClick={() => { pReload(); dReload(); }} className="mt-3 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -103,13 +162,19 @@ export default function PipelineBoard() {
             {defaultPipeline?.name ?? 'No pipeline configured'}
           </p>
         </div>
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="inline-flex items-center gap-2 h-9 px-4 border border-graphite/15 text-graphite text-sm font-sans rounded-full hover:bg-mn-surface transition-colors"
-        >
-          <Filter className="w-4 h-4" />
-          Filters
-        </button>
+        <div className="flex gap-2">
+          <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-accent hover:text-accent-hover border border-accent/20 rounded-lg hover:bg-accent-soft transition-colors">
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="inline-flex items-center gap-2 h-9 px-4 border border-graphite/15 text-graphite text-sm font-sans rounded-full hover:bg-mn-surface transition-colors"
+          >
+            <Filter className="w-4 h-4" />
+            Filters
+          </button>
+        </div>
       </div>
 
       {/* Filter bar */}
@@ -144,8 +209,12 @@ export default function PipelineBoard() {
 
       {/* Kanban */}
       {stages.length === 0 ? (
-        <div className="text-center py-20 text-graphite/50 font-sans">
-          No pipeline stages configured. Set up stages in Admin &rarr; Sales.
+        <div className="text-center py-16">
+          <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Columns3 className="w-8 h-8 text-accent" />
+          </div>
+          <h3 className="text-lg font-semibold text-graphite mb-2">No pipeline stages configured</h3>
+          <p className="text-graphite/60 max-w-md mx-auto mb-6">Set up pipeline stages in Admin to start tracking your deals through the sales process.</p>
         </div>
       ) : (
         <div className="flex gap-4 overflow-x-auto pb-4" style={{ minHeight: '60vh' }}>

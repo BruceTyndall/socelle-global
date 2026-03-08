@@ -1,0 +1,628 @@
+// ── StudioEditor — WO-CMS-05 ────────────────────────────────────────
+// Block-based document editor: 3-panel layout with block picker,
+// canvas, and properties panel. Uses cms_docs + cms_blocks + cms_page_blocks.
+// Data label: LIVE — reads/writes from Supabase CMS tables.
+
+import { useState, useCallback, useMemo } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import {
+  ArrowLeft,
+  Save,
+  Eye,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  X,
+  Plus,
+  Type,
+  Heading,
+  ImageIcon,
+  VideoIcon,
+  Music,
+  File,
+  MousePointer,
+  BarChart3,
+  HelpCircle,
+  Quote,
+  Code,
+  Globe,
+  Layers,
+  LayoutTemplate,
+  Award,
+  ListChecks,
+  Activity,
+  AlertCircle,
+  RefreshCw,
+} from 'lucide-react';
+import { useStudioDoc, useStudioDocs } from '../../../lib/studio/useStudioDocs';
+import type { CmsBlockType } from '../../../lib/cms/types';
+import type { Json } from '../../../lib/database.types';
+
+// ── Extended block types for studio ─────────────────────────────────
+
+type StudioBlockType = CmsBlockType | 'heading' | 'audio' | 'file' | 'quiz' | 'kpi';
+
+interface EditorBlock {
+  id: string;
+  type: StudioBlockType;
+  content: Record<string, unknown>;
+  position: number;
+}
+
+// ── Block type definitions ──────────────────────────────────────────
+
+interface BlockTypeDef {
+  type: StudioBlockType;
+  label: string;
+  icon: React.ElementType;
+  category: string;
+  defaultContent: Record<string, unknown>;
+}
+
+const BLOCK_TYPES: BlockTypeDef[] = [
+  { type: 'text', label: 'Text', icon: Type, category: 'Content', defaultContent: { body: '' } },
+  { type: 'heading', label: 'Heading', icon: Heading, category: 'Content', defaultContent: { text: '', level: 2 } },
+  { type: 'image', label: 'Image', icon: ImageIcon, category: 'Media', defaultContent: { src: '', alt: '', caption: '' } },
+  { type: 'video', label: 'Video', icon: VideoIcon, category: 'Media', defaultContent: { url: '', provider: 'youtube' } },
+  { type: 'audio', label: 'Audio', icon: Music, category: 'Media', defaultContent: { url: '', title: '' } },
+  { type: 'file', label: 'File', icon: File, category: 'Media', defaultContent: { url: '', filename: '' } },
+  { type: 'cta', label: 'CTA', icon: MousePointer, category: 'Interactive', defaultContent: { text: 'Get Started', url: '', variant: 'primary' } },
+  { type: 'stats', label: 'Stats', icon: BarChart3, category: 'Data', defaultContent: { items: [] } },
+  { type: 'faq', label: 'FAQ', icon: HelpCircle, category: 'Content', defaultContent: { items: [] } },
+  { type: 'testimonial', label: 'Testimonial', icon: Quote, category: 'Content', defaultContent: { quote: '', author: '', role: '' } },
+  { type: 'embed', label: 'Embed', icon: Globe, category: 'Media', defaultContent: { html: '' } },
+  { type: 'code', label: 'Code', icon: Code, category: 'Content', defaultContent: { code: '', language: 'text' } },
+  { type: 'hero', label: 'Hero', icon: LayoutTemplate, category: 'Layout', defaultContent: { title: '', subtitle: '', cta_text: '', cta_url: '' } },
+  { type: 'split_feature', label: 'Split Feature', icon: Layers, category: 'Layout', defaultContent: { title: '', body: '', image: '', image_position: 'right' } },
+  { type: 'evidence_strip', label: 'Evidence Strip', icon: Award, category: 'Data', defaultContent: { items: [] } },
+  { type: 'quiz', label: 'Quiz', icon: ListChecks, category: 'Interactive', defaultContent: { questions: [] } },
+  { type: 'kpi', label: 'KPI', icon: Activity, category: 'Data', defaultContent: { label: '', value: '', change: '', direction: 'up' } },
+];
+
+// ── Block categories ────────────────────────────────────────────────
+
+const CATEGORIES = ['Content', 'Media', 'Interactive', 'Data', 'Layout'] as const;
+
+// ── Skeleton ────────────────────────────────────────────────────────
+
+function EditorSkeleton() {
+  return (
+    <div className="h-screen flex bg-[#F6F3EF] animate-pulse">
+      <div className="w-64 bg-white border-r border-[#E8EDF1] p-4">
+        <div className="h-6 bg-[#141418]/5 rounded w-32 mb-4" />
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="h-8 bg-[#141418]/5 rounded mb-2" />
+        ))}
+      </div>
+      <div className="flex-1 p-8">
+        <div className="h-10 bg-[#141418]/5 rounded-lg w-1/2 mb-6" />
+        <div className="space-y-4">
+          <div className="h-32 bg-[#141418]/5 rounded-lg" />
+          <div className="h-24 bg-[#141418]/5 rounded-lg" />
+        </div>
+      </div>
+      <div className="w-72 bg-white border-l border-[#E8EDF1] p-4">
+        <div className="h-6 bg-[#141418]/5 rounded w-24 mb-4" />
+        <div className="space-y-3">
+          <div className="h-8 bg-[#141418]/5 rounded" />
+          <div className="h-8 bg-[#141418]/5 rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Property Editor Panel ───────────────────────────────────────────
+
+function PropertyPanel({
+  block,
+  onUpdate,
+}: {
+  block: EditorBlock | null;
+  onUpdate: (id: string, content: Record<string, unknown>) => void;
+}) {
+  if (!block) {
+    return (
+      <div className="p-4">
+        <p className="text-sm text-[#141418]/40">
+          Select a block to edit its properties.
+        </p>
+      </div>
+    );
+  }
+
+  const blockDef = BLOCK_TYPES.find((bt) => bt.type === block.type);
+
+  function handleFieldChange(field: string, value: unknown) {
+    onUpdate(block.id, { ...block.content, [field]: value });
+  }
+
+  return (
+    <div className="p-4">
+      <div className="flex items-center gap-2 mb-4">
+        {blockDef && <blockDef.icon className="w-4 h-4 text-[#6E879B]" />}
+        <h3 className="text-sm font-semibold text-[#141418]">
+          {blockDef?.label ?? block.type} Properties
+        </h3>
+      </div>
+      <div className="space-y-3">
+        {Object.entries(block.content).map(([key, value]) => {
+          if (typeof value === 'string') {
+            return (
+              <div key={key}>
+                <label className="block text-xs font-medium text-[#141418]/60 mb-1 capitalize">
+                  {key.replace(/_/g, ' ')}
+                </label>
+                {value.length > 80 || key === 'body' || key === 'code' || key === 'html' ? (
+                  <textarea
+                    value={value}
+                    onChange={(e) => handleFieldChange(key, e.target.value)}
+                    rows={4}
+                    className="w-full text-sm border border-[#E8EDF1] rounded-lg px-3 py-2 text-[#141418] focus:outline-none focus:border-[#6E879B] resize-y"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={value}
+                    onChange={(e) => handleFieldChange(key, e.target.value)}
+                    className="w-full text-sm border border-[#E8EDF1] rounded-lg px-3 py-2 text-[#141418] focus:outline-none focus:border-[#6E879B]"
+                  />
+                )}
+              </div>
+            );
+          }
+          if (typeof value === 'number') {
+            return (
+              <div key={key}>
+                <label className="block text-xs font-medium text-[#141418]/60 mb-1 capitalize">
+                  {key.replace(/_/g, ' ')}
+                </label>
+                <input
+                  type="number"
+                  value={value}
+                  onChange={(e) =>
+                    handleFieldChange(key, parseInt(e.target.value, 10) || 0)
+                  }
+                  className="w-full text-sm border border-[#E8EDF1] rounded-lg px-3 py-2 text-[#141418] focus:outline-none focus:border-[#6E879B]"
+                />
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Canvas Block ────────────────────────────────────────────────────
+
+function CanvasBlock({
+  block,
+  isSelected,
+  isFirst,
+  isLast,
+  onSelect,
+  onMoveUp,
+  onMoveDown,
+  onDelete,
+}: {
+  block: EditorBlock;
+  isSelected: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+  onSelect: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDelete: () => void;
+}) {
+  const blockDef = BLOCK_TYPES.find((bt) => bt.type === block.type);
+
+  return (
+    <div
+      onClick={onSelect}
+      className={`relative bg-white rounded-lg border p-4 cursor-pointer transition-colors group ${
+        isSelected
+          ? 'border-[#6E879B] ring-1 ring-[#6E879B]/20'
+          : 'border-[#E8EDF1] hover:border-[#6E879B]/50'
+      }`}
+    >
+      {/* Block type label */}
+      <div className="flex items-center gap-2 mb-2">
+        {blockDef && <blockDef.icon className="w-3.5 h-3.5 text-[#6E879B]" />}
+        <span className="text-xs font-medium text-[#141418]/40 uppercase tracking-wide">
+          {blockDef?.label ?? block.type}
+        </span>
+      </div>
+
+      {/* Block content preview */}
+      <div className="text-sm text-[#141418]/70 min-h-[2rem]">
+        {block.type === 'text' && (
+          <p className="line-clamp-3">
+            {(block.content.body as string) || 'Empty text block'}
+          </p>
+        )}
+        {block.type === 'heading' && (
+          <p className="font-semibold">
+            {(block.content.text as string) || 'Empty heading'}
+          </p>
+        )}
+        {block.type === 'image' && (
+          <p className="italic">
+            {(block.content.alt as string) || (block.content.src as string) || 'No image set'}
+          </p>
+        )}
+        {block.type === 'cta' && (
+          <p>
+            Button: {(block.content.text as string) || 'Untitled'}
+          </p>
+        )}
+        {block.type === 'hero' && (
+          <p className="font-semibold">
+            {(block.content.title as string) || 'Empty hero'}
+          </p>
+        )}
+        {!['text', 'heading', 'image', 'cta', 'hero'].includes(block.type) && (
+          <p className="italic text-[#141418]/40">
+            {blockDef?.label ?? block.type} block
+          </p>
+        )}
+      </div>
+
+      {/* Actions on hover */}
+      <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={(e) => { e.stopPropagation(); onMoveUp(); }}
+          disabled={isFirst}
+          className="p-1 rounded hover:bg-[#E8EDF1] disabled:opacity-30 disabled:cursor-not-allowed"
+          title="Move up"
+        >
+          <ChevronUp className="w-3.5 h-3.5 text-[#141418]/60" />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onMoveDown(); }}
+          disabled={isLast}
+          className="p-1 rounded hover:bg-[#E8EDF1] disabled:opacity-30 disabled:cursor-not-allowed"
+          title="Move down"
+        >
+          <ChevronDown className="w-3.5 h-3.5 text-[#141418]/60" />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          className="p-1 rounded hover:bg-[#8E6464]/10"
+          title="Delete block"
+        >
+          <Trash2 className="w-3.5 h-3.5 text-[#8E6464]" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Main Editor ─────────────────────────────────────────────────────
+
+export default function StudioEditor() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const isNew = !id;
+
+  const { doc, isLoading: docLoading, error: docError } = useStudioDoc(id ?? '');
+  const { updateDoc, createDoc } = useStudioDocs();
+
+  const [title, setTitle] = useState('');
+  const [blocks, setBlocks] = useState<EditorBlock[]>([]);
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [titleInitialized, setTitleInitialized] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Initialize from doc
+  if (doc && !titleInitialized) {
+    setTitle(doc.title);
+    const meta = doc.metadata as Record<string, unknown> | null;
+    const savedBlocks = (meta?.blocks as EditorBlock[]) ?? [];
+    setBlocks(savedBlocks);
+    setTitleInitialized(true);
+  }
+
+  // For new documents
+  if (isNew && !titleInitialized) {
+    setTitle('Untitled Document');
+    setTitleInitialized(true);
+  }
+
+  const selectedBlock = useMemo(
+    () => blocks.find((b) => b.id === selectedBlockId) ?? null,
+    [blocks, selectedBlockId]
+  );
+
+  // ── Block operations ─────────────────────────────────────────────
+
+  const addBlock = useCallback(
+    (typeDef: BlockTypeDef) => {
+      const newBlock: EditorBlock = {
+        id: `block-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        type: typeDef.type,
+        content: { ...typeDef.defaultContent },
+        position: blocks.length,
+      };
+      setBlocks((prev) => [...prev, newBlock]);
+      setSelectedBlockId(newBlock.id);
+    },
+    [blocks.length]
+  );
+
+  const moveBlock = useCallback(
+    (index: number, direction: 'up' | 'down') => {
+      setBlocks((prev) => {
+        const next = [...prev];
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= next.length) return prev;
+        [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+        return next.map((b, i) => ({ ...b, position: i }));
+      });
+    },
+    []
+  );
+
+  const deleteBlock = useCallback(
+    (id: string) => {
+      setBlocks((prev) =>
+        prev
+          .filter((b) => b.id !== id)
+          .map((b, i) => ({ ...b, position: i }))
+      );
+      if (selectedBlockId === id) setSelectedBlockId(null);
+    },
+    [selectedBlockId]
+  );
+
+  const updateBlockContent = useCallback(
+    (id: string, content: Record<string, unknown>) => {
+      setBlocks((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, content } : b))
+      );
+    },
+    []
+  );
+
+  // ── Save ──────────────────────────────────────────────────────────
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      const currentMeta = doc?.metadata as Record<string, unknown> | null;
+      const currentVersion = (currentMeta?.version as number) ?? 0;
+      const metadata: Json = {
+        ...(currentMeta ?? {}),
+        blocks: blocks as unknown as Json,
+        version: currentVersion + 1,
+      };
+
+      if (id && doc) {
+        await updateDoc.mutateAsync({ id, title, metadata });
+      } else {
+        const result = await createDoc.mutateAsync({
+          title,
+          slug: `doc-${Date.now()}`,
+          space_id: '',
+          status: 'draft',
+          category: 'document',
+          body: null,
+          metadata,
+        });
+        navigate(`/portal/studio/editor/${result.id}`, { replace: true });
+      }
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  // ── Loading / Error ───────────────────────────────────────────────
+
+  if (!isNew && docLoading) return <EditorSkeleton />;
+
+  if (!isNew && docError) {
+    return (
+      <div className="p-6 max-w-3xl mx-auto">
+        <div className="flex items-center gap-2 text-[#8E6464] bg-[#8E6464]/10 rounded-lg p-4">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <span>Failed to load document: {docError}</span>
+          <button
+            onClick={() => window.location.reload()}
+            className="ml-auto flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185]"
+          >
+            <RefreshCw className="w-4 h-4" /> Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Preview overlay ───────────────────────────────────────────────
+
+  if (showPreview) {
+    return (
+      <div className="fixed inset-0 bg-[#F6F3EF] z-50 overflow-auto">
+        <div className="sticky top-0 bg-white border-b border-[#E8EDF1] px-6 py-3 flex items-center justify-between z-10">
+          <span className="text-sm font-medium text-[#141418]">Preview</span>
+          <button
+            onClick={() => setShowPreview(false)}
+            className="flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185]"
+          >
+            <X className="w-4 h-4" /> Close Preview
+          </button>
+        </div>
+        <div className="max-w-3xl mx-auto px-6 py-10">
+          <h1 className="text-3xl font-semibold text-[#141418] mb-8">
+            {title}
+          </h1>
+          {blocks.length === 0 ? (
+            <p className="text-[#141418]/40">No blocks to preview.</p>
+          ) : (
+            <div className="space-y-6">
+              {blocks.map((block) => {
+                const blockDef = BLOCK_TYPES.find((bt) => bt.type === block.type);
+                return (
+                  <div key={block.id} className="bg-white rounded-lg border border-[#E8EDF1] p-6">
+                    <div className="flex items-center gap-2 mb-2 text-xs text-[#141418]/40 uppercase tracking-wide">
+                      {blockDef && <blockDef.icon className="w-3 h-3" />}
+                      {blockDef?.label ?? block.type}
+                    </div>
+                    {block.type === 'heading' && (
+                      <h2 className="text-xl font-semibold text-[#141418]">
+                        {(block.content.text as string) || 'Untitled heading'}
+                      </h2>
+                    )}
+                    {block.type === 'text' && (
+                      <p className="text-[#141418]/80 whitespace-pre-wrap">
+                        {(block.content.body as string) || 'Empty text'}
+                      </p>
+                    )}
+                    {block.type === 'image' && (block.content.src as string) && (
+                      <img
+                        src={block.content.src as string}
+                        alt={block.content.alt as string}
+                        className="rounded-lg max-w-full"
+                      />
+                    )}
+                    {block.type === 'cta' && (
+                      <span className="inline-block bg-[#6E879B] text-white text-sm font-medium px-4 py-2 rounded-lg">
+                        {(block.content.text as string) || 'Button'}
+                      </span>
+                    )}
+                    {!['heading', 'text', 'image', 'cta'].includes(block.type) && (
+                      <p className="text-[#141418]/50 italic">
+                        {blockDef?.label ?? block.type} block preview
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Editor Layout ─────────────────────────────────────────────────
+
+  return (
+    <div className="h-screen flex flex-col bg-[#F6F3EF]">
+      {/* ── Top bar ─────────────────────────────────────────────────── */}
+      <div className="bg-white border-b border-[#E8EDF1] px-4 py-2.5 flex items-center gap-4">
+        <Link
+          to="/portal/studio"
+          className="flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185]"
+        >
+          <ArrowLeft className="w-4 h-4" /> Studio
+        </Link>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="flex-1 text-lg font-semibold text-[#141418] bg-transparent border-none outline-none"
+          placeholder="Document title"
+        />
+        <div className="flex items-center gap-2">
+          {doc && (
+            <span className="text-xs text-[#141418]/40">
+              v{((doc.metadata as Record<string, unknown> | null)?.version as number) ?? 1}
+            </span>
+          )}
+          <button
+            onClick={() => setShowPreview(true)}
+            className="flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185] px-3 py-1.5 rounded-lg border border-[#E8EDF1] hover:border-[#6E879B] transition-colors"
+          >
+            <Eye className="w-4 h-4" /> Preview
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-1 text-sm text-white bg-[#6E879B] hover:bg-[#5A7185] px-4 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      </div>
+
+      {/* ── 3-panel layout ──────────────────────────────────────────── */}
+      <div className="flex flex-1 min-h-0">
+        {/* ── Left: Block Picker ─────────────────────────────────────── */}
+        <div className="w-60 bg-white border-r border-[#E8EDF1] overflow-y-auto flex-shrink-0">
+          <div className="p-3">
+            <h2 className="text-xs font-semibold text-[#141418]/50 uppercase tracking-wide mb-3">
+              Add Block
+            </h2>
+            {CATEGORIES.map((cat) => {
+              const catBlocks = BLOCK_TYPES.filter((bt) => bt.category === cat);
+              return (
+                <div key={cat} className="mb-3">
+                  <p className="text-[10px] font-medium text-[#141418]/30 uppercase tracking-wider mb-1 px-1">
+                    {cat}
+                  </p>
+                  {catBlocks.map((bt) => (
+                    <button
+                      key={bt.type}
+                      onClick={() => addBlock(bt)}
+                      className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#141418]/70 hover:bg-[#E8EDF1] hover:text-[#141418] transition-colors text-left"
+                    >
+                      <bt.icon className="w-3.5 h-3.5 text-[#6E879B]" />
+                      {bt.label}
+                    </button>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Center: Canvas ─────────────────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-2xl mx-auto">
+            {blocks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 rounded-full bg-[#E8EDF1] flex items-center justify-center mb-4">
+                  <Plus className="w-8 h-8 text-[#6E879B]" />
+                </div>
+                <h2 className="text-lg font-semibold text-[#141418] mb-2">
+                  Start building
+                </h2>
+                <p className="text-sm text-[#141418]/60 max-w-sm">
+                  Add blocks from the picker on the left to build your document.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {blocks.map((block, index) => (
+                  <CanvasBlock
+                    key={block.id}
+                    block={block}
+                    isSelected={selectedBlockId === block.id}
+                    isFirst={index === 0}
+                    isLast={index === blocks.length - 1}
+                    onSelect={() => setSelectedBlockId(block.id)}
+                    onMoveUp={() => moveBlock(index, 'up')}
+                    onMoveDown={() => moveBlock(index, 'down')}
+                    onDelete={() => deleteBlock(block.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── Right: Properties ───────────────────────────────────────── */}
+        <div className="w-72 bg-white border-l border-[#E8EDF1] overflow-y-auto flex-shrink-0">
+          <div className="p-3 border-b border-[#E8EDF1]">
+            <h2 className="text-xs font-semibold text-[#141418]/50 uppercase tracking-wide">
+              Properties
+            </h2>
+          </div>
+          <PropertyPanel block={selectedBlock} onUpdate={updateBlockContent} />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   AlertCircle,
-  Loader2,
   DollarSign,
   TrendingUp,
   Target,
@@ -10,9 +9,11 @@ import {
   BarChart3,
   Zap,
   ArrowRight,
+  Download,
 } from 'lucide-react';
-import { useDeals, type Deal } from '../../lib/useDeals';
+import { useDeals } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
+import { exportToCSV } from '../../lib/csvExport';
 
 // ── V2-HUBS-09: Revenue Analytics ───────────────────────────────────────
 // Data source: deals + sales_pipelines (LIVE when DB-connected)
@@ -36,10 +37,11 @@ interface StageConversion {
 }
 
 export default function RevenueAnalytics() {
-  const { deals, loading: dealsLoading, isLive: dealsLive } = useDeals();
-  const { pipelines, loading: pipelinesLoading } = usePipelines();
+  const { deals, loading: dealsLoading, isLive: dealsLive, error: dealsError, reload: dealsReload } = useDeals();
+  const { pipelines, loading: pipelinesLoading, error: pipelinesError, reload: pipelinesReload } = usePipelines();
   const loading = dealsLoading || pipelinesLoading;
   const isLive = dealsLive;
+  const error = dealsError || pipelinesError;
 
   const defaultPipeline = pipelines.find((p) => p.is_default) ?? pipelines[0];
   const stages = defaultPipeline?.stages ?? [];
@@ -56,21 +58,16 @@ export default function RevenueAnalytics() {
     const winRate = closedDeals.length > 0
       ? Math.round((wonDeals.length / closedDeals.length) * 100) : 0;
 
-    // Pipeline coverage ratio: pipeline value / quota target
-    // Using simple heuristic: 3x pipeline coverage is healthy
-    const quarterlyTarget = totalRevenue > 0 ? totalRevenue * 4 : 100000; // Annualize and quarterize
+    const quarterlyTarget = totalRevenue > 0 ? totalRevenue * 4 : 100000;
     const coverageRatio = quarterlyTarget > 0 ? pipelineValue / (quarterlyTarget / 4) : 0;
 
-    // Average cycle time (days from creation to close for won deals)
     const cycleTimes = wonDeals.map((d) => daysBetween(d.created_at, d.updated_at));
     const avgCycleTime = cycleTimes.length > 0
       ? Math.round(cycleTimes.reduce((s, t) => s + t, 0) / cycleTimes.length) : 0;
 
-    // Average deal size
     const avgDealSize = wonDeals.length > 0
       ? wonDeals.reduce((s, d) => s + d.value, 0) / wonDeals.length : 0;
 
-    // Intelligence-influenced deals (title contains [Signal])
     const intellDeals = wonDeals.filter((d) => d.title.includes('[Signal]'));
     const intellRevenue = intellDeals.reduce((s, d) => s + d.value, 0);
     const intellPct = totalRevenue > 0 ? Math.round((intellRevenue / totalRevenue) * 100) : 0;
@@ -98,7 +95,6 @@ export default function RevenueAnalytics() {
     return stages.map((stage, idx) => {
       const inStage = deals.filter((d) => d.stage_id === stage.id);
       const entered = deals.filter((d) => {
-        // Deals that were ever in this stage = deals currently in this stage + deals in later stages
         const stageIdx = stages.findIndex((s) => s.id === d.stage_id);
         return stageIdx >= idx || d.status === 'won' || d.status === 'lost';
       });
@@ -169,10 +165,83 @@ export default function RevenueAnalytics() {
     return { wonReasons, lostReasons };
   }, [deals]);
 
+  const handleExport = () => {
+    const exportData = deals.map((d) => ({
+      title: d.title,
+      value: d.value,
+      status: d.status,
+      probability: d.probability,
+      contact: d.contact_name ?? '',
+      company: d.company_name ?? '',
+      expected_close: d.expected_close_date ?? '',
+      won_reason: d.won_reason ?? '',
+      lost_reason: d.lost_reason ?? '',
+      created: d.created_at,
+      updated: d.updated_at,
+    }));
+    exportToCSV(exportData, 'revenue-analytics');
+  };
+
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Header skeleton */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="h-8 w-56 bg-graphite/8 rounded-lg animate-pulse" />
+            <div className="h-4 w-80 bg-graphite/5 rounded-lg animate-pulse mt-2" />
+          </div>
+          <div className="h-10 w-40 bg-graphite/8 rounded-full animate-pulse" />
+        </div>
+        {/* KPI strip skeleton */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-graphite/8 p-4">
+              <div className="h-3 w-16 bg-graphite/8 rounded animate-pulse mb-2" />
+              <div className="h-6 w-24 bg-graphite/5 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+        {/* Attribution skeleton */}
+        <div className="bg-accent/5 rounded-2xl border border-accent/15 p-6">
+          <div className="h-5 w-48 bg-graphite/8 rounded animate-pulse mb-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i}>
+                <div className="h-3 w-28 bg-graphite/8 rounded animate-pulse mb-2" />
+                <div className="h-7 w-20 bg-graphite/5 rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Charts skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-graphite/8 p-6">
+              <div className="h-5 w-48 bg-graphite/8 rounded animate-pulse mb-4" />
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, j) => (
+                  <div key={j} className="h-6 bg-graphite/5 rounded-full animate-pulse" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-6 text-center">
+          <AlertCircle className="w-8 h-8 text-signal-down mx-auto mb-2" />
+          <p className="text-graphite font-medium">Something went wrong</p>
+          <p className="text-graphite/60 text-sm mt-1">{error}</p>
+          <button onClick={() => { dealsReload(); pipelinesReload(); }} className="mt-3 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -196,13 +265,19 @@ export default function RevenueAnalytics() {
           </div>
           <p className="text-graphite/60 font-sans mt-1">Pipeline health, conversion rates, and revenue attribution.</p>
         </div>
-        <Link
-          to="/sales/opportunities"
-          className="inline-flex items-center gap-2 h-10 px-5 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full hover:bg-mn-surface transition-colors"
-        >
-          <Zap className="w-4 h-4" />
-          Find Opportunities
-        </Link>
+        <div className="flex gap-2">
+          <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-accent hover:text-accent-hover border border-accent/20 rounded-lg hover:bg-accent-soft transition-colors">
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+          <Link
+            to="/sales/opportunities"
+            className="inline-flex items-center gap-2 h-10 px-5 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full hover:bg-mn-surface transition-colors"
+          >
+            <Zap className="w-4 h-4" />
+            Find Opportunities
+          </Link>
+        </div>
       </div>
 
       {/* KPI Strip */}
@@ -277,7 +352,12 @@ export default function RevenueAnalytics() {
         <div className="bg-white rounded-2xl border border-graphite/8 p-6">
           <h2 className="text-base font-sans font-semibold text-graphite mb-4">Stage Conversion Rates</h2>
           {stageConversions.length === 0 ? (
-            <p className="text-sm font-sans text-graphite/50">No pipeline stages configured.</p>
+            <div className="text-center py-8">
+              <div className="w-12 h-12 bg-accent-soft rounded-xl flex items-center justify-center mx-auto mb-3">
+                <BarChart3 className="w-6 h-6 text-accent" />
+              </div>
+              <p className="text-sm font-sans text-graphite/50">No pipeline stages configured.</p>
+            </div>
           ) : (
             <div className="space-y-3">
               {stageConversions.map((sc, idx) => (
@@ -316,8 +396,12 @@ export default function RevenueAnalytics() {
             <h2 className="text-base font-sans font-semibold text-graphite">Top Open Deals</h2>
           </div>
           {topDeals.length === 0 ? (
-            <div className="px-5 py-8 text-center">
-              <p className="text-sm font-sans text-graphite/50">No open deals.</p>
+            <div className="text-center py-12">
+              <div className="w-12 h-12 bg-accent-soft rounded-xl flex items-center justify-center mx-auto mb-3">
+                <TrendingUp className="w-6 h-6 text-accent" />
+              </div>
+              <p className="text-sm font-sans font-medium text-graphite">No open deals</p>
+              <p className="text-xs font-sans text-graphite/50 mt-1">Open deals will appear here ranked by value.</p>
             </div>
           ) : (
             <div className="divide-y divide-graphite/5">
