@@ -1,9 +1,11 @@
-# Cloudflare Pages — SOCELLE GLOBAL VERIFY
-# Deploy target: SOCELLE-WEB (Vite + React + Supabase)
-# Direct deploy: npx wrangler pages deploy SOCELLE-WEB/dist --project-name=socelle-global-verify
-# CI build command: cd SOCELLE-WEB && npm ci && npm run build
+# Cloudflare Pages — SOCELLE (production)
+# Git-connected project: BruceTyndall/socelle-global → main
+# Build command: cd SOCELLE-WEB && npm ci && npm run build
 # Output directory: SOCELLE-WEB/dist
 # Docs: https://developers.cloudflare.com/pages/
 
-name = "socelle-global-verify"
+name = "socelle"
 pages_build_output_dir = "SOCELLE-WEB/dist"
+
+[build]
+command = "cd SOCELLE-WEB && npm ci && npm run build"
