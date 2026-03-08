@@ -6,6 +6,3 @@
 
 name = "socelle"
 pages_build_output_dir = "SOCELLE-WEB/dist"
-
-[build]
-command = "cd SOCELLE-WEB && npm ci && npm run build"
