@@ -18,7 +18,6 @@ import MarketingLayout from './layouts/MarketingLayout';
 const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
 
 // ── Public
-const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
 const PublicHome = lazy(() => import('./pages/public/Home'));
 const PublicBrands = lazy(() => import('./pages/public/Brands'));
 const PublicBrandStorefront = lazy(() => import('./pages/public/BrandStorefront'));
