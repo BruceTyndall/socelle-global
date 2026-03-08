@@ -89,6 +89,11 @@ export default function EducationHub() {
                   My Certificates
                 </Link>
               )}
+              {user && (
+                <Link to="/education/ce-credits" className="btn-mineral-secondary">
+                  CE Credits
+                </Link>
+              )}
             </div>
           </BlockReveal>
         </div>

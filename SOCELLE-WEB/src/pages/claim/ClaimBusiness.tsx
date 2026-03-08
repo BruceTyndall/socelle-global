@@ -92,14 +92,14 @@ export default function ClaimBusiness() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-pro-ivory flex flex-col">
-        <header className="border-b border-pro-stone bg-white">
+      <div className="min-h-screen bg-mn-bg flex flex-col">
+        <header className="border-b border-[rgba(30,37,43,0.08)] bg-white">
           <div className="max-w-5xl mx-auto px-6 py-4">
-            <Link to="/" className="font-serif text-xl text-pro-navy">socelle<span className="text-pro-gold">.</span></Link>
+            <Link to="/" className="font-sans text-xl text-graphite font-medium tracking-tight">socelle<span className="text-accent">.</span></Link>
           </div>
         </header>
         <main className="flex-1 flex items-center justify-center px-6 py-16">
-          <Loader2 className="w-8 h-8 text-pro-gold animate-spin" />
+          <Loader2 className="w-8 h-8 text-accent animate-spin" />
         </main>
       </div>
     );
@@ -107,16 +107,16 @@ export default function ClaimBusiness() {
 
   if (error && !business) {
     return (
-      <div className="min-h-screen bg-pro-ivory flex flex-col">
-        <header className="border-b border-pro-stone bg-white">
+      <div className="min-h-screen bg-mn-bg flex flex-col">
+        <header className="border-b border-[rgba(30,37,43,0.08)] bg-white">
           <div className="max-w-5xl mx-auto px-6 py-4">
-            <Link to="/" className="font-serif text-xl text-pro-navy">socelle<span className="text-pro-gold">.</span></Link>
+            <Link to="/" className="font-sans text-xl text-graphite font-medium tracking-tight">socelle<span className="text-accent">.</span></Link>
           </div>
         </header>
         <main className="flex-1 flex items-center justify-center px-6 py-16">
           <div className="text-center">
-            <p className="text-pro-warm-gray font-sans mb-4">{error}</p>
-            <Link to="/" className="text-pro-gold font-medium hover:underline">Back to home</Link>
+            <p className="text-graphite/60 font-sans mb-4">{error}</p>
+            <Link to="/" className="text-accent font-medium hover:underline">Back to home</Link>
           </div>
         </main>
       </div>
@@ -125,17 +125,17 @@ export default function ClaimBusiness() {
 
   if (claimDone) {
     return (
-      <div className="min-h-screen bg-pro-ivory flex flex-col">
-        <header className="border-b border-pro-stone bg-white">
+      <div className="min-h-screen bg-mn-bg flex flex-col">
+        <header className="border-b border-[rgba(30,37,43,0.08)] bg-white">
           <div className="max-w-5xl mx-auto px-6 py-4">
-            <Link to="/" className="font-serif text-xl text-pro-navy">socelle<span className="text-pro-gold">.</span></Link>
+            <Link to="/" className="font-sans text-xl text-graphite font-medium tracking-tight">socelle<span className="text-accent">.</span></Link>
           </div>
         </header>
         <main className="flex-1 flex items-center justify-center px-6 py-16">
           <div className="text-center">
-            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-serif text-pro-navy mb-2">Listing claimed<span className="text-pro-gold">.</span></h1>
-            <p className="text-pro-warm-gray font-sans">Taking you to review your listing…</p>
+            <CheckCircle className="w-12 h-12 text-signal-up mx-auto mb-4" />
+            <h1 className="text-2xl font-sans text-graphite mb-2">Listing claimed<span className="text-accent">.</span></h1>
+            <p className="text-graphite/60 font-sans">Taking you to review your listing...</p>
           </div>
         </main>
       </div>
@@ -143,53 +143,53 @@ export default function ClaimBusiness() {
   }
 
   return (
-    <div className="min-h-screen bg-pro-ivory flex flex-col">
-      <header className="border-b border-pro-stone bg-white">
+    <div className="min-h-screen bg-mn-bg flex flex-col">
+      <header className="border-b border-[rgba(30,37,43,0.08)] bg-white">
         <div className="max-w-5xl mx-auto px-6 py-4">
-          <Link to="/" className="font-serif text-xl text-pro-navy">socelle<span className="text-pro-gold">.</span></Link>
+          <Link to="/" className="font-sans text-xl text-graphite font-medium tracking-tight">socelle<span className="text-accent">.</span></Link>
         </div>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-xl border border-pro-stone shadow-sm p-8">
-            <h1 className="text-2xl font-serif text-pro-navy mb-1">
-              Claim your listing<span className="text-pro-gold">.</span>
+          <div className="bg-white rounded-xl border border-[rgba(30,37,43,0.08)] shadow-sm p-8">
+            <h1 className="text-2xl font-sans text-graphite mb-1">
+              Claim your listing<span className="text-accent">.</span>
             </h1>
-            <p className="text-pro-warm-gray font-sans text-sm mb-6">
+            <p className="text-graphite/60 font-sans text-sm mb-6">
               {business?.name} — confirm ownership to take over this salon/spa listing.
             </p>
 
             {!user ? (
               <form onSubmit={handleAuth} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1">Email</label>
+                  <label className="block text-sm font-medium text-graphite font-sans mb-1">Email</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-pro-stone rounded-lg text-pro-charcoal font-sans"
+                    className="w-full px-3 py-2 border border-[rgba(30,37,43,0.12)] rounded-lg text-graphite font-sans"
                     placeholder="you@yoursalon.com"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1">Password</label>
+                  <label className="block text-sm font-medium text-graphite font-sans mb-1">Password</label>
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-pro-stone rounded-lg text-pro-charcoal font-sans"
+                    className="w-full px-3 py-2 border border-[rgba(30,37,43,0.12)] rounded-lg text-graphite font-sans"
                     placeholder={signUp ? 'At least 8 characters' : 'Your password'}
                     required
                   />
                 </div>
-                {authError && <p className="text-red-600 text-sm font-sans">{authError}</p>}
+                {authError && <p className="text-signal-down text-sm font-sans">{authError}</p>}
                 <div className="flex gap-3">
                   <button
                     type="submit"
                     disabled={authLoading}
-                    className="flex-1 btn-gold py-2 rounded-lg font-sans font-medium flex items-center justify-center gap-2"
+                    className="flex-1 btn-mineral-primary py-2 rounded-lg font-sans font-medium flex items-center justify-center gap-2"
                   >
                     {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : signUp ? 'Create account' : 'Sign in'}
                   </button>
@@ -197,19 +197,19 @@ export default function ClaimBusiness() {
                 <button
                   type="button"
                   onClick={() => { setSignUp(!signUp); setAuthError(null); }}
-                  className="text-sm text-pro-gold hover:underline font-sans"
+                  className="text-sm text-accent hover:underline font-sans"
                 >
                   {signUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
                 </button>
               </form>
             ) : (
               <>
-                {error && <p className="text-red-600 text-sm font-sans mb-4">{error}</p>}
+                {error && <p className="text-signal-down text-sm font-sans mb-4">{error}</p>}
                 <button
                   type="button"
                   onClick={handleClaim}
                   disabled={claiming || business?.verification_status !== 'unverified'}
-                  className="w-full btn-gold py-2 rounded-lg font-sans font-medium flex items-center justify-center gap-2"
+                  className="w-full btn-mineral-primary py-2 rounded-lg font-sans font-medium flex items-center justify-center gap-2"
                 >
                   {claiming ? <Loader2 className="w-4 h-4 animate-spin" /> : (
                     <>Claim {business?.name} <ArrowRight className="w-4 h-4" /></>

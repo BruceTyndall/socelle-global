@@ -1,6 +1,9 @@
 import { supabase } from './supabase';
 import { createScopedLogger } from './logger';
 import { QUERY_CONFIG, DEFAULT_CATEGORY } from './platformConfig';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
+import { fetchSignalsForServiceCategories, type SignalEnrichment } from './analysis/signalEnrichment';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Consolidated Mapping Engine
@@ -476,6 +479,18 @@ export async function analyzeSpaMenu(
     })
     .eq('id', spaMenuId);
 
+  // Live signal enrichment
+  const serviceCategories = [...new Set(services.map((s) => s.service_category).filter(Boolean) as string[])];
+  let signalEnrichment: SignalEnrichment | null = null;
+  try {
+    signalEnrichment = await fetchSignalsForServiceCategories(serviceCategories);
+    log.info('Signals fetched for spa menu analysis', {
+      signalCount: signalEnrichment.signalCount,
+    });
+  } catch {
+    log.warn('Signal enrichment failed in analyzeSpaMenu');
+  }
+
   const summary = {
     total_services: mappings.length,
     exact_matches: mappings.filter(m => m.match_type === 'Exact').length,
@@ -488,7 +503,7 @@ export async function analyzeSpaMenu(
     seasonally_relevant: mappings.filter(m => m.is_seasonally_relevant).length
   };
 
-  return { mappings, summary };
+  return { mappings, summary, signalEnrichment };
 }
 
 // ── Keyword + semantic mapping (primary engine) ──────────────────────────────
@@ -887,4 +902,65 @@ function calculateCOGS(mapping: any, costs: any[]) {
   }
 
   return { status: 'Unknown', amount: null };
+}
+
+// ── Guarded Mapping ─────────────────────────────────────────────────────────
+
+/**
+ * Guarded service mapping — validates input, checks credits, runs mapping,
+ * wraps output with guardrail metadata.
+ */
+export async function performGuardedServiceMapping(
+  menuId: string,
+  userId: string,
+  inputText?: string,
+): Promise<GuardrailResult<{ results: MappingResult[] }>> {
+  // 1. Guardrail input check (use menu ID as context if no raw text)
+  const textToCheck = inputText ?? menuId;
+  const inputCheck = validateInput(textToCheck, 'mappingEngine');
+  if (!inputCheck.valid) {
+    return blockedResult('mappingEngine', inputCheck.blockReason ?? 'Invalid input.');
+  }
+
+  // 2. Credit gate + execution
+  const results = await withCreditGate(userId, 'mappingEngine', async () => {
+    return performServiceMapping(menuId);
+  });
+
+  // 3. Wrap output
+  return validateOutput({ results }, 'mappingEngine', [
+    'canonical_protocols',
+    'spa_menus',
+    'pro_products',
+    'medspa_treatments',
+    'market_signals',
+  ]);
+}
+
+/**
+ * Guarded spa menu analysis — validates input, checks credits, runs analysis,
+ * wraps output with guardrail metadata.
+ */
+export async function analyzeGuardedSpaMenu(
+  spaMenuId: string,
+  services: SpaService[],
+  userId: string,
+  spaType: 'medspa' | 'spa' | 'hybrid' = 'spa',
+): Promise<GuardrailResult<{ mappings: ServiceMapping[]; summary: Record<string, unknown>; signalEnrichment: SignalEnrichment | null }>> {
+  // Build a representative text from services for guardrail check
+  const inputText = services.map((s) => s.service_name).join(', ');
+  const inputCheck = validateInput(inputText, 'mappingEngine');
+  if (!inputCheck.valid) {
+    return blockedResult('mappingEngine', inputCheck.blockReason ?? 'Invalid input.');
+  }
+
+  const result = await withCreditGate(userId, 'mappingEngine', async () => {
+    return analyzeSpaMenu(spaMenuId, services, spaType);
+  });
+
+  return validateOutput(result, 'mappingEngine', [
+    'canonical_protocols',
+    'spa_service_mapping',
+    'market_signals',
+  ]);
 }

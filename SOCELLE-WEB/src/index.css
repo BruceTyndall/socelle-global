@@ -26,7 +26,8 @@
 
   /* Accent system */
   --color-accent:         #6E879B;
-  --color-accent-hover:   #5E7588;
+  --color-accent-hover:   #5A7185;   /* Pearl Mineral V2 locked */
+  --color-accent-soft:    #E8EDF1;   /* Pearl Mineral V2 locked */
   --color-accent-tint:    rgba(110, 135, 155, 0.10);
   --color-focus:          rgba(110, 135, 155, 0.35);
 

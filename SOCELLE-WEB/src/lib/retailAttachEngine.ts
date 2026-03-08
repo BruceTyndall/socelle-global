@@ -1,4 +1,10 @@
 import { supabase } from './supabase';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
+import { fetchRelevantSignals, type SignalEnrichment } from './analysis/signalEnrichment';
+import { createScopedLogger } from './logger';
+
+const retailLog = createScopedLogger('RetailAttachEngine');
 
 export interface RetailAttachRecommendation {
   retail_product_id: string;
@@ -154,10 +160,18 @@ export async function generateRetailAttachRecommendations(
   protocolConcerns: string[],
   protocolAllowedProducts: string[]
 ): Promise<RetailAttachRecommendation[]> {
-  const [retailProducts, seasonalMap] = await Promise.all([
+  const [retailProducts, seasonalMap, signalData] = await Promise.all([
     getRetailProducts(protocolCategory, protocolConcerns),
     getSeasonallyFeaturedProducts(),
+    fetchRelevantSignals({ categories: [protocolCategory] }).catch(() => null),
   ]);
+
+  if (signalData && signalData.signalCount > 0) {
+    retailLog.info('Signals fetched for retail attach', {
+      signalCount: signalData.signalCount,
+      protocolCategory,
+    });
+  }
 
   if (retailProducts.length === 0) {
     return [];
@@ -376,4 +390,36 @@ export async function generateAllRetailAttachForMenu(spaMenuId: string): Promise
       gaps.map(gap => generateRetailAttachForGap(gap.id, spaMenuId))
     );
   }
+}
+
+// ── Guarded Retail Attach ────────────────────────────────────────────────────
+
+/**
+ * Guarded retail attach generation — validates input, checks credits,
+ * runs recommendations, wraps output with guardrail metadata.
+ */
+export async function generateGuardedRetailAttach(
+  spaMenuId: string,
+  userId: string,
+): Promise<GuardrailResult<{ completed: boolean }>> {
+  // Guardrail input check
+  const inputCheck = validateInput(spaMenuId, 'retailAttachEngine');
+  if (!inputCheck.valid) {
+    return blockedResult('retailAttachEngine', inputCheck.blockReason ?? 'Invalid input.');
+  }
+
+  // Credit gate + execution
+  await withCreditGate(userId, 'retailAttachEngine', async () => {
+    await generateAllRetailAttachForMenu(spaMenuId);
+    return { completed: true };
+  });
+
+  // Wrap output
+  return validateOutput({ completed: true }, 'retailAttachEngine', [
+    'retail_products',
+    'spa_service_mapping',
+    'service_gap_analysis',
+    'marketing_calendar',
+    'market_signals',
+  ]);
 }

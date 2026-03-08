@@ -7,9 +7,12 @@ import {
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
+import TrendingBadge from '../../components/commerce/TrendingBadge';
+import AffiliateBadge from '../../components/commerce/AffiliateBadge';
 import { useProducts } from '../../lib/shop/useProducts';
 import { useCategories } from '../../lib/shop/useCategories';
 import { useShopCart } from '../../lib/shop/useShopCart';
+import { useProductSignals } from '../../lib/shop/useProductSignals';
 import { formatCents } from '../../lib/shop/types';
 import type { ProductFilters } from '../../lib/shop/types';
 
@@ -43,6 +46,7 @@ export default function Shop() {
   const { products, loading, total } = useProducts(filters);
   const { categories } = useCategories();
   const { addItem } = useShopCart();
+  const { matches: signalMatches } = useProductSignals(products);
   const totalPages = Math.ceil(total / PER_PAGE);
 
   return (
@@ -165,8 +169,20 @@ export default function Shop() {
                   {products.map(product => {
                     const images = (product.images as string[]) ?? [];
                     const firstImage = images[0] ?? '/placeholder-product.svg';
+                    const signalMatch = signalMatches.get(product.id);
+                    const hasAffiliate = !!(product as Record<string, unknown>).affiliate_url;
                     return (
-                      <div key={product.id} className="group bg-mn-card rounded-card overflow-hidden shadow-soft hover:shadow-panel transition-shadow">
+                      <div key={product.id} className="group bg-mn-card rounded-card overflow-hidden shadow-soft hover:shadow-panel transition-shadow relative">
+                        {/* Intelligence trending badge */}
+                        {signalMatch && (
+                          <div className="absolute top-3 left-3 z-10">
+                            <TrendingBadge
+                              direction={signalMatch.direction}
+                              magnitude={signalMatch.magnitude}
+                              size="sm"
+                            />
+                          </div>
+                        )}
                         <Link to={`/shop/${product.slug}`} className="block">
                           <div className="aspect-square bg-mn-surface overflow-hidden">
                             <img
@@ -204,6 +220,11 @@ export default function Shop() {
                           >
                             {product.stock_quantity < 1 ? 'Out of Stock' : 'Add to Cart'}
                           </button>
+                          {hasAffiliate && (
+                            <div className="mt-2">
+                              <AffiliateBadge size="sm" />
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

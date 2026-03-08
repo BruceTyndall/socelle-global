@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Building2, Users, MessageSquare, Globe, Phone, Mail, MapPin } from 'lucide-react';
+import { ArrowLeft, Building2, Users, MessageSquare, Globe, Phone, Mail, MapPin, Pencil } from 'lucide-react';
 import { useCrmCompanyDetail } from '../../lib/useCrmCompanies';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -77,6 +77,9 @@ export default function CompanyDetail() {
         {!isLive && (
           <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
         )}
+        <Link to={`/portal/crm/companies/${id}/edit`} className="h-9 px-4 text-accent text-sm font-medium rounded-full border border-accent/30 hover:bg-accent/5 transition-colors inline-flex items-center gap-2">
+          <Pencil className="w-4 h-4" /> Edit
+        </Link>
       </div>
 
       {/* Company Info */}

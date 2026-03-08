@@ -24,6 +24,9 @@ import {
   Bell,
   CreditCard,
   Store,
+  Building2,
+  CheckSquare,
+  Layers,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useState } from 'react';
@@ -76,6 +79,10 @@ export default function BusinessLayout() {
         { path: '/portal/sales', label: 'Sales', icon: TrendingUp },
         { path: '/portal/marketing', label: 'Marketing', icon: Megaphone },
         { path: '/portal/crm', label: 'CRM', icon: Users },
+        { path: '/portal/crm/contacts', label: 'Contacts', icon: Users },
+        { path: '/portal/crm/companies', label: 'Companies', icon: Building2 },
+        { path: '/portal/crm/tasks', label: 'Tasks', icon: CheckSquare },
+        { path: '/portal/crm/segments', label: 'Segments', icon: Layers },
         { path: '/portal/booking', label: 'Booking', icon: CalendarDays },
         { path: '/portal/prospects', label: 'Prospects', icon: Target },
         { path: '/portal/reseller', label: 'Reseller', icon: Store },

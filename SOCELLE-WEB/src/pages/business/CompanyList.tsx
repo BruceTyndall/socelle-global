@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Plus, Building2 } from 'lucide-react';
+import { Search, Plus, Building2, Download } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useCrmCompanies } from '../../lib/useCrmCompanies';
+import { exportToCsv } from '../../lib/csvExport';
 
 const TYPE_COLORS: Record<string, string> = {
   salon: 'bg-purple-50 text-purple-700',
@@ -40,10 +41,28 @@ export default function CompanyList() {
           {!isLive && !loading && (
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
           )}
-          <button className="inline-flex items-center gap-2 h-9 px-4 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 transition-colors">
+          <button
+            onClick={() => exportToCsv(filtered.map(c => ({
+              name: c.name,
+              type: c.type,
+              industry: c.industry ?? '',
+              email: c.email ?? '',
+              phone: c.phone ?? '',
+              website: c.website ?? '',
+              city: c.city ?? '',
+              state: c.state ?? '',
+              annual_revenue: c.annual_revenue ?? '',
+              employee_count: c.employee_count ?? '',
+              created_at: c.created_at,
+            })), 'crm_companies')}
+            className="h-9 px-3 text-xs font-medium text-pro-warm-gray border border-pro-stone/30 rounded-full hover:border-accent/30 transition-colors inline-flex items-center gap-1"
+          >
+            <Download className="w-3.5 h-3.5" /> CSV
+          </button>
+          <Link to="/portal/crm/companies/new" className="inline-flex items-center gap-2 h-9 px-4 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 transition-colors">
             <Plus className="w-4 h-4" />
             Add Company
-          </button>
+          </Link>
         </div>
       </div>
 

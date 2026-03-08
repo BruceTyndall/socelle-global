@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Tag, Plus, Phone, Mail, Calendar, FileText, Users, X, Shield, Droplets, Scissors, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Tag, Plus, Phone, Mail, Calendar, FileText, Users, X, Shield, Droplets, Scissors, AlertTriangle, Pencil, Zap } from 'lucide-react';
 import { useCrmContactDetail, useCrmInteractions, type NewInteraction } from '../../lib/useCrmContacts';
 import { useAppointments } from '../../lib/useBooking';
 import { useClientTreatmentRecords } from '../../lib/useClientRecords';
 import { useAuth } from '../../lib/auth';
+import { useCrmTasksForContact } from '../../lib/useCrmTasks';
 
-const TABS = ['Overview', 'Interactions', 'Appointments', 'Service Records', 'Preferences'] as const;
+const TABS = ['Overview', 'Interactions', 'Appointments', 'Service Records', 'Preferences', 'Intelligence'] as const;
 type Tab = typeof TABS[number];
 
 const INTERACTION_ICONS: Record<string, typeof Phone> = { call: Phone, email: Mail, meeting: Users, note: FileText };
@@ -20,6 +21,7 @@ export default function ContactDetail() {
   const { interactions, addInteraction } = useCrmInteractions(id);
   const { appointments } = useAppointments(businessId);
   const { records } = useClientTreatmentRecords(id);
+  const { tasks: contactTasks } = useCrmTasksForContact(id);
 
   const [tab, setTab] = useState<Tab>('Overview');
   const [tagInput, setTagInput] = useState('');
@@ -101,6 +103,9 @@ export default function ContactDetail() {
         {!isLive && (
           <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
         )}
+        <Link to={`/portal/crm/contacts/${id}/edit`} className="h-9 px-4 text-accent text-sm font-medium rounded-full border border-accent/30 hover:bg-accent/5 transition-colors inline-flex items-center gap-2">
+          <Pencil className="w-4 h-4" /> Edit
+        </Link>
         <Link to={`/portal/crm/contacts/${id}/records/new`} className="h-9 px-4 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 transition-colors inline-flex items-center gap-2">
           <Plus className="w-4 h-4" /> Service Record
         </Link>
@@ -321,6 +326,92 @@ export default function ContactDetail() {
               <div className="flex flex-wrap gap-2">{contact.sensitivities.map((s, i) => <span key={i} className="px-2.5 py-1 bg-signal-warn/10 text-signal-warn text-xs rounded-full">{s}</span>)}</div>
             ) : (
               <p className="text-sm text-pro-warm-gray">None reported</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {tab === 'Intelligence' && (
+        <div className="space-y-5">
+          {/* Intelligence Insights Panel */}
+          <div className="bg-white rounded-xl border border-accent/20 p-5">
+            <h2 className="text-sm font-semibold text-pro-charcoal uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-accent" /> Intelligence Insights
+            </h2>
+            <p className="text-xs text-pro-warm-gray mb-4">
+              When market signals are relevant to this contact, intelligence-linked notes and alerts appear here.
+            </p>
+            <div className="bg-accent/5 border border-accent/10 rounded-lg p-4">
+              <p className="text-sm text-accent font-medium mb-1">Contact Intelligence Summary</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-pro-charcoal mt-3">
+                <div>
+                  <p className="text-pro-warm-gray">Total Visits</p>
+                  <p className="text-lg font-semibold">{contact.total_visits}</p>
+                </div>
+                <div>
+                  <p className="text-pro-warm-gray">Total Spend</p>
+                  <p className="text-lg font-semibold">${contact.total_spend.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-pro-warm-gray">Lifecycle</p>
+                  <p className="text-lg font-semibold capitalize">{contact.lifecycle_stage}</p>
+                </div>
+                <div>
+                  <p className="text-pro-warm-gray">Last Visit</p>
+                  <p className="text-lg font-semibold">{contact.last_visit_date ? new Date(contact.last_visit_date).toLocaleDateString() : 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Open Tasks for this Contact */}
+          <div className="bg-white rounded-xl border border-pro-stone/30 p-5">
+            <h2 className="text-sm font-semibold text-pro-charcoal uppercase tracking-wider mb-3">Open Tasks</h2>
+            {contactTasks.filter(t => t.status !== 'completed').length === 0 ? (
+              <p className="text-sm text-pro-warm-gray py-2">No open tasks for this contact</p>
+            ) : (
+              <div className="space-y-2">
+                {contactTasks.filter(t => t.status !== 'completed').map(task => (
+                  <div key={task.id} className="flex items-center gap-3 py-2 border-b border-pro-stone/10 last:border-0">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${task.priority === 'high' ? 'bg-signal-down' : task.priority === 'medium' ? 'bg-signal-warn' : 'bg-accent'}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-pro-charcoal truncate">{task.title}</p>
+                      {task.due_date && (
+                        <p className="text-xs text-pro-warm-gray">Due: {new Date(task.due_date).toLocaleDateString()}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Recent Treatment Intelligence */}
+          <div className="bg-white rounded-xl border border-pro-stone/30 p-5">
+            <h2 className="text-sm font-semibold text-pro-charcoal uppercase tracking-wider mb-3">Treatment History Intelligence</h2>
+            {records.length === 0 ? (
+              <p className="text-sm text-pro-warm-gray py-2">No treatment records to analyze</p>
+            ) : (
+              <div className="space-y-2">
+                <div className="grid grid-cols-3 gap-3 text-xs">
+                  <div className="bg-accent/5 rounded-lg p-3">
+                    <p className="text-pro-warm-gray">Total Treatments</p>
+                    <p className="text-xl font-semibold text-pro-charcoal">{records.length}</p>
+                  </div>
+                  <div className="bg-accent/5 rounded-lg p-3">
+                    <p className="text-pro-warm-gray">Follow-ups Due</p>
+                    <p className="text-xl font-semibold text-pro-charcoal">
+                      {records.filter(r => r.follow_up_date && new Date(r.follow_up_date) > new Date()).length}
+                    </p>
+                  </div>
+                  <div className="bg-accent/5 rounded-lg p-3">
+                    <p className="text-pro-warm-gray">Last Treatment</p>
+                    <p className="text-sm font-semibold text-pro-charcoal">
+                      {records[0] ? new Date(records[0].performed_at).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>

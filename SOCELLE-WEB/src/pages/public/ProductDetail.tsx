@@ -4,13 +4,17 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
   Star, Heart, Minus, Plus, ShoppingBag, ChevronLeft, CheckCircle, AlertTriangle, XCircle,
+  Activity, ArrowRight,
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
+import TrendingBadge from '../../components/commerce/TrendingBadge';
+import AffiliateBadge from '../../components/commerce/AffiliateBadge';
 import { useProduct } from '../../lib/shop/useProduct';
 import { useShopCart } from '../../lib/shop/useShopCart';
 import { useWishlist } from '../../lib/shop/useWishlist';
 import { useProductReviews } from '../../lib/shop/useProductReviews';
+import { useProductIntelligenceContext } from '../../lib/shop/useProductSignals';
 import { formatCents } from '../../lib/shop/types';
 import type { ProductVariant } from '../../lib/shop/types';
 
@@ -38,6 +42,7 @@ export default function ProductDetail() {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const { relatedSignals: intelligenceContext } = useProductIntelligenceContext(product);
   const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', body: '' });
   const [showReviewForm, setShowReviewForm] = useState(false);
 
@@ -265,6 +270,51 @@ export default function ProductDetail() {
 
               {product.sku && (
                 <p className="text-xs font-mono text-graphite/30 mt-4">SKU: {product.sku}</p>
+              )}
+
+              {/* FTC Affiliate Badge */}
+              {!!(product as Record<string, unknown>).affiliate_url && (
+                <div className="mt-4">
+                  <AffiliateBadge size="md" />
+                </div>
+              )}
+
+              {/* Intelligence Context — signal-matched insights */}
+              {intelligenceContext.length > 0 && (
+                <div className="mt-6 border-t border-graphite/10 pt-6">
+                  <p className="text-label text-graphite/60 mb-3 flex items-center gap-1.5">
+                    <Activity className="w-4 h-4" />
+                    Market Intelligence
+                  </p>
+                  <div className="space-y-2">
+                    {intelligenceContext.slice(0, 3).map(signal => (
+                      <div
+                        key={signal.id}
+                        className="bg-mn-bg rounded-lg p-3 border border-graphite/5"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-sans text-graphite line-clamp-1">
+                            {signal.title}
+                          </p>
+                          <TrendingBadge
+                            direction={signal.direction as 'up' | 'down' | 'stable'}
+                            magnitude={signal.magnitude as number}
+                            size="sm"
+                          />
+                        </div>
+                        {signal.region && (
+                          <p className="text-xs font-sans text-graphite/40 mt-1">{signal.region}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <Link
+                    to="/intelligence"
+                    className="inline-flex items-center gap-1 text-xs font-sans text-accent hover:text-accent-hover transition-colors mt-2"
+                  >
+                    View full intelligence <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
               )}
             </div>
           </div>

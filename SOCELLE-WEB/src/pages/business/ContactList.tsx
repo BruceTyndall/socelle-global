@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Plus, Users, Filter } from 'lucide-react';
+import { Search, Plus, Users, Filter, Download } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useCrmContacts } from '../../lib/useCrmContacts';
+import { exportToCsv } from '../../lib/csvExport';
 
 const LIFECYCLE_COLORS: Record<string, string> = {
   lead: 'bg-blue-50 text-blue-700',
@@ -51,6 +52,24 @@ export default function ContactList() {
           {!isLive && !loading && (
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
           )}
+          <button
+            onClick={() => exportToCsv(filtered.map(c => ({
+              first_name: c.first_name,
+              last_name: c.last_name,
+              email: c.email ?? '',
+              phone: c.phone ?? '',
+              type: c.type,
+              lifecycle_stage: c.lifecycle_stage,
+              source: c.source ?? '',
+              total_visits: c.total_visits,
+              total_spend: c.total_spend,
+              last_visit_date: c.last_visit_date ?? '',
+              created_at: c.created_at,
+            })), 'crm_contacts')}
+            className="h-9 px-3 text-xs font-medium text-pro-warm-gray border border-pro-stone/30 rounded-full hover:border-accent/30 transition-colors inline-flex items-center gap-1"
+          >
+            <Download className="w-3.5 h-3.5" /> CSV
+          </button>
           <Link to="/portal/crm/contacts/new" className="inline-flex items-center gap-2 h-9 px-4 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 transition-colors">
             <Plus className="w-4 h-4" />
             Add Contact

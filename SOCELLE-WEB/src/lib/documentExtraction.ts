@@ -1,5 +1,7 @@
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
@@ -122,4 +124,36 @@ async function extractFromDOCX(file: File): Promise<ExtractionResult> {
       error: 'Failed to parse DOCX. The file may be corrupted or password-protected.',
     };
   }
+}
+
+// ── Guarded Document Extraction ──────────────────────────────────────────────
+
+/**
+ * Guarded document extraction — validates extracted text through guardrails,
+ * checks credits, wraps output with safety metadata.
+ */
+export async function extractGuardedTextFromFile(
+  file: File,
+  userId: string,
+): Promise<GuardrailResult<ExtractionResult>> {
+  // Extract first (no guardrail on file bytes, only on resulting text)
+  const result = await extractTextFromFile(file);
+
+  if (!result.success || !result.text) {
+    return validateOutput(result, 'documentExtraction', ['uploaded_file']);
+  }
+
+  // Guardrail check on extracted text
+  const inputCheck = validateInput(result.text, 'documentExtraction');
+  if (!inputCheck.valid && inputCheck.blocked) {
+    return blockedResult(
+      'documentExtraction',
+      inputCheck.blockReason ?? 'Extracted text contains blocked content.',
+    );
+  }
+
+  // Credit gate (deduct for successful extraction)
+  await withCreditGate(userId, 'documentExtraction', async () => result);
+
+  return validateOutput(result, 'documentExtraction', ['uploaded_file']);
 }

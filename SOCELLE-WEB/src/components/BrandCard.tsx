@@ -32,13 +32,13 @@ export default function BrandCard({
     <Link
       to={href}
       className="
-        group block bg-white rounded-xl border border-pro-stone overflow-hidden
-        shadow-card hover:shadow-card-hover hover:-translate-y-0.5
+        group block bg-white rounded-xl border border-mn-surface overflow-hidden
+        shadow-soft hover:shadow-panel hover:-translate-y-0.5
         transition-all duration-200
       "
     >
       {/* Hero thumbnail */}
-      <div className="relative h-36 bg-pro-cream overflow-hidden">
+      <div className="relative h-36 bg-mn-surface overflow-hidden">
         {heroImageUrl ? (
           <img
             src={heroImageUrl}
@@ -47,8 +47,8 @@ export default function BrandCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-pro-navy/10 to-pro-gold/10 flex items-center justify-center">
-            <span className="font-serif text-5xl text-pro-navy/20 select-none">
+          <div className="w-full h-full bg-gradient-to-br from-accent/10 to-signal-warn/10 flex items-center justify-center">
+            <span className="font-sans text-5xl text-accent/20 select-none">
               {name.charAt(0).toUpperCase()}
             </span>
           </div>
@@ -69,7 +69,7 @@ export default function BrandCard({
 
         {/* Brand logo — bottom left of hero */}
         {logoUrl && (
-          <div className="absolute bottom-3 left-3 w-10 h-10 rounded-lg bg-white shadow-card overflow-hidden border border-white/50">
+          <div className="absolute bottom-3 left-3 w-10 h-10 rounded-lg bg-white shadow-soft overflow-hidden border border-white/50">
             <img
               src={logoUrl}
               alt={`${name} logo`}
@@ -82,19 +82,19 @@ export default function BrandCard({
       {/* Body */}
       <div className="p-4">
         <div className="mb-1 flex items-start justify-between gap-2">
-          <h3 className="font-serif text-lg text-pro-navy leading-tight group-hover:text-pro-navy-dark transition-colors">
+          <h3 className="font-sans font-semibold text-lg text-graphite leading-tight group-hover:text-accent transition-colors">
             {name}
           </h3>
         </div>
 
         {category && (
-          <p className="text-xs font-sans font-medium text-pro-warm-gray uppercase tracking-wide mb-2">
+          <p className="text-xs font-sans font-medium text-graphite/50 uppercase tracking-wide mb-2">
             {category}
           </p>
         )}
 
         {description && (
-          <p className="text-sm font-sans text-pro-warm-gray line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-sm font-sans text-graphite/60 line-clamp-2 mb-3 leading-relaxed">
             {description}
           </p>
         )}
@@ -107,12 +107,12 @@ export default function BrandCard({
                 key={s}
                 className={`w-3.5 h-3.5 ${
                   s <= Math.round(rating)
-                    ? 'text-pro-gold fill-pro-gold'
-                    : 'text-pro-stone fill-pro-stone'
+                    ? 'text-signal-warn fill-signal-warn'
+                    : 'text-mn-surface fill-mn-surface'
                 }`}
               />
             ))}
-            <span className="text-xs text-pro-warm-gray ml-1 font-sans">
+            <span className="text-xs text-graphite/50 ml-1 font-sans">
               {rating.toFixed(1)} ({reviewCount})
             </span>
           </div>
@@ -120,8 +120,8 @@ export default function BrandCard({
 
         {/* Key stat */}
         {keyStat && (
-          <div className="flex items-center gap-1.5 text-xs font-sans text-pro-warm-gray border-t border-pro-stone pt-3 mt-1">
-            <Truck className="w-3.5 h-3.5 text-pro-gold flex-shrink-0" />
+          <div className="flex items-center gap-1.5 text-xs font-sans text-graphite/50 border-t border-mn-surface pt-3 mt-1">
+            <Truck className="w-3.5 h-3.5 text-signal-warn flex-shrink-0" />
             <span>{keyStat}</span>
           </div>
         )}

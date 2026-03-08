@@ -1,5 +1,10 @@
 import { supabase } from './supabase';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
+import { fetchRelevantSignals, type SignalEnrichment } from './analysis/signalEnrichment';
+import { createScopedLogger } from './logger';
 
+const gapLog = createScopedLogger('GapAnalysisEngine');
 
 export interface GapAnalysis {
   gap_type: 'category_gap' | 'seasonal_gap' | 'treatment_type_gap' | 'signature_missing' | 'enhancement_missing';
@@ -504,6 +509,18 @@ export async function performGapAnalysis(
     }
   }
 
+  // Live signal enrichment — enrich gap analysis with demand signals
+  const gapCategories = [...new Set(gaps.map((g) => g.gap_category).filter(Boolean))];
+  let signalEnrichment: SignalEnrichment | null = null;
+  try {
+    signalEnrichment = await fetchRelevantSignals({ categories: gapCategories });
+    gapLog.info('Signals fetched for gap analysis', {
+      signalCount: signalEnrichment.signalCount,
+    });
+  } catch {
+    gapLog.warn('Signal enrichment failed in performGapAnalysis');
+  }
+
   for (const gap of gaps) {
     await supabase.from('service_gap_analysis').insert({
       spa_menu_id: spaMenuId,
@@ -574,4 +591,36 @@ export async function getGapAnalysisSummary(spaMenuId: string): Promise<{
     seasonal_opportunities: gaps.filter(g => g.is_seasonal).length,
     estimated_total_revenue: totalRevenue > 0 ? totalRevenue : null
   };
+}
+
+// ── Guarded Gap Analysis ─────────────────────────────────────────────────────
+
+/**
+ * Guarded gap analysis — validates input, checks credits, runs analysis,
+ * wraps output with guardrail metadata.
+ */
+export async function performGuardedGapAnalysis(
+  spaMenuId: string,
+  userId: string,
+  spaType: 'medspa' | 'spa' | 'hybrid' = 'spa',
+): Promise<GuardrailResult<{ gaps: GapAnalysis[] }>> {
+  // Guardrail input check — use spaMenuId as context
+  const inputCheck = validateInput(spaMenuId, 'gapAnalysisEngine');
+  if (!inputCheck.valid) {
+    return blockedResult('gapAnalysisEngine', inputCheck.blockReason ?? 'Invalid input.');
+  }
+
+  // Credit gate + execution
+  const gaps = await withCreditGate(userId, 'gapAnalysisEngine', async () => {
+    return performGapAnalysis(spaMenuId, spaType);
+  });
+
+  // Wrap output
+  return validateOutput({ gaps }, 'gapAnalysisEngine', [
+    'spa_service_mapping',
+    'canonical_protocols',
+    'service_category_benchmarks',
+    'marketing_calendar',
+    'market_signals',
+  ]);
 }

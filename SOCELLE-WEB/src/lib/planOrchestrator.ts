@@ -2,6 +2,42 @@ import { supabase } from './supabase';
 import { performServiceMapping } from './mappingEngine';
 import { performGapAnalysis } from './gapAnalysisEngine';
 import { generateAllRetailAttachForMenu } from './retailAttachEngine';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
+import { fetchSignalsForServiceCategories, type SignalEnrichment } from './analysis/signalEnrichment';
+import { createScopedLogger } from './logger';
+
+const planLog = createScopedLogger('PlanOrchestrator');
+
+/** Structured output type for guarded plan orchestration */
+export interface PlanOrchestrationOutput {
+  summary: {
+    totalServices: number;
+    mappedServices: number;
+    identifiedGaps: number;
+    retailOpportunities: number;
+    openingOrderTotal: number;
+  };
+  services: ParsedService[];
+  mappings: ReturnType<typeof performServiceMapping> extends Promise<infer R> ? R : never;
+  gaps: ReturnType<typeof performGapAnalysis> extends Promise<infer R> ? R : never;
+  retailRecommendations: Array<{
+    serviceName: string;
+    productSKU: string;
+    productName: string;
+    rationale: string;
+    strategy: string;
+    estimatedAttachRate: number;
+  }>;
+  openingOrder: Array<{
+    productName: string;
+    productSKU: string;
+    quantity: number;
+    unitPrice: number;
+    totalCost: number;
+  }>;
+  signalEnrichment: SignalEnrichment | null;
+}
 
 interface ParsedService {
   service_name: string;
@@ -229,6 +265,18 @@ export async function orchestratePlanGeneration(
       totalCost: (product.pro_price || 0) * (2 + index)
     }));
 
+    // Live signal enrichment — query market_signals for context
+    const serviceCategories = [...new Set(services.map((s) => s.category))];
+    let signalEnrichment: SignalEnrichment | null = null;
+    try {
+      signalEnrichment = await fetchSignalsForServiceCategories(serviceCategories);
+      planLog.info('Signals fetched for plan', {
+        signalCount: signalEnrichment.signalCount,
+      });
+    } catch {
+      planLog.warn('Signal enrichment failed — continuing without signals');
+    }
+
     const { data: planOutput, error: planOutputError } = await supabase
       .from('plan_outputs')
       .insert({
@@ -247,7 +295,8 @@ export async function orchestratePlanGeneration(
           mappings: mappingResults,
           gaps: gapAnalysis,
           retailRecommendations,
-          openingOrder
+          openingOrder,
+          signalEnrichment,
         }
       })
       .select()
@@ -287,4 +336,34 @@ export async function orchestratePlanGeneration(
       error: error instanceof Error ? error.message : 'Unknown error occurred'
     };
   }
+}
+
+/**
+ * Guarded plan orchestration — validates input through guardrails,
+ * checks credit balance, executes orchestration, deducts credits.
+ */
+export async function orchestrateGuardedPlanGeneration(
+  submissionId: string,
+  menuText: string,
+  userId: string,
+): Promise<GuardrailResult<{ success: boolean; planOutputId?: string; error?: string }>> {
+  // 1. Guardrail input check
+  const inputCheck = validateInput(menuText, 'planOrchestrator');
+  if (!inputCheck.valid) {
+    return blockedResult('planOrchestrator', inputCheck.blockReason ?? 'Invalid input.');
+  }
+
+  // 2. Credit gate + execution
+  const result = await withCreditGate(userId, 'planOrchestrator', async () => {
+    return orchestratePlanGeneration(submissionId, menuText, userId);
+  });
+
+  // 3. Wrap output with guardrail metadata
+  return validateOutput(result, 'planOrchestrator', [
+    'canonical_protocols',
+    'spa_menus',
+    'pro_products',
+    'retail_products',
+    'market_signals',
+  ]);
 }

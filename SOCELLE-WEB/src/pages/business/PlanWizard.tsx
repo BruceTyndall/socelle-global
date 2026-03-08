@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   FileText,
@@ -8,6 +8,8 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
+  Shield,
+  CreditCard,
 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -17,6 +19,8 @@ import BusinessNav from '../../components/BusinessNav';
 import { mapSupabaseError, getUserMessage } from '../../lib/errors';
 import { createScopedLogger } from '../../lib/logger';
 import { PaywallGate } from '../../components/PaywallGate';
+import { checkCreditBalance, ENGINE_CREDIT_COSTS, type CreditCheckResult } from '../../lib/analysis/creditGate';
+import { validateInput } from '../../lib/analysis/guardrails';
 
 const log = createScopedLogger('PlanWizard');
 
@@ -51,6 +55,24 @@ export default function PlanWizard() {
   const [processing, setProcessing] = useState(false);
   const [menuQuality, setMenuQuality] = useState<'ok' | 'low'>('ok');
   const [error, setError] = useState('');
+  const [creditCheck, setCreditCheck] = useState<CreditCheckResult | null>(null);
+  const [creditLoading, setCreditLoading] = useState(false);
+  const [guardrailWarnings, setGuardrailWarnings] = useState<string[]>([]);
+  const [analysisStep, setAnalysisStep] = useState<string>('');
+
+  // Check credits when entering step 3
+  const checkCredits = useCallback(async () => {
+    if (!user) return;
+    setCreditLoading(true);
+    try {
+      const result = await checkCreditBalance(user.id, 'menuOrchestrator');
+      setCreditCheck(result);
+    } catch (err) {
+      log.error('Credit check failed', { error: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setCreditLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchBrands();
@@ -126,6 +148,15 @@ export default function PlanWizard() {
         setError(validation.error!);
         return;
       }
+
+      // Run guardrail input validation preview
+      const guardrailCheck = validateInput(menuText, 'menuOrchestrator');
+      if (guardrailCheck.blocked) {
+        setError(guardrailCheck.blockReason ?? 'Input blocked by safety guardrails.');
+        return;
+      }
+      setGuardrailWarnings(guardrailCheck.warnings);
+
       setMenuQuality(validation.quality as 'ok' | 'low');
       setStep(2);
     } else if (step === 2) {
@@ -133,6 +164,8 @@ export default function PlanWizard() {
         setError('Please select a brand to continue.');
         return;
       }
+      // Check credits before showing step 3
+      checkCredits();
       setStep(3);
     }
   };
@@ -150,11 +183,13 @@ export default function PlanWizard() {
 
     setProcessing(true);
     setError('');
+    setAnalysisStep('Preparing analysis...');
 
     try {
       const selectedBrand = brands.find((b) => b.id === selectedBrandId);
       const planName = `Menu Fit — ${selectedBrand?.name} · ${new Date().toLocaleDateString()}`;
 
+      setAnalysisStep('Creating analysis plan...');
       const { data: plan, error: planError } = await supabase
         .from('plans')
         .insert({
@@ -168,6 +203,7 @@ export default function PlanWizard() {
 
       if (planError) throw planError;
 
+      setAnalysisStep('Uploading menu data...');
       const { error: menuUploadError } = await supabase.from('menu_uploads').insert({
         plan_id: plan.id,
         source_type: uploadedFile ? (uploadedFile.name.endsWith('.pdf') ? 'pdf' : 'docx') : 'paste',
@@ -177,6 +213,7 @@ export default function PlanWizard() {
       });
       if (menuUploadError) throw menuUploadError;
 
+      setAnalysisStep('Running AI analysis with live market signals...');
       await runMenuAnalysis(plan.id, selectedBrandId, menuText);
 
       // Poll until the plan row reflects status='ready' to confirm all
@@ -439,6 +476,50 @@ export default function PlanWizard() {
                     {serviceCount} line{serviceCount !== 1 ? 's' : ''} · {menuText.length.toLocaleString()} chars
                   </p>
                 </div>
+                <div className="flex items-center justify-between px-5 py-4 bg-white">
+                  <p className="text-xs font-medium text-pro-warm-gray uppercase tracking-wider">Credits</p>
+                  <div className="flex items-center gap-2">
+                    {creditLoading ? (
+                      <Loader2 className="w-3 h-3 animate-spin text-pro-warm-gray" />
+                    ) : creditCheck ? (
+                      <>
+                        <CreditCard className="w-3.5 h-3.5 text-pro-warm-gray" />
+                        <p className={`text-sm font-sans ${creditCheck.sufficient ? 'text-pro-charcoal' : 'text-red-600 font-medium'}`}>
+                          {creditCheck.sufficient
+                            ? `${ENGINE_CREDIT_COSTS.menuOrchestrator} credits will be used`
+                            : `Insufficient credits (need ${creditCheck.requiredCredits}, have ${creditCheck.currentBalance})`
+                          }
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-sm text-pro-warm-gray font-sans">Checking...</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Guardrail warnings */}
+              {guardrailWarnings.length > 0 && (
+                <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Shield className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <p className="text-xs font-semibold text-amber-800 uppercase tracking-wider">Safety Notice</p>
+                  </div>
+                  <ul className="space-y-1">
+                    {guardrailWarnings.map((w, i) => (
+                      <li key={i} className="text-xs text-amber-700">{w}</li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-amber-600 mt-2">
+                    A licensed provider review notice will be included in the output.
+                  </p>
+                </div>
+              )}
+
+              {/* AI disclosure */}
+              <div className="mt-3 flex items-center gap-2 text-xs text-pro-warm-gray">
+                <Shield className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>Generated by AI — results are for business planning only, not medical advice.</span>
               </div>
 
               {processing ? (
@@ -447,16 +528,22 @@ export default function PlanWizard() {
                     <Loader2 className="w-5 h-5 text-pro-charcoal animate-spin flex-shrink-0" />
                     <p className="text-sm font-semibold text-pro-charcoal font-sans">Analyzing your menu…</p>
                   </div>
+                  {analysisStep && (
+                    <p className="text-xs font-medium text-pro-charcoal mb-3 pl-8">{analysisStep}</p>
+                  )}
                   <ul className="space-y-2 pl-8 text-sm text-pro-warm-gray list-none">
                     {[
+                      'Checking safety guardrails',
                       'Parsing service offerings',
+                      'Querying live market signals',
                       'Matching to brand protocols',
                       'Identifying gaps and opportunities',
                       'Generating recommendations',
-                    ].map((step) => (
-                      <li key={step} className="flex items-center gap-2">
+                      'Deducting credits',
+                    ].map((s) => (
+                      <li key={s} className="flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-pro-warm-gray" />
-                        {step}
+                        {s}
                       </li>
                     ))}
                   </ul>

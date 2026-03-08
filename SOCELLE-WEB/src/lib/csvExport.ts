@@ -1,40 +1,41 @@
-/**
- * Lightweight CSV export utility — no external dependencies.
- */
+// ── CSV Export Utility ───────────────────────────────────────────────────
+// Converts an array of objects to a CSV string and triggers download.
+// Used across CRM Hub for contacts, companies, tasks, segments (V2-HUBS-06).
 
-function escapeCell(value: unknown): string {
-  if (value == null) return '';
-  const str = String(value);
-  // Wrap in quotes if the value contains a comma, quote, or newline
-  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
-}
-
-export function exportToCSV(
-  rows: Record<string, unknown>[],
+export function exportToCsv<T extends Record<string, unknown>>(
+  rows: T[],
   filename: string,
-  columns?: { key: string; label: string }[]
+  columns?: { key: keyof T; label: string }[]
 ): void {
   if (rows.length === 0) return;
 
-  const cols = columns || Object.keys(rows[0]).map(k => ({ key: k, label: k }));
+  const cols = columns ?? Object.keys(rows[0]).map(key => ({ key: key as keyof T, label: key as string }));
+
+  const escapeCell = (value: unknown): string => {
+    if (value === null || value === undefined) return '';
+    const str = Array.isArray(value) ? value.join('; ') : String(value);
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  };
 
   const header = cols.map(c => escapeCell(c.label)).join(',');
-  const body = rows
-    .map(row => cols.map(c => escapeCell(row[c.key])).join(','))
-    .join('\n');
+  const body = rows.map(row =>
+    cols.map(c => escapeCell(row[c.key])).join(',')
+  ).join('\n');
 
   const csv = `${header}\n${body}`;
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', filename.endsWith('.csv') ? filename : `${filename}.csv`);
-  document.body.appendChild(link);
+  link.href = url;
+  link.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
   link.click();
-  document.body.removeChild(link);
+
   URL.revokeObjectURL(url);
 }
+
+// Alias for backward compatibility (AdminInbox uses exportToCSV)
+export const exportToCSV = exportToCsv;

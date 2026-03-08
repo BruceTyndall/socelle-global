@@ -15,6 +15,7 @@ import {
   Building2,
   User,
   FileText,
+  Edit,
 } from 'lucide-react';
 import { useDeal } from '../../lib/useDeals';
 import { useDealActivities, type NewDealActivity } from '../../lib/useDealActivities';
@@ -141,6 +142,13 @@ export default function DealDetail() {
 
         {deal.status === 'open' && (
           <div className="flex gap-2">
+            <Link
+              to={`/sales/deals/${id}/edit`}
+              className="inline-flex items-center gap-1.5 h-9 px-4 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full hover:bg-mn-surface transition-colors"
+            >
+              <Edit className="w-4 h-4" />
+              Edit
+            </Link>
             <button
               onClick={() => setShowOutcome('won')}
               className="inline-flex items-center gap-1.5 h-9 px-4 bg-signal-up/10 text-signal-up text-sm font-sans font-semibold rounded-full hover:bg-signal-up/20 transition-colors"

@@ -8,6 +8,9 @@ import {
   AlertCircle,
   Loader2,
   ArrowRight,
+  Zap,
+  BarChart3,
+  Plus,
 } from 'lucide-react';
 import { useDeals } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
@@ -101,12 +104,20 @@ export default function SalesDashboard() {
           </div>
           <p className="text-graphite/60 font-sans mt-1">Pipeline performance and revenue metrics.</p>
         </div>
-        <Link
-          to="/sales/pipeline"
-          className="inline-flex items-center gap-2 h-10 px-5 bg-graphite text-white text-sm font-sans font-semibold rounded-full hover:bg-graphite/90 transition-colors"
-        >
-          View Pipeline <ArrowRight className="w-4 h-4" />
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            to="/sales/deals/new"
+            className="inline-flex items-center gap-2 h-10 px-5 bg-graphite text-white text-sm font-sans font-semibold rounded-full hover:bg-graphite/90 transition-colors"
+          >
+            <Plus className="w-4 h-4" /> New Deal
+          </Link>
+          <Link
+            to="/sales/pipeline"
+            className="inline-flex items-center gap-2 h-10 px-5 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full hover:bg-mn-surface transition-colors"
+          >
+            View Pipeline <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
 
       {/* Revenue Metrics */}
@@ -126,6 +137,28 @@ export default function SalesDashboard() {
             <p className="text-2xl font-sans font-semibold text-graphite">{m.value}</p>
           </div>
         ))}
+      </div>
+
+      {/* Quick Nav */}
+      <div className="flex flex-wrap gap-3">
+        <Link
+          to="/sales/opportunities"
+          className="inline-flex items-center gap-2 h-9 px-4 bg-accent/10 text-accent text-sm font-sans font-semibold rounded-full hover:bg-accent/20 transition-colors"
+        >
+          <Zap className="w-4 h-4" /> Opportunity Finder
+        </Link>
+        <Link
+          to="/sales/analytics"
+          className="inline-flex items-center gap-2 h-9 px-4 bg-accent/10 text-accent text-sm font-sans font-semibold rounded-full hover:bg-accent/20 transition-colors"
+        >
+          <BarChart3 className="w-4 h-4" /> Revenue Analytics
+        </Link>
+        <Link
+          to="/sales/commissions"
+          className="inline-flex items-center gap-2 h-9 px-4 border border-graphite/10 text-graphite/60 text-sm font-sans rounded-full hover:bg-mn-surface transition-colors"
+        >
+          Commissions
+        </Link>
       </div>
 
       {/* Pipeline Overview */}

@@ -1,5 +1,10 @@
 import { supabase } from './supabase';
 import { generateBrandNarrative } from './brandDifferentiationEngine';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
+import { createScopedLogger } from './logger';
+
+const planOutputLog = createScopedLogger('PlanOutputGenerator');
 
 interface PlanGenerationInput {
   spaLeadId: string;
@@ -382,4 +387,42 @@ export async function getPlanByToken(token: string): Promise<any> {
     .single();
 
   return data;
+}
+
+// ── Guarded Plan Output Generation ───────────────────────────────────────────
+
+/**
+ * Guarded plan output generation — validates input, checks credits,
+ * generates plan, wraps output with guardrail metadata.
+ */
+export async function generateGuardedSalesReadyPlan(
+  input: PlanGenerationInput,
+  userId: string,
+): Promise<GuardrailResult<{ planId: string | null }>> {
+  // Guardrail input check (use IDs as proxy — no raw text to check here)
+  const inputText = `${input.spaLeadId} ${input.spaMenuId} ${input.customNotes ?? ''}`;
+  const inputCheck = validateInput(inputText, 'planOutputGenerator');
+  if (!inputCheck.valid && inputCheck.blocked) {
+    return blockedResult(
+      'planOutputGenerator',
+      inputCheck.blockReason ?? 'Input blocked by safety guardrails.',
+    );
+  }
+
+  // Credit gate + execution
+  const planId = await withCreditGate(userId, 'planOutputGenerator', async () => {
+    return generateSalesReadyPlan(input);
+  });
+
+  planOutputLog.info('Guarded plan output generated', { planId });
+
+  // Wrap output
+  return validateOutput({ planId }, 'planOutputGenerator', [
+    'spa_leads',
+    'spa_menus',
+    'spa_service_mapping',
+    'service_gap_analysis',
+    'phased_rollout_plans',
+    'canonical_protocols',
+  ]);
 }

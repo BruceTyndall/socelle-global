@@ -1,4 +1,10 @@
 import { supabase } from './supabase';
+import { validateInput, validateOutput, blockedResult, type GuardrailResult } from './analysis/guardrails';
+import { withCreditGate } from './analysis/creditGate';
+import { fetchSignalsForServiceCategories, type SignalEnrichment } from './analysis/signalEnrichment';
+import { createScopedLogger } from './logger';
+
+const menuLog = createScopedLogger('MenuOrchestrator');
 
 export interface ParsedService {
   name: string;
@@ -42,6 +48,22 @@ export interface RetailAttach {
     size: string | null;
     usage: string | null;
   }>;
+}
+
+export interface MenuAnalysisOutput {
+  overview: {
+    totalServices: number;
+    servicesWithMatches: number;
+    servicesWithoutMatches: number;
+    gapOpportunities: number;
+    services: ParsedService[];
+    brandFitScore: number;
+  };
+  protocol_matches: ProtocolMatch[];
+  gaps: GapOpportunity[];
+  retail_attach: RetailAttach[];
+  activation_assets: Record<string, unknown[]>;
+  signalEnrichment: SignalEnrichment | null;
 }
 
 export interface MenuValidationResult {
@@ -104,6 +126,19 @@ export async function runMenuAnalysis(
   const retailAttach = generateRetailAttach(parsedServices, products, protocolMatches);
   const activationAssets = organizeAssets(assets);
 
+  // Live signal enrichment — query market_signals for demand/pricing context
+  const serviceCategories = [...new Set(parsedServices.map((s) => s.category).filter(Boolean) as string[])];
+  let signalEnrichment: SignalEnrichment | null = null;
+  try {
+    signalEnrichment = await fetchSignalsForServiceCategories(serviceCategories);
+    menuLog.info('Signals fetched for menu analysis', {
+      signalCount: signalEnrichment.signalCount,
+      categories: signalEnrichment.categories,
+    });
+  } catch {
+    menuLog.warn('Signal enrichment failed — continuing without signals');
+  }
+
   const overview = {
     totalServices: parsedServices.length,
     servicesWithMatches: protocolMatches.length,
@@ -119,6 +154,7 @@ export async function runMenuAnalysis(
     gaps,
     retail_attach: retailAttach,
     activation_assets: activationAssets,
+    signal_enrichment: signalEnrichment,
   });
 
   const { error: statusError } = await supabase
@@ -129,6 +165,90 @@ export async function runMenuAnalysis(
   if (statusError) {
     throw new Error(`Failed to mark plan ready: ${statusError.message}`);
   }
+}
+
+/**
+ * Guarded menu analysis — validates input through guardrails,
+ * checks credit balance, executes analysis, deducts credits.
+ *
+ * This is the recommended entry point for UI callers.
+ */
+export async function runGuardedMenuAnalysis(
+  planId: string,
+  brandId: string,
+  menuText: string,
+  userId: string,
+): Promise<GuardrailResult<MenuAnalysisOutput>> {
+  // 1. Guardrail input check
+  const inputCheck = validateInput(menuText, 'menuOrchestrator');
+  if (!inputCheck.valid) {
+    return blockedResult('menuOrchestrator', inputCheck.blockReason ?? 'Invalid input.');
+  }
+
+  // 2. Credit gate + execution
+  const result = await withCreditGate(userId, 'menuOrchestrator', async () => {
+    const parsedServices = parseMenuText(menuText);
+
+    const [protocols, products, assets] = await Promise.all([
+      fetchBrandProtocols(brandId),
+      fetchBrandProducts(brandId),
+      fetchBrandAssets(brandId),
+    ]);
+
+    const protocolMatches = matchServicesToProtocols(parsedServices, protocols);
+    const gaps = identifyGaps(parsedServices, protocols, protocolMatches);
+    const retailAttach = generateRetailAttach(parsedServices, products, protocolMatches);
+    const activationAssets = organizeAssets(assets);
+
+    // Live signal enrichment
+    const serviceCategories = [...new Set(parsedServices.map((s) => s.category).filter(Boolean) as string[])];
+    let signalEnrichment: SignalEnrichment | null = null;
+    try {
+      signalEnrichment = await fetchSignalsForServiceCategories(serviceCategories);
+    } catch {
+      menuLog.warn('Signal enrichment failed in guarded path');
+    }
+
+    const overview = {
+      totalServices: parsedServices.length,
+      servicesWithMatches: protocolMatches.length,
+      servicesWithoutMatches: parsedServices.length - protocolMatches.length,
+      gapOpportunities: gaps.length,
+      services: parsedServices,
+      brandFitScore: calculateFitScore(parsedServices, protocolMatches),
+    };
+
+    await saveOutputs(planId, {
+      overview,
+      protocol_matches: protocolMatches,
+      gaps,
+      retail_attach: retailAttach,
+      activation_assets: activationAssets,
+      signal_enrichment: signalEnrichment,
+    });
+
+    await supabase
+      .from('plans')
+      .update({ status: 'ready', updated_at: new Date().toISOString() })
+      .eq('id', planId);
+
+    return {
+      overview,
+      protocol_matches: protocolMatches,
+      gaps,
+      retail_attach: retailAttach,
+      activation_assets: activationAssets,
+      signalEnrichment,
+    } satisfies MenuAnalysisOutput;
+  });
+
+  // 3. Wrap output with guardrail metadata
+  return validateOutput(result, 'menuOrchestrator', [
+    'canonical_protocols',
+    'pro_products',
+    'brand_assets',
+    'market_signals',
+  ]);
 }
 
 function parseMenuText(text: string): ParsedService[] {

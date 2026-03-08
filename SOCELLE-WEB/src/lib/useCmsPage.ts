@@ -38,7 +38,10 @@ export function useCmsPage(slug: string): UseCmsPageReturn {
         .eq('status', 'published')
         .single();
 
-      if (error) throw new Error(error.message);
+      if (error) {
+        if (error.code === '42P01') return null;
+        throw new Error(error.message);
+      }
       return (data as CmsPage) ?? null;
     },
     enabled: isSupabaseConfigured && !!slug,

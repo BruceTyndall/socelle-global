@@ -18,7 +18,8 @@ export default {
         // Accent system
         accent: {
           DEFAULT:     '#6E879B',   // mineral slate blue
-          hover:       '#5E7588',   // accent hover / active
+          hover:       '#5A7185',   // accent hover / active (Pearl Mineral V2 locked)
+          soft:        '#E8EDF1',   // soft panels (Pearl Mineral V2 locked)
         },
         // Signal colors
         signal: {

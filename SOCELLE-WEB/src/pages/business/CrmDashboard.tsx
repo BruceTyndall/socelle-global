@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Building2, MessageSquare, Calendar, ArrowRight, Phone, Mail, FileText, ClipboardList } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Users, Building2, MessageSquare, Calendar, ArrowRight, Phone, Mail, FileText, ClipboardList, CheckSquare, Layers, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
+import { useOverdueTasks } from '../../lib/useCrmTasks';
 
-interface CrmStats {
-  contactCount: number;
-  companyCount: number;
-  todayInteractions: number;
-  upcomingAppointments: number;
-}
+// ── CRM Dashboard — V2-HUBS-06 ─────────────────────────────────────────
+// Data source: crm_contacts, crm_companies, crm_interactions, appointments, crm_tasks (LIVE)
+// Migrated to TanStack Query v5.
 
 interface RecentInteraction {
   id: string;
@@ -38,78 +36,68 @@ const INTERACTION_ICONS: Record<string, typeof Phone> = {
 export default function CrmDashboard() {
   const { profile } = useAuth();
   const businessId = profile?.business_id;
-  const [stats, setStats] = useState<CrmStats>({ contactCount: 0, companyCount: 0, todayInteractions: 0, upcomingAppointments: 0 });
-  const [recentInteractions, setRecentInteractions] = useState<RecentInteraction[]>([]);
-  const [upcoming, setUpcoming] = useState<UpcomingAppt[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { tasks: overdueTasks } = useOverdueTasks(businessId);
 
-  useEffect(() => {
-    if (!businessId) return;
-    const load = async () => {
-      setLoading(true);
-      try {
-        const today = new Date().toISOString().split('T')[0];
-        const todayStart = `${today}T00:00:00`;
-        const todayEnd = `${today}T23:59:59`;
-        const now = new Date().toISOString();
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['crm_dashboard', businessId],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const todayStart = `${today}T00:00:00`;
+      const todayEnd = `${today}T23:59:59`;
+      const now = new Date().toISOString();
 
-        const [contactRes, companyRes, interactionsRes, apptRes, recentRes, upcomingRes] = await Promise.all([
-          supabase.from('crm_contacts').select('id', { count: 'exact', head: true }).eq('business_id', businessId),
-          supabase.from('crm_companies').select('id', { count: 'exact', head: true }).eq('business_id', businessId),
-          supabase.from('crm_interactions').select('id', { count: 'exact', head: true }).eq('business_id', businessId).gte('occurred_at', todayStart).lte('occurred_at', todayEnd),
-          supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId).gte('start_time', now).eq('status', 'scheduled'),
-          supabase.from('crm_interactions').select('*, crm_contacts(first_name, last_name)').eq('business_id', businessId).order('occurred_at', { ascending: false }).limit(8),
-          supabase.from('appointments').select('*, booking_services(name)').eq('business_id', businessId).gte('start_time', now).eq('status', 'scheduled').order('start_time').limit(5),
-        ]);
+      const [contactRes, companyRes, interactionsRes, apptRes, recentRes, upcomingRes] = await Promise.all([
+        supabase.from('crm_contacts').select('id', { count: 'exact', head: true }).eq('business_id', businessId!),
+        supabase.from('crm_companies').select('id', { count: 'exact', head: true }).eq('business_id', businessId!),
+        supabase.from('crm_interactions').select('id', { count: 'exact', head: true }).eq('business_id', businessId!).gte('occurred_at', todayStart).lte('occurred_at', todayEnd),
+        supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId!).gte('start_time', now).eq('status', 'scheduled'),
+        supabase.from('crm_interactions').select('*, crm_contacts(first_name, last_name)').eq('business_id', businessId!).order('occurred_at', { ascending: false }).limit(8),
+        supabase.from('appointments').select('*, booking_services(name)').eq('business_id', businessId!).gte('start_time', now).eq('status', 'scheduled').order('start_time').limit(5),
+      ]);
 
-        setStats({
-          contactCount: contactRes.count ?? 0,
-          companyCount: companyRes.count ?? 0,
-          todayInteractions: interactionsRes.count ?? 0,
-          upcomingAppointments: apptRes.count ?? 0,
-        });
+      const mappedInteractions: RecentInteraction[] = (recentRes.data ?? []).map((row: Record<string, unknown>) => {
+        const c = row.crm_contacts as { first_name?: string; last_name?: string } | null;
+        return {
+          id: row.id as string,
+          type: row.type as string,
+          subject: row.subject as string | null,
+          occurred_at: row.occurred_at as string,
+          contact_first_name: c?.first_name,
+          contact_last_name: c?.last_name,
+        };
+      });
 
-        const mappedInteractions = (recentRes.data ?? []).map((row: Record<string, unknown>) => {
-          const c = row.crm_contacts as { first_name?: string; last_name?: string } | null;
-          return {
-            id: row.id as string,
-            type: row.type as string,
-            subject: row.subject as string | null,
-            occurred_at: row.occurred_at as string,
-            contact_first_name: c?.first_name,
-            contact_last_name: c?.last_name,
-          };
-        });
-        setRecentInteractions(mappedInteractions);
+      const mappedUpcoming: UpcomingAppt[] = (upcomingRes.data ?? []).map((row: Record<string, unknown>) => {
+        const svc = row.booking_services as { name?: string } | null;
+        return {
+          id: row.id as string,
+          client_first_name: row.client_first_name as string,
+          client_last_name: row.client_last_name as string,
+          start_time: row.start_time as string,
+          service_name: svc?.name,
+        };
+      });
 
-        const mappedUpcoming = (upcomingRes.data ?? []).map((row: Record<string, unknown>) => {
-          const svc = row.booking_services as { name?: string } | null;
-          return {
-            id: row.id as string,
-            client_first_name: row.client_first_name as string,
-            client_last_name: row.client_last_name as string,
-            start_time: row.start_time as string,
-            service_name: svc?.name,
-          };
-        });
-        setUpcoming(mappedUpcoming);
+      return {
+        contactCount: contactRes.count ?? 0,
+        companyCount: companyRes.count ?? 0,
+        todayInteractions: interactionsRes.count ?? 0,
+        upcomingAppointments: apptRes.count ?? 0,
+        recentInteractions: mappedInteractions,
+        upcoming: mappedUpcoming,
+      };
+    },
+    enabled: !!businessId,
+  });
 
-        setIsLive(true);
-      } catch {
-        setIsLive(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [businessId]);
+  const stats = data ?? { contactCount: 0, companyCount: 0, todayInteractions: 0, upcomingAppointments: 0, recentInteractions: [], upcoming: [] };
+  const isLive = !!data;
 
   const statCards = [
     { label: 'Contacts', value: stats.contactCount, icon: Users, to: '/portal/crm/contacts', color: 'text-accent' },
-    { label: 'Companies', value: stats.companyCount, icon: Building2, to: '/portal/crm/companies', color: 'text-pro-navy' },
+    { label: 'Companies', value: stats.companyCount, icon: Building2, to: '/portal/crm/companies', color: 'text-accent' },
     { label: "Today's Interactions", value: stats.todayInteractions, icon: MessageSquare, to: '/portal/crm/contacts', color: 'text-signal-up' },
-    { label: 'Upcoming Appointments', value: stats.upcomingAppointments, icon: Calendar, to: '/portal/booking/calendar', color: 'text-pro-gold' },
+    { label: 'Upcoming Appointments', value: stats.upcomingAppointments, icon: Calendar, to: '/portal/booking/calendar', color: 'text-signal-warn' },
   ];
 
   return (
@@ -130,6 +118,20 @@ export default function CrmDashboard() {
           </Link>
         </div>
       </div>
+
+      {/* Overdue Tasks Alert */}
+      {overdueTasks.length > 0 && (
+        <Link to="/portal/crm/tasks?filter=overdue" className="block bg-signal-down/5 border border-signal-down/20 rounded-xl px-5 py-4 hover:bg-signal-down/10 transition-colors">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-signal-down flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-pro-charcoal">{overdueTasks.length} overdue task{overdueTasks.length !== 1 ? 's' : ''}</p>
+              <p className="text-xs text-pro-warm-gray mt-0.5">Review and update your tasks</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-signal-down ml-auto" />
+          </div>
+        </Link>
+      )}
 
       {/* Stat Cards */}
       {loading ? (
@@ -162,6 +164,34 @@ export default function CrmDashboard() {
         </div>
       )}
 
+      {/* Quick Links: Tasks + Segments */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Link to="/portal/crm/tasks" className="bg-white rounded-xl border border-pro-stone/30 p-5 hover:border-accent/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+              <CheckSquare className="w-5 h-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-pro-charcoal">Tasks</p>
+              <p className="text-xs text-pro-warm-gray">Manage follow-ups and reminders</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-accent transition-colors" />
+          </div>
+        </Link>
+        <Link to="/portal/crm/segments" className="bg-white rounded-xl border border-pro-stone/30 p-5 hover:border-accent/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+              <Layers className="w-5 h-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-pro-charcoal">Segments</p>
+              <p className="text-xs text-pro-warm-gray">Group contacts by criteria</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-accent transition-colors" />
+          </div>
+        </Link>
+      </div>
+
       {/* Two-column: Recent Interactions + Upcoming Appointments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Interactions */}
@@ -170,11 +200,11 @@ export default function CrmDashboard() {
             <h2 className="text-sm font-semibold text-pro-charcoal uppercase tracking-wider">Recent Interactions</h2>
             <ClipboardList className="w-4 h-4 text-pro-warm-gray" />
           </div>
-          {recentInteractions.length === 0 ? (
+          {stats.recentInteractions.length === 0 ? (
             <p className="text-sm text-pro-warm-gray py-4">No interactions yet</p>
           ) : (
             <div className="space-y-3">
-              {recentInteractions.map(ix => {
+              {stats.recentInteractions.map(ix => {
                 const Icon = INTERACTION_ICONS[ix.type] ?? FileText;
                 return (
                   <div key={ix.id} className="flex items-start gap-3 py-2 border-b border-pro-stone/10 last:border-0">
@@ -202,14 +232,14 @@ export default function CrmDashboard() {
             <h2 className="text-sm font-semibold text-pro-charcoal uppercase tracking-wider">Upcoming Appointments</h2>
             <Calendar className="w-4 h-4 text-pro-warm-gray" />
           </div>
-          {upcoming.length === 0 ? (
+          {stats.upcoming.length === 0 ? (
             <p className="text-sm text-pro-warm-gray py-4">No upcoming appointments</p>
           ) : (
             <div className="space-y-3">
-              {upcoming.map(appt => (
+              {stats.upcoming.map(appt => (
                 <Link key={appt.id} to={`/portal/booking/appointments/${appt.id}`} className="flex items-center gap-3 py-2 border-b border-pro-stone/10 last:border-0 hover:bg-pro-ivory/50 -mx-2 px-2 rounded-lg transition-colors">
-                  <div className="w-7 h-7 rounded-full bg-pro-gold/10 flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-3.5 h-3.5 text-pro-gold" />
+                  <div className="w-7 h-7 rounded-full bg-signal-warn/10 flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-3.5 h-3.5 text-signal-warn" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-pro-charcoal">
