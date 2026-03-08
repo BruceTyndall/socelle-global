@@ -1,6 +1,9 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # SOCELLE MONOREPO MAP
-**Generated:** March 5, 2026 — Phase 1 Full Audit  
-**Authority:** `docs/command/SOCELLE_CANONICAL_DOCTRINE.md`
+**Generated:** March 5, 2026 — Phase 1 Full Audit
+**Updated:** March 8, 2026 — V1 Master Alignment
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 
 ---
 
@@ -263,10 +266,11 @@ SOCELLE GLOBAL/                          ← MONOREPO ROOT
 
 | App | Path | Stack | Status |
 |---|---|---|---|
-| SOCELLE-WEB | `/SOCELLE-WEB/` | Vite + React + Tailwind | Active (100+ routes) |
-| SOCELLE-MOBILE | `/SOCELLE-MOBILE-main/` | Flutter + Riverpod | Active (21 features) |
-| Marketing Site | `/apps/marketing-site/` | Next.js | Partial (4 routes) |
+| SOCELLE-WEB | `/SOCELLE-WEB/` | Vite 5.4 + React 18.3 + Tailwind 3.4 | Active (150+ routes) — **Primary runtime: React+Vite** (surgical upgrade to React 19 + Vite 6 planned, ~1 day effort) |
+| SOCELLE-MOBILE | `/SOCELLE-MOBILE-main/` | Flutter + Riverpod | Active (21 features) — shares Supabase API contracts with web |
+| Marketing Site | `/apps/marketing-site/` | Next.js | Partial (4 routes) — **NOT the primary runtime**; SEO-only surface |
 | Web Portal | `/apps/web-portal/` | TBD | Stub only |
+| Desktop (planned) | (not yet created) | Tauri wrapper around SOCELLE-WEB | Phase 6 — wraps same React+Vite build |
 
 ## 5. PACKAGES SUMMARY
 
@@ -305,6 +309,53 @@ SOCELLE GLOBAL/                          ← MONOREPO ROOT
 | `brand_seed_content` | `create_brand_seed_content` | BrandStorefront |
 | `brand_interest_signals` | `create_brand_interest_signals` | BrandStorefront |
 | `conversations` / `messages` | `create_conversations`, `create_messages` | Messaging |
+
+---
+
+---
+
+## 7. V1 HUB COVERAGE (15 Hubs — Anti-Shell Rule)
+
+Per V1 §D + §G, every hub must be non-shell and satisfy the full anti-shell checklist. Current monorepo coverage:
+
+| Hub | Monorepo Location | Status |
+|---|---|---|
+| Intelligence | `SOCELLE-WEB/src/pages/public/Intelligence.tsx` + portal intelligence pages | Routes exist, partial DEMO |
+| Jobs | `SOCELLE-WEB/src/pages/public/Jobs.tsx` | Routes exist |
+| Brands | `SOCELLE-WEB/src/pages/public/Brands.tsx` + brand portal | Routes exist, LIVE |
+| Professionals | `SOCELLE-WEB/src/pages/public/Professionals.tsx` | Route exists, DEMO |
+| Admin | `SOCELLE-WEB/src/pages/admin/` | 37+ routes, mostly LIVE |
+| CRM | `SOCELLE-WEB/src/pages/admin/CrmHub.tsx` | Route exists, needs anti-shell work |
+| Education | `SOCELLE-WEB/src/pages/public/Education.tsx` | Route exists, LIVE |
+| Marketing | `SOCELLE-WEB/src/pages/admin/` (calendar, campaigns) | Partial, needs hub build |
+| Sales | `SOCELLE-WEB/src/pages/admin/SalesHub.tsx` | Route exists, needs anti-shell work |
+| Commerce | Within portals (orders, products, cart) | Module — not top-level nav |
+| Authoring Studio | NOT YET CREATED | Phase 5 — CMS + blog + briefs |
+| Mobile App | `SOCELLE-MOBILE-main/` | Flutter app, 21 features |
+| Desktop App | NOT YET CREATED | Phase 6 — Tauri wrapper |
+| Credit Economy | NOT YET CREATED | Phase 4 — credit deduction + metering |
+| Affiliate/Wholesale Engine | NOT YET CREATED | Phase 4 — FTC badges + tracked redirects |
+
+## 8. MULTI-PLATFORM STRATEGY (V1 §H)
+
+- **Web:** React + Vite (primary runtime). NOT Next.js.
+- **Desktop:** Tauri shell wrapping same React+Vite build (Phase 6).
+- **Mobile:** Flutter app using same Supabase API contracts (Phase 6).
+- **Shared:** Supabase schema/RLS/edge functions, `intelligence-core` TS package, Pearl Mineral V2 tokens.
+- **Goal:** 96%+ reuse of logic and contracts.
+
+## 9. TECH BASELINE UPGRADE (V1 §E — "Surgical Upgrade")
+
+Current → Target (total effort: ~1 working day):
+
+| Package | Current | Target | Effort |
+|---|---|---|---|
+| React | 18.3 | 19.x | ~2 hours |
+| Vite | 5.4 | 6.x | ~1 hour |
+| TypeScript | 5.5 (strict ON, some `any` debt) | 5.5 strict + `noExplicitAny` | ~3-5 hours |
+| TanStack Query | not yet | v5 (standardize all data fetching) | Phase 3 |
+| Tailwind | 3.4 | **Stay on 3.4** (Tailwind 4 deferred) | — |
+| Sentry | not yet | Web + edge | Phase 3 |
 
 ---
 

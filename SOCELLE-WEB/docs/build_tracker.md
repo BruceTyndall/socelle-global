@@ -1,9 +1,28 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-07 (Session 43 — W14-01: Pre-launch quiz page added)
+Last Updated: 2026-03-08 (Session 46 — V2-TECH FROZEN, V3 CMS BUILD is the ONLY priority)
+
+---
+
+## ⛔ V2-TECH FREEZE — EFFECTIVE IMMEDIATELY (March 8, 2026)
+
+**ALL V2-TECH work orders are COMPLETE and FROZEN.** Do not resume, extend, or create new V2-TECH WOs.
+
+**V2-TECH-01 through V2-TECH-07: ALL DONE ✅** — React 19, Vite 6, TS strict, TanStack Query, observability baseline, types regen, Playwright. Observability is satisfied via Admin Hub dashboards and CMS Hub publish/route health — not external Sentry dashboards.
+
+**From this point forward, the ONLY execution priority is:**
+1. **WO-CMS-01 through WO-CMS-06** (V3 Internal CMS Build)
+2. **Hub-by-hub V3 upgrades** (after CMS is live)
+
+**Authority:** `docs/command/V3_BUILD_PLAN.md` + `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`
+
+**Do NOT touch:** V2-INTEL, V2-HUBS, V2-MULTI, V2-LAUNCH, W11, or WAVE OVERHAUL items until all WO-CMS work orders are complete.
+
+---
 
 W14-01: Pre-launch quiz page ✅ — PrelaunchQuiz.tsx at / (App.tsx updated); Home kept at /home; migration 20260307000001 adds zip_code + quiz_answers JSONB to access_requests; 8-question professional benchmarking quiz → lead capture → results view; Pearl Mineral V2; SEO Helmet + JSON-LD; tsc pending (run before deploy)
-Current Phase: WAVE OVERHAUL — COMPLETE ✅
-Next Milestone: Phase 0 ✅ → Phase 1 ✅ → Phase 2 ✅ → Phase 3 ✅ → Phase 4 ✅ → Phase 5 ✅ → Phase 6 ✅ → Phase 7 ✅ → Phase 8 ✅ → Phase 9 ✅ — ALL PHASES COMPLETE
+Current Phase: **V3 CMS BUILD** — WO-CMS-01 through WO-CMS-06 (ACTIVE PRIORITY)
+V2-TECH: ✅ ALL COMPLETE + FROZEN (do not resume)
+Next Milestone: WO-CMS-01 (Schema+RLS) → WO-CMS-02 (Client+Hooks) → WO-CMS-03 (CMS Hub UI) → WO-CMS-04 (PageRenderer) → WO-CMS-05 (Authoring Studio) → WO-CMS-06 (Hub Integrations)
 Completed 2026-03-06 (Session 38 — Wave 13): W13-01 (data_feeds table + RLS + indexes), W13-02 (feed-orchestrator edge function — RSS+API→market_signals), W13-03 (AdminFeedsHub /admin/feeds — full CRUD), W13-04 (102 seed rows across 14 categories), W13-05 (useDataFeedStats + dataSourcesCount in usePlatformStats — full pipeline wired), W13-06 (100 additional sources from Open Source Beauty & Wellness APIs research — grand total 202 feeds)
 Completed 2026-03-06 (Session 37 — 4 parallel lanes): W12-04 (brandIntelligence DB wiring), W12-05 (Portal IntelligenceHub live), W12-06 (BenchmarkDashboard live aggregates), W12-07 (Brand Intelligence+Report live), W12-08 (Brand Analytics live), W12-11 (8 admin hub functional shells — 5 LIVE, 3 DEMO), W12-12 (MarketingCalendar isLive), W10-12 (ProtocolDetail adoptionCount DEMO badge)
 Doc Gate PASS 2026-03-06 (Session 37 Lane A): W12-19 ✅ (all 13 remediation items verified), W12-21 ✅ (useRssItems→rss_items, isLive gates rendering), W12-22 ✅ (useIngredients→ingredients table, isLive gates count+timestamps)
@@ -1253,6 +1272,107 @@ Phase 0 ✅ → Phase 1 (Design Parity) → Phase 2 (Backend Schema)
 
 **PRE-FLIGHT STATUS: PASS (with FAIL 6 noted for Phase 3 remediation)**
 **All 9 WOs created. Ready to begin Phase 1.**
+
+---
+
+## SOCELLE V2 — Align Docs to V1 Master + Rebuild Plan
+
+> Added 2026-03-08. Authority: `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (docs/command/).
+> All V2 WOs follow the V1 master's phase ordering. No code changes in this section — docs and planning only until owner approves execution.
+
+### V2-COMMAND — Documentation Alignment
+
+| WO | Title | Scope | Inputs | Outputs | Owner Agent | Gate |
+|----|-------|-------|--------|---------|-------------|------|
+| ✅ V2-COMMAND-01 | Align command docs to V1 master | Read V1, update all docs/command/*.md to match V1 tech baseline, hub list, phases, anti-shell rule | V1 master, all docs/command/*.md | Updated docs with V1 alignment headers | Command Agent | Phase 0 | ✅ 2026-03-08 — 29 files aligned, all reference V1 |
+| ✅ V2-COMMAND-02 | Refresh agent scopes and workflows | Update AGENT_SCOPE_REGISTRY, AGENT_WORKFLOW_INDEX, AGENT_WORKING_FOLDERS with V1 agent roster + hub-to-agent mapping + NO SHELL rule per hub | V1 §L + §G, agent registry docs | Updated registry docs with 15 hub assignments + skill maps | Command Agent | Phase 0 | ✅ 2026-03-08 — v2.0 registry, 16 agents, 15 hubs mapped |
+| ✅ V2-COMMAND-03 | Update site maps and brand surfaces to V1 | Ensure GLOBAL_SITE_MAP, SITE_MAP, BRAND_SURFACE_INDEX list all 15 hubs + their routes | V1 §G, site map docs | Updated site maps with complete hub route coverage | Command Agent | Phase 0 | ✅ 2026-03-08 — all 15 hubs in site maps |
+
+### V2-TECH — Tech Baseline Upgrades (Phase 3)
+
+| WO | Title | Scope | Inputs | Outputs | Owner Agent | Gate |
+|----|-------|-------|--------|---------|-------------|------|
+| ✅ V2-TECH-01 | React 18.3 → 19.x upgrade | `npm i react@^19 react-dom@^19 @types/react@^19 @types/react-dom@^19` + build + sanity | V1 §E | package.json, lock file, build passing | Platform Engineer | Phase 3 | ✅ 2026-03-08 — React 19.2.4, lucide-react 0.577.0, useRef fix in useScorm.ts, tsc 0 errors, build 4.60s |
+| ✅ V2-TECH-02 | Vite 5.4 → 6.x upgrade | `npm i vite@^6 @vitejs/plugin-react@^5` + build + config fix | V1 §E | vite.config.ts, package.json, build passing | Platform Engineer | Phase 3 | ✅ 2026-03-08 — Vite 6.4.1, @vitejs/plugin-react 5.1.4, no config changes needed, build passing |
+| ✅ V2-TECH-03 | TypeScript strict enforcement | `"strict": true` already ON in tsconfig.app.json; `npx tsc --noEmit` exit 0 | V1 §E | tsconfig.json already strict, tsc passes 0 errors | Platform Engineer | Phase 3 | ✅ 2026-03-08 — strict:true confirmed, tsc 0 errors. 52 files still use explicit `any` (cleanup WO, not blocker) |
+| ✅ V2-TECH-04 | TanStack Query v5 migration | Install TanStack Query, migrate all `useEffect`+fetch patterns to `useQuery`/`useMutation` | V1 §E | All data hooks converted, no raw useEffect+fetch for server data | Platform Engineer | Phase 3 | ✅ 2026-03-08 — @tanstack/react-query v5.90.21 installed, ~80 hook functions across ~46 files migrated, QueryClient defaults (staleTime 5min, gcTime 10min, retry 1), side-effect hooks retain useEffect (Realtime, SCORM, cart/wishlist init), tsc 0 errors, build 4.67s |
+| ✅ V2-TECH-05 | Sentry integration (web + edge) | Wire Sentry SDK for error + performance monitoring on web app and edge functions | V1 §E, §J | Sentry init in main entry, edge function wrappers, errors visible in dashboard | Platform Engineer | Phase 3 | ✅ 2026-03-08 — @sentry/react v10.42.0 + @sentry/vite-plugin v5.1.1 installed. main.tsx: Sentry.init() with browserTracing+replay, PII scrubbing. ErrorBoundary: captureException on componentDidCatch. SentryUserContext: sets user ID (no PII). vite.config.ts: sentryVitePlugin (conditional on SENTRY_AUTH_TOKEN), vendor-sentry chunk, CSP updated. supabase/functions/_shared/sentry.ts: withSentry() wrapper + captureException() for edge functions via HTTP envelope API. Set VITE_SENTRY_DSN (web) + SENTRY_DSN_EDGE (edge) to activate. tsc 0 errors, build 5.31s |
+| ✅ V2-TECH-06 | database.types.ts regeneration | Run Supabase type generation to match all 71+ migrations | V1 §E | database.types.ts matches schema, tsc passes | Data Architect | Phase 3 | ✅ 2026-03-08 — `supabase gen types typescript --project-id rumdmulxzmjtsplsjngi` → 5,009 lines generated to src/lib/database.types.ts. tsc 0 errors, build 4.99s |
+| ✅ V2-TECH-07 | Playwright E2E smoke suite | Route crawl + auth flow + paywall gate tests | V1 §E, §J | Playwright config + test files, CI integration | QA Agent | Phase 3 | ✅ 2026-03-08 — Playwright 1.58.2 already installed. routeTable.ts expanded from 63 to 48 routes (removed stale UUIDs, added all current public/portal/admin routes). New e2e/smoke.spec.ts: 9 tests covering homepage load, intelligence page, auth gates (portal/admin/brand redirect to login), SEO basics (title/meta), and font-serif design compliance check across 6 public routes. Existing routes.spec.ts + auth.spec.ts + ai-flow.spec.ts preserved. tsc 0 errors |
+
+### V2-INTEL — Intelligence Cloud Build (Phase 4)
+
+| WO | Title | Scope | Inputs | Outputs | Owner Agent | Gate |
+|----|-------|-------|--------|---------|-------------|------|
+| V2-INTEL-01 | Intelligence Cloud v1 — 10 modules | Implement KPI Strip, Signal Table, Trend Stacks, What Changed Timeline, Opportunity Signals, Confidence+Provenance, Category Intelligence, Competitive Benchmarking, Brand Health Monitor, Local Market View | V1 §G | 10 module components wired to live data | Intelligence Architect | Phase 4 |
+| V2-INTEL-02 | 7 AI engines implementation | menuOrchestrator, planOrchestrator, gapAnalysisEngine + 4 others wired to credit system | V1 §G | Edge functions + orchestrator configs | Intelligence Architect | Phase 4 |
+| V2-INTEL-03 | 6 AI tools user-facing | Explain Signal, Search, Brief Generator, Action Plan, R&D Scout, MoCRA Checker | V1 §G, §A | UI components + credit deduction on each action | Intelligence Architect | Phase 4 |
+| V2-INTEL-04 | Live feed pipeline (37+ feeds) | Activate 37+ feeds from data_feeds registry, ensure signal freshness < 24h | V1 §J, W13/W15 work | feed_run_log shows successful runs, market_signals fresh | Intelligence Architect | Phase 4 |
+| V2-INTEL-05 | Credit economy wiring | Credit allocation per tier, deduction on every AI action, balance tracking, overage handling | V1 §A, SOCELLE_ENTITLEMENTS_PACKAGING.md | Credit ledger table, deduction logic, UI balance display | Monetization Agent | Phase 4 |
+| V2-INTEL-06 | Affiliate/Wholesale engine | FTC-compliant commission badges, tracked redirects, distributor mapping | V1 §M | Affiliate link wrapper, commission tracking, FTC badges | Monetization Agent | Phase 4 |
+
+### V2-HUBS — Make Each Hub Non-Shell (Phase 5)
+
+Each hub must satisfy ALL anti-shell requirements per V1 §D: Create / List / Detail / Edit+Delete / Permissions / Intelligence input / Proof+metrics / Export / Error+empty+loading / Observability.
+
+| WO | Title | Hub | Owner Agent | Gate |
+|----|-------|-----|-------------|------|
+| V2-HUBS-01 | Intelligence Hub — full non-shell | Intelligence | Intelligence Architect | Phase 5 |
+| V2-HUBS-02 | Jobs Hub — full non-shell | Jobs | Platform Engineer | Phase 5 |
+| V2-HUBS-03 | Brands Hub — full non-shell | Brands | Marketing Agent | Phase 5 |
+| V2-HUBS-04 | Professionals Hub — full non-shell | Professionals | CRM Agent | Phase 5 |
+| V2-HUBS-05 | Admin Hub — full non-shell | Admin | Command Agent | Phase 5 |
+| V2-HUBS-06 | CRM Hub — full non-shell | CRM | CRM Agent | Phase 5 |
+| V2-HUBS-07 | Education Hub — full non-shell | Education | Education Agent | Phase 5 |
+| V2-HUBS-08 | Marketing Hub — full non-shell | Marketing | Marketing Agent | Phase 5 |
+| V2-HUBS-09 | Sales Hub — full non-shell | Sales | Sales Agent | Phase 5 |
+| V2-HUBS-10 | Commerce Hub — full non-shell | Commerce | Ecommerce Agent | Phase 5 |
+| V2-HUBS-11 | Authoring Studio — full non-shell | Authoring Studio | Authoring Agent | Phase 5 |
+| V2-HUBS-12 | Credit Economy — full non-shell | Credit Economy | Monetization Agent | Phase 5 |
+| V2-HUBS-13 | Affiliate/Wholesale Engine — full non-shell | Affiliate Engine | Monetization Agent | Phase 5 |
+| V2-HUBS-14 | CMS + Content Surfaces | CMS (blog, briefs, education content, in-app help) | Authoring Agent | Phase 5 |
+
+### V2-MULTI — Multi-Platform Rollout (Phase 6)
+
+| WO | Title | Scope | Inputs | Outputs | Owner Agent | Gate |
+|----|-------|-------|--------|---------|-------------|------|
+| V2-MULTI-01 | PWA baseline | Service worker, manifest, offline support for React+Vite app | V1 §H | PWA-ready web app | Platform Engineer | Phase 6 |
+| V2-MULTI-02 | Tauri desktop wrapper | Tauri shell wrapping same React+Vite build for Mac + Windows | V1 §H | Desktop builds, no Rust business logic reimplementation | Multi-Platform Agent | Phase 6 |
+| V2-MULTI-03 | Flutter mobile app | Flutter app using same Supabase API contracts + edge functions | V1 §H | Flutter app wired to shared backend, no TS FFI | Multi-Platform Agent | Phase 6 |
+
+### V2-LAUNCH — Launch Gates (Phase 7)
+
+| WO | Title | Scope | Owner Agent | Gate |
+|----|-------|-------|-------------|------|
+| V2-LAUNCH-01 | Launch non-negotiables checklist | All items from V3 §I must pass: tsc, build, TanStack, PAYMENT_BYPASS=false, 0 font-serif, 0 banned terms, Stripe webhooks, fresh signals, AI briefs, SEO baseline, types match, credits deduct, FTC badges, Playwright smoke, errors visible in Admin Hub dashboards | QA Agent + Command Agent | Phase 7 |
+| V2-LAUNCH-02 | Launch comms execution | Site announcement, email sequences, social content per LAUNCH_COMMS_PLAYBOOK.md | Marketing Agent + Copy Agent | Phase 7 |
+
+---
+
+## SOCELLE V3 — CMS-First Platform Build
+
+> Added 2026-03-08. Authority: `V3_BUILD_PLAN.md` → `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`.
+> Phase 0 (Documentation) complete. Phase 1+ requires owner GO.
+
+### WO-CMS — CMS Foundation (Phase 0-6)
+
+| WO | Title | Scope | Inputs | Outputs | Owner Agent | Status |
+|----|-------|-------|--------|---------|-------------|--------|
+| WO-CMS-01 | CMS Schema & RLS | Supabase migrations for `cms_spaces`, `cms_pages`, `cms_blocks`, `cms_page_blocks`, `cms_posts`, `cms_assets`, `cms_docs`, `cms_templates`. RLS: admin write, public read published. Indexes for slug/space/status. `database.types.ts` regen. | `CMS_ARCHITECTURE.md` §2-3 | 8 migrations + RLS policies + indexes | Data Architect | TODO |
+| WO-CMS-02 | CMS Client & Hooks | TanStack Query v5 hooks: `useCmsPages`, `useCmsBlocks`, `useCmsPosts`, `useCmsAssets`, `useCmsSpaces`, `useCmsTemplates`, `useCmsDocs`. All follow `isLive`, `enabled`, 42P01 patterns. | `CMS_ARCHITECTURE.md` §4 | `src/lib/cms/*.ts` hooks | Platform Engineer | TODO |
+| WO-CMS-03 | CMS Hub UI | Admin CMS routes: `/admin/cms` dashboard, `/admin/cms/pages` CRUD, `/admin/cms/posts` CRUD, `/admin/cms/blocks` library, `/admin/cms/media` library, `/admin/cms/templates`, `/admin/cms/spaces`. All routes in App.tsx. Anti-shell compliant. | `CMS_ARCHITECTURE.md` §5, `JOURNEY_STANDARDS.md` §10, §12 | `src/pages/admin/cms/*.tsx` + App.tsx routes | Admin Control Center Agent | TODO |
+| WO-CMS-04 | PageRenderer & Public CMS Pages | `PageRenderer` component: reads `cms_pages` + `cms_page_blocks` + `cms_blocks`, renders blocks by type → component map. Public routes: `/pages/:slug`, `/blog`, `/blog/:slug`, `/help/:slug`. SEO via Helmet from `seo_*` fields. | `CMS_ARCHITECTURE.md` §4, §6, `CMS_CONTENT_MODEL.md` §2 | `src/components/cms/PageRenderer.tsx` + block components + routes | Web Agent | TODO |
+| WO-CMS-05 | Authoring Studio + CMS Integration | Rich block editor in Authoring Studio. Preview mode via PageRenderer. Version history (draft/published/archived). Assigned author + review status. | `CMS_ARCHITECTURE.md` §5, `JOURNEY_STANDARDS.md` §11 | Authoring UI components + version tracking | Authoring Agent | TODO |
+| WO-CMS-06 | Hub Integrations & Journeys | Wire Intelligence briefs → `cms_posts` (space="intelligence"). Wire Education content → `cms_posts` (space="education"). Wire Marketing landing pages → `cms_pages` (space="marketing"). Wire Sales playbooks → `cms_docs` (space="sales"). All remaining hub content surfaces to CMS. | `CMS_CONTENT_MODEL.md` §6, `JOURNEY_STANDARDS.md` §3-13 | Hub pages reading from CMS tables | All Hub Agents | TODO |
+
+### Phase 0 Deliverables (Complete)
+
+| Document | Status | Date |
+|----------|--------|------|
+| `docs/command/V3_BUILD_PLAN.md` | ✅ Written | 2026-03-08 |
+| `docs/command/CMS_ARCHITECTURE.md` | ✅ Written | 2026-03-08 |
+| `docs/command/CMS_CONTENT_MODEL.md` | ✅ Written | 2026-03-08 |
+| `docs/command/JOURNEY_STANDARDS.md` | ✅ Written | 2026-03-08 |
 
 ---
 

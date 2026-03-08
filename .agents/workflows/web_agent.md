@@ -1,4 +1,4 @@
-# WEB AGENT — Workflow
+Shell Command: Install 'code' command in PATH# WEB AGENT — Workflow
 
 ## 1) Purpose
 

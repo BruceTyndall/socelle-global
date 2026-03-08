@@ -1,7 +1,10 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # MONOREPO TOOLING — SOCELLE GLOBAL
 
-**Authority:** `/.claude/CLAUDE.md`
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 **Created:** March 5, 2026 (Port Verification Release)
+**Updated:** March 8, 2026 — V1 Master Alignment
 
 ---
 
@@ -56,7 +59,7 @@ is preserved at root level as `SOCELLE-MOBILE-main/`.
 |---|---|
 | **Build command** | `cd SOCELLE-WEB && npm ci && npm run build` |
 | **Output directory** | `SOCELLE-WEB/dist` |
-| **Framework** | Vite 5 (custom) |
+| **Framework** | Vite 5.4 (custom) — surgical upgrade to Vite 6.x planned (~1 hour, Phase 3) |
 | **Node version** | 20.x |
 
 ### Cloudflare Pages Configuration
@@ -111,6 +114,37 @@ Pipeline is defined in root `turbo.json`. Key tasks:
 
 ---
 
+## V1 Tech Baseline — Surgical Upgrade (per V1 §E)
+
+The current stack is working and shipping. V1 defines incremental upgrades (~1 working day total, zero rewrites):
+
+| Package | Current | Target | Effort | Phase |
+|---|---|---|---|---|
+| React | 18.3 | 19.x | ~2 hours | Phase 3 |
+| Vite | 5.4 | 6.x | ~1 hour | Phase 3 |
+| TypeScript | 5.5 strict | strict + `noExplicitAny` | ~3-5 hours | Phase 3 |
+| TanStack Query | not yet | v5 | Phase 3 | Phase 3 |
+| Tailwind | 3.4 | **Stay on 3.4** | — | Tailwind 4 deferred |
+| Sentry | not yet | Web + edge | Phase 3 | Phase 3 |
+
+**Primary runtime:** React + Vite (SPA). Next.js (in `apps/marketing-site/`) is NOT the primary runtime — it is an optional SEO surface.
+
+Agents MUST treat these as **surgical, incremental changes on a working app**, not multi-week migrations.
+
+---
+
+## V1 Multi-Platform Tooling (per V1 §H)
+
+| Platform | Tooling | Monorepo Location | Shared Layer |
+|---|---|---|---|
+| Web | React + Vite | `SOCELLE-WEB/` | Primary implementation |
+| Desktop | Tauri (wraps same React+Vite build) | Planned — Phase 6 | Same build + IPC plumbing |
+| Mobile | Flutter + Riverpod | `SOCELLE-MOBILE-main/` | Supabase API contracts + edge functions |
+
+Goal: 96%+ reuse of logic and contracts. No re-implementation of business logic in Rust or Dart.
+
+---
+
 ## Wave 2 Migration Notes
 
 1. Move `SOCELLE-WEB/` → `apps/socelle-web/` (update workspace glob to `apps/*` only)
@@ -120,4 +154,4 @@ Pipeline is defined in root `turbo.json`. Key tasks:
 
 ---
 
-*SOCELLE GLOBAL MONOREPO TOOLING v1.0 — Port Verification Release — March 2026*
+*SOCELLE GLOBAL MONOREPO TOOLING v2.0 — V1 Master Alignment — March 2026*

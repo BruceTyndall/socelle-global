@@ -1,8 +1,9 @@
 /**
  * useCourse — single course with modules and lessons
  * Data source: courses + course_modules + course_lessons (LIVE)
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 
 export interface CourseLesson {
@@ -58,80 +59,43 @@ export interface CourseDetail {
 }
 
 export function useCourse(slug: string | undefined) {
-  const [course, setCourse] = useState<CourseDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
-
-  useEffect(() => {
-    if (!slug) {
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function fetchCourse() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured) {
-        setCourse(null);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: fetchError } = await supabase
-          .from('courses')
-          .select(`
-            *,
-            course_modules (
-              id, course_id, title, description, sort_order,
-              course_lessons (
-                id, module_id, title, slug, lesson_type, content, video_url,
-                duration_minutes, sort_order, is_preview, quiz_id, scorm_package_id
-              )
+  const { data: course = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['course_detail', slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('courses')
+        .select(`
+          *,
+          course_modules (
+            id, course_id, title, description, sort_order,
+            course_lessons (
+              id, module_id, title, slug, lesson_type, content, video_url,
+              duration_minutes, sort_order, is_preview, quiz_id, scorm_package_id
             )
-          `)
-          .eq('slug', slug)
-          .single();
+          )
+        `)
+        .eq('slug', slug!)
+        .single();
 
-        if (cancelled) return;
+      if (error) throw new Error(error.message);
 
-        if (fetchError) {
-          setError(fetchError.message);
-          setCourse(null);
-          setIsLive(false);
-        } else {
-          // Sort modules and lessons by sort_order
-          const sorted = data as CourseDetail;
-          if (sorted.course_modules) {
-            sorted.course_modules.sort((a: CourseModule, b: CourseModule) => a.sort_order - b.sort_order);
-            sorted.course_modules.forEach((m: CourseModule) => {
-              if (m.course_lessons) {
-                m.course_lessons.sort((a: CourseLesson, b: CourseLesson) => a.sort_order - b.sort_order);
-              }
-            });
+      // Sort modules and lessons by sort_order
+      const sorted = data as CourseDetail;
+      if (sorted.course_modules) {
+        sorted.course_modules.sort((a: CourseModule, b: CourseModule) => a.sort_order - b.sort_order);
+        sorted.course_modules.forEach((m: CourseModule) => {
+          if (m.course_lessons) {
+            m.course_lessons.sort((a: CourseLesson, b: CourseLesson) => a.sort_order - b.sort_order);
           }
-          setCourse(sorted);
-          setIsLive(true);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load course');
-          setCourse(null);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+        });
       }
-    }
+      return sorted;
+    },
+    enabled: isSupabaseConfigured && !!slug,
+  });
 
-    fetchCourse();
-    return () => { cancelled = true; };
-  }, [slug]);
+  const isLive = course !== null;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { course, loading, error, isLive };
 }

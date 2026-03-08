@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── WO-OVERHAUL-14: Sales Platform — Pipeline Hook ────────────────────────
 // Data source: sales_pipelines + pipeline_stages (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface PipelineStage {
   id: string;
@@ -26,48 +27,35 @@ export interface Pipeline {
 }
 
 export function usePipelines() {
-  const [pipelines, setPipelines] = useState<Pipeline[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: pipelines = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey: ['sales_pipelines'],
+    queryFn: async () => {
       const { data: pData, error: pErr } = await supabase
         .from('sales_pipelines')
         .select('id, name, description, is_default, created_at, updated_at')
         .order('created_at', { ascending: true });
-      if (pErr) throw pErr;
+      if (pErr) {
+        const msg = pErr.message.toLowerCase();
+        if (msg.includes('does not exist') || pErr.code === '42P01') return [];
+        throw new Error(pErr.message);
+      }
 
       const { data: sData, error: sErr } = await supabase
         .from('pipeline_stages')
         .select('id, pipeline_id, name, position, color, is_won, is_lost, created_at')
         .order('position', { ascending: true });
-      if (sErr) throw sErr;
+      if (sErr) throw new Error(sErr.message);
 
-      const stages = sData ?? [];
-      const result: Pipeline[] = (pData ?? []).map((p) => ({
+      const stages = (sData ?? []) as PipelineStage[];
+      return (pData ?? []).map((p): Pipeline => ({
         ...p,
         stages: stages.filter((s) => s.pipeline_id === p.id),
       }));
-      setPipelines(result);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setPipelines([]);
-      } else {
-        setError('Failed to load pipelines.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = pipelines.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { pipelines, loading, error, isLive, reload: load };
+  return { pipelines, loading, error, isLive, reload };
 }

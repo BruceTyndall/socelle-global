@@ -1,14 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
 
 // ── useIntelligence — V3 (W15-04): provenance columns + tier gating ──
 // Fetches live signals from market_signals table (active + non-expired).
-// Falls back to mockSignals when Supabase is unavailable.
+// Falls back to empty state when Supabase is unavailable.
 // Returns isLive flag so UI can show DEMO/PREVIEW banners accordingly.
 // V3: selects provenance fields (source_url, source_name, source_feed_id,
 //     confidence_score, tier_visibility, image_url, is_duplicate).
 //     Filters out duplicates. Applies tier gating based on userTier prop.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 interface UseIntelligenceOptions {
   /** User's plan tier — controls which signals are visible. Default: 'free' */
@@ -96,59 +98,29 @@ const EMPTY_MARKET_PULSE: MarketPulse = {
 export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligenceReturn {
   const userTier = options?.userTier ?? 'free';
   const [activeFilter, setActiveFilter] = useState<SignalFilterKey>('all');
-  const [rawSignals, setRawSignals] = useState<IntelligenceSignal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  const { data: rawSignals = [], isLoading: loading } = useQuery({
+    queryKey: ['market_signals'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('market_signals')
+        .select(
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_url, source_name, source_feed_id, confidence_score, tier_visibility, image_url, is_duplicate'
+        )
+        .eq('active', true)
+        .eq('is_duplicate', false)
+        .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
+        .order('display_order', { ascending: true })
+        .order('updated_at', { ascending: false });
 
-    async function fetchSignals() {
-      setLoading(true);
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) return [];
+      return (data as MarketSignalRow[]).map(rowToSignal);
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-      if (!isSupabaseConfigured) {
-        // No Supabase config — preview empty state
-        setRawSignals([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('market_signals')
-          .select(
-            'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_url, source_name, source_feed_id, confidence_score, tier_visibility, image_url, is_duplicate'
-          )
-          .eq('active', true)
-          .eq('is_duplicate', false)
-          .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
-          .order('display_order', { ascending: true })
-          .order('updated_at', { ascending: false });
-
-        if (cancelled) return;
-
-        if (error || !data || data.length === 0) {
-          // Table empty or query error — preview empty state
-          setRawSignals([]);
-          setIsLive(false);
-        } else {
-          setRawSignals((data as MarketSignalRow[]).map(rowToSignal));
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setRawSignals([]);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchSignals();
-    return () => { cancelled = true; };
-  }, []);
+  const isLive = rawSignals.length > 0;
 
   // ── Derive marketPulse from live signal data ───────────────────────
   const marketPulse = useMemo((): MarketPulse => {

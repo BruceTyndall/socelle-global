@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── useRssItems — W12-21: Live RSS news feed for Insights page ────────────
 // Fetches from rss_items joined with rss_sources.
 // Returns empty array (not mock data) if DB is empty — per W12-21 spec.
 // isLive=true only when Supabase returned at least one row.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface RssItem {
   id: string;
@@ -54,55 +55,25 @@ function rowToItem(row: RssItemRow): RssItem {
 }
 
 export function useRssItems(limit = 12): UseRssItemsReturn {
-  const [items, setItems] = useState<RssItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { data: items = [], isLoading: loading } = useQuery({
+    queryKey: ['rss_items', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('rss_items')
+        .select(
+          'id, title, description, link, published_at, attribution_text, vertical_tags, rss_sources ( name, category )'
+        )
+        .order('published_at', { ascending: false })
+        .limit(limit);
 
-  useEffect(() => {
-    let cancelled = false;
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) return [];
+      return (data as RssItemRow[]).map(rowToItem);
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-    async function fetchItems() {
-      setLoading(true);
-
-      if (!isSupabaseConfigured) {
-        // No Supabase config — empty state with no demo fallback (W12-21)
-        setItems([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('rss_items')
-          .select(
-            'id, title, description, link, published_at, attribution_text, vertical_tags, rss_sources ( name, category )'
-          )
-          .order('published_at', { ascending: false })
-          .limit(limit);
-
-        if (cancelled) return;
-
-        if (error || !data || data.length === 0) {
-          setItems([]);
-          setIsLive(false);
-        } else {
-          setItems((data as RssItemRow[]).map(rowToItem));
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setItems([]);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchItems();
-    return () => { cancelled = true; };
-  }, [limit]);
+  const isLive = items.length > 0;
 
   return { items, loading, isLive };
 }

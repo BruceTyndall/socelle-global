@@ -1,8 +1,11 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+> If this file conflicts with V1, the V1 file wins.
+
 # SOCELLE CANONICAL DOCTRINE
-**Version:** 1.0  
-**Effective:** March 5, 2026  
-**Authority:** SOCELLE Command Center  
-**Scope:** All agents, all surfaces, all platforms (web + mobile + studios + admin)
+**Version:** 1.1
+**Effective:** March 8, 2026
+**Authority:** SOCELLE Command Center
+**Scope:** All agents, all surfaces, all 15 hubs (web + desktop + mobile + studios + admin)
 
 ---
 
@@ -21,9 +24,35 @@ Intelligence → Trust → Transaction → Retention
 3. **Transaction earns.** Commerce exists because intelligence earned the operator's trust. The marketplace serves intelligence, never competes with it.
 4. **Retention deepens.** Studios (Social, CRM, Sales, Marketing, Education) extend the value so operators never need another tool. Each studio is a sellable module.
 
-### Mini-App Architecture
+### Multi-Hub Architecture
 
-SOCELLE ships as **modular mini-apps** sharing a common core. Each mini-app is independently shippable, independently sellable, and independently upgradeable. The core provides auth, entitlements, data, design system, copy voice, analytics, commerce primitives, and governance. No mini-app may bypass the core.
+SOCELLE ships as a **multi-hub ecosystem** with Intelligence as the spine. There are 15 hubs, each of which must be fully functional (no shells). The hubs are: Intelligence, Jobs, Brands, Professionals, Admin, CRM, Education, Marketing, Sales, Commerce, Authoring Studio, Mobile App, Desktop App, Credit Economy, and Affiliate/Wholesale Engine.
+
+All hubs share a common core: auth, entitlements, data (Supabase), design system (Pearl Mineral V2), copy voice, analytics, commerce primitives, and governance. No hub may bypass the core.
+
+### Tech Baseline (Surgical Upgrade, Not Rewrite)
+
+The platform runs on **React + Vite** as the primary web runtime (not Next.js). Tech upgrades are surgical and incremental on a working codebase:
+
+| Current | Target | Effort |
+|---------|--------|--------|
+| React 18.3 | React 19.x | ~2 hours |
+| Vite 5.4 | Vite 6.x | ~1 hour |
+| TypeScript 5.5 | TS strict + noExplicitAny | ~3-5 hours |
+
+Total baseline upgrade: roughly one working day, zero rewrites.
+
+**Tailwind:** Stay on v3.4 for V1. Tailwind 4 is deferred until legacy color systems are removed and all components use Pearl Mineral V2 tokens only.
+
+### Multi-Platform Strategy
+
+- **Web:** React + Vite (SPA) is the source implementation.
+- **Desktop:** Tauri shell wrapping the same React+Vite build.
+- **Mobile:** Flutter app using the same Supabase API contracts and edge functions.
+
+### Execution Phases (Sequence, Not Calendar)
+
+Phase 0: Design + Required Docs. Phase 1: Skills Installation. Phase 2: Full-Platform Audit. Phase 3: Tech Upgrades (React 19, Vite 6, TS strict). Phase 4: Intelligence Cloud Build. Phase 5: All Hubs Functional (including CMS). Phase 6: Multi-Platform (Tauri + Flutter). Phase 7: Launch.
 
 ---
 
@@ -431,7 +460,7 @@ Get Started, Learn More, Unlock Growth, Discover More, Sign Up Today, Join Now (
 
 This document is the **single authority** for all style, tone, voice, data integrity, and visual direction decisions across the SOCELLE platform. All agents, all surfaces, all platforms must comply.
 
-**Contradiction resolution:** If any other document contradicts this doctrine, this doctrine wins. Update the contradicting document.
+**Contradiction resolution:** If this doctrine contradicts V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md, V1 wins. If any other document contradicts this doctrine, this doctrine wins (subject to the V1 override). Update the contradicting document.
 
 **Review cadence:** First Wednesday of each month. Governance agent reviews all work merged in the prior month against this doctrine.
 
@@ -444,4 +473,5 @@ This document is the **single authority** for all style, tone, voice, data integ
 
 ---
 
-*SOCELLE CANONICAL DOCTRINE v1.0 — March 5, 2026 — Command Center Authority*
+*SOCELLE CANONICAL DOCTRINE v1.1 — March 8, 2026 — Command Center Authority*
+*Aligned to V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md*

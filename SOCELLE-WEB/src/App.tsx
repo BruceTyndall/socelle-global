@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { PrelaunchGuard } from './components/PrelaunchGuard';
 import { ConfigCheck } from './components/ConfigCheck';
 import { StagingBanner } from './components/StagingBanner';
+import { SentryUserContext } from './components/SentryUserContext';
 import { ModuleAccessProvider } from './modules/_core/context/ModuleAccessContext';
 import ModuleRoute from './modules/_core/components/ModuleRoute';
 
@@ -308,6 +309,7 @@ function App() {
       <ToastProvider>
         <ConfigCheck>
           <AuthProvider>
+            <SentryUserContext />
             <ModuleAccessProvider>
             <BrowserRouter>
               <Suspense fallback={Fallback}>

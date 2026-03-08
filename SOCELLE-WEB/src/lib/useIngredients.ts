@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── useIngredients — W12-22: Public Ingredient Directory ──────────────────
 // Fetches from public.ingredients (INCI registry).
 // Empty array if DB is empty — no mock fallback per W12-22 spec.
 // Supports debounced search across inci_name and common_name.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface Ingredient {
   id: string;
@@ -49,68 +51,44 @@ function rowToIngredient(row: IngredientRow): Ingredient {
 }
 
 export function useIngredients(search = '', limit = 60): UseIngredientsReturn {
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [total, setTotal] = useState(0);
+  // Debounce search input internally (300ms)
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
-    let cancelled = false;
+    if (!search) { setDebouncedSearch(''); return; }
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
-    // Debounce search queries by 300ms
-    const timer = setTimeout(async () => {
-      setLoading(true);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['ingredients', { search: debouncedSearch, limit }],
+    queryFn: async () => {
+      let query = supabase
+        .from('ingredients')
+        .select('id, inci_name, common_name, cas_number, function, eu_status, description, updated_at', { count: 'exact' })
+        .order('inci_name', { ascending: true })
+        .limit(limit);
 
-      if (!isSupabaseConfigured) {
-        setIngredients([]);
-        setIsLive(false);
-        setTotal(0);
-        setLoading(false);
-        return;
+      if (debouncedSearch.trim()) {
+        query = query.or(
+          `inci_name.ilike.%${debouncedSearch.trim()}%,common_name.ilike.%${debouncedSearch.trim()}%`
+        );
       }
 
-      try {
-        let query = supabase
-          .from('ingredients')
-          .select('id, inci_name, common_name, cas_number, function, eu_status, description, updated_at', { count: 'exact' })
-          .order('inci_name', { ascending: true })
-          .limit(limit);
+      const { data, error, count } = await query;
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) return { ingredients: [] as Ingredient[], total: 0 };
+      return {
+        ingredients: (data as IngredientRow[]).map(rowToIngredient),
+        total: count ?? data.length,
+      };
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-        if (search.trim()) {
-          query = query.or(
-            `inci_name.ilike.%${search.trim()}%,common_name.ilike.%${search.trim()}%`
-          );
-        }
-
-        const { data, error, count } = await query;
-
-        if (cancelled) return;
-
-        if (error || !data || data.length === 0) {
-          setIngredients([]);
-          setIsLive(false);
-          setTotal(0);
-        } else {
-          setIngredients((data as IngredientRow[]).map(rowToIngredient));
-          setIsLive(true);
-          setTotal(count ?? data.length);
-        }
-      } catch {
-        if (!cancelled) {
-          setIngredients([]);
-          setIsLive(false);
-          setTotal(0);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }, search ? 300 : 0);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [search, limit]);
+  const ingredients = data?.ingredients ?? [];
+  const total = data?.total ?? 0;
+  const isLive = ingredients.length > 0;
 
   return { ingredients, loading, isLive, total };
 }

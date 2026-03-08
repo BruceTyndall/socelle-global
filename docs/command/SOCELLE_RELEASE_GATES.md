@@ -1,8 +1,11 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+> If this file conflicts with V1, the V1 file wins.
+
 # SOCELLE RELEASE GATES
-**Version:** 1.0  
-**Effective:** March 5, 2026  
-**Authority:** SOCELLE Command Center — Q1 QA & Governance Enforcer  
-**Scope:** All code changes, all platforms, all mini-apps
+**Version:** 1.2
+**Effective:** March 8, 2026
+**Authority:** SOCELLE Command Center — Q1 QA & Governance Enforcer
+**Scope:** All code changes, all platforms (React+Vite web, Tauri desktop, Flutter mobile), all 15 hubs
 
 ---
 
@@ -389,8 +392,8 @@ git revert HEAD~N..HEAD  # If multiple commits
 # 3. Push revert
 git push origin main
 
-# 4. Trigger deploy (Netlify auto-deploys on push)
-# Or manual: Netlify Dashboard → Deploys → Publish deploy → select last good
+# 4. Trigger deploy (Cloudflare Pages auto-deploys on push)
+# Or manual: Cloudflare Dashboard → Pages → Deployments → Rollback to last good
 
 # 5. Verify rollback
 curl -s -o /dev/null -w "%{http_code}" https://socelle.com  # Should be 200
@@ -466,10 +469,10 @@ Per `/.claude/CLAUDE.md` §2, every agent output must pass the Doc Gate.
 
 ### Technical Foundations
 
-- [ ] All public pages must be **server-rendered (SSR) or statically generated (SSG)** in Next.js. No client-only rendering for indexable content.
+- [ ] The web app is a **React + Vite SPA** (per V1 §E). Next.js is NOT the primary runtime. For SEO on public pages, use pre-rendering (e.g., `vite-plugin-ssr`, `@vitejs/plugin-react` with SSG, or a dedicated sitemap/meta-tag strategy). Client-rendered pages must still have proper `<title>`, `<meta>`, and OG tags injected at build time or via a pre-rendering step.
 - [ ] Every indexable page requires a `<link rel="canonical">` pointing to its exact URL.
-- [ ] `sitemap.ts` must be updated with every new template. `lastModified` must use real DB `updated_at` timestamps.
-- [ ] `robots.ts` must block `/portal/`, `/admin/`, `/api/`.
+- [ ] `sitemap.xml` must be updated with every new template. `lastModified` must use real DB `updated_at` timestamps.
+- [ ] `robots.txt` must block `/portal/`, `/admin/`, `/api/`.
 
 ### Structured Data — Required per Page Type
 
@@ -503,13 +506,17 @@ Pages are only indexable if they meet **minimum content thresholds**:
 **If below threshold → add `noindex` meta tag. Do not publish empty shells.**
 
 ```tsx
-// Pattern for conditional noindex:
-export async function generateMetadata({ params }) {
-  const data = await fetchData(params.slug);
+// Pattern for conditional noindex (React+Vite with react-helmet-async or similar):
+function PageHead({ data }: { data: PageData | null }) {
   if (!data || data.signalCount < 3) {
-    return { robots: { index: false } };
+    return <Helmet><meta name="robots" content="noindex" /></Helmet>;
   }
-  // ... normal metadata
+  return (
+    <Helmet>
+      <title>{data.title} | SOCELLE</title>
+      <meta name="description" content={data.description} />
+    </Helmet>
+  );
 }
 ```
 
@@ -565,5 +572,29 @@ Every detail page must link out to related hubs using **descriptive anchor text*
 
 ---
 
-*SOCELLE RELEASE GATES v1.1 — March 6, 2026 — Command Center Authority*
+## 11. V1 LAUNCH NON-NEGOTIABLES (from V1 §J)
+
+These gates must ALL pass before the first paying subscriber. They supplement the checks above:
+
+- [ ] `/` routes to Intelligence home (not prelaunch quiz or a shell)
+- [ ] Sentry active (web + edge)
+- [ ] TanStack Query used for all data fetching (no raw `useEffect` + fetch for server data)
+- [ ] PAYMENT_BYPASS = false in production
+- [ ] Stripe webhooks work (subscription state changes in DB)
+- [ ] Signals fresh: `market_signals` has >= 5 rows with `fetched_at` < 24h
+- [ ] AI briefs: 10 test briefs with 0 hallucinations and correct citations
+- [ ] `database.types.ts` matches migrations
+- [ ] Credits deduct correctly on every AI action
+- [ ] Affiliate links show proper FTC badges and tracked redirects
+- [ ] Playwright smoke tests (routes + auth + paywall) pass
+
+### Anti-Shell Gate
+
+No hub may ship if it fails the V1 anti-shell checklist (V1 §D): Create, Library, Detail, Edit+Delete, Permissions, Intelligence input, Proof/metrics, Export, Error/empty/loading, Observability.
+
+---
+
+*SOCELLE RELEASE GATES v1.2 — March 8, 2026 — Command Center Authority*
 *§10 absorbed from legacy SEO_GUIDELINES.md — see docs/archive/DEPRECATED__2026-03-06__SEO_GUIDELINES.md*
+*§11 added from V1 §J launch non-negotiables*
+*Aligned to V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md*

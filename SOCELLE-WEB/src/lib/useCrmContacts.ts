@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── CRM Contacts + Tags + Interactions Hook ─────────────────────────────
 // Data source: crm_contacts, crm_contact_tags, crm_interactions (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface CrmContact {
   id: string;
@@ -81,174 +82,151 @@ export interface NewInteraction {
 }
 
 export function useCrmContacts(businessId?: string | null) {
-  const [contacts, setContacts] = useState<CrmContact[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['crm_contacts', businessId];
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: contacts = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('crm_contacts')
         .select('*')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('updated_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setContacts(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load contacts');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as CrmContact[];
+    },
+    enabled: !!businessId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (contact: NewContact) => {
+      const { data, error } = await supabase.from('crm_contacts').insert(contact).select().single();
+      if (error) throw new Error(error.message);
+      return data as CrmContact;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createContact = useCallback(async (contact: NewContact) => {
-    const { data, error: dbErr } = await supabase
-      .from('crm_contacts')
-      .insert(contact)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as CrmContact;
-  }, [load]);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<NewContact> }) => {
+      const { error } = await supabase.from('crm_contacts').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateContact = useCallback(async (id: string, updates: Partial<NewContact>) => {
-    const { error: dbErr } = await supabase
-      .from('crm_contacts')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('crm_contacts').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteContact = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('crm_contacts')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createContact = async (contact: NewContact) => createMut.mutateAsync(contact);
+  const updateContact = async (id: string, updates: Partial<NewContact>) => updateMut.mutateAsync({ id, updates });
+  const deleteContact = async (id: string) => deleteMut.mutateAsync(id);
 
-  return { contacts, loading, error, isLive, reload: load, createContact, updateContact, deleteContact };
+  const isLive = contacts.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { contacts, loading, error, isLive, reload, createContact, updateContact, deleteContact };
 }
 
 export function useCrmContactDetail(contactId?: string) {
-  const [contact, setContact] = useState<CrmContact | null>(null);
-  const [tags, setTags] = useState<CrmContactTag[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['crm_contact_detail', contactId];
 
-  const load = useCallback(async () => {
-    if (!contactId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
       const [contactRes, tagsRes] = await Promise.all([
-        supabase.from('crm_contacts').select('*').eq('id', contactId).single(),
-        supabase.from('crm_contact_tags').select('*').eq('contact_id', contactId).order('created_at', { ascending: false }),
+        supabase.from('crm_contacts').select('*').eq('id', contactId!).single(),
+        supabase.from('crm_contact_tags').select('*').eq('contact_id', contactId!).order('created_at', { ascending: false }),
       ]);
-      if (contactRes.error) throw contactRes.error;
-      setContact(contactRes.data as CrmContact);
-      setTags((tagsRes.data ?? []) as CrmContactTag[]);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load contact');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [contactId]);
+      if (contactRes.error) throw new Error(contactRes.error.message);
+      return {
+        contact: contactRes.data as CrmContact,
+        tags: (tagsRes.data ?? []) as CrmContactTag[],
+      };
+    },
+    enabled: !!contactId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const addTagMut = useMutation({
+    mutationFn: async (tag: string) => {
+      const { error } = await supabase.from('crm_contact_tags').insert({ contact_id: contactId!, tag });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const addTag = useCallback(async (tag: string) => {
-    if (!contactId) return;
-    const { error: dbErr } = await supabase
-      .from('crm_contact_tags')
-      .insert({ contact_id: contactId, tag });
-    if (dbErr) throw dbErr;
-    await load();
-  }, [contactId, load]);
+  const removeTagMut = useMutation({
+    mutationFn: async (tagId: string) => {
+      const { error } = await supabase.from('crm_contact_tags').delete().eq('id', tagId);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const removeTag = useCallback(async (tagId: string) => {
-    const { error: dbErr } = await supabase
-      .from('crm_contact_tags')
-      .delete()
-      .eq('id', tagId);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const addTag = async (tag: string) => addTagMut.mutateAsync(tag);
+  const removeTag = async (tagId: string) => removeTagMut.mutateAsync(tagId);
 
-  return { contact, tags, loading, error, isLive, reload: load, addTag, removeTag };
+  const contact = data?.contact ?? null;
+  const tags = data?.tags ?? [];
+  const isLive = contact !== null;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { contact, tags, loading, error, isLive, reload, addTag, removeTag };
 }
 
 export function useCrmInteractions(contactId?: string) {
-  const [interactions, setInteractions] = useState<CrmInteraction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['crm_interactions', contactId];
 
-  const load = useCallback(async () => {
-    if (!contactId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: interactions = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('crm_interactions')
         .select('*')
-        .eq('contact_id', contactId)
+        .eq('contact_id', contactId!)
         .order('occurred_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setInteractions(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load interactions');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [contactId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as CrmInteraction[];
+    },
+    enabled: !!contactId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const addMut = useMutation({
+    mutationFn: async (interaction: NewInteraction) => {
+      const { error } = await supabase.from('crm_interactions').insert(interaction);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const addInteraction = useCallback(async (interaction: NewInteraction) => {
-    const { error: dbErr } = await supabase
-      .from('crm_interactions')
-      .insert(interaction);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const addInteraction = async (interaction: NewInteraction) => addMut.mutateAsync(interaction);
 
-  return { interactions, loading, error, isLive, reload: load, addInteraction };
+  const isLive = interactions.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { interactions, loading, error, isLive, reload, addInteraction };
 }
 
 export function useRecentInteractions(businessId?: string | null, limit = 10) {
-  const [interactions, setInteractions] = useState<(CrmInteraction & { contact_first_name?: string; contact_last_name?: string })[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: interactions = [], isLoading: loading, refetch: reload } = useQuery({
+    queryKey: ['crm_recent_interactions', businessId, limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('crm_interactions')
         .select('*, crm_contacts(first_name, last_name)')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('occurred_at', { ascending: false })
         .limit(limit);
-      if (dbErr) throw dbErr;
-      const mapped = (data ?? []).map((row: Record<string, unknown>) => {
+      if (error) throw new Error(error.message);
+      return (data ?? []).map((row: Record<string, unknown>) => {
         const contact = row.crm_contacts as { first_name?: string; last_name?: string } | null;
         return {
           ...(row as unknown as CrmInteraction),
@@ -256,16 +234,11 @@ export function useRecentInteractions(businessId?: string | null, limit = 10) {
           contact_last_name: contact?.last_name,
         };
       });
-      setInteractions(mapped);
-      setIsLive(true);
-    } catch {
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId, limit]);
+    },
+    enabled: !!businessId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = interactions.length > 0;
 
-  return { interactions, loading, isLive, reload: load };
+  return { interactions, loading, isLive, reload };
 }

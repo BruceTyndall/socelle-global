@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabase';
 
 export interface Plan {
@@ -27,45 +27,25 @@ export interface PlansResult {
 /**
  * Fetch all active subscription plans from the subscription_plans table.
  * Used by the pricing page and upgrade modals.
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
 export function useSubscriptionPlans(): PlansResult {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: plans = [], isLoading } = useQuery({
+    queryKey: ['subscription_plans'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetch() {
-      try {
-        const { data, error } = await supabase
-          .from('subscription_plans')
-          .select('*')
-          .eq('is_active', true)
-          .order('sort_order', { ascending: true });
-
-        if (!cancelled) {
-          if (error) {
-            console.warn('[useSubscriptionPlans] fetch error:', error.message);
-            setPlans([]);
-          } else {
-            setPlans((data as Plan[]) ?? []);
-          }
-        }
-      } catch (err) {
-        if (!cancelled) {
-          console.warn('[useSubscriptionPlans] unexpected error:', err);
-          setPlans([]);
-        }
-      } finally {
-        if (!cancelled) setIsLoading(false);
+      if (error) {
+        console.warn('[useSubscriptionPlans] fetch error:', error.message);
+        return [];
       }
-    }
-
-    fetch();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+      return (data as Plan[]) ?? [];
+    },
+  });
 
   return { plans, isLoading };
 }

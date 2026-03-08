@@ -483,3 +483,23 @@ Repeating one more time the core loop here for emphasis:
 Please add steps to your TodoList, if you have such a thing, to make sure you don't forget. If you're in Cowork, please specifically put "Create evals JSON and run `eval-viewer/generate_review.py` so human can review test cases" in your TodoList to make sure it happens.
 
 Good luck!
+
+## Verification (Deterministic)
+- **Command:** `find docs/qa -name "skill-creator*.json" | wc -l  # expect >= 1`
+- **Pass criteria:** Command returns expected value (see comment); JSON report written to `docs/qa/skill-creator-YYYY-MM-DD.json`
+- **Fail criteria:** Command returns unexpected value, report not generated, or any BLOCK-level issue found without resolution
+
+
+## Stop Conditions
+- **Hard stop:** Codebase does not compile (`npx tsc --noEmit` fails) — fix build before running this skill
+- **Hard stop:** Target path does not exist or is empty — verify repo checkout
+- **Hard stop:** Required command-line tool missing (grep, find, node) — install before proceeding
+- **Soft stop (owner decision):** More than 50 issues found — present summary to owner for prioritization before attempting fixes
+- **Soft stop (owner decision):** Findings contradict a command doc — escalate to owner; do not auto-fix governance
+
+
+## Fade Protocol
+- **Retest trigger:** Run quarterly or after any major refactor, migration, or dependency upgrade
+- **Deprecation trigger:** Skill references files/patterns that no longer exist in codebase for 2+ consecutive quarters
+- **Replacement path:** If deprecated, merge functionality into the relevant suite or rebuild via `skill-creator`
+- **Last recertified:** 2026-03-08

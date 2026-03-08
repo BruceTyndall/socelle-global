@@ -1,8 +1,10 @@
 /**
  * useQuiz — load quiz, submit attempt, get results
  * Data source: quizzes + quiz_questions + quiz_attempts (LIVE)
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { useAuth } from '../auth';
 
@@ -54,84 +56,54 @@ export interface QuizResult {
 
 export function useQuiz(quizId: string | undefined) {
   const { user } = useAuth();
-  const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const queryClient = useQueryClient();
   const [result, setResult] = useState<QuizResult | null>(null);
-  const [pastAttempts, setPastAttempts] = useState<QuizAttempt[]>([]);
 
-  useEffect(() => {
-    if (!quizId) {
-      setLoading(false);
-      return;
-    }
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['quiz', quizId, user?.id],
+    queryFn: async () => {
+      const { data: quizData, error } = await supabase
+        .from('quizzes')
+        .select(`
+          id, title, description, passing_score, time_limit_minutes, max_attempts,
+          quiz_questions (
+            id, quiz_id, question_text, question_type, options, correct_answer, explanation, points, sort_order
+          )
+        `)
+        .eq('id', quizId!)
+        .single();
 
-    let cancelled = false;
+      if (error) throw new Error(error.message);
 
-    async function fetch() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured) {
-        setQuiz(null);
-        setLoading(false);
-        return;
+      const q = quizData as Quiz;
+      if (q.quiz_questions) {
+        q.quiz_questions.sort((a, b) => a.sort_order - b.sort_order);
       }
 
-      try {
-        const { data, error: fetchError } = await supabase
-          .from('quizzes')
-          .select(`
-            id, title, description, passing_score, time_limit_minutes, max_attempts,
-            quiz_questions (
-              id, quiz_id, question_text, question_type, options, correct_answer, explanation, points, sort_order
-            )
-          `)
-          .eq('id', quizId)
-          .single();
-
-        if (cancelled) return;
-
-        if (fetchError) {
-          setError(fetchError.message);
-        } else {
-          const q = data as Quiz;
-          if (q.quiz_questions) {
-            q.quiz_questions.sort((a, b) => a.sort_order - b.sort_order);
-          }
-          setQuiz(q);
-        }
-
-        // Load past attempts
-        if (user?.id) {
-          const { data: attempts } = await supabase
-            .from('quiz_attempts')
-            .select('*')
-            .eq('quiz_id', quizId)
-            .eq('user_id', user.id)
-            .order('started_at', { ascending: false });
-
-          if (!cancelled && attempts) {
-            setPastAttempts(attempts as QuizAttempt[]);
-          }
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load quiz');
-      } finally {
-        if (!cancelled) setLoading(false);
+      // Load past attempts
+      let pastAttempts: QuizAttempt[] = [];
+      if (user?.id) {
+        const { data: attempts } = await supabase
+          .from('quiz_attempts')
+          .select('*')
+          .eq('quiz_id', quizId!)
+          .eq('user_id', user.id)
+          .order('started_at', { ascending: false });
+        pastAttempts = (attempts as QuizAttempt[]) ?? [];
       }
-    }
 
-    fetch();
-    return () => { cancelled = true; };
-  }, [quizId, user?.id]);
+      return { quiz: q, pastAttempts };
+    },
+    enabled: isSupabaseConfigured && !!quizId,
+  });
 
-  const submitAttempt = useCallback(async (answers: Record<string, string>): Promise<QuizResult | null> => {
-    if (!quiz || !user?.id || !isSupabaseConfigured) return null;
+  const quiz = data?.quiz ?? null;
+  const pastAttempts = data?.pastAttempts ?? [];
 
-    setSubmitting(true);
-    try {
+  const submitMut = useMutation({
+    mutationFn: async (answers: Record<string, string>) => {
+      if (!quiz || !user?.id) throw new Error('Quiz or user not available');
+
       // Grade locally
       const questions = quiz.quiz_questions || [];
       let earnedPoints = 0;
@@ -153,7 +125,7 @@ export function useQuiz(quizId: string | undefined) {
       const passed = score >= quiz.passing_score;
 
       // Save attempt
-      const { data: attempt } = await supabase
+      await supabase
         .from('quiz_attempts')
         .insert({
           quiz_id: quiz.id,
@@ -163,26 +135,30 @@ export function useQuiz(quizId: string | undefined) {
           answers,
           started_at: new Date().toISOString(),
           completed_at: new Date().toISOString(),
-        })
-        .select()
-        .single();
+        });
 
-      if (attempt) {
-        setPastAttempts(prev => [attempt as QuizAttempt, ...prev]);
-      }
-
-      const res: QuizResult = { score, passed, totalPoints, questionResults };
+      return { score, passed, totalPoints, questionResults } satisfies QuizResult;
+    },
+    onSuccess: (res) => {
       setResult(res);
-      return res;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit quiz');
-      return null;
-    } finally {
-      setSubmitting(false);
-    }
-  }, [quiz, user?.id]);
+      queryClient.invalidateQueries({ queryKey: ['quiz', quizId, user?.id] });
+    },
+  });
 
+  const submitAttempt = useCallback(async (answers: Record<string, string>): Promise<QuizResult | null> => {
+    if (!quiz || !user?.id || !isSupabaseConfigured) return null;
+    try {
+      return await submitMut.mutateAsync(answers);
+    } catch {
+      return null;
+    }
+  }, [quiz, user?.id, submitMut]);
+
+  const submitting = submitMut.isPending;
   const canRetake = quiz?.max_attempts ? pastAttempts.length < quiz.max_attempts : true;
+  const error = queryError instanceof Error ? queryError.message
+    : submitMut.error instanceof Error ? submitMut.error.message
+    : null;
 
   return { quiz, loading, error, submitting, result, pastAttempts, canRetake, submitAttempt, setResult };
 }

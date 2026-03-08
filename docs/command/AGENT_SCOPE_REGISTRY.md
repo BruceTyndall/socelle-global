@@ -1,7 +1,9 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # AGENT SCOPE REGISTRY
-**Version:** 1.0  
-**Effective:** March 5, 2026  
-**Authority:** `/.claude/CLAUDE.md` §A → `docs/command/SOCELLE_CANONICAL_DOCTRINE.md`  
+**Version:** 2.0
+**Effective:** March 8, 2026
+**Authority:** `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` → `/.claude/CLAUDE.md` → `docs/command/SOCELLE_CANONICAL_DOCTRINE.md`
 **Scope:** All agents operating in the SOCELLE monorepo
 
 ---
@@ -10,7 +12,7 @@
 
 This registry defines the boundary, skills, allowed paths, forbidden paths, and required proof artifacts for every recognized agent in the SOCELLE monorepo. No agent may operate outside its defined scope without an explicit WO in `SOCELLE-WEB/docs/build_tracker.md`. No agent may invent WO IDs.
 
-**Contradiction resolution:** If any agent output contradicts a command doc, the command doc wins. Update the agent output, not the command doc.
+**Contradiction resolution:** If any agent output contradicts V1 or a command doc, V1 wins. Update the agent output, not V1.
 
 ---
 
@@ -18,605 +20,709 @@ This registry defines the boundary, skills, allowed paths, forbidden paths, and 
 
 | Rule | Enforcement |
 |---|---|
+| Read `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` before any work | Non-negotiable — V1 is the single source of truth |
 | Read `/.claude/CLAUDE.md` before any work | Non-negotiable — no exceptions |
 | Read this file before any work | Non-negotiable — no exceptions |
 | All WO IDs must exist in `build_tracker.md` | Inventing WO IDs = FAIL 2, auto-block |
 | Do not modify files outside your allowed path list | Cross-boundary work requires explicit owner approval |
 | Do not create governance docs outside `/docs/command/` | FAIL 2 |
-| Do not draft outreach emails or cold acquisition copy | FAIL 7 — see `/.claude/CLAUDE.md §G` |
+| Do not draft outreach emails or cold acquisition copy | FAIL 7 — see V1 §P |
 | Label all data surfaces LIVE or DEMO | FAIL 4 for violations |
 | Ecommerce is a module — never an IA center | FAIL 6 for violations |
-| Pass Doc Gate (all 7 FAIL conditions) | Required before any output is considered complete |
+| Pass Doc Gate (all FAIL conditions) | Required before any output is considered complete |
+| **NO SHELLS** — every hub surface must be fully functional | See V1 §D — Anti-Shell Rule |
 
 ---
 
-## AGENT DEFINITIONS
+## ANTI-SHELL RULE (V1 §D — Applies to All Hubs)
+
+**NO SHELLS.** Any page, hub, or feature that renders UI must be fully functional. Every hub must satisfy ALL of the following minimum functional surface requirements:
+
+| # | Requirement | What it means in practice |
+|---|------------|---------------------------|
+| 1 | Create action | User can create the primary object — a row in DB |
+| 2 | Library/List view | Browse all objects with sort/filter/search from Supabase |
+| 3 | Detail view | Full detail of any object from DB |
+| 4 | Edit + Delete | Update and archive/remove objects with RLS respected |
+| 5 | Permissions | RLS + ModuleRoute/TierGuard enforcing roles & tiers |
+| 6 | Intelligence input | A signal can spawn or update an object in this hub |
+| 7 | Proof/metrics | Dashboard with real aggregated metrics (and `updated_at`) |
+| 8 | Export | CSV minimum; PDF for Pro+ |
+| 9 | Error/empty/loading | Premium states implemented and tested |
+| 10 | Observability | Errors and slow paths visible in Sentry / logs |
+
+If an agent detects a shell, they HALT and raise a WO to fix it.
 
 ---
 
-### 1. WEB AGENT
+## V1 TECH BASELINE (§E — "Surgical Upgrade" Framing)
 
-**Description:** Full-stack web development for SOCELLE-WEB (Vite + React 18 + TypeScript + Tailwind + Supabase).
+All agents must understand the tech baseline. These are **surgical, incremental upgrades on a working app**, not multi-week migrations.
 
-**Required Skills:**
-- React 18 (RSC-aware patterns, React Router v7)
-- TypeScript strict mode
-- Tailwind CSS v3.4 (custom token system — Pearl Mineral V2)
-- Supabase JS SDK v2 (auth, PostgreSQL, edge functions)
-- Vite 5.4 build tooling
-- react-helmet-async (SEO meta)
-- General Sans / Fontshare CDN integration
+| Package | Current | Target | Effort |
+|---------|---------|--------|--------|
+| React | 18.3 | 19.x | ~2 hours |
+| Vite | 5.4 | 6.x | ~1 hour |
+| TypeScript | 5.5 | 5.5 strict ON (`noExplicitAny`) | ~3-5 hours |
+| TanStack Query | — | v5 | Incremental |
+| Router | React Router | React Router / TanStack Router | React+Vite primary; NO Next.js as main runtime |
+| Tailwind | 3.4 | 3.4 (Tailwind 4 deferred) | No change |
+| Sentry | — | Web + edge | New |
+| Playwright | Thin | E2E smoke | Expand |
+
+**TOTAL tech baseline upgrade:** roughly **one working day**, zero rewrites.
+
+---
+
+## HUB-TO-AGENT OWNERSHIP (V1 §G + §L)
+
+Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must satisfy the anti-shell minimum functional surface (10 requirements above).
+
+| Hub | Owner Agent | Anti-Shell | Phase |
+|-----|------------|------------|-------|
+| Intelligence | Intelligence Architect | Required | 4 |
+| Jobs | Platform Engineer | Required | 5 |
+| Brands | Marketing Agent | Required | 5 |
+| Professionals | CRM Agent | Required | 5 |
+| Admin | Command Agent | Required | 5 |
+| CRM | CRM Agent | Required | 5 |
+| Education | Education Agent | Required | 5 |
+| Marketing | Marketing Agent | Required | 5 |
+| Sales | Sales Agent | Required | 5 |
+| Commerce | Ecommerce Agent | Required | 5 |
+| Authoring Studio | Authoring Agent | Required | 5 |
+| Mobile App | Multi-Platform Agent | Required | 6 |
+| Desktop App | Multi-Platform Agent | Required | 6 |
+| Credit Economy | Monetization Agent | Required | 4-5 |
+| Affiliate/Wholesale Engine | Monetization Agent | Required | 4-5 |
+
+---
+
+## AGENT DEFINITIONS (V1 §L Roster)
+
+---
+
+### 1. COMMAND AGENT
+
+**Description:** Sequencing, governance, gates. Owns the Admin Hub.
+
+**Scope:** Program-level coordination, command doc maintenance, gate enforcement, cross-agent sequencing.
+
+**Hub ownership:** Admin
 
 **Allowed Paths:**
-- `SOCELLE-WEB/src/pages/public/` — Full read/write (public pages)
-- `SOCELLE-WEB/src/components/` — Read/write (UI components)
-- `SOCELLE-WEB/src/layouts/` — Read/write (layout shells)
-- `SOCELLE-WEB/src/lib/` — Read/write (hooks, services — except protected files below)
-- `SOCELLE-WEB/src/App.tsx` — Read/write (route registration only)
-- `SOCELLE-WEB/tailwind.config.js` — Extend only (never replace tokens)
-- `SOCELLE-WEB/docs/build_tracker.md` — Update WO status at session end
-- `SOCELLE-WEB/MASTER_STATUS.md` — Read-only (status snapshot)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (never modify existing)
-- `SOCELLE-WEB/supabase/functions/` — Read/write for new functions; never modify existing
-- Portal pages (below) — only with explicit WO in `build_tracker.md`:
-  - `SOCELLE-WEB/src/pages/business/` — DO NOT MODIFY without WO
-  - `SOCELLE-WEB/src/pages/brand/` — DO NOT MODIFY without WO
-  - `SOCELLE-WEB/src/pages/admin/` — ADD ONLY (stub completion), no deletions
+- `docs/command/` — full read/write (change control process applies)
+- `/.claude/CLAUDE.md` — read/write (owner approval required for semantic changes)
+- `/.agents/workflows/` — full read/write
+- `SOCELLE-WEB/docs/build_tracker.md` — read/write (WO status updates only)
+- `SOCELLE-WEB/MASTER_STATUS.md` — read/write (status snapshot only)
 
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- `SOCELLE-MOBILE-main/` — NEVER TOUCH
-- `apps/marketing-site/` — SEO Agent domain, not Web Agent
-- `packages/` — Read only; write requires Backend Agent coordination
-- `supabase/` (monorepo root) — Backend Agent domain
+**Forbidden Paths:**
+- ALL `src/` directories — no code changes
+- ALL `supabase/migrations/` — no schema changes
+- ALL `supabase/functions/` — no function changes
+- Commerce flow, auth system — NEVER TOUCH
 
-**Required Proofs Before Marking Work Complete:**
-- [ ] `npx tsc --noEmit` — zero errors
-- [ ] `npm run build` — no build errors
-- [ ] No `pro-*` tokens in `src/pages/public/`
-- [ ] No `font-serif` in `src/pages/public/`
-- [ ] `graphite` = `#141418`, background = `#F6F3EF`
-- [ ] All data surfaces labeled LIVE or DEMO
-- [ ] MainNav: Intelligence is position 1; ecommerce not in MainNav
-- [ ] Auth-aware right pill present and correct
-- [ ] `build_tracker.md` updated with session WO completion
-
----
-
-### 2. MOBILE AGENT
-
-**Description:** Flutter native app development for SOCELLE-MOBILE (Flutter + Riverpod + Supabase).
-
-**Required Skills:**
-- Flutter 3.x + Dart
-- Riverpod state management
-- Supabase Dart SDK
-- `socelle_theme.dart` design token system (must stay in parity with web tokens)
-- RevenueCat (in-app subscriptions — Phase 6)
-
-**Allowed Paths:**
-- `SOCELLE-MOBILE-main/apps/mobile/lib/` — Full read/write
-- `SOCELLE-MOBILE-main/apps/mobile/pubspec.yaml` — Read/write (dependency management)
-- `SOCELLE-MOBILE-main/apps/mobile/ios/` — Read/write (iOS config)
-- `SOCELLE-MOBILE-main/apps/mobile/android/` — Read/write (Android config)
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/` — NEVER TOUCH
-- `apps/marketing-site/` — NEVER TOUCH
-- `supabase/migrations/` — NEVER MODIFY (read schema only)
-- `supabase/functions/` — NEVER MODIFY (read edge function signatures only)
-- `packages/` — Read only
-
-**Required Proofs Before Marking Work Complete:**
-- [ ] `flutter analyze` — zero errors
-- [ ] `flutter build apk --debug` or `flutter build ios --debug` — no build errors
-- [ ] Design tokens in parity with web spec (`socelle_theme.dart`)
-- [ ] No hardcoded data presented as live without DEMO label
-
----
-
-### 3. BACKEND AGENT
-
-**Description:** Supabase PostgreSQL schema, migrations, edge functions, and RLS policies.
-
-**Required Skills:**
-- PostgreSQL (RLS, triggers, RPCs, tsvector)
-- Supabase migrations (ADD ONLY policy — never modify existing)
-- Deno / TypeScript (edge functions)
-- Resend (transactional email via `send-email` edge function)
-- OpenRouter AI integration (ai-orchestrator edge function)
-- Stripe (webhook handler — not yet active)
-
-**Allowed Paths:**
-- `supabase/migrations/` (monorepo root) — ADD ONLY
-- `supabase/functions/` (monorepo root) — Read/write new functions; never modify deployed functions without WO
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
-- `SOCELLE-WEB/supabase/functions/` — Read/write new; never modify deployed without WO
-- `packages/` — Read/write (shared config + schema types)
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/` — NEVER MODIFY directly (schema changes propagate via types only)
-- `SOCELLE-MOBILE-main/` — NEVER TOUCH
-- `apps/marketing-site/` — NEVER TOUCH
-- Existing migration files — NEVER MODIFY (ADD ONLY policy is absolute)
-
-**Required Proofs Before Marking Work Complete:**
-- [ ] Migration file follows `YYYYMMDDHHMMSS_description.sql` naming
-- [ ] RLS policies defined for every new table
-- [ ] `supabase db push` dry run — no conflicts
-- [ ] Edge function type-checks via Deno
-- [ ] `build_tracker.md` updated with migration record
-
----
-
-### 4. SEO / SCHEMA / SITEMAPS AGENT
-
-**Description:** SEO infrastructure for the marketing site (`apps/marketing-site/`) and web app SEO utilities.
-
-**Required Skills:**
-- Next.js App Router (marketing site)
-- JSON-LD / Schema.org markup (JobPosting, Event, Organization, BreadcrumbList, FAQPage)
-- Sitemap generation (programmatic via Next.js `sitemap.ts`)
-- robots.txt management
-- `react-helmet-async` (SOCELLE-WEB SEO meta tags)
-- Core Web Vitals / PageSpeed optimization
-- Canonical URL management
-
-**Allowed Paths:**
-- `apps/marketing-site/` — Full read/write
-- `SOCELLE-WEB/src/lib/seo.ts` — Read/write (SEO utilities)
-- `SOCELLE-WEB/src/pages/public/` — Read; add/update Helmet meta only (no layout changes without Web Agent)
-- `SOCELLE-WEB/public/sitemap.xml` — Read/write
-- `SOCELLE-WEB/public/robots.txt` — Read/write
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/pages/business/` — NEVER TOUCH
-- `SOCELLE-WEB/src/pages/brand/` — NEVER TOUCH
-- `SOCELLE-WEB/src/pages/admin/` — NEVER TOUCH
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER TOUCH
-- `SOCELLE-WEB/supabase/` — NEVER TOUCH (read schema for schema markup only)
-- `SOCELLE-MOBILE-main/` — NEVER TOUCH
-
-**Required Proofs Before Marking Work Complete:**
-- [ ] Schema.org JSON-LD validates via `schema.org` validator or Google Rich Results Test
-- [ ] Sitemap renders valid XML
-- [ ] All public routes in `SITE_MAP.md` covered
-- [ ] `npx tsc --noEmit` — zero errors (for any `.tsx/.ts` changes)
-- [ ] Canonical URLs do not duplicate across routes
-
----
-
-### 5. ADMIN CONTROL CENTER AGENT
-
-**Description:** Admin portal development (`/admin/*`) — signal curation, brand management, order oversight, ingestion controls.
-
-**Required Skills:**
-- React 18 + TypeScript (admin UI patterns)
-- Supabase admin queries (direct table access, no RLS bypass without explicit policy)
-- AdminLayout component awareness
-- Signal curation (market_signals table + AdminMarketSignals.tsx patterns)
-
-**Allowed Paths:**
-- `SOCELLE-WEB/src/pages/admin/` — ADD ONLY (no deletion, no modification of existing admin pages without WO)
-- `SOCELLE-WEB/src/components/` — Read/write (admin-specific components)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (admin-related tables/policies)
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/pages/public/` — Web Agent domain (read for context only)
-- `SOCELLE-WEB/src/pages/business/` — NEVER MODIFY
-- `SOCELLE-WEB/src/pages/brand/` — NEVER MODIFY
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-MOBILE-main/` — NEVER TOUCH
-- `apps/marketing-site/` — NEVER TOUCH
-
-**Required Proofs Before Marking Work Complete:**
-- [ ] `npx tsc --noEmit` — zero errors
-- [ ] New admin page registered in `App.tsx` under `/admin/*`
-- [ ] RLS policies confirm admin-only access
+**Required Proofs:**
+- [ ] No code modified
+- [ ] Doc Gate PASS
+- [ ] Contradiction resolution citations provided
 - [ ] `build_tracker.md` updated
 
 ---
 
-### 6. AI AGENT
+### 2. INTELLIGENCE ARCHITECT
 
-**Description:** AI Orchestrator, AI Concierge, and AI Advisor features across web + mobile.
+**Description:** Intelligence Hub, AI tools, feed pipeline. The revenue surface.
+
+**Scope:** 10 modules (KPI Strip, Signal Table, Trend Stacks, What Changed Timeline, Opportunity Signals, Confidence + Provenance, Category Intelligence, Competitive Benchmarking, Brand Health Monitor, Local Market View), 7 AI engines, 6 AI tools, feed pipeline (37+ feeds), AI orchestrator with caching + eval harness.
+
+**Hub ownership:** Intelligence
 
 **Required Skills:**
 - OpenRouter API integration (Claude Sonnet, Gemini 2.5 Pro, GPT-4o-mini, Llama 3.3 via Groq)
 - Atomic credit system (tenant_balances, deduct_credits(), top_up_credits() RPCs)
 - Deno edge function authoring
 - Supabase Realtime (for streaming AI responses)
-- React hooks for AI state (web portal)
-- Flutter Riverpod (mobile AI state)
+- React hooks for AI state
 
 **Allowed Paths:**
-- `SOCELLE-WEB/supabase/functions/ai-orchestrator/` — Read/write
-- `SOCELLE-WEB/supabase/functions/ai-concierge/` — Read/write
-- `SOCELLE-WEB/src/pages/business/AIAdvisor.tsx` — Read/write (with WO)
-- `SOCELLE-WEB/src/pages/brand/BrandAIAdvisor.tsx` — Read/write (with WO)
-- `SOCELLE-MOBILE-main/apps/mobile/lib/features/` — Read/write AI-related features (with WO)
-- `supabase/migrations/` — ADD ONLY (credit system schema)
+- `SOCELLE-WEB/supabase/functions/ai-orchestrator/` — read/write
+- `SOCELLE-WEB/supabase/functions/ai-concierge/` — read/write
+- `SOCELLE-WEB/supabase/functions/feed-orchestrator/` — read/write
+- `SOCELLE-WEB/supabase/functions/rss-to-signals/` — read/write
+- `SOCELLE-WEB/src/pages/business/IntelligenceHub.tsx` — read/write (with WO)
+- `SOCELLE-WEB/src/pages/business/AIAdvisor.tsx` — read/write (with WO)
+- `SOCELLE-WEB/src/pages/brand/BrandAIAdvisor.tsx` — read/write (with WO)
+- `SOCELLE-WEB/src/pages/public/Intelligence.tsx` — read/write (with WO)
+- `supabase/migrations/` — ADD ONLY (intelligence + credit schema)
 
-**Forbidden Paths (absolute — no exceptions):**
+**Forbidden Paths:**
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
 - `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — NEVER MODIFY (payment system)
-- Portal pages without explicit WO — DO NOT MODIFY
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — NEVER MODIFY
+- Commerce flow — FROZEN
+- Any front-end file that would expose raw LLM prompts to client
 
-**Required Proofs Before Marking Work Complete:**
-- [ ] AI calls route through `ai-orchestrator` (no direct OpenAI/Anthropic calls from client)
-- [ ] Credit deduction verified via `deduct_credits()` RPC call
-- [ ] Atomic credit system not bypassed
-- [ ] Edge function deploys without error
-- [ ] `build_tracker.md` updated
+**Required Proofs:**
+- [ ] AI calls route through `ai-orchestrator` (no direct client-to-LLM calls)
+- [ ] Credit deduction verified via `deduct_credits()` RPC
+- [ ] All 10 Intelligence modules wired to real data
+- [ ] Feed pipeline has >= 5 active feeds
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
 
 ---
 
-### 7. AFFILIATES AGENT
+### 3. PLATFORM ENGINEER
 
-**Description:** Affiliate program infrastructure (first-class revenue channel) — sources/programs index, affiliate tracking schema, referral links, commission logic, placement rules, disclosure compliance, affiliate portal surfaces. Placement rule: affiliate content appears AFTER intelligence context, never as the premise.
+**Description:** Build system, tech upgrades, CI, observability. Owns Jobs Hub.
 
-**Status:** 📋 PLANNED — No active WO. Do not build until WO exists in `build_tracker.md`.
+**Scope:** Tech baseline upgrades (React 19, Vite 6, TS strict, TanStack Query), Sentry wiring, CI/CD pipeline, `database.types.ts` regeneration, Supabase migrations and edge functions, monorepo tooling.
 
-**Required Skills (when active):**
-- Supabase PostgreSQL (affiliate_links, affiliate_commissions, affiliate_payouts tables)
-- Attribution token generation + referral URL tracking
-- Stripe Connect (affiliate payouts — Phase 3+)
-- React portal UI (affiliate dashboard)
+**Hub ownership:** Jobs
 
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (affiliate schema)
-- `SOCELLE-WEB/src/pages/` — Affiliate portal surfaces only (path TBD in WO)
-- `SOCELLE-MOBILE-main/apps/mobile/lib/features/affiliate/` — Mobile affiliate feature
+**Required Skills:**
+- React 19 + Vite 6 + TypeScript strict (surgical upgrades per V1 §E)
+- Supabase PostgreSQL (RLS, triggers, RPCs, tsvector)
+- Supabase migrations (ADD ONLY policy)
+- Deno / TypeScript (edge functions)
+- TanStack Query v5
+- Sentry (web + edge)
 
-**Forbidden Paths (absolute — no exceptions):**
-- All portal paths without explicit WO
+**Allowed Paths:**
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
+- `SOCELLE-WEB/supabase/functions/` — ADD ONLY for new; update non-commerce with WO
+- `supabase/migrations/` (monorepo root) — ADD ONLY
+- `supabase/functions/` (monorepo root) — with WO
+- `SOCELLE-WEB/src/lib/database.types.ts` — regenerate only
+- `packages/` — write with cross-agent coordination
+- `.github/workflows/` — full read/write
+- `wrangler.toml` — read/write
+- `turbo.json` — read/write
+- `package.json` (root + SOCELLE-WEB) — dependency/script management
+- `SOCELLE-WEB/src/pages/public/Jobs.tsx` — read/write
+- `SOCELLE-WEB/src/pages/public/JobDetail.tsx` — read/write
+- `SOCELLE-WEB/vite.config.ts` — read/write
+- `SOCELLE-WEB/tsconfig.json` — read/write
+
+**Forbidden Paths:**
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
 - `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- Commerce flow — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- Commerce flow — FROZEN
+- Existing migration files — NEVER MODIFY (ADD ONLY)
 
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed before any work begins
-- [ ] Attribution logic verifiable (no ghost clicks, no unattributed payouts)
+**Required Proofs:**
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] `npm run build` — no build errors
+- [ ] RLS policies on every new table
+- [ ] `database.types.ts` regenerated after schema changes
+- [ ] Sentry wired (web + edge) after Phase 3
+- [ ] Doc Gate PASS
+
+---
+
+### 4. DESIGN GUARDIAN
+
+**Description:** Design tokens, figma-to-code, responsiveness. Pearl Mineral V2 enforcement.
+
+**Scope:** Tailwind token system, Figma-to-code handoff, design parity across web and mobile, banned color/font enforcement, responsive design audits.
+
+**Allowed Paths:**
+- `SOCELLE-WEB/tailwind.config.js` — parity/compliance fixes ONLY
+- `SOCELLE-WEB/src/index.css` — token updates ONLY
+- `SOCELLE-MOBILE-main/apps/mobile/lib/core/theme/socelle_theme.dart` — token sync ONLY
+
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/pages/` — no layout or logic changes
+- Commerce flow — FROZEN
+- `supabase/` — Backend domain
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+
+**Required Proofs:**
+- [ ] No banned colors (outside Pearl Mineral V2 tokens)
+- [ ] No `font-serif` on public pages
+- [ ] `graphite` = `#141418`, `background` = `#F6F3EF`, `accent` = `#6E879B`
+- [ ] Web and mobile tokens in parity
+- [ ] Doc Gate PASS
+
+---
+
+### 5. SECURITY AGENT
+
+**Description:** RLS, secrets, AI guardrails, legal, FTC compliance.
+
+**Scope:** Row-Level Security audits, secrets scanning, AI safety guardrails (V1 §O), FTC compliance for affiliate/commission disclosures, data provenance enforcement.
+
+**Allowed Paths:**
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (RLS policies)
+- `docs/command/` — security-related docs only
+
+**Forbidden Paths:**
+- ALL application code except for RLS policy audits (read-only)
+- Commerce flow — FROZEN
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+
+**Required Proofs:**
+- [ ] RLS on every table
+- [ ] No secrets in code
+- [ ] AI outputs show "Generated by AI" + evidence panel
+- [ ] Hard block on dosing, diagnoses, prescriptions
+- [ ] FTC badges on commission-linked content
+- [ ] Doc Gate PASS
+
+---
+
+### 6. QA AGENT
+
+**Description:** Tests, smoke, visual regression, LIVE/DEMO enforcement.
+
+**Scope:** Playwright E2E, Vitest unit, route crawl, auth/paywall smoke tests, visual regression, LIVE/DEMO surface labeling enforcement.
+
+**Allowed Paths:**
+- `SOCELLE-WEB/tests/` — full read/write
+- `SOCELLE-WEB/playwright.config.ts` — read/write
+- `docs/command/HARD_CODED_SURFACES.md` — write with WO
+
+**Forbidden Paths:**
+- ALL application code (read-only for audit)
+- Commerce flow — FROZEN
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+
+**Required Proofs:**
+- [ ] Playwright smoke tests pass (routes + auth + paywall)
+- [ ] All data surfaces labeled LIVE or DEMO
+- [ ] No unlabeled mock data in user-facing surfaces
+- [ ] Doc Gate PASS
+
+---
+
+### 7. COPY AGENT
+
+**Description:** Voice, banned terms, paywall/onboarding/empties, launch comms.
+
+**Scope:** Brand voice enforcement (per `BRAND_VOICE_GUIDELINES.md`), banned term scanning, copy for paywall/onboarding/empty states, launch comms playbook execution.
+
+**Allowed Paths:**
+- Copy-only changes in `SOCELLE-WEB/src/pages/` — text/string changes only, with WO
+- `docs/command/` — copy-related docs only
+
+**Forbidden Paths:**
+- Layout or logic changes in any page
+- Commerce flow — FROZEN
+- Outreach / cold email copy — FORBIDDEN (V1 §P)
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+
+**Required Proofs:**
+- [ ] Zero banned terms on public pages
+- [ ] No outreach/cold copy generated
+- [ ] Voice matches brand guidelines
+- [ ] Doc Gate PASS
+
+---
+
+### 8. MONETIZATION AGENT
+
+**Description:** Entitlements, credits, pricing, onboarding. Owns Credit Economy and Affiliate/Wholesale Engine hubs.
+
+**Scope:** Tier gating (Free/Starter/Pro/Enterprise per V1 §A), credit system (deduct_credits/top_up_credits RPCs), affiliate tracking and commission logic, FTC disclosure, onboarding flows.
+
+**Hub ownership:** Credit Economy, Affiliate/Wholesale Engine
+
+**Allowed Paths:**
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (credit + affiliate schema)
+- `SOCELLE-WEB/src/pages/` — entitlement/credit/affiliate surfaces only, with WO
+- `SOCELLE-WEB/supabase/functions/` — credit/affiliate edge functions only, with WO
+
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+
+**Required Proofs:**
+- [ ] Credits deduct correctly on every AI action
+- [ ] Tier gating matches V1 §A pricing table
+- [ ] Affiliate links show FTC-compliant badges
 - [ ] Commission rates sourced from DB, not hardcoded
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
 
 ---
 
-### 8. JOBS PIPELINE AGENT
+### 9. DATA ARCHITECT
 
-**Description:** Back-office jobs data pipeline — ingestion, classification, deduplication, schema compliance for the `/jobs` and `/jobs/:slug` surfaces.
+**Description:** Schema, types, materialized views, first-party events.
 
-**Status:** 📋 PLANNED — WO W10-06 in `build_tracker.md` covers `job_postings` table. Full pipeline work requires additional WO.
+**Scope:** Supabase schema design, `database.types.ts` generation, materialized views for intelligence modules, first-party event tracking schema, pg_cron jobs, pgvector configuration.
 
-**Required Skills (when active):**
-- Supabase PostgreSQL (`job_postings` table, tsvector search)
-- RSS / JSON feed ingestion (edge functions)
-- Schema.org `JobPosting` JSON-LD
-- Deduplication logic (fingerprinting by URL + title)
+**Allowed Paths:**
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
+- `supabase/migrations/` (monorepo root) — ADD ONLY
+- `SOCELLE-WEB/src/lib/database.types.ts` — regenerate only
+- `packages/` — type definitions
 
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (`job_postings` table + search index)
-- `SOCELLE-WEB/supabase/functions/` — ADD ONLY (ingestion edge function)
-- `SOCELLE-WEB/src/pages/public/Jobs.tsx` — Wire to live table (W10-06)
-- `SOCELLE-WEB/src/pages/public/JobDetail.tsx` — Wire + add schema markup
-
-**Forbidden Paths (absolute — no exceptions):**
-- Portal pages — NEVER TOUCH (jobs portal surfaces are Web Agent scope)
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/pages/` — no UI changes
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-MOBILE-main/` — NEVER TOUCH
+- Commerce flow — FROZEN
+- Existing migration files — NEVER MODIFY
 
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] `job_postings` table has RLS (public read, admin write)
-- [ ] Schema.org `JobPosting` validates via Google Rich Results Test
-- [ ] Deduplication: no duplicate `source_url` records
-- [ ] Jobs.tsx data source labeled LIVE after wire-up
-
----
-
-### 9. JOBS MARKETPLACE AGENT
-
-**Description:** Operator-facing job posting UX — brand/operator job creation, applicant tracking, portal job management surfaces.
-
-**Status:** 📋 PLANNED — No active WO. Requires `job_postings` table (W10-06) to complete first.
-
-**Required Skills (when active):**
-- React 18 + TypeScript (portal UI)
-- Supabase Row Level Security (operator-scoped job records)
-- Form design (job posting wizard)
-- Applicant state machine (open → applied → reviewed → hired/closed)
-
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/business/` — Job posting / applicant management surfaces (WO required)
-- `SOCELLE-WEB/src/pages/brand/` — Brand-side job management (WO required)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (applicant tracking schema)
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- `SOCELLE-WEB/src/pages/public/` — Marketplace agent does not own public job pages (Jobs Pipeline Agent domain)
-
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] Applicant data never publicly accessible (RLS enforced)
-- [ ] Job posting creation confirms to `job_postings` schema from Jobs Pipeline Agent
+**Required Proofs:**
+- [ ] RLS on every new table
+- [ ] `database.types.ts` regenerated and matches migrations
+- [ ] Migration naming: `YYYYMMDDHHMMSS_description.sql`
+- [ ] `updated_at` trigger on every new table
+- [ ] Doc Gate PASS
 
 ---
 
-### 10. EDITORIAL / NEWS AGENT
+### 10. CRM AGENT
 
-**Description:** Beauty intelligence editorial — article ingestion, editorial curation, news digest surfaces, RSS feed management. Editorial content lives inside the Intelligence product (`/intelligence` sub-nav: Briefing | News | Signals | Categories | Trends), NOT as a standalone blog or marketing-site feature. Marketing site is not the content home.
+**Description:** CRM Hub owner. Also owns Professionals Hub.
 
-**Status:** 📋 PLANNED — WO W10-08 (RSS ingestion pipeline) covers the initial pipeline. Editorial surfaces require additional WO.
+**Scope:** Customer relationship management — operator CRM, brand CRM, pipeline management, contact database, interaction history, professional profile management.
 
-**Required Skills (when active):**
-- RSS feed parsing (edge functions)
-- Content classification (category tagging, vertical matching)
-- `news_items` + `editorial_posts` + `rss_items` table design (Supabase, with attribution + `updated_at`)
-- React editorial card components
-- Freshness attribution (`published_at`, `fetched_at`, `source_url`)
+**Hub ownership:** CRM, Professionals
 
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (`rss_items`, editorial schema)
-- `SOCELLE-WEB/supabase/functions/` — ADD ONLY (ingestion edge function — W10-08)
-- `SOCELLE-WEB/src/pages/public/Intelligence.tsx` — Editorial sub-nav integration within `/intelligence` (WO required)
-- `SOCELLE-WEB/src/pages/business/IntelligenceHub.tsx` — Read; editorial integration (WO required)
-- `SOCELLE-WEB/src/pages/admin/` — Editorial admin surfaces: `/admin/editorial`, `/admin/news-sources`, `/admin/news-review` (ADD ONLY, WO required)
+**Allowed Paths:**
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (CRM + professionals schema)
+- `SOCELLE-WEB/src/pages/business/` — CRM + professional features only, with WO
+- `SOCELLE-WEB/src/pages/brand/` — CRM features only, with WO
 
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-WEB/src/pages/brand/` — NEVER TOUCH without WO
-- `SOCELLE-WEB/src/pages/admin/` — Admin Signal curation is Admin Control Center Agent scope
-- Outreach / acquisition email copy — NEVER DRAFT (FAIL 7)
-
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] All ingested content has `source_url` + `published_at` attribution
-- [ ] No editorial content displayed without visible `published_at` freshness label
-- [ ] DEMO label on any hardcoded placeholder content
-
----
-
-### 11. CRM AGENT
-
-**Description:** Customer relationship management — operator CRM, brand CRM, pipeline management, contact database, interaction history tracking.
-
-**Status:** 📋 PLANNED — Phase 3. No active WO.
-
-**Required Skills (when active):**
-- CRM data model (contacts, interactions, pipeline stages)
-- React studio builder UI
-- Supabase RLS (CRM data strictly tenant-scoped)
-- Campaign integration (CRM → Marketing Studio handoff)
-
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/business/` — Business CRM surfaces
-- `SOCELLE-WEB/src/pages/brand/` — Brand CRM surfaces (`/brand/customers`, `/brand/pipeline`)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (CRM schema)
-
-**Forbidden Paths (absolute — no exceptions):**
+**Forbidden Paths:**
 - Cross-tenant CRM data access — NEVER (RLS must prevent)
-- Outreach / cold acquisition email — NEVER (FAIL 7)
+- Outreach / cold acquisition email — NEVER (V1 §P)
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- Commerce flow — FROZEN
 
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] RLS prevents cross-tenant data leakage (verified by policy test)
-- [ ] No cold outreach scaffolding in any CRM feature
+**Required Proofs:**
+- [ ] RLS prevents cross-tenant data leakage
+- [ ] No cold outreach scaffolding
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
 
 ---
 
-### 12. MARKETING STUDIO AGENT
+### 11. EDUCATION AGENT
 
-**Description:** Marketing studio — campaign builder, automation triggers, broadcast messaging, marketing calendar.
+**Description:** Education Hub owner.
 
-**Status:** 📋 PLANNED — Phase 3. No active WO.
+**Scope:** Course builder, protocol library, CE credits system, training scheduler, CMS content for education articles and learning paths.
 
-**Required Skills (when active):**
-- Campaign state machine (draft → scheduled → sent → analyzed)
-- Brevo API integration (Phase 3 broadcast emails)
-- Supabase triggers (automation rules)
-- React drag-and-drop builder
+**Hub ownership:** Education
 
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/business/MarketingCalendar.tsx` — Read/write (WO)
-- `SOCELLE-WEB/src/pages/brand/Campaigns.tsx` — Read/write (WO)
-- `SOCELLE-WEB/src/pages/brand/CampaignBuilder.tsx` — Read/write (WO)
-- `SOCELLE-WEB/src/pages/brand/Automations.tsx` — Read/write (WO)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (campaign schema)
+**Allowed Paths:**
+- `SOCELLE-WEB/src/pages/public/Education.tsx` — read/write
+- `SOCELLE-WEB/src/pages/public/Protocols.tsx` — read/write
+- `SOCELLE-WEB/src/pages/public/ProtocolDetail.tsx` — read/write
+- `SOCELLE-WEB/src/pages/business/` — CE credits features only, with WO
+- `SOCELLE-WEB/src/pages/admin/` — education admin, ADD ONLY
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (education schema)
 
-**Forbidden Paths (absolute — no exceptions):**
-- Outreach / cold acquisition email — NEVER (FAIL 7)
-- `send-email` edge function — transactional only; no blast/cold email
+**Forbidden Paths:**
+- Commerce checkout for CE credits — FROZEN
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+
+**Required Proofs:**
+- [ ] CE credits tied to real completion events, not hardcoded
+- [ ] Education positioned within intelligence layer
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
+
+---
+
+### 12. MARKETING AGENT
+
+**Description:** Marketing Hub owner. Also owns Brands Hub.
+
+**Scope:** Campaign builder, automation triggers, broadcast messaging, marketing calendar, brand directory and brand profile management.
+
+**Hub ownership:** Marketing, Brands
+
+**Allowed Paths:**
+- `SOCELLE-WEB/src/pages/business/` — marketing features only, with WO
+- `SOCELLE-WEB/src/pages/brand/` — campaign + brand features only, with WO
+- `SOCELLE-WEB/src/pages/public/Brands.tsx` — read/write
+- `SOCELLE-WEB/src/pages/public/BrandDetail.tsx` — read/write
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (campaign + brand schema)
+
+**Forbidden Paths:**
+- Cold email copy or outbound acquisition — FORBIDDEN (V1 §P)
+- Commerce flow — FROZEN
+- `send-email` edge function — transactional only
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
 
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] All automations have explicit operator opt-in documented
+**Required Proofs:**
 - [ ] No cold email functionality scaffolded
+- [ ] Brand surfaces meet anti-shell minimum functional surface
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
 
 ---
 
-### 13. EDUCATION STUDIO AGENT
+### 13. SALES AGENT
 
-**Description:** Education Hub — course builder, protocol library, CE credits system, training scheduler.
+**Description:** Sales Hub owner.
 
-**Status:** 📋 PLANNED — Phase 2. No active WO beyond existing `brand_training_modules`.
+**Scope:** Lead scoring, deal tracking, commission management, sales analytics, pipeline management.
 
-**Required Skills (when active):**
-- Course builder UI (step wizard, video embed)
-- CE credit system (credential issuance, CPD tracking)
-- Zoom/live scheduler integration (Phase 2)
-- Supabase `reseller_saved_protocols`, course tracking schema
+**Hub ownership:** Sales
 
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/public/Education.tsx` — Read/write (WO)
-- `SOCELLE-WEB/src/pages/business/CECredits.tsx` — Read/write (WO)
-- `SOCELLE-WEB/src/pages/admin/` — Education admin surfaces (ADD ONLY, WO)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (education schema — Phase 2 migrations)
-- `SOCELLE-MOBILE-main/apps/mobile/lib/features/studio/` — Mobile education features (WO)
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- Brand portal education surfaces without explicit WO
-
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] Phase 2 migrations follow ADD ONLY policy
-- [ ] CE credits must be tied to real completion events, not hardcoded
-
----
-
-### 14. SOCIAL STUDIO AGENT
-
-**Description:** Social media management studio — content scheduling, social analytics, platform publishing, engagement tracking.
-
-**Status:** PLANNED — Phase 3+. No active WO.
-
-**Required Skills (when active):**
-- Social media API integrations (Instagram Business, TikTok, Pinterest)
-- Content scheduling and publishing pipelines
-- Social analytics dashboards (engagement, reach, growth)
-- React studio builder UI
-- Supabase RLS (tenant-scoped social accounts)
-
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/business/` — Social studio surfaces (WO required)
-- `SOCELLE-WEB/src/pages/brand/` — Brand social surfaces (WO required)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (social schema)
-- `SOCELLE-WEB/supabase/functions/` — ADD ONLY (social API edge functions)
-
-**Forbidden Paths (absolute — no exceptions):**
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- Outreach / cold acquisition messaging — NEVER (FAIL 7)
-- `SOCELLE-WEB/src/pages/public/` — Web Agent domain
-
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] RLS prevents cross-tenant social account access
-- [ ] No automated DM or cold outreach functionality scaffolded
-- [ ] Social data labeled LIVE or DEMO on all surfaces
-
----
-
-### 15. SALES STUDIO AGENT
-
-**Description:** Sales pipeline and revenue tooling — lead scoring, deal tracking, commission management, sales analytics.
-
-**Status:** PLANNED — Phase 3+. No active WO.
-
-**Required Skills (when active):**
-- Sales pipeline state machine (lead → qualified → proposal → closed)
-- Lead scoring models (Supabase RPCs)
-- Commission calculation engine
-- React pipeline/kanban UI
-- Supabase RLS (sales rep and tenant scoping)
-
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/business/` — Sales pipeline surfaces (WO required)
-- `SOCELLE-WEB/src/pages/brand/` — Brand sales/leads surfaces (`/brand/leads`, `/brand/pipeline`) (WO required)
+**Allowed Paths:**
+- `SOCELLE-WEB/src/pages/business/` — sales features only, with WO
+- `SOCELLE-WEB/src/pages/brand/` — brand leads/pipeline features only, with WO
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (sales schema)
 
-**Forbidden Paths (absolute — no exceptions):**
+**Forbidden Paths:**
+- Cold outreach or acquisition email — FORBIDDEN (V1 §P)
+- Commerce checkout — FROZEN
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
 - `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- Outreach / cold acquisition email — NEVER (FAIL 7)
-- Commerce flow (cart, checkout, orders) — NEVER MODIFY
 
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] Commission rates sourced from DB, not hardcoded
-- [ ] Lead data strictly tenant-scoped (RLS verified)
-- [ ] No cold outreach tooling scaffolded
+**Required Proofs:**
+- [ ] Commission rates from DB, not hardcoded
+- [ ] Lead data tenant-scoped (RLS)
+- [ ] No cold outreach tooling
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
 
 ---
 
-### 16. QUIZZES / POLLS AGENT
+### 14. ECOMMERCE AGENT
 
-**Description:** Engagement and monetization tooling — quiz/poll creation, response collection, sponsor slot placement, results visualization, lead capture via interactive content. Placement rule: quizzes/polls appear AFTER intelligence context, never as the premise.
+**Description:** Commerce Hub owner. Commerce is a **module**, never the IA backbone (V1 §M).
 
-**Status:** PLANNED — No active WO. First-class engagement + monetization channel.
+**Scope:** Product catalog, order management, cart/checkout (read-only on frozen paths), commerce analytics. Commerce routes are always gated (auth + tier).
 
-**Required Skills (when active):**
-- Quiz/poll builder UI (React form wizard)
-- Response aggregation and analytics (Supabase RPCs)
-- Sponsor slot integration (brand-sponsored quiz placement)
-- Results visualization (charts, share cards)
-- Supabase RLS (response data tenant-scoped where applicable)
+**Hub ownership:** Commerce
 
-**Allowed Paths (when active, with WO):**
-- `SOCELLE-WEB/src/pages/public/` — Public quiz/poll surfaces (WO required)
-- `SOCELLE-WEB/src/pages/business/` — Operator quiz results surfaces (WO required)
-- `SOCELLE-WEB/src/pages/brand/` — Brand-sponsored quiz management (WO required)
-- `SOCELLE-WEB/src/pages/admin/` — Quiz/poll admin curation (ADD ONLY, WO required)
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (quizzes, polls, responses schema)
+**Allowed Paths:**
+- `SOCELLE-WEB/src/pages/` — commerce surfaces only, with WO
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (commerce schema, non-checkout)
 
-**Forbidden Paths (absolute — no exceptions):**
+**Forbidden Paths:**
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
 - `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- Outreach / cold acquisition — NEVER (FAIL 7)
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- No "Shop" as primary nav; no "Shop Now" / "Buy Now" as main CTA on Intelligence pages
 
-**Required Proofs (when active):**
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] Quiz/poll placement follows intelligence context (never as premise)
-- [ ] Sponsor disclosures visible on all sponsored content
-- [ ] Response data labeled LIVE or DEMO
+**Required Proofs:**
+- [ ] Commerce never elevated above Intelligence in nav/IA
+- [ ] All commerce routes gated (auth + tier)
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
 
 ---
 
-### 17. RECRUITMENT / OPS AGENT
+### 15. AUTHORING AGENT
 
-**Description:** Future outreach and recruitment operations — operator recruitment, brand onboarding outreach, re-engagement campaigns. BLOCKED by no-outreach rule (`/.claude/CLAUDE.md §G`).
+**Description:** Authoring Studio Hub owner.
 
-**Status:** PLANNED — DO NOT AUTHORIZE. Execution requires explicit written amendment to `/.claude/CLAUDE.md §G` (No Outreach Emails Rule) by the product owner. No WO may be created for this agent until that amendment is merged.
+**Scope:** Content authoring studio — blog posts, stories/briefs, launch comms, SEO content, education content, in-app help. CMS tables and admin go first; Authoring Studio UI later wires into CMS.
 
-**Required Skills (when active — post-amendment only):**
-- Transactional + marketing email (Brevo/Resend)
-- CAN-SPAM / GDPR compliance engine
-- Opt-in/opt-out management (double opt-in required)
-- Campaign state machine (draft → approved → scheduled → sent → tracked)
-- Supabase tables (outreach_campaigns, outreach_recipients, consent_records)
+**Hub ownership:** Authoring Studio
 
-**Allowed Paths (when active — post-amendment only, with WO):**
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (outreach schema)
-- `SOCELLE-WEB/supabase/functions/` — ADD ONLY (outreach edge functions — separate from `send-email`)
-- `SOCELLE-WEB/src/pages/admin/` — Outreach admin surfaces (ADD ONLY, WO required)
+**Allowed Paths:**
+- `SOCELLE-WEB/src/pages/` — authoring surfaces only, with WO
+- `SOCELLE-WEB/src/pages/admin/` — CMS admin surfaces, ADD ONLY
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (CMS + content schema)
 
-**Forbidden Paths (absolute — no exceptions, even post-amendment):**
+**Forbidden Paths:**
 - `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
 - `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
-- `SOCELLE-WEB/supabase/functions/send-email/` — Transactional only; outreach uses separate function
-- Cold DMs, scraping, purchased lists — NEVER (even post-amendment, all outreach requires verified consent)
+- Commerce flow — FROZEN
 
-**Required Proofs (when active — post-amendment only):**
-- [ ] Written amendment to `/.claude/CLAUDE.md §G` merged and cited
-- [ ] WO ID in `build_tracker.md` confirmed
-- [ ] Double opt-in consent verified for every recipient
-- [ ] CAN-SPAM / GDPR compliance audit passed
-- [ ] Unsubscribe mechanism functional and tested
-- [ ] No outreach to purchased or scraped lists
+**Required Proofs:**
+- [ ] CMS tables operational before authoring UI
+- [ ] Content has provenance (source, author, `updated_at`)
+- [ ] `npx tsc --noEmit` — zero errors
+- [ ] Doc Gate PASS
+
+---
+
+### 16. MULTI-PLATFORM AGENT
+
+**Description:** Mobile + Desktop hubs owner. Executes multi-platform strategy (V1 §H).
+
+**Scope:**
+- **Desktop:** Tauri shell wrapping the same React+Vite app. No re-implementation of business logic in Rust; only IPC plumbing. Desktop-only features: notifications, file export, auto-update, secure storage.
+- **Mobile:** Flutter app using same Supabase API contracts and edge functions. No FFI of TypeScript logic into Dart. Shares: schemas, entitlement rules, credit system, AI endpoints.
+
+**Hub ownership:** Mobile App, Desktop App
+
+**Allowed Paths:**
+- `SOCELLE-MOBILE-main/apps/mobile/lib/` — full read/write
+- `SOCELLE-MOBILE-main/apps/mobile/pubspec.yaml` — read/write
+- `SOCELLE-MOBILE-main/apps/mobile/ios/` — read/write
+- `SOCELLE-MOBILE-main/apps/mobile/android/` — read/write
+- `src-tauri/` — Tauri desktop config and IPC (when created)
+- `packages/` — shared type definitions (read only)
+
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/` — Web/Platform Engineer domain (except Tauri wrapper of built output)
+- `supabase/migrations/` — Data Architect/Platform Engineer domain
+- `supabase/functions/` — Intelligence Architect/Platform Engineer domain
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- Commerce flow — FROZEN
+
+**Required Proofs:**
+- [ ] `flutter analyze` — zero errors (mobile)
+- [ ] Tauri build compiles (desktop)
+- [ ] Design tokens in parity with web spec
+- [ ] No hardcoded data without DEMO label
+- [ ] Doc Gate PASS
+
+---
+
+### SUPPORTING AGENT ROLES
+
+These agents support the hub owners but do not own hubs themselves:
+
+---
+
+#### SEO / Schema Agent
+
+**Scope:** SEO infrastructure, Schema.org markup, sitemaps, robots.txt, Core Web Vitals.
+
+**Allowed Paths:**
+- `apps/marketing-site/` — full read/write
+- `SOCELLE-WEB/src/lib/seo.ts` — read/write
+- `SOCELLE-WEB/public/sitemap.xml`, `robots.txt` — read/write
+
+**Forbidden Paths:**
+- Page layout/logic — Web Agent domain
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- Commerce flow — FROZEN
+
+---
+
+#### Doc Gate QA Agent
+
+**Scope:** Audit all agent outputs against FAIL conditions. Read-only access to entire monorepo.
+
+**Allowed Paths:**
+- `docs/command/HARD_CODED_SURFACES.md` — write with WO only
+- ALL other paths: READ-ONLY
+
+---
+
+#### Events Pipeline Agent
+
+**Scope:** Event ingestion, deduplication, Schema.org Event markup.
+
+**Allowed Paths:**
+- `SOCELLE-WEB/src/pages/public/Events.tsx`, `EventDetail.tsx` — read/write
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
+- `SOCELLE-WEB/supabase/functions/` — ADD ONLY (event ingestion)
+
+---
+
+#### Analytics / Attribution Agent
+
+**Scope:** First-party analytics, Core Web Vitals, attribution tracking.
+
+**Allowed Paths:**
+- `SOCELLE-WEB/src/lib/analytics/` — full read/write
+- `SOCELLE-WEB/src/lib/tracking.ts` — read/write
+
+---
+
+#### Infra / DevOps Agent
+
+**Scope:** CI/CD, environment management, build tooling.
+
+**Allowed Paths:**
+- `.github/workflows/` — full read/write
+- `wrangler.toml`, `turbo.json`, `package.json` — read/write
 
 ---
 
 ## AGENT HANDOFF PROTOCOL
 
-When work crosses agent boundaries, the following handoff process applies:
-
 | Handoff Scenario | Process |
 |---|---|
-| Web Agent needs new DB table | Create WO in `build_tracker.md` → Backend Agent executes migration → Web Agent wires frontend |
-| SEO Agent needs schema data from jobs | Jobs Pipeline Agent completes W10-06 first → SEO Agent adds JSON-LD to `JobDetail.tsx` |
-| Editorial Agent needs admin curation UI | Editorial Agent builds ingestion pipeline → Admin Control Center Agent builds curation surface |
-| AI Agent needs new credit tables | Backend Agent migration first → AI Agent wires edge function |
-| Marketing Studio needs Brevo | Owner must configure Brevo account (External Setup) → Backend Agent adds edge function → Marketing Studio Agent wires UI |
-| Any agent crossing app boundary | Must have WO in `build_tracker.md` + explicit owner approval |
-| Social Studio needs platform API keys | Owner configures API credentials (External Setup) → Backend Agent adds edge function → Social Studio Agent wires UI |
-| Sales Studio needs CRM data | CRM Agent completes contact/pipeline schema first → Sales Studio Agent builds pipeline UI |
-| Quizzes/Polls needs brand sponsorship data | CRM Agent provides brand contact → Quizzes/Polls Agent manages sponsor placement |
-| Recruitment/Ops requires outreach amendment | Owner amends `/.claude/CLAUDE.md §G` → WO created in `build_tracker.md` → Recruitment/Ops Agent authorized |
+| Any agent needs new DB table | Create WO in `build_tracker.md` → Data Architect/Platform Engineer executes migration → requesting agent wires frontend |
+| Intelligence Architect needs feed ingestion | Intelligence Architect builds edge function → Platform Engineer reviews deployment |
+| Marketing Agent needs campaign email | Transactional only via `send-email` → no cold outreach (V1 §P) |
+| Multi-Platform Agent needs API contract | Intelligence Architect/Platform Engineer defines contract → Multi-Platform Agent implements in Flutter/Tauri |
+| Any agent crossing hub boundary | Must have WO in `build_tracker.md` + explicit owner approval |
+| Authoring Agent needs CMS tables | Data Architect creates migration → Authoring Agent builds admin UI |
+
+---
+
+## SKILL LIBRARY INTEGRATION (v4.0 — March 8, 2026)
+
+**97 skills installed** in `/.claude/skills/` — auto-discovered by Claude Code sessions. Each agent has assigned skills that match its scope. Agents MUST use their assigned skills before manual audits.
+
+**6 Consolidation Suites** wrap 26 member skills into coordinated pipelines with single verification entrypoints.
+
+### System Skills (All Agents)
+
+| Skill | Purpose |
+|---|---|
+| `skill-creator` | Create, modify, and benchmark skills |
+| `skill-selector` | Auto-route prompts to best-fit skill |
+
+### Agent-to-Skill Map
+
+| Agent | Assigned Skills | Assigned Suites |
+|---|---|---|
+| **Command Agent** | doc-gate-enforcer, proof-pack, repo-auditor, changelog-generator | ALL suites (audit-only) |
+| **Intelligence Architect** | ai-output-quality-checker, ai-service-menu-validator, confidence-scorer, feed-source-auditor, feed-pipeline-checker, signal-data-validator, provenance-checker | data-integrity-suite |
+| **Platform Engineer** | build-gate, db-inspector, migration-validator, rls-auditor, edge-fn-health, type-generation-validator, route-mapper, dependency-scanner | schema-db-suite, test-runner-suite |
+| **Design Guardian** | design-lock-enforcer, design-standard-enforcer, token-drift-scanner, figma-parity-checker | design-audit-suite |
+| **Security Agent** | secrets-scanner, rls-auditor, legal-compliance-checker, risk-gatekeeper | — |
+| **QA Agent** | smoke-test-suite, e2e-test-runner, playwright-crawler, live-demo-detector, hub-shell-detector | test-runner-suite |
+| **Copy Agent** | voice-enforcer, tone-voice-auditor, banned-term-scanner, copy-system-enforcer, language-linter | copy-quality-suite |
+| **Monetization Agent** | credit-economy-validator, billing-scenario-simulator, payment-flow-tester, stripe-integration-tester, affiliate-link-checker, entitlement-validator | billing-payments-suite |
+| **Data Architect** | db-inspector, migration-validator, schema-drift-detector, type-generation-validator, materialized-view-checker | schema-db-suite |
+| **CRM Agent** | rls-auditor, entitlement-validator | — |
+| **Education Agent** | education-content-optimizer, education-module-creator, education-preference-alignor | — |
+| **Marketing Agent** | marketing-alignment-checker, marketing-analytics-forecaster, marketing-campaign-builder, marketing-content-generator, cta-validator | copy-quality-suite |
+| **Sales Agent** | sales-pipeline-optimizer, sales-output-refiner, sales-script-generator | billing-payments-suite |
+| **Ecommerce Agent** | entitlement-validator, payment-flow-tester | billing-payments-suite |
+| **Authoring Agent** | data-quality-auditor, provenance-checker | — |
+| **Multi-Platform Agent** | mobile-parity-checker, build-gate, responsive-checker | design-audit-suite |
+
+### Cross-Cutting Skills (Available to All Agents)
+
+| Skill | Scope |
+|---|---|
+| `build-gate` | TypeScript compilation gate |
+| `secrets-scanner` | Leaked credential detection |
+| `env-validator` | Environment variable compliance |
+| `doc-gate-enforcer` | FAIL condition enforcement |
+| `live-demo-detector` | LIVE/DEMO surface labeling |
+| `proof-pack` | QA artifact aggregation for release gates |
+| `repo-auditor` | Full monorepo structure audit |
+| `risk-gatekeeper` | Existential business risk scan |
+| `legal-compliance-checker` | Legal and regulatory scan |
+| `changelog-generator` | Release notes from git history |
+
+### Consolidation Suites Reference
+
+| Suite | Members | Verification Command |
+|---|---|---|
+| `design-audit-suite` | design-lock-enforcer, design-standard-enforcer, token-drift-scanner, figma-parity-checker | `grep -rn '#141418\|#F6F3EF\|#6E879B' SOCELLE-WEB/src/ \| wc -l` |
+| `copy-quality-suite` | voice-enforcer, tone-voice-auditor, language-linter, banned-term-scanner, copy-system-enforcer | `grep -rn 'revolutionary\|game-changing\|best-in-class' SOCELLE-WEB/src/ \| wc -l` -> expect 0 |
+| `data-integrity-suite` | signal-data-validator, feed-source-auditor, feed-pipeline-checker, provenance-checker, confidence-scorer, data-quality-auditor | `grep -rn 'isLive\|updated_at\|confidence' SOCELLE-WEB/src/hooks/ \| wc -l` |
+| `billing-payments-suite` | billing-scenario-simulator, payment-flow-tester, stripe-integration-tester, credit-economy-validator | `grep -rn 'stripe\|subscription\|payment' SOCELLE-WEB/src/ \| wc -l` |
+| `schema-db-suite` | db-inspector, migration-validator, schema-drift-detector, type-generation-validator | `ls SOCELLE-WEB/supabase/migrations/*.sql \| wc -l` |
+| `test-runner-suite` | smoke-test-suite, e2e-test-runner, playwright-crawler | `npx playwright test --list 2>&1 \| tail -1` |
+
+### Skill Library Governance
+
+- **Location:** `/.claude/skills/` (97 directories, auto-discovered)
+- **Authority:** Skills Master vNext (`SOCELLE_SKILLS_MASTER_vNEXT.docx`)
+- **Certification:** 97/97 PASS (March 8, 2026 re-certification)
+- **Re-certification cadence:** Quarterly (next: June 2026)
+- **Suite definitions:** Suites are execution wrappers; member skills remain individually invocable
+- **New skills:** Must be created via `skill-creator` and added to Skills Master
 
 ---
 
@@ -624,15 +730,19 @@ When work crosses agent boundaries, the following handoff process applies:
 
 Before any agent begins work, verify:
 
+- [ ] V1 master file read (`V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`)
 - [ ] This file read (`docs/command/AGENT_SCOPE_REGISTRY.md`)
 - [ ] `/.claude/CLAUDE.md` read (global governance)
 - [ ] Relevant command docs read for task area
 - [ ] WO ID confirmed in `SOCELLE-WEB/docs/build_tracker.md`
 - [ ] Target paths confirmed within agent's allowed path list
 - [ ] No forbidden paths in planned changeset
-- [ ] Doc Gate PASS conditions understood (§B of `/.claude/CLAUDE.md`)
+- [ ] Doc Gate PASS conditions understood
 - [ ] LIVE vs DEMO labels planned for all data surfaces in scope
+- [ ] Anti-shell rule understood — all 10 requirements for hub surfaces
+- [ ] Assigned skills checked for automated verification before manual audit
+- [ ] Suite-level verification run if task spans multiple skill domains
 
 ---
 
-*SOCELLE AGENT SCOPE REGISTRY v3.0 — March 5, 2026 — Command Center Authority*
+*SOCELLE AGENT SCOPE REGISTRY v2.0 — March 8, 2026 — Aligned to V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md — Command Center Authority*

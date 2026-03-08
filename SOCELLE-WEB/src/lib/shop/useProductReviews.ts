@@ -1,66 +1,60 @@
 // useProductReviews — list reviews for product, submit review
-import { useState, useEffect, useCallback } from 'react';
+// Migrated to TanStack Query v5 (V2-TECH-04).
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import { useAuth } from '../auth';
 import type { Review } from './types';
 
 export function useProductReviews(productId: string | undefined) {
   const { user } = useAuth();
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [avgRating, setAvgRating] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchReviews = useCallback(async () => {
-    if (!productId) { setLoading(false); return; }
-    setLoading(true);
-    try {
-      const { data, error: err } = await supabase
+  const { data, isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['product_reviews', productId],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('reviews')
         .select('*')
-        .eq('product_id', productId)
+        .eq('product_id', productId!)
         .eq('is_approved', true)
         .order('created_at', { ascending: false });
-      if (err) throw err;
+      if (error) throw new Error(error.message);
       const revs = (data as Review[]) ?? [];
-      setReviews(revs);
-      if (revs.length > 0) {
-        setAvgRating(revs.reduce((s, r) => s + r.rating, 0) / revs.length);
-      } else {
-        setAvgRating(0);
-      }
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load reviews');
-    } finally {
-      setLoading(false);
-    }
-  }, [productId]);
+      const avgRating = revs.length > 0
+        ? revs.reduce((s, r) => s + r.rating, 0) / revs.length
+        : 0;
+      return { reviews: revs, avgRating };
+    },
+    enabled: !!productId,
+  });
 
-  useEffect(() => { fetchReviews(); }, [fetchReviews]);
-
-  const submitReview = useCallback(async (rating: number, title: string, body: string) => {
-    if (!user?.id || !productId) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const { error: err } = await supabase.from('reviews').insert({
-        product_id: productId,
-        user_id: user.id,
+  const submitMutation = useMutation({
+    mutationFn: async ({ rating, title, body }: { rating: number; title: string; body: string }) => {
+      const { error } = await supabase.from('reviews').insert({
+        product_id: productId!,
+        user_id: user!.id,
         rating,
         title: title || null,
         body: body || null,
         is_approved: false,
         is_verified_purchase: false,
       });
-      if (err) throw err;
-      await fetchReviews();
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to submit review');
-    } finally {
-      setSubmitting(false);
-    }
-  }, [user?.id, productId, fetchReviews]);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['product_reviews', productId] }); },
+  });
 
-  return { reviews, avgRating, loading, submitting, error, submitReview, refetch: fetchReviews };
+  const submitReview = async (rating: number, title: string, body: string) => {
+    if (!user?.id || !productId) return;
+    await submitMutation.mutateAsync({ rating, title, body });
+  };
+
+  const reviews = data?.reviews ?? [];
+  const avgRating = data?.avgRating ?? 0;
+  const submitting = submitMutation.isPending;
+  const error = queryError instanceof Error ? queryError.message
+    : submitMutation.error instanceof Error ? submitMutation.error.message
+    : null;
+
+  return { reviews, avgRating, loading, submitting, error, submitReview, refetch };
 }

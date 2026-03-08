@@ -1,6 +1,8 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # HARDCODED SURFACES — SOCELLE GLOBAL
 **Updated:** March 6, 2026 — Wave 10 P0 complete
-**Authority:** `docs/command/SOCELLE_DATA_PROVENANCE_POLICY.md` §7  
+**Authority:** `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (master), `docs/command/SOCELLE_DATA_PROVENANCE_POLICY.md` §7
 **Doc Gate:** `docs/command/SOCELLE_RELEASE_GATES.md` §9 FAIL 4
 
 ---
@@ -88,6 +90,20 @@
 | **P1** | 4 (was 6) | ForBrands stats, Professionals stats, Plans tiers, ProtocolDetail count. Insights resolved (W10-04), BrandStorefront labeled (W10-03). |
 | **P2** | 11 | Static content — no action |
 | **TOTAL** | **15 remaining** (4 were fixed this session) |
+
+---
+
+---
+
+## V1 ALIGNMENT NOTES (2026-03-08)
+
+Per `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`:
+
+- **LIVE vs DEMO truth (V1 §N):** Every data surface must declare LIVE or DEMO. Unlabeled MOCK is forbidden. All remaining P1 surfaces above must carry DEMO labels until wired to real DB queries.
+- **Anti-shell rule (V1 §D):** Any hub surface rendering hardcoded data where it should be live is a shell violation. Agents must HALT and raise a WO if detected.
+- **Launch gate (V1 §J):** Signals must be fresh (`market_signals` with `fetched_at` < 24h), AI briefs must have 0 hallucinations, and `database.types.ts` must match migrations before launch.
+- **Intelligence-first IA (V1 §M):** Commerce claims (e.g., "$45M+ transaction volume" in ForBrands/Professionals stats) must never be elevated above Intelligence value propositions.
+- **Runtime context:** All surfaces run on React + Vite (SPA). Not Next.js. Tailwind 3.4 (Tailwind 4 deferred).
 
 ---
 

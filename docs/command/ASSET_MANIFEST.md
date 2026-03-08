@@ -1,6 +1,8 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # ASSET MANIFEST — SOCELLE GLOBAL
-**Generated:** March 5, 2026 — Phase 1 Full Audit  
-**Authority:** `docs/command/SOCELLE_CANONICAL_DOCTRINE.md` §7  
+**Generated:** March 5, 2026 — Phase 1 Full Audit
+**Authority:** `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (master), `docs/command/SOCELLE_CANONICAL_DOCTRINE.md` §7
 **Rule:** No gradient art blocks as content. Use repo visuals first.
 
 ---
@@ -149,6 +151,20 @@ Location: `SOCELLE-MOBILE-main/Photo Skincare Swatches/`
 | Signal card thumbnails | AVIF/WebP | P1 |
 | Event cover images | AVIF/WebP | P1 |
 | Job company logos | PNG/SVG | P2 |
+
+---
+
+---
+
+## V1 ALIGNMENT NOTES (2026-03-08)
+
+Per `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`:
+
+- **Multi-platform asset sharing (V1 §H):** Web and Mobile share design tokens (Pearl Mineral V2). Raw asset duplicates between `SOCELLE-WEB/Images and videos/` and `SOCELLE-MOBILE-main/` should be consolidated to a single monorepo source. Mobile (Flutter) will use the same Supabase API contracts but may need platform-specific asset formats.
+- **Desktop (Tauri):** Wraps the same React+Vite build, so all `SOCELLE-WEB/public/` assets are automatically available to the desktop app. No separate desktop asset pipeline needed.
+- **Design system (V1 §F):** All assets must conform to Pearl Mineral V2 tokens. No cocoa palette, no `font-serif`, no hardcoded hex outside token system. Tailwind 3.4 now; Tailwind 4 deferred.
+- **15 hubs need assets:** Intelligence, Jobs, Brands, Professionals, Admin, CRM, Education, Marketing, Sales, Commerce, Authoring Studio, Mobile App, Desktop App, Credit Economy, Affiliate/Wholesale Engine. Current video coverage (1 of 14 pages) must expand as hubs become non-shell (Phase 5).
+- **`vite.svg` in `public/`:** Still flagged for deletion (Vite default, not a SOCELLE asset).
 
 ---
 

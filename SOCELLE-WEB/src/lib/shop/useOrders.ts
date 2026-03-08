@@ -1,5 +1,6 @@
 // useOrders — list user's orders, single order detail
-import { useState, useEffect, useCallback } from 'react';
+// Migrated to TanStack Query v5 (V2-TECH-04).
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import { useAuth } from '../auth';
 import type { Tables } from '../database.types';
@@ -15,74 +16,55 @@ type OrderItemRow = Tables<'order_items'>;
 
 export function useOrders() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<ShopOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchOrders = useCallback(async () => {
-    if (!user?.id) { setLoading(false); return; }
-    setLoading(true);
-    try {
-      const { data, error: err } = await supabase
+  const { data: orders = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['orders', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('created_by', user.id)
+        .eq('created_by', user!.id)
         .order('created_at', { ascending: false });
-      if (err) throw err;
-      const rows = (data as OrderRow[] | null) ?? [];
-      setOrders(rows.map(normalizeShopOrder));
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load orders');
-    } finally {
-      setLoading(false);
-    }
-  }, [user?.id]);
+      if (error) throw new Error(error.message);
+      return ((data as OrderRow[] | null) ?? []).map(normalizeShopOrder);
+    },
+    enabled: !!user?.id,
+  });
 
-  useEffect(() => { fetchOrders(); }, [fetchOrders]);
-
-  return { orders, loading, error, refetch: fetchOrders };
+  const error = queryError instanceof Error ? queryError.message : null;
+  return { orders, loading, error, refetch };
 }
 
 export function useOrderDetail(orderId: string | undefined) {
   const { user } = useAuth();
-  const [order, setOrder] = useState<ShopOrder | null>(null);
-  const [items, setItems] = useState<ShopOrderItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!orderId || !user?.id) { setLoading(false); return; }
-    let cancelled = false;
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['order_detail', orderId, user?.id],
+    queryFn: async (): Promise<{ order: ShopOrder; items: ShopOrderItem[] }> => {
+      const { data: o, error: oErr } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', orderId!)
+        .eq('created_by', user!.id)
+        .single();
+      if (oErr) throw new Error(oErr.message);
 
-    (async () => {
-      setLoading(true);
-      try {
-        const { data: o, error: oErr } = await supabase
-          .from('orders')
-          .select('*')
-          .eq('id', orderId)
-          .eq('created_by', user.id)
-          .single();
-        if (oErr) throw oErr;
-        if (cancelled) return;
-        setOrder(normalizeShopOrder(o as OrderRow));
+      const { data: oi } = await supabase
+        .from('order_items')
+        .select('*')
+        .eq('order_id', orderId!);
 
-        const { data: oi } = await supabase
-          .from('order_items')
-          .select('*')
-          .eq('order_id', orderId);
-        if (!cancelled) {
-          const rows = (oi as OrderItemRow[] | null) ?? [];
-          setItems(rows.map(normalizeShopOrderItem));
-        }
-      } catch (e: unknown) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load order');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [orderId, user?.id]);
+      return {
+        order: normalizeShopOrder(o as OrderRow),
+        items: ((oi as OrderItemRow[] | null) ?? []).map(normalizeShopOrderItem),
+      };
+    },
+    enabled: !!orderId && !!user?.id,
+  });
+
+  const order = data?.order ?? null;
+  const items = data?.items ?? [];
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { order, items, loading, error };
 }

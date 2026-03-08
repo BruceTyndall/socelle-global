@@ -1,21 +1,18 @@
 // useProducts — list products with filters (category, price range, search, in-stock)
-import { useState, useEffect, useCallback } from 'react';
+// Migrated to TanStack Query v5 (V2-TECH-04).
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { Product, ProductFilters } from './types';
 
 const PER_PAGE = 12;
 
 export function useProducts(initialFilters?: ProductFilters) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [total, setTotal] = useState(0);
   const [filters, setFilters] = useState<ProductFilters>(initialFilters ?? {});
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['products', filters],
+    queryFn: async () => {
       const page = filters.page ?? 1;
       const perPage = filters.per_page ?? PER_PAGE;
       const from = (page - 1) * perPage;
@@ -64,20 +61,15 @@ export function useProducts(initialFilters?: ProductFilters) {
 
       query = query.range(from, to);
 
-      const { data, error: err, count } = await query;
-      if (err) throw err;
-      setProducts((data as Product[]) ?? []);
-      setTotal(count ?? 0);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load products');
-    } finally {
-      setLoading(false);
-    }
-  }, [filters]);
+      const { data, error, count } = await query;
+      if (error) throw new Error(error.message);
+      return { products: (data as Product[]) ?? [], total: count ?? 0 };
+    },
+  });
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const products = data?.products ?? [];
+  const total = data?.total ?? 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { products, loading, error, total, filters, setFilters, refetch: fetchProducts };
+  return { products, loading, error, total, filters, setFilters, refetch };
 }

@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── WO-OVERHAUL-14: Sales Platform — Deals Hook ──────────────────────────
 // Data source: deals table (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface Deal {
   id: string;
@@ -38,15 +39,12 @@ export interface NewDeal {
 }
 
 export function useDeals(pipelineId?: string) {
-  const [deals, setDeals] = useState<Deal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['deals', pipelineId];
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: deals = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
       let query = supabase
         .from('deals')
         .select('*')
@@ -54,87 +52,75 @@ export function useDeals(pipelineId?: string) {
       if (pipelineId) {
         query = query.eq('pipeline_id', pipelineId);
       }
-      const { data, error: dbErr } = await query;
-      if (dbErr) throw dbErr;
-      setDeals(data ?? []);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setDeals([]);
-      } else {
-        setError('Failed to load deals.');
+      const { data, error } = await query;
+      if (error) {
+        // Table might not exist yet — graceful fallback
+        const msg = error.message.toLowerCase();
+        if (msg.includes('does not exist') || error.code === '42P01') return [];
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [pipelineId]);
+      return (data ?? []) as Deal[];
+    },
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (deal: NewDeal) => {
+      const { data, error } = await supabase
+        .from('deals')
+        .insert([{ ...deal, status: 'open' }])
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as Deal;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createDeal = useCallback(async (deal: NewDeal) => {
-    const { data, error: dbErr } = await supabase
-      .from('deals')
-      .insert([{ ...deal, status: 'open' }])
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    setDeals((prev) => [data, ...prev]);
-    return data as Deal;
-  }, []);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Deal> }) => {
+      const { data, error } = await supabase
+        .from('deals')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as Deal;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateDeal = useCallback(async (id: string, updates: Partial<Deal>) => {
-    const { data, error: dbErr } = await supabase
-      .from('deals')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    setDeals((prev) => prev.map((d) => (d.id === id ? (data as Deal) : d)));
-    return data as Deal;
-  }, []);
+  const createDeal = async (deal: NewDeal) => createMut.mutateAsync(deal);
+  const updateDeal = async (id: string, updates: Partial<Deal>) => updateMut.mutateAsync({ id, updates });
+  const moveDeal = async (id: string, stageId: string) => updateDeal(id, { stage_id: stageId });
 
-  const moveDeal = useCallback(async (id: string, stageId: string) => {
-    return updateDeal(id, { stage_id: stageId });
-  }, [updateDeal]);
+  const isLive = deals.length > 0 || !!queryError;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { deals, loading, error, isLive, reload: load, createDeal, updateDeal, moveDeal };
+  return { deals, loading, error, isLive, reload, createDeal, updateDeal, moveDeal };
 }
 
 export function useDeal(dealId: string | undefined) {
-  const [deal, setDeal] = useState<Deal | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!dealId) { setLoading(false); return; }
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: deal = null, isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey: ['deal_detail', dealId],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('deals')
         .select('*')
-        .eq('id', dealId)
+        .eq('id', dealId!)
         .single();
-      if (dbErr) throw dbErr;
-      setDeal(data as Deal);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-      } else {
-        setError('Failed to load deal.');
+      if (error) {
+        const msg = error.message.toLowerCase();
+        if (msg.includes('does not exist') || error.code === '42P01') return null;
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [dealId]);
+      return data as Deal;
+    },
+    enabled: !!dealId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = deal !== null;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { deal, loading, error, isLive, reload: load };
+  return { deal, loading, error, isLive, reload };
 }

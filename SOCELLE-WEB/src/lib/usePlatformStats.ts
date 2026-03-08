@@ -1,9 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
    usePlatformStats — W12-31
    Multi-table COUNT queries for public page stat surfaces.
-   Follows useIntelligence() canonical pattern: isLive + mock fallback.
+   Follows useIntelligence() canonical pattern: isLive + empty fallback.
+   Migrated to TanStack Query v5 (V2-TECH-04).
    ═══════════════════════════════════════════════════════════════ */
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 export interface PlatformStats {
@@ -33,76 +34,40 @@ const EMPTY_STATS: PlatformStats = {
 };
 
 export function usePlatformStats(): UsePlatformStatsReturn {
-  const [stats, setStats] = useState<PlatformStats>(EMPTY_STATS);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['platform_stats'],
+    queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
 
-  useEffect(() => {
-    let cancelled = false;
+      const [brands, signals, protocols, jobs, events, operators, dataSources] = await Promise.all([
+        supabase.from('brands').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('market_signals').select('*', { count: 'exact', head: true }).eq('active', true),
+        supabase.from('canonical_protocols').select('*', { count: 'exact', head: true }),
+        supabase.from('job_postings').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'active').gte('date', today),
+        supabase.from('access_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('data_feeds').select('*', { count: 'exact', head: true }),
+      ]);
 
-    async function fetchStats() {
-      setLoading(true);
+      const countOrZero = (result: { error: unknown; count: number | null }) =>
+        result.error ? 0 : (result.count ?? 0);
 
-      if (!isSupabaseConfigured) {
-        setStats(EMPTY_STATS);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
+      return {
+        brandsCount: countOrZero(brands),
+        signalsCount: countOrZero(signals),
+        protocolsCount: countOrZero(protocols),
+        jobsCount: countOrZero(jobs),
+        eventsCount: countOrZero(events),
+        operatorsCount: countOrZero(operators),
+        dataSourcesCount: countOrZero(dataSources),
+      } satisfies PlatformStats;
+    },
+    enabled: isSupabaseConfigured,
+    staleTime: 10 * 60 * 1000, // 10 min — counts don't need frequent refresh
+  });
 
-      try {
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD for events.date
-
-        const [brands, signals, protocols, jobs, events, operators, dataSources] = await Promise.all([
-          supabase.from('brands').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-          supabase.from('market_signals').select('*', { count: 'exact', head: true }).eq('active', true),
-          supabase.from('canonical_protocols').select('*', { count: 'exact', head: true }),
-          supabase.from('job_postings').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-          supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'active').gte('date', today),
-          supabase.from('access_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
-          supabase.from('data_feeds').select('*', { count: 'exact', head: true }),
-        ]);
-
-        if (cancelled) return;
-
-        const countOrNull = (result: { error: unknown; count: number | null }) =>
-          result.error ? null : (result.count ?? 0);
-
-        const liveCounts = {
-          brandsCount: countOrNull(brands),
-          signalsCount: countOrNull(signals),
-          protocolsCount: countOrNull(protocols),
-          jobsCount: countOrNull(jobs),
-          eventsCount: countOrNull(events),
-          operatorsCount: countOrNull(operators),
-          dataSourcesCount: countOrNull(dataSources),
-        };
-
-        const hasAnyLiveSource = Object.values(liveCounts).some((v) => v !== null);
-
-        setStats({
-          brandsCount: liveCounts.brandsCount ?? 0,
-          signalsCount: liveCounts.signalsCount ?? 0,
-          protocolsCount: liveCounts.protocolsCount ?? 0,
-          jobsCount: liveCounts.jobsCount ?? 0,
-          eventsCount: liveCounts.eventsCount ?? 0,
-          operatorsCount: liveCounts.operatorsCount ?? 0,
-          dataSourcesCount: liveCounts.dataSourcesCount ?? 0,
-        });
-        setIsLive(hasAnyLiveSource);
-      } catch {
-        if (!cancelled) {
-          setStats(EMPTY_STATS);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchStats();
-    return () => { cancelled = true; };
-  }, []);
+  const stats = data ?? EMPTY_STATS;
+  const isLive = !!data;
 
   return { stats, loading, isLive };
 }

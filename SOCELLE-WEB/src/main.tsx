@@ -1,30 +1,66 @@
-// Global error handlers — these must be set before React loads,
-// so we use console.error directly (logger may not be initialized yet).
+import * as Sentry from '@sentry/react';
+
+// Initialize Sentry before anything else
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN || '',
+  environment: import.meta.env.MODE,
+  enabled: !!import.meta.env.VITE_SENTRY_DSN,
+  tracesSampleRate: import.meta.env.PROD ? 0.2 : 1.0,
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: import.meta.env.PROD ? 1.0 : 0,
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+  ],
+  // Scrub PII — never send user emails or names
+  beforeSend(event) {
+    if (event.user) {
+      delete event.user.email;
+      delete event.user.username;
+    }
+    return event;
+  },
+});
+
+// Global error handlers — wired to Sentry
 window.onerror = (message, source, lineno, colno, error) => {
+  if (error instanceof Error) {
+    Sentry.captureException(error);
+  }
   if (import.meta.env.DEV) {
     console.error('[GlobalError]', { message, source, lineno, colno, error });
-  } else {
-    console.error('[GlobalError]', message);
-    // Future: send to error reporting service
   }
   return false;
 };
 
 window.onunhandledrejection = (event) => {
+  if (event.reason instanceof Error) {
+    Sentry.captureException(event.reason);
+  }
   if (import.meta.env.DEV) {
     console.error('[UnhandledRejection]', event.reason);
-  } else {
-    console.error('[UnhandledRejection]', event.reason?.message ?? 'Unknown');
   }
 };
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { ConfigCheck } from './components/ConfigCheck.tsx';
 import './index.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,      // 5 min — avoid refetch storms
+      gcTime: 10 * 60 * 1000,         // 10 min garbage collection
+      retry: 1,                        // single retry on failure
+      refetchOnWindowFocus: false,     // explicit refetch only
+    },
+  },
+});
 
 const rootElement = document.getElementById('root');
 const loadingSplash = document.getElementById('loading-splash');
@@ -38,11 +74,13 @@ if (!rootElement) {
     root.render(
       <StrictMode>
         <HelmetProvider>
-          <ErrorBoundary>
-            <ConfigCheck>
-              <App />
-            </ConfigCheck>
-          </ErrorBoundary>
+          <QueryClientProvider client={queryClient}>
+            <ErrorBoundary>
+              <ConfigCheck>
+                <App />
+              </ConfigCheck>
+            </ErrorBoundary>
+          </QueryClientProvider>
         </HelmetProvider>
       </StrictMode>
     );

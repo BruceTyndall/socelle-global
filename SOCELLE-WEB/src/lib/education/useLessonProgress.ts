@@ -1,8 +1,10 @@
 /**
  * useLessonProgress — track/update lesson progress
  * Data source: lesson_progress table (LIVE)
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { useAuth } from '../auth';
 
@@ -20,46 +22,25 @@ export interface LessonProgress {
 
 export function useLessonProgress(enrollmentId: string | undefined) {
   const { user } = useAuth();
-  const [progressMap, setProgressMap] = useState<Record<string, LessonProgress>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const queryKey = ['lesson_progress', enrollmentId, user?.id];
 
-  useEffect(() => {
-    if (!enrollmentId || !user?.id || !isSupabaseConfigured) {
-      setLoading(false);
-      return;
-    }
+  const { data: progressMap = {}, isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('lesson_progress')
+        .select('*')
+        .eq('enrollment_id', enrollmentId!)
+        .eq('user_id', user!.id);
 
-    let cancelled = false;
-
-    async function fetch() {
-      setLoading(true);
-      try {
-        const { data, error: fetchError } = await supabase
-          .from('lesson_progress')
-          .select('*')
-          .eq('enrollment_id', enrollmentId)
-          .eq('user_id', user!.id);
-
-        if (cancelled) return;
-
-        if (fetchError) {
-          setError(fetchError.message);
-        } else {
-          const map: Record<string, LessonProgress> = {};
-          (data as LessonProgress[])?.forEach(p => { map[p.lesson_id] = p; });
-          setProgressMap(map);
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load progress');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetch();
-    return () => { cancelled = true; };
-  }, [enrollmentId, user?.id]);
+      if (error) throw new Error(error.message);
+      const map: Record<string, LessonProgress> = {};
+      (data as LessonProgress[])?.forEach(p => { map[p.lesson_id] = p; });
+      return map;
+    },
+    enabled: isSupabaseConfigured && !!enrollmentId && !!user?.id,
+  });
 
   const markComplete = useCallback(async (lessonId: string) => {
     if (!enrollmentId || !user?.id || !isSupabaseConfigured) return;
@@ -67,18 +48,12 @@ export function useLessonProgress(enrollmentId: string | undefined) {
     const existing = progressMap[lessonId];
 
     if (existing) {
-      const { data } = await supabase
+      await supabase
         .from('lesson_progress')
         .update({ status: 'completed', progress_pct: 100, completed_at: new Date().toISOString() })
-        .eq('id', existing.id)
-        .select()
-        .single();
-
-      if (data) {
-        setProgressMap(prev => ({ ...prev, [lessonId]: data as LessonProgress }));
-      }
+        .eq('id', existing.id);
     } else {
-      const { data } = await supabase
+      await supabase
         .from('lesson_progress')
         .insert({
           user_id: user.id,
@@ -88,15 +63,11 @@ export function useLessonProgress(enrollmentId: string | undefined) {
           progress_pct: 100,
           time_spent_seconds: 0,
           completed_at: new Date().toISOString(),
-        })
-        .select()
-        .single();
-
-      if (data) {
-        setProgressMap(prev => ({ ...prev, [lessonId]: data as LessonProgress }));
-      }
+        });
     }
-  }, [enrollmentId, user?.id, progressMap]);
+
+    queryClient.invalidateQueries({ queryKey });
+  }, [enrollmentId, user?.id, progressMap, queryClient, queryKey]);
 
   const updateProgress = useCallback(async (lessonId: string, pct: number, position?: number) => {
     if (!enrollmentId || !user?.id || !isSupabaseConfigured) return;
@@ -110,18 +81,12 @@ export function useLessonProgress(enrollmentId: string | undefined) {
     };
 
     if (existing) {
-      const { data } = await supabase
+      await supabase
         .from('lesson_progress')
         .update(updates)
-        .eq('id', existing.id)
-        .select()
-        .single();
-
-      if (data) {
-        setProgressMap(prev => ({ ...prev, [lessonId]: data as LessonProgress }));
-      }
+        .eq('id', existing.id);
     } else {
-      const { data } = await supabase
+      await supabase
         .from('lesson_progress')
         .insert({
           user_id: user.id,
@@ -129,15 +94,13 @@ export function useLessonProgress(enrollmentId: string | undefined) {
           enrollment_id: enrollmentId,
           time_spent_seconds: 0,
           ...updates,
-        })
-        .select()
-        .single();
-
-      if (data) {
-        setProgressMap(prev => ({ ...prev, [lessonId]: data as LessonProgress }));
-      }
+        });
     }
-  }, [enrollmentId, user?.id, progressMap]);
+
+    queryClient.invalidateQueries({ queryKey });
+  }, [enrollmentId, user?.id, progressMap, queryClient, queryKey]);
+
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { progressMap, loading, error, markComplete, updateProgress };
 }

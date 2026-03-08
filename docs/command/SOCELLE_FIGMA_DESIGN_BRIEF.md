@@ -1,14 +1,17 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+> If this file conflicts with V1, the V1 file wins.
+
 # SOCELLE — PUBLIC PAGES FIGMA DESIGN BRIEF
 
 **Fashion Intelligence x Professional Beauty x Live Market Data**
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 — March 2026 |
+| Version | 1.1 — March 2026 |
 | Status | Approved for Design Scope |
 | Scope | 6 Public Pages + Design System |
 | Standard | Vogue Business x Bloomberg Terminal x Net-a-Porter |
-| Platform | Web (Desktop Primary, Mobile Responsive) |
+| Platform | Web (React+Vite primary, Desktop via Tauri, Mobile via Flutter) |
 
 ---
 
@@ -82,22 +85,26 @@ The visual language is clinical precision meeting editorial luxury. Think the re
 
 ## 03. Token System
 
-### Color Tokens — Pearl Mineral System
+### Color Tokens — Pearl Mineral V2 System (V1 Aligned)
 
-These are the ONLY colors permitted. No hardcoded hex values. No legacy Warm Cocoa palette. No one-off values.
+These are the ONLY colors permitted. No hardcoded hex values. No legacy Warm Cocoa palette. No one-off values. These tokens match V1 §F and SOCELLE_CANONICAL_DOCTRINE.md §3 exactly.
 
 | Token Class | CSS | Hex | Usage |
 |-------------|-----|-----|-------|
-| mn-dark | `bg-mn-dark` | `#141418` | Primary dark background |
-| graphite | `text-graphite` | `#1E252B` | Primary text on light |
-| mn-onDark | `text-mn-onDark` | `#F7F5F2` | Primary text on dark |
-| accent | `bg-accent` / `text-accent` | `#C8A96E` | Gold — brand emphasis only |
-| accent-hover | `hover:bg-accent-hover` | `#B8975E` | Accent hover state |
-| pearl | `bg-pearl` | `#FAF9F7` | Off-white page background |
+| background | `bg-background` / `--bg` | `#F6F3EF` | Page backgrounds (pearl mineral) |
+| graphite | `text-graphite` / `--ink` | `#141418` | Primary text — NOT `#1E252B` |
+| mn-onDark | `text-mn-onDark` / `--on-dark` | `#F7F5F2` | Primary text on dark |
+| accent | `bg-accent` / `text-accent` / `--accent` | `#6E879B` | Interactive, links, CTAs — NOT gold |
+| accent-hover | `hover:bg-accent-hover` / `--accent-hover` | `#5A7185` | Hover state |
+| accent-soft | `--accent-soft` | `#E8EDF1` | Soft panels |
+| mn-dark | `bg-mn-dark` / `--panel-dark` | `#1F2428` | Dark contrast panels (max 1 per page) |
+| signal-up | `--signal-up` | `#5F8A72` | Positive / growth |
+| signal-warn | `--signal-warn` | `#A97A4C` | Caution / watch |
+| signal-down | `--signal-down` | `#8E6464` | Negative / decline |
 | rgba dark glass | `bg-[rgba(20,20,24,0.35)]` | — | Glass panels on dark |
 | rgba light glass | `bg-[rgba(255,255,255,0.45)]` | — | Glass panels on light |
 
-**BANNED:** `#29120f` (Warm Cocoa dark), `#47201c` (Warm Cocoa mid), any `pro-` or `cocoa-` namespace tokens
+**BANNED:** `#29120f` (Warm Cocoa dark), `#47201c` (Warm Cocoa mid), `#1E252B` (old wrong graphite), `#C8A96E` (old gold accent — replaced by mineral accent `#6E879B`), `#FAF9F7` (old pearl — replaced by `#F6F3EF`), any `pro-*` or `cocoa-*` namespace tokens on public pages, Bootstrap/Material default blue, `font-serif` on public pages
 
 ### Typography Scale
 
@@ -424,4 +431,14 @@ A page design is NOT approved for handoff to code until all of these pass:
 
 This platform has the infrastructure of hundreds of live APIs, a vetted brand network, and a product that genuinely serves a premium market. The design must reflect that. Vague, generic, or lazy work will be returned. Every frame should look like it belongs on the cover of Vogue Business.
 
+### V1 Tech & Platform Notes
+
+- **Runtime:** React + Vite (SPA). Not Next.js. Figma designs target the React+Vite build.
+- **Tailwind:** v3.4 now. Tailwind 4 is deferred until legacy color systems are fully removed.
+- **Desktop:** Tauri wraps the same React+Vite app. Figma designs serve both web and desktop.
+- **Mobile:** Flutter app uses the same design tokens (Pearl Mineral V2) but renders natively.
+- **Anti-Shell Rule:** Every hub and page must be fully functional. No shells. See V1 §D.
+- **15 Hubs:** Intelligence, Jobs, Brands, Professionals, Admin, CRM, Education, Marketing, Sales, Commerce, Authoring Studio, Mobile App, Desktop App, Credit Economy, Affiliate/Wholesale Engine.
+
 *SOCELLE — March 2026*
+*Aligned to V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md*

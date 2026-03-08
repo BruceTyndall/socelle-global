@@ -1,6 +1,9 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # GLOBAL SITE MAP — SOCELLE PLATFORM
-**Generated:** March 5, 2026 — Phase 1 Full Audit  
-**Authority:** `/.claude/CLAUDE.md` + `docs/command/*`  
+**Generated:** March 5, 2026 — Phase 1 Full Audit
+**Updated:** March 8, 2026 — V1 Master Alignment
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 **Validated against:** `SITE_MAP.md`, `MODULE_BOUNDARIES.md`, `HARD_CODED_SURFACES.md`
 
 > [!IMPORTANT]
@@ -76,19 +79,36 @@ SOCELLE PLATFORM
 │   ├── PaywallGate + UpgradeGate (subscription gates)
 │   └── Stripe Edge Functions (checkout, webhook)
 │
-├── MARKETING SITE (apps/marketing-site/ — Next.js)
+├── MARKETING SITE (apps/marketing-site/ — Next.js, SEO-only, NOT primary runtime)
 │   ├── Layout
 │   ├── Intelligence Landing
 │   ├── Sitemap + Robots
 │
-└── MOBILE APP (Flutter)
-    ├── Auth + Onboarding + Paywall
-    ├── Dashboard + Feed + Discover
-    ├── Shop + Schedule + Studio
-    ├── Messages + Profile + Settings
-    ├── Revenue + Weekly Summary
-    ├── Support + Socelle AI
-    └── Affiliate + Gaps + Share + Shell
+├── MOBILE APP (Flutter — Phase 6, shares Supabase API contracts)
+│   ├── Auth + Onboarding + Paywall
+│   ├── Dashboard + Feed + Discover
+│   ├── Shop + Schedule + Studio
+│   ├── Messages + Profile + Settings
+│   ├── Revenue + Weekly Summary
+│   ├── Support + Socelle AI
+│   └── Affiliate + Gaps + Share + Shell
+│
+├── DESKTOP APP (Tauri — Phase 6, wraps same React+Vite build)
+│   └── (Not yet created — planned hub)
+│
+├── CMS / AUTHORING STUDIO (Phase 5)
+│   ├── Blog CRUD + Stories/Briefs
+│   ├── Education Content Authoring
+│   └── SEO Content Management
+│
+├── CREDIT ECONOMY (Phase 4)
+│   ├── Credit Metering + Deduction
+│   └── Usage Dashboard
+│
+└── AFFILIATE / WHOLESALE ENGINE (Phase 4)
+    ├── FTC Badge System
+    ├── Tracked Redirects
+    └── Commission Reporting
 ```
 
 ---
@@ -478,5 +498,62 @@ External commerce channels, marketplaces, and portals that SOCELLE may integrate
 
 ---
 
-**DOCUMENT STATUS: LOCKED — Doc Gate Reference**  
+## V1 HUB COMPLETENESS (15 Hubs — Anti-Shell Rule per V1 §D + §G)
+
+Every hub must satisfy the anti-shell rule: Create, Library, Detail, Edit+Delete, Permissions, Intelligence input, Proof/metrics, Export, Error/empty/loading, Observability.
+
+| # | Hub | Current Route Coverage | Anti-Shell Status |
+|---|---|---|---|
+| 1 | Intelligence | `/intelligence`, `/portal/intelligence`, `/brand/intelligence`, `/admin/intelligence` | Partial DEMO — needs live wire |
+| 2 | Jobs | `/jobs`, `/jobs/:slug`, `/admin/jobs` | Routes exist |
+| 3 | Brands | `/brands`, `/brands/:slug`, `/brand/*`, `/admin/brands/*` | Most LIVE |
+| 4 | Professionals | `/professionals` | DEMO — needs anti-shell work |
+| 5 | Admin | `/admin/*` (37+ routes) | Mostly LIVE |
+| 6 | CRM | `/admin/crm` | Route exists — needs full build |
+| 7 | Education | `/education`, `/protocols`, `/protocols/:slug` | LIVE |
+| 8 | Marketing | `/portal/calendar`, `/brand/campaigns`, `/admin/calendar` | Partial — needs hub build |
+| 9 | Sales | `/admin/sales` | Route exists — needs full build |
+| 10 | Commerce | Within portals (orders, products, cart) | Module — not top-level nav |
+| 11 | Authoring Studio | NOT YET CREATED | Phase 5 — CMS + blog + briefs |
+| 12 | Mobile App | Flutter app (21 features) | Phase 6 |
+| 13 | Desktop App | NOT YET CREATED | Phase 6 — Tauri wrapper |
+| 14 | Credit Economy | NOT YET CREATED | Phase 4 |
+| 15 | Affiliate/Wholesale Engine | NOT YET CREATED | Phase 4 |
+
+## V1 MULTI-PLATFORM STRATEGY (V1 §H)
+
+| Platform | Tech | Status | Phase |
+|---|---|---|---|
+| Web | React + Vite (SPA) — **primary runtime** | Active | Current |
+| Desktop | Tauri shell wrapping same React+Vite build | Not started | Phase 6 |
+| Mobile | Flutter using same Supabase API contracts | Active (21 features) | Phase 6 |
+| Marketing (SEO) | Next.js — **NOT the primary runtime** | 4 routes | Optional |
+
+**Shared layer:** Supabase schema/RLS/edge functions, `intelligence-core` TS package, Pearl Mineral V2 tokens. Goal: 96%+ reuse of logic and contracts.
+
+## V1 TECH BASELINE (V1 §E — Surgical Upgrade, ~1 Day)
+
+| Package | Current | Target | Effort |
+|---|---|---|---|
+| React | 18.3 | 19.x | ~2 hours |
+| Vite | 5.4 | 6.x | ~1 hour |
+| TypeScript | 5.5 strict | strict + `noExplicitAny` | ~3-5 hours |
+| TanStack Query | not yet | v5 | Phase 3 |
+| Tailwind | 3.4 | **Stay on 3.4** — Tailwind 4 deferred | — |
+| Sentry | not yet | Web + edge | Phase 3 |
+
+## V1 EXECUTION PHASES (V1 §I)
+
+1. Phase 0 — Design + Required Docs
+2. Phase 1 — Skills Installation (51+ skills)
+3. Phase 2 — Full-Platform Audit
+4. Phase 3 — Tech Upgrades (React 19, Vite 6, TS strict, TanStack, Sentry)
+5. Phase 4 — Intelligence Cloud Build (10 modules + 7 engines + 6 AI tools)
+6. Phase 5 — All Hubs Functional (incl. CMS, Authoring Studio)
+7. Phase 6 — Multi-Platform (Tauri desktop, Flutter mobile)
+8. Phase 7 — Launch
+
+---
+
+**DOCUMENT STATUS: LOCKED — Doc Gate Reference**
 This document is the canonical "no page left behind" reference per `/.claude/CLAUDE.md` §2 + `docs/command/SOCELLE_RELEASE_GATES.md` §9 FAIL 5. All route/screen audits must validate against this file. Modifications require change control per `/.claude/CLAUDE.md` §5.

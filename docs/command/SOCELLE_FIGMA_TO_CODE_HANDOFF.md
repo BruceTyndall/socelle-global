@@ -1,8 +1,11 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+> If this file conflicts with V1, the V1 file wins.
+
 # SOCELLE FIGMA-TO-CODE HANDOFF
-**Version:** 1.0  
-**Effective:** March 5, 2026  
-**Authority:** SOCELLE Command Center — D1 Design System Architect  
-**Scope:** All design-to-code transitions across web (Vite/React/Tailwind), mobile (Flutter), and studio mini-apps
+**Version:** 1.1
+**Effective:** March 8, 2026
+**Authority:** SOCELLE Command Center — D1 Design System Architect
+**Scope:** All design-to-code transitions across web (React+Vite+Tailwind 3.4), desktop (Tauri wrapping same React+Vite build), mobile (Flutter), and all 15 hubs
 
 ---
 
@@ -215,12 +218,22 @@ Run this checklist before every PR that touches design system tokens or componen
 
 ### Drift Prevention Protocol
 
-1. **Figma is source of truth** for visual design decisions (color, spacing, layout).
-2. **Code is source of truth** for interaction behavior (animations, transitions, state management).
-3. **When a discrepancy is found:** Update the side that drifted, not the one that's correct. Document which side was wrong.
-4. **Token changes require both:** A Figma update AND a code update in the same PR.
-5. **Monthly audit:** D1 agent runs full parity check first Wednesday of each month.
+1. **V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md is the ultimate authority** for token values (colors, fonts). If Figma or code contradicts V1, V1 wins and both Figma and code must be updated.
+2. **Figma is source of truth** for visual design decisions (layout, spacing, composition) within the bounds of V1 tokens.
+3. **Code is source of truth** for interaction behavior (animations, transitions, state management).
+4. **When a discrepancy is found:** Update the side that drifted, not the one that's correct. Document which side was wrong.
+5. **Token changes require both:** A Figma update AND a code update in the same PR.
+6. **Monthly audit:** D1 agent runs full parity check first Wednesday of each month.
+
+### V1 Platform Notes
+
+- **Web runtime:** React + Vite (SPA with TanStack/React Router). Not Next.js.
+- **Tailwind:** v3.4 now. Tailwind 4 deferred until legacy color systems removed.
+- **Desktop:** Tauri wraps the same React+Vite build. Same tokens, same components.
+- **Mobile:** Flutter uses the same design tokens via `SocelleColors.*` and `SocelleTypography.*`.
+- **Anti-Shell Rule:** Every hub must be fully functional (V1 §D). No shells shipped to users.
 
 ---
 
-*SOCELLE FIGMA-TO-CODE HANDOFF v1.0 — March 5, 2026 — Command Center Authority*
+*SOCELLE FIGMA-TO-CODE HANDOFF v1.1 — March 8, 2026 — Command Center Authority*
+*Aligned to V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md*

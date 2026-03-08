@@ -1,8 +1,11 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+> If this file conflicts with V1, the V1 file wins.
+
 # SOCELLE ENTITLEMENTS & PACKAGING
-**Version:** 1.0  
-**Effective:** March 5, 2026  
-**Authority:** SOCELLE Command Center  
-**Scope:** All mini-apps, all roles, all subscription tiers
+**Version:** 1.1
+**Effective:** March 8, 2026
+**Authority:** SOCELLE Command Center
+**Scope:** All hubs, all roles, all subscription tiers
 
 ---
 
@@ -105,9 +108,11 @@
 
 ---
 
-## 4. MINI-APP UNLOCK MAP
+## 4. HUB UNLOCK MAP
 
-### What Each Mini-App Unlocks by Tier
+### What Each Hub Unlocks by Tier
+
+> **Note:** V1 master defines a credit-based system (Free = 0 credits, Starter = 500, Pro = 2,500, Enterprise = 10,000). The detailed studio add-on pricing in this file remains valid for per-hub upsells. Credit costs per AI action are defined in the credit economy and enforced at the edge function layer.
 
 | Mini-App | Free | Professional / Growth | Business / Scale | Enterprise |
 |---|---|---|---|---|
@@ -262,4 +267,24 @@ function useEntitlement(feature: string): {
 
 ---
 
-*SOCELLE ENTITLEMENTS & PACKAGING v1.0 — March 5, 2026 — Command Center Authority*
+### Anti-Shell Requirement
+
+Every hub listed above must satisfy the V1 anti-shell rule: Create action, Library view, Detail view, Edit + Delete, Permissions (RLS + TierGuard), Intelligence input, Proof/metrics, Export (CSV minimum; PDF for Pro+), Error/empty/loading states, and Observability (Sentry/logs). If a hub is not yet functional, it must not be rendered to users. See V1 §D for the complete checklist.
+
+### Credit Economy (V1 Alignment)
+
+V1 defines a credit-based system alongside subscription tiers:
+
+| Tier | Credits/mo | AI Tools |
+|------|-----------|----------|
+| Free | 0 | Demo only |
+| Starter ($49) | 500 | Explain Signal + Search |
+| Pro ($149) | 2,500 | All 6 tools + briefs + plans |
+| Enterprise ($499) | 10,000 | Unlimited + R&D Scout + MoCRA |
+
+Credits deduct on every AI action. The credit economy hub and affiliate engine must both be wired before launch (V1 §J).
+
+---
+
+*SOCELLE ENTITLEMENTS & PACKAGING v1.1 — March 8, 2026 — Command Center Authority*
+*Aligned to V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md*

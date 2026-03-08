@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── useMediaLibrary — WO-OVERHAUL-03: Media library data hook ─────────
 // Fetches assets from media_library table with optional type/search filters.
 // Falls back gracefully when Supabase is unavailable.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface MediaAsset {
   id: string;
@@ -29,63 +30,28 @@ interface UseMediaLibraryReturn {
 }
 
 export function useMediaLibrary(options?: UseMediaLibraryOptions): UseMediaLibraryReturn {
-  const [assets, setAssets] = useState<MediaAsset[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const type = options?.type;
   const search = options?.search;
 
-  useEffect(() => {
-    let cancelled = false;
+  const { data: assets = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['media_library', { type, search }],
+    queryFn: async () => {
+      let query = supabase
+        .from('media_library')
+        .select('id, file_name, file_url, file_type, alt_text, tags, uploaded_by, created_at, updated_at')
+        .order('created_at', { ascending: false });
 
-    async function fetchAssets() {
-      setLoading(true);
-      setError(null);
+      if (type) query = query.eq('file_type', type);
+      if (search) query = query.ilike('file_name', `%${search}%`);
 
-      if (!isSupabaseConfigured) {
-        setAssets([]);
-        setLoading(false);
-        return;
-      }
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data ?? []) as MediaAsset[];
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-      try {
-        let query = supabase
-          .from('media_library')
-          .select('id, file_name, file_url, file_type, alt_text, tags, uploaded_by, created_at, updated_at')
-          .order('created_at', { ascending: false });
-
-        if (type) {
-          query = query.eq('file_type', type);
-        }
-
-        if (search) {
-          query = query.ilike('file_name', `%${search}%`);
-        }
-
-        const { data, error: queryError } = await query;
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setAssets([]);
-          if (queryError) setError(queryError.message);
-        } else {
-          setAssets(data as MediaAsset[]);
-        }
-      } catch {
-        if (!cancelled) {
-          setAssets([]);
-          setError('Failed to fetch media assets');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchAssets();
-    return () => { cancelled = true; };
-  }, [type, search]);
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { assets, loading, error };
 }

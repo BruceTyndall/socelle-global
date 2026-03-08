@@ -1,7 +1,10 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # MONOREPO PORT VERIFICATION — SOCELLE GLOBAL
 
-**Authority:** `/.claude/CLAUDE.md`
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 **Date:** March 5, 2026
+**Updated:** March 8, 2026 — V1 Master Alignment
 **Status:** ✅ PORT VERIFIED — BUILD + DEPLOY + ROUTES PASS
 
 > STOP CONDITION MET: This document confirms the port is complete and deployable.
@@ -165,4 +168,25 @@ Routes verified present in `SOCELLE-WEB/src/App.tsx`:
 
 ---
 
-*SOCELLE GLOBAL — MONOREPO PORT VERIFICATION v1.0 — March 5, 2026*
+---
+
+## V1 ALIGNMENT NOTES (March 8, 2026)
+
+This port verification was conducted on the current stack (React 18.3 + Vite 5.4 + TS 5.5 + Tailwind 3.4). Per V1 §E, the following surgical upgrades are planned for Phase 3 (~1 working day total, zero rewrites):
+
+- React 18.3 → 19.x (~2 hours)
+- Vite 5.4 → 6.x (~1 hour)
+- TypeScript strict + `noExplicitAny` (~3-5 hours)
+- TanStack Query v5 added for all data fetching
+- Sentry wired (web + edge)
+- Tailwind stays on 3.4 (Tailwind 4 deferred)
+
+**Primary runtime confirmed:** React + Vite (SPA). The Next.js marketing site (`apps/marketing-site/`) is an SEO-only surface, NOT the primary runtime.
+
+**Multi-platform plan (Phase 6):**
+- Desktop: Tauri shell wrapping same React+Vite build
+- Mobile: Flutter app using same Supabase API contracts
+
+---
+
+*SOCELLE GLOBAL — MONOREPO PORT VERIFICATION v2.0 — March 8, 2026 (V1 Aligned)*

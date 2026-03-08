@@ -1,8 +1,9 @@
 /**
  * useCertificates — list user certificates
  * Data source: certificates table (LIVE)
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { useAuth } from '../auth';
 
@@ -21,52 +22,24 @@ export interface Certificate {
 
 export function useCertificates() {
   const { user } = useAuth();
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
 
-  useEffect(() => {
-    if (!user?.id || !isSupabaseConfigured) {
-      setCertificates([]);
-      setLoading(false);
-      setIsLive(false);
-      return;
-    }
+  const { data: certificates = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['certificates', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('certificates')
+        .select('*')
+        .eq('user_id', user!.id)
+        .order('issued_at', { ascending: false });
 
-    let cancelled = false;
+      if (error) throw new Error(error.message);
+      return (data as Certificate[]) ?? [];
+    },
+    enabled: isSupabaseConfigured && !!user?.id,
+  });
 
-    async function fetch() {
-      setLoading(true);
-      try {
-        const { data, error: fetchError } = await supabase
-          .from('certificates')
-          .select('*')
-          .eq('user_id', user!.id)
-          .order('issued_at', { ascending: false });
-
-        if (cancelled) return;
-
-        if (fetchError) {
-          setError(fetchError.message);
-          setIsLive(false);
-        } else {
-          setCertificates((data as Certificate[]) || []);
-          setIsLive(true);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load certificates');
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetch();
-    return () => { cancelled = true; };
-  }, [user?.id]);
+  const isLive = certificates.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { certificates, loading, error, isLive };
 }

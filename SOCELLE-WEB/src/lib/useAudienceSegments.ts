@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── WO-OVERHAUL-15: Marketing Platform — Audience Segments hook ──────
 // Table: audience_segments
 // isLive flag drives DEMO badge.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface SegmentFilter {
   field: string;
@@ -32,70 +33,37 @@ export interface UseAudienceSegmentsReturn {
 }
 
 export function useAudienceSegments(): UseAudienceSegmentsReturn {
-  const [segments, setSegments] = useState<AudienceSegment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
+  const queryClient = useQueryClient();
 
-  const refetch = useCallback(() => setTick((t) => t + 1), []);
+  const { data: segments = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['audience_segments'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('audience_segments')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as AudienceSegment[];
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
+  const createMut = useMutation({
+    mutationFn: async (segment: Omit<AudienceSegment, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase.from('audience_segments').insert(segment).select().single();
+      if (error) throw new Error(error.message);
+      return data as AudienceSegment;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['audience_segments'] }); },
+  });
 
-    async function fetchSegments() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured) {
-        setSegments([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: queryError } = await supabase
-          .from('audience_segments')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setSegments([]);
-          setIsLive(false);
-          if (queryError) setError(queryError.message);
-        } else {
-          setSegments(data as AudienceSegment[]);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setSegments([]);
-          setIsLive(false);
-          setError('Failed to fetch audience segments');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchSegments();
-    return () => { cancelled = true; };
-  }, [tick]);
-
-  const createSegment = useCallback(async (segment: Omit<AudienceSegment, 'id' | 'created_at' | 'updated_at'>): Promise<AudienceSegment | null> => {
+  const createSegment = async (segment: Omit<AudienceSegment, 'id' | 'created_at' | 'updated_at'>): Promise<AudienceSegment | null> => {
     if (!isSupabaseConfigured) return null;
-    const { data, error: insertError } = await supabase
-      .from('audience_segments')
-      .insert(segment)
-      .select()
-      .single();
-    if (insertError) { setError(insertError.message); return null; }
-    refetch();
-    return data as AudienceSegment;
-  }, [refetch]);
+    try { return await createMut.mutateAsync(segment); } catch { return null; }
+  };
+
+  const isLive = segments.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { segments, isLive, loading, error, createSegment, refetch };
 }

@@ -1,5 +1,8 @@
 // useShopCart — cart CRUD, persists to carts table for auth users, localStorage session_id for guests
+// Migrated to TanStack Query v5 (V2-TECH-04).
+// NOTE: Retains useEffect for cart initialization (ensureCart is a side-effect with DB writes).
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import { useAuth } from '../auth';
 import type { CartItem, CartSummary, Product, ProductVariant } from './types';
@@ -17,9 +20,8 @@ function getSessionId(): string {
 
 export function useShopCart() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [cartId, setCartId] = useState<string | null>(null);
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Ensure active cart exists
@@ -28,7 +30,6 @@ export function useShopCart() {
       const userId = user?.id ?? null;
       const sessionId = userId ? null : getSessionId();
 
-      // Try to find existing active cart
       let query = supabase.from('carts').select('id').eq('status', 'active');
       if (userId) query = query.eq('user_id', userId);
       else if (sessionId) query = query.eq('session_id', sessionId);
@@ -39,7 +40,6 @@ export function useShopCart() {
         return existing.id;
       }
 
-      // Create new cart
       const { data: newCart, error: cErr } = await supabase
         .from('carts')
         .insert({ user_id: userId, session_id: sessionId, status: 'active' as const })
@@ -53,16 +53,23 @@ export function useShopCart() {
     }
   }, [user?.id]);
 
-  // Load cart items
-  const loadItems = useCallback(async (cid?: string) => {
-    const id = cid ?? cartId;
-    if (!id) { setItems([]); setLoading(false); return; }
-    setLoading(true);
-    try {
+  // Initialize cart on mount
+  useEffect(() => {
+    (async () => {
+      const cid = await ensureCart();
+      if (!cid) setCartId(null);
+    })();
+  }, [ensureCart]);
+
+  const queryKey = ['shop_cart_items', cartId];
+
+  const { data: items = [], isLoading: loading } = useQuery({
+    queryKey,
+    queryFn: async () => {
       const { data } = await supabase
         .from('cart_items')
         .select('*')
-        .eq('cart_id', id)
+        .eq('cart_id', cartId!)
         .order('created_at');
 
       const cartItems = (data ?? []) as CartItem[];
@@ -92,28 +99,17 @@ export function useShopCart() {
         });
       }
 
-      setItems(cartItems);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load cart');
-    } finally {
-      setLoading(false);
-    }
-  }, [cartId]);
+      return cartItems;
+    },
+    enabled: !!cartId,
+  });
 
-  // Initialize
-  useEffect(() => {
-    (async () => {
-      const cid = await ensureCart();
-      if (cid) await loadItems(cid);
-      else setLoading(false);
-    })();
-  }, [ensureCart, loadItems]);
+  const invalidate = useCallback(() => queryClient.invalidateQueries({ queryKey }), [queryClient, queryKey]);
 
   const addItem = useCallback(async (productId: string, variantId: string | null, quantity: number, unitPriceCents: number) => {
     const cid = cartId ?? await ensureCart();
     if (!cid) return;
 
-    // Check if item already in cart
     const existing = items.find(i => i.product_id === productId && i.variant_id === variantId);
     if (existing) {
       await supabase
@@ -123,33 +119,27 @@ export function useShopCart() {
     } else {
       await supabase
         .from('cart_items')
-        .insert({
-          cart_id: cid,
-          product_id: productId,
-          variant_id: variantId,
-          quantity,
-          unit_price_cents: unitPriceCents,
-        });
+        .insert({ cart_id: cid, product_id: productId, variant_id: variantId, quantity, unit_price_cents: unitPriceCents });
     }
-    await loadItems(cid);
-  }, [cartId, items, ensureCart, loadItems]);
+    invalidate();
+  }, [cartId, items, ensureCart, invalidate]);
 
   const updateQuantity = useCallback(async (itemId: string, quantity: number) => {
     if (quantity < 1) return removeItem(itemId);
     await supabase.from('cart_items').update({ quantity }).eq('id', itemId);
-    await loadItems();
-  }, [loadItems]);
+    invalidate();
+  }, [invalidate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const removeItem = useCallback(async (itemId: string) => {
     await supabase.from('cart_items').delete().eq('id', itemId);
-    await loadItems();
-  }, [loadItems]);
+    invalidate();
+  }, [invalidate]);
 
   const clearCart = useCallback(async () => {
     if (!cartId) return;
     await supabase.from('cart_items').delete().eq('cart_id', cartId);
-    setItems([]);
-  }, [cartId]);
+    invalidate();
+  }, [cartId, invalidate]);
 
   const summary: CartSummary = useMemo(() => {
     const subtotal = items.reduce((s, i) => s + i.unit_price_cents * i.quantity, 0);
@@ -166,6 +156,6 @@ export function useShopCart() {
   return {
     cartId, items, loading, error, summary,
     addItem, updateQuantity, removeItem, clearCart,
-    refetch: loadItems,
+    refetch: invalidate,
   };
 }

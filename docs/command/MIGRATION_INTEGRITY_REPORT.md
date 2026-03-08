@@ -1,7 +1,9 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # MIGRATION INTEGRITY REPORT — SOCELLE GLOBAL
 **Generated:** March 6, 2026 — Post-Restore Re-Verification (v2)
 **Agent:** Migration Verification + Governance Reconciliation
-**Authority:** `/.claude/CLAUDE.md` §B (Doc Gate), `docs/command/SOCELLE_RELEASE_GATES.md`
+**Authority:** `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (master), `/.claude/CLAUDE.md` §B (Doc Gate), `docs/command/SOCELLE_RELEASE_GATES.md`
 
 ---
 
@@ -174,6 +176,25 @@ Rebuilt `SOCELLE-WEB/dist/assets/*` with new content hashes. Replace the 129 mis
 | Phase B Eligible | **YES** — upon owner confirmation of conditional PASS |
 
 Phase B (AGENT_SCOPE_REGISTRY.md update) will proceed only after owner confirms this report as accepted PASS.
+
+---
+
+---
+
+## 10. V1 ALIGNMENT NOTES (2026-03-08)
+
+This report documents historical migration integrity only. It does not prescribe tech direction.
+
+For current tech baseline and platform strategy, refer to `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`:
+
+- **Runtime:** React + Vite (SPA). Next.js is NOT the primary runtime.
+- **Tech upgrades:** React 18.3 → 19.x, Vite 5.4 → 6.x, TS strict flip — surgical, ~1 day total. Not multi-week rewrites.
+- **Tailwind:** Stay on 3.4 for V1. Tailwind 4 deferred.
+- **Multi-platform:** React+Vite web (primary) → Tauri desktop → Flutter mobile.
+- **Hubs:** 15 hubs (Intelligence, Jobs, Brands, Professionals, Admin, CRM, Education, Marketing, Sales, Commerce, Authoring Studio, Mobile App, Desktop App, Credit Economy, Affiliate/Wholesale Engine). All must pass the anti-shell rule per V1 §D.
+- **Execution phases:** 0 (Docs) → 1 (Skills) → 2 (Audit) → 3 (Tech Upgrades) → 4 (Intelligence Cloud) → 5 (All Hubs) → 6 (Multi-Platform) → 7 (Launch).
+
+Future migration integrity checks should verify that `database.types.ts` matches all migrations (V1 §J launch gate).
 
 ---
 

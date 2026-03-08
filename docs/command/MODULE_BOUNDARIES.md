@@ -1,6 +1,8 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # MODULE BOUNDARIES — SOCELLE GLOBAL
-**Generated:** March 5, 2026 — Phase 1 Full Audit  
-**Authority:** `docs/command/SOCELLE_CANONICAL_DOCTRINE.md` §1
+**Generated:** March 5, 2026 — Phase 1 Full Audit
+**Authority:** `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (master), `docs/command/SOCELLE_CANONICAL_DOCTRINE.md` §1
 
 ---
 
@@ -189,14 +191,63 @@ These exist in the repo but are **NOT authoritative** per Doc Gate rules.
 
 ## CROSS-BOUNDARY RULES
 
-Per `/.claude/CLAUDE.md` §3:
+Per `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` §L (Agent Roster) and §D (Anti-Shell Rule):
 
-1. **Web Agent** owns `SOCELLE-WEB/` and `apps/`
-2. **Mobile Agent** owns `SOCELLE-MOBILE-main/`
-3. **Backend Agent** owns `supabase/` — only agent that may create migrations
-4. **Design tokens** changes require coordinated updates across Web Tailwind + Mobile Flutter theme
-5. **Shared types** live in `lib/types.ts` (web) and must mirror mobile models
-6. No app-level doc may override `/docs/command/` governance
+### Agent Ownership (V1 §L)
+
+| Agent Role | Owns |
+|---|---|
+| **Command Agent** | Sequencing, governance, gates, `/docs/command/*` |
+| **Platform Engineer** | `SOCELLE-WEB/` build system, tech upgrades, CI, observability |
+| **Intelligence Architect** | Intelligence Hub, AI tools, feed pipeline (`src/lib/intelligence/`, `src/lib/ai/`, AI edge functions) |
+| **Data Architect** | `supabase/` — only role that may create migrations; schema, types, MVs, first-party events |
+| **Design Guardian** | Design tokens (Tailwind `theme.extend`), figma-to-code, responsiveness |
+| **Security Agent** | RLS, secrets, AI guardrails, legal, FTC |
+| **QA Agent** | Tests, smoke, visual regression, LIVE/DEMO enforcement |
+| **Copy Agent** | Voice, banned terms, paywall/onboarding/empties, launch comms |
+| **Monetization Agent** | Entitlements, credits, pricing, onboarding |
+| **Multi-Platform Agent** | `apps/socelle-mobile/`, Tauri desktop wrapper, shared API contracts |
+| **CRM/Education/Marketing/Sales/Ecommerce/Authoring Agents** | Each owns their respective hub |
+
+### Boundary Rules
+
+1. **Primary runtime:** React + Vite (SPA). Next.js is NOT the main runtime (V1 §E).
+2. **Tech upgrades are surgical:** React 18.3 → 19.x (~2h), Vite 5.4 → 6.x (~1h), TS strict (~3-5h). Total ~1 day, zero rewrites (V1 §E).
+3. **Tailwind 3.4 now.** Tailwind 4 deferred until legacy color systems removed (V1 §F).
+4. **Multi-platform strategy (V1 §H):**
+   - Web: React + Vite (source implementation).
+   - Desktop: Tauri wraps the same React+Vite build.
+   - Mobile: Flutter with shared Supabase API contracts (no TS FFI into Dart).
+5. **Design tokens** changes require coordinated updates across Web Tailwind + Mobile Flutter theme.
+6. **Shared types** live in `lib/types.ts` (web) and must mirror mobile models.
+7. No app-level doc may override `/docs/command/` governance.
+8. Each hub has exactly one primary owner agent. No orphan hubs (V1 §L).
+
+### 15 Hubs — All Must Pass Anti-Shell Rule (V1 §D, §G)
+
+Every hub must have: Create, Library, Detail, Edit+Delete, Permissions (RLS + TierGuard), Intelligence input, Proof/metrics, Export (CSV min), Error/empty/loading states, Observability (Sentry).
+
+| Hub | Owner Agent | Primary Module Path |
+|---|---|---|
+| Intelligence | Intelligence Architect | `src/lib/intelligence/`, `src/pages/intelligence/` |
+| Jobs | Platform Engineer | `socelle-jobs-pipeline/`, `src/pages/jobs/` |
+| Brands | Ecommerce Agent | `src/pages/brand/` |
+| Professionals | Platform Engineer | `src/pages/public/Professionals.tsx` |
+| Admin | Platform Engineer | `src/pages/admin/` |
+| CRM | CRM Agent | TBD (Phase 5) |
+| Education | Education Agent | `src/lib/education/`, `src/pages/education/` |
+| Marketing | Marketing Agent | TBD (Phase 5) |
+| Sales | Sales Agent | TBD (Phase 5) |
+| Commerce | Ecommerce Agent | `src/lib/useCart.ts`, commerce edge functions |
+| Authoring Studio | Authoring Agent | TBD (Phase 5) |
+| Mobile App | Multi-Platform Agent | `apps/socelle-mobile/` |
+| Desktop App | Multi-Platform Agent | Tauri wrapper (Phase 6) |
+| Credit Economy | Monetization Agent | Credit system, entitlements |
+| Affiliate/Wholesale Engine | Monetization Agent | Affiliate links, FTC badges |
+
+### Execution Phase Order (V1 §I)
+
+0. Design + Required Docs → 1. Skills Installation → 2. Full-Platform Audit → 3. Tech Upgrades (Baseline) → 4. Intelligence Cloud Build → 5. All Hubs Functional (incl. CMS) → 6. Multi-Platform → 7. Launch.
 
 ---
 

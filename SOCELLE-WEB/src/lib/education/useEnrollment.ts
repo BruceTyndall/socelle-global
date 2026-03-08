@@ -1,8 +1,9 @@
 /**
  * useEnrollment — enroll, get enrollment status, progress
  * Data source: course_enrollments table (LIVE)
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { useAuth } from '../auth';
 
@@ -19,77 +20,58 @@ export interface Enrollment {
 
 export function useEnrollment(courseId: string | undefined) {
   const { user } = useAuth();
-  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['enrollment', courseId, user?.id];
 
-  const fetchEnrollment = useCallback(async () => {
-    if (!courseId || !user?.id || !isSupabaseConfigured) {
-      setEnrollment(null);
-      setLoading(false);
-      setIsLive(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const { data, error: fetchError } = await supabase
+  const { data: enrollment = null, isLoading: loading, error: queryError, refetch: refresh } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('course_enrollments')
         .select('*')
-        .eq('course_id', courseId)
-        .eq('user_id', user.id)
+        .eq('course_id', courseId!)
+        .eq('user_id', user!.id)
         .maybeSingle();
 
-      if (fetchError) {
-        setError(fetchError.message);
-        setIsLive(false);
-      } else {
-        setEnrollment(data as Enrollment | null);
-        setIsLive(true);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check enrollment');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [courseId, user?.id]);
+      if (error) throw new Error(error.message);
+      return (data as Enrollment | null) ?? null;
+    },
+    enabled: isSupabaseConfigured && !!courseId && !!user?.id,
+  });
 
-  useEffect(() => {
-    fetchEnrollment();
-  }, [fetchEnrollment]);
-
-  const enroll = useCallback(async () => {
-    if (!courseId || !user?.id || !isSupabaseConfigured) return null;
-
-    try {
-      const { data, error: insertError } = await supabase
+  const enrollMut = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase
         .from('course_enrollments')
         .insert({
-          course_id: courseId,
-          user_id: user.id,
+          course_id: courseId!,
+          user_id: user!.id,
           status: 'active',
           progress_pct: 0,
         })
         .select()
         .single();
-
-      if (insertError) {
-        setError(insertError.message);
-        return null;
-      }
-
-      setEnrollment(data as Enrollment);
+      if (error) throw new Error(error.message);
       return data as Enrollment;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to enroll');
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
+
+  const enroll = async () => {
+    if (!courseId || !user?.id || !isSupabaseConfigured) return null;
+    try {
+      return await enrollMut.mutateAsync();
+    } catch {
       return null;
     }
-  }, [courseId, user?.id]);
+  };
 
+  const isLive = !loading && !queryError;
   const isEnrolled = !!enrollment;
   const isCompleted = enrollment?.status === 'completed';
+  const error = queryError instanceof Error ? queryError.message
+    : enrollMut.error instanceof Error ? enrollMut.error.message
+    : null;
 
-  return { enrollment, isEnrolled, isCompleted, loading, error, isLive, enroll, refresh: fetchEnrollment };
+  return { enrollment, isEnrolled, isCompleted, loading, error, isLive, enroll, refresh };
 }

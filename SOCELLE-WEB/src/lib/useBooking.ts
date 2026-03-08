@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── Booking Hook: services, staff, schedules, appointments ──────────────
 // Data source: booking_services, booking_staff, booking_schedules, appointments (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface BookingService {
   id: string;
@@ -85,7 +86,6 @@ export interface Appointment {
   no_show: boolean;
   created_at: string;
   updated_at: string;
-  // joined fields
   service_name?: string;
   staff_first_name?: string;
   staff_last_name?: string;
@@ -141,483 +141,421 @@ export interface NewStaff {
   is_active?: boolean;
 }
 
+// ── Helper ──────────────────────────────────────────────────────────────
+
+function mapAppointmentRow(row: Record<string, unknown>): Appointment {
+  const svc = row.booking_services as { name?: string } | null;
+  const st = row.booking_staff as { first_name?: string; last_name?: string } | null;
+  return {
+    ...(row as unknown as Appointment),
+    service_name: svc?.name,
+    staff_first_name: st?.first_name,
+    staff_last_name: st?.last_name,
+  };
+}
+
 // ── Services ────────────────────────────────────────────────────────────
 
 export function useBookingServices(businessId?: string | null) {
-  const [services, setServices] = useState<BookingService[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['booking_services', businessId];
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: services = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('booking_services')
         .select('*')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('name');
-      if (dbErr) throw dbErr;
-      setServices(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load services');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as BookingService[];
+    },
+    enabled: !!businessId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (svc: NewService) => {
+      const { data, error } = await supabase.from('booking_services').insert(svc).select().single();
+      if (error) throw new Error(error.message);
+      return data as BookingService;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createService = useCallback(async (svc: NewService) => {
-    const { data, error: dbErr } = await supabase
-      .from('booking_services')
-      .insert(svc)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as BookingService;
-  }, [load]);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<NewService> }) => {
+      const { error } = await supabase.from('booking_services').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateService = useCallback(async (id: string, updates: Partial<NewService>) => {
-    const { error: dbErr } = await supabase
-      .from('booking_services')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('booking_services').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteService = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('booking_services')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createService = async (svc: NewService) => createMut.mutateAsync(svc);
+  const updateService = async (id: string, updates: Partial<NewService>) => updateMut.mutateAsync({ id, updates });
+  const deleteService = async (id: string) => deleteMut.mutateAsync(id);
+  const isLive = services.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { services, loading, error, isLive, reload: load, createService, updateService, deleteService };
+  return { services, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), createService, updateService, deleteService };
 }
 
 // ── Service Addons ──────────────────────────────────────────────────────
 
 export function useServiceAddons(serviceId?: string) {
-  const [addons, setAddons] = useState<BookingServiceAddon[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['booking_service_addons', serviceId];
 
-  const load = useCallback(async () => {
-    if (!serviceId) return;
-    setLoading(true);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: addons = [], isLoading: loading } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('booking_service_addons')
         .select('*')
-        .eq('service_id', serviceId)
+        .eq('service_id', serviceId!)
         .order('name');
-      if (dbErr) throw dbErr;
-      setAddons(data ?? []);
-      setIsLive(true);
-    } catch {
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [serviceId]);
+      if (error) throw error;
+      return (data ?? []) as BookingServiceAddon[];
+    },
+    enabled: !!serviceId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (addon: NewAddon) => {
+      const { error } = await supabase.from('booking_service_addons').insert(addon);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createAddon = useCallback(async (addon: NewAddon) => {
-    const { error: dbErr } = await supabase
-      .from('booking_service_addons')
-      .insert(addon);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('booking_service_addons').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteAddon = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('booking_service_addons')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createAddon = async (addon: NewAddon) => createMut.mutateAsync(addon);
+  const deleteAddon = async (id: string) => deleteMut.mutateAsync(id);
+  const isLive = addons.length > 0;
 
-  return { addons, loading, isLive, reload: load, createAddon, deleteAddon };
+  return { addons, loading, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), createAddon, deleteAddon };
 }
 
 // ── Staff ───────────────────────────────────────────────────────────────
 
 export function useBookingStaff(businessId?: string | null) {
-  const [staff, setStaff] = useState<BookingStaff[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['booking_staff', businessId];
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: staff = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('booking_staff')
         .select('*')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('last_name');
-      if (dbErr) throw dbErr;
-      setStaff(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load staff');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as BookingStaff[];
+    },
+    enabled: !!businessId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (s: NewStaff) => {
+      const { data, error } = await supabase.from('booking_staff').insert(s).select().single();
+      if (error) throw new Error(error.message);
+      return data as BookingStaff;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createStaff = useCallback(async (s: NewStaff) => {
-    const { data, error: dbErr } = await supabase
-      .from('booking_staff')
-      .insert(s)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as BookingStaff;
-  }, [load]);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<NewStaff> }) => {
+      const { error } = await supabase.from('booking_staff').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateStaff = useCallback(async (id: string, updates: Partial<NewStaff>) => {
-    const { error: dbErr } = await supabase
-      .from('booking_staff')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('booking_staff').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteStaff = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('booking_staff')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createStaff = async (s: NewStaff) => createMut.mutateAsync(s);
+  const updateStaff = async (id: string, updates: Partial<NewStaff>) => updateMut.mutateAsync({ id, updates });
+  const deleteStaff = async (id: string) => deleteMut.mutateAsync(id);
+  const isLive = staff.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { staff, loading, error, isLive, reload: load, createStaff, updateStaff, deleteStaff };
+  return { staff, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), createStaff, updateStaff, deleteStaff };
 }
 
 // ── Staff Schedules ─────────────────────────────────────────────────────
 
 export function useStaffSchedules(staffId?: string) {
-  const [schedules, setSchedules] = useState<BookingSchedule[]>([]);
-  const [timeOff, setTimeOff] = useState<BookingTimeOff[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['staff_schedules', staffId];
 
-  const load = useCallback(async () => {
-    if (!staffId) return;
-    setLoading(true);
-    try {
+  const { data, isLoading: loading } = useQuery({
+    queryKey,
+    queryFn: async () => {
       const [schedRes, toRes] = await Promise.all([
-        supabase.from('booking_schedules').select('*').eq('staff_id', staffId).order('day_of_week'),
-        supabase.from('booking_time_off').select('*').eq('staff_id', staffId).order('start_date', { ascending: false }),
+        supabase.from('booking_schedules').select('*').eq('staff_id', staffId!).order('day_of_week'),
+        supabase.from('booking_time_off').select('*').eq('staff_id', staffId!).order('start_date', { ascending: false }),
       ]);
-      if (schedRes.error) throw schedRes.error;
-      setSchedules(schedRes.data ?? []);
-      setTimeOff((toRes.data ?? []) as BookingTimeOff[]);
-      setIsLive(true);
-    } catch {
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [staffId]);
+      if (schedRes.error) throw new Error(schedRes.error.message);
+      return {
+        schedules: (schedRes.data ?? []) as BookingSchedule[],
+        timeOff: ((toRes.data ?? []) as BookingTimeOff[]),
+      };
+    },
+    enabled: !!staffId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const upsertMut = useMutation({
+    mutationFn: async (sched: Omit<BookingSchedule, 'id' | 'created_at'> & { id?: string }) => {
+      const { error } = await supabase.from('booking_schedules').upsert(sched);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const upsertSchedule = useCallback(async (sched: Omit<BookingSchedule, 'id' | 'created_at'> & { id?: string }) => {
-    const { error: dbErr } = await supabase
-      .from('booking_schedules')
-      .upsert(sched);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const addTimeOffMut = useMutation({
+    mutationFn: async (to: { staff_id: string; start_date: string; end_date: string; reason?: string }) => {
+      const { error } = await supabase.from('booking_time_off').insert(to);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const addTimeOff = useCallback(async (to: { staff_id: string; start_date: string; end_date: string; reason?: string }) => {
-    const { error: dbErr } = await supabase
-      .from('booking_time_off')
-      .insert(to);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteTimeOffMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('booking_time_off').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteTimeOff = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('booking_time_off')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const schedules = data?.schedules ?? [];
+  const timeOff = data?.timeOff ?? [];
+  const isLive = schedules.length > 0;
+  const upsertSchedule = async (sched: Omit<BookingSchedule, 'id' | 'created_at'> & { id?: string }) => upsertMut.mutateAsync(sched);
+  const addTimeOff = async (to: { staff_id: string; start_date: string; end_date: string; reason?: string }) => addTimeOffMut.mutateAsync(to);
+  const deleteTimeOff = async (id: string) => deleteTimeOffMut.mutateAsync(id);
 
-  return { schedules, timeOff, loading, isLive, reload: load, upsertSchedule, addTimeOff, deleteTimeOff };
+  return { schedules, timeOff, loading, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), upsertSchedule, addTimeOff, deleteTimeOff };
 }
 
 // ── Staff Services ──────────────────────────────────────────────────────
 
 export function useStaffServices(staffId?: string) {
-  const [serviceIds, setServiceIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['booking_staff_services', staffId];
 
-  const load = useCallback(async () => {
-    if (!staffId) return;
-    setLoading(true);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: serviceIds = [], isLoading: loading } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('booking_staff_services')
         .select('service_id')
-        .eq('staff_id', staffId);
-      if (dbErr) throw dbErr;
-      setServiceIds((data ?? []).map((r: { service_id: string }) => r.service_id));
-      setIsLive(true);
-    } catch {
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [staffId]);
+        .eq('staff_id', staffId!);
+      if (error) throw error;
+      return (data ?? []).map((r: { service_id: string }) => r.service_id);
+    },
+    enabled: !!staffId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const assignMut = useMutation({
+    mutationFn: async (serviceId: string) => {
+      if (!staffId) throw new Error('No staff ID');
+      const { error } = await supabase.from('booking_staff_services').insert({ staff_id: staffId, service_id: serviceId });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const assignService = useCallback(async (serviceId: string) => {
-    if (!staffId) return;
-    const { error: dbErr } = await supabase
-      .from('booking_staff_services')
-      .insert({ staff_id: staffId, service_id: serviceId });
-    if (dbErr) throw dbErr;
-    await load();
-  }, [staffId, load]);
+  const unassignMut = useMutation({
+    mutationFn: async (serviceId: string) => {
+      if (!staffId) throw new Error('No staff ID');
+      const { error } = await supabase.from('booking_staff_services').delete().eq('staff_id', staffId).eq('service_id', serviceId);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const unassignService = useCallback(async (serviceId: string) => {
-    if (!staffId) return;
-    const { error: dbErr } = await supabase
-      .from('booking_staff_services')
-      .delete()
-      .eq('staff_id', staffId)
-      .eq('service_id', serviceId);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [staffId, load]);
+  const assignService = async (serviceId: string) => assignMut.mutateAsync(serviceId);
+  const unassignService = async (serviceId: string) => unassignMut.mutateAsync(serviceId);
+  const isLive = serviceIds.length > 0;
 
-  return { serviceIds, loading, isLive, reload: load, assignService, unassignService };
+  return { serviceIds, loading, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), assignService, unassignService };
 }
 
 // ── Appointments ────────────────────────────────────────────────────────
 
 export function useAppointments(businessId?: string | null, dateRange?: { start: string; end: string }) {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['appointments', businessId, dateRange?.start, dateRange?.end];
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: appointments = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
       let query = supabase
         .from('appointments')
         .select('*, booking_services(name), booking_staff(first_name, last_name)')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('start_time', { ascending: true });
       if (dateRange) {
         query = query.gte('start_time', dateRange.start).lte('start_time', dateRange.end);
       }
-      const { data, error: dbErr } = await query;
-      if (dbErr) throw dbErr;
-      const mapped = (data ?? []).map((row: Record<string, unknown>) => {
-        const svc = row.booking_services as { name?: string } | null;
-        const st = row.booking_staff as { first_name?: string; last_name?: string } | null;
-        return {
-          ...(row as unknown as Appointment),
-          service_name: svc?.name,
-          staff_first_name: st?.first_name,
-          staff_last_name: st?.last_name,
-        };
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data ?? []).map((row: Record<string, unknown>) => mapAppointmentRow(row));
+    },
+    enabled: !!businessId,
+  });
+
+  const createMut = useMutation({
+    mutationFn: async (appt: NewAppointment) => {
+      const { data, error } = await supabase
+        .from('appointments')
+        .insert({ ...appt, status: 'scheduled' })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as Appointment;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
+
+  const updateStatusMut = useMutation({
+    mutationFn: async ({ id, status, reason }: { id: string; status: string; reason?: string }) => {
+      const updates: Record<string, unknown> = { status };
+      if (status === 'cancelled' && reason) updates.cancellation_reason = reason;
+      if (status === 'no_show') updates.no_show = true;
+      const { error } = await supabase.from('appointments').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+      await supabase.from('appointment_history').insert({
+        appointment_id: id,
+        action: status,
+        notes: reason ?? null,
       });
-      setAppointments(mapped);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load appointments');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId, dateRange?.start, dateRange?.end]);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createAppointment = async (appt: NewAppointment) => createMut.mutateAsync(appt);
+  const updateAppointmentStatus = async (id: string, status: string, reason?: string) => updateStatusMut.mutateAsync({ id, status, reason });
+  const isLive = appointments.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  const createAppointment = useCallback(async (appt: NewAppointment) => {
-    const { data, error: dbErr } = await supabase
-      .from('appointments')
-      .insert({ ...appt, status: 'scheduled' })
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as Appointment;
-  }, [load]);
-
-  const updateAppointmentStatus = useCallback(async (id: string, status: string, reason?: string) => {
-    const updates: Record<string, unknown> = { status };
-    if (status === 'cancelled' && reason) updates.cancellation_reason = reason;
-    if (status === 'no_show') updates.no_show = true;
-    const { error: dbErr } = await supabase
-      .from('appointments')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    // Log to appointment_history
-    await supabase.from('appointment_history').insert({
-      appointment_id: id,
-      action: status,
-      notes: reason ?? null,
-    });
-    await load();
-  }, [load]);
-
-  return { appointments, loading, error, isLive, reload: load, createAppointment, updateAppointmentStatus };
+  return { appointments, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), createAppointment, updateAppointmentStatus };
 }
 
 export function useAppointmentDetail(appointmentId?: string) {
-  const [appointment, setAppointment] = useState<Appointment | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!appointmentId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: appointment = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['appointment_detail', appointmentId],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('appointments')
         .select('*, booking_services(name), booking_staff(first_name, last_name)')
-        .eq('id', appointmentId)
+        .eq('id', appointmentId!)
         .single();
-      if (dbErr) throw dbErr;
-      const row = data as Record<string, unknown>;
-      const svc = row.booking_services as { name?: string } | null;
-      const st = row.booking_staff as { first_name?: string; last_name?: string } | null;
-      setAppointment({
-        ...(row as unknown as Appointment),
-        service_name: svc?.name,
-        staff_first_name: st?.first_name,
-        staff_last_name: st?.last_name,
-      });
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load appointment');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [appointmentId]);
+      if (error) throw new Error(error.message);
+      return mapAppointmentRow(data as Record<string, unknown>);
+    },
+    enabled: !!appointmentId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = !!appointment;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { appointment, loading, error, isLive, reload: load };
+  return { appointment, loading, error, isLive, reload: () => {} };
 }
 
 // ── Public booking (no auth) ────────────────────────────────────────────
 
 export function usePublicBookingServices(businessSlug?: string) {
-  const [services, setServices] = useState<BookingService[]>([]);
-  const [businessId, setBusinessId] = useState<string | null>(null);
-  const [businessName, setBusinessName] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    if (!businessSlug) return;
-    setLoading(true);
-    setError(null);
-    try {
-      // Look up business by slug
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['public_booking_services', businessSlug],
+    queryFn: async () => {
       const { data: biz, error: bizErr } = await supabase
         .from('businesses')
         .select('id, name')
-        .eq('slug', businessSlug)
+        .eq('slug', businessSlug!)
         .single();
-      if (bizErr) throw bizErr;
-      setBusinessId(biz.id);
-      setBusinessName(biz.name);
-      const { data, error: svcErr } = await supabase
+      if (bizErr) throw new Error(bizErr.message);
+
+      const { data: svcData, error: svcErr } = await supabase
         .from('booking_services')
         .select('*')
         .eq('business_id', biz.id)
         .eq('is_active', true)
         .order('name');
-      if (svcErr) throw svcErr;
-      setServices(data ?? []);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load booking info');
-    } finally {
-      setLoading(false);
-    }
-  }, [businessSlug]);
+      if (svcErr) throw new Error(svcErr.message);
 
-  useEffect(() => { load(); }, [load]);
+      return {
+        services: (svcData ?? []) as BookingService[],
+        businessId: biz.id as string,
+        businessName: biz.name as string,
+      };
+    },
+    enabled: !!businessSlug,
+  });
+
+  const services = data?.services ?? [];
+  const businessId = data?.businessId ?? null;
+  const businessName = data?.businessName ?? '';
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { services, businessId, businessName, loading, error };
 }
 
 export function usePublicBookingStaff(businessId?: string | null, serviceId?: string) {
-  const [staff, setStaff] = useState<BookingStaff[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: staff = [], isLoading: loading } = useQuery({
+    queryKey: ['public_booking_staff', businessId, serviceId],
+    queryFn: async () => {
+      let staffIds: string[] | null = null;
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    try {
-      let query = supabase
-        .from('booking_staff')
-        .select('*')
-        .eq('business_id', businessId)
-        .eq('is_active', true)
-        .order('last_name');
-      // If serviceId provided, filter by staff_services
       if (serviceId) {
         const { data: links } = await supabase
           .from('booking_staff_services')
           .select('staff_id')
           .eq('service_id', serviceId);
-        const staffIds = (links ?? []).map((l: { staff_id: string }) => l.staff_id);
-        if (staffIds.length > 0) {
-          query = query.in('id', staffIds);
-        }
+        staffIds = (links ?? []).map((l: { staff_id: string }) => l.staff_id);
       }
-      const { data, error: dbErr } = await query;
-      if (dbErr) throw dbErr;
-      setStaff(data ?? []);
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId, serviceId]);
 
-  useEffect(() => { load(); }, [load]);
+      let query = supabase
+        .from('booking_staff')
+        .select('*')
+        .eq('business_id', businessId!)
+        .eq('is_active', true)
+        .order('last_name');
+
+      if (staffIds && staffIds.length > 0) {
+        query = query.in('id', staffIds);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []) as BookingStaff[];
+    },
+    enabled: !!businessId,
+  });
 
   return { staff, loading };
 }

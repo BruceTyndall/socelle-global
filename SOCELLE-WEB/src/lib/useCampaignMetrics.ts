@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── WO-OVERHAUL-15: Marketing Platform — Campaign Metrics hook ───────
 // Table: campaign_metrics
 // isLive flag drives DEMO badge.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface CampaignMetrics {
   id: string;
@@ -37,66 +39,35 @@ export interface UseCampaignMetricsReturn {
 }
 
 export function useCampaignMetrics(campaignId: string | undefined): UseCampaignMetricsReturn {
-  const [metrics, setMetrics] = useState<CampaignMetrics[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data: metrics = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['campaign_metrics', campaignId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('campaign_metrics')
+        .select('*')
+        .eq('campaign_id', campaignId!)
+        .order('recorded_at', { ascending: true });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as CampaignMetrics[];
+    },
+    enabled: isSupabaseConfigured && !!campaignId,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
+  const isLive = metrics.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-    async function fetchMetrics() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured || !campaignId) {
-        setMetrics([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: queryError } = await supabase
-          .from('campaign_metrics')
-          .select('*')
-          .eq('campaign_id', campaignId)
-          .order('recorded_at', { ascending: true });
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setMetrics([]);
-          setIsLive(false);
-          if (queryError) setError(queryError.message);
-        } else {
-          setMetrics(data as CampaignMetrics[]);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setMetrics([]);
-          setIsLive(false);
-          setError('Failed to fetch campaign metrics');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchMetrics();
-    return () => { cancelled = true; };
-  }, [campaignId]);
-
-  const summary = metrics.length > 0 ? {
-    totalSends: metrics.reduce((s, m) => s + m.sends, 0),
-    totalOpens: metrics.reduce((s, m) => s + m.opens, 0),
-    totalClicks: metrics.reduce((s, m) => s + m.clicks, 0),
-    totalConversions: metrics.reduce((s, m) => s + m.conversions, 0),
-    totalRevenue: metrics.reduce((s, m) => s + m.revenue, 0),
-    avgOpenRate: metrics.reduce((s, m) => s + m.open_rate, 0) / metrics.length,
-    avgClickRate: metrics.reduce((s, m) => s + m.click_rate, 0) / metrics.length,
-  } : null;
+  const summary = useMemo(() => {
+    if (metrics.length === 0) return null;
+    return {
+      totalSends: metrics.reduce((s, m) => s + m.sends, 0),
+      totalOpens: metrics.reduce((s, m) => s + m.opens, 0),
+      totalClicks: metrics.reduce((s, m) => s + m.clicks, 0),
+      totalConversions: metrics.reduce((s, m) => s + m.conversions, 0),
+      totalRevenue: metrics.reduce((s, m) => s + m.revenue, 0),
+      avgOpenRate: metrics.reduce((s, m) => s + m.open_rate, 0) / metrics.length,
+      avgClickRate: metrics.reduce((s, m) => s + m.click_rate, 0) / metrics.length,
+    };
+  }, [metrics]);
 
   return { metrics, summary, isLive, loading, error };
 }

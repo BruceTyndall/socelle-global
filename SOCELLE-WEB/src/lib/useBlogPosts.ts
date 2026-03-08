@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── useBlogPosts / useBlogPost — WO-OVERHAUL-03: Blog data hooks ─────
 // Fetches published blog posts from blog_posts table.
 // Falls back gracefully when Supabase is unavailable.
 // Returns isLive flag so UI can show DEMO/PREVIEW banners accordingly.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface BlogPost {
   id: string;
@@ -44,127 +45,59 @@ interface UseBlogPostReturn {
 }
 
 export function useBlogPosts(options?: UseBlogPostsOptions): UseBlogPostsReturn {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const tag = options?.tag;
   const limit = options?.limit ?? 50;
   const featured = options?.featured;
 
-  useEffect(() => {
-    let cancelled = false;
+  const { data: posts = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['blog_posts', { tag, limit, featured }],
+    queryFn: async () => {
+      let query = supabase
+        .from('blog_posts')
+        .select('id, slug, title, excerpt, body, tags, author, status, featured_image_url, meta_title, meta_description, published_at, created_at, updated_at')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(limit);
 
-    async function fetchPosts() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured) {
-        setPosts([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
+      if (tag) {
+        query = query.contains('tags', [tag]);
+      }
+      if (featured !== undefined) {
+        query = query.eq('featured', featured);
       }
 
-      try {
-        let query = supabase
-          .from('blog_posts')
-          .select('id, slug, title, excerpt, body, tags, author, status, featured_image_url, meta_title, meta_description, published_at, created_at, updated_at')
-          .eq('status', 'published')
-          .order('published_at', { ascending: false })
-          .limit(limit);
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data ?? []) as BlogPost[];
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-        if (tag) {
-          query = query.contains('tags', [tag]);
-        }
-
-        if (featured !== undefined) {
-          query = query.eq('featured', featured);
-        }
-
-        const { data, error: queryError } = await query;
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setPosts([]);
-          setIsLive(false);
-          if (queryError) setError(queryError.message);
-        } else {
-          setPosts(data as BlogPost[]);
-          setIsLive(data.length > 0);
-        }
-      } catch {
-        if (!cancelled) {
-          setPosts([]);
-          setIsLive(false);
-          setError('Failed to fetch blog posts');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchPosts();
-    return () => { cancelled = true; };
-  }, [tag, limit, featured]);
+  const isLive = posts.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { posts, isLive, loading, error };
 }
 
 export function useBlogPost(slug: string): UseBlogPostReturn {
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data: post = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['blog_post', slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('id, slug, title, excerpt, body, tags, author, status, featured_image_url, meta_title, meta_description, published_at, created_at, updated_at')
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .single();
 
-  useEffect(() => {
-    let cancelled = false;
+      if (error) throw new Error(error.message);
+      return (data as BlogPost) ?? null;
+    },
+    enabled: isSupabaseConfigured && !!slug,
+  });
 
-    async function fetchPost() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured) {
-        setPost(null);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: queryError } = await supabase
-          .from('blog_posts')
-          .select('id, slug, title, excerpt, body, tags, author, status, featured_image_url, meta_title, meta_description, published_at, created_at, updated_at')
-          .eq('slug', slug)
-          .eq('status', 'published')
-          .single();
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setPost(null);
-          setIsLive(false);
-          if (queryError) setError(queryError.message);
-        } else {
-          setPost(data as BlogPost);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setPost(null);
-          setIsLive(false);
-          setError('Failed to fetch blog post');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchPost();
-    return () => { cancelled = true; };
-  }, [slug]);
+  const isLive = post !== null;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { post, isLive, loading, error };
 }

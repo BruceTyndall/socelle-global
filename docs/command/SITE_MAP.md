@@ -1,7 +1,11 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # SITE MAP — SOCELLE GLOBAL
-**Generated:** March 5, 2026 — Phase 1 Full Audit  
-**Authority:** `docs/command/SOCELLE_CANONICAL_DOCTRINE.md`  
+**Generated:** March 5, 2026 — Phase 1 Full Audit
+**Updated:** March 8, 2026 — V1 Master Alignment
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 **Source:** `App.tsx` routes, Flutter features, Next.js `app/` dir, e2e `routeTable.ts`
+**Primary runtime:** React + Vite (SPA). Next.js is SEO-only, NOT the primary runtime.
 
 ---
 
@@ -185,7 +189,7 @@
 
 ---
 
-## MARKETING SITE (`apps/marketing-site/`)
+## MARKETING SITE (`apps/marketing-site/` — Next.js, SEO-only surface, NOT primary runtime)
 
 | # | Route / File | Type |
 |---|---|---|
@@ -236,6 +240,31 @@
 | Marketing Site | 4 |
 | Mobile Features | 21 dirs |
 | **TOTAL** | **170+** |
+
+---
+
+---
+
+## PLANNED SURFACES — V1 HUBS NOT YET ROUTED
+
+Per V1 §G, all 15 hubs must be non-shell. The following hubs do not yet have dedicated route coverage and are planned for future phases:
+
+| Hub | Planned Phase | Notes |
+|---|---|---|
+| Authoring Studio | Phase 5 | CMS + blog + briefs + education content authoring |
+| Desktop App | Phase 6 | Tauri shell wrapping same React+Vite build |
+| Credit Economy | Phase 4 | Credit metering, deduction, usage dashboard |
+| Affiliate/Wholesale Engine | Phase 4 | FTC badges, tracked redirects, commission reporting |
+| CRM | Phase 5 | `/admin/crm` exists as route — needs full hub build |
+| Sales | Phase 5 | `/admin/sales` exists as route — needs full hub build |
+
+## V1 TECH + RUNTIME NOTES
+
+- **Primary runtime:** React + Vite (SPA with React Router). Surgical upgrade to React 19 + Vite 6 planned (~1 day total effort).
+- **Next.js:** Optional SEO surface only. NOT the main runtime.
+- **Tailwind:** Stay on 3.4. Tailwind 4 deferred until design debt cleared.
+- **Desktop:** Tauri wrapper around same React+Vite build (Phase 6).
+- **Mobile:** Flutter app sharing same Supabase API contracts (Phase 6).
 
 ---
 

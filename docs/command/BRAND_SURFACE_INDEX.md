@@ -1,6 +1,9 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # BRAND SURFACE INDEX — SOCELLE PLATFORM
-**Generated:** March 5, 2026  
-**Authority:** `/.claude/CLAUDE.md` + `docs/command/*`  
+**Generated:** March 5, 2026
+**Updated:** March 8, 2026 — V1 Master Alignment
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 **Cross-reference:** `GLOBAL_SITE_MAP.md`, `HARD_CODED_SURFACES.md`
 
 ---
@@ -145,6 +148,44 @@
 | C) Brand portal surfaces | 25 |
 | D) Admin brand surfaces | 12 |
 | **Total brand-related routes** | **40** |
+
+---
+
+---
+
+## F) V1 ANTI-SHELL COMPLIANCE — BRANDS HUB
+
+Per V1 §D, the Brands hub must satisfy all anti-shell requirements:
+
+| Requirement | Status | Notes |
+|---|---|---|
+| Create action | LIVE | `/brand/apply`, `/admin/brands/new` |
+| Library view | LIVE | `/brands` (public), `/admin/brands` |
+| Detail view | LIVE | `/brands/:slug`, `/admin/brands/:id` |
+| Edit + Delete | LIVE | `/brand/storefront`, `/admin/brands/:id/profile` |
+| Permissions | LIVE | RLS + brand_admin role guard |
+| Intelligence input | DEMO | Brand interest signals exist but intelligence hub is mock-heavy |
+| Proof/metrics | LIVE | `/brand/performance`, `/admin/brands/:id/analytics` |
+| Export | NOT YET | CSV export not implemented — needs Phase 5 work |
+| Error/empty/loading | Partial | Some surfaces have loading skeletons, not all |
+| Observability | NOT YET | Sentry not yet wired (Phase 3) |
+
+## G) V1 CONTEXT — COMMERCE BOUNDARY (V1 §M)
+
+Commerce is a **module**, never the IA backbone. Brand surfaces lead with intelligence, not commerce CTAs:
+
+- No "Shop" as primary nav item.
+- No "Shop Now" / "Buy Now" as the main CTA on Intelligence pages.
+- All commerce routes gated (auth + tier).
+- Affiliate engine must display FTC-compliant "Commission-linked" badges.
+
+## H) MULTI-PLATFORM BRAND SURFACES (V1 §H)
+
+| Platform | Brand Surface | Status |
+|---|---|---|
+| Web (React+Vite) | Full brand portal + public brand pages | Active |
+| Mobile (Flutter) | Shop feature (stub) | Phase 6 |
+| Desktop (Tauri) | Same as web (wraps React+Vite build) | Phase 6 |
 
 ---
 

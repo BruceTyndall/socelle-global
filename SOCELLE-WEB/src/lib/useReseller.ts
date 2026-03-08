@@ -1,9 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── B2B Reseller Platform Hooks ─────────────────────────────────────────────
 // Data sources: reseller_accounts, reseller_clients, white_label_config, reseller_revenue
 // isLive pattern: true when DB tables exist and return data, false otherwise (DEMO)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -63,249 +65,224 @@ export interface ResellerRevenueRow {
   updated_at: string;
 }
 
+// ── Helper for 42P01 handling ──────────────────────────────────────────────
+
+function isTableNotFound(err: unknown): boolean {
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (msg.includes('does not exist')) return true;
+  }
+  if (typeof err === 'object' && err !== null && 'code' in err) {
+    return (err as { code: string }).code === '42P01';
+  }
+  return false;
+}
+
 // ── useResellerAccount ──────────────────────────────────────────────────────
 
 export function useResellerAccount(userId?: string) {
-  const [account, setAccount] = useState<ResellerAccount | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryKey = ['reseller_account', userId];
 
-  const load = useCallback(async () => {
-    if (!userId) { setLoading(false); return; }
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: err } = await supabase
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data: row, error } = await supabase
         .from('reseller_accounts')
         .select('*')
-        .eq('user_id', userId)
+        .eq('user_id', userId!)
         .maybeSingle();
-      if (err) throw err;
-      setAccount(data);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setAccount(null);
-      } else {
-        setError('Failed to load reseller account.');
+      if (error) {
+        if (isTableNotFound(error)) return { account: null, isLive: false };
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+      return { account: row as ResellerAccount | null, isLive: true };
+    },
+    enabled: !!userId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const account = data?.account ?? null;
+  const isLive = data?.isLive ?? false;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { account, loading, error, isLive, reload: load };
+  return { account, loading, error, isLive, reload: () => {} };
 }
 
 // ── useResellerClients ──────────────────────────────────────────────────────
 
 export function useResellerClients(resellerId?: string) {
-  const [clients, setClients] = useState<ResellerClient[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['reseller_clients', resellerId];
 
-  const load = useCallback(async () => {
-    if (!resellerId) { setLoading(false); return; }
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: err } = await supabase
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data: rows, error } = await supabase
         .from('reseller_clients')
         .select('*')
-        .eq('reseller_id', resellerId)
+        .eq('reseller_id', resellerId!)
         .order('created_at', { ascending: false });
-      if (err) throw err;
-      setClients(data ?? []);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setClients([]);
-      } else {
-        setError('Failed to load reseller clients.');
+      if (error) {
+        if (isTableNotFound(error)) return { clients: [] as ResellerClient[], isLive: false };
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [resellerId]);
+      return { clients: (rows ?? []) as ResellerClient[], isLive: true };
+    },
+    enabled: !!resellerId,
+  });
 
-  const addClient = useCallback(async (client: { client_name: string; client_email: string; company_name?: string }) => {
-    if (!resellerId) return;
-    const { error: err } = await supabase
-      .from('reseller_clients')
-      .insert({ ...client, reseller_id: resellerId, status: 'pending' });
-    if (err) throw err;
-    await load();
-  }, [resellerId, load]);
+  const addClientMut = useMutation({
+    mutationFn: async (client: { client_name: string; client_email: string; company_name?: string }) => {
+      if (!resellerId) throw new Error('No reseller ID');
+      const { error } = await supabase
+        .from('reseller_clients')
+        .insert({ ...client, reseller_id: resellerId, status: 'pending' });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const clients = data?.clients ?? [];
+  const isLive = data?.isLive ?? false;
+  const error = queryError instanceof Error ? queryError.message : null;
+  const addClient = async (client: { client_name: string; client_email: string; company_name?: string }) => addClientMut.mutateAsync(client);
 
-  return { clients, loading, error, isLive, reload: load, addClient };
+  return { clients, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), addClient };
 }
 
 // ── useWhiteLabelConfig ─────────────────────────────────────────────────────
 
 export function useWhiteLabelConfig(resellerId?: string) {
-  const [config, setConfig] = useState<WhiteLabelConfigRow | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['white_label_config', resellerId];
 
-  const load = useCallback(async () => {
-    if (!resellerId) { setLoading(false); return; }
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: err } = await supabase
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data: row, error } = await supabase
         .from('white_label_config')
         .select('*')
-        .eq('reseller_id', resellerId)
+        .eq('reseller_id', resellerId!)
         .maybeSingle();
-      if (err) throw err;
-      setConfig(data);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setConfig(null);
-      } else {
-        setError('Failed to load white-label config.');
+      if (error) {
+        if (isTableNotFound(error)) return { config: null, isLive: false };
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [resellerId]);
+      return { config: row as WhiteLabelConfigRow | null, isLive: true };
+    },
+    enabled: !!resellerId,
+  });
 
-  const saveConfig = useCallback(async (updates: Partial<WhiteLabelConfigRow>) => {
-    if (!resellerId) return;
-    if (config?.id) {
-      const { error: err } = await supabase
-        .from('white_label_config')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', config.id);
-      if (err) throw err;
-    } else {
-      const { error: err } = await supabase
-        .from('white_label_config')
-        .insert({ ...updates, reseller_id: resellerId });
-      if (err) throw err;
-    }
-    await load();
-  }, [resellerId, config, load]);
+  const saveMut = useMutation({
+    mutationFn: async (updates: Partial<WhiteLabelConfigRow>) => {
+      if (!resellerId) throw new Error('No reseller ID');
+      const existing = data?.config;
+      if (existing?.id) {
+        const { error } = await supabase
+          .from('white_label_config')
+          .update({ ...updates, updated_at: new Date().toISOString() })
+          .eq('id', existing.id);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabase
+          .from('white_label_config')
+          .insert({ ...updates, reseller_id: resellerId });
+        if (error) throw new Error(error.message);
+      }
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const config = data?.config ?? null;
+  const isLive = data?.isLive ?? false;
+  const error = queryError instanceof Error ? queryError.message : null;
+  const saveConfig = async (updates: Partial<WhiteLabelConfigRow>) => saveMut.mutateAsync(updates);
 
-  return { config, loading, error, isLive, reload: load, saveConfig };
+  return { config, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), saveConfig };
 }
 
 // ── useResellerRevenue ──────────────────────────────────────────────────────
 
 export function useResellerRevenue(resellerId?: string) {
-  const [revenue, setRevenue] = useState<ResellerRevenueRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryKey = ['reseller_revenue', resellerId];
 
-  const load = useCallback(async () => {
-    if (!resellerId) { setLoading(false); return; }
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: err } = await supabase
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data: rows, error } = await supabase
         .from('reseller_revenue')
         .select('*')
-        .eq('reseller_id', resellerId)
+        .eq('reseller_id', resellerId!)
         .order('created_at', { ascending: false })
         .limit(200);
-      if (err) throw err;
-      setRevenue(data ?? []);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setRevenue([]);
-      } else {
-        setError('Failed to load reseller revenue.');
+      if (error) {
+        if (isTableNotFound(error)) return { revenue: [] as ResellerRevenueRow[], isLive: false };
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [resellerId]);
+      return { revenue: (rows ?? []) as ResellerRevenueRow[], isLive: true };
+    },
+    enabled: !!resellerId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const revenue = data?.revenue ?? [];
+  const isLive = data?.isLive ?? false;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  // Derived stats
-  const totalRevenue = revenue.reduce((sum, r) => sum + r.amount, 0);
-  const totalCommission = revenue.reduce((sum, r) => sum + r.commission_amount, 0);
-  const pendingPayout = revenue
+  const totalRevenue = useMemo(() => revenue.reduce((sum, r) => sum + r.amount, 0), [revenue]);
+  const totalCommission = useMemo(() => revenue.reduce((sum, r) => sum + r.commission_amount, 0), [revenue]);
+  const pendingPayout = useMemo(() => revenue
     .filter(r => r.status === 'pending')
-    .reduce((sum, r) => sum + r.commission_amount, 0);
+    .reduce((sum, r) => sum + r.commission_amount, 0), [revenue]);
 
-  return { revenue, loading, error, isLive, reload: load, totalRevenue, totalCommission, pendingPayout };
+  return { revenue, loading, error, isLive, reload: () => {}, totalRevenue, totalCommission, pendingPayout };
 }
 
 // ── useAllResellerAccounts (Admin) ──────────────────────────────────────────
 
 export function useAllResellerAccounts() {
-  const [accounts, setAccounts] = useState<ResellerAccount[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['all_reseller_accounts'];
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: err } = await supabase
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data: rows, error } = await supabase
         .from('reseller_accounts')
         .select('*')
         .order('created_at', { ascending: false });
-      if (err) throw err;
-      setAccounts(data ?? []);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setAccounts([]);
-      } else {
-        setError('Failed to load reseller accounts.');
+      if (error) {
+        if (isTableNotFound(error)) return { accounts: [] as ResellerAccount[], isLive: false };
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return { accounts: (rows ?? []) as ResellerAccount[], isLive: true };
+    },
+  });
 
-  const updateAccountStatus = useCallback(async (accountId: string, status: ResellerAccount['status']) => {
-    const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() };
-    if (status === 'approved') updates.approved_at = new Date().toISOString();
-    const { error: err } = await supabase
-      .from('reseller_accounts')
-      .update(updates)
-      .eq('id', accountId);
-    if (err) throw err;
-    await load();
-  }, [load]);
+  const updateStatusMut = useMutation({
+    mutationFn: async ({ accountId, status }: { accountId: string; status: ResellerAccount['status'] }) => {
+      const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() };
+      if (status === 'approved') updates.approved_at = new Date().toISOString();
+      const { error } = await supabase.from('reseller_accounts').update(updates).eq('id', accountId);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateCommissionRate = useCallback(async (accountId: string, rate: number) => {
-    const { error: err } = await supabase
-      .from('reseller_accounts')
-      .update({ commission_rate: rate, updated_at: new Date().toISOString() })
-      .eq('id', accountId);
-    if (err) throw err;
-    await load();
-  }, [load]);
+  const updateRateMut = useMutation({
+    mutationFn: async ({ accountId, rate }: { accountId: string; rate: number }) => {
+      const { error } = await supabase
+        .from('reseller_accounts')
+        .update({ commission_rate: rate, updated_at: new Date().toISOString() })
+        .eq('id', accountId);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const accounts = data?.accounts ?? [];
+  const isLive = data?.isLive ?? false;
+  const error = queryError instanceof Error ? queryError.message : null;
+  const updateAccountStatus = async (accountId: string, status: ResellerAccount['status']) => updateStatusMut.mutateAsync({ accountId, status });
+  const updateCommissionRate = async (accountId: string, rate: number) => updateRateMut.mutateAsync({ accountId, rate });
 
-  return { accounts, loading, error, isLive, reload: load, updateAccountStatus, updateCommissionRate };
+  return { accounts, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), updateAccountStatus, updateCommissionRate };
 }

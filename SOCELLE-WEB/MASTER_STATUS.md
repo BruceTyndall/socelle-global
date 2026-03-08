@@ -1,6 +1,9 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+
 # SOCELLE — MASTER STATUS DOCUMENT
-**Last Updated:** March 5, 2026 — Wave 10 Session 2 (W10-02 complete)
+**Last Updated:** March 8, 2026 — V1 Master Alignment
 **Purpose:** Single source of truth for all agents. Replaces PLATFORM_STATUS.md and SOCELLE_MASTER_WORK_ORDER.md for current-state tracking.
+**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
 **Wave Progress:** Waves 1–9 complete. No outstanding Wave 9 items.
 
 ---
@@ -245,7 +248,8 @@ Highest-leverage zero-cost integrations to build next:
 - BLS jobs data wire-in
 - Industry classification code system (NAICS/SIC for operator segmentation)
 - Multi-language support (translations stubbed for fr/es — need content)
-- Mobile app (React Native or Capacitor)
+- Mobile app (Flutter — sharing Supabase API contracts, Phase 6)
+- Desktop app (Tauri wrapper around React+Vite build, Phase 6)
 
 ---
 
@@ -310,6 +314,54 @@ Dashboard with intelligence preview
 - **Tables still needed:** `rss_items`, `rss_sources`, `ingredient_data`, `enrichment_profiles`
 - **7 Edge Functions deployed:** ai-concierge, ai-orchestrator, create-checkout, generate-embeddings, magic-link, send-email, stripe-webhook
 - **Missing Edge Functions:** rss-ingestion, open-beauty-facts-sync, npi-lookup, sitemap-generator, intelligence-briefing, jobs-search
+
+---
+
+## V1 TECH BASELINE — SURGICAL UPGRADE (per V1 §E)
+
+The current stack is a working React 18.3 + Vite 5.4 + TS 5.5 + Tailwind 3.4 app. V1 defines these as **surgical, incremental upgrades** (~1 working day total, zero rewrites):
+
+| Package | Current | Target | Effort |
+|---|---|---|---|
+| React | 18.3 | 19.x | ~2 hours |
+| Vite | 5.4 | 6.x | ~1 hour |
+| TypeScript | 5.5 strict | strict + `noExplicitAny` | ~3-5 hours |
+| TanStack Query | not yet | v5 (standardize all data fetching) | Phase 3 |
+| Tailwind | 3.4 | **Stay on 3.4** — Tailwind 4 deferred until design debt cleared | — |
+| Sentry | not yet | Web + edge | Phase 3 |
+
+**Primary runtime:** React + Vite (SPA). Next.js is NOT the main runtime; only optional for SEO surfaces.
+
+## V1 EXECUTION PHASES (per V1 §I)
+
+1. Phase 0 — Design + Required Docs
+2. Phase 1 — Skills Installation (51+ skills)
+3. Phase 2 — Full-Platform Audit
+4. Phase 3 — Tech Upgrades (React 19, Vite 6, TS strict, TanStack, Sentry) — ~1 day
+5. Phase 4 — Intelligence Cloud Build (10 modules + 7 engines + 6 AI tools + credit economy + affiliate engine)
+6. Phase 5 — All Hubs Functional (incl. CMS, Authoring Studio, all 15 hubs non-shell)
+7. Phase 6 — Multi-Platform (Tauri desktop, Flutter mobile)
+8. Phase 7 — Launch
+
+## V1 15-HUB ANTI-SHELL STATUS
+
+| Hub | Status | Notes |
+|---|---|---|
+| Intelligence | Partial DEMO | Needs live data wire (Phase 4) |
+| Jobs | Routes exist | Needs anti-shell completion |
+| Brands | Mostly LIVE | Strong coverage |
+| Professionals | DEMO | Hardcoded stats |
+| Admin | Mostly LIVE | 37+ routes |
+| CRM | Route exists | Needs full build (Phase 5) |
+| Education | LIVE | Protocols + training modules |
+| Marketing | Partial | Calendar, campaigns partial |
+| Sales | Route exists | Needs full build (Phase 5) |
+| Commerce | Module (not nav) | Within portals |
+| Authoring Studio | NOT CREATED | Phase 5 — CMS + blog + briefs |
+| Mobile App | Flutter, 21 features | Phase 6 |
+| Desktop App | NOT CREATED | Phase 6 — Tauri |
+| Credit Economy | NOT CREATED | Phase 4 |
+| Affiliate/Wholesale Engine | NOT CREATED | Phase 4 |
 
 ---
 

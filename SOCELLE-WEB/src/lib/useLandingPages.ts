@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── WO-OVERHAUL-15: Marketing Platform — Landing Pages hook ──────────
 // Table: landing_pages
 // isLive flag drives DEMO badge.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export type LandingPageStatus = 'draft' | 'published' | 'archived';
 
@@ -31,81 +32,70 @@ export interface UseLandingPagesReturn {
 }
 
 export function useLandingPages(): UseLandingPagesReturn {
-  const [pages, setPages] = useState<LandingPage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
+  const queryClient = useQueryClient();
 
-  const refetch = useCallback(() => setTick((t) => t + 1), []);
+  const { data: pages = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['landing_pages'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('landing_pages')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  useEffect(() => {
-    let cancelled = false;
+      if (error) throw new Error(error.message);
+      return (data ?? []) as LandingPage[];
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-    async function fetchPages() {
-      setLoading(true);
-      setError(null);
+  const createMutation = useMutation({
+    mutationFn: async (page: Omit<LandingPage, 'id' | 'created_at' | 'updated_at' | 'views' | 'conversions'>) => {
+      const { data, error } = await supabase
+        .from('landing_pages')
+        .insert({ ...page, views: 0, conversions: 0 })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as LandingPage;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['landing_pages'] }); },
+  });
 
-      if (!isSupabaseConfigured) {
-        setPages([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<LandingPage> }) => {
+      const { error } = await supabase
+        .from('landing_pages')
+        .update(updates)
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['landing_pages'] }); },
+  });
 
-      try {
-        const { data, error: queryError } = await supabase
-          .from('landing_pages')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setPages([]);
-          setIsLive(false);
-          if (queryError) setError(queryError.message);
-        } else {
-          setPages(data as LandingPage[]);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setPages([]);
-          setIsLive(false);
-          setError('Failed to fetch landing pages');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchPages();
-    return () => { cancelled = true; };
-  }, [tick]);
-
-  const createPage = useCallback(async (page: Omit<LandingPage, 'id' | 'created_at' | 'updated_at' | 'views' | 'conversions'>): Promise<LandingPage | null> => {
+  const createPage = async (page: Omit<LandingPage, 'id' | 'created_at' | 'updated_at' | 'views' | 'conversions'>): Promise<LandingPage | null> => {
     if (!isSupabaseConfigured) return null;
-    const { data, error: insertError } = await supabase
-      .from('landing_pages')
-      .insert({ ...page, views: 0, conversions: 0 })
-      .select()
-      .single();
-    if (insertError) { setError(insertError.message); return null; }
-    refetch();
-    return data as LandingPage;
-  }, [refetch]);
+    try {
+      return await createMutation.mutateAsync(page);
+    } catch {
+      return null;
+    }
+  };
 
-  const updatePage = useCallback(async (id: string, updates: Partial<LandingPage>): Promise<boolean> => {
+  const updatePage = async (id: string, updates: Partial<LandingPage>): Promise<boolean> => {
     if (!isSupabaseConfigured) return false;
-    const { error: updateError } = await supabase
-      .from('landing_pages')
-      .update(updates)
-      .eq('id', id);
-    if (updateError) { setError(updateError.message); return false; }
-    refetch();
-    return true;
-  }, [refetch]);
+    try {
+      await updateMutation.mutateAsync({ id, updates });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const isLive = pages.length > 0;
+  const error = queryError instanceof Error ? queryError.message
+    : createMutation.error instanceof Error ? createMutation.error.message
+    : updateMutation.error instanceof Error ? updateMutation.error.message
+    : null;
 
   return { pages, isLive, loading, error, createPage, updatePage, refetch };
 }

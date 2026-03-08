@@ -2,9 +2,9 @@
 // Queries business_analytics + orders tables for real operator benchmarks.
 // Falls back to mock data from computeBenchmarks.ts when Supabase is
 // unavailable or when the logged-in user has no business_id.
-// Returns isLive flag so UI can show DEMO badge on mock fallback.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import {
   computeOverallBenchmark,
@@ -40,41 +40,24 @@ function clamp(val: number, min = 0, max = 100): number {
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataReturn {
-  const [benchmark, setBenchmark] = useState<OverallBenchmark>(computeOverallBenchmark());
-  const [categories, setCategories] = useState<CategoryCoverage[]>(getCategoryCoverage());
-  const [reorderItems, setReorderItems] = useState<ReorderHealthItem[]>(getReorderHealth());
-  const [peerGroup, setPeerGroup] = useState<PeerGroupInfo>(getPeerGroupInfo());
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const mockBenchmark = computeOverallBenchmark();
+  const mockCategories = getCategoryCoverage();
+  const mockReorder = getReorderHealth();
+  const mockPeerGroup = getPeerGroupInfo();
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-
-    if (!isSupabaseConfigured || !businessId) {
-      // No Supabase or no business context — use mock data
-      setBenchmark(computeOverallBenchmark());
-      setCategories(getCategoryCoverage());
-      setReorderItems(getReorderHealth());
-      setPeerGroup(getPeerGroupInfo());
-      setIsLive(false);
-      setLoading(false);
-      return;
-    }
-
-    try {
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['benchmark_data', businessId],
+    queryFn: async () => {
       // ── 1. Fetch this operator's orders ──────────────────────────────
       const { data: myOrders, error: ordersErr } = await supabase
         .from('orders')
         .select('id, brand_id, subtotal, created_at, status')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .neq('status', 'cancelled')
         .order('created_at', { ascending: false });
 
       if (ordersErr || !myOrders || myOrders.length === 0) {
-        // No order history — use mock
-        setIsLive(false);
-        setLoading(false);
-        return;
+        return null; // Use mock
       }
 
       // ── 2. Fetch this operator's order items ─────────────────────────
@@ -82,7 +65,7 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
       const { data: myItems } = await supabase
         .from('order_items')
         .select('order_id, product_id, product_name, unit_price, qty, line_total, created_at')
-        .in('order_id', orderIds.slice(0, 200)); // cap for performance
+        .in('order_id', orderIds.slice(0, 200));
 
       const items = myItems ?? [];
 
@@ -100,22 +83,14 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
         .limit(50);
 
       // ── Compute operator metrics ─────────────────────────────────────
-
       const operatorRevenue = myOrders.reduce((sum, o) => sum + Number(o.subtotal ?? 0), 0);
-
-      // Unique products (SKU diversity)
       const uniqueProducts = new Set(items.map((i) => i.product_id));
       const operatorSkuCount = uniqueProducts.size;
-
-      // Unique brands
       const uniqueBrands = new Set(myOrders.map((o) => o.brand_id).filter(Boolean));
       const operatorBrandCount = uniqueBrands.size;
-
-      // Average order value
       const operatorAov = myOrders.length > 0 ? operatorRevenue / myOrders.length : 0;
 
       // ── Compute peer medians ─────────────────────────────────────────
-
       const peerRecords = peerAnalytics ?? [];
       let peerRevenue = 28500;
       let peerSkus = 35;
@@ -133,16 +108,14 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
       }
 
       // ── Build dimension scores ───────────────────────────────────────
-
       const revenueScore = clamp(Math.round((operatorRevenue / Math.max(peerRevenue, 1)) * 70));
       const skuScore = clamp(Math.round((operatorSkuCount / Math.max(peerSkus, 1)) * 70));
       const brandScore = clamp(Math.round((operatorBrandCount / Math.max(peerBrands, 1)) * 70));
       const aovScore = clamp(Math.round((operatorAov / Math.max(peerAov, 1)) * 70));
 
-      // Category coverage: count distinct product categories from items
+      // Category coverage
       const productCategories = new Set<string>();
       for (const item of items) {
-        // Derive category from product name heuristic since order_items doesn't have category column
         const name = (item.product_name ?? '').toLowerCase();
         if (name.includes('serum') || name.includes('active')) productCategories.add('Serums & Actives');
         else if (name.includes('cleanser') || name.includes('toner')) productCategories.add('Cleansers & Toners');
@@ -156,7 +129,7 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
       }
       const catCoverageScore = clamp(Math.round((productCategories.size / 8) * 100));
 
-      // Reorder health: % of products reordered within expected cycle
+      // Reorder health
       const reorderedProducts = new Map<string, Date[]>();
       for (const item of items) {
         const dates = reorderedProducts.get(item.product_id) ?? ([] as Date[]);
@@ -174,7 +147,7 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
         }
       });
       const reorderPct = totalTracked > 0 ? Math.round((healthyReorders / totalTracked) * 100) : 65;
-      const reorderScore = clamp(Math.round((reorderPct / 78) * 70)); // 78% is peer median default
+      const reorderScore = clamp(Math.round((reorderPct / 78) * 70));
 
       const compositeScore = clamp(Math.round(
         (revenueScore + skuScore + catCoverageScore + reorderScore + brandScore + aovScore) / 6
@@ -182,70 +155,38 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
 
       const dimensions: BenchmarkScore[] = [
         {
-          dimension: 'revenue',
-          label: 'Monthly Revenue',
-          score: revenueScore,
-          percentile: clamp(revenueScore - 5),
-          peerMedian: Math.round(peerRevenue),
-          operatorValue: Math.round(operatorRevenue),
-          unit: '$',
-          ...(revenueScore < 65 ? {
-            recommendation: `Expand high-margin treatment SKUs to close the revenue gap with peers at $${Math.round(peerRevenue).toLocaleString()}/mo.`,
-          } : {}),
+          dimension: 'revenue', label: 'Monthly Revenue', score: revenueScore,
+          percentile: clamp(revenueScore - 5), peerMedian: Math.round(peerRevenue),
+          operatorValue: Math.round(operatorRevenue), unit: '$',
+          ...(revenueScore < 65 ? { recommendation: `Expand high-margin treatment SKUs to close the revenue gap with peers at $${Math.round(peerRevenue).toLocaleString()}/mo.` } : {}),
         },
         {
-          dimension: 'sku_diversity',
-          label: 'SKU Diversity',
-          score: skuScore,
-          percentile: clamp(skuScore - 5),
-          peerMedian: peerSkus,
-          operatorValue: operatorSkuCount,
-          unit: 'products',
-          ...(skuScore < 65 ? {
-            recommendation: `Add ${Math.max(1, peerSkus - operatorSkuCount)} more SKUs to match peer median.`,
-          } : {}),
+          dimension: 'sku_diversity', label: 'SKU Diversity', score: skuScore,
+          percentile: clamp(skuScore - 5), peerMedian: peerSkus,
+          operatorValue: operatorSkuCount, unit: 'products',
+          ...(skuScore < 65 ? { recommendation: `Add ${Math.max(1, peerSkus - operatorSkuCount)} more SKUs to match peer median.` } : {}),
         },
         {
-          dimension: 'category_coverage',
-          label: 'Category Coverage',
-          score: catCoverageScore,
-          percentile: clamp(catCoverageScore - 5),
-          peerMedian: 6.2,
-          operatorValue: productCategories.size,
-          unit: 'categories',
-          ...(catCoverageScore < 65 ? {
-            recommendation: 'Expand into missing product categories to improve treatment room coverage.',
-          } : {}),
+          dimension: 'category_coverage', label: 'Category Coverage', score: catCoverageScore,
+          percentile: clamp(catCoverageScore - 5), peerMedian: 6.2,
+          operatorValue: productCategories.size, unit: 'categories',
+          ...(catCoverageScore < 65 ? { recommendation: 'Expand into missing product categories to improve treatment room coverage.' } : {}),
         },
         {
-          dimension: 'reorder_health',
-          label: 'Reorder Health',
-          score: reorderScore,
-          percentile: clamp(reorderScore - 5),
-          peerMedian: 78,
-          operatorValue: reorderPct,
-          unit: '%',
+          dimension: 'reorder_health', label: 'Reorder Health', score: reorderScore,
+          percentile: clamp(reorderScore - 5), peerMedian: 78,
+          operatorValue: reorderPct, unit: '%',
         },
         {
-          dimension: 'brand_diversity',
-          label: 'Brand Diversity',
-          score: brandScore,
-          percentile: clamp(brandScore - 5),
-          peerMedian: peerBrands,
-          operatorValue: operatorBrandCount,
-          unit: 'brands',
-          ...(brandScore < 65 ? {
-            recommendation: `Diversify with ${Math.max(1, peerBrands - operatorBrandCount)} additional brand(s). Single-brand dependency increases supply-chain risk.`,
-          } : {}),
+          dimension: 'brand_diversity', label: 'Brand Diversity', score: brandScore,
+          percentile: clamp(brandScore - 5), peerMedian: peerBrands,
+          operatorValue: operatorBrandCount, unit: 'brands',
+          ...(brandScore < 65 ? { recommendation: `Diversify with ${Math.max(1, peerBrands - operatorBrandCount)} additional brand(s). Single-brand dependency increases supply-chain risk.` } : {}),
         },
         {
-          dimension: 'avg_order_value',
-          label: 'Avg Order Value',
-          score: aovScore,
-          percentile: clamp(aovScore - 5),
-          peerMedian: Math.round(peerAov),
-          operatorValue: Math.round(operatorAov),
-          unit: '$',
+          dimension: 'avg_order_value', label: 'Avg Order Value', score: aovScore,
+          percentile: clamp(aovScore - 5), peerMedian: Math.round(peerAov),
+          operatorValue: Math.round(operatorAov), unit: '$',
         },
       ];
 
@@ -257,11 +198,9 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
         dimensions,
       };
 
-      setBenchmark(liveBenchmark);
-
-      // ── Live category coverage ───────────────────────────────────────
-      const mockCategories = getCategoryCoverage();
-      const liveCats: CategoryCoverage[] = mockCategories.map((cat) => ({
+      // Live category coverage
+      const baseCats = getCategoryCoverage();
+      const liveCats: CategoryCoverage[] = baseCats.map((cat) => ({
         ...cat,
         operatorCount: productCategories.has(cat.category)
           ? items.filter((it) => {
@@ -271,48 +210,28 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
             }).length || cat.operatorCount
           : 0,
       }));
-      setCategories(liveCats);
 
-      // ── Live reorder health from order items ─────────────────────────
+      // Live reorder health
       const liveReorderItems: ReorderHealthItem[] = [];
       const productOrders = new Map<string, { name: string; brandId: string; dates: Date[] }>();
       for (const item of items) {
-        const existing = productOrders.get(item.product_id) ?? {
-          name: item.product_name,
-          brandId: '',
-          dates: [] as Date[],
-        };
+        const existing = productOrders.get(item.product_id) ?? { name: item.product_name, brandId: '', dates: [] as Date[] };
         existing.dates.push(new Date(item.created_at));
         productOrders.set(item.product_id, existing);
       }
 
-      // Map order IDs to brand IDs
       const orderBrandMap: Record<string, string> = {};
-      for (const o of myOrders) {
-        orderBrandMap[o.id] = o.brand_id ?? '';
-      }
+      for (const o of myOrders) orderBrandMap[o.id] = o.brand_id ?? '';
       for (const item of items) {
         const entry = productOrders.get(item.product_id);
-        if (entry && !entry.brandId && orderBrandMap[item.order_id]) {
-          entry.brandId = orderBrandMap[item.order_id];
-        }
+        if (entry && !entry.brandId && orderBrandMap[item.order_id]) entry.brandId = orderBrandMap[item.order_id];
       }
 
-      // Get brand names for the reorder table
-      const brandIdsForLookup = [...new Set(
-        [...productOrders.values()].map((v) => v.brandId).filter(Boolean)
-      )];
+      const brandIdsForLookup = [...new Set([...productOrders.values()].map((v) => v.brandId).filter(Boolean))];
       let brandNameMap: Record<string, string> = {};
       if (brandIdsForLookup.length > 0) {
-        const { data: brandRows } = await supabase
-          .from('brands')
-          .select('id, name')
-          .in('id', brandIdsForLookup.slice(0, 20));
-        if (brandRows) {
-          for (const b of brandRows) {
-            brandNameMap[b.id] = b.name;
-          }
-        }
+        const { data: brandRows } = await supabase.from('brands').select('id, name').in('id', brandIdsForLookup.slice(0, 20));
+        if (brandRows) for (const b of brandRows) brandNameMap[b.id] = b.name;
       }
 
       productOrders.forEach((entry) => {
@@ -333,44 +252,38 @@ export function useBenchmarkData(businessId?: string | null): UseBenchmarkDataRe
         if (daysAgo > avgReorderDays * 1.5) status = 'critical';
         else if (daysAgo > avgReorderDays * 1.1) status = 'warning';
 
-        liveReorderItems.push({
-          productName: entry.name,
-          brand: brandNameMap[entry.brandId] ?? 'Unknown',
-          lastOrderDaysAgo: daysAgo,
-          avgReorderDays,
-          status,
-        });
+        liveReorderItems.push({ productName: entry.name, brand: brandNameMap[entry.brandId] ?? 'Unknown', lastOrderDaysAgo: daysAgo, avgReorderDays, status });
       });
 
-      // Sort: critical first, then warning, then healthy
       const statusOrder = { critical: 0, warning: 1, healthy: 2 };
       liveReorderItems.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
 
-      if (liveReorderItems.length > 0) {
-        setReorderItems(liveReorderItems.slice(0, 15));
-      }
-
-      // ── Peer group info ──────────────────────────────────────────────
       const avgPeerRevenue = peerRevenue > 0 ? `$${Math.round(peerRevenue).toLocaleString()}/mo` : '$26,400/mo';
-      setPeerGroup({
+      const livePeerGroup: PeerGroupInfo = {
         type: 'Operators',
         region: 'All Regions',
         size: totalBusinesses ?? 142,
         avgRevenue: avgPeerRevenue,
-      });
+      };
 
-      setIsLive(true);
-    } catch {
-      // On error, keep mock data
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId]);
+      return {
+        benchmark: liveBenchmark,
+        categories: liveCats,
+        reorderItems: liveReorderItems.length > 0 ? liveReorderItems.slice(0, 15) : getReorderHealth(),
+        peerGroup: livePeerGroup,
+        isLive: true,
+      };
+    },
+    enabled: isSupabaseConfigured && !!businessId,
+    staleTime: 10 * 60 * 1000, // 10 minutes — benchmark data doesn't change frequently
+  });
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  return { benchmark, categories, reorderItems, peerGroup, loading, isLive };
+  return {
+    benchmark: data?.benchmark ?? mockBenchmark,
+    categories: data?.categories ?? mockCategories,
+    reorderItems: data?.reorderItems ?? mockReorder,
+    peerGroup: data?.peerGroup ?? mockPeerGroup,
+    loading,
+    isLive: data?.isLive ?? false,
+  };
 }

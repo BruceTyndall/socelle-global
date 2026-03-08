@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── Client Records Hook ─────────────────────────────────────────────────
 // Data source: client_treatment_records, client_product_history, client_visit_summary (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface ClientTreatmentRecord {
   id: string;
@@ -61,111 +62,92 @@ export interface NewTreatmentRecord {
 }
 
 export function useClientTreatmentRecords(contactId?: string) {
-  const [records, setRecords] = useState<ClientTreatmentRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['client_treatment_records', contactId];
 
-  const load = useCallback(async () => {
-    if (!contactId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: records = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('client_treatment_records')
         .select('*')
-        .eq('contact_id', contactId)
+        .eq('contact_id', contactId!)
         .order('performed_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setRecords(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load treatment records');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [contactId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as ClientTreatmentRecord[];
+    },
+    enabled: !!contactId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (record: NewTreatmentRecord) => {
+      const { data, error } = await supabase
+        .from('client_treatment_records')
+        .insert(record)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as ClientTreatmentRecord;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createRecord = useCallback(async (record: NewTreatmentRecord) => {
-    const { data, error: dbErr } = await supabase
-      .from('client_treatment_records')
-      .insert(record)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as ClientTreatmentRecord;
-  }, [load]);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<NewTreatmentRecord> }) => {
+      const { error } = await supabase
+        .from('client_treatment_records')
+        .update(updates)
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateRecord = useCallback(async (id: string, updates: Partial<NewTreatmentRecord>) => {
-    const { error: dbErr } = await supabase
-      .from('client_treatment_records')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createRecord = async (record: NewTreatmentRecord) => createMut.mutateAsync(record);
+  const updateRecord = async (id: string, updates: Partial<NewTreatmentRecord>) => updateMut.mutateAsync({ id, updates });
 
-  return { records, loading, error, isLive, reload: load, createRecord, updateRecord };
+  const isLive = records.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { records, loading, error, isLive, reload: () => queryClient.invalidateQueries({ queryKey }), createRecord, updateRecord };
 }
 
 export function useClientProductHistory(contactId?: string) {
-  const [products, setProducts] = useState<ClientProductHistory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!contactId) return;
-    setLoading(true);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: products = [], isLoading: loading } = useQuery({
+    queryKey: ['client_product_history', contactId],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('client_product_history')
         .select('*')
-        .eq('contact_id', contactId)
+        .eq('contact_id', contactId!)
         .order('purchased_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setProducts(data ?? []);
-      setIsLive(true);
-    } catch {
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [contactId]);
+      if (error) throw error;
+      return (data ?? []) as ClientProductHistory[];
+    },
+    enabled: !!contactId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = products.length > 0;
 
-  return { products, loading, isLive, reload: load };
+  return { products, loading, isLive, reload: () => {} };
 }
 
 export function useClientVisitSummary(contactId?: string) {
-  const [visits, setVisits] = useState<ClientVisitSummary[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!contactId) return;
-    setLoading(true);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: visits = [], isLoading: loading } = useQuery({
+    queryKey: ['client_visit_summary', contactId],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('client_visit_summary')
         .select('*')
-        .eq('contact_id', contactId)
+        .eq('contact_id', contactId!)
         .order('visit_date', { ascending: false });
-      if (dbErr) throw dbErr;
-      setVisits(data ?? []);
-      setIsLive(true);
-    } catch {
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [contactId]);
+      if (error) throw error;
+      return (data ?? []) as ClientVisitSummary[];
+    },
+    enabled: !!contactId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = visits.length > 0;
 
-  return { visits, loading, isLive, reload: load };
+  return { visits, loading, isLive, reload: () => {} };
 }

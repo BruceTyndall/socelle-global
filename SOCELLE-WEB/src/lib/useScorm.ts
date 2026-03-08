@@ -2,8 +2,11 @@
  * useScorm — SCORM package management + runtime tracking
  * Data source: scorm_packages + scorm_tracking tables (LIVE)
  * Communicates with scorm-runtime edge function for LMS data persistence
+ * Migrated to TanStack Query v5 (V2-TECH-04).
+ * NOTE: useScormRuntime retains useEffect for side-effects (interval + global API injection).
  */
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { useAuth } from './auth';
 
@@ -39,45 +42,31 @@ export interface ScormTracking {
 /* ── useScormPackage — load a single SCORM package ─────────────────── */
 
 export function useScormPackage(packageId: string | undefined) {
-  const [pkg, setPkg] = useState<ScormPackage | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const { data, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['scorm_package', packageId],
+    queryFn: async () => {
+      const { data: row, error } = await supabase
+        .from('scorm_packages')
+        .select('*')
+        .eq('id', packageId!)
+        .single();
 
-  useEffect(() => {
-    if (!packageId) { setLoading(false); return; }
+      if (error) throw new Error(error.message);
+      return row as ScormPackage;
+    },
+    enabled: isSupabaseConfigured && !!packageId,
+  });
 
-    let cancelled = false;
-
-    async function fetch() {
-      setLoading(true);
-      if (!isSupabaseConfigured) { setPkg(null); setIsLive(false); setLoading(false); return; }
-
-      try {
-        const { data, error: fetchError } = await supabase
-          .from('scorm_packages')
-          .select('*')
-          .eq('id', packageId)
-          .single();
-
-        if (cancelled) return;
-        if (fetchError) { setError(fetchError.message); setIsLive(false); }
-        else { setPkg(data as ScormPackage); setIsLive(true); }
-      } catch (err) {
-        if (!cancelled) { setError(err instanceof Error ? err.message : 'Failed to load SCORM package'); setIsLive(false); }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetch();
-    return () => { cancelled = true; };
-  }, [packageId]);
+  const pkg = data ?? null;
+  const isLive = !!data;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { pkg, loading, error, isLive };
 }
 
 /* ── useScormRuntime — SCORM 1.2 + 2004 API bridge ────────────────── */
+// This hook uses refs + intervals for SCORM API bridge state management.
+// TanStack Query is used only for initial tracking data load.
 
 interface ScormRuntimeOptions {
   scormPackageId: string | undefined;
@@ -93,7 +82,7 @@ export function useScormRuntime(options: ScormRuntimeOptions) {
   const [error, setError] = useState<string | null>(null);
   const trackingRef = useRef<Record<string, string>>({});
   const dirtyRef = useRef(false);
-  const commitTimerRef = useRef<ReturnType<typeof setInterval>>();
+  const commitTimerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   // Load existing tracking data on mount
   useEffect(() => {
@@ -211,7 +200,6 @@ export function useScormRuntime(options: ScormRuntimeOptions) {
   const injectApis = useCallback((iframeWindow: Window) => {
     try {
       if (scormVersion === 'scorm_12' || scormVersion === 'scorm_2004') {
-        // Inject both for maximum compatibility
         (iframeWindow as unknown as Record<string, unknown>).API = buildScorm12Api();
         (iframeWindow as unknown as Record<string, unknown>).API_1484_11 = buildScorm2004Api();
       }

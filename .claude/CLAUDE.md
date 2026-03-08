@@ -1,241 +1,664 @@
-# SOCELLE GLOBAL — MONOREPO GOVERNANCE
-**Authority:** This is the root governance file for the entire SOCELLE monorepo.  
-**Last Updated:** March 5, 2026  
-**Canonical Command Docs:** `docs/command/*`
+You are the COMMAND AGENT for the SOCELLE monorepo.
+
+IMPORTANT CONTEXT:
+- The ONLY document that reflects the OWNER’S CURRENT DIRECTION is:
+  - `V3SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V3 master — supersedes V1)
+- All other command/governance docs (including `SOCELLE_MASTER_CLAUDE_MD_COMPLETE.md`) are older and may conflict.
+- Your job in this run is to:
+  1) Read the new V1 master file.
+  2) Treat it as the top authority.
+  3) Rewrite the rest of the command-layer docs to match it.
+  4) Register work orders so future agents execute the plan.
+
+Do NOT touch application code, schemas, or runtime configs in this run.
+
+========================================
+STEP 0 — READ THE NEW MASTER
+========================================
+
+1. Read `V3SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` in full (supersedes V1).
+2. Treat it as the **single source of truth** for:
+   - Tech baseline: React 19 + Vite 6 + strict TypeScript, TanStack Query, Playwright, Supabase (RLS + pg_cron + pgvector), AI orchestrator with caching + eval harness.
+   - Observability via Admin Hub dashboards and CMS Hub publish/route health (not external Sentry dashboards).
+   - “Surgical upgrade, no rewrite” framing for React/Vite/TS:
+     - React 18.3 → 19.x ≈ 2 hours.
+     - Vite 5.x → 6.x ≈ 1 hour.
+     - TS strict flip ≈ 3–5 hours.
+   - Tailwind 3 now + token linting; Tailwind 4 later.
+   - Multi-hub, no-shell rule and hub list.
+   - Multi-platform plan: web (React+Vite) first, then Tauri desktop shell, then Flutter mobile using shared API contracts.
+   - Execution phases and gates.
+
+If anything in any other doc contradicts this V1 file, V1 wins.
+
+========================================
+STEP 1 — PROMOTE V1 AS THE MASTER
+========================================
+
+Update:
+
+- `SOCELLE_MASTER_CLAUDE_MD_COMPLETE.md`
+- `ROOT_CLAUDE.md`
+- `SOCELLE_WEB_CLAUDE.md`
+
+For each:
+
+1. Insert at the top:
+
+   “NOTE: This file is aligned to `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`. If this file conflicts with V1, the V1 file wins.”
+
+2. In `SOCELLE_MASTER_CLAUDE_MD_COMPLETE.md`:
+   - Rewrite its tech stack, execution order, and hub descriptions so they match the V1 version:
+     - Emphasize React 19 + Vite 6 + TS strict as small, incremental upgrades on a working React 18.3 + Vite 5.4 + TS 5.5 codebase.
+     - Explicitly state the one-day upgrade effort.
+     - Clarify web runtime: React + Vite as primary; Next.js only optional/future.
+     - Tailwind 3 now, Tailwind 4 later.
+     - Phases exactly as in V1 (skills first, then audit, then tech upgrades, then Intelligence Cloud, then all hubs, then multi-platform, then launch).
+
+3. In ROOT_CLAUDE and SOCELLE_WEB_CLAUDE:
+   - Remove or soften anything that suggests:
+     - Big rewrites rather than surgical upgrades.
+     - Next.js as the main runtime.
+   - Ensure they reference:
+     - Web: React+Vite.
+     - Desktop: Tauri wrapper.
+     - Mobile: Flutter with shared API contracts.
+
+========================================
+STEP 2 — ALIGN OTHER GOVERNANCE DOCS
+========================================
+
+Using V1 as the authority, go through and update:
+
+- `SOCELLE_CANONICAL_DOCTRINE.md`
+- `SOCELLE_ENTITLEMENTS_PACKAGING.md`
+- `SOCELLE_DATA_PROVENANCE_POLICY.md`
+- `SOCELLE_FIGMA_DESIGN_BRIEF.md`
+- `SOCELLE_FIGMA_TO_CODE_HANDOFF.md`
+- `SOCELLE_RELEASE_GATES.md`
+- `AGENT_SCOPE_REGISTRY.md`
+- `AGENT_WORKFLOW_INDEX.md`
+- `AGENT_WORKING_FOLDERS.md`
+- `SOCELLE_MONOREPO_MAP.md`
+- `GLOBAL_SITE_MAP.md`
+- `SITE_MAP.md`
+- `BRAND_SURFACE_INDEX.md`
+- `MASTER_STATUS.md`
+- `MONOREPO_TOOLING.md`
+- `MONOREPO_PORT_VERIFICATION.md`
+- `MIGRATION_INTEGRITY_REPORT.md`
+- `MODULE_BOUNDARIES.md`
+- `HARD_CODED_SURFACES.md`
+- `ASSET_MANIFEST.md`
+
+For each:
+
+1. Read existing content.
+2. Compare to V1.
+3. Rewrite sections that conflict with V1 about:
+   - Tech baseline and “surgical upgrade” framing.
+   - Anti-shell rule and required hub completeness.
+   - Multi-hub list and Intelligence-first IA.
+   - Multi-platform strategy (React+Vite → Tauri → Flutter).
+4. Add a short note at the top:
+   - “Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on <today’s date>.”
+
+========================================
+STEP 3 — UPDATE AGENT + WORKFLOW REGISTRIES
+========================================
+
+In:
+
+- `AGENT_SCOPE_REGISTRY.md`
+- `AGENT_WORKFLOW_INDEX.md`
+- `AGENT_WORKING_FOLDERS.md`
+
+Make sure they now reflect the agent roster and hub responsibilities as defined in V1:
+
+- Command Agent, Intelligence Architect, Platform Engineer, Design Guardian, Security, QA, Copy, Monetization, Data Architect, Commerce/Ecommerce, Education, Marketing, Sales, Multi-Platform, etc.
+- Each hub (Intelligence, Jobs, Brands, Professionals, Admin, CRM, Education, Marketing, Sales, Commerce, Authoring Studio, Mobile, Desktop, Credit Economy, Affiliate Engine) must:
+  - Have an assigned owner agent role.
+  - Explicitly reference “NO SHELLS” and list the minimum functional surface (Create/List/Detail/Edit/Permissions/Exports/Observability/Intelligence input).
+
+========================================
+STEP 4 — REGISTER REBUILD WORK ORDERS
+========================================
+
+In `build_tracker.md`:
+
+1. Add a new top-level section: “SOCELLE V2 – Align With V1 Master + Rebuild Plan”.
+2. Create work orders such as:
+   - V2-COMMAND-01: Align command docs to V1 master.
+   - V2-COMMAND-02: Refresh agent scopes and workflows.
+   - V2-COMMAND-03: Update site maps and brand surfaces to V1.
+   - V2-TECH-01: Execute tech baseline upgrades (React 19, Vite 6, TS strict, TanStack, Playwright, types regen). ALL COMPLETE + FROZEN.
+   - V2-INTEL-01: Implement Intelligence Cloud v1 (10 modules, 7 engines, 6 AI tools).
+   - V2-HUBS-01..N: Make each hub non-shell.
+
+Each WO should have: scope, inputs (which docs), outputs (which files/artifacts), owner agent role, and which gate it helps satisfy.
+
+========================================
+STEP 5 — PROOF PACK (FINAL ANSWER)
+========================================
+
+At the end of this run, output a short Markdown report that includes:
+
+- List of files you modified (paths).
+- 2–3 bullets per file describing the major changes.
+- List of new Work Orders in `build_tracker.md`.
+- Any open questions or conflicts you found between V1 and existing docs.
+
+Do NOT:
+- Modify React/TS code or Supabase schema.
+- Change pricing or tiers.
+- Weaken safety, legal, or provenance requirements.
+
+Your job in this run is ONLY: take the owner’s updated V1 master file and push that direction into all command/gov docs and build_tracker so future agents can execute the rebuild correctly.
+
+Begin.
+This uses your updated V1 file as the only authoritative input and tells Command to bring everything else up to match it. You don’t need to touch the other docs manually.
+
+When are we implementing the CMS
+You should implement the CMS after Intelligence Cloud is live but before you finish all other hubs — roughly alongside Marketing/Education, not at the very end.
+
+Given your phases and current direction, a clean placement is:
+
+Phase 4: Intelligence Cloud build (10 modules, 7 engines, 6 AI tools).
+
+Phase 5: “All hubs functional” — this is where CMS lives, because:
+
+CMS is the backbone for: blog, stories/briefs, launch comms, SEO content, education content, and in-app help.
+
+It’s also where your “blog everywhere” and Authoring Studio will eventually connect.
+
+So: Phase 5, early, in parallel with:
+
+Marketing Hub (campaigns, content placements).
+
+Education Hub (courses, articles, learning content).
+
+Authoring Studio (later wires into CMS, but the CMS tables and admin go first).
+
+If you want, I can outline a minimal CMS scope (tables + routes + admin screens) that fits your no-shell rule but can be built in about a week.
+
+Yes you need to update this file with your new direction so we have one source of truth and then command can update everything else please update this in an md file
+
+V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md
+Here’s an updated V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md that bakes in the new direction: React 19 + Vite 6 + TS strict as surgical upgrades, React+Vite as the primary runtime, Tailwind 3 now (Tailwind 4 later), skills-first, and the multi-hub/multi‑platform plan.
+
+You can paste this over your existing V1 file and commit it.
+
+text
+# SOCELLE — ONE SOURCE OF TRUTH (V1)
+# This file IS the master plan. Every agent reads this FIRST.
+# Last updated: March 8, 2026 (V1 direction lock)
+
+SOCELLE is a B2B intelligence platform for the professional beauty and medspa industry.  
+Intelligence platform FIRST. Marketplace second. Always.
+
+**One-liner:** “Spate tracks consumers. SOCELLE tracks Licensed Pros.”
+
+**Value flow:** Intelligence → Trust → Transaction → Retention (non‑negotiable order)
+
+**Revenue model:** Tri‑sided — SaaS subscriptions + wholesale affiliate commission + AI add‑ons + B2B ad‑tech.
+
+**Target:** $158,500/mo at 1,000 subscribers (~96% margin).
 
 ---
 
-## A) CANONICAL AUTHORITY
+## §A — Personas & Pricing (Locked)
 
-The following documents in `/docs/command/` are the **sole source of truth** for all platform decisions. No other document may override, contradict, or redefine what these documents establish.
+### Personas
 
-| Document | Governs |
-|---|---|
-| `SOCELLE_CANONICAL_DOCTRINE.md` | Platform thesis, dual-requirement doctrine, style locks (color/type/glass), banned language, conversion CTAs, voice, visual rules, data integrity rules |
-| `SOCELLE_ENTITLEMENTS_PACKAGING.md` | Roles, plan tiers, free preview rules, mini-app unlock map, subscription hooks, entitlement enforcement |
-| `SOCELLE_DATA_PROVENANCE_POLICY.md` | Allowed/disallowed sources, attribution, confidence scoring, freshness SLAs, influencer monitoring, truthfulness policy |
-| `SOCELLE_FIGMA_TO_CODE_HANDOFF.md` | Token naming parity (Figma→CSS→Tailwind→Flutter), component naming, breakpoints, grids, export rules, no-drift checklist |
-| `SOCELLE_RELEASE_GATES.md` | Pre-merge checklist, pre-deploy checklist, schema validation, no-fake-live validation, performance budgets, broken links, rollback protocol, Doc Gate |
-| `GLOBAL_SITE_MAP.md` | Canonical route/screen index — "no page left behind" reference |
-| `SITE_MAP.md` | Detailed route/screen/feature index with file paths, auth requirements, and data source labels (web + mobile + marketing) |
-| `BRAND_SURFACE_INDEX.md` | Brand-related surfaces across all portals + SEO readiness |
-| `AGENT_SCOPE_REGISTRY.md` | Agent boundaries, allowed/forbidden paths, handoff protocol |
+| Persona | What they pay for | Tier |
+|--------|--------------------|------|
+| Operator (spa/salon/medspa owner) | Market intelligence → menu optimization → revenue growth | $49–149/mo |
+| Provider (esthetician/stylist/NP) | Signals + protocols + education + career intelligence | $49/mo |
+| Brand (beauty company) | Market share + competitive intelligence + R&D Scout + partner enablement | $149–499/mo |
+| Student | Treatment demand signals + job market data + education | Free–$49/mo |
 
-**Rule:** If any file outside `/docs/command/` contradicts a command doc, the command doc wins. Update the contradicting file, not the command doc.
+### Pricing (locked)
 
-**Intelligence-First Thesis:** Intelligence platform first, marketplace second. This is non-negotiable across all apps, agents, and surfaces. The Intelligence Hub is the product hook. **Ecommerce is a transaction module beneath the intelligence layer — it is never the IA center, never leads navigation, and never defines the platform premise.**
+| Tier | Price | Credits | Intelligence | AI tools | Exports |
+|------|-------|---------|-------------|----------|---------|
+| Free | $0 | 0 | Top 3 national signals (current week) | Demo only | None |
+| Starter | $49 | 500 | Full national + limited local, 30 days | Explain Signal + Search | CSV |
+| Pro | $149 | 2,500 | All regions + historical + local | All 6 tools + briefs + plans | CSV + PDF + branded |
+| Enterprise | $499 | 10,000 | Unlimited + API + custom feeds | Unlimited + R&D Scout + MoCRA | All + API + webhook |
 
----
-
-## B) DOC GATE (GLOBAL QA ENFORCEMENT — NON-NEGOTIABLE)
-
-Authoritative docs:
-- `/docs/command/*` (global canonical)
-- This file: `/.claude/CLAUDE.md` (global governance)
-- Each app may have a local `CLAUDE.md` for stack-specific rules, but **local files may NOT override global doctrine.**
-
-Every agent output, every PR, every document must pass the Doc Gate. Violations are **automatic FAIL — no exceptions.**
-
-### FAIL Conditions
-
-| # | Condition | Example |
-|---|---|---|
-| FAIL 1 | External doc reference as authority | "Per `GOVERNANCE.md`..." or "Per `SOCELLE_MASTER_WORK_ORDER.md`..." |
-| FAIL 2 | New work order / master plan doc created outside `build_tracker.md` | Creating `REBUILD_PLAN_V2.md` anywhere; inventing WO IDs not in `build_tracker.md` |
-| FAIL 3 | Contradiction with command docs (design locks, provenance, entitlements) | Using `#1E252B` for primary text; `font-serif` on public pages |
-| FAIL 4 | Fake-live claims — numbers, timestamps, signals not tied to real `updated_at` | Hardcoded `"Updated 3 min ago"` with no DB column |
-| FAIL 5 | Omitted routes/screens vs `GLOBAL_SITE_MAP.md` + `SITE_MAP.md` | Spec covering 20 of 30 public routes |
-| FAIL 6 | Ecommerce elevated above Intelligence Hub in IA or navigation | MainNav leading with "Shop"; ecommerce framed as the platform premise |
-| FAIL 7 | Outreach/cold email content drafted or sent | Any cold email copy, cold DM scripts, or acquisition outreach |
-
-**Exception:** App-level `CLAUDE.md` files may contain stack-specific runtime rules that do not contradict command docs. These are operational context, not governance authority.
-
-### PASS Requirements
-
-| Requirement | Standard |
-|---|---|
-| **Cite file paths** | Every recommendation maps to a specific file path, route, endpoint, table, or component. No vague references. |
-| **Provide diffs/patch lists** | Any proposed change includes a diff or patch list showing exactly what changes and where. |
-| **LIVE vs DEMO labels** | Every data surface in output is explicitly labeled `DEMO` (mock/hardcoded) or `LIVE` (DB-connected with real `updated_at`). No ambiguity. |
-| **Reference command docs** | Cite the specific command doc and section for any governance rule applied. |
-| **Complete coverage** | No page, route, screen, or surface may be omitted. "No page left behind." |
-| **Proof artifacts** | Build logs (`npx tsc --noEmit`), curl output, screenshots, or schema diffs as required by task. |
-| **WO ID sourced correctly** | All WO IDs referenced in output must exist in `SOCELLE-WEB/docs/build_tracker.md`. |
+Credit costs and entitlements follow `SOCELLE_ENTITLEMENTS_PACKAGING.md`.
 
 ---
 
-## C) MONOREPO BOUNDARY RULES
+## §B — Canonical Authority (Docs This File Controls)
 
-### App Boundaries
+These docs in `/docs/command/` must align with THIS file. If they conflict, **this file wins**:
 
-| App | Path | Runtime | Owner Agent |
-|---|---|---|---|
-| Web (Public + Portals) | `SOCELLE-WEB/` | Vite + React + Tailwind + Supabase | Web Agent |
-| Mobile | `SOCELLE-MOBILE-main/apps/mobile/` | Flutter + Riverpod + Supabase | Mobile Agent |
-| Marketing Site | `apps/marketing-site/` | Next.js | SEO Agent |
-| Supabase Backend | `supabase/` + `SOCELLE-WEB/supabase/` | PostgreSQL + Edge Functions (Deno) | Backend Agent |
-| Shared Packages | `packages/` | Shared config + UI primitives | All (read), Backend (write) |
+- `SOCELLE_CANONICAL_DOCTRINE.md`
+- `SOCELLE_ENTITLEMENTS_PACKAGING.md`
+- `SOCELLE_DATA_PROVENANCE_POLICY.md`
+- `SOCELLE_FIGMA_DESIGN_BRIEF.md`
+- `SOCELLE_FIGMA_TO_CODE_HANDOFF.md`
+- `SOCELLE_RELEASE_GATES.md`
+- `GLOBAL_SITE_MAP.md`
+- `SITE_MAP.md`
+- `BRAND_SURFACE_INDEX.md`
+- `AGENT_SCOPE_REGISTRY.md`
+- `AGENT_WORKFLOW_INDEX.md`
+- `AGENT_WORKING_FOLDERS.md`
+- `MASTER_STATUS.md`
+- `SOCELLE_MONOREPO_MAP.md`
 
-### Cross-Boundary Rules
-
-1. **Mobile may not modify** `SOCELLE-WEB/` files or Supabase migrations.
-2. **Web may not modify** `SOCELLE-MOBILE-main/` files.
-3. **Both may read** `packages/` and `supabase/` schemas.
-4. **Only Backend Agent** may create or modify Supabase migrations.
-5. **Design token changes** require updates in both web (`tailwind.config.js`) and mobile (`socelle_theme.dart`) — coordinated by the Figma-to-Code handoff doc.
-6. **Portal routes** (`/portal/*`, `/brand/*`, `/admin/*`) — DO NOT MODIFY without explicit WO scope.
-7. **Commerce flow** (cart, checkout, orders) — NEVER MODIFY.
-8. **Auth system** (ProtectedRoute, AuthProvider) — NEVER MODIFY.
+**Rule:** If ANY file contradicts this V1 master, V1 is correct and the other file must be updated.
 
 ---
 
-## D) WO ID SOURCE RULE (GLOBAL — NON-NEGOTIABLE)
+## §C — Doc Gate (Every Agent Output Must Pass)
 
-- **Wave/WO IDs are only valid if present in `SOCELLE-WEB/docs/build_tracker.md`.**
-- No agent may invent, reference, or execute new WO IDs without adding them to `build_tracker.md` first.
-- `build_tracker.md` is the **sole execution authority** for WO scheduling, priority, and completion status.
-- `MASTER_STATUS.md` is a status snapshot only. If it contradicts `build_tracker.md`, `build_tracker.md` wins.
-- App-level `CLAUDE.md` files must not duplicate or redefine WO completion status — they must point to `build_tracker.md` as the source of truth.
+FAIL (any = reject output):
 
----
+- References external strategy/plan docs as authority (only this file + docs/command/* allowed).
+- Creates new planning docs outside `build_tracker.md`.
+- Contradicts V1 tech baseline or execution phases in this file.
+- Claims something is LIVE without tying to real `updated_at` + source.
+- Omits routes vs `GLOBAL_SITE_MAP` / `SITE_MAP`.
+- Elevates ecommerce above Intelligence in nav or IA.
+- Generates outreach / cold email / “partnership” copy.
 
-## E) ECOMMERCE MODULE RULE (NON-NEGOTIABLE)
+PASS (all = accept):
 
-Ecommerce (cart, checkout, wholesale orders, brand payouts) is **a module** — not the platform premise, not the IA center, and not the primary navigation hook.
-
-| Rule | Enforcement |
-|---|---|
-| Ecommerce does not appear in MainNav | MainNav position 1 is Intelligence. Commerce is inside portals only. |
-| Ecommerce never leads product messaging | All CTAs, headlines, and landing experiences lead with intelligence. |
-| "Shop" is never the first action | Discovery → Intelligence → Trust → Transaction is the canonical flow. |
-| Commerce routes are portal-scoped | `/portal/orders`, `/brand/orders`, `/brand/products`, `/admin/orders` — not public IA. |
-
-Violation of this rule = **FAIL 6**, blocks deploy.
+- Cites file paths and diffs.
+- Uses LIVE/DEMO labelling on data surfaces.
+- References this V1 file or command docs when making decisions.
+- Produces proof artifacts (audit JSON, screenshots) and a WO ID from `build_tracker.md`.
 
 ---
 
-## F) LIVE vs DEMO TRUTH RULES (NON-NEGOTIABLE)
+## §D — Anti‑Shell Rule (No Shells, Ever)
 
-Every data surface in every output must be explicitly labeled **LIVE** or **DEMO**. No ambiguity, no implicit assumptions.
+**NO SHELLS.** Any page, hub, or feature that renders UI must be fully functional.
 
-| Label | Meaning | Enforcement |
-|---|---|---|
-| **LIVE** | Data connects to a real DB column with verifiable `updated_at` | JS hook must reference Supabase table; no hardcoded fallback presented as live |
-| **DEMO** | Data is hardcoded, mocked, or seeded for demonstration | Must display visible `DEMO` or `PREVIEW` badge to end user |
+A shell is a surface that:
 
-Rules:
-1. Any surface showing "Updated X ago" must derive that value from a real `updated_at` DB column.
-2. Any surface showing counts, benchmarks, or trend signals must `COUNT(*)` from a real table or show a `DEMO` badge.
-3. `isLive` flags (see `useIntelligence.ts`) drive PREVIEW banners — this pattern must be applied to all new data hooks.
-4. Never display a pulsing dot, "Live" badge, or animated counter on data that is a static array.
+- Renders only mock/static data when the hub is supposed to be live.
+- Has no write path for its primary object (no Create/Edit/Delete).
+- Does not enforce permissions or tier gating.
+- Lacks proper error, empty, and loading states.
+- Has no observability (errors never reach Admin Hub dashboards or logs).
 
-Canonical DEMO surfaces (as of Wave 10 — verify against `build_tracker.md` for current state):
-- `/` (Home) — hardcoded signals; no DEMO label yet (W10-02 / BUG-W9-02)
-- `/plans` — hardcoded tiers
-- `/for-brands`, `/professionals` — hardcoded stats
-- `/events` — stub pending `events` Supabase table (W10-05)
-- `/jobs` — stub pending `job_postings` live wire (W10-06)
-- `/portal/intelligence`, `/portal/benchmarks`, `/brand/intelligence`, `/brand/intelligence-report` — mock data
+**Every hub must have ALL of these:**
 
-Canonical LIVE surfaces (confirmed Wave 9+):
-- `/intelligence` — `market_signals` via `useIntelligence()` with `isLive` flag
-- `/brands`, `/brands/:slug` — `brands` table (active status)
-- `/education`, `/protocols`, `/protocols/:slug` — `brand_training_modules`, `canonical_protocols`
-- `/request-access` — `access_requests` table
+| Requirement | What it means in practice |
+|------------|---------------------------|
+| Create action | User can create the primary object → a row in DB |
+| Library view | Browse all objects with sort/filter/search from Supabase |
+| Detail view | Full detail of any object from DB |
+| Edit + Delete | Update and archive/remove objects with RLS respected |
+| Permissions | RLS + ModuleRoute/TierGuard enforcing roles & tiers |
+| Intelligence input | A signal can spawn or update an object in this hub |
+| Proof/metrics | Dashboard with real aggregated metrics (and `updated_at`) |
+| Export | CSV minimum; PDF for Pro+ |
+| Error/empty/loading | Premium states implemented and tested |
+| Observability | Errors and slow paths visible in Admin Hub dashboards and logs |
 
----
-
-## G) NO OUTREACH EMAILS RULE
-
-- Do **not** write, draft, or send outreach emails, cold DMs, or acquisition email copy of any kind.
-- Acquisition uses on-site flows only: public pages → "Get Intelligence Access" CTA → `/request-access` form → `access_requests` table → portal signup.
-- The `send-email` Edge Function is for **transactional emails only** (order confirmations, password resets, access notifications).
-- This rule is in effect until the product owner explicitly lifts it in writing.
+If an agent detects a shell, they HALT and raise a WO to fix it.
 
 ---
 
-## H) CHANGE CONTROL
+## §E — Tech Stack (Locked, “Surgical Upgrade” Framing)
 
-### Modifying Command Docs
+### Current reality (from build spec)
 
-| Action | Process |
-|---|---|
-| Fix a typo or formatting | Direct edit, no approval needed |
-| Clarify existing rule (no semantic change) | Direct edit, note in commit message |
-| Add a new rule or section | Requires owner (Bruce) approval before merge |
-| Modify an existing rule | Requires owner approval + impact assessment |
-| Remove a rule | Requires owner approval + migration plan |
-| Add a new command doc | Requires owner approval |
+- React 18.3 (working, shipping).
+- Vite 5.4.
+- TypeScript 5.5 (strict mode ON, but some `any` debt).
+- Tailwind 3.4.
+- React Router DOM.
+- Supabase JS 2.57.
+- Playwright + Vitest wired but thin coverage.
 
-### Modifying App-Level CLAUDE.md
+### Target baseline (must be in place before big feature work)
 
-| Action | Process |
-|---|---|
-| Update wave status / blockers to match `build_tracker.md` | Direct edit |
-| Add stack-specific build commands | Direct edit |
-| Add design rules that contradict command docs | **FORBIDDEN** |
-| Redefine WO completion status (vs `build_tracker.md`) | **FORBIDDEN** |
+| Package | Target | Notes |
+|---------|--------|-------|
+| React | 19.x | Incremental bump from 18.3 |
+| Vite | 6.x | Incremental bump from 5.4 |
+| TypeScript | 5.5 strict ON | `noExplicitAny = true` |
+| TanStack Query | v5 | Standardize all data fetching |
+| Router | React Router / TanStack Router | React+Vite primary; no Next.js as main runtime |
+| Tailwind | 3.4 | Tailwind 4 deferred until design debt cleared |
+| Observability | Admin Hub dashboards + logs | Errors and key events visible in Admin Hub |
+| Playwright | E2E smoke | Route crawl, auth, paywall |
 
-### No Parallel Plans Enforcement
+### Upgrade effort (realistic, non‑scary)
 
-ONE canonical plan. Updates go in command docs. No side channels.
+- React 18.3 → 19.x: ~2 hours  
+  - `npm i react@^19 react-dom@^19 @types/react@^19 @types/react-dom@^19`  
+  - `npm run build` + sanity checks.
 
-- ❌ Creating `MY_IMPLEMENTATION_PLAN.md` that duplicates governance
-- ❌ Creating a "v2" of any command doc alongside the original
-- ❌ Inventing WO IDs not tracked in `build_tracker.md`
-- ✅ All changes to platform rules flow through `/docs/command/` updates
-- ✅ Implementation specs in app directories reference (not redefine) command doc rules
+- Vite 5.x → 6.x: ~1 hour  
+  - `npm i vite@^6 @vitejs/plugin-react@^5`  
+  - `npm run build` and fix any minor config warnings.
 
-### Contradiction Resolution
+- TypeScript strict flip: ~3–5 hours  
+  - In `tsconfig.json`: `"strict": true`, `"noExplicitAny": true`.  
+  - `npx tsc --noEmit` and fix existing `any` usages with minimal changes.
 
-1. `/docs/command/*` wins over everything
-2. `/.claude/CLAUDE.md` (this file) wins over app-level CLAUDE.md files
-3. App-level CLAUDE.md wins over inline code comments
-4. `build_tracker.md` wins over `MASTER_STATUS.md` for WO completion status
+**TOTAL tech baseline upgrade:** roughly **one working day**, zero rewrites.  
+Agents MUST treat these as **surgical, incremental changes on a working app**, not multi‑week migrations.
 
----
+### Primary runtime choice
 
-## I) AGENT OPERATING RULES
-
-### Before Starting Any Work
-
-1. Read this file (`/.claude/CLAUDE.md`)
-2. Read the relevant command docs in `/docs/command/`
-3. Read the app-level CLAUDE.md for your target app
-4. Read `SOCELLE-WEB/MASTER_STATUS.md` (live status snapshot)
-5. Read `SOCELLE-WEB/docs/build_tracker.md` (execution authority for WO IDs + wave status)
-6. Read `docs/command/AGENT_SCOPE_REGISTRY.md` (your scope, allowed/forbidden paths)
-7. Confirm you know which mini-app boundary you're operating in
-8. Confirm your output will pass the Doc Gate (§B above)
-
-### During Work
-
-- Reference command docs by path: `docs/command/SOCELLE_CANONICAL_DOCTRINE.md §3`
-- Do not create new governance documents outside `/docs/command/`
-- Do not modify existing command docs without change control process
-- Coordinate cross-boundary changes with the relevant app agent
-- Do not invent WO IDs — all WOs must be in `build_tracker.md`
-
-### After Work
-
-- Run the Doc Gate check on your output
-- Run the pre-merge checklist from `docs/command/SOCELLE_RELEASE_GATES.md`
-- Run the no-drift checklist from `docs/command/SOCELLE_FIGMA_TO_CODE_HANDOFF.md` (if design changes)
-- Update `build_tracker.md` if WO status changed
+- Web **primary** runtime: **React + Vite** (SPA with TanStack/React Router).
+- Next.js: **not** the core runtime; only optional for future SEO‑specialized surfaces if needed.
+- All planning assumes React+Vite as the app shell used by:
+  - Web.
+  - Desktop (Tauri wrapper) using the same build.
 
 ---
 
-## J) DEFINITION OF DONE FOR GOVERNANCE
+## §F — Design System (Pearl Mineral V2, Tailwind 3 Now)
 
-The governance layer is complete when:
-1. `/.claude/CLAUDE.md` exists and contains §A–§J above
-2. `/docs/command/AGENT_SCOPE_REGISTRY.md` exists with all recognized agent scopes
-3. `/SOCELLE-WEB/.claude/CLAUDE.md` exists with operational context only (no governance redefinitions)
-4. All 3 files are consistent (no contradictions between them)
-5. Ecommerce is scoped as a module (not IA center) across all 3 files
-6. LIVE vs DEMO labels are applied to all data surfaces in all agent outputs
-7. No outreach email copy exists in any agent output
+**Canonical source:** `SOCELLE_CANONICAL_DOCTRINE.md` and Tailwind `theme.extend` tokens.
+
+- Tailwind: stay on **v3.4** for V1. Tailwind 4 migration is **deferred** until:
+  - Legacy color systems removed (`pro.*`, `brand.*`, `natura.*`, `intel.*`, `edu.*`).
+  - All components use Pearl Mineral V2 tokens only.
+
+Color tokens (must be enforced via lint rules):
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| background | `#F6F3EF` | Page backgrounds |
+| graphite | `#141418` | Primary text |
+| accent | `#6E879B` | Interactive, links |
+| accent-hover | `#5A7185` | Hover |
+| accent-soft | `#E8EDF1` | Soft panels |
+| signal-up | `#5F8A72` | Positive |
+| signal-warn | `#A97A4C` | Caution |
+| signal-down | `#8E6464` | Negative |
+
+Banned:
+
+- `font-serif` on public pages.
+- Hardcoded hex outside token system.
+- Bootstrap/Material default blue, etc.
+
+Implementation requirement:
+
+- ESLint/plugin rules must block rogue colors and fonts.
+- Pearl tokens must be enforced; figma must be updated to match these doctrine values (not the other way around).
 
 ---
 
-*SOCELLE GLOBAL GOVERNANCE v4.0 — March 5, 2026 — Command Center Authority*
+## §G — Hubs & Intelligence Spine
+
+SOCELLE is a **multi‑hub ecosystem**. Intelligence is the spine.
+
+### Hub list (must all be non‑shell)
+
+- Intelligence (core revenue surface)
+- Jobs
+- Brands
+- Professionals
+- Admin
+- CRM
+- Education
+- Marketing
+- Sales
+- Commerce
+- Authoring Studio
+- Mobile App
+- Desktop App
+- Credit Economy
+- Affiliate/Wholesale Engine
+
+Each hub must satisfy the anti‑shell rule and have a defined relationship with Intelligence (signals create/update objects).
+
+### Intelligence Hub (the revenue surface)
+
+10 modules (must exist and be wired to real data):
+
+- KPI Strip
+- Signal Table
+- Trend Stacks
+- “What Changed” Timeline
+- Opportunity Signals (revenue estimates)
+- Confidence + Provenance
+- Category Intelligence
+- Competitive Benchmarking
+- Brand Health Monitor
+- Local Market View
+
+7 AI engines and 6 AI tools live here (menuOrchestrator, planOrchestrator, gapAnalysisEngine, etc.), tied to credit usage.
+
+---
+
+## §H — Multi‑Platform Strategy (Build Once, Use Smartly)
+
+Goal: **96%+ reuse of logic and contracts**, without forcing unnatural code sharing.
+
+- Shared across all platforms:
+  - Supabase schema, RLS, pg_cron, pgvector.
+  - Edge functions (ai‑orchestrator, feed‑orchestrator, rss‑to‑signals, etc.).
+  - `intelligence-core` business logic (TS package) used by React front‑ends.
+  - Design tokens (Pearl Mineral V2).
+
+- Web:
+  - React + Vite app is the **source implementation**.
+  - This app is what Tauri wraps.
+
+- Desktop:
+  - Tauri shell for Mac + Windows.
+  - Wraps the **same React+Vite app**.
+  - Adds desktop‑only features later (notifications, file export, auto‑update, secure storage).
+  - No re‑implementation of business logic in Rust; only IPC plumbing.
+
+- Mobile:
+  - Flutter app.
+  - Uses the same Supabase API contracts and edge functions.
+  - No attempt to FFI TypeScript logic into Dart.
+  - Shares: schemas, entitlement rules, credit system, AI endpoints.
+
+---
+
+## §I — Execution Phases (V1 Timeline, Quality > Time)
+
+Phases are **sequence**, not calendar. Agents must respect order.
+
+1. **PHASE 0 — Design + Required Docs**
+   - All hub specs and required docs exist (see §S).
+   - No new app code before this.
+
+2. **PHASE 1 — Skills Installation**
+   - 51+ skills installed and verified.
+   - Skills cover: repo audit, token scanner, copy linter, QA smoke, data/provenance checks, etc.
+   - SKILLS FIRST: no audit or upgrade work before the skill verification command passes.
+
+3. **PHASE 2 — Full‑Platform Audit**
+   - Run repo, route, data, and mock‑density audits.
+   - Produce artifacts: route manifest, apilogic map, livedemo report, tokendrift report, mockdensity report, etc.
+   - Command Agent proposes upgrades → owner approves.
+
+4. **PHASE 3 — Tech Upgrades (Baseline)**
+   - React 19, Vite 6, TypeScript strict, TanStack Query on all data hooks.
+   - Observability: errors and key events visible in Admin Hub dashboards and logs.
+   - Redis or equivalent caching for AI.
+   - `database.types.ts` regenerated to match all migrations.
+   - **Framing:** ~1 day of focused work on a working codebase, no rewrites.
+
+5. **PHASE 4 — Intelligence Cloud Build**
+   - Implement the 10 modules + 7 engines + 6 AI tools.
+   - Live feed pipeline in place (37+ feeds, APIs).
+   - Credit economy and affiliate engine wired.
+
+6. **PHASE 5 — All Hubs Functional**
+   - Each hub meets anti‑shell rule.
+   - CMS and content surfaces implemented (blog, briefs, education content).
+   - Authoring Studio MVP.
+
+7. **PHASE 6 — Multi‑Platform**
+   - PWA baseline solid.
+   - Tauri desktop wrapper.
+   - Flutter mobile wired to same APIs.
+
+8. **PHASE 7 — Launch**
+   - All launch non‑negotiables passed (see §K).
+   - Launch comms executed (site, email, social).
+
+---
+
+## §J — Launch Non‑Negotiables (Must Pass All)
+
+Before first paying subscriber:
+
+- `npx tsc --noEmit` → Exit 0.
+- `npm run build` → Exit 0.
+- `/` routes to Intelligence home (not prelaunch quiz or a shell).
+- Errors and key events visible in Admin Hub dashboards and logs.
+- TanStack Query used for all data fetching (no raw `useEffect` + fetch for server data).
+- PAYMENT_BYPASS = false in production.
+- 0 `font-serif` on public pages.
+- 0 banned terms on public pages (per doctrine).
+- Stripe webhooks work (subscription state changes in DB).
+- Signals fresh: `market_signals` has ≥5 rows with `fetched_at` < 24h.
+- AI briefs: 10 test briefs with 0 hallucinations and correct citations.
+- SEO baseline: all public routes with titles/meta/OG; `sitemap.xml` live.
+- `database.types.ts` matches migrations.
+- Credits deduct correctly on every AI action.
+- Affiliate links show proper FTC badges and tracked redirects.
+- Playwright smoke tests (routes + auth + paywall) pass.
+
+---
+
+## §K — Required Docs (Gate Before Major Work)
+
+These must exist before stepping into the corresponding phases:
+
+Program‑wide (governance):
+
+- `AGENT_OPERATING_MANUAL.md`
+- `SOCELLE_CANONICAL_DOCTRINE.md`
+- `SOCELLE_ENTITLEMENTS_PACKAGING.md`
+- `SOCELLE_DATA_PROVENANCE_POLICY.md`
+- `SOCELLE_FIGMA_DESIGN_BRIEF.md`
+- `SOCELLE_FIGMA_TO_CODE_HANDOFF.md`
+- `SOCELLE_RELEASE_GATES.md`
+- `SECURITY_BASELINE.md`
+- `QA_TEST_STRATEGY.md`
+- `AI_SAFETY_LEGAL_FRAMEWORK.md`
+- `BRAND_VOICE_GUIDELINES.md`
+- `MASTER_PROMPTING_GUIDELINE.md`
+- `COPY_SYSTEM.md`
+- `DATA_MODEL_GLOSSARY.md`
+- `RISK_REGISTER.md`
+- `INCIDENT_ROLLBACK_PLAYBOOK.md`
+- `ADMIN_CONTROL_CENTER_SPEC.md`
+- `LAUNCH_COMMS_PLAYBOOK.md`
+
+Per hub:
+
+- One **Hub Spec** each for:
+  - Intelligence, Jobs, Brands, Professionals, Admin, CRM, Education, Marketing, Sales, Commerce, Authoring Studio, Mobile, Desktop, Credit Economy, Affiliate Engine.
+
+Rule:
+
+- If a required doc for a phase is missing, agents HALT implementation and file a WO in `build_tracker.md` to create it.
+
+---
+
+## §L — Agent Roster (Roles, Not People)
+
+Key roles:
+
+- Command Agent — sequencing, governance, gates.
+- Intelligence Architect — Intelligence Hub, AI tools, feed pipeline.
+- Platform Engineer — build system, tech upgrades, CI, observability.
+- Design Guardian — design tokens, figma→code, responsiveness.
+- Security Agent — RLS, secrets, AI guardrails, legal, FTC.
+- QA Agent — tests, smoke, visual regression, LIVE/DEMO enforcement.
+- Copy Agent — voice, banned terms, paywall/onboarding/empties, launch comms.
+- Monetization Agent — entitlements, credits, pricing, onboarding.
+- Data Architect — schema, types, MVs, first‑party events.
+- CRM/Education/Marketing/Sales/Ecommerce/Authoring/Multi‑Platform Agents — each own their hub.
+
+Each hub has exactly one primary owner. No orphan hubs.
+
+---
+
+## §M — Ecommerce Boundary (Non‑Negotiable)
+
+Commerce is a **module**, never the IA backbone:
+
+- No “Shop” as primary nav item.
+- No “Shop Now” / “Buy Now” as the main CTA on Intelligence pages.
+- All commerce routes gated (auth + tier).
+- Intelligence pages lead with signals and value, then (optionally) actions that may include commerce.
+
+Affiliate engine:
+
+- Must display FTC‑compliant “Commission‑linked” badges on any monetized recommendation.
+
+---
+
+## §N — Live vs Demo Truth
+
+Every data surface must declare its truth level:
+
+- LIVE: backed by DB with verifiable `updated_at` + provenance.
+- DEMO: clearly labeled DEMO to the user.
+- MOCK (unlabeled) is forbidden in any user‑facing surface.
+
+All hooks must follow the `isLive` pattern and route components must label surfaces correctly.
+
+---
+
+## §O — AI Safety (Beauty + Medspa Context)
+
+- Guardrails between LLM and user.
+- Always show “Generated by AI” and an expandable “Evidence & Logic” panel with sources.
+- Hard block: dosing, diagnoses, prescriptions.
+- Provider override for higher‑risk suggestions: NPI → scope_of_practice → rationale logged.
+- Maintain logs suitable for insurance/legal review.
+
+---
+
+## §P — Acquisition Boundary (No Outreach)
+
+- Acquisition is driven by on‑platform flows (public pages → request access → app).
+- `send-email` is transactional only (auth, receipts, briefs, etc.).
+- No cold email, DM sequences, or pseudo‑outreach content.
+
+---
+
+## §Q — Competitive Position (Anchors)
+
+- Spate, Trendalytics, Revieve, Zenoti, Meevo, Canva are the comparison set.
+- SOCELLE differentiates by:
+  - Licensed pros focus.
+  - Intelligence → action plans → revenue, not just charts.
+  - Integrated AI Service Menu.
+  - Medical‑adjacent compliance baked in.
+
+---
+
+## §R — Deferred Tech (Must Not Be Implemented Early)
+
+High‑cost or optional tech (Perfect Corp, Haut.AI, Sora, Typesense, etc.) is listed as **deferred**.  
+Agents MUST NOT implement them until revenue/scale triggers (documented elsewhere) are met.
+
+---
+
+## §S — Stop Conditions
+
+Agents must HALT and escalate if:
+
+- A shell is about to be shipped.
+- Secrets are found in code.
+- PAYMENT_BYPASS or similar flags are true in prod.
+- Banned terms appear in public copy.
+- Build or tests fail.
+
+---
+
+*Quality and revenue outrank time. Nothing ships average. Intelligence platform first. Always.*

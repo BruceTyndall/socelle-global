@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── WO-OVERHAUL-15: Marketing Platform — Campaign hooks ──────────────
 // Tables: campaigns, campaign_content
 // isLive flag drives DEMO badge. ZERO cold email — all campaigns opt-in only.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export type CampaignType = 'email' | 'sms' | 'push' | 'in_app' | 'social';
 export type CampaignStatusType = 'draft' | 'scheduled' | 'active' | 'paused' | 'completed' | 'archived';
@@ -34,81 +35,50 @@ export interface UseCampaignsReturn {
 }
 
 export function useCampaigns(): UseCampaignsReturn {
-  const [campaigns, setCampaigns] = useState<MarketingCampaign[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
+  const queryClient = useQueryClient();
 
-  const refetch = useCallback(() => setTick((t) => t + 1), []);
+  const { data: campaigns = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['campaigns'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('campaigns')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as MarketingCampaign[];
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
+  const createMut = useMutation({
+    mutationFn: async (campaign: Omit<MarketingCampaign, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase.from('campaigns').insert(campaign).select().single();
+      if (error) throw new Error(error.message);
+      return data as MarketingCampaign;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['campaigns'] }); },
+  });
 
-    async function fetchCampaigns() {
-      setLoading(true);
-      setError(null);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<MarketingCampaign> }) => {
+      const { error } = await supabase.from('campaigns').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['campaigns'] }); },
+  });
 
-      if (!isSupabaseConfigured) {
-        setCampaigns([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: queryError } = await supabase
-          .from('campaigns')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (cancelled) return;
-
-        if (queryError || !data) {
-          setCampaigns([]);
-          setIsLive(false);
-          if (queryError) setError(queryError.message);
-        } else {
-          setCampaigns(data as MarketingCampaign[]);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setCampaigns([]);
-          setIsLive(false);
-          setError('Failed to fetch campaigns');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchCampaigns();
-    return () => { cancelled = true; };
-  }, [tick]);
-
-  const createCampaign = useCallback(async (campaign: Omit<MarketingCampaign, 'id' | 'created_at' | 'updated_at'>): Promise<MarketingCampaign | null> => {
+  const createCampaign = async (campaign: Omit<MarketingCampaign, 'id' | 'created_at' | 'updated_at'>): Promise<MarketingCampaign | null> => {
     if (!isSupabaseConfigured) return null;
-    const { data, error: insertError } = await supabase
-      .from('campaigns')
-      .insert(campaign)
-      .select()
-      .single();
-    if (insertError) { setError(insertError.message); return null; }
-    refetch();
-    return data as MarketingCampaign;
-  }, [refetch]);
+    try { return await createMut.mutateAsync(campaign); } catch { return null; }
+  };
 
-  const updateCampaign = useCallback(async (id: string, updates: Partial<MarketingCampaign>): Promise<boolean> => {
+  const updateCampaign = async (id: string, updates: Partial<MarketingCampaign>): Promise<boolean> => {
     if (!isSupabaseConfigured) return false;
-    const { error: updateError } = await supabase
-      .from('campaigns')
-      .update(updates)
-      .eq('id', id);
-    if (updateError) { setError(updateError.message); return false; }
-    refetch();
-    return true;
-  }, [refetch]);
+    try { await updateMut.mutateAsync({ id, updates }); return true; } catch { return false; }
+  };
+
+  const isLive = campaigns.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   return { campaigns, isLive, loading, error, createCampaign, updateCampaign, refetch };
 }

@@ -1,8 +1,10 @@
 /**
  * useCourses — list courses with filters (category, level, free/paid, featured)
- * Data source: courses table (LIVE when DB connected, DEMO fallback)
+ * Data source: courses table (LIVE when DB connected)
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 
 export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';
@@ -40,89 +42,54 @@ interface UseCoursesOptions {
 }
 
 export function useCourses(options: UseCoursesOptions = {}) {
-  const [courses, setCourses] = useState<CourseListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const { data: courses = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['courses', options],
+    queryFn: async () => {
+      let query = supabase
+        .from('courses')
+        .select('id, title, slug, description, category, level, thumbnail_url, author_name, duration_minutes, ce_credits, price_cents, is_free, is_featured, is_published, rating_avg, enrollment_count, created_at, updated_at')
+        .eq('is_published', true);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchCourses() {
-      setLoading(true);
-      setError(null);
-
-      if (!isSupabaseConfigured) {
-        setCourses([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
+      if (options.category && options.category !== 'all') {
+        query = query.eq('category', options.category);
+      }
+      if (options.level && options.level !== 'all') {
+        query = query.eq('level', options.level);
+      }
+      if (options.pricing === 'free') {
+        query = query.eq('is_free', true);
+      } else if (options.pricing === 'paid') {
+        query = query.eq('is_free', false);
+      }
+      if (options.featured) {
+        query = query.eq('is_featured', true);
+      }
+      if (options.search) {
+        query = query.ilike('title', `%${options.search}%`);
       }
 
-      try {
-        let query = supabase
-          .from('courses')
-          .select('id, title, slug, description, category, level, thumbnail_url, author_name, duration_minutes, ce_credits, price_cents, is_free, is_featured, is_published, rating_avg, enrollment_count, created_at, updated_at')
-          .eq('is_published', true);
-
-        if (options.category && options.category !== 'all') {
-          query = query.eq('category', options.category);
-        }
-        if (options.level && options.level !== 'all') {
-          query = query.eq('level', options.level);
-        }
-        if (options.pricing === 'free') {
-          query = query.eq('is_free', true);
-        } else if (options.pricing === 'paid') {
-          query = query.eq('is_free', false);
-        }
-        if (options.featured) {
-          query = query.eq('is_featured', true);
-        }
-        if (options.search) {
-          query = query.ilike('title', `%${options.search}%`);
-        }
-
-        // Sort
-        switch (options.sort) {
-          case 'popular':
-            query = query.order('enrollment_count', { ascending: false, nullsFirst: false });
-            break;
-          case 'rating':
-            query = query.order('rating_avg', { ascending: false, nullsFirst: false });
-            break;
-          case 'newest':
-          default:
-            query = query.order('created_at', { ascending: false });
-            break;
-        }
-
-        const { data, error: fetchError } = await query;
-
-        if (cancelled) return;
-
-        if (fetchError) {
-          setError(fetchError.message);
-          setCourses([]);
-          setIsLive(false);
-        } else {
-          setCourses((data as CourseListItem[]) || []);
-          setIsLive(true);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load courses');
-          setCourses([]);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+      switch (options.sort) {
+        case 'popular':
+          query = query.order('enrollment_count', { ascending: false, nullsFirst: false });
+          break;
+        case 'rating':
+          query = query.order('rating_avg', { ascending: false, nullsFirst: false });
+          break;
+        case 'newest':
+        default:
+          query = query.order('created_at', { ascending: false });
+          break;
       }
-    }
 
-    fetchCourses();
-    return () => { cancelled = true; };
-  }, [options.category, options.level, options.pricing, options.featured, options.sort, options.search]);
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data as CourseListItem[]) || [];
+    },
+    enabled: isSupabaseConfigured,
+  });
+
+  const isLive = courses.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
 
   const categories = useMemo(() => {
     const cats = new Set(courses.map(c => c.category).filter(Boolean) as string[]);

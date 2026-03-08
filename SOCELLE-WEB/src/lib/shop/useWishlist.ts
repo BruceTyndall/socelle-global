@@ -1,15 +1,16 @@
 // useWishlist — add/remove/list wishlist items
+// Migrated to TanStack Query v5 (V2-TECH-04).
+// NOTE: Retains useEffect for wishlist initialization (ensureWishlist is a side-effect with DB writes).
 import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import { useAuth } from '../auth';
 import type { WishlistItem, Product } from './types';
 
 export function useWishlist() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [wishlistId, setWishlistId] = useState<string | null>(null);
-  const [items, setItems] = useState<WishlistItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const ensureWishlist = useCallback(async (): Promise<string | null> => {
     if (!user?.id) return null;
@@ -33,15 +34,22 @@ export function useWishlist() {
     } catch { return null; }
   }, [user?.id]);
 
-  const loadItems = useCallback(async (wid?: string) => {
-    const id = wid ?? wishlistId;
-    if (!id) { setItems([]); setLoading(false); return; }
-    setLoading(true);
-    try {
+  // Initialize wishlist on mount
+  useEffect(() => {
+    (async () => {
+      await ensureWishlist();
+    })();
+  }, [ensureWishlist]);
+
+  const queryKey = ['wishlist_items', wishlistId];
+
+  const { data: items = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
       const { data } = await supabase
         .from('wishlist_items')
         .select('*')
-        .eq('wishlist_id', id)
+        .eq('wishlist_id', wishlistId!)
         .order('added_at', { ascending: false });
 
       const wlItems = (data ?? []) as WishlistItem[];
@@ -51,21 +59,12 @@ export function useWishlist() {
         const prodMap = new Map((prods ?? []).map(p => [p.id, p as Product]));
         wlItems.forEach(i => { if (i.product_id) i.product = prodMap.get(i.product_id); });
       }
-      setItems(wlItems);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load wishlist');
-    } finally {
-      setLoading(false);
-    }
-  }, [wishlistId]);
+      return wlItems;
+    },
+    enabled: !!wishlistId,
+  });
 
-  useEffect(() => {
-    (async () => {
-      const wid = await ensureWishlist();
-      if (wid) await loadItems(wid);
-      else setLoading(false);
-    })();
-  }, [ensureWishlist, loadItems]);
+  const invalidate = useCallback(() => queryClient.invalidateQueries({ queryKey }), [queryClient, queryKey]);
 
   const addItem = useCallback(async (productId: string, variantId: string | null = null) => {
     const wid = wishlistId ?? await ensureWishlist();
@@ -73,13 +72,13 @@ export function useWishlist() {
     const exists = items.find(i => i.product_id === productId && i.variant_id === variantId);
     if (exists) return;
     await supabase.from('wishlist_items').insert({ wishlist_id: wid, product_id: productId, variant_id: variantId });
-    await loadItems(wid);
-  }, [wishlistId, items, ensureWishlist, loadItems]);
+    invalidate();
+  }, [wishlistId, items, ensureWishlist, invalidate]);
 
   const removeItem = useCallback(async (itemId: string) => {
     await supabase.from('wishlist_items').delete().eq('id', itemId);
-    await loadItems();
-  }, [loadItems]);
+    invalidate();
+  }, [invalidate]);
 
   const isInWishlist = useCallback((productId: string) => {
     return items.some(i => i.product_id === productId);
@@ -94,5 +93,7 @@ export function useWishlist() {
     await addItem(productId, variantId);
   }, [items, addItem, removeItem]);
 
-  return { items, loading, error, addItem, removeItem, toggleItem, isInWishlist, refetch: loadItems };
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { items, loading, error, addItem, removeItem, toggleItem, isInWishlist, refetch: invalidate };
 }

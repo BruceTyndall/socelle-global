@@ -1,15 +1,10 @@
 // ── useBrandAnalytics — W12-08: Brand Analytics live order/product aggregates ─
 // Wraps analyticsService.getBrandAnalytics with isLive flag detection.
-// Queries brand_analytics + orders tables for real brand performance data.
-// Falls back to empty/zero state when Supabase is unavailable or no data exists.
-// Returns isLive flag so UI can show DEMO badge on mock/empty fallback.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { isSupabaseConfigured } from '../supabase';
 import { getBrandAnalytics, type BrandAnalyticsData, type KpiTrend } from '../analyticsService';
-import { createScopedLogger } from '../logger';
-
-const log = createScopedLogger('useBrandAnalytics');
 
 // ── Return type ─────────────────────────────────────────────────────────────
 
@@ -42,50 +37,26 @@ const emptyData: BrandAnalyticsData = {
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useBrandAnalytics(brandId?: string): UseBrandAnalyticsReturn {
-  const [data, setData] = useState<BrandAnalyticsData>(emptyData);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-
-    if (!isSupabaseConfigured || !brandId) {
-      setData(emptyData);
-      setIsLive(false);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const result = await getBrandAnalytics(brandId);
-
-      // Determine if we got real data back
-      // If all KPI values are 0 and no recent orders, it's effectively empty
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['brand_analytics', brandId],
+    queryFn: async () => {
+      const result = await getBrandAnalytics(brandId!);
       const hasRealData =
         result.kpis.totalOrders.value > 0 ||
         result.kpis.totalRevenue.value > 0 ||
         result.kpis.totalViews.value > 0 ||
         result.recentOrders.length > 0;
+      return { result, isLive: hasRealData };
+    },
+    enabled: isSupabaseConfigured && !!brandId,
+  });
 
-      setData(result);
-      setIsLive(hasRealData);
-    } catch (err) {
-      log.error('Failed to fetch brand analytics', { err });
-      setData(emptyData);
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [brandId]);
+  const analyticsData = data?.result ?? emptyData;
+  const isLive = data?.isLive ?? false;
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const orderCount = analyticsData.kpis.totalOrders.value;
+  const totalRevenue = analyticsData.kpis.totalRevenue.value;
+  const productCount = analyticsData.topProducts.length;
 
-  // Derived convenience values
-  const orderCount = data.kpis.totalOrders.value;
-  const totalRevenue = data.kpis.totalRevenue.value;
-  const productCount = data.topProducts.length;
-
-  return { data, loading, isLive, orderCount, totalRevenue, productCount };
+  return { data: analyticsData, loading, isLive, orderCount, totalRevenue, productCount };
 }

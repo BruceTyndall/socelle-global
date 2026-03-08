@@ -1,3 +1,7 @@
+> Updated to align with V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md on 2026-03-08.
+> If this file conflicts with V1 or docs/command/SOCELLE_FIGMA_DESIGN_BRIEF.md, those files win.
+> Canonical Figma brief is now at: docs/command/SOCELLE_FIGMA_DESIGN_BRIEF.md
+
 # SOCELLE Figma Design Brief — Build This in Figma
 
 **Purpose:** Your Figma file is blank; this doc is the **single source of truth** to build the SOCELLE design system and key screens in Figma. Use it to create variables, components, and frames so the webapp and Figma stay aligned.

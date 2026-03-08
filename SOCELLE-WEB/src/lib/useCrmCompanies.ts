@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── CRM Companies Hook ──────────────────────────────────────────────────
 // Data source: crm_companies (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface CrmCompany {
   id: string;
@@ -46,94 +47,75 @@ export interface NewCompany {
 }
 
 export function useCrmCompanies(businessId?: string | null) {
-  const [companies, setCompanies] = useState<CrmCompany[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['crm_companies', businessId];
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: companies = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('crm_companies')
         .select('*')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('updated_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setCompanies(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load companies');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as CrmCompany[];
+    },
+    enabled: !!businessId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (company: NewCompany) => {
+      const { data, error } = await supabase.from('crm_companies').insert(company).select().single();
+      if (error) throw new Error(error.message);
+      return data as CrmCompany;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createCompany = useCallback(async (company: NewCompany) => {
-    const { data, error: dbErr } = await supabase
-      .from('crm_companies')
-      .insert(company)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as CrmCompany;
-  }, [load]);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<NewCompany> }) => {
+      const { error } = await supabase.from('crm_companies').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateCompany = useCallback(async (id: string, updates: Partial<NewCompany>) => {
-    const { error: dbErr } = await supabase
-      .from('crm_companies')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('crm_companies').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteCompany = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('crm_companies')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createCompany = async (company: NewCompany) => createMut.mutateAsync(company);
+  const updateCompany = async (id: string, updates: Partial<NewCompany>) => updateMut.mutateAsync({ id, updates });
+  const deleteCompany = async (id: string) => deleteMut.mutateAsync(id);
 
-  return { companies, loading, error, isLive, reload: load, createCompany, updateCompany, deleteCompany };
+  const isLive = companies.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { companies, loading, error, isLive, reload, createCompany, updateCompany, deleteCompany };
 }
 
 export function useCrmCompanyDetail(companyId?: string) {
-  const [company, setCompany] = useState<CrmCompany | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!companyId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: company = null, isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey: ['crm_company_detail', companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('crm_companies')
         .select('*')
-        .eq('id', companyId)
+        .eq('id', companyId!)
         .single();
-      if (dbErr) throw dbErr;
-      setCompany(data as CrmCompany);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load company');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [companyId]);
+      if (error) throw new Error(error.message);
+      return data as CrmCompany;
+    },
+    enabled: !!companyId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const isLive = company !== null;
+  const error = queryError instanceof Error ? queryError.message : null;
 
-  return { company, loading, error, isLive, reload: load };
+  return { company, loading, error, isLive, reload };
 }

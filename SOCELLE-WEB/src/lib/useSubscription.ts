@@ -7,9 +7,13 @@
  *   - loading: boolean
  *   - startCheckout: redirect to Stripe Checkout
  *   - manageBilling: redirect to Stripe Customer Portal
+ *
+ * Migrated to TanStack Query v5 (V2-TECH-04).
+ * NOTE: Retains Supabase Realtime subscription via useEffect for live updates.
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import { useAuth } from './auth';
 import { PAYMENT_BYPASS } from './paymentBypass';
@@ -27,52 +31,40 @@ export interface Subscription {
 
 export function useSubscription() {
   const { user } = useAuth();
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [loading, setLoading] = useState(!PAYMENT_BYPASS);
+  const queryClient = useQueryClient();
+  const [realtimeUpdate, setRealtimeUpdate] = useState<Subscription | null>(null);
 
-  useEffect(() => {
-    if (PAYMENT_BYPASS) {
-      setLoading(false);
-      return;
-    }
-    if (!user) {
-      setSubscription(null);
-      setLoading(false);
-      return;
-    }
+  const queryKey = ['subscription', user?.id];
 
-    let cancelled = false;
+  const { data: fetchedSubscription = null, isLoading } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user!.id)
+        .in('status', ['active', 'trialing', 'past_due', 'canceled'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
-    async function fetchSubscription() {
-      try {
-        const { data, error } = await supabase
-          .from('subscriptions')
-          .select('*')
-          .eq('user_id', user!.id)
-          .in('status', ['active', 'trialing', 'past_due', 'canceled'])
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        if (!cancelled) {
-          if (error) {
-            console.warn('Subscription fetch error:', error.message);
-            setSubscription(null);
-          } else {
-            setSubscription(data);
-          }
-        }
-      } catch (err) {
-        console.warn('Subscription fetch failed:', err);
-        if (!cancelled) setSubscription(null);
-      } finally {
-        if (!cancelled) setLoading(false);
+      if (error) {
+        console.warn('Subscription fetch error:', error.message);
+        return null;
       }
-    }
+      return data as Subscription | null;
+    },
+    enabled: !PAYMENT_BYPASS && !!user,
+  });
 
-    fetchSubscription();
+  // Use realtime update if available, otherwise use fetched data
+  const subscription = realtimeUpdate ?? fetchedSubscription;
+  const loading = PAYMENT_BYPASS ? false : isLoading;
 
-    // Listen for realtime changes
+  // Listen for realtime changes
+  useEffect(() => {
+    if (PAYMENT_BYPASS || !user) return;
+
     const channel = supabase
       .channel('subscription-changes')
       .on(
@@ -85,22 +77,21 @@ export function useSubscription() {
         },
         (payload) => {
           if (payload.new) {
-            setSubscription(payload.new as Subscription);
+            setRealtimeUpdate(payload.new as Subscription);
+            queryClient.invalidateQueries({ queryKey });
           }
         }
       )
       .subscribe();
 
     return () => {
-      cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, queryClient, queryKey]);
 
   const isPro = PAYMENT_BYPASS || (subscription?.status === 'active' || subscription?.status === 'trialing');
   const isPastDue = subscription?.status === 'past_due';
 
-  // Features that require a Pro or Studio subscription
   const PRO_GATED_FEATURES = [
     'protocol_matches',
     'gap_detail',
@@ -110,8 +101,9 @@ export function useSubscription() {
 
   const canAccess = useCallback((feature: string): boolean => {
     if ((PRO_GATED_FEATURES as readonly string[]).includes(feature)) return isPro;
-    return true; // unknown features default open
+    return true;
   }, [isPro]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const isCanceled = subscription?.status === 'canceled' && !!subscription?.current_period_end &&
     new Date(subscription.current_period_end) > new Date();
 
@@ -135,8 +127,6 @@ export function useSubscription() {
   }, []);
 
   const manageBilling = useCallback(async () => {
-    // For MVP, link directly to Stripe customer portal
-    // In production, create a portal session via Edge Function
     if (subscription?.stripe_customer_id) {
       try {
         const { data } = await supabase.functions.invoke('create-checkout', {

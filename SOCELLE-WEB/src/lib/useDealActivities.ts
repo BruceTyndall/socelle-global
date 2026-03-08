@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── WO-OVERHAUL-14: Sales Platform — Deal Activities Hook ─────────────────
 // Data source: deal_activities table (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface DealActivity {
   id: string;
@@ -23,58 +24,53 @@ export interface NewDealActivity {
 }
 
 export function useDealActivities(dealId: string | undefined) {
-  const [activities, setActivities] = useState<DealActivity[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['deal_activities', dealId];
 
-  const load = useCallback(async () => {
-    if (!dealId) { setLoading(false); return; }
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: activities = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('deal_activities')
         .select('*')
-        .eq('deal_id', dealId)
+        .eq('deal_id', dealId!)
         .order('performed_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setActivities(data ?? []);
-      setIsLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setIsLive(false);
-        setActivities([]);
-      } else {
-        setError('Failed to load activities.');
+      if (error) {
+        const msg = error.message.toLowerCase();
+        if (msg.includes('does not exist') || error.code === '42P01') return [];
+        throw new Error(error.message);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [dealId]);
+      return (data ?? []) as DealActivity[];
+    },
+    enabled: !!dealId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const addMut = useMutation({
+    mutationFn: async (activity: NewDealActivity) => {
+      const { data, error } = await supabase
+        .from('deal_activities')
+        .insert([{ ...activity, performed_at: new Date().toISOString() }])
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data as DealActivity;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const addActivity = useCallback(async (activity: NewDealActivity) => {
-    const { data, error: dbErr } = await supabase
-      .from('deal_activities')
-      .insert([{ ...activity, performed_at: new Date().toISOString() }])
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    setActivities((prev) => [data as DealActivity, ...prev]);
-    return data as DealActivity;
-  }, []);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('deal_activities').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteActivity = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('deal_activities')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    setActivities((prev) => prev.filter((a) => a.id !== id));
-  }, []);
+  const addActivity = async (activity: NewDealActivity) => addMut.mutateAsync(activity);
+  const deleteActivity = async (id: string) => deleteMut.mutateAsync(id);
 
-  return { activities, loading, error, isLive, reload: load, addActivity, deleteActivity };
+  const isLive = activities.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { activities, loading, error, isLive, reload, addActivity, deleteActivity };
 }

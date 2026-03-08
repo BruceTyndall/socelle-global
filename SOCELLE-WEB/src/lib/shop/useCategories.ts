@@ -1,32 +1,23 @@
 // useCategories — list product categories
-import { useState, useEffect } from 'react';
+// Migrated to TanStack Query v5 (V2-TECH-04).
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { ProductCategory } from './types';
 
 export function useCategories() {
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: categories = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['product_categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('product_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+      if (error) throw new Error(error.message);
+      return (data as ProductCategory[]) ?? [];
+    },
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data, error: err } = await supabase
-          .from('product_categories')
-          .select('*')
-          .eq('is_active', true)
-          .order('sort_order');
-        if (err) throw err;
-        if (!cancelled) setCategories((data as ProductCategory[]) ?? []);
-      } catch (e: unknown) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load categories');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
+  const error = queryError instanceof Error ? queryError.message : null;
   return { categories, loading, error };
 }

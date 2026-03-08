@@ -5,8 +5,9 @@
  *
  * Data label: LIVE when DB-connected, PREVIEW when fallback.
  * Authority: build_tracker.md WO W13-05
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 
 export interface DataFeedStats {
@@ -42,80 +43,59 @@ const EMPTY_STATS: DataFeedStats = {
   feedsNeverFetched: 0,
 };
 
+interface FeedStatsResult {
+  stats: DataFeedStats;
+  avgConfidence: number | null;
+}
+
 export function useDataFeedStats(): UseDataFeedStatsReturn {
-  const [stats, setStats] = useState<DataFeedStats>(EMPTY_STATS);
-  const [avgConfidence, setAvgConfidence] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['data_feed_stats'],
+    queryFn: async (): Promise<FeedStatsResult> => {
+      const [{ data: feedData, error }, { data: confidenceRows, error: confidenceError }] = await Promise.all([
+        supabase
+          .from('data_feeds')
+          .select('id, is_enabled, category, feed_type, signal_count, last_fetched_at, last_error'),
+        supabase
+          .from('market_signals')
+          .select('confidence_score')
+          .eq('active', true)
+          .not('confidence_score', 'is', null)
+          .limit(5000),
+      ]);
 
-  useEffect(() => {
-    let cancelled = false;
+      if (error || !feedData) throw new Error(error?.message ?? 'Failed to fetch feed stats');
 
-    async function fetchStats() {
-      setLoading(true);
+      const totalFeeds = feedData.length;
+      const enabledFeeds = feedData.filter((f) => f.is_enabled).length;
+      const totalSignals = feedData.reduce((sum, f) => sum + (f.signal_count || 0), 0);
 
-      if (!isSupabaseConfigured) {
-        setStats(EMPTY_STATS);
-        setAvgConfidence(null);
-        setIsLive(false);
-        setLoading(false);
-        return;
+      const feedsByCategory: Record<string, number> = {};
+      const feedsByType: Record<string, number> = {};
+
+      for (const feed of feedData) {
+        feedsByCategory[feed.category] = (feedsByCategory[feed.category] || 0) + 1;
+        feedsByType[feed.feed_type] = (feedsByType[feed.feed_type] || 0) + 1;
       }
 
-      try {
-        const [{ data, error }, { data: confidenceRows, error: confidenceError }] = await Promise.all([
-          supabase
-            .from('data_feeds')
-            .select('id, is_enabled, category, feed_type, signal_count, last_fetched_at, last_error'),
-          supabase
-            .from('market_signals')
-            .select('confidence_score')
-            .eq('active', true)
-            .not('confidence_score', 'is', null)
-            .limit(5000),
-        ]);
+      const fetchedDates = feedData
+        .filter((f) => f.last_fetched_at)
+        .map((f) => new Date(f.last_fetched_at).getTime());
+      const lastOrchestratorRun =
+        fetchedDates.length > 0
+          ? new Date(Math.max(...fetchedDates)).toISOString()
+          : null;
 
-        if (cancelled) return;
+      const feedsWithErrors = feedData.filter((f) => f.last_error).length;
+      const feedsNeverFetched = feedData.filter((f) => !f.last_fetched_at).length;
+      const avgConfidence =
+        confidenceError || !confidenceRows || confidenceRows.length === 0
+          ? null
+          : confidenceRows.reduce((sum, row) => sum + Number(row.confidence_score ?? 0), 0) /
+            confidenceRows.length;
 
-        if (error || !data) {
-          // Table doesn't exist or query error — preview empty state
-          setStats(EMPTY_STATS);
-          setAvgConfidence(null);
-          setIsLive(false);
-          setLoading(false);
-          return;
-        }
-
-        const totalFeeds = data.length;
-        const enabledFeeds = data.filter((f) => f.is_enabled).length;
-        const totalSignals = data.reduce((sum, f) => sum + (f.signal_count || 0), 0);
-
-        const feedsByCategory: Record<string, number> = {};
-        const feedsByType: Record<string, number> = {};
-
-        for (const feed of data) {
-          feedsByCategory[feed.category] = (feedsByCategory[feed.category] || 0) + 1;
-          feedsByType[feed.feed_type] = (feedsByType[feed.feed_type] || 0) + 1;
-        }
-
-        // Most recent fetch across all feeds = proxy for last orchestrator run
-        const fetchedDates = data
-          .filter((f) => f.last_fetched_at)
-          .map((f) => new Date(f.last_fetched_at).getTime());
-        const lastOrchestratorRun =
-          fetchedDates.length > 0
-            ? new Date(Math.max(...fetchedDates)).toISOString()
-            : null;
-
-        const feedsWithErrors = data.filter((f) => f.last_error).length;
-        const feedsNeverFetched = data.filter((f) => !f.last_fetched_at).length;
-        const avgConfidenceValue =
-          confidenceError || !confidenceRows || confidenceRows.length === 0
-            ? null
-            : confidenceRows.reduce((sum, row) => sum + Number(row.confidence_score ?? 0), 0) /
-              confidenceRows.length;
-
-        setStats({
+      return {
+        stats: {
           totalFeeds,
           enabledFeeds,
           totalSignals,
@@ -124,25 +104,16 @@ export function useDataFeedStats(): UseDataFeedStatsReturn {
           lastOrchestratorRun,
           feedsWithErrors,
           feedsNeverFetched,
-        });
-        setAvgConfidence(avgConfidenceValue);
-        setIsLive(true);
-      } catch {
-        if (!cancelled) {
-          setStats(EMPTY_STATS);
-          setAvgConfidence(null);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
+        },
+        avgConfidence,
+      };
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-    fetchStats();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const stats = data?.stats ?? EMPTY_STATS;
+  const avgConfidence = data?.avgConfidence ?? null;
+  const isLive = !!data;
 
   return {
     stats,

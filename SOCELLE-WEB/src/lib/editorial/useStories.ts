@@ -1,8 +1,10 @@
 // ── useStories — W15-05 ───────────────────────────────────────────────
 // Fetches published stories from the stories table.
 // Data label: LIVE — stories table with RLS (public reads published only)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 
 // ── Types ─────────────────────────────────────────────────────────────
@@ -53,60 +55,28 @@ export function useStories(options?: { limit?: number; category?: string }): Use
   const limit = options?.limit ?? 50;
   const category = options?.category;
 
-  const [stories, setStories] = useState<Story[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { data: stories = [], isLoading: loading } = useQuery({
+    queryKey: ['stories', { limit, category }],
+    queryFn: async () => {
+      let query = supabase
+        .from('stories')
+        .select(STORY_COLUMNS)
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(limit);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetch() {
-      setLoading(true);
-
-      if (!isSupabaseConfigured) {
-        setStories([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
+      if (category) {
+        query = query.eq('category', category);
       }
 
-      try {
-        let query = supabase
-          .from('stories')
-          .select(STORY_COLUMNS)
-          .eq('status', 'published')
-          .order('published_at', { ascending: false })
-          .limit(limit);
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data ?? []) as Story[];
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-        if (category) {
-          query = query.eq('category', category);
-        }
-
-        const { data, error } = await query;
-
-        if (cancelled) return;
-
-        if (error || !data) {
-          setStories([]);
-          setIsLive(false);
-        } else {
-          setStories(data as Story[]);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setStories([]);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetch();
-    return () => { cancelled = true; };
-  }, [limit, category]);
-
+  const isLive = stories.length > 0;
   const featured = useMemo(() => stories.filter((s) => s.featured), [stories]);
 
   return { stories, featured, loading, isLive };
@@ -115,65 +85,24 @@ export function useStories(options?: { limit?: number; category?: string }): Use
 // ── useStoryDetail: single story by slug ──────────────────────────────
 
 export function useStoryDetail(slug: string | undefined): UseStoryDetailReturn {
-  const [story, setStory] = useState<Story | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [notFound, setNotFound] = useState(false);
+  const { data: story = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['story_detail', slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('stories')
+        .select(STORY_COLUMNS)
+        .eq('slug', slug!)
+        .eq('status', 'published')
+        .single();
 
-  useEffect(() => {
-    if (!slug) {
-      setStory(null);
-      setLoading(false);
-      setNotFound(true);
-      return;
-    }
+      if (error) throw new Error(error.message);
+      return (data as Story) ?? null;
+    },
+    enabled: isSupabaseConfigured && !!slug,
+  });
 
-    let cancelled = false;
-
-    async function fetch() {
-      setLoading(true);
-      setNotFound(false);
-
-      if (!isSupabaseConfigured) {
-        setStory(null);
-        setIsLive(false);
-        setLoading(false);
-        setNotFound(true);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('stories')
-          .select(STORY_COLUMNS)
-          .eq('slug', slug)
-          .eq('status', 'published')
-          .single();
-
-        if (cancelled) return;
-
-        if (error || !data) {
-          setStory(null);
-          setIsLive(false);
-          setNotFound(true);
-        } else {
-          setStory(data as Story);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setStory(null);
-          setIsLive(false);
-          setNotFound(true);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetch();
-    return () => { cancelled = true; };
-  }, [slug]);
+  const isLive = story !== null;
+  const notFound = !loading && story === null && (!!queryError || !slug);
 
   return { story, loading, isLive, notFound };
 }

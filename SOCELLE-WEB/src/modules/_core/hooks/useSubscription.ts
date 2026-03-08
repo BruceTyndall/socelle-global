@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 
@@ -39,29 +40,16 @@ export interface SubscriptionResult {
 /**
  * Hook for the current user's subscription state.
  * Reads from account_subscriptions joined with subscription_plans.
+ * Migrated to TanStack Query v5 (V2-TECH-04).
  */
 export function useSubscription(): SubscriptionResult {
   const { user, profile } = useAuth();
-  const [plan, setPlan] = useState<SubscriptionPlan | null>(null);
-  const [status, setStatus] = useState<SubscriptionResult['status']>('none');
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual' | null>(null);
-  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<Date | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   const accountId = profile?.business_id ?? profile?.brand_id ?? user?.id ?? null;
 
-  const fetchSubscription = useCallback(async () => {
-    if (!accountId) {
-      setPlan(null);
-      setStatus('none');
-      setBillingCycle(null);
-      setCurrentPeriodEnd(null);
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
+  const { data, isLoading } = useQuery({
+    queryKey: ['account_subscription', accountId],
+    queryFn: async () => {
+      const { data: row, error } = await supabase
         .from('account_subscriptions')
         .select(`
           id,
@@ -76,7 +64,7 @@ export function useSubscription(): SubscriptionResult {
             sort_order, trial_days, features
           )
         `)
-        .eq('account_id', accountId)
+        .eq('account_id', accountId!)
         .in('status', ['active', 'trialing', 'past_due'])
         .order('created_at', { ascending: false })
         .limit(1)
@@ -84,43 +72,30 @@ export function useSubscription(): SubscriptionResult {
 
       if (error) {
         console.warn('[useSubscription] fetch error:', error.message);
-        setPlan(null);
-        setStatus('none');
-      } else if (data) {
-        // Plan comes back as an object from the join
-        const planData = Array.isArray(data.plan) ? data.plan[0] : data.plan;
-        setPlan((planData as SubscriptionPlan) ?? null);
-        setStatus(data.status as SubscriptionResult['status']);
-        setBillingCycle(data.billing_cycle as 'monthly' | 'annual' | null);
-        setCurrentPeriodEnd(data.current_period_end ? new Date(data.current_period_end) : null);
-      } else {
-        setPlan(null);
-        setStatus('none');
-        setBillingCycle(null);
-        setCurrentPeriodEnd(null);
+        return null;
       }
-    } catch (err) {
-      console.warn('[useSubscription] unexpected error:', err);
-      setPlan(null);
-      setStatus('none');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [accountId]);
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetchSubscription();
-  }, [fetchSubscription]);
+      if (!row) return null;
 
-  return {
-    plan,
-    status,
-    modulesIncluded: plan?.modules_included ?? [],
-    billingCycle,
-    currentPeriodEnd,
-    isTrialing: status === 'trialing',
-    isPastDue: status === 'past_due',
+      const planData = Array.isArray(row.plan) ? row.plan[0] : row.plan;
+      return {
+        plan: (planData as SubscriptionPlan) ?? null,
+        status: row.status as SubscriptionResult['status'],
+        billingCycle: row.billing_cycle as 'monthly' | 'annual' | null,
+        currentPeriodEnd: row.current_period_end ? new Date(row.current_period_end) : null,
+      };
+    },
+    enabled: !!accountId,
+  });
+
+  return useMemo(() => ({
+    plan: data?.plan ?? null,
+    status: data?.status ?? 'none',
+    modulesIncluded: data?.plan?.modules_included ?? [],
+    billingCycle: data?.billingCycle ?? null,
+    currentPeriodEnd: data?.currentPeriodEnd ?? null,
+    isTrialing: data?.status === 'trialing',
+    isPastDue: data?.status === 'past_due',
     isLoading,
-  };
+  }), [data, isLoading]);
 }

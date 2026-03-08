@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── useProductIngredients — WO-OVERHAUL-12 ──────────────────────────────────
 // Fetches ingredients for a given product_id via product_ingredients junction.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface ProductIngredientEntry {
   id: string;
@@ -22,79 +23,44 @@ export interface UseProductIngredientsReturn {
 }
 
 export function useProductIngredients(productId: string | undefined): UseProductIngredientsReturn {
-  const [ingredients, setIngredients] = useState<ProductIngredientEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { data: ingredients = [], isLoading: loading } = useQuery({
+    queryKey: ['product_ingredients', productId],
+    queryFn: async () => {
+      // Get junction rows
+      const { data: junctionData, error: junctionError } = await supabase
+        .from('product_ingredients')
+        .select('id, ingredient_id, position, concentration_pct, function_in_product')
+        .eq('product_id', productId!)
+        .order('position');
 
-  useEffect(() => {
-    let cancelled = false;
+      if (junctionError || !junctionData || junctionData.length === 0) return [];
 
-    async function fetch() {
-      setLoading(true);
+      // Get ingredient details
+      const ingIds = junctionData.map((j) => j.ingredient_id);
+      const { data: ingData } = await supabase
+        .from('ingredients')
+        .select('id, inci_name, common_name, ewg_score')
+        .in('id', ingIds);
 
-      if (!isSupabaseConfigured || !productId) {
-        setIngredients([]);
-        setIsLive(false);
-        setLoading(false);
-        return;
-      }
+      const ingMap = Object.fromEntries(
+        (ingData ?? []).map((i) => [i.id, i])
+      );
 
-      try {
-        // Get junction rows
-        const { data: junctionData, error: junctionError } = await supabase
-          .from('product_ingredients')
-          .select('id, ingredient_id, position, concentration_pct, function_in_product')
-          .eq('product_id', productId)
-          .order('position');
+      return junctionData.map((j): ProductIngredientEntry => ({
+        id: j.id,
+        ingredient_id: j.ingredient_id,
+        inci_name: ingMap[j.ingredient_id]?.inci_name ?? 'Unknown',
+        common_name: ingMap[j.ingredient_id]?.common_name ?? null,
+        position: j.position,
+        concentration_pct: j.concentration_pct,
+        function_in_product: j.function_in_product,
+        ewg_score: ingMap[j.ingredient_id]?.ewg_score ?? null,
+      }));
+    },
+    enabled: isSupabaseConfigured && !!productId,
+  });
 
-        if (cancelled) return;
-
-        if (junctionError || !junctionData || junctionData.length === 0) {
-          setIngredients([]);
-          setIsLive(false);
-          setLoading(false);
-          return;
-        }
-
-        // Get ingredient details
-        const ingIds = junctionData.map((j) => j.ingredient_id);
-        const { data: ingData } = await supabase
-          .from('ingredients')
-          .select('id, inci_name, common_name, ewg_score')
-          .in('id', ingIds);
-
-        if (cancelled) return;
-
-        const ingMap = Object.fromEntries(
-          (ingData ?? []).map((i) => [i.id, i])
-        );
-
-        setIngredients(
-          junctionData.map((j) => ({
-            id: j.id,
-            ingredient_id: j.ingredient_id,
-            inci_name: ingMap[j.ingredient_id]?.inci_name ?? 'Unknown',
-            common_name: ingMap[j.ingredient_id]?.common_name ?? null,
-            position: j.position,
-            concentration_pct: j.concentration_pct,
-            function_in_product: j.function_in_product,
-            ewg_score: ingMap[j.ingredient_id]?.ewg_score ?? null,
-          }))
-        );
-        setIsLive(true);
-      } catch {
-        if (!cancelled) {
-          setIngredients([]);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetch();
-    return () => { cancelled = true; };
-  }, [productId]);
+  const isLive = ingredients.length > 0;
 
   return { ingredients, loading, isLive };
 }

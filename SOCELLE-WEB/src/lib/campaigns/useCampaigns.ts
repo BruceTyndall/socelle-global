@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type {
   Campaign,
   CampaignStatus,
@@ -11,6 +12,8 @@ import type {
 } from './types';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { useAuth } from '../auth';
+
+// ── Migrated to TanStack Query v5 (V2-TECH-04). ─────────────────────────
 
 interface CampaignRow {
   id: string;
@@ -156,50 +159,31 @@ function toVolumeDiscount(row: VolumeDiscountRow): VolumeDiscount {
   };
 }
 
+// ── useCampaigns ──────────────────────────────────────────────────────────
+
 export function useCampaigns() {
   const { user, profile } = useAuth();
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const queryKey = ['brand_campaigns', profile?.brand_id];
 
-  const loadCampaigns = useCallback(async () => {
-    if (!isSupabaseConfigured || !profile?.brand_id) {
-      setCampaigns([]);
-      setLoading(false);
-      return;
-    }
+  const { data: campaigns = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('campaigns')
+        .select('id,name,status,scheduled_start_at,scheduled_end_at,goal,goal_value,metadata,created_at')
+        .eq('tenant_id', profile!.brand_id!)
+        .order('created_at', { ascending: false });
 
-    setLoading(true);
-    setError(null);
+      if (error) throw new Error(error.message);
+      return ((data as CampaignRow[] | null) ?? []).map(fromCampaignRow);
+    },
+    enabled: isSupabaseConfigured && !!profile?.brand_id,
+  });
 
-    const { data, error: queryError } = await supabase
-      .from('campaigns')
-      .select('id,name,status,scheduled_start_at,scheduled_end_at,goal,goal_value,metadata,created_at')
-      .eq('tenant_id', profile.brand_id)
-      .order('created_at', { ascending: false });
-
-    if (queryError) {
-      setError(queryError.message);
-      setCampaigns([]);
-      setLoading(false);
-      return;
-    }
-
-    const rows = (data as CampaignRow[] | null) ?? [];
-    setCampaigns(rows.map(fromCampaignRow));
-    setLoading(false);
-  }, [profile?.brand_id]);
-
-  useEffect(() => {
-    void loadCampaigns();
-  }, [loadCampaigns]);
-
-  const addCampaign = useCallback(
-    async (campaign: Omit<Campaign, 'id' | 'createdAt'>): Promise<Campaign | null> => {
-      if (!isSupabaseConfigured || !profile?.brand_id || !user?.id) {
-        setError('Campaign storage is not configured');
-        return null;
-      }
+  const addMut = useMutation({
+    mutationFn: async (campaign: Omit<Campaign, 'id' | 'createdAt'>) => {
+      if (!profile?.brand_id || !user?.id) throw new Error('Campaign storage is not configured');
 
       const metadata: Record<string, unknown> = {
         scope: 'brand_campaign',
@@ -213,7 +197,7 @@ export function useCampaigns() {
 
       const dbStatus = mapDbStatus(campaign.status, metadata);
 
-      const { data, error: insertError } = await supabase
+      const { data, error } = await supabase
         .from('campaigns')
         .insert({
           name: campaign.name,
@@ -230,33 +214,18 @@ export function useCampaigns() {
         .select('id,name,status,scheduled_start_at,scheduled_end_at,goal,goal_value,metadata,created_at')
         .single();
 
-      if (insertError || !data) {
-        setError(insertError?.message ?? 'Failed to create campaign');
-        return null;
-      }
-
-      const created = fromCampaignRow(data as CampaignRow);
-      setCampaigns((prev) => [created, ...prev]);
-      return created;
+      if (error || !data) throw new Error(error?.message ?? 'Failed to create campaign');
+      return fromCampaignRow(data as CampaignRow);
     },
-    [profile?.brand_id, user?.id]
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateCampaign = useCallback(
-    async (id: string, updates: Partial<Campaign>): Promise<boolean> => {
-      if (!isSupabaseConfigured) {
-        setError('Campaign storage is not configured');
-        return false;
-      }
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Campaign> }) => {
+      const current = campaigns.find((c) => c.id === id);
+      if (!current) throw new Error('Campaign not found');
 
-      const current = campaigns.find((campaign) => campaign.id === id);
-      if (!current) return false;
-
-      const merged: Campaign = {
-        ...current,
-        ...updates,
-      };
-
+      const merged: Campaign = { ...current, ...updates };
       const metadata: Record<string, unknown> = {
         scope: 'brand_campaign',
         description: merged.description,
@@ -269,7 +238,7 @@ export function useCampaigns() {
 
       const dbStatus = mapDbStatus(merged.status, metadata);
 
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('campaigns')
         .update({
           name: merged.name,
@@ -283,119 +252,72 @@ export function useCampaigns() {
         })
         .eq('id', id);
 
-      if (updateError) {
-        setError(updateError.message);
-        return false;
-      }
-
-      setCampaigns((prev) =>
-        prev.map((campaign) => (campaign.id === id ? merged : campaign))
-      );
-      return true;
+      if (error) throw new Error(error.message);
     },
-    [campaigns]
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteCampaign = useCallback(async (id: string): Promise<boolean> => {
-    if (!isSupabaseConfigured) {
-      setError('Campaign storage is not configured');
-      return false;
-    }
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('campaigns').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-    const { error: deleteError } = await supabase.from('campaigns').delete().eq('id', id);
-    if (deleteError) {
-      setError(deleteError.message);
-      return false;
-    }
-
-    setCampaigns((prev) => prev.filter((campaign) => campaign.id !== id));
-    return true;
-  }, []);
-
-  return {
-    campaigns,
-    loading,
-    error,
-    isLive: isSupabaseConfigured,
-    addCampaign,
-    updateCampaign,
-    deleteCampaign,
-    refetch: loadCampaigns,
+  const error = queryError instanceof Error ? queryError.message : null;
+  const addCampaign = async (campaign: Omit<Campaign, 'id' | 'createdAt'>): Promise<Campaign | null> => {
+    try { return await addMut.mutateAsync(campaign); } catch { return null; }
   };
+  const updateCampaign = useCallback(async (id: string, updates: Partial<Campaign>): Promise<boolean> => {
+    try { await updateMut.mutateAsync({ id, updates }); return true; } catch { return false; }
+  }, [updateMut]);
+  const deleteCampaign = async (id: string): Promise<boolean> => {
+    try { await deleteMut.mutateAsync(id); return true; } catch { return false; }
+  };
+
+  return { campaigns, loading, error, isLive: isSupabaseConfigured, addCampaign, updateCampaign, deleteCampaign, refetch: () => queryClient.invalidateQueries({ queryKey }) };
 }
+
+// ── useAutomations ────────────────────────────────────────────────────────
 
 export function useAutomations() {
   const { profile } = useAuth();
-  const [automations, setAutomations] = useState<AutomationRule[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const queryKey = ['brand_automation_rules', profile?.brand_id];
 
-  const loadAutomations = useCallback(async () => {
-    if (!isSupabaseConfigured || !profile?.brand_id) {
-      setAutomations([]);
-      setLoading(false);
-      return;
-    }
+  const { data: automations = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_automation_rules')
+        .select('id,name,rule_type,enabled,trigger_days,description,last_triggered_at,trigger_count')
+        .eq('brand_id', profile!.brand_id!)
+        .order('created_at', { ascending: false });
 
-    setLoading(true);
-    setError(null);
+      if (error) throw new Error(error.message);
+      return ((data as AutomationRow[] | null) ?? []).map(toAutomationRule);
+    },
+    enabled: isSupabaseConfigured && !!profile?.brand_id,
+  });
 
-    const { data, error: queryError } = await supabase
-      .from('brand_automation_rules')
-      .select('id,name,rule_type,enabled,trigger_days,description,last_triggered_at,trigger_count')
-      .eq('brand_id', profile.brand_id)
-      .order('created_at', { ascending: false });
-
-    if (queryError) {
-      setError(queryError.message);
-      setAutomations([]);
-      setLoading(false);
-      return;
-    }
-
-    setAutomations(((data as AutomationRow[] | null) ?? []).map(toAutomationRule));
-    setLoading(false);
-  }, [profile?.brand_id]);
-
-  useEffect(() => {
-    void loadAutomations();
-  }, [loadAutomations]);
-
-  const toggleAutomation = useCallback(
-    async (id: string): Promise<boolean> => {
-      const existing = automations.find((rule) => rule.id === id);
-      if (!existing) return false;
-
-      const { error: updateError } = await supabase
+  const toggleMut = useMutation({
+    mutationFn: async (id: string) => {
+      const existing = automations.find((r) => r.id === id);
+      if (!existing) throw new Error('Rule not found');
+      const { error } = await supabase
         .from('brand_automation_rules')
         .update({ enabled: !existing.enabled, updated_at: new Date().toISOString() })
         .eq('id', id);
-
-      if (updateError) {
-        setError(updateError.message);
-        return false;
-      }
-
-      setAutomations((prev) =>
-        prev.map((rule) =>
-          rule.id === id
-            ? { ...rule, enabled: !rule.enabled }
-            : rule
-        )
-      );
-      return true;
+      if (error) throw new Error(error.message);
     },
-    [automations]
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const addAutomation = useCallback(
-    async (rule: Omit<AutomationRule, 'id' | 'triggerCount'>): Promise<AutomationRule | null> => {
-      if (!profile?.brand_id) {
-        setError('Brand context is missing');
-        return null;
-      }
-
-      const { data, error: insertError } = await supabase
+  const addMut = useMutation({
+    mutationFn: async (rule: Omit<AutomationRule, 'id' | 'triggerCount'>) => {
+      if (!profile?.brand_id) throw new Error('Brand context is missing');
+      const { data, error } = await supabase
         .from('brand_automation_rules')
         .insert({
           brand_id: profile.brand_id,
@@ -408,91 +330,59 @@ export function useAutomations() {
         })
         .select('id,name,rule_type,enabled,trigger_days,description,last_triggered_at,trigger_count')
         .single();
-
-      if (insertError || !data) {
-        setError(insertError?.message ?? 'Failed to create automation rule');
-        return null;
-      }
-
-      const created = toAutomationRule(data as AutomationRow);
-      setAutomations((prev) => [created, ...prev]);
-      return created;
+      if (error || !data) throw new Error(error?.message ?? 'Failed to create rule');
+      return toAutomationRule(data as AutomationRow);
     },
-    [profile?.brand_id]
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteAutomation = useCallback(async (id: string): Promise<boolean> => {
-    const { error: deleteError } = await supabase
-      .from('brand_automation_rules')
-      .delete()
-      .eq('id', id);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('brand_automation_rules').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-    if (deleteError) {
-      setError(deleteError.message);
-      return false;
-    }
-
-    setAutomations((prev) => prev.filter((rule) => rule.id !== id));
-    return true;
-  }, []);
-
-  return {
-    automations,
-    loading,
-    error,
-    isLive: isSupabaseConfigured,
-    toggleAutomation,
-    addAutomation,
-    deleteAutomation,
-    refetch: loadAutomations,
+  const error = queryError instanceof Error ? queryError.message : null;
+  const toggleAutomation = async (id: string): Promise<boolean> => {
+    try { await toggleMut.mutateAsync(id); return true; } catch { return false; }
   };
+  const addAutomation = async (rule: Omit<AutomationRule, 'id' | 'triggerCount'>): Promise<AutomationRule | null> => {
+    try { return await addMut.mutateAsync(rule); } catch { return null; }
+  };
+  const deleteAutomation = async (id: string): Promise<boolean> => {
+    try { await deleteMut.mutateAsync(id); return true; } catch { return false; }
+  };
+
+  return { automations, loading, error, isLive: isSupabaseConfigured, toggleAutomation, addAutomation, deleteAutomation, refetch: () => queryClient.invalidateQueries({ queryKey }) };
 }
+
+// ── useTierDiscounts ──────────────────────────────────────────────────────
 
 export function useTierDiscounts() {
   const { profile } = useAuth();
-  const [tierDiscounts, setTierDiscounts] = useState<TierDiscount[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const queryKey = ['brand_tier_discounts', profile?.brand_id];
 
-  const loadTierDiscounts = useCallback(async () => {
-    if (!isSupabaseConfigured || !profile?.brand_id) {
-      setTierDiscounts([]);
-      setLoading(false);
-      return;
-    }
+  const { data: tierDiscounts = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_tier_discounts')
+        .select('id,tier,discount_percent,min_units,description')
+        .eq('brand_id', profile!.brand_id!)
+        .order('tier', { ascending: true });
+      if (error) throw new Error(error.message);
+      return ((data as TierDiscountRow[] | null) ?? []).map(toTierDiscount);
+    },
+    enabled: isSupabaseConfigured && !!profile?.brand_id,
+  });
 
-    setLoading(true);
-    setError(null);
-
-    const { data, error: queryError } = await supabase
-      .from('brand_tier_discounts')
-      .select('id,tier,discount_percent,min_units,description')
-      .eq('brand_id', profile.brand_id)
-      .order('tier', { ascending: true });
-
-    if (queryError) {
-      setError(queryError.message);
-      setTierDiscounts([]);
-      setLoading(false);
-      return;
-    }
-
-    setTierDiscounts(((data as TierDiscountRow[] | null) ?? []).map(toTierDiscount));
-    setLoading(false);
-  }, [profile?.brand_id]);
-
-  useEffect(() => {
-    void loadTierDiscounts();
-  }, [loadTierDiscounts]);
-
-  const addTierDiscount = useCallback(
-    async (discount: Omit<TierDiscount, 'id'>): Promise<TierDiscount | null> => {
-      if (!profile?.brand_id) {
-        setError('Brand context is missing');
-        return null;
-      }
-
-      const { data, error: insertError } = await supabase
+  const addMut = useMutation({
+    mutationFn: async (discount: Omit<TierDiscount, 'id'>) => {
+      if (!profile?.brand_id) throw new Error('Brand context is missing');
+      const { data, error } = await supabase
         .from('brand_tier_discounts')
         .insert({
           brand_id: profile.brand_id,
@@ -503,127 +393,72 @@ export function useTierDiscounts() {
         })
         .select('id,tier,discount_percent,min_units,description')
         .single();
-
-      if (insertError || !data) {
-        setError(insertError?.message ?? 'Failed to create tier discount');
-        return null;
-      }
-
-      const created = toTierDiscount(data as TierDiscountRow);
-      setTierDiscounts((prev) => [...prev, created]);
-      return created;
+      if (error || !data) throw new Error(error?.message ?? 'Failed to create tier discount');
+      return toTierDiscount(data as TierDiscountRow);
     },
-    [profile?.brand_id]
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateTierDiscount = useCallback(
-    async (id: string, updates: Partial<TierDiscount>): Promise<boolean> => {
-      const payload: Record<string, unknown> = {
-        updated_at: new Date().toISOString(),
-      };
-
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<TierDiscount> }) => {
+      const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (updates.tier) payload.tier = updates.tier;
       if (typeof updates.discountPercent === 'number') payload.discount_percent = updates.discountPercent;
       if ('minUnits' in updates) payload.min_units = updates.minUnits ?? null;
       if (typeof updates.description === 'string') payload.description = updates.description;
-
-      const { error: updateError } = await supabase
-        .from('brand_tier_discounts')
-        .update(payload)
-        .eq('id', id);
-
-      if (updateError) {
-        setError(updateError.message);
-        return false;
-      }
-
-      setTierDiscounts((prev) =>
-        prev.map((discount) =>
-          discount.id === id
-            ? {
-                ...discount,
-                ...updates,
-              }
-            : discount
-        )
-      );
-      return true;
+      const { error } = await supabase.from('brand_tier_discounts').update(payload).eq('id', id);
+      if (error) throw new Error(error.message);
     },
-    []
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteTierDiscount = useCallback(async (id: string): Promise<boolean> => {
-    const { error: deleteError } = await supabase
-      .from('brand_tier_discounts')
-      .delete()
-      .eq('id', id);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('brand_tier_discounts').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-    if (deleteError) {
-      setError(deleteError.message);
-      return false;
-    }
-
-    setTierDiscounts((prev) => prev.filter((discount) => discount.id !== id));
-    return true;
-  }, []);
-
-  return {
-    tierDiscounts,
-    loading,
-    error,
-    isLive: isSupabaseConfigured,
-    addTierDiscount,
-    updateTierDiscount,
-    deleteTierDiscount,
-    refetch: loadTierDiscounts,
+  const error = queryError instanceof Error ? queryError.message : null;
+  const addTierDiscount = async (discount: Omit<TierDiscount, 'id'>): Promise<TierDiscount | null> => {
+    try { return await addMut.mutateAsync(discount); } catch { return null; }
   };
+  const updateTierDiscount = async (id: string, updates: Partial<TierDiscount>): Promise<boolean> => {
+    try { await updateMut.mutateAsync({ id, updates }); return true; } catch { return false; }
+  };
+  const deleteTierDiscount = async (id: string): Promise<boolean> => {
+    try { await deleteMut.mutateAsync(id); return true; } catch { return false; }
+  };
+
+  return { tierDiscounts, loading, error, isLive: isSupabaseConfigured, addTierDiscount, updateTierDiscount, deleteTierDiscount, refetch: () => queryClient.invalidateQueries({ queryKey }) };
 }
+
+// ── useVolumeDiscounts ────────────────────────────────────────────────────
 
 export function useVolumeDiscounts() {
   const { profile } = useAuth();
-  const [volumeDiscounts, setVolumeDiscounts] = useState<VolumeDiscount[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const queryKey = ['brand_volume_discounts', profile?.brand_id];
 
-  const loadVolumeDiscounts = useCallback(async () => {
-    if (!isSupabaseConfigured || !profile?.brand_id) {
-      setVolumeDiscounts([]);
-      setLoading(false);
-      return;
-    }
+  const { data: volumeDiscounts = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_volume_discounts')
+        .select('id,min_units,max_units,discount_percent')
+        .eq('brand_id', profile!.brand_id!)
+        .order('min_units', { ascending: true });
+      if (error) throw new Error(error.message);
+      return ((data as VolumeDiscountRow[] | null) ?? []).map(toVolumeDiscount);
+    },
+    enabled: isSupabaseConfigured && !!profile?.brand_id,
+  });
 
-    setLoading(true);
-    setError(null);
-
-    const { data, error: queryError } = await supabase
-      .from('brand_volume_discounts')
-      .select('id,min_units,max_units,discount_percent')
-      .eq('brand_id', profile.brand_id)
-      .order('min_units', { ascending: true });
-
-    if (queryError) {
-      setError(queryError.message);
-      setVolumeDiscounts([]);
-      setLoading(false);
-      return;
-    }
-
-    setVolumeDiscounts(((data as VolumeDiscountRow[] | null) ?? []).map(toVolumeDiscount));
-    setLoading(false);
-  }, [profile?.brand_id]);
-
-  useEffect(() => {
-    void loadVolumeDiscounts();
-  }, [loadVolumeDiscounts]);
-
-  const addVolumeDiscount = useCallback(
-    async (discount: Omit<VolumeDiscount, 'id'>): Promise<VolumeDiscount | null> => {
-      if (!profile?.brand_id) {
-        setError('Brand context is missing');
-        return null;
-      }
-
-      const { data, error: insertError } = await supabase
+  const addMut = useMutation({
+    mutationFn: async (discount: Omit<VolumeDiscount, 'id'>) => {
+      if (!profile?.brand_id) throw new Error('Brand context is missing');
+      const { data, error } = await supabase
         .from('brand_volume_discounts')
         .insert({
           brand_id: profile.brand_id,
@@ -633,79 +468,44 @@ export function useVolumeDiscounts() {
         })
         .select('id,min_units,max_units,discount_percent')
         .single();
-
-      if (insertError || !data) {
-        setError(insertError?.message ?? 'Failed to create volume discount');
-        return null;
-      }
-
-      const created = toVolumeDiscount(data as VolumeDiscountRow);
-      setVolumeDiscounts((prev) => [...prev, created]);
-      return created;
+      if (error || !data) throw new Error(error?.message ?? 'Failed to create volume discount');
+      return toVolumeDiscount(data as VolumeDiscountRow);
     },
-    [profile?.brand_id]
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateVolumeDiscount = useCallback(
-    async (id: string, updates: Partial<VolumeDiscount>): Promise<boolean> => {
-      const payload: Record<string, unknown> = {
-        updated_at: new Date().toISOString(),
-      };
-
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<VolumeDiscount> }) => {
+      const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (typeof updates.minUnits === 'number') payload.min_units = updates.minUnits;
       if ('maxUnits' in updates) payload.max_units = updates.maxUnits ?? null;
       if (typeof updates.discountPercent === 'number') payload.discount_percent = updates.discountPercent;
-
-      const { error: updateError } = await supabase
-        .from('brand_volume_discounts')
-        .update(payload)
-        .eq('id', id);
-
-      if (updateError) {
-        setError(updateError.message);
-        return false;
-      }
-
-      setVolumeDiscounts((prev) =>
-        prev.map((discount) =>
-          discount.id === id
-            ? {
-                ...discount,
-                ...updates,
-              }
-            : discount
-        )
-      );
-      return true;
+      const { error } = await supabase.from('brand_volume_discounts').update(payload).eq('id', id);
+      if (error) throw new Error(error.message);
     },
-    []
-  );
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteVolumeDiscount = useCallback(async (id: string): Promise<boolean> => {
-    const { error: deleteError } = await supabase
-      .from('brand_volume_discounts')
-      .delete()
-      .eq('id', id);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('brand_volume_discounts').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-    if (deleteError) {
-      setError(deleteError.message);
-      return false;
-    }
-
-    setVolumeDiscounts((prev) => prev.filter((discount) => discount.id !== id));
-    return true;
-  }, []);
-
-  return {
-    volumeDiscounts,
-    loading,
-    error,
-    isLive: isSupabaseConfigured,
-    addVolumeDiscount,
-    updateVolumeDiscount,
-    deleteVolumeDiscount,
-    refetch: loadVolumeDiscounts,
+  const error = queryError instanceof Error ? queryError.message : null;
+  const addVolumeDiscount = async (discount: Omit<VolumeDiscount, 'id'>): Promise<VolumeDiscount | null> => {
+    try { return await addMut.mutateAsync(discount); } catch { return null; }
   };
+  const updateVolumeDiscount = async (id: string, updates: Partial<VolumeDiscount>): Promise<boolean> => {
+    try { await updateMut.mutateAsync({ id, updates }); return true; } catch { return false; }
+  };
+  const deleteVolumeDiscount = async (id: string): Promise<boolean> => {
+    try { await deleteMut.mutateAsync(id); return true; } catch { return false; }
+  };
+
+  return { volumeDiscounts, loading, error, isLive: isSupabaseConfigured, addVolumeDiscount, updateVolumeDiscount, deleteVolumeDiscount, refetch: () => queryClient.invalidateQueries({ queryKey }) };
 }
 
 // Utility export retained for backwards compatibility with legacy callers.

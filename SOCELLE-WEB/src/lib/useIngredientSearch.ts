@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // ── useIngredientSearch — WO-OVERHAUL-12 ────────────────────────────────────
 // Calls the ingredient-search edge function with advanced filters.
 // Falls back to direct DB query if edge function is unavailable.
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface SearchIngredient {
   id: string;
@@ -40,116 +42,76 @@ export interface UseIngredientSearchReturn {
   isLive: boolean;
 }
 
+function normalizeResult(r: SearchIngredient): SearchIngredient {
+  return {
+    ...r,
+    skin_types: r.skin_types ?? [],
+    benefits: r.benefits ?? [],
+    concerns: r.concerns ?? [],
+    function: r.function ?? [],
+  };
+}
+
 export function useIngredientSearch(filters: SearchFilters): UseIngredientSearchReturn {
-  const [results, setResults] = useState<SearchIngredient[]>([]);
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [isLive, setIsLive] = useState(false);
+  // Debounce search input internally (300ms)
+  const [debouncedQ, setDebouncedQ] = useState(filters.q);
 
   useEffect(() => {
-    let cancelled = false;
+    if (!filters.q) { setDebouncedQ(''); return; }
+    const timer = setTimeout(() => setDebouncedQ(filters.q), 300);
+    return () => clearTimeout(timer);
+  }, [filters.q]);
 
-    const timer = setTimeout(async () => {
-      if (!isSupabaseConfigured) {
-        setResults([]);
-        setCount(0);
-        setIsLive(false);
-        return;
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['ingredient_search', { q: debouncedQ, limit: filters.limit, skin_type: filters.skin_type, vegan: filters.vegan, max_ewg: filters.max_ewg }],
+    queryFn: async () => {
+      // Try edge function first
+      const params = new URLSearchParams();
+      if (debouncedQ) params.set('q', debouncedQ);
+      params.set('limit', String(filters.limit ?? 30));
+      if (filters.skin_type) params.set('skin_type', filters.skin_type);
+      if (filters.vegan) params.set('vegan', 'true');
+      if (filters.max_ewg != null) params.set('max_ewg', String(filters.max_ewg));
+
+      const queryString = params.toString();
+      const functionName = queryString ? `ingredient-search?${queryString}` : 'ingredient-search';
+      const { data: fnData, error: fnError } = await supabase.functions.invoke(functionName, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!fnError && fnData) {
+        const parsed = fnData as { results: SearchIngredient[]; count: number };
+        return { results: (parsed.results ?? []).map(normalizeResult), count: parsed.count ?? 0 };
       }
 
-      setLoading(true);
+      // Direct DB fallback
+      let query = supabase
+        .from('ingredients')
+        .select('id, inci_name, common_name, ewg_score, comedogenic_rating, skin_types, benefits, concerns, is_vegan, is_cruelty_free, is_natural, is_fragrance, is_allergen, safety_score, trending_score, function, eu_status', { count: 'exact' })
+        .order('inci_name')
+        .limit(filters.limit ?? 30);
 
-      try {
-        // Build edge function URL params
-        const params = new URLSearchParams();
-        if (filters.q) params.set('q', filters.q);
-        params.set('limit', String(filters.limit ?? 30));
-        if (filters.skin_type) params.set('skin_type', filters.skin_type);
-        if (filters.vegan) params.set('vegan', 'true');
-        if (filters.max_ewg != null) params.set('max_ewg', String(filters.max_ewg));
-
-        const queryString = params.toString();
-        const functionName = queryString ? `ingredient-search?${queryString}` : 'ingredient-search';
-        const { data, error } = await supabase.functions.invoke(functionName, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        // Edge function invoke doesn't support GET params well — fall back to direct query
-        if (error || !data) {
-          // Direct DB fallback
-          let query = supabase
-            .from('ingredients')
-            .select('id, inci_name, common_name, ewg_score, comedogenic_rating, skin_types, benefits, concerns, is_vegan, is_cruelty_free, is_natural, is_fragrance, is_allergen, safety_score, trending_score, function, eu_status', { count: 'exact' })
-            .order('inci_name')
-            .limit(filters.limit ?? 30);
-
-          if (filters.q.trim()) {
-            query = query.or(
-              `inci_name.ilike.%${filters.q.trim()}%,common_name.ilike.%${filters.q.trim()}%`
-            );
-          }
-          if (filters.skin_type) {
-            query = query.contains('skin_types', [filters.skin_type]);
-          }
-          if (filters.vegan) {
-            query = query.eq('is_vegan', true);
-          }
-          if (filters.max_ewg != null) {
-            query = query.lte('ewg_score', filters.max_ewg);
-          }
-
-          const { data: dbData, error: dbError, count: dbCount } = await query;
-          if (cancelled) return;
-
-          if (dbError || !dbData) {
-            setResults([]);
-            setCount(0);
-            setIsLive(false);
-          } else {
-            setResults(
-              (dbData as SearchIngredient[]).map((r) => ({
-                ...r,
-                skin_types: r.skin_types ?? [],
-                benefits: r.benefits ?? [],
-                concerns: r.concerns ?? [],
-                function: r.function ?? [],
-              }))
-            );
-            setCount(dbCount ?? dbData.length);
-            setIsLive(true);
-          }
-        } else {
-          if (cancelled) return;
-          const parsed = data as { results: SearchIngredient[]; count: number };
-          setResults(
-            (parsed.results ?? []).map((r) => ({
-              ...r,
-              skin_types: r.skin_types ?? [],
-              benefits: r.benefits ?? [],
-              concerns: r.concerns ?? [],
-              function: r.function ?? [],
-            }))
-          );
-          setCount(parsed.count ?? 0);
-          setIsLive(true);
-        }
-      } catch {
-        if (!cancelled) {
-          setResults([]);
-          setCount(0);
-          setIsLive(false);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+      if (debouncedQ.trim()) {
+        query = query.or(`inci_name.ilike.%${debouncedQ.trim()}%,common_name.ilike.%${debouncedQ.trim()}%`);
       }
-    }, filters.q ? 300 : 0);
+      if (filters.skin_type) query = query.contains('skin_types', [filters.skin_type]);
+      if (filters.vegan) query = query.eq('is_vegan', true);
+      if (filters.max_ewg != null) query = query.lte('ewg_score', filters.max_ewg);
 
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [filters.q, filters.limit, filters.skin_type, filters.vegan, filters.max_ewg]);
+      const { data: dbData, error: dbError, count: dbCount } = await query;
+      if (dbError || !dbData) return { results: [] as SearchIngredient[], count: 0 };
+      return {
+        results: (dbData as SearchIngredient[]).map(normalizeResult),
+        count: dbCount ?? dbData.length,
+      };
+    },
+    enabled: isSupabaseConfigured,
+  });
+
+  const results = data?.results ?? [];
+  const count = data?.count ?? 0;
+  const isLive = results.length > 0;
 
   return { results, count, loading, isLive };
 }

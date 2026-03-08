@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 
 // ── B2B Prospects Hook ──────────────────────────────────────────────────
 // Data source: b2b_prospects, b2b_prospect_touchpoints (LIVE when DB-connected)
+// Migrated to TanStack Query v5 (V2-TECH-04).
 
 export interface B2bProspect {
   id: string;
@@ -64,112 +65,100 @@ export interface NewTouchpoint {
 }
 
 export function useProspects(businessId?: string | null) {
-  const [prospects, setProspects] = useState<B2bProspect[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['b2b_prospects', businessId];
 
-  const load = useCallback(async () => {
-    if (!businessId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbErr } = await supabase
+  const { data: prospects = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('b2b_prospects')
         .select('*')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('updated_at', { ascending: false });
-      if (dbErr) throw dbErr;
-      setProspects(data ?? []);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load prospects');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [businessId]);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as B2bProspect[];
+    },
+    enabled: !!businessId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const createMut = useMutation({
+    mutationFn: async (prospect: NewProspect) => {
+      const { data, error } = await supabase.from('b2b_prospects').insert(prospect).select().single();
+      if (error) throw new Error(error.message);
+      return data as B2bProspect;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const createProspect = useCallback(async (prospect: NewProspect) => {
-    const { data, error: dbErr } = await supabase
-      .from('b2b_prospects')
-      .insert(prospect)
-      .select()
-      .single();
-    if (dbErr) throw dbErr;
-    await load();
-    return data as B2bProspect;
-  }, [load]);
+  const updateMut = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<NewProspect> }) => {
+      const { error } = await supabase.from('b2b_prospects').update(updates).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const updateProspect = useCallback(async (id: string, updates: Partial<NewProspect>) => {
-    const { error: dbErr } = await supabase
-      .from('b2b_prospects')
-      .update(updates)
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('b2b_prospects').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const deleteProspect = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('b2b_prospects')
-      .delete()
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const inviteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('b2b_prospects').update({ invited_to_platform: true, invited_at: new Date().toISOString() }).eq('id', id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const markInvited = useCallback(async (id: string) => {
-    const { error: dbErr } = await supabase
-      .from('b2b_prospects')
-      .update({ invited_to_platform: true, invited_at: new Date().toISOString() })
-      .eq('id', id);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const createProspect = async (prospect: NewProspect) => createMut.mutateAsync(prospect);
+  const updateProspect = async (id: string, updates: Partial<NewProspect>) => updateMut.mutateAsync({ id, updates });
+  const deleteProspect = async (id: string) => deleteMut.mutateAsync(id);
+  const markInvited = async (id: string) => inviteMut.mutateAsync(id);
 
-  return { prospects, loading, error, isLive, reload: load, createProspect, updateProspect, deleteProspect, markInvited };
+  const isLive = prospects.length > 0;
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  return { prospects, loading, error, isLive, reload, createProspect, updateProspect, deleteProspect, markInvited };
 }
 
 export function useProspectDetail(prospectId?: string) {
-  const [prospect, setProspect] = useState<B2bProspect | null>(null);
-  const [touchpoints, setTouchpoints] = useState<B2bTouchpoint[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
+  const queryKey = ['b2b_prospect_detail', prospectId];
 
-  const load = useCallback(async () => {
-    if (!prospectId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading: loading, error: queryError, refetch: reload } = useQuery({
+    queryKey,
+    queryFn: async () => {
       const [pRes, tRes] = await Promise.all([
-        supabase.from('b2b_prospects').select('*').eq('id', prospectId).single(),
-        supabase.from('b2b_prospect_touchpoints').select('*').eq('prospect_id', prospectId).order('occurred_at', { ascending: false }),
+        supabase.from('b2b_prospects').select('*').eq('id', prospectId!).single(),
+        supabase.from('b2b_prospect_touchpoints').select('*').eq('prospect_id', prospectId!).order('occurred_at', { ascending: false }),
       ]);
-      if (pRes.error) throw pRes.error;
-      setProspect(pRes.data as B2bProspect);
-      setTouchpoints((tRes.data ?? []) as B2bTouchpoint[]);
-      setIsLive(true);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Failed to load prospect');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [prospectId]);
+      if (pRes.error) throw new Error(pRes.error.message);
+      return {
+        prospect: pRes.data as B2bProspect,
+        touchpoints: (tRes.data ?? []) as B2bTouchpoint[],
+      };
+    },
+    enabled: !!prospectId,
+  });
 
-  useEffect(() => { load(); }, [load]);
+  const addMut = useMutation({
+    mutationFn: async (tp: NewTouchpoint) => {
+      const { error } = await supabase.from('b2b_prospect_touchpoints').insert(tp);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
+  });
 
-  const addTouchpoint = useCallback(async (tp: NewTouchpoint) => {
-    const { error: dbErr } = await supabase
-      .from('b2b_prospect_touchpoints')
-      .insert(tp);
-    if (dbErr) throw dbErr;
-    await load();
-  }, [load]);
+  const prospect = data?.prospect ?? null;
+  const touchpoints = data?.touchpoints ?? [];
+  const isLive = prospect !== null;
+  const error = queryError instanceof Error ? queryError.message : null;
+  const addTouchpoint = async (tp: NewTouchpoint) => addMut.mutateAsync(tp);
 
-  return { prospect, touchpoints, loading, error, isLive, reload: load, addTouchpoint };
+  return { prospect, touchpoints, loading, error, isLive, reload, addTouchpoint };
 }
