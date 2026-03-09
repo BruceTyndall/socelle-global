@@ -138,6 +138,7 @@ export default function Education() {
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <MainNav />
 
+      <main id="main-content">
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         {/* Brand video background */}
@@ -244,7 +245,7 @@ export default function Education() {
                     className="text-left w-full bg-white/60 backdrop-blur-[12px] border border-white/30 rounded-2xl p-7 transition-all duration-200 hover:shadow-panel hover:-translate-y-0.5 group"
                   >
                     <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-accent/10 mb-5 transition-colors group-hover:bg-accent/20">
-                      <Icon className="w-5 h-5 text-accent" />
+                      <Icon className="w-5 h-5 text-accent" aria-hidden="true" />
                     </div>
                     <h3 className="font-sans text-lg font-semibold text-graphite mb-2">
                       {CATEGORY_LABELS[cat.key]}
@@ -302,7 +303,7 @@ export default function Education() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <BookOpen className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
+              <BookOpen className="w-10 h-10 text-graphite/20 mx-auto mb-4" aria-hidden="true" />
               <p className="text-graphite/60 font-sans">
                 No content matches your filters. Try adjusting your selection.
               </p>
@@ -352,11 +353,11 @@ export default function Education() {
               <div className="max-w-3xl mx-auto text-center">
                 <div className="flex items-center justify-center gap-3 mb-6">
                   <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-white/[0.08]">
-                    <TrendingUp className="w-5 h-5 text-accent" />
+                    <TrendingUp className="w-5 h-5 text-accent" aria-hidden="true" />
                   </div>
-                  <Zap className="w-4 h-4 text-accent/50" />
+                  <Zap className="w-4 h-4 text-accent/50" aria-hidden="true" />
                   <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-white/[0.08]">
-                    <BookOpen className="w-5 h-5 text-accent" />
+                    <BookOpen className="w-5 h-5 text-accent" aria-hidden="true" />
                   </div>
                 </div>
 
@@ -373,7 +374,7 @@ export default function Education() {
                   className="inline-flex items-center gap-2 text-accent font-sans font-semibold text-sm hover:text-accent-hover transition-colors"
                 >
                   Explore Socelle Intelligence
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>
               </div>
             </div>
@@ -389,7 +390,7 @@ export default function Education() {
               <div className="absolute top-0 right-0 w-40 h-40 bg-accent/[0.04] rounded-bl-[80px]" />
               <div className="relative">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 mx-auto mb-6">
-                  <Lock className="w-5 h-5 text-accent" />
+                  <Lock className="w-5 h-5 text-accent" aria-hidden="true" />
                 </div>
                 <h2 className="font-sans font-semibold text-subsection text-graphite mb-4">
                   Full education access requires a professional account
@@ -401,7 +402,7 @@ export default function Education() {
                 <div className="flex flex-wrap justify-center gap-4">
                   <Link to="/request-access" className="btn-mineral-primary">
                     Request Professional Access
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </Link>
                   <Link to="/brand/apply" className="btn-mineral-secondary">
                     Brand Partner Application
@@ -412,6 +413,8 @@ export default function Education() {
           </BlockReveal>
         </div>
       </section>
+
+      </main>
 
       {/* ── Footer ──────────────────────────────────────────────────── */}
       <SiteFooter />

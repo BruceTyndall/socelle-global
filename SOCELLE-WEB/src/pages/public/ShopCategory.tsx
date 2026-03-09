@@ -72,6 +72,13 @@ export default function ShopCategory() {
       <Helmet>
         <title>{categoryName} | SOCELLE Shop</title>
         <meta name="description" content={`Browse ${categoryName} products on SOCELLE — professional beauty intelligence marketplace.`} />
+        <meta property="og:title" content={`${categoryName} | SOCELLE Shop`} />
+        <meta property="og:description" content={`Browse ${categoryName} products on SOCELLE.`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://socelle.com/shop/category/${slug}`} />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`https://socelle.com/shop/category/${slug}`} />
       </Helmet>
       <MainNav />
 

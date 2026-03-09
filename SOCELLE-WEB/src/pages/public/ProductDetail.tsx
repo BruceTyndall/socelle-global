@@ -128,6 +128,13 @@ export default function ProductDetail() {
       <Helmet>
         <title>{product.name} | Socelle Shop</title>
         <meta name="description" content={product.short_description ?? product.description ?? ''} />
+        <meta property="og:title" content={`${product.name} | Socelle Shop`} />
+        <meta property="og:description" content={product.short_description ?? product.description ?? ''} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={`https://socelle.com/shop/${product.slug}`} />
+        <meta property="og:image" content={product.image_url ?? 'https://socelle.com/og-image.svg'} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`https://socelle.com/shop/${product.slug}`} />
         {jsonLd && <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>}
       </Helmet>
       <MainNav />

@@ -64,6 +64,13 @@ export default function IntelligenceCommerce() {
           name="description"
           content="Discover professional beauty products backed by market intelligence signals. See what is trending in your region."
         />
+        <meta property="og:title" content="Intelligence-Driven Products | SOCELLE" />
+        <meta property="og:description" content="Professional beauty products backed by market intelligence signals. See what is trending in your region." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/intelligence/commerce" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://socelle.com/intelligence/commerce" />
       </Helmet>
       <MainNav />
 

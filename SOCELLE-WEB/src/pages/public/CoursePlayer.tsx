@@ -415,6 +415,11 @@ export default function CoursePlayer() {
     <>
       <Helmet>
         <title>{activeLesson?.title ?? course.title} | Socelle Courses</title>
+        <meta name="description" content={`Watch ${activeLesson?.title ?? course.title} on Socelle Courses.`} />
+        <meta property="og:title" content={`${activeLesson?.title ?? course.title} | Socelle Courses`} />
+        <meta property="og:description" content={`Watch ${activeLesson?.title ?? course.title} on Socelle Courses.`} />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="min-h-screen bg-mn-bg flex flex-col">

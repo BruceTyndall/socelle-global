@@ -25,7 +25,11 @@ export default function ShopOrders() {
     <>
       <Helmet>
         <title>Order History | SOCELLE</title>
-        <meta name="description" content="View your order history on SOCELLE." />
+        <meta name="description" content="View your order history on SOCELLE. Track shipments and manage past purchases." />
+        <meta property="og:title" content="Order History | SOCELLE" />
+        <meta property="og:description" content="View your order history on SOCELLE." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <MainNav />
 

@@ -115,12 +115,12 @@ function ValueProps() {
               className="group bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">
-                <p.icon className="w-6 h-6 text-accent" />
+                <p.icon className="w-6 h-6 text-accent" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold text-graphite mb-3">{p.title}</h3>
               <p className="text-graphite/60 text-sm leading-relaxed mb-4">{p.description}</p>
               <span className="inline-flex items-center text-sm font-medium text-accent group-hover:gap-2 transition-all">
-                Explore <ArrowRight className="w-4 h-4 ml-1" />
+                Explore <ArrowRight className="w-4 h-4 ml-1" aria-hidden="true" />
               </span>
             </Link>
           ))}
@@ -146,7 +146,7 @@ function BrandShowcase() {
             to="/brands"
             className="hidden md:inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-graphite transition-colors"
           >
-            View All Brands <ArrowRight className="w-4 h-4" />
+            View All Brands <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
 
@@ -174,7 +174,7 @@ function BrandShowcase() {
             to="/brands"
             className="inline-flex items-center gap-2 text-sm font-medium text-accent"
           >
-            View All Brands <ArrowRight className="w-4 h-4" />
+            View All Brands <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </div>
@@ -189,7 +189,7 @@ function SignalPreview({ isLive }: { isLive: boolean }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <TrendingUp className="w-5 h-5 text-accent" />
+            <TrendingUp className="w-5 h-5 text-accent" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-graphite">Latest Market Signals</h2>
             {!isLive && <DemoBadge />}
             {isLive && (
@@ -301,6 +301,7 @@ export default function Home() {
       <JsonLd data={[buildOrganizationSchema(), buildWebSiteSchema()]} />
       <MainNav noSpacer />
 
+      <main id="main-content">
       {/* ── Hero: Cinematic video background with Pearl Mineral glass overlay ── */}
       <HeroMediaRail
         videoSrc={HERO_VIDEO}
@@ -426,6 +427,8 @@ export default function Home() {
 
       {/* ── Sticky Conversion Bar ── */}
       <StickyConversionBar />
+
+      </main>
 
       {/* ── Site Footer ── */}
       <SiteFooter />

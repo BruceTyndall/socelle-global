@@ -64,9 +64,9 @@ function TypeBadge({ type }: { type: string }) {
 }
 
 const DirectionIcon = ({ direction }: { direction: string }) => {
-  if (direction === 'up') return <TrendingUp className="w-4 h-4 text-signal-up" />;
-  if (direction === 'down') return <TrendingDown className="w-4 h-4 text-signal-down" />;
-  return <Minus className="w-4 h-4 text-graphite/40" />;
+  if (direction === 'up') return <TrendingUp className="w-4 h-4 text-signal-up" aria-hidden="true" />;
+  if (direction === 'down') return <TrendingDown className="w-4 h-4 text-signal-down" aria-hidden="true" />;
+  return <Minus className="w-4 h-4 text-graphite/40" aria-hidden="true" />;
 };
 
 /* ── Skeleton shimmer ──────────────────────────────────────────── */
@@ -202,6 +202,7 @@ export default function Jobs() {
       ))}
       <MainNav />
 
+      <main id="main-content">
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="relative min-h-[55vh] flex items-center overflow-hidden">
         <img
@@ -333,8 +334,10 @@ export default function Jobs() {
           {/* Search bar */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#141418]/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#141418]/30" aria-hidden="true" />
+              <label htmlFor="job-search" className="sr-only">Search jobs</label>
               <input
+                id="job-search"
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -344,9 +347,10 @@ export default function Jobs() {
               {search && (
                 <button
                   onClick={() => setSearch('')}
+                  aria-label="Clear search"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#141418]/30 hover:text-[#141418] cursor-pointer"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -357,7 +361,7 @@ export default function Jobs() {
                 onClick={handleExport}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#141418]/10 bg-white text-[#141418]/60 text-sm font-medium hover:border-[#141418]/20 hover:text-[#141418] transition-all cursor-pointer"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4" aria-hidden="true" />
                 Export CSV
               </button>
             )}
@@ -411,7 +415,7 @@ export default function Jobs() {
           {/* ── Error state ────────────────────────────────────────── */}
           {!loading && error && (
             <div className="text-center py-16">
-              <AlertCircle className="w-10 h-10 text-[#8E6464] mx-auto mb-4" />
+              <AlertCircle className="w-10 h-10 text-[#8E6464] mx-auto mb-4" aria-hidden="true" />
               <h3 className="font-sans font-semibold text-[#141418] mb-2">
                 Unable to load job listings
               </h3>
@@ -422,7 +426,7 @@ export default function Jobs() {
                 onClick={() => void refetch()}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#6E879B] text-white text-sm font-medium hover:bg-[#5A7185] transition-colors cursor-pointer"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4" aria-hidden="true" />
                 Retry
               </button>
             </div>
@@ -431,7 +435,7 @@ export default function Jobs() {
           {/* ── Empty state ────────────────────────────────────────── */}
           {!loading && !error && listings.length === 0 && !featured && (
             <div className="text-center py-16">
-              <FileSearch className="w-10 h-10 text-[#141418]/20 mx-auto mb-4" />
+              <FileSearch className="w-10 h-10 text-[#141418]/20 mx-auto mb-4" aria-hidden="true" />
               <h3 className="font-sans font-semibold text-[#141418] mb-2">
                 No jobs matching your criteria
               </h3>
@@ -496,12 +500,14 @@ export default function Jobs() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#F6F3EF] text-[#141418] text-sm font-semibold hover:bg-white transition-colors"
               >
                 Request Access
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </div>
           </BlockReveal>
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>
@@ -538,16 +544,16 @@ function FeaturedJobCard({ job }: { job: JobPostingRow }) {
       </p>
       <div className="flex flex-wrap gap-4 text-sm text-[#141418]/40">
         <span className="flex items-center gap-1.5">
-          <MapPin className="w-4 h-4" />
+          <MapPin className="w-4 h-4" aria-hidden="true" />
           {job.location}
         </span>
         <span className="flex items-center gap-1.5">
-          <Briefcase className="w-4 h-4" />
+          <Briefcase className="w-4 h-4" aria-hidden="true" />
           {job.type}
         </span>
         <span>{salary}</span>
         <span className="flex items-center gap-1.5">
-          <Clock className="w-4 h-4" />
+          <Clock className="w-4 h-4" aria-hidden="true" />
           {daysAgoLabel(days)}
         </span>
       </div>
@@ -577,7 +583,7 @@ function JobListingCard({ job }: { job: JobPostingRow }) {
           <p className="text-[#141418]/50 text-sm mt-1">{job.company}</p>
           <div className="flex flex-wrap gap-3 mt-3 text-xs text-[#141418]/40">
             <span className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" />
+              <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
               {job.location}
             </span>
             <span>{salary}</span>

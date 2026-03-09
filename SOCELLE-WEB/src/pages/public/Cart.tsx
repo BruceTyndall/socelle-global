@@ -42,6 +42,11 @@ export default function Cart() {
     <>
       <Helmet>
         <title>Shopping Cart | Socelle</title>
+        <meta name="description" content="Review the items in your Socelle shopping cart before checkout." />
+        <meta property="og:title" content="Shopping Cart | Socelle" />
+        <meta property="og:description" content="Review your cart and proceed to checkout on Socelle." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <MainNav />
 

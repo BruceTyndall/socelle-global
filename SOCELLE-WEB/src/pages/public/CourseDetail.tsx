@@ -183,6 +183,13 @@ export default function CourseDetail() {
       <Helmet>
         <title>{course.title} | Socelle Courses</title>
         <meta name="description" content={course.description || `Learn ${course.title} on Socelle`} />
+        <meta property="og:title" content={`${course.title} | Socelle Courses`} />
+        <meta property="og:description" content={course.description || `Learn ${course.title} on Socelle`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://socelle.com/courses/${course.slug}`} />
+        <meta property="og:image" content={course.thumbnail_url ?? 'https://socelle.com/og-image.svg'} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`https://socelle.com/courses/${course.slug}`} />
         {jsonLd && <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>}
       </Helmet>
 

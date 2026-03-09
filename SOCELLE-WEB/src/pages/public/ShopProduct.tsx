@@ -107,6 +107,13 @@ export default function ShopProduct() {
       <Helmet>
         <title>{product.name} | SOCELLE Shop</title>
         <meta name="description" content={product.description ?? `Shop ${product.name} on SOCELLE.`} />
+        <meta property="og:title" content={`${product.name} | SOCELLE Shop`} />
+        <meta property="og:description" content={product.description ?? `Shop ${product.name} on SOCELLE.`} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={`https://socelle.com/shop/products/${product.slug ?? product.id}`} />
+        <meta property="og:image" content={product.image_url ?? 'https://socelle.com/og-image.svg'} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`https://socelle.com/shop/products/${product.slug ?? product.id}`} />
       </Helmet>
       <MainNav />
 

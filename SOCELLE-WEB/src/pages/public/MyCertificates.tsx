@@ -23,7 +23,11 @@ export default function MyCertificates() {
     <>
       <Helmet>
         <title>My Certificates | Socelle</title>
-        <meta name="description" content="View and download your earned professional education certificates." />
+        <meta name="description" content="View and download your earned professional education certificates on Socelle." />
+        <meta property="og:title" content="My Certificates | Socelle" />
+        <meta property="og:description" content="View and download your earned professional education certificates." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <MainNav />

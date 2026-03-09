@@ -34,6 +34,10 @@ export default function ForgotPassword() {
       <div className="min-h-screen bg-mn-bg flex items-center justify-center p-4">
         <Helmet>
           <title>Password Reset Sent — Socelle</title>
+          <meta name="description" content="A password reset link has been sent to your email address." />
+          <meta property="og:title" content="Password Reset Sent — Socelle" />
+          <meta property="og:description" content="A password reset link has been sent to your email address." />
+          <meta property="og:type" content="website" />
           <meta name="robots" content="noindex, nofollow" />
         </Helmet>
         <div className="w-full max-w-md">
@@ -74,6 +78,10 @@ export default function ForgotPassword() {
     <div className="min-h-screen bg-mn-bg flex items-center justify-center p-4">
       <Helmet>
         <title>Forgot Password — Socelle</title>
+        <meta name="description" content="Reset your Socelle account password. Enter your email to receive a password reset link." />
+        <meta property="og:title" content="Forgot Password — Socelle" />
+        <meta property="og:description" content="Reset your Socelle account password." />
+        <meta property="og:type" content="website" />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="w-full max-w-md">

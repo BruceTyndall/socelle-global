@@ -42,6 +42,7 @@ export default function IngredientCollection() {
           content={collection?.description || 'Curated ingredient collection for professional beauty operators.'}
         />
         <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={collection?.description || 'Curated ingredient collection for professional beauty operators.'} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://socelle.com/ingredients/collections/${slug}`} />
         <meta name="robots" content="index, follow" />

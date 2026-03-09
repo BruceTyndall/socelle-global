@@ -44,7 +44,7 @@ export default function SiteFooter() {
 
           {/* Link columns */}
           {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-            <div key={heading}>
+            <nav key={heading} aria-label={`${heading} links`}>
               <h4 className="text-mn-bg/40 font-sans text-xs font-medium tracking-[0.08em] uppercase mb-4">
                 {heading}
               </h4>
@@ -60,7 +60,7 @@ export default function SiteFooter() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
 

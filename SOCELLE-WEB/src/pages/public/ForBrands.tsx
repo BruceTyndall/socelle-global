@@ -117,6 +117,7 @@ export default function ForBrands() {
       })} />
       <MainNav />
 
+      <main id="main-content">
       {/* ══════════════════════════════════════════════════════════
           HERO — Video Background + Glass Overlay
           ══════════════════════════════════════════════════════════ */}
@@ -159,7 +160,7 @@ export default function ForBrands() {
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white text-sm font-sans font-medium tracking-wide hover:bg-white/25 transition-all duration-300"
               >
                 Join as a Brand Partner
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
               <Link
                 to="/brands"
@@ -230,7 +231,7 @@ export default function ForBrands() {
                   </div>
                   <div className="p-6">
                     <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mb-4">
-                      <Icon className="w-5 h-5 text-accent" />
+                      <Icon className="w-5 h-5 text-accent" aria-hidden="true" />
                     </div>
                     <h3 className="font-sans font-semibold text-lg text-graphite mb-2">
                       {prop.title}
@@ -257,7 +258,7 @@ export default function ForBrands() {
               return (
                 <div key={item.label} className="flex gap-4">
                   <div className="w-10 h-10 rounded-xl bg-mn-surface flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-graphite" />
+                    <Icon className="w-5 h-5 text-graphite" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="font-sans font-semibold text-graphite text-sm mb-1">
@@ -342,6 +343,7 @@ export default function ForBrands() {
                 muted
                 loop
                 playsInline
+                aria-hidden="true"
               />
             </div>
             {/* Copy */}
@@ -373,7 +375,7 @@ export default function ForBrands() {
                 className="btn-mineral-accent inline-flex items-center gap-2"
               >
                 See Market Intelligence
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -413,12 +415,14 @@ export default function ForBrands() {
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white text-sm font-sans font-medium tracking-wide hover:bg-white/25 transition-all duration-300"
               >
                 Join as a Brand Partner
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>

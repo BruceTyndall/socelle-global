@@ -173,6 +173,13 @@ export default function CoursesCatalog() {
       <Helmet>
         <title>Course Catalog | Socelle</title>
         <meta name="description" content="Professional beauty and medspa courses with CE credits. Browse treatment protocols, ingredient science, compliance, and business training." />
+        <meta property="og:title" content="Course Catalog | Socelle" />
+        <meta property="og:description" content="Professional beauty and medspa courses with CE credits. Treatment protocols, ingredient science, and business training." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/courses" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://socelle.com/courses" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 

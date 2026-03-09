@@ -18,7 +18,13 @@ export default function CertificateVerify() {
     <>
       <Helmet>
         <title>Verify Certificate | Socelle</title>
-        <meta name="description" content="Verify the authenticity of a Socelle professional education certificate." />
+        <meta name="description" content="Verify the authenticity of a Socelle professional education certificate. Confirm credentials for licensed beauty professionals." />
+        <meta property="og:title" content="Verify Certificate | Socelle" />
+        <meta property="og:description" content="Verify the authenticity of a Socelle professional education certificate." />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://socelle.com/certificates/verify" />
       </Helmet>
 
       <MainNav />

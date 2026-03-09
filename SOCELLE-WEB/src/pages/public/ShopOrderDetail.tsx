@@ -66,6 +66,10 @@ export default function ShopOrderDetail() {
       <Helmet>
         <title>Order #{order.id.slice(0, 8)} | SOCELLE</title>
         <meta name="description" content="View your order details on SOCELLE." />
+        <meta property="og:title" content="Order Details | SOCELLE" />
+        <meta property="og:description" content="View your order details on SOCELLE." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <MainNav />
 

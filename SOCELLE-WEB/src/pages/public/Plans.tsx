@@ -189,6 +189,7 @@ export default function Pricing() {
       </Helmet>
       <MainNav />
 
+      <main id="main-content">
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="relative bg-mn-bg py-20 lg:py-28 overflow-hidden">
         <img
@@ -218,7 +219,7 @@ export default function Pricing() {
               <div className="flex flex-wrap justify-center gap-4">
                 <Link to="/portal/signup" className="btn-mineral-primary">
                   Get Intelligence Access
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                 </Link>
                 <Link to="/brand/apply" className="btn-mineral-secondary">
                   Claim Your Brand Page
@@ -272,7 +273,7 @@ export default function Pricing() {
                     <ul className="space-y-3 mb-8 flex-1">
                       {tier.features.map((f) => (
                         <li key={f} className="flex items-start gap-2.5">
-                          <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                          <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
                           <span className="text-sm font-sans text-graphite">{f}</span>
                         </li>
                       ))}
@@ -286,7 +287,7 @@ export default function Pricing() {
                         }`}
                     >
                       {tier.cta}
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
                     </Link>
                   </div>
                 </div>
@@ -428,6 +429,8 @@ export default function Pricing() {
           </BlockReveal>
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>

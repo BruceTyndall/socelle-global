@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Check, ChevronRight, ChevronLeft, Calendar as CalIcon, Clock, User, Scissors } from 'lucide-react';
 import { usePublicBookingServices, usePublicBookingStaff, type BookingService, type BookingStaff } from '../../lib/useBooking';
 import { supabase } from '../../lib/supabase';
@@ -123,6 +124,15 @@ export default function BookingWidget() {
   }
 
   return (
+    <>
+      <Helmet>
+        <title>{businessName ? `Book with ${businessName}` : 'Book an Appointment'} | Socelle</title>
+        <meta name="description" content={`Book an appointment${businessName ? ` with ${businessName}` : ''} on Socelle. Professional beauty and medspa services.`} />
+        <meta property="og:title" content={`${businessName ? `Book with ${businessName}` : 'Book an Appointment'} | Socelle`} />
+        <meta property="og:description" content={`Book an appointment${businessName ? ` with ${businessName}` : ''} on Socelle.`} />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
     <div className="min-h-screen bg-mn-bg py-8 px-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
@@ -288,5 +298,6 @@ export default function BookingWidget() {
         </div>
       </div>
     </div>
+    </>
   );
 }

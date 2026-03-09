@@ -150,7 +150,11 @@ export default function ShopCheckout() {
     <>
       <Helmet>
         <title>Checkout | SOCELLE</title>
-        <meta name="description" content="Complete your purchase on SOCELLE." />
+        <meta name="description" content="Complete your purchase on SOCELLE. Secure checkout for professional beauty products." />
+        <meta property="og:title" content="Checkout | SOCELLE" />
+        <meta property="og:description" content="Complete your purchase on SOCELLE." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <MainNav />
 

@@ -106,9 +106,9 @@ function timeAgo(dateStr: string): string {
 }
 
 function DirectionIcon({ dir }: { dir: string }) {
-  if (dir === 'up') return <TrendingUp className="w-4 h-4 text-signal-up" />;
-  if (dir === 'down') return <TrendingDown className="w-4 h-4 text-signal-down" />;
-  return <Minus className="w-4 h-4 text-graphite/40" />;
+  if (dir === 'up') return <TrendingUp className="w-4 h-4 text-signal-up" aria-hidden="true" />;
+  if (dir === 'down') return <TrendingDown className="w-4 h-4 text-signal-down" aria-hidden="true" />;
+  return <Minus className="w-4 h-4 text-graphite/40" aria-hidden="true" />;
 }
 
 /* ═══════════════════════════════════════════════════════════════ */
@@ -268,6 +268,7 @@ export default function Intelligence() {
       })} />
       <MainNav noSpacer />
 
+      <main id="main-content">
       {/* ═══ HERO: Video background with glass overlay ═══════════ */}
       <HeroMediaRail
         videoSrc={HERO_VIDEO}
@@ -333,8 +334,10 @@ export default function Intelligence() {
 
           <div className="max-w-xl mx-auto mb-5">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/35" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/35" aria-hidden="true" />
+              <label htmlFor="signal-search" className="sr-only">Search signals</label>
               <input
+                id="signal-search"
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -357,7 +360,7 @@ export default function Intelligence() {
                       : 'bg-white text-graphite/70 hover:bg-mn-surface hover:text-graphite border border-graphite/10'
                   }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3.5 h-3.5" aria-hidden="true" />
                 {label}
               </button>
             ))}
@@ -481,6 +484,8 @@ export default function Intelligence() {
 
       {/* ═══ STICKY CONVERSION BAR ════════════════════════════════ */}
       <StickyConversionBar />
+
+      </main>
 
       {/* ═══ SITE FOOTER ═════════════════════════════════════════ */}
       <SiteFooter />

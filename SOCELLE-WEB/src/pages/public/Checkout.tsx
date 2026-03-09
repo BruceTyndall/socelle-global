@@ -336,6 +336,11 @@ export default function Checkout() {
       <>
         <Helmet>
           <title>Checkout Unavailable | Socelle</title>
+          <meta name="description" content="Checkout is currently unavailable on Socelle." />
+          <meta property="og:title" content="Checkout Unavailable | Socelle" />
+          <meta property="og:description" content="Checkout is currently unavailable." />
+          <meta property="og:type" content="website" />
+          <meta name="robots" content="noindex, nofollow" />
         </Helmet>
         <MainNav />
         <main className="min-h-screen bg-mn-bg">
@@ -361,6 +366,11 @@ export default function Checkout() {
     <>
       <Helmet>
         <title>Checkout | Socelle</title>
+        <meta name="description" content="Complete your purchase on Socelle. Secure checkout for professional beauty products." />
+        <meta property="og:title" content="Checkout | Socelle" />
+        <meta property="og:description" content="Complete your purchase on Socelle." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <MainNav />
       <main className="min-h-screen bg-mn-bg">

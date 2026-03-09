@@ -54,6 +54,11 @@ export default function OrderDetailPage() {
     <>
       <Helmet>
         <title>Order #{order.order_number} | Socelle</title>
+        <meta name="description" content="View your order details and track shipment status on Socelle." />
+        <meta property="og:title" content="Order Details | Socelle" />
+        <meta property="og:description" content="View your order details on Socelle." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <MainNav />
 

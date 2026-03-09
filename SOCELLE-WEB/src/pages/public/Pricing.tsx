@@ -56,12 +56,19 @@ export default function Pricing() {
     <>
       <Helmet>
         <title>Pricing | Socelle</title>
-        <meta name="description" content="Choose the right plan for your professional beauty business. Intelligence-first pricing with modular access." />
+        <meta name="description" content="Choose the right plan for your professional beauty business. Intelligence-first pricing with modular access to market signals and AI tools." />
+        <meta property="og:title" content="Pricing | Socelle" />
+        <meta property="og:description" content="Choose the right plan for your professional beauty business. Intelligence-first pricing with modular access." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/pricing" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://socelle.com/pricing" />
       </Helmet>
 
       <MainNav />
 
-      <main className="bg-mn-bg min-h-screen">
+      <main id="main-content" className="bg-mn-bg min-h-screen">
         {/* Hero */}
         <section className="pt-24 pb-12 px-4 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent mb-4">
@@ -75,9 +82,10 @@ export default function Pricing() {
           </p>
 
           {/* Billing toggle */}
-          <div className="inline-flex items-center bg-white rounded-full border border-graphite/10 p-1">
+          <div className="inline-flex items-center bg-white rounded-full border border-graphite/10 p-1" role="group" aria-label="Billing period">
             <button
               type="button"
+              aria-pressed={billing === 'monthly'}
               onClick={() => setBilling('monthly')}
               className={`px-5 py-2 text-sm font-medium rounded-full transition-colors ${
                 billing === 'monthly'
@@ -89,6 +97,7 @@ export default function Pricing() {
             </button>
             <button
               type="button"
+              aria-pressed={billing === 'annual'}
               onClick={() => setBilling('annual')}
               className={`px-5 py-2 text-sm font-medium rounded-full transition-colors flex items-center gap-2 ${
                 billing === 'annual'
@@ -154,7 +163,7 @@ export default function Pricing() {
                     {plan.is_featured && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                         <span className="inline-flex items-center gap-1 bg-accent text-white text-[11px] font-semibold px-3 py-1 rounded-full">
-                          <Star className="w-3 h-3" />
+                          <Star className="w-3 h-3" aria-hidden="true" />
                           Most Popular
                         </span>
                       </div>
@@ -193,9 +202,9 @@ export default function Pricing() {
                         return (
                           <li key={key} className="flex items-center gap-2 text-sm">
                             {included ? (
-                              <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                              <Check className="w-4 h-4 text-green-600 flex-shrink-0" aria-hidden="true" />
                             ) : (
-                              <X className="w-4 h-4 text-graphite/20 flex-shrink-0" />
+                              <X className="w-4 h-4 text-graphite/20 flex-shrink-0" aria-hidden="true" />
                             )}
                             <span className={included ? 'text-graphite' : 'text-graphite/30'}>
                               {meta.label}
@@ -216,7 +225,7 @@ export default function Pricing() {
                         className="h-11 flex items-center justify-center gap-2 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
                       >
                         Start Free
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
                       </Link>
                     ) : plan.trial_days > 0 ? (
                       <Link
@@ -224,7 +233,7 @@ export default function Pricing() {
                         className="h-11 flex items-center justify-center gap-2 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
                       >
                         Start {plan.trial_days}-Day Trial
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
                       </Link>
                     ) : plan.price_monthly >= 500 ? (
                       <Link
@@ -239,7 +248,7 @@ export default function Pricing() {
                         className="h-11 flex items-center justify-center gap-2 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
                       >
                         Upgrade
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
                       </Link>
                     )}
                   </div>
@@ -283,9 +292,9 @@ export default function Pricing() {
                         {plans.map((p: Plan) => (
                           <td key={p.id} className="text-center px-4 py-3">
                             {p.modules_included?.includes(key) ? (
-                              <Check className="w-4 h-4 text-green-600 mx-auto" />
+                              <Check className="w-4 h-4 text-green-600 mx-auto" aria-hidden="true" />
                             ) : (
-                              <X className="w-4 h-4 text-graphite/15 mx-auto" />
+                              <X className="w-4 h-4 text-graphite/15 mx-auto" aria-hidden="true" />
                             )}
                           </td>
                         ))}
@@ -308,6 +317,7 @@ export default function Pricing() {
               <div key={i} className="bg-white rounded-xl border border-graphite/10 overflow-hidden">
                 <button
                   type="button"
+                  aria-expanded={openFaq === i}
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between px-6 py-4 text-left"
                 >
@@ -316,6 +326,7 @@ export default function Pricing() {
                     className={`w-4 h-4 text-graphite/40 transition-transform ${
                       openFaq === i ? 'rotate-180' : ''
                     }`}
+                    aria-hidden="true"
                   />
                 </button>
                 {openFaq === i && (

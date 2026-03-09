@@ -81,6 +81,10 @@ export default function ResetPassword() {
       <div className="min-h-screen bg-mn-bg flex items-center justify-center p-4">
         <Helmet>
           <title>Password Updated — Socelle</title>
+          <meta name="description" content="Your Socelle account password has been updated successfully." />
+          <meta property="og:title" content="Password Updated — Socelle" />
+          <meta property="og:description" content="Your Socelle account password has been updated successfully." />
+          <meta property="og:type" content="website" />
           <meta name="robots" content="noindex, nofollow" />
         </Helmet>
         <div className="w-full max-w-md">
@@ -107,6 +111,10 @@ export default function ResetPassword() {
     <div className="min-h-screen bg-mn-bg flex items-center justify-center p-4">
       <Helmet>
         <title>Reset Password — Socelle</title>
+        <meta name="description" content="Create a new password for your Socelle account." />
+        <meta property="og:title" content="Reset Password — Socelle" />
+        <meta property="og:description" content="Create a new password for your Socelle account." />
+        <meta property="og:type" content="website" />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="w-full max-w-md">

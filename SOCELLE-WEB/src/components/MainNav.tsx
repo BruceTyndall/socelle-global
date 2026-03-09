@@ -66,6 +66,14 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
 
   return (
     <>
+      {/* ── Skip to main content link ── */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-mn-dark focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+      >
+        Skip to main content
+      </a>
+
       {/* ── Fixed outer wrapper ── */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <div className="px-4 sm:px-5 pt-3 sm:pt-4">
@@ -84,6 +92,7 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
 
             {/* ── Child 2: Nav links pill (desktop only) ── */}
             <nav
+              aria-label="Main navigation"
               className="glass-nav-child hidden lg:flex items-center h-[48px] px-2 gap-0.5"
               data-scrolled={scrolledAttr}
             >
@@ -160,7 +169,7 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
                     onClick={handleSignOut}
                     className="inline-flex items-center gap-1.5 text-sm font-sans font-medium text-graphite/50 hover:text-graphite transition-colors duration-150 px-2 py-1.5 rounded-full hover:bg-black/[0.04]"
                   >
-                    <LogOut className="w-3.5 h-3.5" />
+                    <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Sign out</span>
                   </button>
                 </div>
@@ -207,7 +216,7 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
           </div>
 
           {/* Dialog nav links */}
-          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+          <nav aria-label="Main navigation" className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
             {NAV_LINKS.map(({ to, label }) => (
               <Link
                 key={to}
@@ -286,7 +295,7 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
                   }}
                   className="flex items-center gap-2 h-12 w-full px-5 rounded-full text-[15px] font-sans font-medium text-graphite/60 hover:text-graphite hover:bg-black/[0.03] transition-colors"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-4 h-4" aria-hidden="true" />
                   Sign out
                 </button>
               </div>

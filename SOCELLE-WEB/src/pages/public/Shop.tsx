@@ -53,7 +53,14 @@ export default function Shop() {
     <>
       <Helmet>
         <title>Shop Professional Products | Socelle</title>
-        <meta name="description" content="Shop professional beauty and skincare products verified by industry intelligence." />
+        <meta name="description" content="Shop professional beauty and skincare products verified by industry intelligence. Curated for licensed salons, spas, and medspas." />
+        <meta property="og:title" content="Shop Professional Products | Socelle" />
+        <meta property="og:description" content="Shop professional beauty and skincare products verified by industry intelligence." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://socelle.com/shop" />
+        <meta property="og:image" content="https://socelle.com/og-image.svg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://socelle.com/shop" />
       </Helmet>
       <MainNav />
 

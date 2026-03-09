@@ -16,6 +16,11 @@ export default function WishlistPage() {
     <>
       <Helmet>
         <title>My Wishlist | Socelle</title>
+        <meta name="description" content="View and manage your saved products on Socelle." />
+        <meta property="og:title" content="My Wishlist | Socelle" />
+        <meta property="og:description" content="View and manage your saved products on Socelle." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <MainNav />
 

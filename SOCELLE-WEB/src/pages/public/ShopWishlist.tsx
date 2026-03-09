@@ -17,7 +17,11 @@ export default function ShopWishlist() {
     <>
       <Helmet>
         <title>Wishlist | SOCELLE</title>
-        <meta name="description" content="Your saved products on SOCELLE." />
+        <meta name="description" content="Your saved products on SOCELLE. View and manage your wishlist of professional beauty products." />
+        <meta property="og:title" content="Wishlist | SOCELLE" />
+        <meta property="og:description" content="Your saved products on SOCELLE." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <MainNav />
 

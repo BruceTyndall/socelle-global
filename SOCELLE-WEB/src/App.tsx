@@ -167,6 +167,13 @@ const JobDetail = lazy(() => import('./pages/public/JobDetail'));
 const BlogListPage = lazy(() => import('./pages/public/BlogListPage'));
 const BlogPostPage = lazy(() => import('./pages/public/BlogPostPage'));
 
+// ── CMS content surfaces (V2-HUBS-14)
+const IntelligenceBriefs = lazy(() => import('./pages/public/IntelligenceBriefs'));
+const IntelligenceBriefDetail = lazy(() => import('./pages/public/IntelligenceBriefDetail'));
+const EducationArticles = lazy(() => import('./pages/public/EducationArticles'));
+const HelpCenter = lazy(() => import('./pages/public/HelpCenter'));
+const CaseStudies = lazy(() => import('./pages/public/Stories'));
+
 // ── Brand portal
 const BrandLogin = lazy(() => import('./pages/brand/Login'));
 const BrandApply = lazy(() => import('./pages/brand/Apply'));
@@ -468,6 +475,13 @@ function App() {
                   <Route path="/blog/:slug" element={<BlogPostPage />} />
                   <Route path="/pages/:slug" element={<CmsPageRoute />} />
                   <Route path="/help/:slug" element={<CmsHelpRoute />} />
+
+                  {/* ── CMS content surfaces (V2-HUBS-14) ── */}
+                  <Route path="/intelligence/briefs" element={<IntelligenceBriefs />} />
+                  <Route path="/intelligence/briefs/:slug" element={<IntelligenceBriefDetail />} />
+                  <Route path="/education/articles" element={<EducationArticles />} />
+                  <Route path="/help" element={<HelpCenter />} />
+                  <Route path="/case-studies" element={<CaseStudies />} />
 
                   {/* MODULE_EDUCATION gated */}
                   <Route path="/courses" element={<ModuleRoute moduleKey="MODULE_EDUCATION"><CoursesCatalog /></ModuleRoute>} />

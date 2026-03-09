@@ -24,6 +24,11 @@ export default function OrderHistory() {
     <>
       <Helmet>
         <title>My Orders | Socelle</title>
+        <meta name="description" content="View your order history and track shipments on Socelle." />
+        <meta property="og:title" content="My Orders | Socelle" />
+        <meta property="og:description" content="View your order history and track shipments on Socelle." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <MainNav />
 

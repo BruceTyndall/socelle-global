@@ -60,7 +60,11 @@ export default function ShopCart() {
     <>
       <Helmet>
         <title>Shopping Cart | SOCELLE</title>
-        <meta name="description" content="Review your cart and proceed to checkout on SOCELLE." />
+        <meta name="description" content="Review your cart and proceed to checkout on SOCELLE. Professional beauty products." />
+        <meta property="og:title" content="Shopping Cart | SOCELLE" />
+        <meta property="og:description" content="Review your cart and proceed to checkout on SOCELLE." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <MainNav />
 
