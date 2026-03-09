@@ -3,7 +3,7 @@
 // canvas, and properties panel. Uses cms_docs + cms_blocks + cms_page_blocks.
 // Data label: LIVE — reads/writes from Supabase CMS tables.
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -36,6 +36,7 @@ import {
   AlertTriangle,
   MonitorSmartphone,
   RefreshCw,
+  Download,
 } from 'lucide-react';
 import { useStudioDoc, useStudioDocs } from '../../../lib/studio/useStudioDocs';
 import type { CmsBlockType } from '../../../lib/cms/types';
@@ -47,6 +48,8 @@ import {
   type ResolveResult,
 } from '../../../lib/studio/studioTemplateVariables';
 import { useStudioSmartFill } from '../../../lib/studio/useStudioSmartFill';
+import { useAuth } from '../../../lib/auth';
+import { generateStudioSharePack, downloadStudioSharePack } from '../../../lib/studio/studioSharePack';
 
 // ── Extended block types for studio ─────────────────────────────────
 
@@ -358,6 +361,7 @@ export default function StudioEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isNew = !id;
+  const { user } = useAuth();
   const { context: smartFillContext, isLoading: smartFillLoading, isLive: smartFillLive } = useStudioSmartFill();
 
   const { doc, isLoading: docLoading, error: docError } = useStudioDoc(id ?? '');
@@ -372,33 +376,50 @@ export default function StudioEditor() {
   const [selectedPresetId, setSelectedPresetId] = useState<string>('slide-16x9');
   const [lastUnresolvedVariables, setLastUnresolvedVariables] = useState<string[]>([]);
 
-  // Initialize from doc
-  if (doc && !titleInitialized) {
-    setTitle(doc.title);
-    const meta = doc.metadata as Record<string, unknown> | null;
-    const savedBlocks = (meta?.blocks as EditorBlock[]) ?? [];
-    setBlocks(savedBlocks);
-    const savedPreset = typeof meta?.output_preset === 'string' ? meta.output_preset : null;
-    if (savedPreset && OUTPUT_PRESETS.some((preset) => preset.id === savedPreset)) {
-      setSelectedPresetId(savedPreset);
-    }
-    setTitleInitialized(true);
-  }
-
-  // For new documents
-  if (isNew && !titleInitialized) {
-    setTitle('Untitled Document');
-    setTitleInitialized(true);
-  }
-
-  const selectedBlock = useMemo(
-    () => blocks.find((b) => b.id === selectedBlockId) ?? null,
-    [blocks, selectedBlockId]
-  );
+  // Canvas scale — fits preset dimensions into available viewport width
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [canvasScale, setCanvasScale] = useState(1);
 
   const selectedPreset = useMemo(
     () => OUTPUT_PRESETS.find((preset) => preset.id === selectedPresetId) ?? OUTPUT_PRESETS[0],
     [selectedPresetId]
+  );
+
+  useEffect(() => {
+    const el = canvasContainerRef.current;
+    if (!el) return;
+    const update = () => {
+      const available = el.clientWidth - 48; // 2 × p-6 = 48px
+      setCanvasScale(Math.min(1, available / selectedPreset.width));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [selectedPreset.width]);
+
+  // Initialize from loaded doc or new document
+  useEffect(() => {
+    if (titleInitialized) return;
+    if (doc) {
+      setTitle(doc.title);
+      const meta = doc.metadata as Record<string, unknown> | null;
+      const savedBlocks = (meta?.blocks as EditorBlock[]) ?? [];
+      setBlocks(savedBlocks);
+      const savedPreset = typeof meta?.output_preset === 'string' ? meta.output_preset : null;
+      if (savedPreset && OUTPUT_PRESETS.some((preset) => preset.id === savedPreset)) {
+        setSelectedPresetId(savedPreset);
+      }
+      setTitleInitialized(true);
+    } else if (isNew) {
+      setTitle('Untitled Document');
+      setTitleInitialized(true);
+    }
+  }, [doc, isNew, titleInitialized]);
+
+  const selectedBlock = useMemo(
+    () => blocks.find((b) => b.id === selectedBlockId) ?? null,
+    [blocks, selectedBlockId]
   );
 
   const unresolvedByBlock = useMemo(() => {
@@ -484,6 +505,29 @@ export default function StudioEditor() {
 
     setLastUnresolvedVariables(Array.from(unresolved));
   }, [title, smartFillContext]);
+
+  const handleDownloadSharePack = useCallback(() => {
+    const copyBlocks = blocks
+      .flatMap((b) => {
+        if (b.type === 'text') return [(b.content.body as string) || ''];
+        if (b.type === 'heading') return [(b.content.text as string) || ''];
+        if (b.type === 'cta') return [(b.content.text as string) || ''];
+        return [];
+      })
+      .filter(Boolean);
+    const ctaBlock = blocks.find((b) => b.type === 'cta');
+    const ctaUrl = (ctaBlock?.content.url as string) || null;
+    const { filename, blob } = generateStudioSharePack({
+      title,
+      slug: title,
+      presetId: selectedPreset.id,
+      copyBlocks,
+      ctaUrl,
+      signalSummary: smartFillContext.signal.metric,
+      generatedBy: user?.email ?? null,
+    });
+    downloadStudioSharePack(filename, blob);
+  }, [blocks, title, selectedPreset.id, smartFillContext.signal.metric, user]);
 
   // ── Save ──────────────────────────────────────────────────────────
 
@@ -665,6 +709,13 @@ export default function StudioEditor() {
             <Eye className="w-4 h-4" /> Preview
           </button>
           <button
+            onClick={handleDownloadSharePack}
+            className="flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185] px-3 py-1.5 rounded-lg border border-[#E8EDF1] hover:border-[#6E879B] transition-colors"
+            title="Download share pack as ZIP (captions, UTM link, QR code)"
+          >
+            <Download className="w-4 h-4" /> Share Pack
+          </button>
+          <button
             onClick={handleSave}
             disabled={saving}
             className="flex items-center gap-1 text-sm text-white bg-[#6E879B] hover:bg-[#5A7185] px-4 py-1.5 rounded-lg transition-colors disabled:opacity-50"
@@ -706,57 +757,65 @@ export default function StudioEditor() {
         </div>
 
         {/* ── Center: Canvas ─────────────────────────────────────────── */}
-        <div className="flex-1 overflow-auto p-6">
-          <div className="mx-auto w-fit">
+        <div ref={canvasContainerRef} className="flex-1 overflow-auto p-6">
+          <div
+            className="mx-auto"
+            style={{ width: Math.ceil(selectedPreset.width * canvasScale) }}
+          >
             <div className="mb-2 flex items-center justify-between text-xs text-[#141418]/55">
               <span>{selectedPreset.label}</span>
-              <span>{selectedPreset.width} × {selectedPreset.height}px · Safe margin {selectedPreset.safeMargin}px</span>
+              <span>
+                {selectedPreset.width} × {selectedPreset.height}px · Safe margin {selectedPreset.safeMargin}px
+                {canvasScale < 0.99 ? ` · ${Math.round(canvasScale * 100)}%` : ''}
+              </span>
             </div>
-            <div className="rounded-xl border border-[#E8EDF1] bg-white/60 p-4 shadow-sm">
-              <div
-                className="relative overflow-hidden rounded-lg border border-[#E8EDF1] bg-[#F6F3EF]"
-                style={{ width: selectedPreset.width, minHeight: selectedPreset.height }}
-              >
+            <div style={{ transform: `scale(${canvasScale})`, transformOrigin: 'top left' }}>
+              <div className="rounded-xl border border-[#E8EDF1] bg-white/60 p-4 shadow-sm">
                 <div
-                  className="pointer-events-none absolute border border-dashed border-[#6E879B]/40"
-                  style={{
-                    top: selectedPreset.safeMargin,
-                    right: selectedPreset.safeMargin,
-                    bottom: selectedPreset.safeMargin,
-                    left: selectedPreset.safeMargin,
-                  }}
-                />
-                <div className="relative p-4">
-                  {blocks.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-24 text-center">
-                      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EDF1]">
-                        <Plus className="h-8 w-8 text-[#6E879B]" />
+                  className="relative overflow-hidden rounded-lg border border-[#E8EDF1] bg-[#F6F3EF]"
+                  style={{ width: selectedPreset.width, minHeight: selectedPreset.height }}
+                >
+                  <div
+                    className="pointer-events-none absolute border border-dashed border-[#6E879B]/40"
+                    style={{
+                      top: selectedPreset.safeMargin,
+                      right: selectedPreset.safeMargin,
+                      bottom: selectedPreset.safeMargin,
+                      left: selectedPreset.safeMargin,
+                    }}
+                  />
+                  <div className="relative p-4">
+                    {blocks.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-24 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EDF1]">
+                          <Plus className="h-8 w-8 text-[#6E879B]" />
+                        </div>
+                        <h2 className="mb-2 text-lg font-semibold text-[#141418]">
+                          Start building
+                        </h2>
+                        <p className="max-w-sm text-sm text-[#141418]/60">
+                          Add blocks from the picker on the left to build your document.
+                        </p>
                       </div>
-                      <h2 className="mb-2 text-lg font-semibold text-[#141418]">
-                        Start building
-                      </h2>
-                      <p className="max-w-sm text-sm text-[#141418]/60">
-                        Add blocks from the picker on the left to build your document.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {blocks.map((block, index) => (
-                        <CanvasBlock
-                          key={block.id}
-                          block={block}
-                          isSelected={selectedBlockId === block.id}
-                          isFirst={index === 0}
-                          isLast={index === blocks.length - 1}
-                          hasUnresolvedVariables={(unresolvedByBlock[block.id] ?? []).length > 0}
-                          onSelect={() => setSelectedBlockId(block.id)}
-                          onMoveUp={() => moveBlock(index, 'up')}
-                          onMoveDown={() => moveBlock(index, 'down')}
-                          onDelete={() => deleteBlock(block.id)}
-                        />
-                      ))}
-                    </div>
-                  )}
+                    ) : (
+                      <div className="space-y-3">
+                        {blocks.map((block, index) => (
+                          <CanvasBlock
+                            key={block.id}
+                            block={block}
+                            isSelected={selectedBlockId === block.id}
+                            isFirst={index === 0}
+                            isLast={index === blocks.length - 1}
+                            hasUnresolvedVariables={(unresolvedByBlock[block.id] ?? []).length > 0}
+                            onSelect={() => setSelectedBlockId(block.id)}
+                            onMoveUp={() => moveBlock(index, 'up')}
+                            onMoveDown={() => moveBlock(index, 'down')}
+                            onDelete={() => deleteBlock(block.id)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
