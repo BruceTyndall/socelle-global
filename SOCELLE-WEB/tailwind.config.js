@@ -29,33 +29,6 @@ export default {
           down:        '#8E6464',   // negative / decline
         },
 
-        // ── Legacy semantic tokens (portals) ────────────────────────
-        brand: {
-          bg:           '#F5F3F0',
-          'bg-alt':     '#EDEDE5',
-          surface:      '#FFFFFF',
-          'surface-alt':'#FBF9F5',
-          border:       '#D6D1C9',
-          'border-dark':'#B8B2A9',
-          text:         '#1A1714',
-          'text-muted': '#6B6560',
-          'text-light': '#5C5652',
-          accent:       '#8C6B6E',
-          'accent-dark':'#6E5254',
-          gold:         '#D4A44C',
-          'gold-light': '#E0BA72',
-        },
-        // ── Intelligence layer (portal dashboards) ─────────────────
-        intel: {
-          dark:    '#0F1419',
-          slate:   '#1A2332',
-          border:  '#2A3544',
-          text:    '#94A3B8',
-          accent:  '#3B82F6',
-          up:      '#22C55E',
-          down:    '#EF4444',
-          stable:  '#94A3B8',
-        },
         edu: {
           primary: '#7C3AED',
           light:   '#EDE9FE',
