@@ -1,0 +1,246 @@
+{
+  "skill": "dev-best-practice-checker",
+  "task": "TanStack Query Migration Audit — useEffect + supabase.from() anti-pattern detection",
+  "timestamp": "2026-03-09T12:00:00Z",
+  "auditor": "claude-sonnet-4-6 (automated)",
+  "overall": "PASS_WITH_WARNINGS",
+
+  "scope": {
+    "directory": "SOCELLE-WEB/src/",
+    "file_types": ["*.tsx", "*.ts"],
+    "total_files_scanned": 651,
+    "files_with_supabase_from": 88,
+    "files_with_useeffect": 79,
+    "files_with_both": 12,
+    "confirmed_violations": 6,
+    "correct_patterns_verified": 6
+  },
+
+  "correction_to_claude_md": {
+    "claude_md_claimed_violations": 79,
+    "actual_violations": 6,
+    "explanation": "The CLAUDE.md §4 estimate of '79 pages using raw useEffect + supabase.from()' is stale. Most of the 88 files with supabase.from() are already using TanStack Query (useQuery/useMutation) for data fetching. Only 6 files contain the raw anti-pattern. The 79 figure likely reflects a historical codebase state before TanStack Query was adopted."
+  },
+
+  "violations": [
+    {
+      "file": "src/components/CostsView.tsx",
+      "hook_name": "CostsView (component)",
+      "query_table": "treatment_costs",
+      "query_type": "SELECT",
+      "line_approx": 21,
+      "pattern": "useEffect(() => { loadCosts(); }, []) → async loadCosts() → supabase.from('treatment_costs').select('*')",
+      "also_has_mutations": true,
+      "mutation_pattern": "Event handler → supabase.from('treatment_costs').insert/update/delete (acceptable; could be useMutation)",
+      "tanstack_equivalent_exists": false,
+      "suggested_hook": "useTreatmentCosts",
+      "migration_complexity": "LOW — simple SELECT, no dependencies",
+      "priority": "MEDIUM — legacy admin view, low traffic"
+    },
+    {
+      "file": "src/components/MixingRulesView.tsx",
+      "hook_name": "MixingRulesView (component)",
+      "query_table": "mixing_rules",
+      "query_type": "SELECT",
+      "line_approx": 19,
+      "pattern": "useEffect(() => { loadRules(); }, []) → async loadRules() → supabase.from('mixing_rules').select('*')",
+      "also_has_mutations": true,
+      "mutation_pattern": "Event handler → supabase.from('mixing_rules').insert/update/delete",
+      "tanstack_equivalent_exists": false,
+      "suggested_hook": "useMixingRules",
+      "migration_complexity": "LOW",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/components/ProProductsView.tsx",
+      "hook_name": "ProProductsView (component)",
+      "query_table": "pro_products",
+      "query_type": "SELECT",
+      "line_approx": 20,
+      "pattern": "useEffect(() => { loadProducts(); }, []) → async loadProducts() → supabase.from('pro_products').select('*')",
+      "also_has_mutations": true,
+      "mutation_pattern": "Event handler → supabase.from('pro_products').insert/update/delete",
+      "tanstack_equivalent_exists": false,
+      "suggested_hook": "useProProducts",
+      "migration_complexity": "LOW",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/components/RetailProductsView.tsx",
+      "hook_name": "RetailProductsView (component)",
+      "query_table": "retail_products",
+      "query_type": "SELECT",
+      "line_approx": 20,
+      "pattern": "useEffect(() => { loadProducts(); }, []) → async loadProducts() → supabase.from('retail_products').select('*')",
+      "also_has_mutations": true,
+      "mutation_pattern": "Event handler → supabase.from('retail_products').insert/update/delete",
+      "tanstack_equivalent_exists": false,
+      "suggested_hook": "useRetailProducts",
+      "migration_complexity": "LOW",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/components/SpaMenusView.tsx",
+      "hook_name": "SpaMenusView (component)",
+      "query_table": "spa_menus",
+      "query_type": "SELECT",
+      "line_approx": 18,
+      "pattern": "useEffect(() => { loadMenus(); }, []) → async loadMenus() → supabase.from('spa_menus').select('*')",
+      "also_has_mutations": true,
+      "mutation_pattern": "Event handler → supabase.from('spa_menus').insert",
+      "tanstack_equivalent_exists": false,
+      "suggested_hook": "useSpaMenus",
+      "migration_complexity": "LOW",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/pages/brand/Products.tsx",
+      "hook_name": "ProductFormModal (component function)",
+      "query_table": "product_pricing",
+      "query_type": "SELECT",
+      "line_approx": 102,
+      "pattern": "useEffect([open, editProduct]) → fetchTieredPricing(editProduct.id, type) → supabase.from('product_pricing').select('tier, price, min_qty')",
+      "also_has_mutations": true,
+      "mutation_pattern": "handleSave → supabase.from(table).update/insert (acceptable; could be useMutation)",
+      "tanstack_equivalent_exists": false,
+      "suggested_hook": "useTieredPricing(productId, productType, enabled)",
+      "migration_complexity": "MEDIUM — depends on editProduct?.id and open state (use enabled flag)",
+      "priority": "HIGH — brand-portal page, active feature"
+    }
+  ],
+
+  "correct_patterns_verified": [
+    {
+      "file": "src/lib/enrichment/useEnrichment.ts",
+      "pattern": "CORRECT — useEffect for scheduling refresh timer; data fetching in useQuery()",
+      "verdict": "PASS"
+    },
+    {
+      "file": "src/lib/shop/useShopCart.ts",
+      "pattern": "CORRECT — useEffect for cart initialization (side-effect); data fetching in useQuery()",
+      "verdict": "PASS"
+    },
+    {
+      "file": "src/lib/shop/useWishlist.ts",
+      "pattern": "CORRECT — useEffect for ensureWishlist (DB INSERT side-effect, documented in comment); SELECT in useQuery()",
+      "verdict": "PASS"
+    },
+    {
+      "file": "src/pages/admin/AdminIngredientsHub.tsx",
+      "pattern": "CORRECT — useEffect for debounce timer only; data fetching in useQuery()",
+      "verdict": "PASS"
+    },
+    {
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "pattern": "CORRECT — 11 useQuery/useMutation calls; useEffect for non-data-fetch side effects",
+      "verdict": "PASS"
+    },
+    {
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "pattern": "CORRECT — useQuery for data fetching; useEffect for non-data-fetch side effects",
+      "verdict": "PASS"
+    }
+  ],
+
+  "existing_tanstack_hooks": [
+    { "file": "src/hooks/useTier.ts", "hook": "useTier", "tables": ["subscriptions", "user_profiles"] },
+    { "file": "src/lib/intelligence/useIntelligence.ts", "hook": "useIntelligence", "tables": ["market_signals"] },
+    { "file": "src/lib/intelligence/useBenchmarkData.ts", "hook": "useBenchmarkData", "tables": ["brands"] },
+    { "file": "src/lib/intelligence/useBrandIntelligence.ts", "hook": "useBrandIntelligence", "tables": [] },
+    { "file": "src/lib/intelligence/useActionableSignals.ts", "hook": "useActionableSignals", "tables": [] },
+    { "file": "src/lib/intelligence/useBrandAnalytics.ts", "hook": "useBrandAnalytics", "tables": [] },
+    { "file": "src/lib/intelligence/useDataFeedStats.ts", "hook": "useDataFeedStats", "tables": [] },
+    { "file": "src/lib/usePlatformStats.ts", "hook": "usePlatformStats", "tables": ["access_requests","brands","canonical_protocols","events","job_postings","market_signals"] },
+    { "file": "src/lib/useCrmContacts.ts", "hook": "useCrmContacts/useCrmContactDetail/useCrmInteractions", "tables": ["crm_contacts","crm_interactions","crm_contact_tags"] },
+    { "file": "src/lib/useBooking.ts", "hook": "useBookingServices/useServiceAddons/useBookingStaff", "tables": ["booking_services","booking_staff","booking_schedules","appointment_history"] },
+    { "file": "src/lib/useDeals.ts", "hook": "useDeals/useDeal", "tables": [] },
+    { "file": "src/lib/usePipelines.ts", "hook": "usePipelines", "tables": [] },
+    { "file": "src/lib/useProposals.ts", "hook": "useProposals/useProposal", "tables": ["proposals"] },
+    { "file": "src/lib/useProspects.ts", "hook": "useProspects/useProspectDetail", "tables": ["b2b_prospects","b2b_prospect_touchpoints"] },
+    { "file": "src/lib/useCrmCompanies.ts", "hook": "useCrmCompanies/useCrmCompanyDetail", "tables": ["crm_companies"] },
+    { "file": "src/lib/useCrmTasks.ts", "hook": "useCrmTasks/useCrmTasksForContact/useOverdueTasks", "tables": ["crm_tasks"] },
+    { "file": "src/lib/useCampaigns.ts", "hook": "useCampaigns", "tables": ["campaigns","notifications"] },
+    { "file": "src/lib/useLandingPages.ts", "hook": "useLandingPages", "tables": [] },
+    { "file": "src/lib/shop/useProducts.ts", "hook": "useProducts", "tables": [] },
+    { "file": "src/lib/shop/useOrders.ts", "hook": "useOrders/useOrderDetail", "tables": [] },
+    { "file": "src/lib/shop/useShopCart.ts", "hook": "useShopCart", "tables": ["carts","cart_items"] },
+    { "file": "src/lib/shop/useWishlist.ts", "hook": "useWishlist", "tables": ["wishlists","wishlist_items","products"] },
+    { "file": "src/lib/credits/useCreditBalance.ts", "hook": "useCreditBalance", "tables": [] },
+    { "file": "src/lib/notifications/useNotifications.ts", "hook": "useNotifications", "tables": ["notifications"] },
+    { "file": "src/lib/useSubscription.ts", "hook": "useSubscription", "tables": [] },
+    { "file": "src/lib/useIngredients.ts", "hook": "useIngredients", "tables": ["ingredients"] },
+    { "file": "src/lib/useIngredientSearch.ts", "hook": "useIngredientSearch", "tables": ["ingredients"] },
+    { "file": "src/lib/useReseller.ts", "hook": "useResellerAccount/useResellerClients", "tables": ["reseller_accounts"] },
+    { "file": "src/lib/useCommissions.ts", "hook": "useCommissions", "tables": ["commission_rules","commission_payouts"] },
+    { "file": "src/lib/cms/useCmsPages.ts", "hook": "useCmsPages/useCmsPageBySlug", "tables": ["cms_pages"] },
+    { "file": "src/lib/cms/useCmsPosts.ts", "hook": "useCmsPosts/useCmsPostBySlug", "tables": ["cms_posts"] },
+    { "file": "src/lib/cms/useCmsBlocks.ts", "hook": "useCmsBlocks/useCmsBlock", "tables": ["cms_blocks"] },
+    { "file": "src/lib/cms/useCmsAssets.ts", "hook": "useCmsAssets", "tables": ["cms_assets"] },
+    { "file": "src/lib/cms/useCmsSpaces.ts", "hook": "useCmsSpaces", "tables": ["cms_spaces"] },
+    { "file": "src/lib/cms/useCmsTemplates.ts", "hook": "useCmsTemplates", "tables": ["cms_templates"] },
+    { "file": "src/lib/cms/useCmsDocs.ts", "hook": "useCmsDocs/useCmsDocBySlug", "tables": ["cms_docs"] },
+    { "file": "src/lib/cms/useCmsPageBlocks.ts", "hook": "useCmsPageBlocks", "tables": ["cms_page_blocks"] },
+    { "file": "src/lib/education/useCourses.ts", "hook": "useCourses", "tables": [] },
+    { "file": "src/lib/education/useCourse.ts", "hook": "useCourse", "tables": [] },
+    { "file": "src/lib/education/useEnrollment.ts", "hook": "useEnrollment", "tables": [] },
+    { "file": "src/lib/education/useLessonProgress.ts", "hook": "useLessonProgress", "tables": [] },
+    { "file": "src/lib/useFeatureFlag.ts", "hook": "useFeatureFlag", "tables": [] },
+    { "file": "src/lib/useAuditLogs.ts", "hook": "useAuditLogs", "tables": [] },
+    { "file": "src/lib/useRssItems.ts", "hook": "useRssItems", "tables": [] },
+    { "file": "src/lib/useJobPostings.ts", "hook": "useJobPostings/useJobDetail", "tables": [] },
+    { "file": "src/lib/useBlogPosts.ts", "hook": "useBlogPosts/useBlogPost", "tables": [] }
+  ],
+
+  "summary": {
+    "total_violations": 6,
+    "violations_by_directory": {
+      "src/components": 5,
+      "src/pages/brand": 1,
+      "src/pages/business": 0,
+      "src/pages/admin": 0,
+      "src/pages/public": 0,
+      "src/lib": 0,
+      "src/hooks": 0
+    },
+    "existing_tanstack_hooks_count": 46,
+    "compliance_rate_percent": 99,
+    "merge_recommendation": "PASS_WITH_WARNINGS",
+    "blocking_issues": 0,
+    "warnings": 6,
+    "remediation_effort": "LOW — all 6 violations are simple SELECT patterns in legacy admin/brand view components. Migration to useQuery is straightforward."
+  },
+
+  "remediation_plan": {
+    "priority_1_brand_portal": {
+      "file": "src/pages/brand/Products.tsx",
+      "action": "Extract fetchTieredPricing into useQuery with enabled: !!editProduct?.id && open",
+      "new_hook": "src/lib/shop/useTieredPricing.ts",
+      "effort": "1h"
+    },
+    "priority_2_legacy_view_components": {
+      "files": [
+        "src/components/CostsView.tsx",
+        "src/components/MixingRulesView.tsx",
+        "src/components/ProProductsView.tsx",
+        "src/components/RetailProductsView.tsx",
+        "src/components/SpaMenusView.tsx"
+      ],
+      "action": "Replace loadXxx() + useEffect pattern with useQuery in each component. Mutations (insert/update/delete) can remain as event handlers OR be wrapped in useMutation for proper cache invalidation.",
+      "new_hooks": [
+        "src/lib/useTreatmentCosts.ts",
+        "src/lib/useMixingRules.ts",
+        "src/lib/useProProducts.ts",
+        "src/lib/useRetailProducts.ts",
+        "src/lib/useSpaMenus.ts"
+      ],
+      "effort": "2-3h total"
+    }
+  },
+
+  "claude_md_correction_needed": {
+    "section": "§4 CRITICAL DEBT item 3",
+    "current_text": "79 pages using raw useEffect + supabase.from() instead of TanStack Query",
+    "corrected_text": "6 components using raw useEffect + supabase.from() instead of TanStack Query (audit 2026-03-09 confirmed; original estimate was stale)",
+    "action": "Update CLAUDE.md §4 item 3 to reflect verified count"
+  }
+}

@@ -895,27 +895,27 @@ function App() {
                     {/* ── Authoring Studio (WO-CMS-05) ── */}
                     <Route path="studio" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <StudioHome />
+                        <ModuleRoute moduleKey="MODULE_STUDIO"><StudioHome /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="studio/editor/:id" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <StudioEditor />
+                        <ModuleRoute moduleKey="MODULE_STUDIO"><StudioEditor /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="studio/editor" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <StudioEditor />
+                        <ModuleRoute moduleKey="MODULE_STUDIO"><StudioEditor /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="studio/course/:id" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <CourseBuilder />
+                        <ModuleRoute moduleKey="MODULE_STUDIO"><CourseBuilder /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="studio/course" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <CourseBuilder />
+                        <ModuleRoute moduleKey="MODULE_STUDIO"><CourseBuilder /></ModuleRoute>
                       </ProtectedRoute>
                     } />
 
