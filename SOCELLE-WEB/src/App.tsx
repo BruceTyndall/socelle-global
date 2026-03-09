@@ -101,6 +101,9 @@ const CreditPurchase = lazy(() => import('./pages/business/credits/CreditPurchas
 const AffiliateDashboard = lazy(() => import('./pages/business/affiliates/AffiliateDashboard'));
 const AffiliateLinks = lazy(() => import('./pages/business/affiliates/AffiliateLinks'));
 
+// ── Onboarding (V2-PLAT-04)
+const OnboardingFlow = lazy(() => import('./pages/business/onboarding/OnboardingFlow'));
+
 // ── Marketing Hub (V2-HUBS-08)
 const BizMarketingDashboard = lazy(() => import('./pages/business/marketing/MarketingDashboard'));
 const BizCampaignList = lazy(() => import('./pages/business/marketing/CampaignList'));
@@ -872,6 +875,13 @@ function App() {
                         <ModuleRoute moduleKey="MODULE_CRM"><ProspectDetail /></ModuleRoute>
                       </ProtectedRoute>
                     } />
+                    {/* ── Onboarding (V2-PLAT-04) ── */}
+                    <Route path="onboarding" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <OnboardingFlow />
+                      </ProtectedRoute>
+                    } />
+
                     {/* ── Authoring Studio (WO-CMS-05) ── */}
                     <Route path="studio" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
