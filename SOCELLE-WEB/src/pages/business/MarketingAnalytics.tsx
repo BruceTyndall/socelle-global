@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useCampaigns } from '../../lib/useCampaigns';
 import { useCampaignMetrics } from '../../lib/useCampaignMetrics';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Marketing Analytics ─────────────────────────────────
 // Portal page — analytics for opt-in campaigns only.
@@ -59,16 +60,29 @@ function SimpleBar({ label, value, max, color }: { label: string; value: number;
 }
 
 export default function MarketingAnalytics() {
-  const { campaigns, isLive: campaignsLive, loading: campaignsLoading } = useCampaigns();
+  const {
+    campaigns,
+    isLive: campaignsLive,
+    loading: campaignsLoading,
+    error: campaignsError,
+    refetch: refetchCampaigns,
+  } = useCampaigns();
 
   // For aggregate metrics, we pick the first campaign with data for charting.
   // A full implementation would aggregate across all campaigns server-side.
   const completedCampaigns = campaigns.filter((c) => c.status === 'completed' || c.status === 'active');
   const firstCampaignId = completedCampaigns[0]?.id;
-  const { metrics, summary, isLive: metricsLive, loading: metricsLoading } = useCampaignMetrics(firstCampaignId);
+  const {
+    metrics,
+    summary,
+    isLive: metricsLive,
+    loading: metricsLoading,
+    error: metricsError,
+  } = useCampaignMetrics(firstCampaignId);
 
   const isLive = campaignsLive || metricsLive;
   const loading = campaignsLoading || metricsLoading;
+  const error = campaignsError ?? metricsError;
 
   // Campaign performance by type
   const typeBreakdown = useMemo(() => {
@@ -158,6 +172,12 @@ export default function MarketingAnalytics() {
           <div className="flex items-center justify-center py-24">
             <Loader2 className="w-6 h-6 text-graphite/60 animate-spin" />
           </div>
+        ) : error ? (
+          <ErrorState
+            title="Analytics unavailable"
+            message={error}
+            onRetry={() => void refetchCampaigns()}
+          />
         ) : (
           <>
             {/* ── Summary Metrics ──────────────────────────────── */}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, AlertCircle, Loader2, Calendar } from 'lucide-react';
 import { useCampaigns } from '../../lib/useCampaigns';
 import type { MarketingCampaign } from '../../lib/useCampaigns';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Marketing Calendar (/marketing/calendar) ─────────
 // Monthly view of scheduled campaigns.
@@ -22,7 +23,7 @@ const STATUS_DOT: Record<string, string> = {
 };
 
 export default function MarketingCalendar() {
-  const { campaigns, isLive, loading } = useCampaigns();
+  const { campaigns, isLive, loading, error, refetch } = useCampaigns();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
@@ -73,6 +74,23 @@ export default function MarketingCalendar() {
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 text-accent animate-spin" />
+          </div>
+        ) : error ? (
+          <ErrorState
+            title="Calendar unavailable"
+            message={error}
+            onRetry={() => void refetch()}
+          />
+        ) : campaigns.length === 0 ? (
+          <div className="bg-mn-card border border-graphite/8 rounded-xl p-12 text-center">
+            <Calendar className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
+            <p className="text-sm text-graphite/50 font-sans">No campaigns scheduled yet.</p>
+            <Link
+              to="/marketing/campaigns/new"
+              className="inline-flex items-center gap-2 mt-4 h-10 px-4 bg-mn-dark text-white text-sm font-sans font-medium rounded-full hover:bg-mn-dark/90 transition-colors"
+            >
+              Create Campaign
+            </Link>
           </div>
         ) : (
           <div className="bg-mn-card border border-graphite/8 rounded-xl overflow-hidden">

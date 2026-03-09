@@ -3,13 +3,127 @@
     "src/pages/public",
     "src/lib"
   ],
-  "total": 83,
+  "total": 85,
   "entries": [
+    {
+      "id": "src/lib/__tests__/auditLog.test.ts:3:// We need to mock the supabase module before importing the logger.",
+      "file": "src/lib/__tests__/auditLog.test.ts",
+      "line": 3,
+      "snippet": "// We need to mock the supabase module before importing the logger."
+    },
+    {
+      "id": "src/lib/__tests__/auditLog.test.ts:77:// Re-mock with isSupabaseConfigured = false",
+      "file": "src/lib/__tests__/auditLog.test.ts",
+      "line": 77,
+      "snippet": "// Re-mock with isSupabaseConfigured = false"
+    },
+    {
+      "id": "src/lib/__tests__/auditLog.test.ts:8:vi.mock('../supabase', () => ({",
+      "file": "src/lib/__tests__/auditLog.test.ts",
+      "line": 8,
+      "snippet": "vi.mock('../supabase', () => ({"
+    },
+    {
+      "id": "src/lib/__tests__/csvExport.test.ts:3:// Mock DOM APIs that csvExport uses for download",
+      "file": "src/lib/__tests__/csvExport.test.ts",
+      "line": 3,
+      "snippet": "// Mock DOM APIs that csvExport uses for download"
+    },
+    {
+      "id": "src/lib/__tests__/csvExport.test.ts:36:const blobArg = mockCreateObjectURL.mock.calls[0]?.[0];",
+      "file": "src/lib/__tests__/csvExport.test.ts",
+      "line": 36,
+      "snippet": "const blobArg = mockCreateObjectURL.mock.calls[0]?.[0];"
+    },
+    {
+      "id": "src/lib/__tests__/csvExport.test.ts:61:const blobArg = mockCreateObjectURL.mock.calls[0]?.[0] as Blob | undefined;",
+      "file": "src/lib/__tests__/csvExport.test.ts",
+      "line": 61,
+      "snippet": "const blobArg = mockCreateObjectURL.mock.calls[0]?.[0] as Blob | undefined;"
+    },
+    {
+      "id": "src/lib/__tests__/entitlements.test.ts:151:// We inline the expected value here since the mock prevents normal import",
+      "file": "src/lib/__tests__/entitlements.test.ts",
+      "line": 151,
+      "snippet": "// We inline the expected value here since the mock prevents normal import"
+    },
+    {
+      "id": "src/lib/__tests__/entitlements.test.ts:17:// ── Shared mock factories ──────────────────────────────────────────────────",
+      "file": "src/lib/__tests__/entitlements.test.ts",
+      "line": 17,
+      "snippet": "// ── Shared mock factories ──────────────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/__tests__/entitlements.test.ts:38:vi.mock('../../lib/supabase', () => ({",
+      "file": "src/lib/__tests__/entitlements.test.ts",
+      "line": 38,
+      "snippet": "vi.mock('../../lib/supabase', () => ({"
+    },
+    {
+      "id": "src/lib/__tests__/entitlements.test.ts:43:vi.mock('../../lib/auth', () => ({",
+      "file": "src/lib/__tests__/entitlements.test.ts",
+      "line": 43,
+      "snippet": "vi.mock('../../lib/auth', () => ({"
+    },
+    {
+      "id": "src/lib/__tests__/logger.test.ts:18:const loggedStr = spy.mock.calls[0][0] as string;",
+      "file": "src/lib/__tests__/logger.test.ts",
+      "line": 18,
+      "snippet": "const loggedStr = spy.mock.calls[0][0] as string;"
+    },
+    {
+      "id": "src/lib/__tests__/logger.test.ts:29:const loggedStr = spy.mock.calls[0][0] as string;",
+      "file": "src/lib/__tests__/logger.test.ts",
+      "line": 29,
+      "snippet": "const loggedStr = spy.mock.calls[0][0] as string;"
+    },
+    {
+      "id": "src/lib/__tests__/logger.test.ts:39:const loggedStr = spy.mock.calls[0][0] as string;",
+      "file": "src/lib/__tests__/logger.test.ts",
+      "line": 39,
+      "snippet": "const loggedStr = spy.mock.calls[0][0] as string;"
+    },
+    {
+      "id": "src/lib/__tests__/logger.test.ts:50:const loggedStr = spy.mock.calls[0][0] as string;",
+      "file": "src/lib/__tests__/logger.test.ts",
+      "line": 50,
+      "snippet": "const loggedStr = spy.mock.calls[0][0] as string;"
+    },
+    {
+      "id": "src/lib/__tests__/useEdgeFunctionControls.test.ts:11:// logAudit mock",
+      "file": "src/lib/__tests__/useEdgeFunctionControls.test.ts",
+      "line": 11,
+      "snippet": "// logAudit mock"
+    },
+    {
+      "id": "src/lib/__tests__/useEdgeFunctionControls.test.ts:12:vi.mock('../auditLog', () => ({",
+      "file": "src/lib/__tests__/useEdgeFunctionControls.test.ts",
+      "line": 12,
+      "snippet": "vi.mock('../auditLog', () => ({"
+    },
+    {
+      "id": "src/lib/__tests__/useEdgeFunctionControls.test.ts:16:vi.mock('../supabase', () => ({",
+      "file": "src/lib/__tests__/useEdgeFunctionControls.test.ts",
+      "line": 16,
+      "snippet": "vi.mock('../supabase', () => ({"
+    },
     {
       "id": "src/lib/ai/mockAdvisor.ts:3:/* ── Intent Classification (keyword-based mock) ─────────────── */",
       "file": "src/lib/ai/mockAdvisor.ts",
       "line": 3,
       "snippet": "/* ── Intent Classification (keyword-based mock) ─────────────── */"
+    },
+    {
+      "id": "src/lib/analysis/__tests__/creditGate.test.ts:21:vi.mock('../../supabase', () => ({",
+      "file": "src/lib/analysis/__tests__/creditGate.test.ts",
+      "line": 21,
+      "snippet": "vi.mock('../../supabase', () => ({"
+    },
+    {
+      "id": "src/lib/analysis/__tests__/creditGate.test.ts:32:vi.mock('../../logger', () => ({",
+      "file": "src/lib/analysis/__tests__/creditGate.test.ts",
+      "line": 32,
+      "snippet": "vi.mock('../../logger', () => ({"
     },
     {
       "id": "src/lib/api/mockApiData.ts:2:* Enterprise Intelligence API — Mock Data",
@@ -96,6 +210,48 @@
       "snippet": "return 'Billing integration coming soon';"
     },
     {
+      "id": "src/lib/cms/__tests__/useCmsPages.test.ts:35:vi.mock('../../supabase', () => ({",
+      "file": "src/lib/cms/__tests__/useCmsPages.test.ts",
+      "line": 35,
+      "snippet": "vi.mock('../../supabase', () => ({"
+    },
+    {
+      "id": "src/lib/cms/__tests__/useCmsPages.test.ts:6:// ── Mock supabase ────────────────────────────────────────────────────────",
+      "file": "src/lib/cms/__tests__/useCmsPages.test.ts",
+      "line": 6,
+      "snippet": "// ── Mock supabase ────────────────────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/cms/__tests__/useCmsPages.test.ts:8:// We build a chainable mock that resolves when awaited.",
+      "file": "src/lib/cms/__tests__/useCmsPages.test.ts",
+      "line": 8,
+      "snippet": "// We build a chainable mock that resolves when awaited."
+    },
+    {
+      "id": "src/lib/cms/__tests__/useCmsPosts.test.ts:28:vi.mock('../../supabase', () => ({",
+      "file": "src/lib/cms/__tests__/useCmsPosts.test.ts",
+      "line": 28,
+      "snippet": "vi.mock('../../supabase', () => ({"
+    },
+    {
+      "id": "src/lib/cms/__tests__/useCmsPosts.test.ts:6:// ── Mock supabase (vi.hoisted to avoid factory hoisting issue) ───────────",
+      "file": "src/lib/cms/__tests__/useCmsPosts.test.ts",
+      "line": 6,
+      "snippet": "// ── Mock supabase (vi.hoisted to avoid factory hoisting issue) ───────────"
+    },
+    {
+      "id": "src/lib/credits/__tests__/useCreditBalance.test.ts:15:vi.mock('../../supabase', () => ({",
+      "file": "src/lib/credits/__tests__/useCreditBalance.test.ts",
+      "line": 15,
+      "snippet": "vi.mock('../../supabase', () => ({"
+    },
+    {
+      "id": "src/lib/credits/__tests__/useCreditBalance.test.ts:6:// ── Mock supabase (vi.hoisted to avoid factory hoisting issue) ───────────",
+      "file": "src/lib/credits/__tests__/useCreditBalance.test.ts",
+      "line": 6,
+      "snippet": "// ── Mock supabase (vi.hoisted to avoid factory hoisting issue) ───────────"
+    },
+    {
       "id": "src/lib/education/mockContent.ts:3:// ── Mock education content — 22 items across all categories ────────",
       "file": "src/lib/education/mockContent.ts",
       "line": 3,
@@ -108,82 +264,10 @@
       "snippet": "// ── Mock progress — simulates a user 8/24 CE credits in ─────────"
     },
     {
-      "id": "src/lib/enrichment/enrichmentService.ts:312:provider: 'fallback/mock-profile',",
-      "file": "src/lib/enrichment/enrichmentService.ts",
-      "line": 312,
-      "snippet": "provider: 'fallback/mock-profile',"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:1:// ── External Enrichment Pipeline — Mock Data ──────────────────────",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 1,
-      "snippet": "// ── External Enrichment Pipeline — Mock Data ──────────────────────"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:196:// ── Mock Brand Enrichment Profiles ─────────────────────────────────",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 196,
-      "snippet": "// ── Mock Brand Enrichment Profiles ─────────────────────────────────"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:2:// WO-16: Realistic mock enrichment profiles for professional beauty operators + brands",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 2,
-      "snippet": "// WO-16: Realistic mock enrichment profiles for professional beauty operators + brands"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:277:* Falls back to a known mock profile if operatorId isn't matched,",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 277,
-      "snippet": "* Falls back to a known mock profile if operatorId isn't matched,"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:285:// Deterministic fallback: hash operatorId to pick a mock profile",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 285,
-      "snippet": "// Deterministic fallback: hash operatorId to pick a mock profile"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:294:* Falls back to a known mock profile if brandId isn't matched.",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 294,
-      "snippet": "* Falls back to a known mock profile if brandId isn't matched."
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:3:// V1: Static mock data; V2: Supabase enrichment_profiles table queries",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 3,
-      "snippet": "// V1: Static mock data; V2: Supabase enrichment_profiles table queries"
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:308:* Get all mock operator profiles (for admin/debug views).",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 308,
-      "snippet": "* Get all mock operator profiles (for admin/debug views)."
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:315:* Get all mock brand profiles (for admin/debug views).",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 315,
-      "snippet": "* Get all mock brand profiles (for admin/debug views)."
-    },
-    {
-      "id": "src/lib/enrichment/mockEnrichment.ts:7:// ── Mock Operator Enrichment Profiles ──────────────────────────────",
-      "file": "src/lib/enrichment/mockEnrichment.ts",
-      "line": 7,
-      "snippet": "// ── Mock Operator Enrichment Profiles ──────────────────────────────"
-    },
-    {
       "id": "src/lib/enrichment/types.ts:3:// V1: Mock data layer; V2: real API integrations (Google, Yelp, social)",
       "file": "src/lib/enrichment/types.ts",
       "line": 3,
       "snippet": "// V1: Mock data layer; V2: real API integrations (Google, Yelp, social)"
-    },
-    {
-      "id": "src/lib/enrichment/useEnrichment.ts:3:// V1: Returns mock data synchronously (simulates loading state)",
-      "file": "src/lib/enrichment/useEnrichment.ts",
-      "line": 3,
-      "snippet": "// V1: Returns mock data synchronously (simulates loading state)"
     },
     {
       "id": "src/lib/i18n/currency.ts:28:* Convert an amount between two currencies using mock rates.",
@@ -330,22 +414,10 @@
       "snippet": "// Falls back to mock data from computeBenchmarks.ts when Supabase is"
     },
     {
-      "id": "src/lib/intelligence/useBenchmarkData.ts:364:// On error, keep mock data",
+      "id": "src/lib/intelligence/useBenchmarkData.ts:60:return null; // Use mock",
       "file": "src/lib/intelligence/useBenchmarkData.ts",
-      "line": 364,
-      "snippet": "// On error, keep mock data"
-    },
-    {
-      "id": "src/lib/intelligence/useBenchmarkData.ts:54:// No Supabase or no business context — use mock data",
-      "file": "src/lib/intelligence/useBenchmarkData.ts",
-      "line": 54,
-      "snippet": "// No Supabase or no business context — use mock data"
-    },
-    {
-      "id": "src/lib/intelligence/useBenchmarkData.ts:74:// No order history — use mock",
-      "file": "src/lib/intelligence/useBenchmarkData.ts",
-      "line": 74,
-      "snippet": "// No order history — use mock"
+      "line": 60,
+      "snippet": "return null; // Use mock"
     },
     {
       "id": "src/lib/intelligence/useBrandIntelligence.ts:3:// and adoption count data. Falls back to mock maps in brandIntelligence.ts",
@@ -354,15 +426,9 @@
       "snippet": "// and adoption count data. Falls back to mock maps in brandIntelligence.ts"
     },
     {
-      "id": "src/lib/intelligence/useBrandIntelligence.ts:46:// No Supabase config — fall back to mock data",
-      "file": "src/lib/intelligence/useBrandIntelligence.ts",
-      "line": 46,
-      "snippet": "// No Supabase config — fall back to mock data"
-    },
-    {
-      "id": "src/lib/intelligence/useIntelligence.ts:191:if (!isLive) return rawSignals; // mock data has no tier_visibility",
+      "id": "src/lib/intelligence/useIntelligence.ts:163:if (!isLive) return rawSignals; // mock data has no tier_visibility",
       "file": "src/lib/intelligence/useIntelligence.ts",
-      "line": 191,
+      "line": 163,
       "snippet": "if (!isLive) return rawSignals; // mock data has no tier_visibility"
     },
     {
@@ -414,36 +480,6 @@
       "snippet": "// ── Mock Notification Data ─────────────────────────────────────────"
     },
     {
-      "id": "src/lib/notifications/useNotifications.ts:31:// STUB: In production, persist to Supabase",
-      "file": "src/lib/notifications/useNotifications.ts",
-      "line": 31,
-      "snippet": "// STUB: In production, persist to Supabase"
-    },
-    {
-      "id": "src/lib/notifications/useNotifications.ts:36:// STUB: In production, batch update in Supabase",
-      "file": "src/lib/notifications/useNotifications.ts",
-      "line": 36,
-      "snippet": "// STUB: In production, batch update in Supabase"
-    },
-    {
-      "id": "src/lib/notifications/useNotifications.ts:42:// STUB: In production, save to Supabase user_preferences",
-      "file": "src/lib/notifications/useNotifications.ts",
-      "line": 42,
-      "snippet": "// STUB: In production, save to Supabase user_preferences"
-    },
-    {
-      "id": "src/lib/notifications/useNotifications.ts:43:// STUB: Email delivery not yet connected",
-      "file": "src/lib/notifications/useNotifications.ts",
-      "line": 43,
-      "snippet": "// STUB: Email delivery not yet connected"
-    },
-    {
-      "id": "src/lib/notifications/useNotifications.ts:45:// noop: email frequency stub — not yet wired to delivery service",
-      "file": "src/lib/notifications/useNotifications.ts",
-      "line": 45,
-      "snippet": "// noop: email frequency stub — not yet wired to delivery service"
-    },
-    {
       "id": "src/lib/protocols/mockProtocols.ts:3:// ── Mock Treatment Protocols ────────────────────────────────────────",
       "file": "src/lib/protocols/mockProtocols.ts",
       "line": 3,
@@ -468,40 +504,16 @@
       "snippet": "// ── Mock supabase ─────────────────────────────────────────────────────────────"
     },
     {
-      "id": "src/lib/useIngredients.ts:6:// Empty array if DB is empty — no mock fallback per W12-22 spec.",
+      "id": "src/lib/useIngredients.ts:7:// Empty array if DB is empty — no mock fallback per W12-22 spec.",
       "file": "src/lib/useIngredients.ts",
-      "line": 6,
+      "line": 7,
       "snippet": "// Empty array if DB is empty — no mock fallback per W12-22 spec."
-    },
-    {
-      "id": "src/lib/usePlatformStats.ts:4:Follows useIntelligence() canonical pattern: isLive + mock fallback.",
-      "file": "src/lib/usePlatformStats.ts",
-      "line": 4,
-      "snippet": "Follows useIntelligence() canonical pattern: isLive + mock fallback."
     },
     {
       "id": "src/lib/useRssItems.ts:6:// Returns empty array (not mock data) if DB is empty — per W12-21 spec.",
       "file": "src/lib/useRssItems.ts",
       "line": 6,
       "snippet": "// Returns empty array (not mock data) if DB is empty — per W12-21 spec."
-    },
-    {
-      "id": "src/lib/useRssItems.ts:67:// No Supabase config — empty state, no mock fallback (W12-21)",
-      "file": "src/lib/useRssItems.ts",
-      "line": 67,
-      "snippet": "// No Supabase config — empty state, no mock fallback (W12-21)"
-    },
-    {
-      "id": "src/pages/public/ApiPricing.tsx:129:addToast('API access coming soon. We will notify you when self-serve is available.', 'info');",
-      "file": "src/pages/public/ApiPricing.tsx",
-      "line": 129,
-      "snippet": "addToast('API access coming soon. We will notify you when self-serve is available.', 'info');"
-    },
-    {
-      "id": "src/pages/public/CourseDetail.tsx:351:<p className=\"text-sm text-graphite/50\">Curriculum details coming soon.</p>",
-      "file": "src/pages/public/CourseDetail.tsx",
-      "line": 351,
-      "snippet": "<p className=\"text-sm text-graphite/50\">Curriculum details coming soon.</p>"
     }
   ]
 }

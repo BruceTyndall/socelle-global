@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Plus, Mail, AlertCircle, Loader2, Filter, Search } from 'lucide-react';
 import { useCampaigns } from '../../lib/useCampaigns';
 import type { MarketingCampaign, CampaignType, CampaignStatusType } from '../../lib/useCampaigns';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Campaign List (/marketing/campaigns) ─────────────
 // Data source: campaigns table via useCampaigns()
@@ -21,7 +22,7 @@ const CAMPAIGN_TYPES: CampaignType[] = ['email', 'sms', 'push', 'in_app', 'socia
 const CAMPAIGN_STATUSES: CampaignStatusType[] = ['draft', 'scheduled', 'active', 'paused', 'completed', 'archived'];
 
 export default function CampaignList() {
-  const { campaigns, isLive, loading } = useCampaigns();
+  const { campaigns, isLive, loading, error, refetch } = useCampaigns();
   const [typeFilter, setTypeFilter] = useState<CampaignType | ''>('');
   const [statusFilter, setStatusFilter] = useState<CampaignStatusType | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -101,10 +102,23 @@ export default function CampaignList() {
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 text-accent animate-spin" />
           </div>
+        ) : error ? (
+          <ErrorState
+            title="Campaign list unavailable"
+            message={error}
+            onRetry={() => void refetch()}
+          />
         ) : filtered.length === 0 ? (
           <div className="bg-mn-card border border-graphite/8 rounded-xl p-12 text-center">
             <Mail className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
             <p className="text-sm text-graphite/50 font-sans">No campaigns found. Create your first opt-in campaign.</p>
+            <Link
+              to="/marketing/campaigns/new"
+              className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full bg-mn-dark text-white text-sm font-sans font-medium hover:bg-mn-dark/90 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Campaign
+            </Link>
           </div>
         ) : (
           <div className="bg-mn-card border border-graphite/8 rounded-xl overflow-hidden">

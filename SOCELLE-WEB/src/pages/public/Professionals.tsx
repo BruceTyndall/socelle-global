@@ -19,6 +19,8 @@ import {
   BadgeCheck,
   Briefcase,
   SlidersHorizontal,
+  Zap,
+  RefreshCw,
 } from 'lucide-react';
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
@@ -26,6 +28,8 @@ import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { useActionableSignals } from '../../lib/intelligence/useActionableSignals';
+import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -163,6 +167,12 @@ export default function Professionals() {
   const [showFilters, setShowFilters] = useState(false);
 
   const { user } = useAuth();
+  const {
+    signals: actionableSignals,
+    loading: signalsLoading,
+    error: signalsError,
+    refetch: refetchSignals,
+  } = useActionableSignals(3);
 
   const {
     data: professionals = [],
@@ -496,6 +506,70 @@ export default function Professionals() {
               </p>
             </div>
 
+            {/* Signal-driven actions */}
+            <div className="mb-8 bg-white rounded-2xl border border-graphite/8 p-5">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-graphite">Signals to Activate</h3>
+                  <p className="text-xs text-graphite/50 mt-0.5">
+                    Route live intelligence into CRM, campaigns, and follow-up actions.
+                  </p>
+                </div>
+                <Link to="/intelligence" className="text-xs font-medium text-accent hover:text-accent-hover">
+                  Open Intelligence
+                </Link>
+              </div>
+
+              {signalsLoading ? (
+                <div className="space-y-2 animate-pulse">
+                  <div className="h-10 rounded-lg bg-mn-surface" />
+                  <div className="h-10 rounded-lg bg-mn-surface" />
+                </div>
+              ) : signalsError ? (
+                <div className="flex items-center justify-between gap-3 bg-signal-down/5 border border-signal-down/20 rounded-lg px-3 py-2.5">
+                  <p className="text-xs text-graphite/70">{signalsError}</p>
+                  <button
+                    onClick={() => {
+                      void refetchSignals();
+                    }}
+                    className="inline-flex items-center gap-1 text-xs text-graphite/70 hover:text-graphite"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Retry
+                  </button>
+                </div>
+              ) : actionableSignals.length === 0 ? (
+                <div className="text-center py-6">
+                  <Zap className="w-6 h-6 text-graphite/20 mx-auto mb-2" />
+                  <p className="text-xs text-graphite/60">No active signals right now</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {actionableSignals.map((signal) => (
+                    <div key={signal.id} className="flex items-center gap-2 border border-graphite/8 rounded-lg px-3 py-2.5">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-graphite truncate">{signal.title}</p>
+                        <p className="text-xs text-graphite/60">
+                          {signal.category} • Δ {signal.delta.toFixed(1)} • {(signal.confidence * 100).toFixed(0)}% confidence
+                        </p>
+                      </div>
+                      <CrossHubActionDispatcher
+                        compact
+                        signal={{
+                          id: signal.id,
+                          title: signal.title,
+                          category: signal.category,
+                          delta: signal.delta,
+                          confidence: signal.confidence,
+                          source: signal.source,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Professional cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredProfessionals.map((pro) => {
@@ -516,9 +590,10 @@ export default function Professionals() {
                 };
 
                 return (
-                  <div
+                  <Link
                     key={pro.id}
-                    className="bg-white rounded-2xl border border-graphite/8 p-6 transition-all hover:shadow-sm hover:-translate-y-0.5"
+                    to={`/professionals/${pro.id}`}
+                    className="bg-white rounded-2xl border border-graphite/8 p-6 transition-all hover:shadow-sm hover:-translate-y-0.5 block"
                   >
                     <script
                       type="application/ld+json"
@@ -565,7 +640,11 @@ export default function Professionals() {
                         </div>
                       )}
                     </div>
-                  </div>
+                    <div className="mt-4 pt-3 border-t border-graphite/8 flex items-center justify-between">
+                      <span className="text-xs text-graphite/50">View full profile</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-accent" />
+                    </div>
+                  </Link>
                 );
               })}
             </div>

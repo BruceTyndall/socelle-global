@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useCampaigns } from '../../lib/useCampaigns';
 import type { MarketingCampaign, CampaignStatusType } from '../../lib/useCampaigns';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Marketing Dashboard ─────────────────────────────────
 // Portal page — opt-in campaigns only (ZERO cold email/outreach).
@@ -80,7 +81,7 @@ function MetricCard({
 }
 
 export default function MarketingDashboard() {
-  const { campaigns, isLive, loading } = useCampaigns();
+  const { campaigns, isLive, loading, error, refetch } = useCampaigns();
   const [statusFilter, setStatusFilter] = useState<CampaignStatusType | 'all'>('all');
 
   const filtered = useMemo(() => {
@@ -194,6 +195,12 @@ export default function MarketingDashboard() {
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-6 h-6 text-graphite/60 animate-spin" />
             </div>
+          ) : error ? (
+            <ErrorState
+              title="Campaign data unavailable"
+              message={error}
+              onRetry={() => void refetch()}
+            />
           ) : filtered.length === 0 ? (
             <div className="text-center py-16 px-4">
               <Mail className="w-10 h-10 text-graphite/60/40 mx-auto mb-3" />

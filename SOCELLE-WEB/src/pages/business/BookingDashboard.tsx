@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Users, Scissors, ArrowRight, CheckCircle, XCircle, AlertTriangle, UserPlus, Zap, AlertCircle, RefreshCw } from 'lucide-react';
+import { Calendar, Clock, Users, Scissors, ArrowRight, CheckCircle, XCircle, AlertTriangle, UserPlus, Zap, AlertCircle, RefreshCw, Download } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useAppointments, useBookingServices, useBookingStaff } from '../../lib/useBooking';
 import { useActionableSignals } from '../../lib/intelligence/useActionableSignals';
 import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
+import { exportToCsv } from '../../lib/csvExport';
 
 const STATUS_COLORS: Record<string, string> = {
   scheduled: 'bg-blue-50 text-blue-700',
@@ -33,14 +34,38 @@ export default function BookingDashboard() {
     return { total, completed, noShow, upcoming };
   }, [appointments]);
 
+  const handleExportAppointments = () => {
+    exportToCsv(
+      appointments.map((appt) => ({
+        id: appt.id,
+        client: `${appt.client_first_name} ${appt.client_last_name}`.trim(),
+        service: appt.service_name ?? '',
+        start_time: appt.start_time,
+        end_time: appt.end_time,
+        status: appt.status,
+        staff: `${appt.staff_first_name ?? ''} ${appt.staff_last_name ?? ''}`.trim(),
+        contact_id: appt.contact_id ?? '',
+      })),
+      'booking_appointments',
+    );
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-graphite">Booking Management</h1>
           <p className="text-sm text-graphite/60 mt-1">Today: {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportAppointments}
+            disabled={appointments.length === 0}
+            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full border border-accent-soft text-xs font-medium text-graphite hover:bg-accent-soft/40 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Export CSV
+          </button>
           {!isLive && !loading && (
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
           )}

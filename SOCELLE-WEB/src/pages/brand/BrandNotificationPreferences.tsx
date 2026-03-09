@@ -2,11 +2,13 @@
 // WO-18: Settings page for brand portal notification preferences
 
 import { Helmet } from 'react-helmet-async';
-import { Bell, Mail, Info } from 'lucide-react';
+import { Bell, Mail, Info, Send, Zap, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useNotifications } from '../../lib/notifications/useNotifications';
 import type { EmailFrequency } from '../../lib/notifications/types';
 import NotificationLedgerPanel from '../../components/notifications/NotificationLedgerPanel';
+import { useActionableSignals } from '../../lib/intelligence/useActionableSignals';
+import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
 
 const TOGGLE_ITEMS = [
   { key: 'intelligence_alerts' as const, label: 'Intelligence Alerts', desc: 'Market trends, category performance, and competitive signals' },
@@ -33,9 +35,17 @@ export default function BrandNotificationPreferences() {
     loading,
     error,
     updatePreferences,
+    createNotification,
     refresh,
   } = useNotifications();
   const [savingKey, setSavingKey] = useState<string | null>(null);
+  const [sendingTest, setSendingTest] = useState(false);
+  const {
+    signals: actionableSignals,
+    loading: signalsLoading,
+    error: signalsError,
+    refetch: refetchSignals,
+  } = useActionableSignals(3);
 
   const handleToggle = async (key: keyof typeof preferences) => {
     if (key === 'email_frequency') return;
@@ -53,6 +63,21 @@ export default function BrandNotificationPreferences() {
       await updatePreferences({ email_frequency: value });
     } finally {
       setSavingKey(null);
+    }
+  };
+
+  const handleSendTest = async () => {
+    setSendingTest(true);
+    try {
+      await createNotification({
+        type: 'system',
+        channel: 'in_app',
+        title: 'Brand test notification',
+        body: 'Brand notification pipeline is active for this account.',
+      });
+      await refresh();
+    } finally {
+      setSendingTest(false);
     }
   };
 
@@ -74,6 +99,79 @@ export default function BrandNotificationPreferences() {
               Manage your brand portal notification preferences
             </p>
           </div>
+        </div>
+
+        <div className="mb-5">
+          <button
+            onClick={() => {
+              void handleSendTest();
+            }}
+            disabled={sendingTest || loading}
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-accent-soft text-xs font-medium text-graphite hover:bg-accent-soft/40 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            <Send className="w-3.5 h-3.5" />
+            {sendingTest ? 'Sending...' : 'Send Test Notification'}
+          </button>
+        </div>
+
+        <div className="bg-white rounded-xl border border-accent-soft shadow-sm mb-6 p-5">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div>
+              <h2 className="font-sans font-semibold text-graphite text-sm">Signal-triggered actions</h2>
+              <p className="text-xs text-graphite/60 mt-0.5">
+                Dispatch CRM, campaign, and sales actions from active signals.
+              </p>
+            </div>
+          </div>
+
+          {signalsLoading ? (
+            <div className="space-y-2 animate-pulse">
+              <div className="h-10 rounded-lg bg-accent-soft/20" />
+              <div className="h-10 rounded-lg bg-accent-soft/20" />
+            </div>
+          ) : signalsError ? (
+            <div className="flex items-center justify-between gap-3 bg-signal-down/5 border border-signal-down/20 rounded-lg px-3 py-2.5">
+              <p className="text-xs text-graphite/70">{signalsError}</p>
+              <button
+                onClick={() => {
+                  void refetchSignals();
+                }}
+                className="inline-flex items-center gap-1 text-xs text-graphite/70 hover:text-graphite"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Retry
+              </button>
+            </div>
+          ) : actionableSignals.length === 0 ? (
+            <div className="text-center py-5">
+              <Zap className="w-5 h-5 text-graphite/20 mx-auto mb-2" />
+              <p className="text-xs text-graphite/60">No active signals available</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {actionableSignals.map((signal) => (
+                <div key={signal.id} className="flex items-center gap-2 border border-accent-soft rounded-lg px-3 py-2.5">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-graphite truncate">{signal.title}</p>
+                    <p className="text-xs text-graphite/60">
+                      {signal.category} • Δ {signal.delta.toFixed(1)} • {(signal.confidence * 100).toFixed(0)}% confidence
+                    </p>
+                  </div>
+                  <CrossHubActionDispatcher
+                    compact
+                    signal={{
+                      id: signal.id,
+                      title: signal.title,
+                      category: signal.category,
+                      delta: signal.delta,
+                      confidence: signal.confidence,
+                      source: signal.source,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <NotificationLedgerPanel

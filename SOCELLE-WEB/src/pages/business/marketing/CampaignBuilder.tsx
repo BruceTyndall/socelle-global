@@ -20,6 +20,7 @@ import {
 import { useMarketingCampaigns } from '../../../lib/marketing/useMarketingCampaigns';
 import { useAudienceSegments } from '../../../lib/useAudienceSegments';
 import { useContentTemplates } from '../../../lib/useContentTemplates';
+import ErrorState from '../../../components/ErrorState';
 
 // ── V2-HUBS-08: Campaign Builder (4-step wizard) ───────────────────
 // Steps: Details > Audience > Content > Review+Schedule
@@ -45,8 +46,9 @@ const TYPE_OPTIONS: { type: CampaignType; label: string; desc: string; icon: Rea
 export default function CampaignBuilder() {
   const navigate = useNavigate();
   const { createCampaign, isLive } = useMarketingCampaigns();
-  const { segments, loading: segmentsLoading } = useAudienceSegments();
-  const { templates, loading: templatesLoading } = useContentTemplates();
+  const { segments, loading: segmentsLoading, error: segmentsError } = useAudienceSegments();
+  const { templates, loading: templatesLoading, error: templatesError } = useContentTemplates();
+  const blockingError = segmentsError ?? templatesError;
 
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -168,6 +170,14 @@ export default function CampaignBuilder() {
             </div>
           ))}
         </div>
+
+        {blockingError && (
+          <ErrorState
+            title="Campaign builder data unavailable"
+            message={blockingError}
+            onRetry={() => window.location.reload()}
+          />
+        )}
 
         {/* ── Step Content ────────────────────────────────────── */}
         <div className="bg-white rounded-xl border border-graphite/8 p-6">

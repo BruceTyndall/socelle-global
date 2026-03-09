@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, Mail, MessageSquare, Bell, Smartphone, Share2, AlertCircle, Users, FileText, Calendar, Eye } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Mail, MessageSquare, Bell, Smartphone, Share2, AlertCircle, Users, FileText, Calendar, Eye, Loader2 } from 'lucide-react';
 import { useCampaigns } from '../../lib/useCampaigns';
 import type { CampaignType } from '../../lib/useCampaigns';
 import { useAudienceSegments } from '../../lib/useAudienceSegments';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Campaign Builder (/marketing/campaigns/new) ──────
 // Multi-step builder: Type > Audience > Content > Schedule > Review
@@ -22,7 +23,12 @@ const TYPE_OPTIONS: { type: CampaignType; label: string; desc: string; icon: Rea
 export default function CampaignBuilder() {
   const navigate = useNavigate();
   const { createCampaign, isLive } = useCampaigns();
-  const { segments } = useAudienceSegments();
+  const {
+    segments,
+    loading: segmentsLoading,
+    error: segmentsError,
+    refetch: refetchSegments,
+  } = useAudienceSegments();
 
   const [step, setStep] = useState(0);
   const [campaignType, setCampaignType] = useState<CampaignType>('email');
@@ -111,6 +117,14 @@ export default function CampaignBuilder() {
           ))}
         </div>
 
+        {segmentsError && (
+          <ErrorState
+            title="Audience data unavailable"
+            message={segmentsError}
+            onRetry={() => void refetchSegments()}
+          />
+        )}
+
         {/* Step Content */}
         <div className="bg-mn-card border border-graphite/8 rounded-xl p-6">
           {/* Step 0: Type */}
@@ -152,16 +166,23 @@ export default function CampaignBuilder() {
                 <h2 className="text-lg font-semibold text-graphite font-sans">Select Audience</h2>
               </div>
               <p className="text-sm text-graphite/50 font-sans mb-5">Choose an existing segment or send to all subscribers</p>
-              <select
-                value={segmentId}
-                onChange={(e) => setSegmentId(e.target.value)}
-                className="w-full h-10 px-3 text-sm font-sans text-graphite bg-mn-bg border border-graphite/10 rounded-lg focus:outline-none focus:border-accent"
-              >
-                <option value="">All Subscribers (opt-in)</option>
-                {segments.map((seg) => (
-                  <option key={seg.id} value={seg.id}>{seg.name} ({seg.estimated_size.toLocaleString()})</option>
-                ))}
-              </select>
+              {segmentsLoading ? (
+                <div className="flex items-center gap-2 py-3">
+                  <Loader2 className="w-4 h-4 animate-spin text-graphite/40" />
+                  <span className="text-sm font-sans text-graphite/60">Loading segments...</span>
+                </div>
+              ) : (
+                <select
+                  value={segmentId}
+                  onChange={(e) => setSegmentId(e.target.value)}
+                  className="w-full h-10 px-3 text-sm font-sans text-graphite bg-mn-bg border border-graphite/10 rounded-lg focus:outline-none focus:border-accent"
+                >
+                  <option value="">All Subscribers (opt-in)</option>
+                  {segments.map((seg) => (
+                    <option key={seg.id} value={seg.id}>{seg.name} ({seg.estimated_size.toLocaleString()})</option>
+                  ))}
+                </select>
+              )}
             </div>
           )}
 

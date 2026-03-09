@@ -22,6 +22,7 @@ import {
   Search,
   Download,
   BarChart3,
+  RefreshCw,
 } from 'lucide-react';
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
@@ -38,6 +39,8 @@ import {
   BRAND_INTEL_FILTERS,
 } from '../../lib/intelligence/brandIntelligence';
 import type { BrandIntelFilter } from '../../lib/intelligence/brandIntelligence';
+import { useActionableSignals } from '../../lib/intelligence/useActionableSignals';
+import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -216,6 +219,12 @@ export default function Brands() {
   const [activeIntelFilter, setActiveIntelFilter] = useState<BrandIntelFilter | null>(null);
 
   const { user } = useAuth();
+  const {
+    signals: actionableSignals,
+    loading: signalsLoading,
+    error: signalsError,
+    refetch: refetchSignals,
+  } = useActionableSignals(3);
 
   const { data: brands = [], isLoading: loading, error: queryError, refetch } = useBrands();
 
@@ -669,6 +678,69 @@ export default function Brands() {
               <p className="text-graphite/62 font-sans text-center text-sm max-w-xl mx-auto">
                 All brands verified and authorized for professional distribution.
               </p>
+            </div>
+
+            <div className="mb-8 bg-white rounded-2xl border border-graphite/8 p-5">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-graphite">Signal-Driven Actions</h3>
+                  <p className="text-xs text-graphite/50 mt-0.5">
+                    Launch CRM, campaign, and sales actions from live intelligence signals.
+                  </p>
+                </div>
+                <Link to="/intelligence" className="text-xs font-medium text-accent hover:text-accent-hover">
+                  Open Intelligence
+                </Link>
+              </div>
+
+              {signalsLoading ? (
+                <div className="space-y-2 animate-pulse">
+                  <div className="h-10 rounded-lg bg-mn-surface" />
+                  <div className="h-10 rounded-lg bg-mn-surface" />
+                </div>
+              ) : signalsError ? (
+                <div className="flex items-center justify-between gap-3 bg-signal-down/5 border border-signal-down/20 rounded-lg px-3 py-2.5">
+                  <p className="text-xs text-graphite/70">{signalsError}</p>
+                  <button
+                    onClick={() => {
+                      void refetchSignals();
+                    }}
+                    className="inline-flex items-center gap-1 text-xs text-graphite/70 hover:text-graphite"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Retry
+                  </button>
+                </div>
+              ) : actionableSignals.length === 0 ? (
+                <div className="text-center py-6">
+                  <Zap className="w-6 h-6 text-graphite/20 mx-auto mb-2" />
+                  <p className="text-xs text-graphite/60">No active signals right now</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {actionableSignals.map((signal) => (
+                    <div key={signal.id} className="flex items-center gap-2 border border-graphite/8 rounded-lg px-3 py-2.5">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-graphite truncate">{signal.title}</p>
+                        <p className="text-xs text-graphite/60">
+                          {signal.category} • Δ {signal.delta.toFixed(1)} • {(signal.confidence * 100).toFixed(0)}% confidence
+                        </p>
+                      </div>
+                      <CrossHubActionDispatcher
+                        compact
+                        signal={{
+                          id: signal.id,
+                          title: signal.title,
+                          category: signal.category,
+                          delta: signal.delta,
+                          confidence: signal.confidence,
+                          source: signal.source,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Brand grid with Schema.org Organization JSON-LD per card */}

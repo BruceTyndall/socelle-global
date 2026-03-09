@@ -1,16 +1,16 @@
 {
-  "scan_date": "2026-03-09T15:59:53.783Z",
+  "scan_date": "2026-03-09T18:23:31.366Z",
   "summary": {
-    "total": 269,
-    "live": 151,
-    "demo": 66,
+    "total": 271,
+    "live": 152,
+    "demo": 67,
     "shell": 52,
-    "shell_rate": "19.3"
+    "shell_rate": "19.2"
   },
   "by_hub": {
     "admin": {
       "live": 55,
-      "demo": 9,
+      "demo": 10,
       "shell": 13,
       "pages": [
         {
@@ -147,6 +147,11 @@
           "file": "src/pages/admin/AdminPlatformSettings.tsx",
           "classification": "DEMO",
           "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/AdminRecovery.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
         },
         {
           "file": "src/pages/admin/AdminResellerHub.tsx",
@@ -590,7 +595,7 @@
         {
           "file": "src/pages/business/BookingDashboard.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/BrandDetail.tsx",
@@ -705,7 +710,7 @@
         {
           "file": "src/pages/business/MarketingAnalytics.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/MarketingCalendar.tsx",
@@ -715,7 +720,7 @@
         {
           "file": "src/pages/business/MarketingDashboard.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/Messages.tsx",
@@ -850,7 +855,7 @@
         {
           "file": "src/pages/business/marketing/CampaignBuilder.tsx",
           "classification": "LIVE",
-          "feature_score": 3
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/marketing/CampaignList.tsx",
@@ -1013,27 +1018,27 @@
         {
           "file": "src/pages/marketing/CampaignBuilder.tsx",
           "classification": "LIVE",
-          "feature_score": 2
+          "feature_score": 4
         },
         {
           "file": "src/pages/marketing/CampaignDetail.tsx",
           "classification": "LIVE",
-          "feature_score": 3
+          "feature_score": 4
         },
         {
           "file": "src/pages/marketing/CampaignList.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/marketing/LandingPageList.tsx",
           "classification": "DEMO",
-          "feature_score": 3
+          "feature_score": 4
         },
         {
           "file": "src/pages/marketing/MarketingCalendar.tsx",
           "classification": "LIVE",
-          "feature_score": 3
+          "feature_score": 5
         },
         {
           "file": "src/pages/marketing/MarketingDashboard.tsx",
@@ -1043,7 +1048,7 @@
         {
           "file": "src/pages/marketing/SegmentList.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/marketing/TemplateGallery.tsx",
@@ -1053,7 +1058,7 @@
       ]
     },
     "public": {
-      "live": 14,
+      "live": 15,
       "demo": 26,
       "shell": 21,
       "pages": [
@@ -1270,6 +1275,11 @@
         {
           "file": "src/pages/public/ProductDetail.tsx",
           "classification": "SHELL",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/ProfessionalDetail.tsx",
+          "classification": "LIVE",
           "feature_score": 3
         },
         {
@@ -1822,6 +1832,21 @@
         "export": false
       },
       "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/AdminRecovery.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
     },
     {
       "file": "src/pages/admin/AdminResellerHub.tsx",
@@ -3109,9 +3134,9 @@
         "error_state": false,
         "loading_state": true,
         "crud": false,
-        "export": false
+        "export": true
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/BrandDetail.tsx",
@@ -3451,12 +3476,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/MarketingCalendar.tsx",
@@ -3481,12 +3506,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/Messages.tsx",
@@ -3886,12 +3911,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/marketing/CampaignList.tsx",
@@ -4291,12 +4316,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
+        "error_state": true,
+        "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 4
     },
     {
       "file": "src/pages/marketing/CampaignDetail.tsx",
@@ -4306,12 +4331,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/marketing/CampaignList.tsx",
@@ -4321,12 +4346,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/marketing/LandingPageList.tsx",
@@ -4336,12 +4361,12 @@
         "live_data": false,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/marketing/MarketingCalendar.tsx",
@@ -4350,13 +4375,13 @@
       "features": {
         "live_data": true,
         "demo_labeled": true,
-        "empty_state": false,
-        "error_state": false,
+        "empty_state": true,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 5
     },
     {
       "file": "src/pages/marketing/MarketingDashboard.tsx",
@@ -4381,12 +4406,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/marketing/TemplateGallery.tsx",
@@ -5044,6 +5069,21 @@
         "error_state": false,
         "loading_state": true,
         "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/ProfessionalDetail.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
         "export": false
       },
       "feature_score": 3

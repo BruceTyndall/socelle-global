@@ -38,6 +38,7 @@ const Intelligence = lazy(() => import('./pages/public/Intelligence'));
 const StoriesIndex = lazy(() => import('./pages/public/StoriesIndex'));
 const StoryDetail = lazy(() => import('./pages/public/StoryDetail'));
 const Professionals = lazy(() => import('./pages/public/Professionals'));
+const ProfessionalDetail = lazy(() => import('./pages/public/ProfessionalDetail'));
 const ForBrands = lazy(() => import('./pages/public/ForBrands'));
 const ForMedspas = lazy(() => import('./pages/public/ForMedspas'));
 const ForSalons = lazy(() => import('./pages/public/ForSalons'));
@@ -208,6 +209,7 @@ const IntelligenceReport = lazy(() => import('./pages/brand/IntelligenceReport')
 
 // ── Admin
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const AdminRecovery = lazy(() => import('./pages/admin/AdminRecovery'));
 const AdminAuthDebug = lazy(() => import('./pages/admin/AuthDebug'));
 const AdminInbox = lazy(() => import('./pages/admin/AdminInbox'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -421,6 +423,7 @@ function App() {
                   <Route path="/stories" element={<StoriesIndex />} />
                   <Route path="/stories/:slug" element={<StoryDetail />} />
                   <Route path="/professionals" element={<Professionals />} />
+                  <Route path="/professionals/:id" element={<ProfessionalDetail />} />
                   <Route path="/for-brands" element={<ForBrands />} />
                   <Route path="/for-medspas" element={<ForMedspas />} />
                   <Route path="/for-salons" element={<ForSalons />} />
@@ -620,7 +623,7 @@ function App() {
                     } />
                     <Route path="notifications" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <NotificationPreferences />
+                        <ModuleRoute moduleKey="MODULE_CRM"><NotificationPreferences /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="plans" element={
@@ -643,7 +646,11 @@ function App() {
                         <PlanResults />
                       </ProtectedRoute>
                     } />
-                    <Route path="brands/:slug" element={<BrandDetail />} />
+                    <Route path="brands/:slug" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SHOP"><BrandDetail /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
                     <Route path="orders" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <BusinessOrders />
@@ -996,7 +1003,7 @@ function App() {
                     <Route path="storefront" element={<BrandStorefront />} />
                     <Route path="intelligence" element={<BrandIntelligenceHub />} />
                     <Route path="advisor" element={<BrandAIAdvisor />} />
-                    <Route path="notifications" element={<BrandNotificationPreferences />} />
+                    <Route path="notifications" element={<ModuleRoute moduleKey="MODULE_MARKETING"><BrandNotificationPreferences /></ModuleRoute>} />
                     <Route path="intelligence-pricing" element={<IntelligencePricing />} />
                     <Route path="intelligence-report" element={<IntelligenceReport />} />
                     {/* Keep legacy routes */}
@@ -1044,6 +1051,7 @@ function App() {
 
                   {/* ── Admin ─────────────────────────────────────── */}
                   <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin/recovery" element={<AdminRecovery />} />
                   <Route path="/admin/debug-auth" element={<AdminAuthDebug />} />
 
                   <Route

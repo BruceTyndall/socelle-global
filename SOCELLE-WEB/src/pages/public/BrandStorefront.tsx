@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -746,15 +746,6 @@ export default function BrandStorefront() {
   const { slug } = useParams<{ slug: string }>();
   const { user, profile } = useAuth();
 
-  const [brand, setBrand] = useState<BrandRow | null>(null);
-  const [proProducts, setProProducts] = useState<ProProduct[]>([]);
-  const [retailProducts, setRetailProducts] = useState<RetailProduct[]>([]);
-  const [pressMentions, setPressMentions] = useState<PressMention[]>([]);
-  const [trustBadges, setTrustBadges] = useState<TrustBadgeItem[]>([]);
-  const [instagramStats, setInstagramStats] = useState<InstagramStats | null>(null);
-  const [interestCount, setInterestCount] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'pro' | 'retail'>('all');
   const [activeSection, setActiveSection] = useState<'overview' | 'products' | 'education' | 'protocols' | 'intelligence'>('overview');
 
@@ -768,31 +759,21 @@ export default function BrandStorefront() {
   const brandIntel = useBrandIntelligence(slug ?? '');
   const [successOrderNumber, setSuccessOrderNumber] = useState('');
 
-  const { items, addItem, updateQty, removeItem, clearCart, subtotal, itemCount } = useCart(brand?.id || '');
-
-  const isReseller = !!user && profile?.role === 'business_user';
-  const showPrices = isReseller;
-
-  useEffect(() => { if (slug) fetchBrand(); }, [slug]);
-
-  const fetchBrand = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const brandQuery = useQuery({
+    queryKey: ['brand-storefront', slug],
+    enabled: isSupabaseConfigured && !!slug,
+    queryFn: async () => {
       const { data: brandData, error: brandErr } = await supabase
         .from('brands')
         .select('id, name, slug, description, long_description, logo_url, hero_image_url, verification_status, service_tier, website, instagram_handle, contact_email')
         .eq('slug', slug!)
         .maybeSingle();
 
-      if (brandErr) throw brandErr;
-      if (!brandData) { setError('Brand not found.'); setLoading(false); return; }
+      if (brandErr) throw new Error(brandErr.message);
+      if (!brandData) throw new Error('Brand not found.');
 
-      setBrand(brandData as BrandRow);
       storeBrandMeta(brandData.id, brandData.name, brandData.slug);
 
-      // Fetch seed content + interest signals for all brands (verified + unverified)
       const [pressRes, badgesRes, igRes, signalsRes] = await Promise.all([
         supabase.from('brand_seed_content')
           .select('content_data, source_url, created_at')
@@ -818,32 +799,23 @@ export default function BrandStorefront() {
           .eq('signal_type', 'express_interest'),
       ]);
 
-      // Parse press mentions
-      if (pressRes.data) {
-        setPressMentions(
-          pressRes.data.map(r => r.content_data as PressMention)
-        );
-      }
+      if (pressRes.error) throw new Error(pressRes.error.message);
+      if (badgesRes.error) throw new Error(badgesRes.error.message);
+      if (igRes.error) throw new Error(igRes.error.message);
+      if (signalsRes.error) throw new Error(signalsRes.error.message);
 
-      // Parse trust badges
-      if (badgesRes.data && badgesRes.data.length > 0) {
-        setTrustBadges(
-          badgesRes.data.map(r => {
-            const d = r.content_data as { name?: string; facility_name?: string; label?: string };
-            return { label: d.label || d.name || d.facility_name || 'Verified' };
-          })
-        );
-      }
+      const pressMentions = (pressRes.data ?? []).map((r) => r.content_data as PressMention);
+      const trustBadges = (badgesRes.data ?? []).map((r) => {
+        const d = r.content_data as { name?: string; facility_name?: string; label?: string };
+        return { label: d.label || d.name || d.facility_name || 'Verified' };
+      }) as TrustBadgeItem[];
+      const instagramStats = igRes.data && igRes.data.length > 0
+        ? (igRes.data[0].content_data as InstagramStats)
+        : null;
 
-      // Parse Instagram stats
-      if (igRes.data && igRes.data.length > 0) {
-        setInstagramStats(igRes.data[0].content_data as InstagramStats);
-      }
+      let proProducts: ProProduct[] = [];
+      let retailProducts: RetailProduct[] = [];
 
-      // Interest count
-      setInterestCount(signalsRes.count ?? 0);
-
-      // Fetch products for verified brands only
       if (brandData.verification_status === 'verified') {
         const [proRes, retailRes] = await Promise.all([
           supabase
@@ -861,15 +833,38 @@ export default function BrandStorefront() {
             .order('sort_order', { ascending: true })
             .order('product_name'),
         ]);
-        setProProducts((proRes.data || []) as ProProduct[]);
-        setRetailProducts((retailRes.data || []) as RetailProduct[]);
+        if (proRes.error) throw new Error(proRes.error.message);
+        if (retailRes.error) throw new Error(retailRes.error.message);
+        proProducts = (proRes.data ?? []) as ProProduct[];
+        retailProducts = (retailRes.data ?? []) as RetailProduct[];
       }
-    } catch {
-      setError('Failed to load brand. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      return {
+        brand: brandData as BrandRow,
+        proProducts,
+        retailProducts,
+        pressMentions,
+        trustBadges,
+        instagramStats,
+        interestCount: signalsRes.count ?? 0,
+      };
+    },
+  });
+
+  const brand = brandQuery.data?.brand ?? null;
+  const proProducts = brandQuery.data?.proProducts ?? [];
+  const retailProducts = brandQuery.data?.retailProducts ?? [];
+  const pressMentions = brandQuery.data?.pressMentions ?? [];
+  const trustBadges = brandQuery.data?.trustBadges ?? [];
+  const instagramStats = brandQuery.data?.instagramStats ?? null;
+  const interestCount = brandQuery.data?.interestCount ?? 0;
+  const loading = brandQuery.isLoading;
+  const error = brandQuery.error instanceof Error ? brandQuery.error.message : null;
+
+  const { items, addItem, updateQty, removeItem, clearCart, subtotal, itemCount } = useCart(brand?.id || '');
+
+  const isReseller = !!user && profile?.role === 'business_user';
+  const showPrices = isReseller;
 
   const handleAddProToCart = (p: ProProduct) => {
     addItem({ productId: p.id, productName: p.product_name, productType: 'pro', unitPrice: p.wholesale_price ?? p.msrp_price ?? 0 });

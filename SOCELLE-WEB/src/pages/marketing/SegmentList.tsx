@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Users, Plus, AlertCircle, Loader2, X } from 'lucide-react';
 import { useAudienceSegments } from '../../lib/useAudienceSegments';
 import type { AudienceSegment, SegmentFilter } from '../../lib/useAudienceSegments';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Segment List (/marketing/segments) ───────────────
 // Data source: audience_segments table via useAudienceSegments()
@@ -11,7 +12,7 @@ const FILTER_FIELDS = ['role', 'location', 'plan_tier', 'signup_date', 'last_act
 const FILTER_OPERATORS: SegmentFilter['operator'][] = ['equals', 'contains', 'gt', 'lt', 'in'];
 
 export default function SegmentList() {
-  const { segments, isLive, loading, createSegment } = useAudienceSegments();
+  const { segments, isLive, loading, error, createSegment, refetch } = useAudienceSegments();
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDescription, setNewDescription] = useState('');
@@ -157,10 +158,23 @@ export default function SegmentList() {
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 text-accent animate-spin" />
           </div>
+        ) : error ? (
+          <ErrorState
+            title="Audience segments unavailable"
+            message={error}
+            onRetry={() => void refetch()}
+          />
         ) : segments.length === 0 ? (
           <div className="bg-mn-card border border-graphite/8 rounded-xl p-12 text-center">
             <Users className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
             <p className="text-sm text-graphite/50 font-sans">No audience segments yet. Create one to target specific groups.</p>
+            <button
+              onClick={() => setShowCreate(true)}
+              className="inline-flex items-center gap-2 mt-4 h-10 px-4 bg-mn-dark text-white text-sm font-sans font-medium rounded-full hover:bg-mn-dark/90 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Segment
+            </button>
           </div>
         ) : (
           <div className="bg-mn-card border border-graphite/8 rounded-xl overflow-hidden">

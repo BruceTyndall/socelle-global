@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-09 (Command Center — Build 3 growth wave 2 hardening + shell reduction)
+Last Updated: 2026-03-09 (Command Center — Build 3 growth apps verification pass + TanStack hardening)
 
 ---
 
@@ -13,9 +13,10 @@ Last Updated: 2026-03-09 (Command Center — Build 3 growth wave 2 hardening + s
 | CTRL-WO-04 | Entitlements chain verification (ModuleRoute -> UpgradePrompt) | COMPLETE | `eee5ffc` | `docs/qa/verify_CTRL-WO-04_2026-03-09T04-17-09Z.json` |
 | CRM-WO-calendar-oauth-sync | CRM Tasks Google/Microsoft OAuth connections + server-side event creation | COMPLETE | `ea341c6` | `docs/qa/verify_CRM-WO-calendar-oauth-sync_2026-03-09T06-25-39Z.json` |
 | CRM-WO-unified-timeline | Contact-level unified timeline + CRM dashboard commerce/sales reinforcement | COMPLETE | `176a01d` | `docs/qa/verify_CRM-WO-unified-timeline_2026-03-09T06-38-37Z.json` |
-| BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS | Notifications live ledger + booking CRM linking + growth hook schema hardening | IN PROGRESS (verification blockers) | `4c7ae53` | `docs/qa/verify_BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS_2026-03-09T07-11-29Z.json` |
+| BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS | Notifications live ledger + booking CRM linking + growth hook schema hardening | COMPLETE | `4c7ae53` | `docs/qa/verify_BUILD3-NOTIFICATIONS_2026-03-09T18-24-14-253Z.json` |
 | BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION | Booking follow-up automation + CRM task/notification fan-out + Google/Teams calendar actions | COMPLETE | `6a70c5c` | `docs/qa/verify_BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION_2026-03-09T07-15-27Z.json` |
-| BUILD3-GROWTH-HARDENING-WAVE2 | Shell-detector live-pattern upgrades + signal-action dispatcher on marketing/booking + notification ledger + brand CSV exports | IN PROGRESS (global tsc baseline failures) | `ba59f01` | `docs/qa/verify_BUILD3-GROWTH-HARDENING-WAVE2_2026-03-09T16-00-18Z.json` |
+| BUILD3-GROWTH-HARDENING-WAVE2 | Shell-detector live-pattern upgrades + signal-action dispatcher on marketing/booking + notification ledger + brand CSV exports | COMPLETE | `ba59f01` | `docs/qa/verify_BUILD3-MARKETING_2026-03-09T18-24-14-253Z.json` |
+| BUILD3-GROWTH-APPS | Marketing + Booking + Brands + Professionals + Notifications app verification bundle | COMPLETE | `TBD` | `docs/qa/verify_BUILD3-MARKETING_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-BOOKING_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-BRANDS_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-PROFESSIONALS_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-NOTIFICATIONS_2026-03-09T18-24-14-253Z.json` |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|

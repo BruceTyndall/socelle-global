@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, Globe, AlertCircle, Loader2, X } from 'lucide-react';
 import { useLandingPages } from '../../lib/useLandingPages';
 import type { LandingPage } from '../../lib/useLandingPages';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Landing Page List (/marketing/landing-pages) ─────
 // Data source: landing_pages table via useLandingPages()
@@ -14,7 +15,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function LandingPageList() {
-  const { pages, isLive, loading, createPage } = useLandingPages();
+  const { pages, isLive, loading, error, createPage, refetch } = useLandingPages();
   const [showCreate, setShowCreate] = useState(false);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
@@ -113,10 +114,23 @@ export default function LandingPageList() {
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 text-accent animate-spin" />
           </div>
+        ) : error ? (
+          <ErrorState
+            title="Landing pages unavailable"
+            message={error}
+            onRetry={() => void refetch()}
+          />
         ) : pages.length === 0 ? (
           <div className="bg-mn-card border border-graphite/8 rounded-xl p-12 text-center">
             <Globe className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
             <p className="text-sm text-graphite/50 font-sans">No landing pages yet. Create one to pair with a campaign.</p>
+            <button
+              onClick={() => setShowCreate(true)}
+              className="inline-flex items-center gap-2 mt-4 h-10 px-4 bg-mn-dark text-white text-sm font-sans font-medium rounded-full hover:bg-mn-dark/90 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Page
+            </button>
           </div>
         ) : (
           <div className="bg-mn-card border border-graphite/8 rounded-xl overflow-hidden">

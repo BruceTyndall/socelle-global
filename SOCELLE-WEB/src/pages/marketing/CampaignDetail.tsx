@@ -3,6 +3,7 @@ import { ArrowLeft, Mail, BarChart3, MousePointerClick, TrendingUp, DollarSign, 
 import { useCampaigns } from '../../lib/useCampaigns';
 import { useCampaignMetrics } from '../../lib/useCampaignMetrics';
 import type { MarketingCampaign } from '../../lib/useCampaigns';
+import ErrorState from '../../components/ErrorState';
 
 // ── WO-OVERHAUL-15: Campaign Detail (/marketing/campaigns/:id) ───────
 // Data source: campaigns + campaign_metrics tables
@@ -31,12 +32,25 @@ function MetricCard({ label, value, icon: Icon }: { label: string; value: string
 
 export default function CampaignDetail() {
   const { id } = useParams<{ id: string }>();
-  const { campaigns, isLive: campaignsLive, loading: campaignsLoading } = useCampaigns();
-  const { summary, metrics, isLive: metricsLive, loading: metricsLoading } = useCampaignMetrics(id);
+  const {
+    campaigns,
+    isLive: campaignsLive,
+    loading: campaignsLoading,
+    error: campaignsError,
+    refetch: refetchCampaigns,
+  } = useCampaigns();
+  const {
+    summary,
+    metrics,
+    isLive: metricsLive,
+    loading: metricsLoading,
+    error: metricsError,
+  } = useCampaignMetrics(id);
 
   const campaign = campaigns.find((c: MarketingCampaign) => c.id === id);
   const isLive = campaignsLive && metricsLive;
   const loading = campaignsLoading || metricsLoading;
+  const error = campaignsError ?? metricsError;
 
   return (
     <div className="min-h-screen bg-mn-bg">
@@ -76,6 +90,12 @@ export default function CampaignDetail() {
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 text-accent animate-spin" />
           </div>
+        ) : error ? (
+          <ErrorState
+            title="Campaign unavailable"
+            message={error}
+            onRetry={() => void refetchCampaigns()}
+          />
         ) : !campaign ? (
           <div className="bg-mn-card border border-graphite/8 rounded-xl p-12 text-center">
             <p className="text-sm text-graphite/50 font-sans">Campaign not found.</p>

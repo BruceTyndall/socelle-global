@@ -34,7 +34,7 @@ const METRICS: Array<{ key: string; label: string; unit?: string }> = [
   { key: 'livePages', label: 'LIVE pages' },
   { key: 'shellPages', label: 'SHELL pages' },
   { key: 'shellRate', label: 'Shell rate', unit: '%' },
-  { key: 'fontSerifInSrc', label: 'font-serif in src' },
+  { key: 'fontSerifInSrc', label: 'serif utility token in src' },
   { key: 'proTokensInSrc', label: 'pro-* tokens in src' },
   { key: 'sentryInSrc', label: '@sentry in src' },
   { key: 'bannedTermsPublic', label: 'Banned terms (public)' },

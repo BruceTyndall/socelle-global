@@ -1,0 +1,89 @@
+{
+  "wo_id": "BUILD3-PROFESSIONALS",
+  "timestamp": "2026-03-09T18:24:14.253Z",
+  "app": "PROFESSIONALS",
+  "skills_run": [
+    "hub-shell-detector",
+    "design-audit-suite",
+    "rls-auditor",
+    "entitlement-validator",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "scanned_files": 2,
+        "live_count": 2,
+        "demo_count": 0,
+        "shell_count": 0
+      }
+    },
+    "design-audit-suite": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "font_serif_count": 0,
+        "token_reference_hits": 114,
+        "css_vars": {
+          "font_primary": true,
+          "font_display": true,
+          "font_mono": true,
+          "tailwind_font_sans": true
+        }
+      }
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "enable_row_level_security_count": 179,
+        "create_policy_count": 516
+      }
+    },
+    "entitlement-validator": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "route_checks": [
+          {
+            "snippet": "path=\"/professionals\"",
+            "found": true
+          },
+          {
+            "snippet": "path=\"/professionals/:id\"",
+            "found": true
+          }
+        ],
+        "entitlement_refs": 246
+      }
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "tsc_no_emit": "PASS",
+        "npm_build": "PASS",
+        "route_manifest": "PASS",
+        "fake_live_guard": "PASS",
+        "e2e_route_coverage": "PASS"
+      }
+    }
+  },
+  "additional_checks": {
+    "useEffect_supabase_hits": 0,
+    "cross_hub_dispatcher_refs": 3,
+    "mobile_artifacts": [
+      {
+        "file": "features/crm/screens/contact_list_screen.dart",
+        "found": true
+      },
+      {
+        "file": "features/crm/screens/contact_detail_screen.dart",
+        "found": true
+      }
+    ]
+  },
+  "overall": "PASS"
+}
