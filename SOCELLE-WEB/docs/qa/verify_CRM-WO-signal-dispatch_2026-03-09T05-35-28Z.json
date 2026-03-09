@@ -1,0 +1,77 @@
+{
+  "wo_id": "CRM-WO-signal-dispatch",
+  "timestamp_utc": "2026-03-09T05-35-28Z",
+  "status": "PASS",
+  "scope": "Wire CrossHubActionDispatcher actions from CRM dashboard signals to create CRM follow-up tasks.",
+  "files_changed": [
+    "src/pages/business/CrmDashboard.tsx"
+  ],
+  "skills_run": [
+    {
+      "name": "hub-shell-detector",
+      "status": "PASS",
+      "evidence": "npm run shell:check -> no new shells introduced"
+    },
+    {
+      "name": "build-gate",
+      "status": "PASS",
+      "evidence": "npx tsc --noEmit exit 0; npm run build exit 0"
+    },
+    {
+      "name": "entitlement-validator",
+      "status": "PASS",
+      "evidence": "Route remains under existing ModuleRoute/TierGate structure; no entitlement regressions introduced"
+    },
+    {
+      "name": "rls-auditor",
+      "status": "PASS",
+      "evidence": "No schema changes; crm_tasks insert relies on existing table policies"
+    },
+    {
+      "name": "live-demo-detector",
+      "status": "PASS",
+      "evidence": "Signal cards consume live market_signals and action writes live crm_tasks rows"
+    },
+    {
+      "name": "design-audit-suite",
+      "status": "PASS",
+      "evidence": "No banned token/font additions; existing signal color tokens used"
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "npm run shell:check",
+      "status": "PASS"
+    },
+    {
+      "cmd": "npx tsc --noEmit",
+      "status": "PASS"
+    },
+    {
+      "cmd": "npm run build",
+      "status": "PASS"
+    }
+  ],
+  "done_checks": [
+    {
+      "check": "CrossHubActionDispatcher available on CRM signal cards",
+      "status": "PASS"
+    },
+    {
+      "check": "add_to_crm action creates crm_tasks row",
+      "status": "PASS"
+    },
+    {
+      "check": "add_to_note action creates crm_tasks row",
+      "status": "PASS"
+    },
+    {
+      "check": "success/error UI feedback visible",
+      "status": "PASS"
+    },
+    {
+      "check": "Typecheck and production build clean",
+      "status": "PASS"
+    }
+  ]
+}

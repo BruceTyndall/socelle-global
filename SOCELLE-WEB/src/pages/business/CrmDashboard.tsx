@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   Users, Calendar, ArrowRight, CheckSquare, Layers,
   AlertTriangle, TrendingUp, Clock, DollarSign, Zap,
@@ -9,6 +9,10 @@ import {
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { useOverdueTasks } from '../../lib/useCrmTasks';
+import {
+  CrossHubActionDispatcher,
+  type SignalAction,
+} from '../../components/CrossHubActionDispatcher';
 
 // ── CRM Dashboard — "Today View" (V2-HUBS-06) ─────────────────────────
 // Data source: crm_contacts, crm_tasks, appointments, market_signals (LIVE)
@@ -72,6 +76,44 @@ export default function CrmDashboard() {
   const { profile, user } = useAuth();
   const businessId = profile?.business_id;
   const { tasks: overdueTasks } = useOverdueTasks(businessId);
+
+  const signalTaskMutation = useMutation({
+    mutationFn: async (action: SignalAction) => {
+      if (!businessId) return;
+      const taskTitle =
+        action.action_type === 'add_to_note'
+          ? `Add signal note: ${action.signal_title}`
+          : `Review CRM signal: ${action.signal_title}`;
+      const description = [
+        `Signal category: ${action.signal_category}`,
+        `Source: ${action.signal_source}`,
+        `Delta: ${action.signal_delta}`,
+        `Confidence: ${action.signal_confidence}`,
+      ].join(' | ');
+
+      const { error } = await supabase.from('crm_tasks').insert({
+        business_id: businessId,
+        title: taskTitle,
+        description,
+        priority: 'medium',
+        status: 'open',
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    },
+  });
+
+  const handleSignalAction = useCallback(
+    (action: SignalAction) => {
+      if (!businessId) return;
+      if (action.action_type === 'add_to_crm' || action.action_type === 'add_to_note') {
+        signalTaskMutation.mutate(action);
+      }
+    },
+    [businessId, signalTaskMutation],
+  );
 
   const firstName = useMemo(() => {
     const email = user?.email ?? profile?.email ?? '';
@@ -438,15 +480,39 @@ export default function CrmDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {stats.topSignals.map(signal => (
               <div key={signal.id} className="p-3 rounded-lg bg-accent-soft/50 border border-accent/10">
-                <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp className={`w-3.5 h-3.5 ${signal.direction === 'up' ? 'text-signal-up' : signal.direction === 'down' ? 'text-signal-down' : 'text-signal-warn'}`} />
-                  <span className="text-[10px] text-graphite/50 uppercase">{signal.category ?? 'Market'}</span>
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <TrendingUp className={`w-3.5 h-3.5 ${signal.direction === 'up' ? 'text-signal-up' : signal.direction === 'down' ? 'text-signal-down' : 'text-signal-warn'}`} />
+                    <span className="text-[10px] text-graphite/50 uppercase truncate">{signal.category ?? 'Market'}</span>
+                  </div>
+                  <CrossHubActionDispatcher
+                    compact
+                    signal={{
+                      id: signal.id,
+                      title: signal.title,
+                      category: signal.category ?? 'Market',
+                      delta: signal.magnitude,
+                      confidence: 0.8,
+                      source: 'market_signals',
+                    }}
+                    onAction={handleSignalAction}
+                  />
                 </div>
                 <p className="text-sm font-medium text-graphite line-clamp-2">{signal.title}</p>
                 <p className="text-xs text-graphite/50 mt-1">Magnitude: {signal.magnitude}</p>
               </div>
             ))}
           </div>
+          {signalTaskMutation.isError && (
+            <p className="text-xs text-signal-down mt-3">
+              Could not create CRM follow-up task from signal action.
+            </p>
+          )}
+          {signalTaskMutation.isSuccess && (
+            <p className="text-xs text-signal-up mt-3">
+              CRM follow-up task created from selected signal action.
+            </p>
+          )}
         </div>
       )}
     </div>
