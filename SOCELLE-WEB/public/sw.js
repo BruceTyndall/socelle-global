@@ -1,11 +1,13 @@
 /**
- * SOCELLE — Service Worker (PWA Baseline)
+ * SOCELLE — Service Worker (PWA — Build 5 enhanced)
  * WO: V2-MULTI-01
  *
  * Strategy:
  *   - Cache-first for static assets (JS, CSS, fonts, images)
  *   - Network-first for API calls (supabase.co)
  *   - Offline fallback page for navigation requests
+ *   - Push notifications: intelligence alerts, booking reminders
+ *   - Notification click: opens relevant portal route
  */
 
 const CACHE_VERSION = 'socelle-v1';
@@ -137,3 +139,113 @@ async function navigationFallback(request) {
     return offlinePage || new Response('Offline', { status: 503 });
   }
 }
+
+/**
+ * Push notification handler.
+ *
+ * Expected push payload (JSON):
+ *   { title, body, icon?, badge?, tag?, url?, type }
+ *
+ * Types:
+ *   'signal'   — new market intelligence signal
+ *   'booking'  — appointment reminder
+ *   'alert'    — system or credit alert
+ */
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+
+  let payload;
+  try {
+    payload = event.data.json();
+  } catch {
+    payload = { title: 'SOCELLE', body: event.data.text() };
+  }
+
+  const {
+    title = 'SOCELLE',
+    body = '',
+    icon = '/socelle-icon-192.png',
+    badge = '/socelle-icon-192.png',
+    tag = 'socelle-notification',
+    url = '/portal/dashboard',
+    type = 'general',
+  } = payload;
+
+  // Tag by type to prevent duplicate stacking
+  const notificationTag = `socelle-${type}-${tag}`;
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon,
+      badge,
+      tag: notificationTag,
+      renotify: false,
+      requireInteraction: type === 'booking',
+      data: { url },
+      actions:
+        type === 'signal'
+          ? [{ action: 'view', title: 'View Signal' }]
+          : type === 'booking'
+          ? [{ action: 'view', title: 'See Appointment' }]
+          : [],
+    })
+  );
+});
+
+/**
+ * Notification click handler.
+ * Opens the URL stored in notification.data.url in an existing client
+ * or a new window if none is open.
+ */
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const targetUrl = event.notification.data?.url ?? '/portal/dashboard';
+
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
+        // Focus an existing window if one is open on the same origin
+        for (const client of clients) {
+          try {
+            const clientUrl = new URL(client.url);
+            if (clientUrl.origin === self.location.origin) {
+              client.navigate(targetUrl);
+              return client.focus();
+            }
+          } catch {
+            // Non-http client — skip
+          }
+        }
+        // Otherwise open a new window
+        return self.clients.openWindow(targetUrl);
+      })
+  );
+});
+
+/**
+ * Push subscription change handler.
+ * Re-subscribes automatically if the browser rotates the push subscription.
+ */
+self.addEventListener('pushsubscriptionchange', (event) => {
+  event.waitUntil(
+    self.registration.pushManager
+      .subscribe({ userVisibleOnly: true })
+      .then((subscription) => {
+        // Notify the app so it can update the subscription on the server.
+        return self.clients.matchAll().then((clients) => {
+          clients.forEach((client) =>
+            client.postMessage({
+              type: 'PUSH_SUBSCRIPTION_CHANGED',
+              subscription: subscription.toJSON(),
+            })
+          );
+        });
+      })
+      .catch(() => {
+        // Push subscription renewal failed — user may need to re-enable.
+      })
+  );
+});

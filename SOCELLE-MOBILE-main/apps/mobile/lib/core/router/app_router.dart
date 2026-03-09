@@ -42,6 +42,10 @@ import '../../features/settings/screens/notifications_screen.dart';
 import '../../features/subscription/screens/subscription_screen.dart';
 import '../../features/subscription/screens/plans_screen.dart';
 import '../../features/subscription/screens/upgrade_screen.dart';
+import '../../features/brands/screens/brands_hub_screen.dart';
+import '../../features/jobs/screens/jobs_hub_screen.dart';
+import '../../features/events/screens/events_hub_screen.dart';
+import '../../features/studio/screens/studio_hub_screen.dart';
 import '../../features/_core/widgets/module_gate.dart';
 
 /// Global navigator key for GoRouter.
@@ -125,11 +129,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ),
           ),
-          // Book tab
+          // Book tab (gated)
           GoRoute(
             path: '/book',
             pageBuilder: (context, state) => const NoTransitionPage(
-              child: BookingHomeScreen(),
+              child: ModuleGate(
+                moduleKey: 'MODULE_BOOKING',
+                child: BookingHomeScreen(),
+              ),
             ),
           ),
           // More tab (settings/profile)
@@ -291,6 +298,42 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/reseller/revenue',
         builder: (context, state) => const RevenueScreen(),
+      ),
+
+      // Brands (gated)
+      GoRoute(
+        path: '/brands',
+        builder: (context, state) => const ModuleGate(
+          moduleKey: 'MODULE_BRANDS',
+          child: BrandsHubScreen(),
+        ),
+      ),
+
+      // Jobs (gated)
+      GoRoute(
+        path: '/jobs',
+        builder: (context, state) => const ModuleGate(
+          moduleKey: 'MODULE_JOBS',
+          child: JobsHubScreen(),
+        ),
+      ),
+
+      // Events (gated)
+      GoRoute(
+        path: '/events',
+        builder: (context, state) => const ModuleGate(
+          moduleKey: 'MODULE_EVENTS',
+          child: EventsHubScreen(),
+        ),
+      ),
+
+      // Studio (gated)
+      GoRoute(
+        path: '/studio',
+        builder: (context, state) => const ModuleGate(
+          moduleKey: 'MODULE_STUDIO',
+          child: StudioHubScreen(),
+        ),
       ),
 
       // Settings

@@ -15,6 +15,7 @@ import AdminLayout from './layouts/AdminLayout';
 import BrandLayout from './layouts/BrandLayout';
 import MarketingLayout from './layouts/MarketingLayout';
 import { PageRenderer } from './components/cms/PageRenderer';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 
 // ── Dev Tools
 const DevMasterIndex = lazy(() => import('./pages/dev/MasterIndex'));
@@ -386,6 +387,7 @@ function App() {
   return (
     <ErrorBoundary>
       <StagingBanner />
+      <PWAInstallPrompt />
       <ToastProvider>
         <ConfigCheck>
           <AuthProvider>
