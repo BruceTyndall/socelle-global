@@ -8,3 +8,7 @@ out
 
 # Quarantined legacy files — safe to delete after build verification
 .archive/
+
+# Local nested worktree repos (do not track in parent repo)
+.claude/worktrees/gifted-saha/
+.claude/worktrees/silly-feynman/
