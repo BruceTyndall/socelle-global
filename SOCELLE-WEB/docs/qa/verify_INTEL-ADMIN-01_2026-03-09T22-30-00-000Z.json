@@ -1,0 +1,67 @@
+{
+  "wo_id": "INTEL-ADMIN-01",
+  "verified_by": "VERIFY agent (INTEL-ADMIN-01 — IntelligenceDashboard live wire)",
+  "timestamp": "2026-03-09T22:30:00.000Z",
+  "skills_run": ["live-demo-detector", "hub-shell-detector", "build-gate"],
+  "sub_tasks": {
+    "INTEL-ADMIN-01-hook": {
+      "file": "src/lib/intelligence/useAdminIntelligence.ts",
+      "description": "New TanStack Query hook with 4 live queries + realtime subscription",
+      "queries": [
+        "metricsQuery — COUNT from market_signals, businesses, brands, account_subscriptions",
+        "signalsQuery — most recent 20 market_signals (title, signal_type, confidence, direction, updated_at, source_name, tier_visibility, status)",
+        "apiHealthQuery — api_registry (id, name, category, is_active, last_test_status, last_tested_at, last_test_latency_ms)",
+        "feedHealthQuery — data_feeds (id, name, is_enabled, last_fetched_at, last_error, signal_count)"
+      ],
+      "realtime": "supabase.channel on market_signals INSERT → invalidates admin-market-signals + admin-intelligence-metrics",
+      "isLive_contract": "isLive=true when isSupabaseConfigured AND no errors AND data present",
+      "status": "DONE"
+    },
+    "INTEL-ADMIN-01-dashboard": {
+      "file": "src/pages/admin/IntelligenceDashboard.tsx",
+      "changes": [
+        "Removed all static imports from adminIntelligence.ts (getPlatformMetrics, getAdminSignals, getWeeklyInsights)",
+        "Wired to useAdminIntelligence() hook",
+        "LIVE/DEMO badge added to header (pulsing dot for LIVE, amber pill for DEMO)",
+        "KPI strip shows live counts: totalSignals, totalOperators, totalBrands, totalSubscriptions",
+        "Signal table renders live market_signals with direction icon, type badge, confidence, source_name",
+        "handleCreateSignal: live INSERT to market_signals (was placeholder toast)",
+        "handleArchiveSignal: live UPDATE status=archived",
+        "handleDeleteSignal: live DELETE by id",
+        "DashboardSkeleton: skeleton shimmer on isLoading (NOT spinner)",
+        "API Health Panel: renders api_registry rows with pass/fail/timeout/untested icons",
+        "Feed Status Strip: renders data_feeds rows with error/ok icons, error message display",
+        "Empty states: illustrated fallback with LIVE vs offline context message"
+      ],
+      "status": "DONE"
+    }
+  },
+  "results": {
+    "build_gate": {
+      "tsc_errors": 0,
+      "build_exit": 0,
+      "status": "PASS"
+    },
+    "live_demo_detector": {
+      "isLive_contract": "PRESENT — useAdminIntelligence returns isLive based on isSupabaseConfigured + no errors + data present",
+      "badge_in_header": "PRESENT — LiveDemoBadge component renders in page header",
+      "static_data_removed": "PASS — getPlatformMetrics, getAdminSignals, getWeeklyInsights no longer imported",
+      "status": "PASS"
+    },
+    "hub_shell_detector": {
+      "live_data_hook": "PRESENT — useAdminIntelligence (TanStack Query)",
+      "empty_state": "PRESENT — Activity icon + contextual message for signals, Server/Rss icons for API/feed panels",
+      "loading_state": "PRESENT — DashboardSkeleton with animate-pulse shimmer",
+      "crud": "PRESENT — INSERT (Create Signal), UPDATE (Archive), DELETE (Delete)",
+      "realtime": "PRESENT — Supabase channel on market_signals INSERT",
+      "status": "PASS"
+    },
+    "tanstack_query_compliance": {
+      "raw_useEffect_supabase": 0,
+      "useQuery_calls": 4,
+      "status": "PASS"
+    }
+  },
+  "overall": "PASS",
+  "notes": "IntelligenceDashboard.tsx fully wired to live Supabase data. All 3 static adminIntelligence.ts function calls removed. Live CRUD (create/archive/delete), LIVE/DEMO badge, skeleton loading, empty states, API Health Panel, and Feed Status Strip all implemented. adminIntelligence.ts retained (other admin pages still reference getBrandAnalytics etc.) but IntelligenceDashboard no longer imports from it."
+}

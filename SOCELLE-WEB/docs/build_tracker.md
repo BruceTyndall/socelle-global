@@ -1453,6 +1453,7 @@ Each hub must satisfy ALL anti-shell requirements per V1 §D: Create / List / De
 |----|-------|-------|-------------|------|
 | V2-LAUNCH-01 | Launch non-negotiables checklist | All items from V3 §I must pass: tsc, build, TanStack, PAYMENT_BYPASS=false, 0 font-serif, 0 banned terms, Stripe webhooks, fresh signals, AI briefs, SEO baseline, types match, credits deduct, FTC badges, Playwright smoke, errors visible in Admin Hub dashboards | QA Agent + Command Agent | Phase 7 |
 | V2-LAUNCH-02 | Launch comms execution | Site announcement, email sequences, social content per LAUNCH_COMMS_PLAYBOOK.md | Marketing Agent + Copy Agent | Phase 7 |
+| OWNER-CREDS-01 | Owner credential setup — AI + Payments + OAuth | **Must complete before launch. Owner action only — no agent can do this.** (1) Supabase Dashboard → Project Settings → Edge Functions secrets → set `OPENAI_API_KEY` (powers ai-orchestrator embeddings + GPT-4o responses). (2) Stripe Dashboard → get publishable key → set `VITE_STRIPE_PUBLISHABLE_KEY` in `SOCELLE-WEB/.env` + get webhook signing secret → set `STRIPE_WEBHOOK_SECRET` in Supabase edge function secrets. (3) Google Cloud Console → create OAuth 2.0 app → set `VITE_GOOGLE_OAUTH_CLIENT_ID` in `.env` (CRM calendar sync). (4) Microsoft Azure → create OAuth app → set `VITE_MICROSOFT_OAUTH_CLIENT_ID` in `.env` (CRM Outlook calendar sync). | Owner (Bruce) only | Phase 7 — after PAY-WO-01..05 complete, before launch |
 
 ---
 
