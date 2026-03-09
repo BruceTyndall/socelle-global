@@ -228,6 +228,12 @@ const AdminFeedsHub = lazy(() => import('./pages/admin/AdminFeedsHub'));
 const AdminBlogHub = lazy(() => import('./pages/admin/AdminBlogHub'));
 const AdminResellerHub = lazy(() => import('./pages/admin/AdminResellerHub'));
 
+// ── Admin Hub completion (V2-HUBS-05)
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
+const AdminAuditLog = lazy(() => import('./pages/admin/AdminAuditLog'));
+const AdminFeatureFlags = lazy(() => import('./pages/admin/AdminFeatureFlags'));
+const AdminPlatformSettings = lazy(() => import('./pages/admin/AdminPlatformSettings'));
+
 // ── Sales Platform (WO-OVERHAUL-14)
 const SalesDashboard = lazy(() => import('./pages/sales/SalesDashboard'));
 const PipelineBoard = lazy(() => import('./pages/sales/PipelineBoard'));
@@ -1077,6 +1083,12 @@ function App() {
                     <Route path="blog" element={<AdminBlogHub />} />
                     <Route path="sales-platform" element={<AdminSalesPlatformHub />} />
                     <Route path="reseller" element={<AdminResellerHub />} />
+
+                    {/* ── Admin Hub completion (V2-HUBS-05) ── */}
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="audit-log" element={<AdminAuditLog />} />
+                    <Route path="feature-flags" element={<AdminFeatureFlags />} />
+                    <Route path="platform-settings" element={<AdminPlatformSettings />} />
 
                     {/* ── Education (WO-OVERHAUL-13) ── */}
                     <Route path="education" element={<AdminEducationHub />} />

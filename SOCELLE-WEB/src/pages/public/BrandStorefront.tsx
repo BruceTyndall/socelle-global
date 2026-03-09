@@ -385,12 +385,14 @@ function IndustryPresence({ badges, isVerified }: { badges: TrustBadgeItem[]; is
 
 // ── Product tile ──────────────────────────────────────────────────────────────
 
+// Pearl Mineral V2 product gradients — using token palette hex values only
+// background=#F6F3EF, accent-soft=#E8EDF1, accent=#6E879B, signal-up=#5F8A72, signal-warn=#A97A4C
 const PRODUCT_GRADIENTS = [
-  'linear-gradient(145deg, #F0EDE8, #E8E3DC)',
-  'linear-gradient(145deg, #E8EDE8, #D4E0D4)',
-  'linear-gradient(145deg, #EDE8DF, #E0D8CC)',
-  'linear-gradient(145deg, #E8E5DF, #DDD8CF)',
-  'linear-gradient(145deg, #E5E8EE, #D5D9E4)',
+  'linear-gradient(145deg, #F6F3EF, #E8EDF1)',           // background → accent-soft
+  'linear-gradient(145deg, #F6F3EF, rgba(95,138,114,0.12))', // background → signal-up tint
+  'linear-gradient(145deg, #F6F3EF, rgba(169,122,76,0.10))', // background → signal-warn tint
+  'linear-gradient(145deg, #E8EDF1, rgba(110,135,155,0.12))', // accent-soft → accent tint
+  'linear-gradient(145deg, #E8EDF1, #F6F3EF)',           // accent-soft → background
 ];
 
 function ProductTile({
