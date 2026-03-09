@@ -183,11 +183,18 @@ fs.writeFileSync(outputFile, report, 'utf8');
 
 // Also write JSON for machine consumption
 const jsonFile = path.join(projectRoot, 'docs', 'qa', 'inventory_report.json');
+const previousJsonFile = path.join(projectRoot, 'docs', 'qa', 'inventory_report.previous.json');
 fs.mkdirSync(path.dirname(jsonFile), { recursive: true });
+if (fs.existsSync(jsonFile)) {
+  fs.copyFileSync(jsonFile, previousJsonFile);
+}
 fs.writeFileSync(jsonFile, JSON.stringify(metrics, null, 2) + '\n', 'utf8');
 
 console.log('Inventory report written: docs/inventory/SOCELLE_GLOBAL_INVENTORY_REPORT.md');
 console.log('Inventory JSON written: docs/qa/inventory_report.json');
+if (fs.existsSync(previousJsonFile)) {
+  console.log('Previous inventory JSON written: docs/qa/inventory_report.previous.json');
+}
 console.log(
   `\nSummary: ${metrics.webPages} pages | ${metrics.shellPages} shells (${metrics.shellRate}%) | ${metrics.bannedTermsPublic} banned terms`
 );

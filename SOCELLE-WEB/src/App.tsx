@@ -245,6 +245,7 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminAuditLog = lazy(() => import('./pages/admin/AdminAuditLog'));
 const AdminFeatureFlags = lazy(() => import('./pages/admin/AdminFeatureFlags'));
 const AdminShellDetection = lazy(() => import('./pages/admin/AdminShellDetection'));
+const AdminInventoryReport = lazy(() => import('./pages/admin/AdminInventoryReport'));
 const AdminApiControls = lazy(() => import('./pages/admin/AdminApiControls'));
 const AdminPlatformSettings = lazy(() => import('./pages/admin/AdminPlatformSettings'));
 
@@ -1119,6 +1120,7 @@ function App() {
                     <Route path="audit-log" element={<AdminAuditLog />} />
                     <Route path="feature-flags" element={<AdminFeatureFlags />} />
                     <Route path="shell-detection" element={<AdminShellDetection />} />
+                    <Route path="inventory-report" element={<AdminInventoryReport />} />
                     <Route path="api-controls" element={<AdminApiControls />} />
                     <Route path="platform-settings" element={<AdminPlatformSettings />} />
 

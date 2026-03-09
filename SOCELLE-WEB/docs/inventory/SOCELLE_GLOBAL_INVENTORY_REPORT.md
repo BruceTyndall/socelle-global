@@ -1,6 +1,6 @@
 # SOCELLE GLOBAL — INVENTORY REPORT
 
-**Generated:** 2026-03-09T03:42:15.512Z
+**Generated:** 2026-03-09T04:56:21.489Z
 **Generator:** `scripts/generate-inventory.mjs`
 **Rule:** Regenerate before each build (`npm run inventory`)
 
@@ -10,14 +10,14 @@
 
 | Metric | Count |
 |--------|-------|
-| Web pages | 267 |
+| Web pages | 269 |
 | Web components | 156 |
-| Web routes | 289 |
+| Web routes | 291 |
 | ModuleRoute wrappers | 150 |
 | Hooks | 110 |
 | Edge functions | 32 |
-| Migrations | 160 |
-| Unit test files | 16 |
+| Migrations | 162 |
+| Unit test files | 17 |
 | E2E spec files | 9 |
 | Installed skills | 123 |
 
@@ -25,18 +25,18 @@
 
 | Gate | Count | Status |
 |------|-------|--------|
-| font-serif in src/ | 0 | PASS |
-| pro-* tokens in src/ | 12 | DEBT |
-| @sentry in src/ | 0 | PASS |
+| font-serif in src/ | 1 | FAIL |
+| pro-* tokens in src/ | 13 | DEBT |
+| @sentry in src/ | 1 | DEBT |
 | Banned terms (public pages) | 0 | PASS |
 
 ## Shell Detection
 
 | Metric | Count |
 |--------|-------|
-| LIVE pages (has DB query) | 94 |
+| LIVE pages (has DB query) | 96 |
 | SHELL pages (no DB query) | 173 |
-| Shell rate | 64.8% |
+| Shell rate | 64.3% |
 
 ---
 

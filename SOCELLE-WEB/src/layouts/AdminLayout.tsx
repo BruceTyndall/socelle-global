@@ -141,6 +141,7 @@ const NAV_GROUPS = [
     items: [
       { path: '/admin/health', label: 'Schema Health', icon: Shield },
       { path: '/admin/shell-detection', label: 'Shell Matrix', icon: BarChart3 },
+      { path: '/admin/inventory-report', label: 'Inventory Report', icon: FileText },
       { path: '/admin/debug', label: 'Debug', icon: Activity },
     ],
   },
