@@ -28,7 +28,8 @@ Last Updated: 2026-03-09 (Session — STUDIO-UI-01..05 complete; DEBT audit foun
 | MOBILE-WO (partial) | Flutter: brands_hub, jobs_hub, events_hub, studio_hub screens + MODULE gates + app_router wired | PARTIAL | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | TAURI-WO-01 | Tauri desktop shell: tauri.conf.json, Cargo.toml, main.rs + lib.rs scaffold; package.json scripts | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | PWA-WO-01/02/03 | PWA: sw.js push/notificationclick/pushsubscriptionchange handlers; PWAInstallPrompt.tsx (14-day snooze, VAPID opt-in); wired in App.tsx | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
-| STUDIO-UI-02/04 (in progress) | StudioEditor: DragCanvas + exportStudioDocument + studioTemplates imports wired — canvas + template library implementation next | IN PROGRESS | — | — |
+| STUDIO-UI-01..05 | StudioEditor fully wired: DragCanvas + TemplatePickerModal + ExportModal (PNG/JPG/PDF/SVG/SCORM) + mode toggle + grid overlay | COMPLETE | pending | — |
+| DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | PENDING | — | — |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|
