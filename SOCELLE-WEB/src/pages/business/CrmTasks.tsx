@@ -19,6 +19,7 @@ import { useCrmTasks, type NewCrmTask } from '../../lib/useCrmTasks';
 import { useCrmContacts } from '../../lib/useCrmContacts';
 import { exportToCsv } from '../../lib/csvExport';
 import { supabase } from '../../lib/supabase';
+import { useFeatureFlag } from '../../lib/useFeatureFlag';
 
 const PRIORITY_STYLES: Record<string, { bg: string; label: string }> = {
   high: { bg: 'bg-signal-down/10 text-signal-down', label: 'High' },
@@ -28,6 +29,7 @@ const PRIORITY_STYLES: Record<string, { bg: string; label: string }> = {
 
 const FILTER_OPTIONS = ['all', 'open', 'completed', 'overdue'] as const;
 type FilterOption = typeof FILTER_OPTIONS[number];
+type CalendarProvider = 'google' | 'microsoft';
 
 type SequenceTemplateKey = 'lead_nurture_14d' | 'post_purchase_30d' | 'reactivation_21d';
 
@@ -37,6 +39,31 @@ interface SequenceStep {
   description: string;
   priority: 'low' | 'medium' | 'high';
 }
+
+interface CalendarConnection {
+  provider: CalendarProvider;
+  status: 'active' | 'pending' | 'disconnected' | 'error';
+  provider_email: string | null;
+  connected_at: string | null;
+  last_event_created_at: string | null;
+  error_message: string | null;
+}
+
+const CALENDAR_PROVIDER_META: Record<CalendarProvider, { label: string; chip: string }> = {
+  google: {
+    label: 'Google Calendar',
+    chip: 'bg-accent/10 text-accent',
+  },
+  microsoft: {
+    label: 'Microsoft Teams / Outlook',
+    chip: 'bg-signal-warn/10 text-signal-warn',
+  },
+};
+
+const CALENDAR_OAUTH_SCOPE = {
+  google: 'openid email profile https://www.googleapis.com/auth/calendar.events',
+  microsoft: 'offline_access User.Read Calendars.ReadWrite',
+} as const;
 
 const SEQUENCE_TEMPLATES: Record<
   SequenceTemplateKey,
@@ -186,9 +213,63 @@ function buildTeamsCalendarLink(params: {
   return `https://outlook.office.com/calendar/0/deeplink/compose?${qp.toString()}`;
 }
 
+function getCalendarCallbackUrl(): string {
+  const explicit = (import.meta.env.VITE_CALENDAR_OAUTH_REDIRECT_URI as string | undefined)?.trim();
+  if (explicit) return explicit;
+
+  const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
+  if (!supabaseUrl) return '';
+
+  return `${supabaseUrl.replace(/\/$/, '')}/functions/v1/calendar-oauth-callback`;
+}
+
+function buildCalendarOAuthUrl(provider: CalendarProvider, state: string): string {
+  const callbackUrl = getCalendarCallbackUrl();
+  if (!callbackUrl) {
+    throw new Error('Missing VITE_SUPABASE_URL or VITE_CALENDAR_OAUTH_REDIRECT_URI.');
+  }
+
+  if (provider === 'google') {
+    const clientId = (import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID as string | undefined)?.trim();
+    if (!clientId) {
+      throw new Error('Missing VITE_GOOGLE_OAUTH_CLIENT_ID for Google OAuth.');
+    }
+
+    const qp = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: callbackUrl,
+      response_type: 'code',
+      scope: CALENDAR_OAUTH_SCOPE.google,
+      access_type: 'offline',
+      include_granted_scopes: 'true',
+      prompt: 'consent',
+      state,
+    });
+
+    return `https://accounts.google.com/o/oauth2/v2/auth?${qp.toString()}`;
+  }
+
+  const clientId = (import.meta.env.VITE_MICROSOFT_OAUTH_CLIENT_ID as string | undefined)?.trim();
+  if (!clientId) {
+    throw new Error('Missing VITE_MICROSOFT_OAUTH_CLIENT_ID for Microsoft OAuth.');
+  }
+
+  const qp = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: callbackUrl,
+    response_type: 'code',
+    response_mode: 'query',
+    scope: CALENDAR_OAUTH_SCOPE.microsoft,
+    state,
+  });
+
+  return `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${qp.toString()}`;
+}
+
 export default function CrmTasks() {
   const { profile, user } = useAuth();
   const businessId = profile?.business_id;
+  const { enabled: calendarApiSyncEnabled } = useFeatureFlag('CRM_CALENDAR_API_SYNC');
   const { tasks, loading, isLive, createTask, completeTask, deleteTask } = useCrmTasks(businessId);
   const { contacts } = useCrmContacts(businessId);
 
@@ -232,6 +313,7 @@ export default function CrmTasks() {
     duration_minutes: 30,
     notes: '',
   });
+  const [inviteProvider, setInviteProvider] = useState<CalendarProvider>('google');
 
   const now = new Date();
 
@@ -303,6 +385,74 @@ export default function CrmTasks() {
       return (data ?? []) as Array<{ id: string; name: string }>;
     },
   });
+
+  const { data: calendarConnections = [] } = useQuery({
+    queryKey: ['crm_task_calendar_connections', businessId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('calendar_connections')
+        .select('provider, status, provider_email, connected_at, last_event_created_at, error_message')
+        .eq('business_id', businessId!)
+        .order('provider', { ascending: true });
+
+      if (error) {
+        if (error.code === '42P01') return [] as CalendarConnection[];
+        throw new Error(error.message);
+      }
+
+      return (data ?? []) as CalendarConnection[];
+    },
+    enabled: !!businessId && calendarApiSyncEnabled,
+  });
+
+  const connectCalendarMutation = useMutation({
+    mutationFn: async (provider: CalendarProvider) => {
+      if (!businessId || !user?.id) {
+        throw new Error('Connect calendar requires an authenticated business user.');
+      }
+
+      const state = crypto.randomUUID();
+      const oauthUrl = buildCalendarOAuthUrl(provider, state);
+
+      const { error } = await supabase
+        .from('calendar_oauth_states')
+        .insert({
+          state,
+          business_id: businessId,
+          provider,
+          created_by: user.id,
+          return_path: '/portal/crm/tasks',
+        });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      window.location.assign(oauthUrl);
+      return provider;
+    },
+    onError: (error: unknown) => {
+      setActionMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to start calendar OAuth flow.',
+      });
+    },
+  });
+
+  const calendarConnectionsByProvider = useMemo(
+    () =>
+      calendarConnections.reduce(
+        (acc, connection) => {
+          acc[connection.provider] = connection;
+          return acc;
+        },
+        {} as Partial<Record<CalendarProvider, CalendarConnection>>,
+      ),
+    [calendarConnections],
+  );
+
+  const selectedCalendarConnection = calendarConnectionsByProvider[inviteProvider] ?? null;
+  const isSelectedProviderConnected = selectedCalendarConnection?.status === 'active';
 
   const assignLearningMutation = useMutation({
     mutationFn: async () => {
@@ -520,6 +670,46 @@ export default function CrmTasks() {
         durationMinutes: virtualInvite.duration_minutes,
       });
 
+      let providerEventUrl: string | null = null;
+      let providerJoinUrl: string | null = null;
+      let providerEventId: string | null = null;
+
+      if (calendarApiSyncEnabled && isSelectedProviderConnected) {
+        const startsAtIso = new Date(virtualInvite.starts_at).toISOString();
+        const attendeeEmail = selectedContact?.email ?? undefined;
+        const { data, error } = await supabase.functions.invoke('calendar-create-event', {
+          body: {
+            provider: inviteProvider,
+            title: virtualInvite.title.trim(),
+            starts_at: startsAtIso,
+            duration_minutes: virtualInvite.duration_minutes,
+            notes: virtualInvite.notes,
+            attendee_email: attendeeEmail,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            location: inviteProvider === 'microsoft' ? 'Microsoft Teams' : 'Google Meet',
+          },
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        const payload = (data ?? {}) as {
+          error?: string;
+          event_url?: string | null;
+          join_url?: string | null;
+          event_id?: string | null;
+        };
+
+        if (payload.error) {
+          throw new Error(payload.error);
+        }
+
+        providerEventUrl = payload.event_url ?? null;
+        providerJoinUrl = payload.join_url ?? null;
+        providerEventId = payload.event_id ?? null;
+      }
+
       await createTask({
         business_id: businessId,
         contact_id: virtualInvite.contact_id || undefined,
@@ -527,6 +717,10 @@ export default function CrmTasks() {
         description: [
           `Contact: ${contactName}`,
           `Start: ${new Date(virtualInvite.starts_at).toLocaleString()}`,
+          `Provider: ${CALENDAR_PROVIDER_META[inviteProvider].label}`,
+          providerEventId ? `Provider event ID: ${providerEventId}` : '',
+          providerEventUrl ? `Provider event URL: ${providerEventUrl}` : '',
+          providerJoinUrl ? `Provider join URL: ${providerJoinUrl}` : '',
           `Google Calendar: ${googleLink}`,
           `Microsoft Teams/Outlook: ${teamsLink}`,
           virtualInvite.notes ? `Notes: ${virtualInvite.notes}` : '',
@@ -537,12 +731,14 @@ export default function CrmTasks() {
         priority: 'medium',
       });
 
-      return { googleLink, teamsLink };
+      return { googleLink, teamsLink, providerEventUrl };
     },
-    onSuccess: () => {
+    onSuccess: ({ providerEventUrl }) => {
       setActionMessage({
         type: 'success',
-        text: 'Virtual booking reminder created with Google Calendar + Teams links.',
+        text: providerEventUrl
+          ? `Virtual booking reminder created with ${CALENDAR_PROVIDER_META[inviteProvider].label} sync + fallback links.`
+          : 'Virtual booking reminder created with Google Calendar + Teams links.',
       });
     },
     onError: (error: unknown) => {
@@ -873,6 +1069,57 @@ export default function CrmTasks() {
             <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider">
               Google Calendar + Microsoft Teams Invites
             </h2>
+          </div>
+          {!calendarApiSyncEnabled && (
+            <div className="rounded-lg border border-signal-warn/30 bg-signal-warn/5 px-3 py-2 text-xs text-signal-warn">
+              CRM calendar API sync is currently disabled by feature flag. Fallback deep links remain available.
+            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {(['google', 'microsoft'] as CalendarProvider[]).map((provider) => {
+              const connection = calendarConnectionsByProvider[provider];
+              const isConnected = connection?.status === 'active';
+              return (
+                <div key={provider} className="rounded-lg border border-accent-soft/30 p-2.5 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${CALENDAR_PROVIDER_META[provider].chip}`}>
+                      {CALENDAR_PROVIDER_META[provider].label}
+                    </span>
+                    <span className={`text-[11px] font-medium ${isConnected ? 'text-signal-up' : 'text-graphite/50'}`}>
+                      {isConnected ? 'Connected' : 'Not connected'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-graphite/60">
+                    {connection?.provider_email || 'No account connected yet.'}
+                  </p>
+                  {connection?.error_message && (
+                    <p className="text-xs text-signal-down">{connection.error_message}</p>
+                  )}
+                  <button
+                    onClick={() => connectCalendarMutation.mutate(provider)}
+                    disabled={!calendarApiSyncEnabled || connectCalendarMutation.isPending}
+                    className="h-8 px-3 text-xs rounded-full border border-accent/40 text-accent hover:bg-accent/5 disabled:opacity-50"
+                  >
+                    {isConnected ? 'Reconnect' : 'Connect'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <select
+              value={inviteProvider}
+              onChange={(event) => setInviteProvider(event.target.value as CalendarProvider)}
+              className="h-9 px-2.5 border border-accent-soft/30 rounded-lg text-sm text-graphite bg-white"
+            >
+              <option value="google">Google Calendar (API)</option>
+              <option value="microsoft">Microsoft Teams / Outlook (API)</option>
+            </select>
+            <div className="md:col-span-2 h-9 px-2.5 border border-accent-soft/30 rounded-lg text-xs text-graphite/70 inline-flex items-center">
+              {isSelectedProviderConnected
+                ? `${CALENDAR_PROVIDER_META[inviteProvider].label} is connected. Save Reminder will create a real provider event before saving the task.`
+                : `${CALENDAR_PROVIDER_META[inviteProvider].label} is not connected. Save Reminder will add fallback links only.`}
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <input

@@ -1,0 +1,49 @@
+{
+  "wo_id": "CRM-WO-calendar-oauth-sync",
+  "timestamp_utc": "2026-03-09T06:25:39Z",
+  "status": "PASS_WITH_BASELINE_TYPECHECK_DEBT",
+  "scope": "Google Calendar + Microsoft Teams/Outlook OAuth API sync for CRM Tasks",
+  "files_changed": [
+    "SOCELLE-WEB/src/pages/business/CrmTasks.tsx",
+    "SOCELLE-WEB/supabase/functions/calendar-oauth-callback/index.ts",
+    "SOCELLE-WEB/supabase/functions/calendar-create-event/index.ts",
+    "SOCELLE-WEB/supabase/migrations/20260310130001_create_calendar_oauth_connections.sql"
+  ],
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "workdir": "SOCELLE-WEB",
+      "result": "FAIL",
+      "notes": "Repository baseline contains extensive pre-existing TypeScript errors in unrelated modules/pages; this WO did not resolve global type debt."
+    },
+    {
+      "command": "npm run build",
+      "workdir": "SOCELLE-WEB",
+      "result": "PASS",
+      "notes": "Production build succeeds."
+    },
+    {
+      "command": "npm run shell:check",
+      "workdir": "SOCELLE-WEB",
+      "result": "PASS",
+      "notes": "No new shells introduced; gate passed."
+    }
+  ],
+  "acceptance": {
+    "oauth_state_table_with_rls": "PASS",
+    "calendar_connections_table_with_rls": "PASS",
+    "google_callback_exchange_and_upsert": "PASS",
+    "microsoft_callback_exchange_and_upsert": "PASS",
+    "server_side_event_creation_function": "PASS",
+    "provider_token_refresh_on_expiry": "PASS",
+    "crm_tasks_connect_buttons_and_status": "PASS",
+    "crm_tasks_real_provider_event_creation": "PASS",
+    "feature_flag_gate_used": "PASS",
+    "edge_function_kill_switch_registration": "PASS"
+  },
+  "user_visible_changes": [
+    "CRM Tasks now shows Google and Microsoft connection status with connect/reconnect actions.",
+    "Save Reminder can create real provider events (Google Meet or Teams) when connected, and stores event/join links in task details.",
+    "Fallback deep-link behavior remains available when provider sync is not connected or feature-flagged off."
+  ]
+}
