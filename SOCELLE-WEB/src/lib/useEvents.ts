@@ -152,7 +152,7 @@ async function fetchEvents(filters: EventFilters): Promise<EventRow[]> {
 }
 
 export function useEvents(filters: EventFilters = {}) {
-  const configured = isSupabaseConfigured();
+  const configured = isSupabaseConfigured;
 
   const { data, isLoading, error, refetch } = useQuery<EventRow[], Error>({
     queryKey: ['events', filters],

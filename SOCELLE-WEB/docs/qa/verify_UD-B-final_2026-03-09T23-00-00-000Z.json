@@ -1,0 +1,66 @@
+{
+  "wo_id": "UD-B",
+  "verified_by": "LANE-B-VERIFY",
+  "timestamp": "2026-03-09T23:00:00.000Z",
+  "skills_run": ["dev-best-practice-checker", "hook-consolidator"],
+  "results": {
+    "dev_best_practice": {
+      "status": "PASS",
+      "violations_remaining": [],
+      "files_migrated": [
+        "src/components/BusinessRulesView.tsx",
+        "src/components/ReportsView.tsx",
+        "src/components/MappingView.tsx",
+        "src/components/PlanOutputView.tsx",
+        "src/components/ServiceIntelligenceView.tsx",
+        "src/components/MarketingCalendarView.tsx",
+        "src/layouts/BrandLayout.tsx",
+        "src/modules/_core/context/ModuleAccessContext.tsx"
+      ],
+      "migration_notes": {
+        "BusinessRulesView": "2x useQuery (service_category_benchmarks, revenue_model_defaults) + 2x useMutation. Local optimistic edits via queryClient.setQueryData on onChange, invalidate on mutation success.",
+        "ReportsView": "1x useQuery (spa_menus_parsed). Action-triggered generateReports() kept as-is (not a data fetch).",
+        "MappingView": "1x useQuery (spa_menus_all). Action-triggered performServiceMapping() kept as-is.",
+        "PlanOutputView": "1x useQuery (plan_output, planId). isLoading drives existing skeleton shimmer. null data drives existing error state.",
+        "ServiceIntelligenceView": "3x useQuery (spa_menus_intel, spa_service_mapping, service_gap_analysis) + 2x useMutation (mapping review, gap status). runAnalysis() is an imperative action that invalidates queries after completion. Realtime removed (was imperative reload, not subscription).",
+        "MarketingCalendarView": "1x useQuery (marketing_calendar_2026). isLive derived from data.length > 0. Removed loading spinner (was Loader2 spinner — pre-existing, not introduced by migration).",
+        "BrandLayout": "1x useQuery (brand_conversation_count) with refetchInterval:60000 to maintain badge freshness. Replaced useEffect+direct supabase call.",
+        "ModuleAccessContext": "1x useQuery (account_module_access) replaces fetchAccess useCallback+useEffect pattern. Realtime subscription useEffect kept (WebSocket, not data fetch) — now calls queryClient.invalidateQueries instead of fetchAccess."
+      },
+      "false_positives_excluded": [
+        "src/components/PWAInstallPrompt.tsx — Uint8Array.from(), no supabase.from()",
+        "src/pages/business/studio/StudioEditor.tsx — Array.from(), no supabase.from()",
+        "src/lib/auth.tsx — NEVER MODIFY per CLAUDE.md §B"
+      ]
+    },
+    "hook_consolidator": {
+      "status": "PASS",
+      "duplicate_hooks_found": 0,
+      "notes": "No duplicate query keys introduced. spa_menus is queried under distinct keys (spa_menus_parsed for ReportsView, spa_menus_all for MappingView, spa_menus_intel for ServiceIntelligenceView) to preserve independent filtering. Consolidation into a shared hook is deferred to a dedicated hook-consolidator WO."
+    },
+    "tsc": {
+      "status": "PASS",
+      "errors": 0,
+      "command": "npx tsc --noEmit"
+    },
+    "build": {
+      "status": "PASS",
+      "command": "npm run build",
+      "notes": "Chunk size warnings are pre-existing Rollup advisories, not errors introduced by this migration."
+    },
+    "post_migration_scan": {
+      "status": "PASS",
+      "remaining_fail_lines": 3,
+      "all_false_positives": true,
+      "scan_output": [
+        "FAIL: src/components/PWAInstallPrompt.tsx (false positive — Uint8Array.from)",
+        "FAIL: src/lib/auth.tsx (excluded — NEVER MODIFY)",
+        "FAIL: src/pages/business/studio/StudioEditor.tsx (false positive — Array.from)"
+      ],
+      "true_violations_remaining": 0
+    }
+  },
+  "overall": "PASS",
+  "launch_non_negotiable_23_satisfied": true,
+  "notes": "All 8 true violations migrated to TanStack Query. tsc=0 errors. Build exits 0. 0 true violations remain in full src/ scan. auth.tsx excluded per CLAUDE.md §B (NEVER MODIFY)."
+}

@@ -211,8 +211,8 @@ export default function PortalHome() {
         <section className="rounded-xl border border-accent-soft bg-graphite overflow-hidden">
           <div className="px-6 py-5 border-b border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-intel-accent/10 flex items-center justify-center">
-                <Brain className="w-4 h-4 text-intel-accent" />
+              <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                <Brain className="w-4 h-4 text-accent" />
               </div>
               <div>
                 <h2 className="font-heading text-lg font-bold text-white">See what&apos;s trending in treatment rooms near you</h2>
@@ -245,13 +245,13 @@ export default function PortalHome() {
               return (
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
-                    <Zap className="w-4 h-4 text-intel-accent" />
-                    <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-intel-accent">Demand Signal</span>
+                    <Zap className="w-4 h-4 text-accent" />
+                    <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-accent">Demand Signal</span>
                   </div>
                   <h3 className="font-sans font-semibold text-white text-sm mb-2">{demand.title}</h3>
                   <p className="text-xs text-accent-soft/80 font-sans leading-relaxed line-clamp-3">{demand.description}</p>
                   <div className="mt-4 flex items-center gap-3">
-                    <span className="text-xs font-sans font-medium text-intel-accent bg-intel-accent/10 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-sans font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">
                       +{demand.magnitude}% this quarter
                     </span>
                     <span className="text-xs font-sans text-accent-soft/60">{demand.region}</span>

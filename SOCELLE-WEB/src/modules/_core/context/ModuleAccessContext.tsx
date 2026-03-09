@@ -1,4 +1,5 @@
-import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useCallback, useEffect, type ReactNode } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 
@@ -40,44 +41,33 @@ const ModuleAccessContext = createContext<ModuleAccessContextType | undefined>(u
 
 export function ModuleAccessProvider({ children }: { children: ReactNode }) {
   const { user, profile } = useAuth();
-  const [records, setRecords] = useState<ModuleAccessRecord[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   const accountId = profile?.business_id ?? profile?.brand_id ?? user?.id ?? null;
 
-  const fetchAccess = useCallback(async () => {
-    if (!accountId) {
-      setRecords([]);
-      setIsLoading(false);
-      return;
-    }
+  const queryKey = ['account_module_access', accountId] as const;
 
-    try {
+  const { data: records = [], isLoading } = useQuery<ModuleAccessRecord[]>({
+    queryKey,
+    queryFn: async () => {
+      if (!accountId) return [];
       const { data, error } = await supabase
         .from('account_module_access')
         .select('module_key, access_type, expires_at, granted_at')
         .eq('account_id', accountId)
         .eq('is_active', true);
-
       if (error) {
         console.warn('[ModuleAccess] fetch error:', error.message);
-        setRecords([]);
-      } else {
-        setRecords((data as ModuleAccessRecord[]) ?? []);
+        return [];
       }
-    } catch (err) {
-      console.warn('[ModuleAccess] unexpected error:', err);
-      setRecords([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [accountId]);
+      return (data as ModuleAccessRecord[]) ?? [];
+    },
+    enabled: !!accountId,
+  });
 
-  // Initial fetch
-  useEffect(() => {
-    setIsLoading(true);
-    fetchAccess();
-  }, [fetchAccess]);
+  const refreshAccess = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey });
+  }, [queryClient, queryKey]);
 
   // Realtime subscription for live updates
   useEffect(() => {
@@ -95,7 +85,7 @@ export function ModuleAccessProvider({ children }: { children: ReactNode }) {
         },
         () => {
           // Re-fetch on any change to this account's module access
-          fetchAccess();
+          queryClient.invalidateQueries({ queryKey });
         },
       )
       .subscribe();
@@ -103,7 +93,7 @@ export function ModuleAccessProvider({ children }: { children: ReactNode }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [accountId, fetchAccess]);
+  }, [accountId, queryClient, queryKey]);
 
   const checkAccess = useCallback(
     (moduleKey: string): boolean => {
@@ -128,7 +118,7 @@ export function ModuleAccessProvider({ children }: { children: ReactNode }) {
 
   return (
     <ModuleAccessContext.Provider
-      value={{ checkAccess, getAccessRecord, isLoading, refreshAccess: fetchAccess }}
+      value={{ checkAccess, getAccessRecord, isLoading, refreshAccess }}
     >
       {children}
     </ModuleAccessContext.Provider>

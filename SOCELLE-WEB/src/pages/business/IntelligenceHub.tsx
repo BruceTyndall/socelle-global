@@ -172,7 +172,7 @@ export default function IntelligenceHub() {
         <title>Intelligence Hub | Socelle</title>
         <meta
           name="description"
-          content="Professional beauty and medspa market intelligence. Live signals, trends, and AI-powered analysis."
+          content="Professional beauty and medspa market intelligence. Live signals, trends, and market signal analysis."
         />
       </Helmet>
 
@@ -200,7 +200,7 @@ export default function IntelligenceHub() {
                 )}
               </div>
               <p className="text-sm text-gray-500 font-sans">
-                Market signals, trends, and AI-powered analysis
+                Market signals, trends, and intelligence analysis
               </p>
             </div>
           </div>

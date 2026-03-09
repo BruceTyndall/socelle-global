@@ -52,7 +52,7 @@ export const TIER_FEATURES: TierFeature[] = [
   {
     key: 'predictive_insights',
     name: 'Predictive Insights',
-    description: 'AI-powered demand forecasting and trend predictions',
+    description: 'Intelligence-driven demand forecasting and trend predictions',
     includedIn: { basic: false, professional: false, enterprise: true },
     category: 'intelligence',
   },

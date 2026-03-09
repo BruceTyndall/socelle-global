@@ -9,7 +9,7 @@ interface DarkPanelProps extends HTMLAttributes<HTMLDivElement> {
 
 const variantClasses: Record<DarkPanelVariant, string> = {
   default:  'bg-graphite rounded-2xl p-6',
-  elevated: 'bg-intel-dark border border-intel-border rounded-2xl p-6 shadow-signal',
+  elevated: 'bg-graphite border border-graphite/20 rounded-2xl p-6 shadow-signal',
 };
 
 /**

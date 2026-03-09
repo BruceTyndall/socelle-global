@@ -8,10 +8,10 @@ interface GlowBadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantClasses: Record<GlowBadgeVariant, string> = {
-  up:     'text-intel-up   bg-intel-up/10   shadow-[0_0_8px_rgba(34,197,94,0.2)]',
-  down:   'text-intel-down bg-intel-down/10 shadow-[0_0_8px_rgba(239,68,68,0.2)]',
-  stable: 'text-intel-text bg-intel-text/10',
-  new:    'text-intel-accent bg-intel-accent/10 shadow-[0_0_8px_rgba(59,130,246,0.2)]',
+  up:     'text-signal-up   bg-signal-up/10   shadow-[0_0_8px_rgba(95,138,114,0.2)]',
+  down:   'text-signal-down bg-signal-down/10 shadow-[0_0_8px_rgba(142,100,100,0.2)]',
+  stable: 'text-graphite/60 bg-graphite/10',
+  new:    'text-accent bg-accent/10 shadow-[0_0_8px_rgba(110,135,155,0.2)]',
   ce:     'text-edu-primary  bg-edu-primary/10  shadow-[0_0_8px_rgba(124,58,237,0.2)]',
 };
 

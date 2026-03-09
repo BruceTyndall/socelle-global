@@ -1,0 +1,105 @@
+{
+  "sprint": "Ultra Drive",
+  "timestamp": "2026-03-09T24:00:00.000Z",
+  "gate_results": {
+    "gate_1_pro_star": {
+      "status": "PASS",
+      "count": 0,
+      "note": "0 Tailwind pro-* class usages (text-pro-*, bg-pro-*, border-pro-*, from-pro-*, to-pro-*, via-pro-*, ring-pro-*) in src/"
+    },
+    "gate_2_brand_star": {
+      "status": "PASS",
+      "count": 0,
+      "remaining": [],
+      "note": "0 Tailwind brand-* class usages in src/ *.tsx/*.ts/*.css"
+    },
+    "gate_3_intel_star": {
+      "status": "PASS",
+      "count": 0,
+      "remaining": [],
+      "note": "0 Tailwind intel-* class usages in src/ *.tsx/*.ts/*.css"
+    },
+    "gate_4_tanstack": {
+      "status": "PASS",
+      "violations": [],
+      "gate_script_hits": [
+        "src/pages/business/studio/StudioEditor.tsx — FALSE POSITIVE: only Array.from() calls, no supabase.from(). useEffect is for canvas state management.",
+        "src/lib/auth.tsx — EXEMPT: auth context provider; NEVER MODIFY per CLAUDE.md governance. Supabase onAuthStateChange subscription pattern is correct usage.",
+        "src/components/PWAInstallPrompt.tsx — FALSE POSITIVE: only Uint8Array.from() for push subscription encoding, no supabase.from()."
+      ],
+      "note": "Gate script matches Array.from()/Uint8Array.from() as false positives. No true raw useEffect+supabase.from() violations exist outside of the auth context provider (exempt by governance)."
+    },
+    "gate_5_sentry": {
+      "status": "PASS",
+      "count": 0,
+      "note": "0 Sentry references in src/, vite.config.ts, or package.json after filtering known false positives. @sentry packages fully removed."
+    },
+    "gate_6_tsc": {
+      "status": "PASS",
+      "exit_code": 0,
+      "note": "npx tsc --noEmit exits 0. No TypeScript errors."
+    },
+    "gate_7_build": {
+      "status": "PASS",
+      "exit_code": 0,
+      "note": "npm run build exits 0. Built in ~6s. Chunk size warning for vendor-docs (847kb) is pre-existing and non-blocking — maps to future code-splitting WO."
+    },
+    "gate_8_unit_tests": {
+      "status": "PASS",
+      "passing": 156,
+      "failing": 0,
+      "test_files": 20,
+      "note": "20/20 test files passed. 156/156 tests passing. 0 failures."
+    },
+    "gate_9_qa_artifacts": {
+      "status": "PASS",
+      "count": 8,
+      "files": [
+        "docs/qa/verify_UD-A-01_2026-03-09T21-34-58Z.json",
+        "docs/qa/verify_UD-A-ALL_20260309T210000Z.json",
+        "docs/qa/verify_UD-B-baseline_2026-03-09T22-00-00-000Z.json",
+        "docs/qa/verify_UD-B-final_2026-03-09T23-00-00-000Z.json",
+        "docs/qa/verify_UD-C_2026-03-09T22-00-00-000Z.json",
+        "docs/qa/verify_UD-D_2026-03-09T21-00-00-000Z.json",
+        "docs/qa/verify_UD-D_2026-03-09T23-30-00-000Z.json",
+        "docs/qa/verify_UD-E_2026-03-09T21-00-00-000Z.json"
+      ],
+      "note": "8 UD-* artifacts found (exceeds minimum threshold of 5). Coverage: Lanes A (2), B (2), C (1), D (2), E (1)."
+    },
+    "gate_10_e2e_files": {
+      "count": 10,
+      "files": [
+        "e2e/accessibility.spec.ts",
+        "e2e/ai-flow.spec.ts",
+        "e2e/auth.spec.ts",
+        "e2e/design-compliance.spec.ts",
+        "e2e/intelligence.spec.ts",
+        "e2e/navigation.spec.ts",
+        "e2e/paywall-and-entitlements.spec.ts",
+        "e2e/routes.spec.ts",
+        "e2e/seo.spec.ts",
+        "e2e/smoke.spec.ts"
+      ],
+      "note": "10 E2E spec files present. Full suite run not executed (gate check only). Lane D previously reported 164/215 tests passing; 47 pre-existing failures mapped to open WOs (SEO meta tags, nav label mismatches, DEMO badge detection gaps)."
+    }
+  },
+  "lanes_completed": ["A", "B", "C", "D", "E"],
+  "overall": "PASS",
+  "gate_summary": {
+    "PASS": ["gate_1_pro_star", "gate_2_brand_star", "gate_3_intel_star", "gate_4_tanstack", "gate_5_sentry", "gate_6_tsc", "gate_7_build", "gate_8_unit_tests", "gate_9_qa_artifacts"],
+    "FAIL": [],
+    "REPORT_ONLY": ["gate_10_e2e_files"]
+  },
+  "open_debt_carry_forward": [
+    "47 E2E failures: SEO meta tags, nav label mismatches, DEMO badge detection gaps (pre-existing, mapped to open WOs)",
+    "Hardcoded hex in CMS modules (TDS-01..04 — separate WO needed)",
+    "database.types.ts drift: 116/165 tables (P0-5) — run supabase gen types",
+    "Cart.tsx:84 'Shop Now' stop condition (P0-1) — §9 STOP CONDITION, fix immediately",
+    "IntelligenceCommerce.tsx missing isLive guard (P0-2)",
+    "8x 'AI-powered' banned term in user-facing copy (P0-4)",
+    "29 unit tests previously failing due to @testing-library/react v16 incompatibility with React 19 — resolved this sprint (156/156 now passing)",
+    "SEO coverage 40.1% — 163/272 pages missing meta tags (SITE-WO-04)",
+    "vendor-docs chunk 847kb — code-splitting needed (non-blocking build warning)"
+  ],
+  "next_priority": "P0 queue — fix Cart.tsx 'Shop Now' (§9 STOP CONDITION), IntelligenceCommerce.tsx isLive guard, run supabase gen types (database.types.ts drift), then BUILD 1 (INTEL-WO-01)"
+}

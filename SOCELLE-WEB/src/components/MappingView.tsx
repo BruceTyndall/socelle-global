@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { MapPin, Play, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { performServiceMapping } from '../lib/mappingEngine';
@@ -26,26 +27,22 @@ interface MappingResult {
 }
 
 export default function MappingView() {
-  const [menus, setMenus] = useState<SpaMenu[]>([]);
   const [selectedMenuId, setSelectedMenuId] = useState<string>('');
   const [isMapping, setIsMapping] = useState(false);
   const [mappingResults, setMappingResults] = useState<MappingResult[]>([]);
   const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    loadMenus();
-  }, []);
-
-  const loadMenus = async () => {
-    const { data, error } = await supabase
-      .from('spa_menus')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setMenus(data);
-    }
-  };
+  const { data: menus = [] } = useQuery<SpaMenu[]>({
+    queryKey: ['spa_menus_all'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('spa_menus')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
 
   const handleStartMapping = async () => {
     if (!selectedMenuId) {
@@ -90,7 +87,7 @@ export default function MappingView() {
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-graphite">Service Mapping Engine</h2>
         <p className="text-sm text-graphite/60 mt-1">
-          Map spa services to Naturopathica solutions using AI-powered analysis
+          Map spa services to Naturopathica solutions using signal analysis
         </p>
       </div>
 

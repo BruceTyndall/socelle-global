@@ -1,0 +1,21 @@
+{
+  "wo_id": "P0-events",
+  "timestamp": "2026-03-09T23:00:00.000Z",
+  "fixes": {
+    "crash_fixed": true,
+    "root_cause": "isSupabaseConfigured called as function isSupabaseConfigured() in src/lib/useEvents.ts:155, but is exported as a boolean constant from src/lib/supabase.ts. Removed () to use as boolean.",
+    "file_changed": "src/lib/useEvents.ts",
+    "line_changed": 155,
+    "before": "const configured = isSupabaseConfigured();",
+    "after": "const configured = isSupabaseConfigured;",
+    "demo_badge_added": false,
+    "demo_badge_note": "DEMO badge already present in Events.tsx at lines 208-218 (inline hero badge) and lines 234-239 (full-width DEMO banner). No changes required to Events.tsx."
+  },
+  "results": {
+    "tsc": { "status": "PASS", "errors": 0 },
+    "build": { "status": "PASS" },
+    "isSupabaseConfigured_function_call_grep": { "status": "PASS", "matches": 0, "command": "grep -n 'isSupabaseConfigured()' src/lib/useEvents.ts" },
+    "isLive_demo_badge_present": { "status": "PASS", "evidence": "Events.tsx lines 208-218 and 234-239 render DEMO badge and banner when !isLive" }
+  },
+  "overall": "PASS"
+}

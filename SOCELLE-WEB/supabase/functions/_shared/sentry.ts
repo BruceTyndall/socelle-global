@@ -1,106 +1,38 @@
 /**
- * Sentry integration for Supabase Edge Functions (Deno).
+ * Error handling for Supabase Edge Functions (Deno).
+ *
+ * Sentry has been removed (2026-03-09). All errors are logged to console.
+ * Observability is via Admin Hub dashboards and Supabase logs.
  *
  * Usage in any edge function:
- *   import { captureException, withSentry } from '../_shared/sentry.ts';
+ *   import { captureException, withErrorHandler } from '../_shared/sentry.ts';
  *
- *   Deno.serve(withSentry(async (req) => {
+ *   Deno.serve(withErrorHandler(async (req) => {
  *     // ... your handler
  *     return new Response(JSON.stringify({ ok: true }));
  *   }));
- *
- * Set SENTRY_DSN_EDGE in Supabase secrets to enable.
- * When SENTRY_DSN_EDGE is not set, errors are logged to console only.
  */
 
-const SENTRY_DSN = Deno.env.get('SENTRY_DSN_EDGE') || '';
-const ENVIRONMENT = Deno.env.get('ENVIRONMENT') || 'production';
-
-interface SentryEvent {
-  exception: {
-    values: Array<{
-      type: string;
-      value: string;
-      stacktrace?: { frames: Array<{ filename: string; lineno?: number; function?: string }> };
-    }>;
-  };
-  level: string;
-  platform: string;
-  environment: string;
-  timestamp: number;
-  tags?: Record<string, string>;
-  extra?: Record<string, unknown>;
-}
-
-function parseDsn(dsn: string): { publicKey: string; host: string; projectId: string } | null {
-  try {
-    const url = new URL(dsn);
-    const projectId = url.pathname.replace('/', '');
-    return {
-      publicKey: url.username,
-      host: url.hostname,
-      projectId,
-    };
-  } catch {
-    return null;
-  }
-}
-
 /**
- * Send an error to Sentry via the HTTP envelope API.
+ * Log an error to console for Admin Hub observability.
+ * Drop-in replacement for former Sentry captureException.
  */
 export async function captureException(
   error: unknown,
   context?: { tags?: Record<string, string>; extra?: Record<string, unknown> }
 ): Promise<void> {
   const err = error instanceof Error ? error : new Error(String(error));
-  console.error('[EdgeFn Error]', err.message, err.stack);
-
-  if (!SENTRY_DSN) return;
-
-  const parsed = parseDsn(SENTRY_DSN);
-  if (!parsed) return;
-
-  const event: SentryEvent = {
-    exception: {
-      values: [{
-        type: err.name,
-        value: err.message,
-        stacktrace: err.stack ? {
-          frames: err.stack.split('\n').slice(1).map((line) => ({
-            filename: line.trim(),
-            function: line.trim().split(' ')[1] || '<anonymous>',
-          })),
-        } : undefined,
-      }],
-    },
-    level: 'error',
-    platform: 'javascript',
-    environment: ENVIRONMENT,
-    timestamp: Date.now() / 1000,
+  console.error('[EdgeFn Error]', {
+    message: err.message,
+    stack: err.stack,
     tags: context?.tags,
     extra: context?.extra,
-  };
-
-  const envelope = [
-    JSON.stringify({ dsn: SENTRY_DSN, sent_at: new Date().toISOString() }),
-    JSON.stringify({ type: 'event' }),
-    JSON.stringify(event),
-  ].join('\n');
-
-  try {
-    await fetch(`https://${parsed.host}/api/${parsed.projectId}/envelope/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-sentry-envelope' },
-      body: envelope,
-    });
-  } catch {
-    // Silently fail — Sentry reporting should never break the edge function
-  }
+  });
 }
 
 /**
- * Wrap a Deno.serve handler with Sentry error capture.
+ * Wrap a Deno.serve handler with error capture.
+ * Drop-in replacement for former withSentry wrapper.
  */
 export function withSentry(
   handler: (req: Request) => Promise<Response> | Response,
@@ -124,3 +56,6 @@ export function withSentry(
     }
   };
 }
+
+/** Alias for withSentry — preferred name post-Sentry removal */
+export const withErrorHandler = withSentry;

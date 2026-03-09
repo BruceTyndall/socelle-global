@@ -116,7 +116,7 @@ export default function UpgradeGate({
 
       {/* Paywall overlay — intelligence-grade, not template */}
       <div className={`${showPreview ? 'absolute inset-0 flex items-center justify-center' : ''}`}>
-        <div className="bg-white rounded-xl shadow-elevated border border-brand-border p-8 md:p-10 max-w-md mx-auto">
+        <div className="bg-white rounded-xl shadow-elevated border border-graphite/20 p-8 md:p-10 max-w-md mx-auto">
           <div className="flex items-center gap-3 mb-5">
             <div className="w-10 h-10 bg-graphite rounded-lg flex items-center justify-center flex-shrink-0">
               <Lock className="w-5 h-5 text-white" />

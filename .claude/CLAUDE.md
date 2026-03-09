@@ -185,17 +185,28 @@ Execute WOs in this order. Complete each before starting the next. Check `SOCELL
 
 ## §4 — CRITICAL DEBT (FIX BEFORE NEW WOs)
 
-**Verified 2026-03-08 by independent audit.** These issues exist NOW. Prior agents claimed some were done — they were not.
+**Re-verified 2026-03-09 by 5-agent site-wide audit.** Artifact: `docs/qa/verify_site_wide_audit_2026-03-09T22-00-00-000Z.json`. Prior stale figures corrected below.
 
-1. **`font-serif` violations: 0 in live `src/`** — ✅ Actually fixed. Confirmed 0 in SOCELLE-WEB/src/. Old violations exist only in `.archive/SOCELLE-WEB-1/` (146 refs) which is dead code.
-2. **2,027 legacy `pro-*` Tailwind token usages in portals** — admin (748), business (587), brand (288), components (377), layouts (26). Public pages are clean (0). Prior agents claimed "correctly scoped to portals" as a PASS — **this was a false exemption**. ALL `pro-*` tokens must be replaced with Pearl Mineral V2 equivalents. See `ULTRA_DRIVE_PROMPT.md` §3 for the token replacement map.
-3. **6 components using raw `useEffect` + `supabase.from()` instead of TanStack Query** — ⚠️ Re-verified 2026-03-09 by automated grep audit (artifact: `docs/qa/verify_tanstack_audit_20260309T120000Z.json`). Original estimate of 79 was pre-migration. Session 48 Ultra Drive migrated 73 pages. 6 remain: `components/CostsView.tsx`, `components/MixingRulesView.tsx`, `components/ProProductsView.tsx`, `components/RetailProductsView.tsx`, `components/SpaMenusView.tsx`, `pages/brand/Products.tsx`. All are simple SELECT patterns needing useQuery replacement. See artifact for suggested hooks.
-4. **Sentry fully wired as production dependency** — `@sentry/react` + `@sentry/vite-plugin` in package.json, `Sentry.init()` in main.tsx, SentryUserContext in App.tsx, captureException in ErrorBoundary.tsx, Sentry Vite plugin + vendor chunk + CSP allowlist in vite.config.ts. Must be completely removed.
-5. **2 unit tests and 4 E2E tests** for 220 pages — functionally untested.
+**RESOLVED (do not re-open):**
+- ✅ `font-serif` violations: 0 in live `src/`
+- ✅ `pro-*` Tailwind token violations: 0 — prior figure of 2,027 was stale (those were plan IDs, HTML ids, DB column names — NOT Tailwind classNames). `pro-*` not defined in tailwind.config.js.
+- ✅ Sentry: fully removed — package.json clean, src/ clean, vite.config.ts clean. §16.20 SATISFIED.
+- ✅ DEBT-6 tier filter bypass: resolved — `allowedTiers` now applied unconditionally on all signal paths.
 
-**Active corrective sprint:** `ULTRA_DRIVE_PROMPT.md` — 5 parallel lanes addressing all 5 items above.
+**OPEN (fix immediately — P0 queue in build_tracker.md):**
 
-Run `design-audit-suite`, `token-drift-scanner`, `dev-best-practice-checker`, `dependency-scanner`, and `test-runner-suite` after fixing to verify.
+1. **`brand-*` token violations: 19** — StatCard, Button, EmptyState, UpgradeGate, index.css. Defined in `tailwind.config.js` as legacy tokens. Migrate to Pearl Mineral V2 (`accent-soft`, etc.). → P1-1
+2. **`intel-*` token violations: 30** — GlowBadge, DarkPanel, 5 business portal pages. Replace `intel-up/down/accent/dark` with `signal-up/down/warn/accent`. → P1-2
+3. **1 raw `useEffect` + `supabase.from()` violation** — `src/lib/enrichment/useEnrichment.ts` (scheduling trigger). Migrate to `useQuery`. → P0-3
+4. **29 unit tests failing** — `@testing-library/react` v16.3.2 incompatible with React 19. Upgrade to `^17.x`. 163/192 passing. → P2-1
+5. **SEO coverage: 40.1%** — 109/272 pages have meta tags. 163 uncovered. → SITE-WO-04 / P3-1
+6. **database.types.ts drift** — 116 tables vs 165 migrations. Run `supabase gen types`. → P0-5
+7. **Cart.tsx:84 'Shop Now'** — §9 STOP CONDITION. Replace immediately. → P0-1
+8. **8× 'AI-powered' in user-facing copy** — banned term per CANONICAL_DOCTRINE §9. → P0-4
+9. **IntelligenceCommerce.tsx missing isLive guard** — calls `useIntelligence()` but renders no LIVE/DEMO badge. → P0-2
+10. **19 raw `market_signals` queries outside useIntelligence** — page/component-level callers bypass isLive/tier contract. Consolidate to hook. → FOUND-WO-11
+
+Run `token-drift-scanner`, `dev-best-practice-checker`, `banned-term-scanner`, `live-demo-detector` after fixing each item to verify.
 
 ---
 

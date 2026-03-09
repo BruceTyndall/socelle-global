@@ -1,0 +1,103 @@
+{
+  "wo_id": "P0-04",
+  "timestamp": "2026-03-09T22:30:00.000Z",
+  "check": "Banned term removal: AI-powered",
+  "skills_run": ["banned-term-scanner", "language-linter"],
+  "results": {
+    "ai_powered_before": 9,
+    "ai_powered_after": 0,
+    "notes_on_count": "9 user-facing occurrences found (prompt stated 8 — the two hits in IntelligenceHub.tsx at lines 175 and 203 are distinct). 1 additional occurrence in PaywallGate.tsx:15 is inside a block comment and was intentionally left unchanged per instructions.",
+    "files_changed": [
+      "src/components/MappingView.tsx",
+      "src/components/intelligence/tools/SignalSearch.tsx",
+      "src/components/ServiceIntelligenceView.tsx",
+      "src/lib/brandTiers/mockTierData.ts",
+      "src/pages/brand/BrandAIAdvisor.tsx",
+      "src/pages/business/AIAdvisor.tsx",
+      "src/pages/business/IntelligenceHub.tsx",
+      "src/pages/public/HelpCenter.tsx"
+    ],
+    "replacements": [
+      {
+        "file": "src/components/MappingView.tsx",
+        "line": 90,
+        "before": "Map spa services to Naturopathica solutions using AI-powered analysis",
+        "after": "Map spa services to Naturopathica solutions using signal analysis"
+      },
+      {
+        "file": "src/components/intelligence/tools/SignalSearch.tsx",
+        "line": 107,
+        "before": "AI-powered signal discovery",
+        "after": "Intelligence-driven signal discovery"
+      },
+      {
+        "file": "src/components/ServiceIntelligenceView.tsx",
+        "line": 286,
+        "before": "AI-powered service mapping and gap analysis",
+        "after": "Signal-driven service mapping and gap analysis"
+      },
+      {
+        "file": "src/lib/brandTiers/mockTierData.ts",
+        "line": 55,
+        "before": "AI-powered demand forecasting and trend predictions",
+        "after": "Intelligence-driven demand forecasting and trend predictions"
+      },
+      {
+        "file": "src/pages/brand/BrandAIAdvisor.tsx",
+        "line": 114,
+        "before": "AI-powered market intelligence for your brand",
+        "after": "Market intelligence signals for your brand"
+      },
+      {
+        "file": "src/pages/business/AIAdvisor.tsx",
+        "line": 224,
+        "before": "AI-powered insights for your business",
+        "after": "Market signals and intelligence for your business"
+      },
+      {
+        "file": "src/pages/business/IntelligenceHub.tsx",
+        "line": 175,
+        "before": "Professional beauty and medspa market intelligence. Live signals, trends, and AI-powered analysis.",
+        "after": "Professional beauty and medspa market intelligence. Live signals, trends, and market signal analysis."
+      },
+      {
+        "file": "src/pages/business/IntelligenceHub.tsx",
+        "line": 203,
+        "before": "Market signals, trends, and AI-powered analysis",
+        "after": "Market signals, trends, and intelligence analysis"
+      },
+      {
+        "file": "src/pages/public/HelpCenter.tsx",
+        "line": 42,
+        "before": "Credits are used when you activate AI-powered tools like Explain Signal, Treatment Planner, Gap Analysis...",
+        "after": "Credits are used when you activate intelligence tools like Explain Signal, Treatment Planner, Gap Analysis..."
+      }
+    ],
+    "tsc": {
+      "status": "PASS",
+      "errors": 0
+    },
+    "additional_banned_terms_found": [
+      {
+        "term": "optimized",
+        "file": "src/pages/business/PlanResults.tsx",
+        "line": 407,
+        "text": "Each represents recoverable revenue through optimized brand-protocol alignment.",
+        "severity": "P2",
+        "note": "Variant of 'optimize' — borderline; in a results/output context describing an action taken, not a marketing claim. Recommend review for SITE-WO-04 sweep."
+      }
+    ],
+    "skipped_occurrences": [
+      {
+        "file": "src/components/PaywallGate.tsx",
+        "line": 15,
+        "reason": "Block comment (/* */) — not user-facing copy, intentionally left unchanged per task instructions"
+      },
+      {
+        "file": "src/components/BrandPageRenderer.tsx",
+        "reason": "All 'enable*' hits are TanStack Query 'enabled' boolean options — code identifiers, not copy"
+      }
+    ]
+  },
+  "overall": "PASS"
+}

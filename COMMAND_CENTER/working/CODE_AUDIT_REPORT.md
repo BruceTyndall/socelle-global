@@ -124,11 +124,23 @@ No instances of `isAdmin = true` or hardcoded auth bypasses found in source code
 
 **Note:** `#F7F5F2` is the Pearl Mineral background color and `#1F2428` is close to graphite. These should be Tailwind tokens (`text-pearl`, `bg-graphite`, etc.) per `SOCELLE_CANONICAL_DOCTRINE.md`.
 
-### 3b. font-serif in Public Pages — PASS
+### 3b. font-serif in Public Pages — PASS (verified 2026-03-09)
 
-All `font-serif` references in public pages are **comments only** (e.g., `// no font-serif`). No actual `font-serif` class usage.
+`grep -rn "font-serif" src/ --include="*.tsx" --include="*.ts"` returns **0 lines** excluding comments. No actual `font-serif` class usage anywhere in `src/`. Archive copy at `.archive/SOCELLE-WEB-1/` has 146 legacy refs — dead code, not shipped.
 
 ### 3c. Mobile Hardcoded Colors — WARN
+
+**144 occurrences** of `Color(0x...)` outside `socelle_theme.dart` in the mobile codebase. These should reference theme tokens.
+
+### 3d. pro-* Token Compliance — PASS (migration complete 2026-03-09)
+
+`grep -rn "text-pro-\|bg-pro-\|border-pro-\|from-pro-\|to-pro-\|via-pro-\|ring-pro-" src/ --include="*.tsx" --include="*.ts"` returns **0 lines**. Migration complete via Ultra Drive UD-A-01..UD-A-06. Prior audit (2026-03-08) found 2,027 usages across admin (748), business (587), brand (288), components (377), layouts (26) — all replaced with Pearl Mineral V2 equivalents. Prior "PASS — correctly scoped to portals" claim was a **false exemption**; all portals are now clean.
+
+### 3e. TanStack Query Migration — PARTIAL (6 components remain)
+
+`DEBT-TANSTACK-REAL-6` is **PENDING** as of 2026-03-09. Six components still use raw `useEffect + supabase.from()`: `BusinessRulesView`, `ReportsView`, `MappingView`, `PlanOutputView`, `ServiceIntelligenceView`, `MarketingCalendarView`. These must be migrated before launch gate §5/§23 pass. Prior agents migrated 73 of 79 pages (Session 48).
+
+**Section 3 Score: WARN** (9 hardcoded hex web, 144 hardcoded colors mobile, 6 TanStack violations pending)
 
 **144 occurrences** of `Color(0x...)` outside `socelle_theme.dart` in the mobile codebase. These should reference theme tokens.
 
@@ -337,5 +349,41 @@ Card input is handled via `@stripe/react-stripe-js` (v5.6.1):
 
 ---
 
+---
+
+## LANE E CORRECTION — CURRENT OPEN DEBT (updated 2026-03-09)
+
+**Source:** 2026-03-09 site-wide 5-agent audit. Artifact: `SOCELLE-WEB/docs/qa/verify_site_wide_audit_2026-03-09T22-00-00-000Z.json`
+
+### Resolved (do not re-open)
+- **`pro-*` tokens:** RESOLVED — 0 usages in `src/` (portals included). Migration complete via Ultra Drive UD-A-01..UD-A-06 verified 2026-03-09. Verification: `docs/qa/verify_UD-A-ALL_20260309T210000Z.json`
+- **Sentry:** RESOLVED — 0 imports/packages in `src/`, `vite.config.ts`, `package.json`. One monitoring metric label in `AdminInventoryReport.tsx:39` (`label: '@sentry in src'`) is a health-check string, not an import. Verification: `docs/qa/build_gate_results.json`
+- **`font-serif`:** RESOLVED — 0 usages in `src/`. Verified 2026-03-09.
+- **DEBT-6 (tier filter bypass):** RESOLVED — `allowedTiers` filter now applies unconditionally on all signal paths in `useIntelligence.ts`.
+
+### Open — P0 (fix before any new WO)
+- **Cart.tsx:84 'Shop Now'** — §9 STOP CONDITION. Replace immediately. Blocks §16.8.
+- **IntelligenceCommerce.tsx** — missing `isLive` LIVE/DEMO badge. Violates §8.
+- **`useEnrichment.ts`** — 1 raw `useEffect + supabase.from()` (scheduling trigger). Must migrate to `useQuery`. Blocks §16.23.
+- **8× 'AI-powered' in user-facing copy** — banned term per CANONICAL_DOCTRINE §9. Blocks §16.8.
+- **`database.types.ts` drift** — 116 tables vs 165 migrations. Run `supabase gen types`. Blocks §16.13.
+
+### Open — P1 (design token migration)
+- **`brand-*` token violations: 19** — `StatCard`, `Button`, `EmptyState`, `UpgradeGate`, `index.css`. Defined in `tailwind.config.js` as legacy tokens. Migrate to Pearl Mineral V2 (`accent-soft`, etc.).
+- **`intel-*` token violations: 30** — `GlowBadge`, `DarkPanel`, 5 business portal pages. Replace `intel-up/down/accent/dark` with `signal-up/down/warn/accent`.
+
+### Open — P2 (TanStack migration)
+- **`DEBT-TANSTACK-REAL-6` — 6 files pending:** `BusinessRulesView`, `ReportsView`, `MappingView`, `PlanOutputView`, `ServiceIntelligenceView`, `MarketingCalendarView`. Migrate from raw `useEffect + supabase.from()` to `useQuery`. Blocks launch gate §5/§23.
+- **`StudioEditor.tsx`** — additional raw `useEffect + supabase.from()` violation detected in pages scan (2026-03-09 verification). Evaluate for migration.
+
+### Open — P2 (test failures)
+- **29 unit tests failing** — `@testing-library/react` v16.3.2 incompatible with React 19. Upgrade to `^17.x`. 163/192 passing.
+
+### Open — P3 (SEO)
+- **SEO coverage: 40.1%** — 109/272 pages have meta tags. 163 uncovered. Maps to SITE-WO-04.
+
+---
+
 *Report generated 2026-03-07 by WO-OVERHAUL-20 Code Audit Agent*
+*Corrected 2026-03-09 by LANE-E audit: false PASS claims for pro-* and Sentry updated to reflect verified state. Open debt documented per site-wide audit artifact.*
 *Authority: `/.claude/CLAUDE.md` Section B (Doc Gate)*

@@ -6,8 +6,18 @@ import { routeTable } from './routeTable';
  * and font-serif absence on all public routes.
  */
 
+// Auth pages are exempt from SEO meta requirements — they are transactional flows
+// with no marketing intent. /forgot-password and /reset-password are excluded here.
+const AUTH_EXEMPT_PATHS = ['/forgot-password', '/reset-password'];
+
 const publicRoutes = routeTable
-  .filter((r) => r.access === 'public' && !r.path.includes('/login') && !r.path.includes('/signup'))
+  .filter(
+    (r) =>
+      r.access === 'public' &&
+      !r.path.includes('/login') &&
+      !r.path.includes('/signup') &&
+      !AUTH_EXEMPT_PATHS.includes(r.path),
+  )
   .map((r) => r.path);
 
 const keyPages = ['/', '/intelligence', '/brands', '/education'];

@@ -1,18 +1,28 @@
 {
   "skill": "test-coverage-audit",
-  "timestamp": "2026-03-09T00:00:00Z",
+  "timestamp": "2026-03-09T21:30:00.000Z",
+  "auditor": "claude-sonnet-4-6 (route-inventory + test-coverage agent)",
+  "prior_snapshot": "2026-03-09T00:00:00Z",
   "summary": {
-    "total_page_files": 271,
+    "total_page_files": 272,
     "pages_with_unit_tests": 0,
     "pages_with_e2e_functional_coverage": 14,
     "pages_with_crash_only_e2e": 47,
     "pages_with_zero_coverage": 224,
     "unit_test_files": 17,
-    "unit_tests_total": 129,
-    "unit_tests_passing": 100,
+    "unit_tests_total": 192,
+    "unit_tests_passing": 163,
     "unit_tests_failing": 29,
-    "e2e_specs": 4,
-    "e2e_routes_in_crawl_table": 47
+    "e2e_specs": 9,
+    "e2e_test_cases_approx": 98,
+    "e2e_routes_in_crawl_table": 47,
+    "tsc_errors": 0,
+    "routes_total_path_occurrences": 298,
+    "routes_active": 289,
+    "routes_redirects": 9,
+    "seo_pages_with_meta": 109,
+    "seo_total_pages": 272,
+    "seo_coverage_pct": 40.1
   },
   "unit_test_failures": {
     "root_cause": "React.act is not a function — @testing-library/react@16.3.2 uses react-dom/test-utils which removed act export in React 19",
@@ -123,8 +133,91 @@
     "TEST-06: E2E routeTable expansion — add 200+ missing routes to crawl coverage"
   ],
   "launch_gate_status": {
-    "requirement_20": "≥20 unit tests passing — CURRENT: 100 passing ✅",
-    "requirement_22": "≥10 E2E Playwright tests — CURRENT: 47-route crawl + smoke + auth (~20+ tests) ✅",
+    "requirement_20": "≥20 unit tests passing — CURRENT: 163 passing PASS",
+    "requirement_22": "≥10 E2E Playwright tests — CURRENT: 9 spec files ~98 test cases PASS",
     "blocker": "29 unit tests FAILING due to React.act compat — must fix before launch"
-  }
+  },
+
+  "route_inventory_2026_03_09": {
+    "total_path_occurrences": 298,
+    "non_redirect_routes": 289,
+    "redirect_routes": 9,
+    "hub_breakdown": {
+      "public": 57,
+      "portal_business": 67,
+      "brand_portal": 26,
+      "admin": 80,
+      "marketing_standalone": 7,
+      "sales_standalone": 9,
+      "redirects_legacy_spa": 9
+    },
+    "sample_first_50": [
+      "/", "/forgot-password", "/reset-password", "/privacy", "/terms",
+      "/request-access", "/home", "/brands", "/brands/:slug", "/plans",
+      "/pricing", "/about", "/intelligence", "/insights→/intelligence",
+      "/stories", "/stories/:slug", "/professionals", "/professionals/:id",
+      "/for-brands", "/for-medspas", "/for-salons", "/how-it-works",
+      "/education", "/education/courses", "/education/courses/:slug",
+      "/education/learn/:slug", "/education/certificates", "/education/author",
+      "/education/author/courses/new", "/education/author/courses/:id/edit",
+      "/education/ce-credits", "/education/staff", "/ingredients",
+      "/ingredients/collections/:slug", "/ingredients/:slug", "/protocols",
+      "/protocols/:slug", "/faq", "/api/docs", "/api/pricing",
+      "/events", "/jobs", "/jobs/:slug", "/search", "/blog",
+      "/blog/:slug", "/pages/:slug", "/help/:slug", "/intelligence/briefs",
+      "/intelligence/briefs/:slug"
+    ]
+  },
+
+  "seo_audit_2026_03_09": {
+    "pages_with_meta": 109,
+    "total_pages": 272,
+    "coverage_pct": 40.1,
+    "status": "FAIL",
+    "launch_gate_item": "§12 — SEO baseline complete",
+    "gap": "163 pages missing meta tags",
+    "notes": "109 pages have at least one SEO signal (document.title, <meta, MetaTags, Helmet). 163 have none. Launch gate §12 requires complete baseline."
+  },
+
+  "banned_terms_audit_2026_03_09": {
+    "commerce_ctas": [
+      "src/pages/business/studio/StudioEditor.tsx:91 — 'Get Started' (CTA block default label — portal, tolerable)",
+      "src/pages/business/WhiteLabelConfig.tsx:274 — 'Get Started' (button label — portal)",
+      "src/pages/admin/BrandAdminEditor.tsx:2267 — 'Get Started' (placeholder text — admin only)",
+      "src/pages/public/Cart.tsx:84 — 'Shop Now' (user-facing — VIOLATION §9 stop condition)",
+      "src/components/BrandPageRenderer.tsx:423 — 'Get Started' (config default fallback — review)",
+      "src/components/PaywallGate.tsx:233 — 'Get Started' (paywall CTA — user-facing, review)",
+      "src/components/PlanOutputView.tsx:522 — 'Ready to Get Started?' (plan heading — user-facing, review)"
+    ],
+    "weak_ai_copy": [
+      "src/pages/brand/BrandAIAdvisor.tsx:114 — 'AI-powered market intelligence' — VIOLATION §6",
+      "src/pages/business/AIAdvisor.tsx:224 — 'AI-powered insights' — VIOLATION §6",
+      "src/pages/business/IntelligenceHub.tsx:175 — 'AI-powered analysis' (meta content) — VIOLATION §6",
+      "src/pages/business/IntelligenceHub.tsx:203 — 'AI-powered analysis' (visible text) — VIOLATION §6",
+      "src/pages/public/HelpCenter.tsx:42 — 'AI-powered tools' (FAQ text) — VIOLATION §6",
+      "src/components/MappingView.tsx:93 — 'AI-powered analysis' — VIOLATION §6",
+      "src/components/intelligence/tools/SignalSearch.tsx:107 — 'AI-powered signal discovery' — VIOLATION §6",
+      "src/components/ServiceIntelligenceView.tsx:289 — 'AI-powered service mapping' — VIOLATION §6"
+    ],
+    "status": "FAIL",
+    "hard_violations": [
+      "Cart.tsx:84 'Shop Now' — §9 stop condition, user-facing public page",
+      "8x 'AI-powered' in user-facing surfaces — §6 banned copy"
+    ]
+  },
+
+  "overall_launch_gate": "FAIL",
+  "fail_reasons": [
+    "SEO incomplete: 163 of 272 pages missing meta tags (launch gate §12)",
+    "'Shop Now' on Cart.tsx public surface (§9 stop condition §12 banned terms)",
+    "8x 'AI-powered' in user-facing copy (§6 banned language)",
+    "29 unit tests failing due to @testing-library/react React 19 compat issue (launch gate §21)"
+  ],
+  "pass_items": [
+    "tsc --noEmit: 0 errors (launch gate §1)",
+    "playwright.config.ts: EXISTS",
+    "Unit tests: 17 files / 163 passing — exceeds 20-test minimum (launch gate §21)",
+    "E2E tests: 9 spec files / ~98 cases — exceeds 10-test minimum (launch gate §22)",
+    "Route inventory: 298 path= declarations (289 active, 9 redirects)"
+  ]
 }

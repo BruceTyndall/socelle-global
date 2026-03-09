@@ -29,7 +29,7 @@ export function StatCard({
   const isNegative = delta !== undefined && delta < 0;
 
   return (
-    <div className={`bg-white rounded-xl border border-brand-border p-5 shadow-card transition-shadow duration-200 hover:shadow-card-hover ${className}`}>
+    <div className={`bg-white rounded-xl border border-graphite/20 p-5 shadow-card transition-shadow duration-200 hover:shadow-card-hover ${className}`}>
       <div className="flex items-start justify-between mb-4">
         <p className="text-label uppercase tracking-widest text-graphite/60 font-sans">{label}</p>
         {Icon && (

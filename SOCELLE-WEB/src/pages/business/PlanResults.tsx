@@ -350,8 +350,8 @@ function IntelligenceContextSection({ brandName }: { brandName?: string }) {
   return (
     <section className="mt-8 space-y-4">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-intel-dark flex items-center justify-center">
-          <Brain className="w-4 h-4 text-intel-accent" />
+        <div className="w-8 h-8 rounded-lg bg-graphite flex items-center justify-center">
+          <Brain className="w-4 h-4 text-accent-soft" />
         </div>
         <div>
           <h3 className="font-sans font-semibold text-graphite text-base">Intelligence Context</h3>
@@ -425,7 +425,7 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
       )}
 
       {/* ── Section 2: Three metrics — structured grid ── */}
-      <div className="grid md:grid-cols-3 gap-px bg-brand-border rounded-xl overflow-hidden border border-brand-border">
+      <div className="grid md:grid-cols-3 gap-px bg-graphite/20 rounded-xl overflow-hidden border border-graphite/20">
         <div className="bg-white p-6">
           <p className="text-label text-graphite/60 mb-2 tracking-widest">Services analyzed</p>
           <p className="text-metric-lg font-sans text-graphite">{data.totalServices}</p>
@@ -471,9 +471,9 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
           <h3 className="font-sans font-semibold text-graphite text-base">Menu Analysis</h3>
           <span className="text-sm font-sans text-graphite/60">{data.totalServices} services detected</span>
         </div>
-        <div className="divide-y divide-brand-border rounded-xl border border-brand-border overflow-hidden">
+        <div className="divide-y divide-graphite/10 rounded-xl border border-graphite/20 overflow-hidden">
           {data.services.map((service: any, idx: number) => (
-            <div key={idx} className="flex items-center justify-between px-5 py-3.5 bg-white hover:bg-brand-surface-alt transition-colors duration-100">
+            <div key={idx} className="flex items-center justify-between px-5 py-3.5 bg-white hover:bg-accent-soft transition-colors duration-100">
               <div className="flex-1 min-w-0">
                 <p className="font-sans font-medium text-sm text-graphite truncate">{service.name}</p>
               </div>

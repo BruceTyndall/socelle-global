@@ -218,14 +218,14 @@ export default function MarketingAnalytics() {
                     preserveAspectRatio="none"
                   >
                     <path d={sparkline.openPath} fill="none" stroke="currentColor" strokeWidth="2" className="text-graphite" />
-                    <path d={sparkline.clickPath} fill="none" stroke="currentColor" strokeWidth="2" className="text-intel-accent" strokeDasharray="4 2" />
+                    <path d={sparkline.clickPath} fill="none" stroke="currentColor" strokeWidth="2" className="text-accent" strokeDasharray="4 2" />
                   </svg>
                   <div className="flex items-center gap-6 mt-3 text-xs font-sans text-graphite/60">
                     <span className="flex items-center gap-1.5">
                       <span className="w-4 h-0.5 bg-graphite rounded" /> Open Rate
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <span className="w-4 h-0.5 bg-intel-accent rounded border-dashed" /> Click Rate
+                      <span className="w-4 h-0.5 bg-accent rounded border-dashed" /> Click Rate
                     </span>
                   </div>
                 </>

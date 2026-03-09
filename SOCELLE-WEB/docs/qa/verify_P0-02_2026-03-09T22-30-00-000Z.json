@@ -1,0 +1,15 @@
+{
+  "wo_id": "P0-02",
+  "timestamp": "2026-03-09T22:30:00.000Z",
+  "check": "IntelligenceCommerce isLive LIVE/DEMO guard",
+  "skills_run": ["live-demo-detector"],
+  "results": {
+    "isLive_guard_present": true,
+    "demo_label_visible": true,
+    "tsc": { "status": "PASS", "errors": 0 },
+    "build": { "status": "PASS" },
+    "implementation": "Added isLive to useIntelligence() destructure on line 24. Added conditional DEMO banner (bg-signal-warn/10 text-signal-warn) when !isLive and LIVE banner (bg-signal-up/10 text-signal-up) when isLive, placed between the hero section and main content div. Both banners use only Pearl Mineral V2 tokens. No business logic, routing, or data fetching was modified."
+  },
+  "overall": "PASS",
+  "notes": "§8 compliance restored. IntelligenceCommerce.tsx now renders a visible DEMO or LIVE banner based on the isLive flag returned by useIntelligence(). Pattern matches Intelligence.tsx reference implementation."
+}

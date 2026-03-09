@@ -21,7 +21,7 @@ import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 export default function IntelligenceCommerce() {
   const { products, loading: productsLoading } = useProducts({ per_page: 50, sort: 'featured' });
   const { matches, loading: signalsLoading } = useProductSignals(products);
-  const { signals: marketSignals, loading: intelligenceLoading } = useIntelligence();
+  const { signals: marketSignals, isLive, loading: intelligenceLoading } = useIntelligence();
 
   const loading = productsLoading || signalsLoading || intelligenceLoading;
 
@@ -89,6 +89,18 @@ export default function IntelligenceCommerce() {
             </p>
           </div>
         </section>
+
+        {/* ── LIVE / DEMO badge ─────────────────────────────────── */}
+        {!isLive && (
+          <div className="bg-signal-warn/10 text-signal-warn text-xs font-medium px-4 py-2 text-center">
+            DEMO — Market signal data is for demonstration purposes. Sign in for live intelligence.
+          </div>
+        )}
+        {isLive && (
+          <div className="bg-signal-up/10 text-signal-up text-xs font-medium px-4 py-2 text-center">
+            LIVE — Product recommendations are connected to live market intelligence signals.
+          </div>
+        )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
           {/* Intelligence Context Strip */}

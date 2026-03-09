@@ -1,0 +1,180 @@
+{
+  "wo_id": "DEBT-4-DEBT-5-TOKEN-SENTRY-AUDIT",
+  "timestamp": "2026-03-09T21:00:00.000Z",
+  "skills_run": ["token-drift-scanner", "dependency-scanner", "dev-best-practice-checker"],
+  "audit_scope": "SOCELLE-WEB/src/ — design token violations, Sentry removal, useEffect+supabase violations",
+
+  "pro_tokens": {
+    "admin": 10,
+    "business": 2,
+    "brand": 4,
+    "components": 20,
+    "layouts": 0,
+    "public": 9,
+    "total_raw_grep_hits": 87,
+    "note": "Raw grep for 'pro-|pro_' catches non-Tailwind strings: plan IDs (pro_monthly, pro_only), HTML element IDs (pro-search, pro-backbar), DB column names (pro_products, pro_price, allow_pro_orders, selected_pro_ids), comments referencing pro-* policy, database.types.ts generated fields. No 'pro-*' entries exist in tailwind.config.js — they are NOT defined as Tailwind tokens. No className attribute contains a pro-[token] Tailwind class. The 2,027 figure from CLAUDE.md §4 refers to a prior audit state; current repo has 87 raw grep hits of which 0 are Tailwind CSS utility classes.",
+    "actual_tailwind_pro_token_usages": 0,
+    "top_classes": [
+      {"class": "pro-search", "count": 2, "type": "HTML element id attribute — NOT a Tailwind token"},
+      {"class": "pro-backbar", "count": 1, "type": "signal_key string in mockSignals.ts — NOT a Tailwind token"}
+    ],
+    "status": "PASS — 0 pro-* Tailwind CSS tokens in use. tailwind.config.js defines NO pro-* color entries."
+  },
+
+  "other_banned_tokens": {
+    "brand_star": {
+      "raw_count": 95,
+      "actual_tailwind_token_usages": 19,
+      "token_names": ["brand-border", "brand-surface", "brand-surface-alt", "brand-bg", "brand-bg-alt", "brand-text", "brand-text-muted", "brand-accent", "brand-gold"],
+      "defined_in_tailwind_config": true,
+      "scope": "Portal-scoped tokens defined in tailwind.config.js lines 33-47 under comment '// Legacy semantic tokens (portals)'. Used in: index.css, StatCard, Button, EmptyState, UpgradeGate. NOT present in src/pages/public/.",
+      "status": "FAIL — 19 usages of brand-* Tailwind tokens exist. These are legacy tokens defined in tailwind.config.js portals scope. They must be migrated to Pearl Mineral V2 equivalents (accent-soft, mn.surface, etc.) per CLAUDE.md §4 item 2 and launch gate §19."
+    },
+    "natura_star": {
+      "raw_count": 0,
+      "status": "PASS"
+    },
+    "intel_star": {
+      "raw_count": 30,
+      "actual_tailwind_token_usages": 30,
+      "token_names": ["intel-up", "intel-down", "intel-accent", "intel-dark", "intel-border", "intel-text", "intel-slate", "intel-stable"],
+      "defined_in_tailwind_config": true,
+      "scope": "Defined in tailwind.config.js lines 49-58 under '// Intelligence layer (portal dashboards)'. Used in GlowBadge, DarkPanel, business/Dashboard, business/PortalHome, business/PlanResults, business/BrandDetail, business/MarketingAnalytics, business/BenchmarkDashboard.",
+      "status": "FAIL — 30 usages of intel-* Tailwind tokens exist. These are banned per CLAUDE.md §6. Must be replaced with Pearl Mineral V2 signal tokens (signal-up, signal-down, signal-warn, accent, graphite)."
+    },
+    "font_serif": {
+      "raw_count": 0,
+      "status": "PASS — 0 font-serif usages in src/. Confirmed clean."
+    }
+  },
+
+  "sentry": {
+    "in_package_json": false,
+    "note_package_json": "No @sentry/react or @sentry/vite-plugin found in package.json. Sentry dependency removal appears complete.",
+    "src_references": [
+      {
+        "file": "src/pages/admin/AdminInventoryReport.tsx",
+        "line": 39,
+        "content": "{ key: 'sentryInSrc', label: '@sentry in src' },",
+        "type": "Label string in inventory report UI — references the audit check itself, NOT an actual Sentry import"
+      }
+    ],
+    "vite_config_references": [],
+    "main_tsx_references": [],
+    "app_tsx_references": [],
+    "status": "PASS — Sentry fully removed from package.json, vite.config.ts, src/main.tsx, src/App.tsx. Only remaining reference is a label string in AdminInventoryReport.tsx audit UI (line 39), which is the report dashboard displaying this metric — not an actual Sentry usage."
+  },
+
+  "useeffect_supabase_violations": [
+    {
+      "file": "src/lib/shop/useWishlist.ts",
+      "lines_useeffect": [38],
+      "lines_supabase_from": [58, 74, 79],
+      "nature": "Cart initialization side-effect (ensureWishlist). Comment on line 3 acknowledges retained useEffect for DB write side-effect. supabase.from calls are mutations (insert/delete), not SELECT fetches. NEVER MODIFY per CLAUDE.md §B.",
+      "priority": "LOW — mutations only, no SELECT fetch pattern, protected file"
+    },
+    {
+      "file": "src/lib/shop/useShopCart.ts",
+      "lines_useeffect": [57],
+      "lines_supabase_from": [33, 129, 134, 140],
+      "nature": "Cart initialization side-effect. Comment on line 3 acknowledges retained useEffect. supabase.from on line 33 is inside async init function (mutation context). NEVER MODIFY per CLAUDE.md §B.",
+      "priority": "LOW — protected file"
+    },
+    {
+      "file": "src/lib/enrichment/useEnrichment.ts",
+      "lines_useeffect": [38],
+      "lines_supabase_from": [91],
+      "nature": "Scheduling side-effect. Comment on line 4 acknowledges retained useEffect for operator enrichment scheduling. supabase.from is a SELECT inside a scheduled function.",
+      "priority": "MEDIUM — needs migration to useQuery for the SELECT"
+    },
+    {
+      "file": "src/pages/brand/Products.tsx",
+      "lines_useeffect": [124, 139],
+      "lines_supabase_from": [195, 199],
+      "nature": "useEffect on lines 124+139 appear to be side effects (form sync). supabase.from on 195+199 are mutations (update/insert) inside event handlers — not inside useEffect. File also uses useQuery (lines 105, 561). True violation needs confirmation of whether useEffect fetches from supabase directly.",
+      "priority": "MEDIUM — in CLAUDE.md §4 known list, needs targeted review"
+    },
+    {
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "lines_useeffect": [363],
+      "lines_supabase_from": [321],
+      "nature": "supabase.from on line 321 is inside a useQuery queryFn (line 311 confirms useQuery wraps it). useEffect on line 363 is a side effect (not a fetch). File has useQuery as primary data fetching pattern.",
+      "priority": "LOW — supabase.from is inside useQuery, useEffect is a separate side effect — likely NOT a true violation"
+    },
+    {
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "lines_useeffect": [1134],
+      "lines_supabase_from": [336, 337, 1776, 1777],
+      "nature": "supabase.from on 336/337 are slug-uniqueness checks in validation function. Lines 1776/1777 are inside useQuery queryFn. useEffect on 1134 is a side-effect. File extensively uses useQuery. Likely NOT a true violation — supabase.from calls are inside useQuery or validation helpers.",
+      "priority": "LOW — supabase.from wrapped in useQuery"
+    },
+    {
+      "file": "src/pages/admin/AdminIngredientsHub.tsx",
+      "lines_useeffect": [78],
+      "lines_supabase_from": [165, 168],
+      "nature": "useEffect on line 78 is a side-effect. supabase.from on 165/168 are mutations (update/insert) inside event handlers. File also uses useQuery (line 83). Not a raw data-fetch violation.",
+      "priority": "LOW — mutations only, not in useEffect"
+    }
+  ],
+
+  "true_violations_requiring_migration": [
+    "src/lib/enrichment/useEnrichment.ts — SELECT inside scheduling useEffect should use useQuery"
+  ],
+
+  "results": {
+    "token-drift-scanner": {
+      "status": "FAIL",
+      "failures": [
+        "19 brand-* Tailwind token usages remain (brand-border, brand-surface, brand-surface-alt etc.) in components and index.css",
+        "30 intel-* Tailwind token usages remain (intel-up, intel-down, intel-accent, intel-dark etc.) in portal pages and UI components"
+      ],
+      "passes": [
+        "0 pro-* Tailwind CSS token usages (no pro-* defined in tailwind.config.js)",
+        "0 natura-* token usages",
+        "0 font-serif usages"
+      ],
+      "evidence": "tailwind.config.js lines 33-58 define brand-* and intel-* as legacy portal-scoped tokens. 19+30=49 total banned token usages across src/components/ and src/pages/business/"
+    },
+    "dependency-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No @sentry/react, @sentry/vite-plugin in package.json. No Sentry.init() in main.tsx or App.tsx. No Sentry imports in src/. No sentryVitePlugin in vite.config.ts."
+    },
+    "dev-best-practice-checker": {
+      "status": "WARN",
+      "failures": [
+        "src/lib/enrichment/useEnrichment.ts — useEffect with supabase.from SELECT (scheduling hook, 1 confirmed violation)"
+      ],
+      "passes": [
+        "useWishlist.ts and useShopCart.ts: protected NEVER MODIFY files, useEffect is for mutation side-effects not SELECT fetches",
+        "AdminIngredientsHub.tsx, BrandAdminEditor.tsx, IntelligenceReport.tsx, Products.tsx: supabase.from calls are inside useQuery queryFns or mutation event handlers — not raw useEffect fetches"
+      ],
+      "evidence": "6 files flagged by grep; only 1 confirmed true SELECT-in-useEffect violation (useEnrichment.ts). Remaining 5 use supabase.from inside useQuery or for mutations."
+    }
+  },
+
+  "summary": {
+    "pro_star_tailwind_tokens": 0,
+    "brand_star_tailwind_tokens": 19,
+    "intel_star_tailwind_tokens": 30,
+    "natura_star_tailwind_tokens": 0,
+    "font_serif_usages": 0,
+    "sentry_removed": true,
+    "true_useeffect_violations": 1,
+    "protected_file_exceptions": 2
+  },
+
+  "overall": "FAIL",
+  "fail_reasons": [
+    "19 brand-* Tailwind tokens in use (brand-border, brand-surface, brand-surface-alt) — must migrate to Pearl Mineral V2",
+    "30 intel-* Tailwind tokens in use (intel-up, intel-down, intel-accent, intel-dark) — must migrate to signal-up, signal-down, signal-warn, accent",
+    "1 confirmed useEffect+SELECT violation in src/lib/enrichment/useEnrichment.ts"
+  ],
+  "pass_items": [
+    "0 pro-* Tailwind tokens (tailwind.config.js has no pro-* definitions)",
+    "0 natura-* tokens",
+    "0 font-serif usages",
+    "Sentry fully removed (package.json, vite.config.ts, main.tsx, App.tsx all clean)",
+    "useWishlist.ts + useShopCart.ts: NEVER MODIFY protected, useEffect is for mutations not SELECT fetches"
+  ]
+}

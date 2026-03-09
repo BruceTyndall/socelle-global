@@ -6,6 +6,14 @@
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 
+// Required for React 19 + @testing-library/react v16 in Vitest/jsdom.
+// React 19 moved act() to the react package; react-dom/test-utils production
+// build checks React.act which is undefined unless NODE_ENV is development.
+// Setting IS_REACT_ACT_ENVIRONMENT enables act() wrapping globally.
+(globalThis as unknown as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
+// Force development mode so react-dom loads its development build (which exports act)
+process.env.NODE_ENV = 'test';
+
 // Stub Vite's import.meta.env
 Object.defineProperty(import.meta, 'env', {
   value: {

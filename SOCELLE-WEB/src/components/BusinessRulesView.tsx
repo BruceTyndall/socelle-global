@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Settings, Save, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -23,63 +24,76 @@ interface RevenueDefaults {
 }
 
 export default function BusinessRulesView() {
-  const [benchmarks, setBenchmarks] = useState<Benchmark[]>([]);
-  const [revenueDefaults, setRevenueDefaults] = useState<RevenueDefaults[]>([]);
   const [activeTab, setActiveTab] = useState<'benchmarks' | 'revenue'>('benchmarks');
-  const [saving, setSaving] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const { data: benchmarks = [] } = useQuery<Benchmark[]>({
+    queryKey: ['service_category_benchmarks'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('service_category_benchmarks')
+        .select('*')
+        .order('spa_type, category');
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
 
-  const loadData = async () => {
-    const { data: benchmarkData } = await supabase
-      .from('service_category_benchmarks')
-      .select('*')
-      .order('spa_type, category');
+  const { data: revenueDefaults = [] } = useQuery<RevenueDefaults[]>({
+    queryKey: ['revenue_model_defaults'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('revenue_model_defaults')
+        .select('*')
+        .order('spa_type');
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
 
-    const { data: revenueData } = await supabase
-      .from('revenue_model_defaults')
-      .select('*')
-      .order('spa_type');
+  const benchmarkMutation = useMutation({
+    mutationFn: async (benchmark: Benchmark) => {
+      const { error } = await supabase
+        .from('service_category_benchmarks')
+        .update({
+          min_service_count: benchmark.min_service_count,
+          priority_level: benchmark.priority_level,
+          notes: benchmark.notes,
+          is_active: benchmark.is_active,
+          updated_by: 'admin',
+        })
+        .eq('id', benchmark.id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['service_category_benchmarks'] }),
+  });
 
-    if (benchmarkData) setBenchmarks(benchmarkData);
-    if (revenueData) setRevenueDefaults(revenueData);
+  const revenueDefaultsMutation = useMutation({
+    mutationFn: async (defaults: RevenueDefaults) => {
+      const { error } = await supabase
+        .from('revenue_model_defaults')
+        .update({
+          default_utilization_per_month: defaults.default_utilization_per_month,
+          default_attach_rate: defaults.default_attach_rate,
+          default_retail_conversion_rate: defaults.default_retail_conversion_rate,
+          notes: defaults.notes,
+          is_active: defaults.is_active,
+          updated_by: 'admin',
+        })
+        .eq('id', defaults.id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['revenue_model_defaults'] }),
+  });
+
+  const saving = benchmarkMutation.isPending || revenueDefaultsMutation.isPending;
+
+  const updateBenchmark = (benchmark: Benchmark) => {
+    benchmarkMutation.mutate(benchmark);
   };
 
-  const updateBenchmark = async (benchmark: Benchmark) => {
-    setSaving(true);
-    await supabase
-      .from('service_category_benchmarks')
-      .update({
-        min_service_count: benchmark.min_service_count,
-        priority_level: benchmark.priority_level,
-        notes: benchmark.notes,
-        is_active: benchmark.is_active,
-        updated_by: 'admin'
-      })
-      .eq('id', benchmark.id);
-
-    await loadData();
-    setSaving(false);
-  };
-
-  const updateRevenueDefaults = async (defaults: RevenueDefaults) => {
-    setSaving(true);
-    await supabase
-      .from('revenue_model_defaults')
-      .update({
-        default_utilization_per_month: defaults.default_utilization_per_month,
-        default_attach_rate: defaults.default_attach_rate,
-        default_retail_conversion_rate: defaults.default_retail_conversion_rate,
-        notes: defaults.notes,
-        is_active: defaults.is_active,
-        updated_by: 'admin'
-      })
-      .eq('id', defaults.id);
-
-    await loadData();
-    setSaving(false);
+  const updateRevenueDefaults = (defaults: RevenueDefaults) => {
+    revenueDefaultsMutation.mutate(defaults);
   };
 
   const groupedBenchmarks = benchmarks.reduce((acc, b) => {
@@ -157,7 +171,9 @@ export default function BusinessRulesView() {
                               value={benchmark.min_service_count}
                               onChange={(e) => {
                                 const updated = { ...benchmark, min_service_count: parseInt(e.target.value) };
-                                setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
+                                queryClient.setQueryData<Benchmark[]>(['service_category_benchmarks'], (prev) =>
+                                  prev ? prev.map(b => b.id === benchmark.id ? updated : b) : prev
+                                );
                               }}
                               onBlur={() => updateBenchmark(benchmark)}
                               className="w-full px-2 py-1 border border-accent-soft rounded text-sm"
@@ -169,7 +185,9 @@ export default function BusinessRulesView() {
                               value={benchmark.priority_level}
                               onChange={(e) => {
                                 const updated = { ...benchmark, priority_level: e.target.value };
-                                setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
+                                queryClient.setQueryData<Benchmark[]>(['service_category_benchmarks'], (prev) =>
+                                  prev ? prev.map(b => b.id === benchmark.id ? updated : b) : prev
+                                );
                                 updateBenchmark(updated);
                               }}
                               className="w-full px-2 py-1 border border-accent-soft rounded text-sm"
@@ -186,7 +204,9 @@ export default function BusinessRulesView() {
                               value={benchmark.notes}
                               onChange={(e) => {
                                 const updated = { ...benchmark, notes: e.target.value };
-                                setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
+                                queryClient.setQueryData<Benchmark[]>(['service_category_benchmarks'], (prev) =>
+                                  prev ? prev.map(b => b.id === benchmark.id ? updated : b) : prev
+                                );
                               }}
                               onBlur={() => updateBenchmark(benchmark)}
                               className="w-full px-2 py-1 border border-accent-soft rounded text-sm"
@@ -201,7 +221,9 @@ export default function BusinessRulesView() {
                                 checked={benchmark.is_active}
                                 onChange={(e) => {
                                   const updated = { ...benchmark, is_active: e.target.checked };
-                                  setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
+                                  queryClient.setQueryData<Benchmark[]>(['service_category_benchmarks'], (prev) =>
+                                    prev ? prev.map(b => b.id === benchmark.id ? updated : b) : prev
+                                  );
                                   updateBenchmark(updated);
                                 }}
                                 className="rounded"
@@ -230,7 +252,9 @@ export default function BusinessRulesView() {
                         checked={defaults.is_active}
                         onChange={(e) => {
                           const updated = { ...defaults, is_active: e.target.checked };
-                          setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
+                          queryClient.setQueryData<RevenueDefaults[]>(['revenue_model_defaults'], (prev) =>
+                            prev ? prev.map(r => r.id === defaults.id ? updated : r) : prev
+                          );
                           updateRevenueDefaults(updated);
                         }}
                         className="rounded"
@@ -249,7 +273,9 @@ export default function BusinessRulesView() {
                         value={defaults.default_utilization_per_month || ''}
                         onChange={(e) => {
                           const updated = { ...defaults, default_utilization_per_month: e.target.value ? parseInt(e.target.value) : null };
-                          setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
+                          queryClient.setQueryData<RevenueDefaults[]>(['revenue_model_defaults'], (prev) =>
+                            prev ? prev.map(r => r.id === defaults.id ? updated : r) : prev
+                          );
                         }}
                         onBlur={() => updateRevenueDefaults(defaults)}
                         className="w-full px-3 py-2 border border-accent-soft rounded"
@@ -268,7 +294,9 @@ export default function BusinessRulesView() {
                         value={defaults.default_attach_rate || ''}
                         onChange={(e) => {
                           const updated = { ...defaults, default_attach_rate: e.target.value ? parseFloat(e.target.value) : null };
-                          setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
+                          queryClient.setQueryData<RevenueDefaults[]>(['revenue_model_defaults'], (prev) =>
+                            prev ? prev.map(r => r.id === defaults.id ? updated : r) : prev
+                          );
                         }}
                         onBlur={() => updateRevenueDefaults(defaults)}
                         className="w-full px-3 py-2 border border-accent-soft rounded"
@@ -287,7 +315,9 @@ export default function BusinessRulesView() {
                         value={defaults.default_retail_conversion_rate || ''}
                         onChange={(e) => {
                           const updated = { ...defaults, default_retail_conversion_rate: e.target.value ? parseFloat(e.target.value) : null };
-                          setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
+                          queryClient.setQueryData<RevenueDefaults[]>(['revenue_model_defaults'], (prev) =>
+                            prev ? prev.map(r => r.id === defaults.id ? updated : r) : prev
+                          );
                         }}
                         onBlur={() => updateRevenueDefaults(defaults)}
                         className="w-full px-3 py-2 border border-accent-soft rounded"
@@ -305,7 +335,9 @@ export default function BusinessRulesView() {
                       value={defaults.notes || ''}
                       onChange={(e) => {
                         const updated = { ...defaults, notes: e.target.value };
-                        setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
+                        queryClient.setQueryData<RevenueDefaults[]>(['revenue_model_defaults'], (prev) =>
+                          prev ? prev.map(r => r.id === defaults.id ? updated : r) : prev
+                        );
                       }}
                       onBlur={() => updateRevenueDefaults(defaults)}
                       className="w-full px-3 py-2 border border-accent-soft rounded text-sm"

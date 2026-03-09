@@ -81,7 +81,7 @@ export default function Cart() {
                 to="/shop"
                 className="inline-flex items-center gap-2 h-12 px-8 bg-mn-dark text-white text-sm font-sans font-semibold rounded-pill hover:bg-graphite transition-colors"
               >
-                <ShoppingBag className="w-4 h-4" /> Shop Now
+                <ShoppingBag className="w-4 h-4" /> Explore Products
               </Link>
             </div>
           )}

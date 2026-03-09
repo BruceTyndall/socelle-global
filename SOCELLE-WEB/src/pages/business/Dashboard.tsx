@@ -46,7 +46,7 @@ const VERIFICATION_BADGE: Record<string, { label: string; icon: typeof CheckCirc
 
 const INSIGHT_CONFIG: Record<OperatorInsight['category'], { icon: typeof TrendingUp; borderColor: string; iconColor: string; badgeColor: string }> = {
   growth:    { icon: TrendingUp,    borderColor: 'border-l-accent',      iconColor: 'text-accent',    badgeColor: 'bg-accent/10 text-accent' },
-  trend:     { icon: BarChart3,     borderColor: 'border-l-intel-accent',  iconColor: 'text-intel-accent', badgeColor: 'bg-intel-accent/10 text-intel-accent' },
+  trend:     { icon: BarChart3,     borderColor: 'border-l-accent',        iconColor: 'text-accent',       badgeColor: 'bg-accent/10 text-accent' },
   risk:      { icon: AlertTriangle, borderColor: 'border-l-amber-500',    iconColor: 'text-amber-500',   badgeColor: 'bg-amber-500/10 text-amber-600' },
   benchmark: { icon: BarChart3,     borderColor: 'border-l-graphite',     iconColor: 'text-graphite',    badgeColor: 'bg-graphite/10 text-graphite' },
   education: { icon: Brain,         borderColor: 'border-l-emerald-500',  iconColor: 'text-emerald-500', badgeColor: 'bg-emerald-500/10 text-emerald-600' },
@@ -331,8 +331,8 @@ export default function Dashboard() {
       <section className="mt-12 space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-intel-dark flex items-center justify-center">
-              <Brain className="w-5 h-5 text-intel-accent" />
+            <div className="w-9 h-9 rounded-lg bg-graphite flex items-center justify-center">
+              <Brain className="w-5 h-5 text-accent-soft" />
             </div>
             <div>
               <h2 className="font-heading text-xl font-bold text-graphite">Your Intelligence Brief</h2>

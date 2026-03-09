@@ -104,7 +104,7 @@ export function SignalSearch({ onClose }: SignalSearchProps) {
                 Signal Search
               </h2>
               <p className="text-xs font-sans text-gray-400">
-                AI-powered signal discovery
+                Intelligence-driven signal discovery
               </p>
             </div>
           </div>

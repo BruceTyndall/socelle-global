@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { FileText, Download, Loader2, Mail } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { generateReports } from '../lib/reportGenerator';
@@ -17,27 +18,23 @@ interface GeneratedReports {
 }
 
 export default function ReportsView() {
-  const [menus, setMenus] = useState<SpaMenu[]>([]);
   const [selectedMenuId, setSelectedMenuId] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [reports, setReports] = useState<GeneratedReports | null>(null);
   const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    loadMenus();
-  }, []);
-
-  const loadMenus = async () => {
-    const { data, error } = await supabase
-      .from('spa_menus')
-      .select('id, spa_name, parse_status')
-      .eq('parse_status', 'parsed')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setMenus(data);
-    }
-  };
+  const { data: menus = [] } = useQuery<SpaMenu[]>({
+    queryKey: ['spa_menus_parsed'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('spa_menus')
+        .select('id, spa_name, parse_status')
+        .eq('parse_status', 'parsed')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
 
   const handleGenerateReports = async () => {
     if (!selectedMenuId) {

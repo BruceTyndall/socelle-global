@@ -704,7 +704,7 @@ export default function BrandDetail() {
                   </div>
                   {isBrandTrending(slug) ? (
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-intel-up/20 text-intel-up text-xs font-sans font-bold rounded-full">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-signal-up/20 text-signal-up text-xs font-sans font-bold rounded-full">
                         <TrendingUp className="w-3 h-3" />
                         Trending
                       </span>

@@ -402,9 +402,9 @@
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           border border-brand-border text-graphite font-sans font-medium text-sm
+           border border-graphite/20 text-graphite font-sans font-medium text-sm
            px-6 py-3 rounded-lg bg-white
-           hover:border-graphite hover:bg-brand-surface-alt
+           hover:border-graphite hover:bg-accent-soft
            active:scale-[0.98]
            transition-all duration-150;
   }
@@ -444,13 +444,13 @@
 
   /* ── Legacy Cards (portals) ── */
   .card {
-    @apply bg-white rounded-xl border border-brand-border
+    @apply bg-white rounded-xl border border-graphite/20
            shadow-card
            transition-shadow duration-200;
   }
 
   .card-elevated {
-    @apply bg-white rounded-xl border border-brand-border shadow-elevated;
+    @apply bg-white rounded-xl border border-graphite/20 shadow-elevated;
   }
 
   .panel {
@@ -458,12 +458,12 @@
   }
 
   .panel-inset {
-    @apply bg-brand-surface-alt rounded-lg shadow-inner border border-brand-border/50;
+    @apply bg-accent-soft rounded-lg shadow-inner border border-graphite/10;
   }
 
   /* ── Form inputs ── */
   .input {
-    @apply w-full px-4 py-2.5 rounded-md border border-brand-border
+    @apply w-full px-4 py-2.5 rounded-md border border-graphite/20
            bg-white text-graphite placeholder-accent-soft
            font-sans text-sm
            focus:border-graphite focus:ring-1 focus:ring-graphite/10

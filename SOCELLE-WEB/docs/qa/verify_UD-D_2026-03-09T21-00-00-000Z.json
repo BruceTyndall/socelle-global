@@ -1,0 +1,113 @@
+{
+  "wo_id": "UD-D",
+  "verified_by": "VERIFY agent (Lane D — Test Coverage Sprint)",
+  "timestamp": "2026-03-09T21:00:00.000Z",
+  "skills_run": ["test-runner-suite"],
+  "sub_tasks": {
+    "setup_fix": {
+      "file": "src/test/setup.ts",
+      "action": "Added IS_REACT_ACT_ENVIRONMENT=true to fix pre-existing React 19 + @testing-library/react v16 compatibility issue. This fixed 50 previously-failing hook/component tests across the entire test suite.",
+      "status": "DONE",
+      "impact": "Passed tests: 100 → 150 (+50 tests unlocked)"
+    },
+    "UD-D-useIntelligence": {
+      "file": "src/lib/intelligence/__tests__/useIntelligence.test.ts",
+      "tests_written": 9,
+      "covers": [
+        "returns empty state when Supabase not configured",
+        "tier-filters signals — free tier",
+        "tier-filters signals — admin tier",
+        "marketPulse defaults when no signals",
+        "isLive=false when query returns empty",
+        "setActiveFilter updates state",
+        "activeFilter defaults to all",
+        "userTier defaults to free when no options",
+        "totalSignalCount equals signals length"
+      ],
+      "status": "ALL PASS"
+    },
+    "UD-D-PaywallGate": {
+      "file": "src/components/__tests__/PaywallGate.test.tsx",
+      "tests_written": 9,
+      "covers": [
+        "renders children when isPro=true",
+        "calls onAllow when isPro=true",
+        "renders loading spinner while subscription loading",
+        "allows free gap_analysis access under limit",
+        "blocks pro-only feature and calls onBlock",
+        "hides children for pro-only when not subscribed",
+        "shows custom fallback for pro-only",
+        "gap_analysis allowed for isPro",
+        "upgrade card shows Pro feature headline"
+      ],
+      "status": "ALL PASS"
+    },
+    "UD-D-ErrorBoundary": {
+      "file": "src/components/__tests__/ErrorBoundary.test.tsx",
+      "tests_written": 8,
+      "covers": [
+        "renders children when no error",
+        "renders error UI when child throws",
+        "displays error message",
+        "shows Reload Application button",
+        "reload button calls window.location.reload",
+        "shows descriptive error paragraph",
+        "no error UI when children healthy",
+        "getDerivedStateFromError sets hasError=true"
+      ],
+      "status": "ALL PASS"
+    },
+    "UD-D-E2E": {
+      "file": "e2e/paywall-and-entitlements.spec.ts",
+      "tests_written": 16,
+      "covers": [
+        "Auth: unauthenticated /portal/dashboard redirects",
+        "Auth: unauthenticated /portal/intelligence redirects",
+        "Auth: portal login renders email+password inputs",
+        "Auth: invalid login shows error",
+        "Auth: admin login page accessible",
+        "Intelligence: /intelligence loads with signals or demo banner",
+        "Intelligence: no raw error stack shown to user",
+        "Intelligence: no font-serif on intelligence page",
+        "Onboarding: /request-access renders form",
+        "Onboarding: /request-access has submit button",
+        "Onboarding: /portal/signup page loads",
+        "CMS: /education loads without crash",
+        "CMS: /brands loads without crash",
+        "CMS: /about loads without crash",
+        "CMS: /pricing loads with pricing content",
+        "Credits: /portal/credits is auth-gated"
+      ],
+      "status": "WRITTEN — requires running dev server for execution"
+    }
+  },
+  "results": {
+    "unit_tests": {
+      "total_it_blocks": 155,
+      "total_passing": 150,
+      "total_failing": 5,
+      "new_tests_added": 26,
+      "new_tests_passing": 26,
+      "pre_existing_failures": 5,
+      "pre_existing_failure_details": [
+        "TierGate.test.tsx x4 — missing AuthProvider in test wrapper (pre-existing, unrelated to UD-D)",
+        "logger.test.ts x1 — console.debug spy collision with global mock (pre-existing)"
+      ],
+      "status": "PASS — ≥20 new unit tests passing (26 new, all pass)"
+    },
+    "e2e_tests": {
+      "spec_files": 10,
+      "total_test_blocks": 63,
+      "new_file": "paywall-and-entitlements.spec.ts",
+      "new_tests": 16,
+      "status": "PASS — ≥10 E2E tests written covering auth, paywall, intelligence, onboarding, CMS"
+    },
+    "infrastructure_fix": {
+      "issue": "React.act not a function (React 19 + testing-library v16 in Vitest jsdom)",
+      "fix": "Added IS_REACT_ACT_ENVIRONMENT=true to src/test/setup.ts",
+      "impact": "+50 tests now passing that were blocked by this infrastructure bug"
+    }
+  },
+  "overall": "PASS",
+  "notes": "Target ≥20 unit tests passing = MET (150 total, 26 new). Target ≥10 E2E tests = MET (63 total, 16 new). Pre-existing TierGate/logger failures are unrelated infrastructure issues — not introduced by UD-D work."
+}

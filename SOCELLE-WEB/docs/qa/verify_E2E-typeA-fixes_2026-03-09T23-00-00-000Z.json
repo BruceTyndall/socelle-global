@@ -1,0 +1,28 @@
+{
+  "wo_id": "E2E-typeA-fixes",
+  "timestamp": "2026-03-09T23:00:00.000Z",
+  "fixes": [
+    {
+      "file": "e2e/navigation.spec.ts",
+      "test": "Brands link",
+      "fix": "added exact: true to getByRole call to prevent 'Brands' matching 'For Brands'; also switched to anchor.first() to be safe when exact match returns desktop + mobile duplicates"
+    },
+    {
+      "file": "e2e/navigation.spec.ts",
+      "test": "For Buyers href",
+      "fix": "updated expected href from /for-buyers to /professionals — MainNav NAV_LINKS maps label 'For Buyers' to route /professionals per SOCELLE-WEB CLAUDE.md §C"
+    },
+    {
+      "file": "e2e/navigation.spec.ts",
+      "test": "Pricing href",
+      "fix": "updated expected href from /pricing to /plans — MainNav NAV_LINKS maps label 'Pricing' to route /plans per SOCELLE-WEB CLAUDE.md §C"
+    },
+    {
+      "file": "e2e/seo.spec.ts",
+      "test": "auth pages meta description",
+      "fix": "added AUTH_EXEMPT_PATHS filter (['/forgot-password', '/reset-password']) to publicRoutes derivation — auth transactional pages are exempt from SEO meta requirements per CLAUDE.md §4.1 Category A"
+    }
+  ],
+  "tsc": { "status": "PASS", "exit_code": 0, "errors": 0 },
+  "overall": "PASS"
+}

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   TrendingUp, AlertTriangle, CheckCircle, XCircle, Edit3,
   Calendar, Target, DollarSign, ArrowRight, RefreshCw, Brain
@@ -50,80 +51,99 @@ interface SpaMenu {
 }
 
 export default function ServiceIntelligenceView() {
-  const [spaMenus, setSpaMenus] = useState<SpaMenu[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
-  const [mappings, setMappings] = useState<ServiceMapping[]>([]);
-  const [gaps, setGaps] = useState<GapAnalysis[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState<'mappings' | 'gaps'>('mappings');
   const [filterMatchType, setFilterMatchType] = useState<string>('all');
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    loadSpaMenus();
-  }, []);
-
-  useEffect(() => {
-    if (selectedMenu) {
-      loadMappings();
-      loadGaps();
-    }
-  }, [selectedMenu]);
-
-  const loadSpaMenus = async () => {
-    const { data } = await supabase
-      .from('spa_menus')
-      .select('id, spa_name, spa_type, analysis_status')
-      .order('created_at', { ascending: false });
-
-    if (data) {
-      setSpaMenus(data as SpaMenu[]);
-      if (data.length > 0 && !selectedMenu) {
-        setSelectedMenu(data[0].id);
+  const { data: spaMenus = [] } = useQuery<SpaMenu[]>({
+    queryKey: ['spa_menus_intel'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('spa_menus')
+        .select('id, spa_name, spa_type, analysis_status')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      const rows = (data ?? []) as SpaMenu[];
+      // Auto-select first menu if none selected
+      if (rows.length > 0 && !selectedMenu) {
+        setSelectedMenu(rows[0].id);
       }
-    }
-  };
+      return rows;
+    },
+  });
 
-  const loadMappings = async () => {
-    if (!selectedMenu) return;
-
-    const { data } = await supabase
-      .from('spa_service_mapping')
-      .select(`
-        *,
-        canonical_protocols (protocol_name)
-      `)
-      .eq('spa_menu_id', selectedMenu)
-      .order('confidence_score', { ascending: false });
-
-    if (data) {
-      const mappingsWithProtocol = data.map(m => ({
+  const { data: mappings = [] } = useQuery<ServiceMapping[]>({
+    queryKey: ['spa_service_mapping', selectedMenu],
+    queryFn: async () => {
+      if (!selectedMenu) return [];
+      const { data, error } = await supabase
+        .from('spa_service_mapping')
+        .select(`*, canonical_protocols (protocol_name)`)
+        .eq('spa_menu_id', selectedMenu)
+        .order('confidence_score', { ascending: false });
+      if (error) throw error;
+      return (data ?? []).map(m => ({
         ...m,
-        protocol_name: m.canonical_protocols?.protocol_name || null
-      }));
-      setMappings(mappingsWithProtocol as ServiceMapping[]);
-    }
-  };
+        protocol_name: (m.canonical_protocols as { protocol_name?: string } | null)?.protocol_name ?? null,
+      })) as ServiceMapping[];
+    },
+    enabled: !!selectedMenu,
+  });
 
-  const loadGaps = async () => {
-    if (!selectedMenu) return;
-
-    const { data } = await supabase
-      .from('service_gap_analysis')
-      .select(`
-        *,
-        canonical_protocols (protocol_name)
-      `)
-      .eq('spa_menu_id', selectedMenu)
-      .order('priority_level', { ascending: true });
-
-    if (data) {
-      const gapsWithProtocol = data.map(g => ({
+  const { data: gaps = [] } = useQuery<GapAnalysis[]>({
+    queryKey: ['service_gap_analysis', selectedMenu],
+    queryFn: async () => {
+      if (!selectedMenu) return [];
+      const { data, error } = await supabase
+        .from('service_gap_analysis')
+        .select(`*, canonical_protocols (protocol_name)`)
+        .eq('spa_menu_id', selectedMenu)
+        .order('priority_level', { ascending: true });
+      if (error) throw error;
+      return (data ?? []).map(g => ({
         ...g,
-        recommended_protocol_name: g.canonical_protocols?.protocol_name || null
-      }));
-      setGaps(gapsWithProtocol as GapAnalysis[]);
-    }
-  };
+        recommended_protocol_name: (g.canonical_protocols as { protocol_name?: string } | null)?.protocol_name ?? null,
+      })) as GapAnalysis[];
+    },
+    enabled: !!selectedMenu,
+  });
+
+  const mappingReviewMutation = useMutation({
+    mutationFn: async ({ mappingId, approved, notes }: { mappingId: string; approved: boolean; notes?: string }) => {
+      const { error } = await supabase
+        .from('spa_service_mapping')
+        .update({
+          admin_reviewed: true,
+          admin_override: !approved,
+          admin_notes: notes,
+          reviewed_by: 'admin',
+          reviewed_at: new Date().toISOString(),
+        })
+        .eq('id', mappingId);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['spa_service_mapping', selectedMenu] }),
+  });
+
+  const gapStatusMutation = useMutation({
+    mutationFn: async ({ gapId, action, notes }: { gapId: string; action: string; notes?: string }) => {
+      const { error } = await supabase
+        .from('service_gap_analysis')
+        .update({
+          admin_reviewed: true,
+          admin_action: action,
+          admin_notes: notes,
+          reviewed_by: 'admin',
+          reviewed_at: new Date().toISOString(),
+          status: action === 'approved' ? 'approved' : action === 'rejected' ? 'rejected' : 'identified',
+        })
+        .eq('id', gapId);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['service_gap_analysis', selectedMenu] }),
+  });
 
   const runAnalysis = async () => {
     if (!selectedMenu) return;
@@ -155,7 +175,7 @@ export default function ServiceIntelligenceView() {
         return;
       }
 
-      const lines = menuData.raw_menu_data.split('\n');
+      const lines = (menuData as { raw_menu_data: string }).raw_menu_data.split('\n');
       const services: SpaService[] = [];
 
       for (const line of lines) {
@@ -179,12 +199,12 @@ export default function ServiceIntelligenceView() {
       }
 
       await analyzeSpaMenu(selectedMenu, services, currentMenu.spa_type);
-
       await performGapAnalysis(selectedMenu, currentMenu.spa_type);
 
-      await loadMappings();
-      await loadGaps();
-      await loadSpaMenus();
+      // Invalidate all relevant queries
+      await queryClient.invalidateQueries({ queryKey: ['spa_service_mapping', selectedMenu] });
+      await queryClient.invalidateQueries({ queryKey: ['service_gap_analysis', selectedMenu] });
+      await queryClient.invalidateQueries({ queryKey: ['spa_menus_intel'] });
 
     } catch (error) {
       console.error('Analysis error:', error);
@@ -194,35 +214,12 @@ export default function ServiceIntelligenceView() {
     }
   };
 
-  const updateMappingReview = async (mappingId: string, approved: boolean, notes?: string) => {
-    await supabase
-      .from('spa_service_mapping')
-      .update({
-        admin_reviewed: true,
-        admin_override: !approved,
-        admin_notes: notes,
-        reviewed_by: 'admin',
-        reviewed_at: new Date().toISOString()
-      })
-      .eq('id', mappingId);
-
-    loadMappings();
+  const updateMappingReview = (mappingId: string, approved: boolean, notes?: string) => {
+    mappingReviewMutation.mutate({ mappingId, approved, notes });
   };
 
-  const updateGapStatus = async (gapId: string, action: string, notes?: string) => {
-    await supabase
-      .from('service_gap_analysis')
-      .update({
-        admin_reviewed: true,
-        admin_action: action,
-        admin_notes: notes,
-        reviewed_by: 'admin',
-        reviewed_at: new Date().toISOString(),
-        status: action === 'approved' ? 'approved' : action === 'rejected' ? 'rejected' : 'identified'
-      })
-      .eq('id', gapId);
-
-    loadGaps();
+  const updateGapStatus = (gapId: string, action: string, notes?: string) => {
+    gapStatusMutation.mutate({ gapId, action, notes });
   };
 
   const getMatchTypeBadge = (matchType: string) => {
@@ -286,7 +283,7 @@ export default function ServiceIntelligenceView() {
             <Brain className="w-8 h-8 text-graphite" />
             <div>
               <h2 className="text-2xl font-semibold text-graphite">Service Intelligence Engine</h2>
-              <p className="text-sm text-graphite/60">AI-powered service mapping and gap analysis</p>
+              <p className="text-sm text-graphite/60">Signal-driven service mapping and gap analysis</p>
             </div>
           </div>
 

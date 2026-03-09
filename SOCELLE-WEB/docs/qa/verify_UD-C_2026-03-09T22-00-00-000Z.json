@@ -1,0 +1,77 @@
+{
+  "wo_id": "UD-C",
+  "verified_by": "LANE-C-VERIFY",
+  "timestamp": "2026-03-09T22:00:00.000Z",
+  "skills_run": ["dependency-scanner", "error-handling-auditor", "build-gate"],
+  "lane": "C",
+  "tasks_verified": [
+    "UD-C-01: src/main.tsx — Sentry.init() removal confirmed, global error handlers present",
+    "UD-C-02: src/App.tsx — SentryUserContext removal confirmed",
+    "UD-C-03: src/components/SentryUserContext.tsx — file deletion confirmed",
+    "UD-C-04: src/components/ErrorBoundary.tsx — uses console.error, no Sentry import, fully functional",
+    "UD-C-05: src/lib/logger.ts — no Sentry reference",
+    "UD-C-06: vite.config.ts — no sentryVitePlugin, no vendor-sentry chunk, no *.sentry.io in CSP",
+    "UD-C-07: package.json + package-lock.json — @sentry/react and @sentry/vite-plugin absent",
+    "UD-C-08: supabase/functions/_shared/sentry.ts — rewritten as console-only error handler, no @sentry SDK import, no external Sentry HTTP calls. 0 edge functions consume this file."
+  ],
+  "results": {
+    "dependency-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": {
+        "sentry_react_in_package_json": false,
+        "sentry_vite_plugin_in_package_json": false,
+        "sentry_in_package_lock": false,
+        "sentry_in_vite_config": false,
+        "sentry_in_src_actual_imports": 0,
+        "sentry_in_src_grep_count": 1,
+        "note": "Only 1 grep hit in src/: AdminInventoryReport.tsx:39 — string label { key: 'sentryInSrc', label: '@sentry in src' } (inventory metric display label, NOT an import or SDK call). scripts/generate-inventory.mjs:83,162 — metric variable names only, NOT @sentry SDK.",
+        "supabase_shared_action": "supabase/functions/_shared/sentry.ts rewritten — console.error only, no @sentry SDK, no external Sentry calls. 0 consumers (grep confirmed).",
+        "locked_tech_confirmed": {
+          "@sentry/react": "NOT PRESENT",
+          "@sentry/vite-plugin": "NOT PRESENT"
+        }
+      }
+    },
+    "error-handling-auditor": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": {
+        "sentry_installed": false,
+        "sentry_in_src_imports": false,
+        "sentry_in_package_json": false,
+        "error_boundaries_found": 2,
+        "error_boundary_files": [
+          "src/components/ErrorBoundary.tsx — getDerivedStateFromError + componentDidCatch + console.error + fallback UI + reload button — FUNCTIONAL",
+          "src/components/RouteErrorBoundary.tsx — uses console.error — correct"
+        ],
+        "observability_pattern": "Admin Hub dashboards + console.error (per CLAUDE.md §10)",
+        "main_tsx_sentry_init": false,
+        "main_tsx_window_onerror": true,
+        "main_tsx_window_onunhandledrejection": true,
+        "app_tsx_sentry_context": false,
+        "sentry_user_context_file_exists": false,
+        "vite_config_sentry_plugin": false,
+        "vite_config_sentry_csp": false,
+        "vite_config_sourcemaps": "false (explicit)"
+      }
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "tsc_exit": 0,
+      "build_exit": 0,
+      "tsc_command": "npx tsc --noEmit",
+      "build_command": "npm run build",
+      "note": "StudioEditor.tsx TS errors from prior run (STUDIO-UI-01..05) have been resolved. Current run: 0 tsc errors, build exits 0."
+    }
+  },
+  "false_positives": [
+    "src/pages/admin/AdminInventoryReport.tsx:39 — string label only: { key: 'sentryInSrc', label: '@sentry in src' } — inventory dashboard metric display label, NOT an import or SDK call",
+    "scripts/generate-inventory.mjs:83,162 — metric counter variable name and display label for inventory report, NOT an @sentry import or SDK call"
+  ],
+  "sentry_removal_verdict": "COMPLETE — all 8 UD-C tasks verified clean",
+  "overall": "PASS",
+  "overall_note": "Sentry fully removed. 0 @sentry SDK imports in src/. 0 Sentry entries in package.json or package-lock.json. vite.config.ts clean. supabase/functions/_shared/sentry.ts rewritten to console-only handler with no external Sentry dependency. ErrorBoundary fully functional without Sentry. tsc=0, build=0. §16.20 SATISFIED.",
+  "blocking_for_launch": false
+}

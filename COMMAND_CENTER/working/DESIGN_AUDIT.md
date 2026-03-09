@@ -308,7 +308,7 @@ text-caption:   font-sans font-normal text-[11px] text-graphite/40 leading-[1.4]
 
 | Namespace | Found On Public Pages? | Status |
 |-----------|----------------------|--------|
-| `pro-*` | NO | PASS — correctly scoped to portals |
+| `pro-*` | NO (public pages) | RESOLVED — 0 usages verified 2026-03-09 (UD-A-01..UD-A-06 audit-clean). brand-* (19) and intel-* (30) violations remain — see P1 queue in build_tracker.md |
 | `cocoa-*` | NO | PASS — correctly scoped to `.portal-context` |
 | `font-serif` | NO on public pages | PASS — banned, not used |
 | `blue-500` | YES — Events.tsx EventTypeBadge | FAIL — SaaS blue on public page |

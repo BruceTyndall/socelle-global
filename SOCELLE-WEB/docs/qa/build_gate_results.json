@@ -48,7 +48,49 @@
       }
     }
   },
-  "overall": "PASS",
+  "token_compliance": {
+    "pro_star": "PASS — 0 usages verified 2026-03-09",
+    "brand_star": "FAIL — 14 usages in StatCard, Button, EmptyState, UpgradeGate, index.css (grep verified 2026-03-09)",
+    "intel_star": "FAIL — 29 usages in GlowBadge, DarkPanel, 5 business portal pages (grep verified 2026-03-09)",
+    "status": "PARTIAL",
+    "pro_token_usages_in_src": 0,
+    "brand_token_usages_in_src": 14,
+    "intel_token_usages_in_src": 29,
+    "grep_command_pro": "grep -rn \"text-pro-\\|bg-pro-\\|border-pro-\\|from-pro-\\|to-pro-\\|via-pro-\\|ring-pro-\" src/",
+    "grep_command_brand": "grep -rn \"text-brand-\\|bg-brand-\\|border-brand-\" src/",
+    "grep_command_intel": "grep -rn \"text-intel-\\|bg-intel-\\|border-intel-\" src/",
+    "verified_at": "2026-03-09T21:00:00Z",
+    "notes": "pro-* migration complete via Ultra Drive UD-A-01..UD-A-06. brand-* and intel-* remain open (P1 queue). Prior false exemption 'correctly scoped to portals' deleted."
+  },
+  "tanstack_migration": {
+    "status": "FAIL",
+    "remaining_violations": 7,
+    "files": [
+      "BusinessRulesView.tsx",
+      "ReportsView.tsx",
+      "MappingView.tsx",
+      "PlanOutputView.tsx",
+      "ServiceIntelligenceView.tsx",
+      "MarketingCalendarView.tsx",
+      "useEnrichment.ts"
+    ],
+    "wo_id": "DEBT-TANSTACK-REAL-6",
+    "notes": "6 page-level violations (DEBT-TANSTACK-REAL-6 PENDING) + 1 lib violation (useEnrichment.ts). StudioEditor.tsx also flagged in pages scan — evaluate. Blocks launch gate §5/§23."
+  },
+  "sentry_status": "PASS — fully removed 2026-03-09",
+  "sentry_detail": {
+    "packages_in_package_json": 0,
+    "imports_in_src": 0,
+    "references_in_vite_config": 0,
+    "status": "FULLY_REMOVED",
+    "verified_at": "2026-03-09T21:00:00Z",
+    "notes": "One monitoring label ref in AdminInventoryReport.tsx:39 (`label: '@sentry in src'`) is a health-check metric string, not an import."
+  },
+  "test_coverage": {
+    "unit_tests": "FAIL — 29 failing (React 19 + @testing-library/react v16 compat). 163/192 passing.",
+    "e2e_tests": "UNKNOWN — coverage not verified in this audit run"
+  },
+  "overall": "PARTIAL",
   "sentry_verdict": "FULLY_REMOVED",
   "lint_verdict": "PRE_EXISTING_FAILURES — not introduced this session, separate WO required"
 }

@@ -1,0 +1,100 @@
+{
+  "wo_id": "UD-A-01",
+  "lane": "LANE-A — Token Purge",
+  "agent": "VERIFY + BUILD-EXECUTE",
+  "timestamp": "2026-03-09T21:34:58Z",
+  "updated": "2026-03-09T22:30:00Z",
+  "skills_run": ["token-drift-scanner", "design-audit-suite", "design-lock-enforcer"],
+  "overall": "PASS",
+
+  "results": {
+
+    "pro_star_tokens": {
+      "status": "PASS",
+      "count": 0,
+      "evidence": "grep -rn 'text-pro-|bg-pro-|border-pro-|from-pro-|to-pro-|via-pro-|ring-pro-|divide-pro-|placeholder-pro-' src/ --include='*.tsx' --include='*.ts' returns 0 lines. Verified before and after all edits."
+    },
+
+    "brand_star_tokens": {
+      "status": "PASS",
+      "count_before": 14,
+      "count_after": 0,
+      "files_fixed": [
+        "src/index.css (btn-outline, card, card-elevated, panel-inset, input — 6 usages)",
+        "src/components/ui/StatCard.tsx (border-brand-border → border-graphite/20)",
+        "src/components/ui/Button.tsx (bg-brand-surface-alt → bg-accent-soft, 2 usages)",
+        "src/components/ui/EmptyState.tsx (bg-brand-surface-alt → bg-accent-soft)",
+        "src/components/UpgradeGate.tsx (border-brand-border → border-graphite/20)",
+        "src/pages/business/PlanResults.tsx (bg-brand-border, border-brand-border, divide-brand-border, bg-brand-surface-alt — 4 usages)"
+      ],
+      "replacement_map": {
+        "brand-border": "graphite/20",
+        "brand-border/50": "graphite/10",
+        "brand-surface-alt": "accent-soft"
+      },
+      "violations_remaining": [],
+      "evidence": "grep -rn 'text-brand-|bg-brand-|border-brand-|from-brand-|to-brand-|ring-brand-|via-brand-' src/ returns 0 lines after fixes"
+    },
+
+    "intel_star_tokens": {
+      "status": "PASS",
+      "count_before": 30,
+      "count_after": 0,
+      "files_fixed": [
+        "src/components/ui/GlowBadge.tsx (intel-up, intel-down, intel-text, intel-accent — 4 usages)",
+        "src/components/ui/DarkPanel.tsx (intel-dark, intel-border — 2 usages)",
+        "src/pages/business/Dashboard.tsx (intel-accent, intel-dark — 3 usages)",
+        "src/pages/business/BrandDetail.tsx (intel-up — 2 usages)",
+        "src/pages/business/PortalHome.tsx (intel-accent — 5 usages)",
+        "src/pages/business/PlanResults.tsx (intel-dark, intel-accent — 2 usages)",
+        "src/pages/business/MarketingAnalytics.tsx (intel-accent — 2 usages)",
+        "src/pages/business/BenchmarkDashboard.tsx (intel-up, intel-down, intel-accent, intel-dark — 10 usages)"
+      ],
+      "replacement_map": {
+        "intel-up": "signal-up",
+        "intel-down": "signal-down",
+        "intel-accent": "accent",
+        "intel-dark": "graphite",
+        "intel-border": "graphite/20",
+        "intel-text": "graphite/60"
+      },
+      "violations_remaining": [],
+      "evidence": "grep -rn 'text-intel-|bg-intel-|border-intel-|from-intel-|to-intel-|ring-intel-|via-intel-' src/ returns 0 lines after fixes"
+    },
+
+    "tsc": {
+      "status": "PASS",
+      "errors": 0,
+      "evidence": "npx tsc --noEmit exits 0 with no output after all token replacements"
+    },
+
+    "build": {
+      "status": "PASS",
+      "evidence": "npm run build completes in 6.41s. Only pre-existing chunk size warnings (vendor-docs 847KB) — not errors. Exit 0."
+    },
+
+    "prior_fail_notes": {
+      "prior_overall": "FAIL",
+      "prior_failures_resolved_by_this_agent": [
+        "brand-* tokens: 14 violations → 0 (fixed by class name replacements, CSS class changes only)",
+        "intel-* tokens: 30 violations → 0 (fixed by class name replacements, CSS class changes only)"
+      ],
+      "prior_failures_not_in_scope": [
+        "TDS-01..04: Hardcoded hex in CMS modules (#F7F5F2, #FAF9F7, #3F5465, #8FAEC4) — these are outside the pro-*/brand-*/intel-* token scope of UD-A-01. Carry forward to separate WO.",
+        "DLE-01: backdrop-blur-md glass lock variance — design spec / design-lock-enforcer alignment issue, not a token class name violation. Carry forward.",
+        "figma-parity-checker BLOCKED: missing SOCELLE_FIGMA_TO_CODE_HANDOFF.md — infrastructure gap, not a code violation."
+      ]
+    }
+  },
+
+  "failure_summary": {
+    "total_failures": 0,
+    "blocking": [],
+    "warnings": [],
+    "carry_forward_to_separate_wos": [
+      "Hardcoded hex in CMS modules (TDS-01..04 from prior audit) → needs dedicated WO",
+      "backdrop-blur-md spec alignment (DLE-01) → design-lock-enforcer update or code WO",
+      "figma-parity-checker blocked → create SOCELLE_FIGMA_TO_CODE_HANDOFF.md"
+    ]
+  }
+}

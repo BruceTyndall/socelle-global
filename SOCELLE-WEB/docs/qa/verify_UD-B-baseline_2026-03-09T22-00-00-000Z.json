@@ -1,0 +1,90 @@
+{
+  "wo_id": "DEBT-TANSTACK-REAL-6",
+  "timestamp": "2026-03-09T22:00:00.000Z",
+  "skills_run": ["dev-best-practice-checker", "hook-consolidator"],
+  "lane": "B",
+  "batch": "BASELINE — Session 3 batches not yet submitted",
+  "results": {
+    "dev-best-practice-checker": {
+      "status": "FAIL",
+      "failures": [
+        {
+          "file": "src/components/BusinessRulesView.tsx",
+          "violations": ["useEffect + raw supabase.from (lines 31,36,41,52,69)", "0 useQuery calls"],
+          "tables": ["service_category_benchmarks", "revenue_model_defaults"],
+          "pattern": "ANTI_PATTERN_RAW_EFFECT_SUPABASE"
+        },
+        {
+          "file": "src/components/ReportsView.tsx",
+          "violations": ["useEffect + raw supabase.from (lines 26,31)"],
+          "tables": ["spa_menus"],
+          "pattern": "ANTI_PATTERN_RAW_EFFECT_SUPABASE"
+        },
+        {
+          "file": "src/components/MappingView.tsx",
+          "violations": ["useEffect + raw supabase.from (lines 35,40)"],
+          "tables": ["spa_menus"],
+          "pattern": "ANTI_PATTERN_RAW_EFFECT_SUPABASE"
+        },
+        {
+          "file": "src/components/PlanOutputView.tsx",
+          "violations": ["useEffect + raw supabase.from (lines 17,22)"],
+          "tables": ["unknown — requires read of full file"],
+          "pattern": "ANTI_PATTERN_RAW_EFFECT_SUPABASE"
+        },
+        {
+          "file": "src/components/ServiceIntelligenceView.tsx",
+          "violations": ["2x useEffect + 4x raw supabase (lines 61,65,73,89,110,137)"],
+          "tables": ["multiple — highest complexity component"],
+          "pattern": "ANTI_PATTERN_RAW_EFFECT_SUPABASE"
+        },
+        {
+          "file": "src/components/MarketingCalendarView.tsx",
+          "violations": ["useEffect + raw supabase.from (lines 27,44)"],
+          "tables": ["unknown — requires read of full file"],
+          "pattern": "ANTI_PATTERN_RAW_EFFECT_SUPABASE"
+        }
+      ],
+      "typescript_strict": {
+        "any_violations_in_debt_files": 9,
+        "ts_ignore_count": 0
+      },
+      "code_hygiene": {
+        "console_log_in_debt_files": 0
+      },
+      "merge_recommendation": "BLOCK",
+      "summary": "6/6 DEBT-TANSTACK-REAL-6 violations confirmed. All 6 components use raw useEffect+supabase.from with 0 useQuery calls. Violates CLAUDE.md §9 stop condition 13 and Launch Non-Negotiable §23."
+    },
+    "hook-consolidator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": {
+        "total_hooks_in_codebase": 114,
+        "hooks_in_src_hooks": 2,
+        "hooks_in_src_lib": 108,
+        "hooks_in_other": 4,
+        "unused_hooks_in_src_hooks": 0,
+        "duplicate_tables_needing_consolidation": "not scanned — scope deferred to post-migration",
+        "note": "hook-consolidator scope is to identify duplicates post-migration. Pre-migration baseline shows 6 components needing new useQuery hooks created. No existing hooks cover service_category_benchmarks, revenue_model_defaults, or spa_menus in the lib/ directory (confirmed by violation scope)."
+      }
+    }
+  },
+  "overall": "FAIL",
+  "session_3_batches_received": 0,
+  "session_3_batches_verified": 0,
+  "verification_protocol": "After each Session 3 batch, re-run dev-best-practice-checker on migrated files. Mark batch DONE only when: (1) useEffect removed, (2) supabase.from removed from component, (3) useQuery wired, (4) skeleton shimmer loading state, (5) error state with retry, (6) empty state with CTA, (7) tsc --noEmit exits 0.",
+  "batch_verification_gate": {
+    "required_per_file": [
+      "useEffect import removed (or only used for non-data logic)",
+      "direct supabase.from() call removed from component body",
+      "useQuery from @tanstack/react-query added with correct queryKey",
+      "isLoading → skeleton shimmer (not Loader2 spinner)",
+      "isError → error state with retry button",
+      "data?.length === 0 → empty state with CTA",
+      "tsc --noEmit 0 errors on migrated file"
+    ]
+  },
+  "blocking_for_launch": true,
+  "launch_non_negotiable_ref": "§23 — 0 pages using raw useEffect + supabase.from() without TanStack Query",
+  "next_action": "Session 3 (Lane B migration agent) to submit batches. This agent verifies each batch. Do NOT mark DEBT-TANSTACK-REAL-6 DONE until all 6 files verified + this JSON updated to PASS."
+}

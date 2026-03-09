@@ -11,9 +11,11 @@ const REQUIRED_NAV_LINKS = [
   { label: 'Education', href: '/education' },
   { label: 'Events', href: '/events' },
   { label: 'Jobs', href: '/jobs' },
-  { label: 'For Buyers', href: '/for-buyers' },
+  // Fix: nav links to /professionals (For Buyers is nav label, /professionals is the route)
+  { label: 'For Buyers', href: '/professionals' },
   { label: 'For Brands', href: '/for-brands' },
-  { label: 'Pricing', href: '/pricing' },
+  // Fix: nav links to /plans (label is "Pricing", route is /plans per NAV_LINKS spec §C)
+  { label: 'Pricing', href: '/plans' },
 ];
 
 test.describe('MainNav — Link Inventory', () => {
@@ -25,9 +27,10 @@ test.describe('MainNav — Link Inventory', () => {
   for (const link of REQUIRED_NAV_LINKS) {
     test(`nav contains "${link.label}" linking to ${link.href}`, async ({ page }) => {
       const nav = page.locator('nav').first();
-      const anchor = nav.getByRole('link', { name: link.label });
-      await expect(anchor).toBeVisible();
-      const href = await anchor.getAttribute('href');
+      // exact: true prevents "Brands" from matching "For Brands" (and similar prefix collisions)
+      const anchor = nav.getByRole('link', { name: link.label, exact: true });
+      await expect(anchor.first()).toBeVisible();
+      const href = await anchor.first().getAttribute('href');
       expect(href).toBe(link.href);
     });
   }

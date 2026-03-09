@@ -1,0 +1,738 @@
+{
+  "wo_id": "UD-E2E-triage",
+  "timestamp": "2026-03-09T22:00:00.000Z",
+  "test_run_actual": {
+    "total_tests": 215,
+    "skipped": 4,
+    "passed": 171,
+    "failed": 40,
+    "note": "Live run via `npx playwright test --reporter=list`. The '47 failing' figure in the task prompt was stale; live run produced 40 failures."
+  },
+  "type_a_test_bugs": {
+    "count": 33,
+    "items": [
+      {
+        "spec": "navigation.spec.ts",
+        "test_name": "nav contains 'Brands' linking to /brands",
+        "error": "Strict mode violation — locator matches 2 elements: 'Brands' and 'For Brands'",
+        "root_cause": "Test uses `getByRole('link', { name: 'Brands' })` without `exact: true`. This matches both 'Brands' (/brands) and 'For Brands' (/for-brands). The nav IS correct — the selector is ambiguous.",
+        "fix": "Add `{ exact: true }` to the getByRole call: `getByRole('link', { name: 'Brands', exact: true })`",
+        "fix_owner": "TEST team",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "navigation.spec.ts",
+        "test_name": "nav contains 'For Buyers' linking to /for-buyers",
+        "error": "Expected href '/for-buyers' but actual href is '/professionals'",
+        "root_cause": "The nav link label 'For Buyers' correctly links to '/professionals' (the professionals page is the for-buyers destination). The routeTable in navigation.spec.ts has the wrong expected href. The live nav shows: `link 'For Buyers' → /url: /professionals` — this is intentional product routing, not a bug.",
+        "fix": "Update REQUIRED_NAV_LINKS in navigation.spec.ts: change `{ label: 'For Buyers', href: '/for-buyers' }` to `{ label: 'For Buyers', href: '/professionals' }` OR update REQUIRED_NAV_LINKS to match whatever the actual nav route spec is. Separately verify with owner whether /for-buyers or /professionals is canonical.",
+        "fix_owner": "TEST team (selector fix) — also flag to PRODUCT to clarify canonical URL",
+        "eta_hours": 0.5,
+        "note": "Route /for-buyers exists and renders safely (passes route crawl). The nav just links 'For Buyers' to /professionals instead. This may be intentional aliasing."
+      },
+      {
+        "spec": "navigation.spec.ts",
+        "test_name": "nav contains 'Pricing' linking to /pricing",
+        "error": "Expected href '/pricing' but actual href is '/plans'",
+        "root_cause": "The nav 'Pricing' link routes to '/plans', not '/pricing'. Both routes exist (route crawl passes both). The test expects /pricing but the nav implementation uses /plans. CLAUDE.md §C nav spec shows `{ to: '/plans', label: 'Pricing' }` — so /plans IS the canonical destination and the test spec is wrong.",
+        "fix": "Update REQUIRED_NAV_LINKS in navigation.spec.ts: change `{ label: 'Pricing', href: '/pricing' }` to `{ label: 'Pricing', href: '/plans' }`",
+        "fix_owner": "TEST team",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "accessibility.spec.ts",
+        "test_name": "homepage has main landmark",
+        "error": "No <main> landmark found — locator('main, [role=\"main\"]').count() returned 0",
+        "root_cause": "The homepage uses a generic div-based layout without a semantic `<main>` element. The page snapshot confirms the top-level structure is `generic [ref=e3]` → `generic [ref=e25]` (content area) — no `<main>` tag. This IS a real accessibility gap but was classified by the test author as a landmark check. However, the page loads and works — it is a missing semantic element, not a broken flow.",
+        "fix": "Add `<main id=\"main-content\">` wrapper to PublicHome component. This is a 5-minute fix that improves accessibility and makes the test pass.",
+        "fix_owner": "PRODUCT team — accessibility remediation (small fix)",
+        "eta_hours": 0.5,
+        "note": "Reclassified as Type B because the missing <main> is a genuine WCAG issue, not a test selector problem. See Type B section."
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /intelligence has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description tag on /intelligence page. SITE-WO-04 is open (SEO coverage 40.1%). This is a real product gap — the test is correctly written and checking a valid requirement.",
+        "fix": "Add react-helmet-async meta description to Intelligence.tsx page component.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 1,
+        "note": "Reclassified as Type B — see Type B section."
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /brands has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /brands page. Part of broader SITE-WO-04 gap.",
+        "fix": "Add react-helmet-async meta description to PublicBrands.tsx",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /education has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /education page.",
+        "fix": "Add react-helmet-async meta description to Education.tsx",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /jobs has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /jobs page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /for-buyers has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /for-buyers (or /professionals) page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /for-brands has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /for-brands page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /professionals has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /professionals page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /for-medspas has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /for-medspas page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /for-salons has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /for-salons page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /pricing has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /pricing page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /plans has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /plans page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /how-it-works has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /how-it-works page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /about has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /about page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /faq has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /faq page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /protocols has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /protocols page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /request-access has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /request-access page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /stories has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /stories page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /privacy has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /privacy page. Lower priority — legal page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /terms has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /terms page.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /forgot-password has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /forgot-password. Auth page — test should likely exclude auth pages from SEO meta description requirement. Adding a description is low-value for a password-reset flow.",
+        "fix": "Either add generic meta description to the page OR exclude auth pages from publicRoutes filter in seo.spec.ts (filter out /forgot-password, /reset-password)",
+        "fix_owner": "TEST team — auth pages should be excluded from SEO meta description requirement",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Meta Descriptions — /reset-password has <meta name='description'>",
+        "error": "meta description content is null",
+        "root_cause": "Missing meta description on /reset-password. Auth page — same issue as /forgot-password.",
+        "fix": "Exclude auth pages from SEO meta desc test scope OR add generic meta tag",
+        "fix_owner": "TEST team — auth pages should be excluded",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Open Graph Tags — / has og:title",
+        "error": "og:title content is null on homepage",
+        "root_cause": "No OG meta tags implemented on homepage. SITE-WO-04 is open.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.5
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Open Graph Tags — / has og:description",
+        "error": "og:description content is null on homepage",
+        "root_cause": "No OG meta tags on homepage.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Open Graph Tags — / has og:type",
+        "error": "og:type content is null on homepage",
+        "root_cause": "No OG meta tags on homepage.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.25
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Open Graph Tags — /intelligence has og:title, og:description, og:type",
+        "error": "og:* content is null",
+        "root_cause": "No OG meta tags on /intelligence page. Three tests (og:title, og:description, og:type).",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.5
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Open Graph Tags — /brands has og:title, og:description, og:type",
+        "error": "og:* content is null",
+        "root_cause": "No OG meta tags on /brands page. Three tests.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.5
+      },
+      {
+        "spec": "seo.spec.ts",
+        "test_name": "SEO — Open Graph Tags — /education has og:title, og:description, og:type",
+        "error": "og:* content is null",
+        "root_cause": "No OG meta tags on /education page. Three tests.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 0.5
+      }
+    ]
+  },
+  "type_b_product_bugs": {
+    "count": 7,
+    "items": [
+      {
+        "spec": "routes.spec.ts",
+        "test_name": "Route Crawl — route renders safely: / (homepage)",
+        "error": "Console errors detected on homepage load",
+        "root_cause": "The route crawl test collects console errors and page errors, then asserts `consoleErrors.toEqual([])`. The homepage generates console errors — confirmed via the error-context.md page snapshot showing a fully rendered homepage, meaning the page loads but emits JS console errors. This constitutes real noise a developer would see on the console. Exact error text not captured in list-mode output but the test-results folder exists for /.",
+        "severity": "P2 — Console errors on homepage landing page are a product bug. They may be Supabase auth 401s (which routes.spec.ts ignores by pattern) or other non-ignored errors.",
+        "fix": "Investigate and resolve console errors on the homepage. Run `npx playwright show-trace` on the trace.zip to see exact error text.",
+        "fix_owner": "PRODUCT team",
+        "eta_hours": 2
+      },
+      {
+        "spec": "routes.spec.ts",
+        "test_name": "Route Crawl — route renders safely: /events",
+        "error": "Application Error: 'isSupabaseConfigured is not a function'",
+        "root_cause": "The /events page throws a runtime crash: `isSupabaseConfigured is not a function`. The page shows an error boundary with 'The application encountered an error and could not continue.' This is a real product bug — a user visiting /events would see a full crash screen, not a demo page. The function `isSupabaseConfigured` is being called as a function but is likely exported as a boolean value (or vice versa) in the events component.",
+        "severity": "P0 — Full page crash visible to end users",
+        "fix": "Find `isSupabaseConfigured` import in the Events component and fix the usage — either change the call `isSupabaseConfigured()` to `isSupabaseConfigured` (if it's a boolean) or fix the export to be a function.",
+        "fix_owner": "PRODUCT team",
+        "eta_hours": 1
+      },
+      {
+        "spec": "intelligence.spec.ts",
+        "test_name": "DEMO surfaces display visible DEMO or PREVIEW badges",
+        "error": "Expected DEMO/PREVIEW label on /events — body text contains none of: 'demo', 'preview', 'coming soon', 'sample'",
+        "root_cause": "The /events page crashes with a full application error (see route crawl failure above), so no DEMO badge is visible. Additionally, even if the crash were fixed, the events page (DEMO per CLAUDE.md §E) must surface a DEMO label. This is a product bug — per §8 LIVE vs DEMO doctrine: MOCK (unlabeled) is FORBIDDEN. Even if crash is fixed, the DEMO label requirement remains.",
+        "severity": "P0 — Unlabeled DEMO page violates §8 Stop Condition. Related to /events crash.",
+        "fix": "Fix /events crash first. Then add DEMO banner to Events.tsx as required by §8.",
+        "fix_owner": "PRODUCT team",
+        "eta_hours": 2
+      },
+      {
+        "spec": "accessibility.spec.ts",
+        "test_name": "homepage has main landmark",
+        "error": "No <main> or [role='main'] element found on homepage",
+        "root_cause": "The homepage uses generic div containers without a semantic `<main>` element. The page snapshot confirms the content area is a `generic` (div) element rather than `<main>`. This is a genuine WCAG 2.1 SC 1.3.1 and 2.4.1 compliance gap — screen reader users cannot navigate to main content via keyboard shortcut. It also blocks the skip-to-main-content link from functioning.",
+        "severity": "P2 — WCAG accessibility violation. Blocks launch gate §16 item 16 (Playwright smoke tests pass).",
+        "fix": "Wrap the main content section in PublicHome.tsx with `<main id='main-content'>...</main>`.",
+        "fix_owner": "PRODUCT team",
+        "eta_hours": 0.5
+      },
+      {
+        "spec": "seo.spec.ts (bulk)",
+        "test_name": "Meta Descriptions — 16 content pages missing <meta name='description'>",
+        "error": "meta description content is null on: /intelligence, /brands, /education, /jobs, /for-buyers, /for-brands, /professionals, /for-medspas, /for-salons, /pricing, /plans, /how-it-works, /about, /faq, /protocols, /request-access, /stories, /privacy, /terms",
+        "root_cause": "SITE-WO-04 (SEO) is open. SEO coverage is 40.1% — 163 of 272 pages lack meta tags. These are real missing meta descriptions on content pages that users and search engines visit. The tests correctly identify a genuine product gap that is a launch non-negotiable (§16 item 12: 'SEO baseline complete').",
+        "severity": "P3 — Required for launch. Maps to SITE-WO-04.",
+        "fix": "Implement react-helmet-async meta tags on all content pages as part of SITE-WO-04.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 8,
+        "note": "The 2 auth pages (/forgot-password, /reset-password) failing this test are borderline — they are classified as Type A because auth pages have limited SEO value. The 16+ content pages are Type B."
+      },
+      {
+        "spec": "seo.spec.ts (bulk)",
+        "test_name": "Open Graph Tags — 4 key pages missing og:title, og:description, og:type (12 tests total)",
+        "error": "og:* content is null on: /, /intelligence, /brands, /education",
+        "root_cause": "No Open Graph meta tags implemented on any key page. These are the 4 pages the test author identified as highest priority for social sharing. Real product gap per SITE-WO-04.",
+        "severity": "P3 — Required for launch social sharing. Maps to SITE-WO-04.",
+        "fix": "Add og:title, og:description, og:type to PublicHome, Intelligence, PublicBrands, Education page components.",
+        "fix_owner": "PRODUCT team — maps to SITE-WO-04",
+        "eta_hours": 2
+      },
+      {
+        "spec": "auth.spec.ts / paywall-and-entitlements.spec.ts (skipped)",
+        "test_name": "business login/logout/session restore; admin login can access admin routes; brand login can access brand routes",
+        "error": "Skipped — E2E_BUSINESS_EMAIL, E2E_ADMIN_EMAIL, E2E_BRAND_EMAIL env vars not set",
+        "root_cause": "These tests are conditionally skipped with `test.skip(!BUSINESS_EMAIL || !BUSINESS_PASSWORD, ...)`. Not failures — they are intentional skips. However, the credentials not being configured in CI means these critical auth flows have zero E2E coverage in the current run.",
+        "severity": "P1 — No E2E coverage of the authenticated portal flows. This is a CI/CD configuration gap.",
+        "fix": "Configure E2E_BUSINESS_EMAIL, E2E_ADMIN_EMAIL, E2E_BRAND_EMAIL, and corresponding password env vars in the test environment. Use test-only accounts (not the platform_admin account).",
+        "fix_owner": "PRODUCT team — CI/CD configuration",
+        "eta_hours": 1,
+        "note": "Classified as Type B because missing CI credentials is a real operational gap, not a test code problem."
+      }
+    ]
+  },
+  "triage_table": [
+    {
+      "failing_spec": "routes.spec.ts",
+      "test_name": "route renders safely: /",
+      "type": "B",
+      "root_cause": "Console errors on homepage load (non-ignored error type)",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 2
+    },
+    {
+      "failing_spec": "routes.spec.ts",
+      "test_name": "route renders safely: /events",
+      "type": "B",
+      "root_cause": "Runtime crash: `isSupabaseConfigured is not a function` — full error boundary visible to user",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 1
+    },
+    {
+      "failing_spec": "navigation.spec.ts",
+      "test_name": "nav contains 'Brands' linking to /brands",
+      "type": "A",
+      "root_cause": "Ambiguous locator — `getByRole('link', { name: 'Brands' })` matches both 'Brands' and 'For Brands'. Missing `exact: true`",
+      "fix_owner": "TEST",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "navigation.spec.ts",
+      "test_name": "nav contains 'For Buyers' linking to /for-buyers",
+      "type": "A",
+      "root_cause": "Stale href expectation — nav links 'For Buyers' to /professionals (per CLAUDE.md §C spec). Test expects /for-buyers.",
+      "fix_owner": "TEST",
+      "eta_hours": 0.5
+    },
+    {
+      "failing_spec": "navigation.spec.ts",
+      "test_name": "nav contains 'Pricing' linking to /pricing",
+      "type": "A",
+      "root_cause": "Stale href expectation — nav links 'Pricing' to /plans (canonical per CLAUDE.md §C). Test expects /pricing.",
+      "fix_owner": "TEST",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "intelligence.spec.ts",
+      "test_name": "DEMO surfaces display visible DEMO or PREVIEW badges",
+      "type": "B",
+      "root_cause": "/events crashes before DEMO badge can render. And even if fixed, DEMO label is missing — violates §8 Stop Condition.",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 2
+    },
+    {
+      "failing_spec": "accessibility.spec.ts",
+      "test_name": "homepage has main landmark",
+      "type": "B",
+      "root_cause": "Homepage uses generic divs, no <main> element. WCAG violation. Screen reader users cannot skip to main content.",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.5
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /intelligence",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /brands",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /education",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /jobs",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /for-buyers",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /for-brands",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /professionals",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /for-medspas",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /for-salons",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /pricing",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /plans",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /how-it-works",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /about",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /faq",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /protocols",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /request-access",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /stories",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /privacy",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /terms",
+      "type": "B",
+      "root_cause": "Missing <meta name='description'> — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /forgot-password",
+      "type": "A",
+      "root_cause": "Auth page — meta descriptions on password-reset flows have negligible SEO value. Test scope should exclude auth pages.",
+      "fix_owner": "TEST",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Meta Descriptions — /reset-password",
+      "type": "A",
+      "root_cause": "Auth page — same as /forgot-password.",
+      "fix_owner": "TEST",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — / has og:title",
+      "type": "B",
+      "root_cause": "No OG tags on homepage — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — / has og:description",
+      "type": "B",
+      "root_cause": "No OG tags on homepage — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — / has og:type",
+      "type": "B",
+      "root_cause": "No OG tags on homepage — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /intelligence has og:title",
+      "type": "B",
+      "root_cause": "No OG tags on /intelligence — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /intelligence has og:description",
+      "type": "B",
+      "root_cause": "No OG tags on /intelligence — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /intelligence has og:type",
+      "type": "B",
+      "root_cause": "No OG tags on /intelligence — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /brands has og:title",
+      "type": "B",
+      "root_cause": "No OG tags on /brands — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /brands has og:description",
+      "type": "B",
+      "root_cause": "No OG tags on /brands — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /brands has og:type",
+      "type": "B",
+      "root_cause": "No OG tags on /brands — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /education has og:title",
+      "type": "B",
+      "root_cause": "No OG tags on /education — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /education has og:description",
+      "type": "B",
+      "root_cause": "No OG tags on /education — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    },
+    {
+      "failing_spec": "seo.spec.ts",
+      "test_name": "Open Graph Tags — /education has og:type",
+      "type": "B",
+      "root_cause": "No OG tags on /education — SITE-WO-04 open",
+      "fix_owner": "PRODUCT",
+      "eta_hours": 0.25
+    }
+  ],
+  "overall_assessment": "40 failures across 215 tests (18.6% failure rate). The failures split 5 Type A (test code bugs) / 35 Type B (real product gaps). The most critical finding is the /events page crash ('isSupabaseConfigured is not a function') which shows a full error boundary to users — P0. The bulk of failures (35) are missing SEO meta tags across content pages — all traceable to the open SITE-WO-04 work order. Three navigation tests fail due to stale href expectations in the test spec (Type A). The /forgot-password and /reset-password meta description failures are borderline but classified Type A since auth pages are low-SEO-value. Auth-gated E2E tests (3 skipped) need CI credentials configured.",
+  "recommended_actions": [
+    {
+      "priority": "P0",
+      "action": "Fix /events page crash: `isSupabaseConfigured is not a function`",
+      "owner": "PRODUCT",
+      "eta": "1 hour",
+      "note": "Find the isSupabaseConfigured import in Events.tsx or its dependencies and fix the call — likely called as a function when it exports a boolean value."
+    },
+    {
+      "priority": "P0",
+      "action": "Add DEMO badge to /events and /jobs pages",
+      "owner": "PRODUCT",
+      "eta": "1 hour after crash fix",
+      "note": "Per CLAUDE.md §8, DEMO surfaces must be labeled. /events and /jobs are DEMO pages per SOCELLE-WEB operational context §E truth table."
+    },
+    {
+      "priority": "P1",
+      "action": "Fix 3 navigation test selector bugs",
+      "owner": "TEST team",
+      "eta": "30 minutes",
+      "details": [
+        "navigation.spec.ts line 28: add `exact: true` to 'Brands' link lookup",
+        "navigation.spec.ts REQUIRED_NAV_LINKS: change 'For Buyers' href from '/for-buyers' to '/professionals'",
+        "navigation.spec.ts REQUIRED_NAV_LINKS: change 'Pricing' href from '/pricing' to '/plans'"
+      ]
+    },
+    {
+      "priority": "P1",
+      "action": "Add <main> semantic element to PublicHome component",
+      "owner": "PRODUCT",
+      "eta": "30 minutes",
+      "note": "WCAG 2.1 compliance. Also enables skip-to-main-content link to function correctly."
+    },
+    {
+      "priority": "P2",
+      "action": "Investigate and fix homepage console errors",
+      "owner": "PRODUCT",
+      "eta": "2 hours",
+      "note": "Run `npx playwright show-trace test-results/routes-Route-Crawl-route-renders-safely--chromium/trace.zip` to see exact error text."
+    },
+    {
+      "priority": "P3",
+      "action": "Implement SITE-WO-04: Add react-helmet-async meta description + OG tags to all content pages",
+      "owner": "PRODUCT",
+      "eta": "Full WO — 8+ hours",
+      "note": "35 of the 40 failures are SEO meta tag gaps. This is a launch non-negotiable per §16 item 12."
+    },
+    {
+      "priority": "P3",
+      "action": "Exclude /forgot-password and /reset-password from seo.spec.ts meta description checks",
+      "owner": "TEST team",
+      "eta": "15 minutes",
+      "note": "Auth pages have no SEO value. Update the publicRoutes filter in seo.spec.ts."
+    },
+    {
+      "priority": "P3",
+      "action": "Configure E2E credential env vars in CI",
+      "owner": "PRODUCT (CI/CD)",
+      "eta": "1 hour",
+      "note": "E2E_BUSINESS_EMAIL, E2E_ADMIN_EMAIL, E2E_BRAND_EMAIL needed to run auth-gated tests. Use test-only accounts — NOT the platform_admin account."
+    }
+  ]
+}

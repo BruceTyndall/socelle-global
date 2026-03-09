@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Calendar, Sparkles, Video, Package, FileText, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 
@@ -18,52 +19,25 @@ interface MarketingMonth {
 }
 
 export default function MarketingCalendarView() {
-  const [calendarData, setCalendarData] = useState<MarketingMonth[]>([]);
-  const [selectedQuarter, setSelectedQuarter] = useState<number>(1);
-  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const currentDate = new Date();
+  const [selectedQuarter, setSelectedQuarter] = useState<number>(Math.ceil((currentDate.getMonth() + 1) / 3));
+  const currentMonth = currentDate.getMonth() + 1;
 
-  useEffect(() => {
-    fetchCalendarData();
-    const currentDate = new Date();
-    setCurrentMonth(currentDate.getMonth() + 1);
-    setSelectedQuarter(Math.ceil((currentDate.getMonth() + 1) / 3));
-  }, []);
-
-  const fetchCalendarData = async () => {
-    if (!isSupabaseConfigured) {
-      // No Supabase — show empty state with DEMO badge
-      setCalendarData([]);
-      setIsLive(false);
-      setLoading(false);
-      return;
-    }
-
-    try {
+  const { data: calendarData = [], isLoading: loading } = useQuery<MarketingMonth[]>({
+    queryKey: ['marketing_calendar_2026'],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) return [];
       const { data, error } = await supabase
         .from('marketing_calendar')
         .select('*')
         .eq('year', 2026)
         .order('month');
-
       if (error) throw error;
+      return (data ?? []) as MarketingMonth[];
+    },
+  });
 
-      if (data && data.length > 0) {
-        setCalendarData(data);
-        setIsLive(true);
-      } else {
-        setCalendarData([]);
-        setIsLive(false);
-      }
-    } catch (error) {
-      console.error('Error fetching calendar:', error);
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const isLive = calendarData.length > 0;
   const quarterMonths = calendarData.filter(m => m.quarter === selectedQuarter);
 
   const getQuarterName = (q: number) => {

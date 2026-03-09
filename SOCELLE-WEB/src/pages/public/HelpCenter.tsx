@@ -39,7 +39,7 @@ const DEMO_FAQS: FaqItem[] = [
     id: 'demo-3',
     question: 'What are intelligence credits and how do they work?',
     answer:
-      'Credits are used when you activate AI-powered tools like Explain Signal, Treatment Planner, Gap Analysis, or generate PDF reports. Each plan includes a monthly credit allotment (Starter: 500, Pro: 2,500, Enterprise: 10,000). Unused credits do not roll over. You can track usage in your account settings.',
+      'Credits are used when you activate intelligence tools like Explain Signal, Treatment Planner, Gap Analysis, or generate PDF reports. Each plan includes a monthly credit allotment (Starter: 500, Pro: 2,500, Enterprise: 10,000). Unused credits do not roll over. You can track usage in your account settings.',
     category: 'Billing',
   },
   {

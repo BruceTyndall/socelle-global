@@ -33,25 +33,35 @@ Last Updated: 2026-03-09 (Ultra Drive LANE A audit: pro-* tokens = 0 across all 
 | PWA-WO-01/02/03 | PWA: sw.js push/notificationclick/pushsubscriptionchange handlers; PWAInstallPrompt.tsx (14-day snooze, VAPID opt-in); wired in App.tsx | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | STUDIO-UI-01..05 | StudioEditor fully wired: DragCanvas + TemplatePickerModal + ExportModal (PNG/JPG/PDF/SVG/SCORM) + mode toggle + grid overlay | COMPLETE | pending | — |
 | DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | PENDING | — | — |
+| UD-E (Lane E) | Audit doc corrections: CODE_AUDIT_REPORT §3b/3d/3e updated; DESIGN_AUDIT line 311 false exemption replaced; build_tracker.md line 126 self-granted exemption deleted; build_gate_results.json: token_compliance + tanstack_migration + sentry_status fields added | COMPLETE | — | `docs/qa/verify_UD-E_2026-03-09T21-00-00-000Z.json` |
+| UD-D (Lane D) | Test coverage sprint: 26 new unit tests (useIntelligence×9, PaywallGate×9, ErrorBoundary×8) + 16 new E2E tests (paywall-and-entitlements.spec.ts) + IS_REACT_ACT_ENVIRONMENT fix → 150 passing (was 100) | COMPLETE | — | `docs/qa/verify_UD-D_2026-03-09T21-00-00-000Z.json` |
 | SITE-WIDE-AUDIT-2026-03-09 | Full 5-agent site audit complete. See artifact. Results: tsc=PASS, build=PASS, 18 shells remain, 19 raw market_signals queries, 1 missing isLive (IntelligenceCommerce.tsx), Sentry=RESOLVED, pro-* tokens=0, brand-*=19, intel-*=30, useEffect+supabase=1 (useEnrichment.ts), 29 unit tests failing (React 19 compat), SEO=40.1%, Cart.tsx 'Shop Now' STOP CONDITION, database.types.ts drift 116/165 tables | COMPLETE | — | `docs/qa/verify_site_wide_audit_2026-03-09T22-00-00-000Z.json` |
+| P0-01 | Cart.tsx:84 'Shop Now' → 'Explore Products' (§9 STOP CONDITION resolved). grep src/ returns 0. tsc=0. | COMPLETE | — | `docs/qa/verify_P0-01_2026-03-09T22-30-00-000Z.json` |
+| P0-02 | IntelligenceCommerce.tsx isLive LIVE/DEMO guard added: DEMO banner (signal-warn) + LIVE badge (signal-up). tsc=0, build=0. | COMPLETE | — | `docs/qa/verify_P0-02_2026-03-09T22-30-00-000Z.json` |
+| P0-03 | database.types.ts regenerated via supabase gen types --linked. Now reflects live DB (99 tables, tsc=0). 74 migrations pending push to remote (BUILD 1/2/4 feature tables — deferred, owner decision required). 8 tables in live DB without migration files: access_requests, events, ingredient_identifiers, ingredients, job_postings, market_signals, rss_items, rss_sources. | PARTIAL | — | `docs/qa/verify_P0-03_2026-03-09T22-30-00-000Z.json` |
+| P0-03-push | supabase db push: owner-authorized push to remote (rumdmulxzmjtsplsjngi). All 101 local migrations already applied — remote was up to date. 1 remote-only migration (20260309173300) repaired/reverted in history (applied manually via dashboard, no local file). database.types.ts regenerated: 109 tables. tsc=0. | COMPLETE | — | `docs/qa/verify_P0-03-push_2026-03-09T23-30-00-000Z.json` |
+| P0-04 | 9 user-facing 'AI-powered' occurrences replaced across 8 files with intelligence-first vocabulary per CANONICAL_DOCTRINE §9. tsc=0. Additional banned term noted: PlanResults.tsx:407 'optimized' → add to SITE-WO-04 copy sweep. | COMPLETE | — | `docs/qa/verify_P0-04_2026-03-09T22-30-00-000Z.json` |
+| P0-events | /events crash fixed: isSupabaseConfigured() → isSupabaseConfigured (boolean, not fn) in useEvents.ts:155. DEMO badge already present (2 banners). tsc=0, build=0. | COMPLETE | — | `docs/qa/verify_P0-events_2026-03-09T23-00-00-000Z.json` |
+| E2E-triage | 40 E2E failures triaged (was 47 — stale count). Type A (test bugs): 5. Type B (product bugs): 35. Type A fixed: nav hrefs /for-buyers→/professionals, /pricing→/plans; Brands exact:true; auth pages SEO-exempt. Type B: 32 SEO failures → SITE-WO-04; homepage console errors; no <main> landmark (WCAG); /events DEMO badge (resolved above). | COMPLETE | — | `docs/qa/verify_UD-E2E-triage_2026-03-09T22-00-00-000Z.json` |
+| E2E-typeA-fixes | navigation.spec.ts: For Buyers href /for-buyers→/professionals; Pricing href /pricing→/plans; Brands link exact:true + .first(). seo.spec.ts: auth pages (/forgot-password, /reset-password) added to AUTH_EXEMPT_PATHS. tsc=0. | COMPLETE | — | `docs/qa/verify_E2E-typeA-fixes_2026-03-09T23-00-00-000Z.json` |
 
 ## ⚡ P0 QUEUE — FIX BEFORE ANY NEW WO (from 2026-03-09 audit)
 
 | ID | Task | File | Effort | Blocks |
 |----|------|------|--------|--------|
-| P0-1 | Cart.tsx:84 — replace 'Shop Now' (§9 STOP CONDITION) | src/pages/public/Cart.tsx | 2 min | §16.8 |
-| P0-2 | IntelligenceCommerce.tsx — add isLive LIVE/DEMO badge | src/pages/public/IntelligenceCommerce.tsx | 10 min | §8 |
-| P0-3 | useEnrichment.ts — migrate useEffect+supabase to useQuery | src/lib/enrichment/useEnrichment.ts | 15 min | §16.23 |
-| P0-4 | 8x 'AI-powered' copy — replace with approved vocab | see audit JSON | 20 min | §16.8 |
-| P0-5 | supabase gen types — regenerate database.types.ts | src/lib/database.types.ts | 5 min | §16.13 |
+| P0-1 | Cart.tsx:84 — replace 'Shop Now' (§9 STOP CONDITION) | src/pages/public/Cart.tsx | 2 min | §16.8 | ✅ DONE — verify_P0-01 |
+| P0-2 | IntelligenceCommerce.tsx — add isLive LIVE/DEMO badge | src/pages/public/IntelligenceCommerce.tsx | 10 min | §8 | ✅ DONE — verify_P0-02 |
+| P0-3 | useEnrichment.ts — migrate useEffect+supabase to useQuery | src/lib/enrichment/useEnrichment.ts | 15 min | §16.23 | ✅ DONE — migrated in UD-B (Lane B) |
+| P0-4 | 9x 'AI-powered' copy — replaced with intelligence-first vocab | 8 files | 20 min | §16.8 | ✅ DONE — verify_P0-04 |
+| P0-5 | supabase gen types — regenerated database.types.ts (99 live tables, tsc=0) | src/lib/database.types.ts | 5 min | §16.13 | ✅ PARTIAL — verify_P0-03. 74 migrations undeployed (owner decision). |
 
 ## 🎨 P1 QUEUE — DESIGN TOKEN MIGRATION
 
 | ID | Task | Effort |
 |----|------|--------|
-| P1-1 | Migrate 19 brand-* usages → Pearl Mineral V2 (StatCard, Button, EmptyState, UpgradeGate, index.css) | 1-2h |
-| P1-2 | Migrate 30 intel-* usages → signal-*/accent (GlowBadge, DarkPanel, 5 business pages) | 1-2h |
-| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min |
+| P1-1 | Migrate 19 brand-* usages → Pearl Mineral V2 (StatCard, Button, EmptyState, UpgradeGate, index.css) | 1-2h | ✅ DONE — UD-A Lane A (14 actual violations → 0) |
+| P1-2 | Migrate 30 intel-* usages → signal-*/accent (GlowBadge, DarkPanel, 5 business pages) | 1-2h | ✅ DONE — UD-A Lane A (29 actual violations → 0) |
+| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min | ⚠️ PENDING — verify brand-*/intel-* removed from tailwind.config.js legacy token blocks |
 
 ## 🧪 P2 QUEUE — TEST FIXES
 
@@ -123,7 +133,7 @@ Waves 1–9 (March 3–5, 2026) replaced ALL public page tokens with Pearl Miner
 DO NOT use pro-* tokens on any page in src/pages/public/.
 DO NOT use font-serif on any public page.
 DO NOT use DM Serif Display, Playfair Display, or Inter on public pages.
-The pro-* tokens still exist in portal code (business/brand/admin) for backward compat — do not clean those without a dedicated audit WO.
+pro-* portal cleanup: COMPLETE (verified 2026-03-09 — 0 usages in src/ including all portals; migration executed via Ultra Drive UD-A-01..UD-A-06). Prior exemption "do not clean without a dedicated audit WO" was a false self-certification — deleted per ULTRA_DRIVE_PROMPT.md §2 Lane E.
 Full spec: CLAUDE.md (root) → LOCKED DESIGN SYSTEM section.
 
 ---
@@ -1450,6 +1460,10 @@ Each hub must satisfy ALL anti-shell requirements per V1 §D: Create / List / De
 | `docs/command/CMS_ARCHITECTURE.md` | ✅ Written | 2026-03-08 |
 | `docs/command/CMS_CONTENT_MODEL.md` | ✅ Written | 2026-03-08 |
 | `docs/command/JOURNEY_STANDARDS.md` | ✅ Written | 2026-03-08 |
+
+---
+
+| ULTRA-DRIVE-COMPLETE | Ultra Drive sprint: all 5 lanes complete. pro-*=0, brand-*=0, intel-*=0, Sentry=0, TanStack=0 violations, unit=156/156, E2E=164/215. Completion gate artifact: docs/qa/verify_UD-sprint-complete_2026-03-09T24-00-00-000Z.json | COMPLETE | — | docs/qa/verify_UD-sprint-complete_2026-03-09T24-00-00-000Z.json |
 
 ---
 

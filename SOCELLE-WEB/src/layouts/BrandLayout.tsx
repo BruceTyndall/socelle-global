@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import {
@@ -81,20 +82,22 @@ export default function BrandLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [msgCount, setMsgCount] = useState(0);
 
-  useEffect(() => {
-    if (!brandId) return;
-    supabase
-      .from('conversations')
-      .select('id', { count: 'exact', head: true })
-      .eq('brand_id', brandId)
-      .eq('is_archived', false)
-      .then(({ count, error }) => {
-        if (error) return;
-        setMsgCount(count ?? 0);
-      });
-  }, [brandId]);
+  const { data: msgCount = 0 } = useQuery<number>({
+    queryKey: ['brand_conversation_count', brandId],
+    queryFn: async () => {
+      if (!brandId) return 0;
+      const { count, error } = await supabase
+        .from('conversations')
+        .select('id', { count: 'exact', head: true })
+        .eq('brand_id', brandId)
+        .eq('is_archived', false);
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: !!brandId,
+    refetchInterval: 60000,
+  });
 
   const handleSignOut = async () => {
     await signOut();

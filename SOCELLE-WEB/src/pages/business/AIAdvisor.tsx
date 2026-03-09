@@ -221,7 +221,7 @@ export default function AIAdvisor() {
             </div>
             <div>
               <h1 className="font-sans text-lg text-graphite leading-tight">Intelligence Advisor</h1>
-              <p className="text-xs text-graphite/60 font-sans">AI-powered insights for your business</p>
+              <p className="text-xs text-graphite/60 font-sans">Market signals and intelligence for your business</p>
             </div>
           </div>
 

@@ -1,0 +1,24 @@
+{
+  "wo_id": "P0-01",
+  "timestamp": "2026-03-09T22:30:00.000Z",
+  "check": "Cart CTA compliance",
+  "skills_run": ["banned-term-scanner"],
+  "results": {
+    "shop_now_grep": {
+      "status": "PASS",
+      "count": 0,
+      "evidence": "grep -rn 'Shop Now' src/ --include='*.tsx' --include='*.ts' returns 0 matches"
+    },
+    "tsc": {
+      "status": "PASS",
+      "errors": 0,
+      "evidence": "npx tsc --noEmit exits 0"
+    },
+    "files_changed": [
+      "src/pages/public/Cart.tsx:84"
+    ],
+    "replacement_used": "Explore Products"
+  },
+  "overall": "PASS",
+  "notes": "§9 STOP CONDITION resolved. Empty cart CTA 'Shop Now' replaced with 'Explore Products'. Only the display string was changed — cart logic, useShopCart hook, auth, and checkout flow untouched."
+}

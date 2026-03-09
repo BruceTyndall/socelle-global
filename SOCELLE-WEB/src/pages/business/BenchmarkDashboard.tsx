@@ -28,15 +28,15 @@ const dimensionIcons: Record<BenchmarkDimension, React.ElementType> = {
 };
 
 function scoreColor(score: number): string {
-  if (score >= 70) return 'bg-intel-up';
+  if (score >= 70) return 'bg-signal-up';
   if (score >= 40) return 'bg-amber-400';
-  return 'bg-intel-down';
+  return 'bg-signal-down';
 }
 
 function scoreTextColor(score: number): string {
-  if (score >= 70) return 'text-intel-up';
+  if (score >= 70) return 'text-signal-up';
   if (score >= 40) return 'text-amber-500';
-  return 'text-intel-down';
+  return 'text-signal-down';
 }
 
 function statusBadge(status: 'healthy' | 'warning' | 'critical') {
@@ -185,7 +185,7 @@ export default function BenchmarkDashboard() {
         </div>
 
         {/* ── Composite Score Panel ───────────────────────────── */}
-        <div className="bg-intel-dark rounded-2xl p-8 md:p-12 shadow-lg">
+        <div className="bg-graphite rounded-2xl p-8 md:p-12 shadow-lg">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
             <ScoreRing score={benchmark.compositeScore} />
             <div className="text-center md:text-left">
@@ -195,7 +195,7 @@ export default function BenchmarkDashboard() {
                 reorder cadence — compared to {benchmark.peerGroupSize} peer operators in your segment.
               </p>
               <div className="mt-4 inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                <TrendingUp className="w-4 h-4 text-intel-accent" />
+                <TrendingUp className="w-4 h-4 text-accent" />
                 <span className="text-sm font-sans text-white/80">
                   Top {100 - Math.round(
                     benchmark.dimensions.reduce((sum, d) => sum + d.percentile, 0) / benchmark.dimensions.length
@@ -244,10 +244,10 @@ export default function BenchmarkDashboard() {
               return (
                 <div key={cat.category} className="group">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className={`text-sm font-sans ${isMissing ? 'text-intel-down font-medium' : 'text-graphite'}`}>
+                    <span className={`text-sm font-sans ${isMissing ? 'text-signal-down font-medium' : 'text-graphite'}`}>
                       {cat.category}
                       {isMissing && (
-                        <span className="ml-2 text-xs text-intel-down/80">— Not stocked</span>
+                        <span className="ml-2 text-xs text-signal-down/80">— Not stocked</span>
                       )}
                     </span>
                     <span className="text-xs font-sans text-graphite/60">
@@ -268,7 +268,7 @@ export default function BenchmarkDashboard() {
                     />
                   </div>
                   {isMissing && (
-                    <button className="mt-1.5 text-xs font-sans font-medium text-intel-accent hover:text-intel-accent/80 flex items-center gap-1 transition-colors">
+                    <button className="mt-1.5 text-xs font-sans font-medium text-accent hover:text-accent/80 flex items-center gap-1 transition-colors">
                       Browse this category <ArrowRight className="w-3 h-3" />
                     </button>
                   )}
@@ -309,7 +309,7 @@ export default function BenchmarkDashboard() {
                     <td className="px-6 py-4 text-center">{statusBadge(item.status)}</td>
                     <td className="px-6 py-4 text-right">
                       {item.status === 'critical' && (
-                        <button className="text-xs font-medium text-intel-down hover:text-intel-down/80 flex items-center gap-1 ml-auto transition-colors">
+                        <button className="text-xs font-medium text-signal-down hover:text-signal-down/80 flex items-center gap-1 ml-auto transition-colors">
                           Reorder Now <ArrowRight className="w-3 h-3" />
                         </button>
                       )}
@@ -349,7 +349,7 @@ export default function BenchmarkDashboard() {
                           <span className="text-xs font-sans text-graphite/60">
                             Gap: {formatValue(Math.abs(dim.peerMedian - dim.operatorValue), dim.unit)} below peers
                           </span>
-                          <button className="text-xs font-sans font-medium text-intel-accent hover:text-intel-accent/80 flex items-center gap-1 transition-colors">
+                          <button className="text-xs font-sans font-medium text-accent hover:text-accent/80 flex items-center gap-1 transition-colors">
                             Explore solutions <ArrowRight className="w-3 h-3" />
                           </button>
                         </div>

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { CheckCircle, Download, Share2, TrendingUp, Calendar, Package, GraduationCap, Award, AlertCircle, Loader2, Link as LinkIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Skeleton } from './ui/Skeleton';
@@ -9,31 +10,26 @@ interface PlanOutputViewProps {
 }
 
 export default function PlanOutputView({ planId, readOnly = false }: PlanOutputViewProps) {
-  const [plan, setPlan] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [shareMsg, setShareMsg] = useState('');
 
-  useEffect(() => {
-    loadPlan();
-  }, [planId]);
-
-  const loadPlan = async () => {
-    const { data } = await supabase
-      .from('plan_outputs')
-      .select(`
-        *,
-        spa_leads(spa_name, location, spa_type, contact_name),
-        spa_menus(spa_name)
-      `)
-      .eq('id', planId)
-      .single();
-
-    if (data) {
-      setPlan(data);
-    }
-    setLoading(false);
-  };
+  const { data: plan, isLoading: loading } = useQuery({
+    queryKey: ['plan_output', planId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('plan_outputs')
+        .select(`
+          *,
+          spa_leads(spa_name, location, spa_type, contact_name),
+          spa_menus(spa_name)
+        `)
+        .eq('id', planId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!planId,
+  });
 
   const handleExportPdf = async () => {
     setExportingPdf(true);

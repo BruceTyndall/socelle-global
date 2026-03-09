@@ -111,7 +111,7 @@ export default function BrandAIAdvisor() {
             </div>
             <div>
               <h1 className="font-sans text-lg text-graphite leading-tight">Brand Intelligence Advisor</h1>
-              <p className="text-xs text-graphite/60 font-sans">AI-powered market intelligence for your brand</p>
+              <p className="text-xs text-graphite/60 font-sans">Market intelligence signals for your brand</p>
             </div>
           </div>
 
