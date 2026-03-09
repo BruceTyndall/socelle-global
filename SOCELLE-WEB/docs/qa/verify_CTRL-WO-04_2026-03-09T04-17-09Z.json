@@ -1,0 +1,59 @@
+{
+  "wo_id": "CTRL-WO-04",
+  "timestamp_utc": "2026-03-09T04:17:09Z",
+  "branch": "main",
+  "description": "Entitlements chain verification: subscription_plans -> modules_included -> ModuleRoute -> UpgradePrompt",
+  "skills_run": [
+    "schema-db-suite",
+    "entitlement-chain-verifier",
+    "build-gate"
+  ],
+  "results": {
+    "schema-db-suite": {
+      "status": "PASS",
+      "checks": {
+        "entitlements_migration_present": true,
+        "modules_included_column_seeded": true,
+        "account_module_access_table_present": true,
+        "account_subscriptions_table_present": true,
+        "module_route_wrappers_in_app": 76
+      },
+      "evidence": [
+        "supabase/migrations/20260310100001_entitlements_chain_fix.sql",
+        "src/App.tsx",
+        "src/modules/_core/context/ModuleAccessContext.tsx"
+      ]
+    },
+    "entitlement-chain-verifier": {
+      "status": "PASS",
+      "checks": {
+        "useTier_chain_tests_passed": true,
+        "module_route_upgrade_prompt_test_added": true,
+        "module_route_loading_denied_allowed_paths_verified": true
+      },
+      "evidence": [
+        "src/lib/__tests__/entitlements.test.ts",
+        "src/modules/_core/components/__tests__/ModuleRoute.test.tsx",
+        "src/modules/_core/components/ModuleRoute.tsx"
+      ]
+    },
+    "build-gate": {
+      "status": "PASS",
+      "checks": {
+        "tsc_no_emit_exit_code": 0,
+        "build_exit_code": 0,
+        "vitest_entitlements_moduleRoute_exit_code": 0
+      },
+      "notes": [
+        "vite build emits existing duplicate onClick warning in src/pages/admin/EditorialHub.tsx",
+        "no TypeScript or production build failures"
+      ]
+    }
+  },
+  "implementation_evidence": {
+    "module_route_to_upgrade_prompt": "src/modules/_core/components/ModuleRoute.tsx",
+    "entitlement_context_source": "src/modules/_core/context/ModuleAccessContext.tsx",
+    "verification_test_file": "src/modules/_core/components/__tests__/ModuleRoute.test.tsx"
+  },
+  "overall": "PASS"
+}
