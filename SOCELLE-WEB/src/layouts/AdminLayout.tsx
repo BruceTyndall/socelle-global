@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
+  BarChart3,
   Shield,
   Loader2,
   LogOut,
@@ -139,6 +140,7 @@ const NAV_GROUPS = [
     label: 'System',
     items: [
       { path: '/admin/health', label: 'Schema Health', icon: Shield },
+      { path: '/admin/shell-detection', label: 'Shell Matrix', icon: BarChart3 },
       { path: '/admin/debug', label: 'Debug', icon: Activity },
     ],
   },

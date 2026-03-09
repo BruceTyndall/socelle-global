@@ -244,6 +244,7 @@ const AdminResellerHub = lazy(() => import('./pages/admin/AdminResellerHub'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminAuditLog = lazy(() => import('./pages/admin/AdminAuditLog'));
 const AdminFeatureFlags = lazy(() => import('./pages/admin/AdminFeatureFlags'));
+const AdminShellDetection = lazy(() => import('./pages/admin/AdminShellDetection'));
 const AdminApiControls = lazy(() => import('./pages/admin/AdminApiControls'));
 const AdminPlatformSettings = lazy(() => import('./pages/admin/AdminPlatformSettings'));
 
@@ -1117,6 +1118,7 @@ function App() {
                     <Route path="users" element={<AdminUsers />} />
                     <Route path="audit-log" element={<AdminAuditLog />} />
                     <Route path="feature-flags" element={<AdminFeatureFlags />} />
+                    <Route path="shell-detection" element={<AdminShellDetection />} />
                     <Route path="api-controls" element={<AdminApiControls />} />
                     <Route path="platform-settings" element={<AdminPlatformSettings />} />
 
