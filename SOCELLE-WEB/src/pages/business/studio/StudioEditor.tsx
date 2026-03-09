@@ -32,11 +32,21 @@ import {
   ListChecks,
   Activity,
   AlertCircle,
+  Sparkles,
+  AlertTriangle,
+  MonitorSmartphone,
   RefreshCw,
 } from 'lucide-react';
 import { useStudioDoc, useStudioDocs } from '../../../lib/studio/useStudioDocs';
 import type { CmsBlockType } from '../../../lib/cms/types';
 import type { Json } from '../../../lib/database.types';
+import {
+  findUnresolvedVariablesInJson,
+  resolveTemplateJson,
+  resolveTemplateString,
+  type ResolveResult,
+} from '../../../lib/studio/studioTemplateVariables';
+import { useStudioSmartFill } from '../../../lib/studio/useStudioSmartFill';
 
 // ── Extended block types for studio ─────────────────────────────────
 
@@ -83,6 +93,26 @@ const BLOCK_TYPES: BlockTypeDef[] = [
 
 const CATEGORIES = ['Content', 'Media', 'Interactive', 'Data', 'Layout'] as const;
 
+interface OutputPreset {
+  id: string;
+  label: string;
+  width: number;
+  height: number;
+  safeMargin: number;
+}
+
+const OUTPUT_PRESETS: OutputPreset[] = [
+  { id: 'ig-post', label: 'IG Post (1:1)', width: 1080, height: 1080, safeMargin: 64 },
+  { id: 'ig-story', label: 'IG Story (9:16)', width: 1080, height: 1920, safeMargin: 96 },
+  { id: 'ig-reel', label: 'IG Reel Cover (9:16)', width: 1080, height: 1920, safeMargin: 96 },
+  { id: 'tiktok-cover', label: 'TikTok Cover (9:16)', width: 1080, height: 1920, safeMargin: 96 },
+  { id: 'email-header', label: 'Email Header', width: 1200, height: 600, safeMargin: 48 },
+  { id: 'flyer', label: 'Flyer (US Letter)', width: 1275, height: 1650, safeMargin: 72 },
+  { id: 'menu-insert', label: 'Menu Insert', width: 1200, height: 1800, safeMargin: 72 },
+  { id: 'staff-sop', label: 'Staff SOP Sheet', width: 1275, height: 1650, safeMargin: 72 },
+  { id: 'slide-16x9', label: 'Slide 16:9', width: 1920, height: 1080, safeMargin: 80 },
+];
+
 // ── Skeleton ────────────────────────────────────────────────────────
 
 function EditorSkeleton() {
@@ -110,6 +140,20 @@ function EditorSkeleton() {
       </div>
     </div>
   );
+}
+
+function resolveBlockVariables(
+  block: EditorBlock,
+  context: ReturnType<typeof useStudioSmartFill>['context']
+): ResolveResult<EditorBlock> {
+  const resolved = resolveTemplateJson(block.content as Json, context);
+  return {
+    value: {
+      ...block,
+      content: (resolved.value as Record<string, unknown>) ?? {},
+    },
+    unresolved: resolved.unresolved,
+  };
 }
 
 // ── Property Editor Panel ───────────────────────────────────────────
@@ -203,6 +247,7 @@ function CanvasBlock({
   isSelected,
   isFirst,
   isLast,
+  hasUnresolvedVariables,
   onSelect,
   onMoveUp,
   onMoveDown,
@@ -212,6 +257,7 @@ function CanvasBlock({
   isSelected: boolean;
   isFirst: boolean;
   isLast: boolean;
+  hasUnresolvedVariables: boolean;
   onSelect: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
@@ -234,6 +280,12 @@ function CanvasBlock({
         <span className="text-xs font-medium text-[#141418]/40 uppercase tracking-wide">
           {blockDef?.label ?? block.type}
         </span>
+        {hasUnresolvedVariables && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#A97A4C]/15 px-2 py-0.5 text-[10px] font-semibold text-[#A97A4C]">
+            <AlertTriangle className="h-3 w-3" />
+            Fix vars
+          </span>
+        )}
       </div>
 
       {/* Block content preview */}
@@ -306,6 +358,7 @@ export default function StudioEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isNew = !id;
+  const { context: smartFillContext, isLoading: smartFillLoading, isLive: smartFillLive } = useStudioSmartFill();
 
   const { doc, isLoading: docLoading, error: docError } = useStudioDoc(id ?? '');
   const { updateDoc, createDoc } = useStudioDocs();
@@ -316,6 +369,8 @@ export default function StudioEditor() {
   const [showPreview, setShowPreview] = useState(false);
   const [titleInitialized, setTitleInitialized] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [selectedPresetId, setSelectedPresetId] = useState<string>('slide-16x9');
+  const [lastUnresolvedVariables, setLastUnresolvedVariables] = useState<string[]>([]);
 
   // Initialize from doc
   if (doc && !titleInitialized) {
@@ -323,6 +378,10 @@ export default function StudioEditor() {
     const meta = doc.metadata as Record<string, unknown> | null;
     const savedBlocks = (meta?.blocks as EditorBlock[]) ?? [];
     setBlocks(savedBlocks);
+    const savedPreset = typeof meta?.output_preset === 'string' ? meta.output_preset : null;
+    if (savedPreset && OUTPUT_PRESETS.some((preset) => preset.id === savedPreset)) {
+      setSelectedPresetId(savedPreset);
+    }
     setTitleInitialized(true);
   }
 
@@ -336,6 +395,27 @@ export default function StudioEditor() {
     () => blocks.find((b) => b.id === selectedBlockId) ?? null,
     [blocks, selectedBlockId]
   );
+
+  const selectedPreset = useMemo(
+    () => OUTPUT_PRESETS.find((preset) => preset.id === selectedPresetId) ?? OUTPUT_PRESETS[0],
+    [selectedPresetId]
+  );
+
+  const unresolvedByBlock = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    blocks.forEach((block) => {
+      map[block.id] = findUnresolvedVariablesInJson(block.content as Json);
+    });
+    return map;
+  }, [blocks]);
+
+  const unresolvedVariables = useMemo(() => {
+    const all = new Set<string>(lastUnresolvedVariables);
+    Object.values(unresolvedByBlock).forEach((variables) => {
+      variables.forEach((variableName) => all.add(variableName));
+    });
+    return Array.from(all);
+  }, [lastUnresolvedVariables, unresolvedByBlock]);
 
   // ── Block operations ─────────────────────────────────────────────
 
@@ -387,6 +467,24 @@ export default function StudioEditor() {
     []
   );
 
+  const handleSmartFill = useCallback(() => {
+    const unresolved = new Set<string>();
+
+    const resolvedTitle = resolveTemplateString(title, smartFillContext);
+    resolvedTitle.unresolved.forEach((value) => unresolved.add(value));
+    setTitle(resolvedTitle.value);
+
+    setBlocks((prev) =>
+      prev.map((block) => {
+        const resolvedBlock = resolveBlockVariables(block, smartFillContext);
+        resolvedBlock.unresolved.forEach((value) => unresolved.add(value));
+        return resolvedBlock.value;
+      })
+    );
+
+    setLastUnresolvedVariables(Array.from(unresolved));
+  }, [title, smartFillContext]);
+
   // ── Save ──────────────────────────────────────────────────────────
 
   async function handleSave() {
@@ -398,6 +496,8 @@ export default function StudioEditor() {
         ...(currentMeta ?? {}),
         blocks: blocks as unknown as Json,
         version: currentVersion + 1,
+        output_preset: selectedPreset.id,
+        unresolved_variables: unresolvedVariables,
       };
 
       if (id && doc) {
@@ -527,6 +627,32 @@ export default function StudioEditor() {
           placeholder="Document title"
         />
         <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1.5 rounded-lg border border-[#E8EDF1] bg-white px-2 py-1.5">
+            <MonitorSmartphone className="h-3.5 w-3.5 text-[#6E879B]" />
+            <select
+              value={selectedPresetId}
+              onChange={(e) => setSelectedPresetId(e.target.value)}
+              className="bg-transparent text-xs font-medium text-[#141418] outline-none"
+              aria-label="Output preset"
+            >
+              {OUTPUT_PRESETS.map((preset) => (
+                <option key={preset.id} value={preset.id}>
+                  {preset.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={handleSmartFill}
+            className="flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185] px-3 py-1.5 rounded-lg border border-[#E8EDF1] hover:border-[#6E879B] transition-colors"
+            title="Resolve template variables using business, brand, and signal context"
+          >
+            <Sparkles className="w-4 h-4" />
+            Smart Fill
+            {smartFillLive ? null : (
+              <span className="text-[10px] text-[#A97A4C]">{smartFillLoading ? '...' : 'fallback'}</span>
+            )}
+          </button>
           {doc && (
             <span className="text-xs text-[#141418]/40">
               v{((doc.metadata as Record<string, unknown> | null)?.version as number) ?? 1}
@@ -580,37 +706,60 @@ export default function StudioEditor() {
         </div>
 
         {/* ── Center: Canvas ─────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-2xl mx-auto">
-            {blocks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#E8EDF1] flex items-center justify-center mb-4">
-                  <Plus className="w-8 h-8 text-[#6E879B]" />
+        <div className="flex-1 overflow-auto p-6">
+          <div className="mx-auto w-fit">
+            <div className="mb-2 flex items-center justify-between text-xs text-[#141418]/55">
+              <span>{selectedPreset.label}</span>
+              <span>{selectedPreset.width} × {selectedPreset.height}px · Safe margin {selectedPreset.safeMargin}px</span>
+            </div>
+            <div className="rounded-xl border border-[#E8EDF1] bg-white/60 p-4 shadow-sm">
+              <div
+                className="relative overflow-hidden rounded-lg border border-[#E8EDF1] bg-[#F6F3EF]"
+                style={{ width: selectedPreset.width, minHeight: selectedPreset.height }}
+              >
+                <div
+                  className="pointer-events-none absolute border border-dashed border-[#6E879B]/40"
+                  style={{
+                    top: selectedPreset.safeMargin,
+                    right: selectedPreset.safeMargin,
+                    bottom: selectedPreset.safeMargin,
+                    left: selectedPreset.safeMargin,
+                  }}
+                />
+                <div className="relative p-4">
+                  {blocks.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-24 text-center">
+                      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EDF1]">
+                        <Plus className="h-8 w-8 text-[#6E879B]" />
+                      </div>
+                      <h2 className="mb-2 text-lg font-semibold text-[#141418]">
+                        Start building
+                      </h2>
+                      <p className="max-w-sm text-sm text-[#141418]/60">
+                        Add blocks from the picker on the left to build your document.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {blocks.map((block, index) => (
+                        <CanvasBlock
+                          key={block.id}
+                          block={block}
+                          isSelected={selectedBlockId === block.id}
+                          isFirst={index === 0}
+                          isLast={index === blocks.length - 1}
+                          hasUnresolvedVariables={(unresolvedByBlock[block.id] ?? []).length > 0}
+                          onSelect={() => setSelectedBlockId(block.id)}
+                          onMoveUp={() => moveBlock(index, 'up')}
+                          onMoveDown={() => moveBlock(index, 'down')}
+                          onDelete={() => deleteBlock(block.id)}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <h2 className="text-lg font-semibold text-[#141418] mb-2">
-                  Start building
-                </h2>
-                <p className="text-sm text-[#141418]/60 max-w-sm">
-                  Add blocks from the picker on the left to build your document.
-                </p>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {blocks.map((block, index) => (
-                  <CanvasBlock
-                    key={block.id}
-                    block={block}
-                    isSelected={selectedBlockId === block.id}
-                    isFirst={index === 0}
-                    isLast={index === blocks.length - 1}
-                    onSelect={() => setSelectedBlockId(block.id)}
-                    onMoveUp={() => moveBlock(index, 'up')}
-                    onMoveDown={() => moveBlock(index, 'down')}
-                    onDelete={() => deleteBlock(block.id)}
-                  />
-                ))}
-              </div>
-            )}
+            </div>
           </div>
         </div>
 
@@ -622,6 +771,39 @@ export default function StudioEditor() {
             </h2>
           </div>
           <PropertyPanel block={selectedBlock} onUpdate={updateBlockContent} />
+          <div className="border-t border-[#E8EDF1] p-4">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#141418]/50">
+              Variable Fix Panel
+            </h3>
+            {unresolvedVariables.length === 0 ? (
+              <p className="text-xs text-[#5F8A72]">All template variables resolved.</p>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-xs text-[#141418]/60">
+                  Resolve these variables by editing block fields or running Smart Fill after updating profile data.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {unresolvedVariables.map((variableName) => (
+                    <span
+                      key={variableName}
+                      className="rounded-full bg-[#A97A4C]/15 px-2 py-1 text-[10px] font-semibold text-[#A97A4C]"
+                    >
+                      {'{'}
+                      {variableName}
+                      {'}'}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="mt-3 rounded-md border border-[#E8EDF1] bg-[#F6F3EF] px-2.5 py-2">
+              <p className="text-[10px] uppercase tracking-wide text-[#141418]/40">Smart Fill context</p>
+              <p className="mt-1 text-xs text-[#141418]/70">
+                {smartFillContext.business_name} · {smartFillContext.city}
+              </p>
+              <p className="text-[11px] text-[#141418]/55">Signal: {smartFillContext.signal.metric}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

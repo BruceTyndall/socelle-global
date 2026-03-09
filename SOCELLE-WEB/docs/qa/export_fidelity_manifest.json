@@ -1,0 +1,52 @@
+{
+  "harness": "studio-export-fidelity",
+  "version": 1,
+  "formats": ["PNG", "JPG", "PDF", "PPTX", "SCORM", "SVG", "GIF"],
+  "templates": [
+    {
+      "id": "intelligence-brief",
+      "name": "Intelligence Brief",
+      "baselines": {
+        "PNG": "sha256:studio-intel-brief-png-v1",
+        "PDF": "sha256:studio-intel-brief-pdf-v1",
+        "PPTX": "sha256:studio-intel-brief-pptx-v1"
+      }
+    },
+    {
+      "id": "activation-plan",
+      "name": "Activation Plan",
+      "baselines": {
+        "PNG": "sha256:studio-activation-png-v1",
+        "PDF": "sha256:studio-activation-pdf-v1",
+        "PPTX": "sha256:studio-activation-pptx-v1"
+      }
+    },
+    {
+      "id": "training-kit",
+      "name": "Training Kit",
+      "baselines": {
+        "PNG": "sha256:studio-training-png-v1",
+        "PDF": "sha256:studio-training-pdf-v1",
+        "PPTX": "sha256:studio-training-pptx-v1"
+      }
+    },
+    {
+      "id": "campaign-brief",
+      "name": "Campaign Brief",
+      "baselines": {
+        "PNG": "sha256:studio-campaign-png-v1",
+        "PDF": "sha256:studio-campaign-pdf-v1",
+        "PPTX": "sha256:studio-campaign-pptx-v1"
+      }
+    },
+    {
+      "id": "staff-sop",
+      "name": "Staff SOP",
+      "baselines": {
+        "PNG": "sha256:studio-sop-png-v1",
+        "PDF": "sha256:studio-sop-pdf-v1",
+        "PPTX": "sha256:studio-sop-pptx-v1"
+      }
+    }
+  ]
+}

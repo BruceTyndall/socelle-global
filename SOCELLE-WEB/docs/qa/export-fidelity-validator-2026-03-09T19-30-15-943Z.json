@@ -1,0 +1,52 @@
+{
+  "skill": "export-fidelity-validator",
+  "timestamp": "2026-03-09T19:30:15.943Z",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "manifest_exists",
+      "pass": true,
+      "evidence": "/Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL/SOCELLE-WEB/docs/qa/export_fidelity_manifest.json"
+    },
+    {
+      "name": "required_formats",
+      "pass": true,
+      "evidence": "all formats present (PNG, JPG, PDF, PPTX, SCORM, SVG, GIF)"
+    },
+    {
+      "name": "template_count",
+      "pass": true,
+      "evidence": "count=5"
+    },
+    {
+      "name": "baseline_intelligence-brief",
+      "pass": true,
+      "evidence": "PNG/PDF/PPTX baseline entries present"
+    },
+    {
+      "name": "baseline_activation-plan",
+      "pass": true,
+      "evidence": "PNG/PDF/PPTX baseline entries present"
+    },
+    {
+      "name": "baseline_training-kit",
+      "pass": true,
+      "evidence": "PNG/PDF/PPTX baseline entries present"
+    },
+    {
+      "name": "baseline_campaign-brief",
+      "pass": true,
+      "evidence": "PNG/PDF/PPTX baseline entries present"
+    },
+    {
+      "name": "baseline_staff-sop",
+      "pass": true,
+      "evidence": "PNG/PDF/PPTX baseline entries present"
+    },
+    {
+      "name": "studio_output_presets_defined",
+      "pass": true,
+      "evidence": "/Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL/SOCELLE-WEB/src/pages/business/studio/StudioEditor.tsx"
+    }
+  ]
+}

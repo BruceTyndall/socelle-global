@@ -456,6 +456,15 @@ ONLY THEN → proceed to Build 1
 | STUDIO-UI-07 | Studio UI | Collaboration (comments + approve/reject + presence) | Two users see each other, comment resolves |
 | STUDIO-UI-08 | Studio UI | Brand kit system (colors/fonts/logo per org) | Apply brand kit → elements recolor |
 | STUDIO-UI-09 | Studio UI | Mobile quick authoring (template → fill → share in 30s) | Pick template → fill → export → share sheet |
+| STUDIO-UI-10 | Studio UI | Template variable system + Smart Fill (`{business_name}`, `{city}`, `{offer}`, `{price}`, `{date}`, `{cta}`, `{brand_kit.primary}`, `{signal.metric}`) | Duplicate template resolves variables; unresolved variables surfaced in Fix panel |
+| STUDIO-UI-11 | Studio UI | Multi-format output presets (IG Post/Story/Reel cover, TikTok cover, Email header, Flyer, Menu insert, Staff SOP sheet, Slide 16:9) | Selecting preset resizes artboard, applies safe margins, and export matches spec |
+| STUDIO-UI-12 | Studio UI | Asset governance + licensing rules (owner assets only where required, source + rights tracking, external placeholder blocking) | Banned/unlicensed source is blocked with remediation guidance |
+| STUDIO-UI-13 | Studio UI | Version history + branching UI (draft/published states, who/when/why metadata, restore) | Create 3 versions then restore v1; content and canvas revert correctly |
+| STUDIO-UI-14 | Studio UI | Review/approval workflow (author/reviewer/publisher roles, threaded comments, approve/reject) | Non-publisher cannot publish; reviewer can request changes; audit log entry exists |
+| STUDIO-UI-15 | Studio UI | Embed Intelligence widgets (KPI tile, trend sparkline, signal callout, what-changed timeline snippet, source citation block) | Bind widget to `signal_id` and render live data + provenance + cached fallback |
+| STUDIO-UI-16 | Studio UI | Export reliability harness (pixel/font/layout fidelity golden tests for PDF/PPTX/PNG across 5 templates) | CI suite runs; failures produce diff artifacts/metrics |
+| STUDIO-UI-17 | Studio UI | Content distribution hooks (copy blocks, UTM links, QR code, share-pack ZIP with assets + captions) | Generate share pack returns ZIP with required files and `manifest.json` |
+| STUDIO-UI-18 | Studio UI | Abuse/safety + compliance layer (restricted categories require disclaimer block before publish) | Restricted template cannot publish without disclaimer; violation logged in audit trail |
 
 ### BUILD 5: Multi-Platform Polish
 
