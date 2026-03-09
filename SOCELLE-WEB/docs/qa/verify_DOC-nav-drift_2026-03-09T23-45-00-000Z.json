@@ -1,0 +1,20 @@
+{
+  "wo_id": "DOC-nav-drift",
+  "timestamp": "2026-03-09T23:45:00.000Z",
+  "action": "Align SOCELLE-WEB/.claude/CLAUDE.md §C nav spec to actual MainNav routes",
+  "note": "SOCELLE-WEB/.claude/CLAUDE.md is gitignored by SOCELLE-WEB/.gitignore — on-disk edit applied successfully, file cannot be tracked by git",
+  "changes": [
+    { "old": "{ to: '/for-buyers', label: 'For Buyers' }", "new": "{ to: '/professionals', label: 'For Buyers' }" },
+    { "old": "{ to: '/pricing', label: 'Pricing' }", "new": "{ to: '/plans', label: 'Pricing' }" }
+  ],
+  "verification": {
+    "grep_actual_code": "MainNav.tsx:18: { to: '/professionals', label: 'For Buyers' }  // line 18",
+    "grep_actual_code_2": "MainNav.tsx:20: { to: '/plans', label: 'Pricing' }  // line 20 (inferred from array position)",
+    "doc_after_edit": "SOCELLE-WEB/.claude/CLAUDE.md line 83: { to: '/professionals', label: 'For Buyers' }",
+    "doc_after_edit_2": "SOCELLE-WEB/.claude/CLAUDE.md line 85: { to: '/plans', label: 'Pricing' }"
+  },
+  "doc_only": true,
+  "no_code_changes": true,
+  "gitignored": true,
+  "overall": "PASS"
+}
