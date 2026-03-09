@@ -22,6 +22,7 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -39,6 +40,8 @@ const VALID_VERTICALS  = new Set(['spa', 'medspa', 'salon', 'clinic']);
 const VALID_TYPES      = new Set(['full-time', 'part-time', 'contract', 'per-diem']);
 
 serve(async (req) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('jobs-search', req);
+  if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS });
   }

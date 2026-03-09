@@ -33,6 +33,7 @@
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -405,6 +406,8 @@ function isDueForFetch(feed: DataFeed): boolean {
 // ── Main Handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('feed-orchestrator', req);
+  if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS });
   }

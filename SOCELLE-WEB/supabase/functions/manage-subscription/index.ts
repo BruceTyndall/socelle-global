@@ -5,6 +5,7 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 import Stripe from 'https://esm.sh/stripe@14.14.0?target=deno';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,6 +20,8 @@ interface ManageSubscriptionRequest {
 }
 
 serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('manage-subscription', req);
+  if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }

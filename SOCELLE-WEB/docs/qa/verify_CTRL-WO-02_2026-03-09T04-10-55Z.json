@@ -1,0 +1,60 @@
+{
+  "wo_id": "CTRL-WO-02",
+  "timestamp_utc": "2026-03-09T04:10:55Z",
+  "branch": "main",
+  "description": "API kill-switch enforcement for all edge functions via edge_function_controls admin toggle",
+  "skills_run": [
+    "schema-db-suite",
+    "rls-auditor",
+    "build-gate"
+  ],
+  "results": {
+    "schema-db-suite": {
+      "status": "PASS",
+      "checks": {
+        "migration_count": 162,
+        "edge_function_controls_table_present": true,
+        "edge_function_controls_seed_migration_present": true,
+        "edge_function_directory_count": 30,
+        "kill_switch_guard_calls": 30
+      },
+      "evidence": [
+        "supabase/migrations/20260309220001_create_edge_function_controls.sql",
+        "supabase/migrations/20260310121001_seed_edge_function_controls_all.sql",
+        "supabase/functions/_shared/edgeControl.ts",
+        "supabase/functions/*/index.ts"
+      ]
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "checks": {
+        "rls_enabled_on_edge_function_controls": true,
+        "authenticated_select_policy_present": true,
+        "admin_manage_policy_present": true
+      },
+      "evidence": [
+        "supabase/migrations/20260309220001_create_edge_function_controls.sql:16",
+        "supabase/migrations/20260309220001_create_edge_function_controls.sql:18",
+        "supabase/migrations/20260309220001_create_edge_function_controls.sql:22"
+      ]
+    },
+    "build-gate": {
+      "status": "PASS",
+      "checks": {
+        "tsc_no_emit_exit_code": 0,
+        "build_exit_code": 0,
+        "vitest_useEdgeFunctionControls_exit_code": 0
+      },
+      "notes": [
+        "vite build emits existing duplicate onClick warning in src/pages/admin/EditorialHub.tsx",
+        "no TypeScript or production build failures"
+      ]
+    }
+  },
+  "implementation_evidence": {
+    "shared_guard": "supabase/functions/_shared/edgeControl.ts",
+    "seed_migration": "supabase/migrations/20260310121001_seed_edge_function_controls_all.sql",
+    "enforced_function_count": 30
+  },
+  "overall": "PASS"
+}

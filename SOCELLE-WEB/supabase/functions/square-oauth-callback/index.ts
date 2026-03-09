@@ -44,6 +44,7 @@
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -78,6 +79,8 @@ interface SquareMerchant {
 // ── Main Handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('square-oauth-callback', req);
+  if (edgeControlResponse) return edgeControlResponse;
   const url        = new URL(req.url);
   const code       = url.searchParams.get('code');
   const state      = url.searchParams.get('state');

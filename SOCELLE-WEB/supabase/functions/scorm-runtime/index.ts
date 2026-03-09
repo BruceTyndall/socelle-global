@@ -15,6 +15,7 @@
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -42,6 +43,8 @@ const ELEMENT_MAP: Record<string, string> = {
 };
 
 serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('scorm-runtime', req);
+  if (edgeControlResponse) return edgeControlResponse;
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }

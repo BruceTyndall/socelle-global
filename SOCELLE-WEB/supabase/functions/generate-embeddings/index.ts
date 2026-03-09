@@ -15,6 +15,7 @@
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -84,6 +85,8 @@ function buildTextForRow(tableName: string, row: Record<string, unknown>): strin
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('generate-embeddings', req);
+  if (edgeControlResponse) return edgeControlResponse;
   // CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, {

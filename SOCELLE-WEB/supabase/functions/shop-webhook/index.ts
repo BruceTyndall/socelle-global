@@ -14,6 +14,7 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -149,6 +150,8 @@ async function restoreInventory(admin: ReturnType<typeof createClient>, orderId:
 }
 
 serve(async (req) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('shop-webhook', req);
+  if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS });
   }

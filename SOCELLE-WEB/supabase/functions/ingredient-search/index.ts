@@ -5,6 +5,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,6 +14,8 @@ const corsHeaders = {
 };
 
 serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('ingredient-search', req);
+  if (edgeControlResponse) return edgeControlResponse;
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });

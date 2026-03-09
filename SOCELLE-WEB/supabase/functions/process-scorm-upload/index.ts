@@ -17,6 +17,7 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { BlobReader, ZipReader, TextWriter } from "https://deno.land/x/zipjs@v2.7.32/index.js";
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,6 +27,8 @@ const corsHeaders = {
 const BUCKET = "scorm-packages";
 
 serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('process-scorm-upload', req);
+  if (edgeControlResponse) return edgeControlResponse;
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }

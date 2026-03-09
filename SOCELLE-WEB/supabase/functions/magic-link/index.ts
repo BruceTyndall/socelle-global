@@ -23,6 +23,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 const ALLOWED_ORIGINS = [
   "https://app.socelle.com",
@@ -39,6 +40,8 @@ const corsHeaders = (origin: string | null) => ({
 });
 
 Deno.serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('magic-link', req);
+  if (edgeControlResponse) return edgeControlResponse;
   const origin = req.headers.get("origin");
 
   // ── CORS preflight ──────────────────────────────────────────────────────────

@@ -31,6 +31,7 @@
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -64,6 +65,8 @@ interface NppesResponse {
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
+  const edgeControlResponse = await enforceEdgeFunctionEnabled('ingest-npi', req);
+  if (edgeControlResponse) return edgeControlResponse;
   // CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: CORS_HEADERS });
