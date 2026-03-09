@@ -6,8 +6,9 @@
  * Step 3: Review + Publish
  * Data: courses, course_modules, course_lessons tables (LIVE)
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import {
   ArrowLeft,
@@ -96,7 +97,6 @@ export default function CourseBuilder() {
 
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
-  const [loading, setLoading] = useState(isEditing);
 
   const [form, setForm] = useState<CourseForm>({
     title: '',
@@ -119,15 +119,9 @@ export default function CourseBuilder() {
   ]);
 
   // Load existing course for editing
-  useEffect(() => {
-    if (!id || !isSupabaseConfigured) {
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadCourse() {
+  const { isLoading: loading } = useQuery({
+    queryKey: ['course-builder', id],
+    queryFn: async () => {
       const { data: course } = await supabase
         .from('courses')
         .select(`
@@ -139,13 +133,10 @@ export default function CourseBuilder() {
             )
           )
         `)
-        .eq('id', id)
+        .eq('id', id!)
         .single();
 
-      if (cancelled || !course) {
-        setLoading(false);
-        return;
-      }
+      if (!course) return null;
 
       const c = course as Record<string, unknown>;
       setForm({
@@ -191,12 +182,10 @@ export default function CourseBuilder() {
         );
       }
 
-      setLoading(false);
-    }
-
-    loadCourse();
-    return () => { cancelled = true; };
-  }, [id]);
+      return course;
+    },
+    enabled: !!id && isSupabaseConfigured,
+  });
 
   const updateForm = (key: keyof CourseForm, value: unknown) => {
     setForm(prev => ({ ...prev, [key]: value }));

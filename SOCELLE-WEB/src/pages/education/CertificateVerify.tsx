@@ -4,8 +4,8 @@
  * Calls verify-certificate edge function
  * Data: certificates table via edge function (LIVE)
  */
-import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import {
   CheckCircle,
@@ -30,64 +30,40 @@ interface VerifiedCertificate {
 
 export default function CertificateVerify() {
   const { token } = useParams<{ token: string }>();
-  const [result, setResult] = useState<VerifiedCertificate | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function verify() {
-      setLoading(true);
-      setError(null);
-
+  const { data: result = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['certificate-verify', token],
+    queryFn: async (): Promise<VerifiedCertificate> => {
       if (!isSupabaseConfigured) {
-        // Fallback: try direct table query
-        setResult({ valid: false, learner_name: null, course_title: null, issued_at: null, ce_credits: null });
-        setLoading(false);
-        return;
+        return { valid: false, learner_name: null, course_title: null, issued_at: null, ce_credits: null };
       }
 
-      try {
-        // Try edge function first
-        const { data, error: fnError } = await supabase.functions.invoke('verify-certificate', {
-          body: { token },
-        });
+      // Try edge function first
+      const { data, error: fnError } = await supabase.functions.invoke('verify-certificate', {
+        body: { token },
+      });
 
-        if (cancelled) return;
+      if (fnError) {
+        // Fallback: direct table query
+        const { data: cert, error: dbError } = await supabase
+          .from('certificates')
+          .select('learner_name, course_title, issued_at, ce_credits')
+          .eq('verification_token', token)
+          .maybeSingle();
 
-        if (fnError) {
-          // Fallback: direct table query
-          const { data: cert, error: dbError } = await supabase
-            .from('certificates')
-            .select('learner_name, course_title, issued_at, ce_credits')
-            .eq('verification_token', token)
-            .maybeSingle();
-
-          if (dbError || !cert) {
-            setResult({ valid: false, learner_name: null, course_title: null, issued_at: null, ce_credits: null });
-          } else {
-            const c = cert as { learner_name: string | null; course_title: string | null; issued_at: string | null; ce_credits: number | null };
-            setResult({ valid: true, learner_name: c.learner_name, course_title: c.course_title, issued_at: c.issued_at, ce_credits: c.ce_credits });
-          }
-        } else {
-          setResult(data as VerifiedCertificate);
+        if (dbError || !cert) {
+          return { valid: false, learner_name: null, course_title: null, issued_at: null, ce_credits: null };
         }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Verification failed');
-      } finally {
-        if (!cancelled) setLoading(false);
+        const c = cert as { learner_name: string | null; course_title: string | null; issued_at: string | null; ce_credits: number | null };
+        return { valid: true, learner_name: c.learner_name, course_title: c.course_title, issued_at: c.issued_at, ce_credits: c.ce_credits };
       }
-    }
 
-    verify();
-    return () => { cancelled = true; };
-  }, [token]);
+      return data as VerifiedCertificate;
+    },
+    enabled: !!token,
+  });
+
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Verification failed') : null;
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Search, Users, MapPin, ChevronRight, AlertCircle, RefreshCw } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { Badge, Input, EmptyState, StatCard, Avatar } from '../../components/ui';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -29,22 +30,12 @@ function getRetailerStatus(r: Retailer): keyof typeof STATUS_BADGE {
 
 export default function BrandCustomers() {
   const { brandId } = useAuth();
-  const [retailers, setRetailers] = useState<Retailer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'new' | 'inactive'>('all');
 
-  useEffect(() => {
-    if (brandId) fetchRetailers();
-    else setLoading(false);
-  }, [brandId]);
-
-  const fetchRetailers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: retailers = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['brand-customers', brandId],
+    queryFn: async () => {
       // Get plans for this brand + join businesses
       const { data: plans, error: plansErr } = await supabase
         .from('plans')
@@ -74,7 +65,6 @@ export default function BrandCustomers() {
         } else {
           const existing = businessMap.get(biz.id)!;
           existing.planCount += 1;
-          // keep earliest date
           if (plan.created_at < existing.firstSeen) existing.firstSeen = plan.created_at;
         }
       }
@@ -99,14 +89,12 @@ export default function BrandCustomers() {
         }
       }
 
-      setRetailers(Array.from(businessMap.values()).sort((a, b) => b.totalSpend - a.totalSpend));
-    } catch (err: any) {
-      console.warn('Customers fetch error:', err);
-      setError('Unable to load retailer data. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return Array.from(businessMap.values()).sort((a, b) => b.totalSpend - a.totalSpend);
+    },
+    enabled: !!brandId,
+  });
+
+  const error = queryError ? 'Unable to load retailer data. Please try again.' : null;
 
   const filtered = retailers.filter(r => {
     const matchesSearch =
@@ -155,7 +143,7 @@ export default function BrandCustomers() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <p className="text-red-700 font-sans text-sm flex-1">{error}</p>
-          <button onClick={fetchRetailers} className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800">
+          <button onClick={() => refetch()} className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800">
             <RefreshCw className="w-3.5 h-3.5" />
             Retry
           </button>

@@ -3,7 +3,8 @@
  * Renders SCORM content in iframe with JavaScript SCORM API bridge
  * Calls scorm-runtime edge function for Initialize/GetValue/SetValue/Commit/Finish
  */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Loader2, AlertTriangle, ExternalLink } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
@@ -105,67 +106,41 @@ class ScormApiBridge {
 
 export default function ScormPlayer({ scormPackageId, enrollmentId, onComplete }: ScormPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [scormData, setScormData] = useState<ScormData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const apiBridgeRef = useRef<ScormApiBridge | null>(null);
 
   // Load SCORM package data
-  useEffect(() => {
-    if (!isSupabaseConfigured) {
-      setError('Database not connected');
-      setLoading(false);
-      return;
-    }
+  const { data: scormData = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['scorm-package', scormPackageId, enrollmentId],
+    queryFn: async (): Promise<ScormData> => {
+      const { data: pkg, error: pkgError } = await supabase
+        .from('scorm_packages')
+        .select('launch_url')
+        .eq('id', scormPackageId)
+        .single();
 
-    let cancelled = false;
-
-    async function loadScormPackage() {
-      try {
-        const { data: pkg, error: pkgError } = await supabase
-          .from('scorm_packages')
-          .select('launch_url')
-          .eq('id', scormPackageId)
-          .single();
-
-        if (cancelled) return;
-
-        if (pkgError || !pkg) {
-          setError('SCORM package not found');
-          setLoading(false);
-          return;
-        }
-
-        // Load tracking data for resume
-        const { data: tracking } = await supabase
-          .from('scorm_tracking')
-          .select('suspend_data, lesson_location, lesson_status')
-          .eq('scorm_package_id', scormPackageId)
-          .eq('enrollment_id', enrollmentId)
-          .maybeSingle();
-
-        if (cancelled) return;
-
-        const data: ScormData = {
-          launch_url: (pkg as { launch_url: string }).launch_url,
-          suspend_data: (tracking as Record<string, string> | null)?.suspend_data,
-          lesson_location: (tracking as Record<string, string> | null)?.lesson_location,
-          lesson_status: (tracking as Record<string, string> | null)?.lesson_status,
-        };
-
-        setScormData(data);
-        setLoading(false);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load SCORM package');
-          setLoading(false);
-        }
+      if (pkgError || !pkg) {
+        throw new Error('SCORM package not found');
       }
-    }
 
-    loadScormPackage();
-    return () => { cancelled = true; };
-  }, [scormPackageId, enrollmentId]);
+      // Load tracking data for resume
+      const { data: tracking } = await supabase
+        .from('scorm_tracking')
+        .select('suspend_data, lesson_location, lesson_status')
+        .eq('scorm_package_id', scormPackageId)
+        .eq('enrollment_id', enrollmentId)
+        .maybeSingle();
+
+      return {
+        launch_url: (pkg as { launch_url: string }).launch_url,
+        suspend_data: (tracking as Record<string, string> | null)?.suspend_data,
+        lesson_location: (tracking as Record<string, string> | null)?.lesson_location,
+        lesson_status: (tracking as Record<string, string> | null)?.lesson_status,
+      };
+    },
+    enabled: isSupabaseConfigured,
+  });
+
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load SCORM package') : (!isSupabaseConfigured ? 'Database not connected' : null);
 
   // Install SCORM API bridge on window
   const installBridge = useCallback(() => {

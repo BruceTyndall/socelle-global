@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, AlertCircle, Check, Truck, RotateCcw, MessageSquare } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Badge } from '../../components/ui';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
@@ -78,10 +79,7 @@ const CARRIERS = [
 export default function BrandOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const { brandId } = useAuth();
-
-  const [order, setOrder]         = useState<OrderData | null>(null);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   // Status update state
   const [newStatus, setNewStatus]             = useState('');
@@ -95,16 +93,9 @@ export default function BrandOrderDetail() {
   const [messageError, setMessageError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (brandId && id) fetchOrder();
-    else setLoading(false);
-  }, [brandId, id]);
-
-  const fetchOrder = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: order = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['brand-order-detail', brandId, id],
+    queryFn: async () => {
       const { data: orderData, error: orderErr } = await supabase
         .from('orders')
         .select(`
@@ -127,7 +118,11 @@ export default function BrandOrderDetail() {
         .eq('order_id', id!)
         .order('product_name');
 
-      setOrder({
+      // Pre-fill tracking if already set
+      setTrackingNumber(orderData.tracking_number || '');
+      setTrackingCarrier(orderData.tracking_carrier || '');
+
+      return {
         id:                   orderData.id,
         order_number:         orderData.order_number,
         created_at:           orderData.created_at,
@@ -143,17 +138,12 @@ export default function BrandOrderDetail() {
         return_requested_at:  orderData.return_requested_at ?? null,
         return_reason:        orderData.return_reason ?? null,
         items:                itemsData || [],
-      });
+      } as OrderData;
+    },
+    enabled: !!brandId && !!id,
+  });
 
-      // Pre-fill tracking if already set
-      setTrackingNumber(orderData.tracking_number || '');
-      setTrackingCarrier(orderData.tracking_carrier || '');
-    } catch {
-      setError('Unable to load order. It may not exist or you may not have access.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = queryError ? 'Unable to load order. It may not exist or you may not have access.' : null;
 
   const handleSaveStatus = async () => {
     if (!order || !newStatus) return;
@@ -189,13 +179,8 @@ export default function BrandOrderDetail() {
 
       if (updateErr) throw updateErr;
 
-      // Reflect updates locally
-      setOrder(prev => prev ? {
-        ...prev,
-        status:           newStatus,
-        tracking_number:  newStatus === 'shipped' ? trackingNumber.trim() : prev.tracking_number,
-        tracking_carrier: newStatus === 'shipped' ? (trackingCarrier || null) : prev.tracking_carrier,
-      } : prev);
+      // Refetch order data
+      queryClient.invalidateQueries({ queryKey: ['brand-order-detail', brandId, id] });
       setNewStatus('');
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -248,7 +233,7 @@ export default function BrandOrderDetail() {
       const result = data as { ok?: boolean; error?: string } | null;
       if (rpcErr) throw new Error(rpcErr.message);
       if (result && !result.ok) throw new Error(result.error || 'Failed to resolve');
-      fetchOrder();
+      queryClient.invalidateQueries({ queryKey: ['brand-order-detail', brandId, id] });
     } catch (e: unknown) {
       setSaveError(e instanceof Error ? e.message : 'Failed to resolve return.');
     } finally {

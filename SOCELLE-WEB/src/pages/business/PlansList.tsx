@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Trash2, Eye, Loader2, Search, GitCompare, X, Upload } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import BusinessNav from '../../components/BusinessNav';
 import { TableRowSkeleton, Skeleton } from '../../components/Skeleton';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Plan {
   id: string;
@@ -27,43 +28,39 @@ const STATUS_STYLE: Record<string, string> = {
 
 export default function PlansList() {
   const { user } = useAuth();
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  useEffect(() => {
-    if (user) fetchPlans();
-  }, [user]);
-
-  const fetchPlans = async () => {
-    try {
+  const { data: plans = [], isLoading: loading } = useQuery({
+    queryKey: ['plans', user?.id],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('plans')
         .select('*, brands(name, slug)')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPlans(data || []);
-    } catch {
-      // silent — no blocking error for list failures
-    } finally {
-      setLoading(false);
-    }
-  };
+      return (data || []) as Plan[];
+    },
+    enabled: !!user,
+  });
 
-  const handleDeleteConfirm = async (id: string) => {
-    setConfirmDeleteId(null);
-    setDeletingId(id);
-    try {
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
       const { error } = await supabase.from('plans').delete().eq('id', id);
       if (error) throw error;
-      setPlans(plans.filter((p) => p.id !== id));
-    } finally {
-      setDeletingId(null);
-    }
+      return id;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['plans', user?.id] });
+    },
+  });
+
+  const handleDeleteConfirm = (id: string) => {
+    setConfirmDeleteId(null);
+    deleteMutation.mutate(id);
   };
 
   if (loading) {
@@ -269,11 +266,11 @@ export default function PlansList() {
                                 </Link>
                                 <button
                                   onClick={() => setConfirmDeleteId(plan.id)}
-                                  disabled={deletingId === plan.id}
+                                  disabled={deleteMutation.isPending && deleteMutation.variables === plan.id}
                                   className="p-2 text-graphite/60 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                                   title="Delete plan"
                                 >
-                                  {deletingId === plan.id
+                                  {deleteMutation.isPending && deleteMutation.variables === plan.id
                                     ? <Loader2 className="w-4 h-4 animate-spin" />
                                     : <Trash2 className="w-4 h-4" />
                                   }

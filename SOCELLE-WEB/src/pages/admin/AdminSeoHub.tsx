@@ -2,7 +2,8 @@
 // SEO manager. CRUD on sitemap_entries table + page-level meta from cms_pages.
 // Data label: LIVE — reads/writes sitemap_entries with real lastmod
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
   Pencil,
@@ -50,8 +51,7 @@ function formatDate(dateStr: string): string {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminSeoHub() {
-  const [entries, setEntries] = useState<SitemapEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
   const [editing, setEditing] = useState<SitemapEntry | null>(null);
@@ -70,26 +70,18 @@ export default function AdminSeoHub() {
 
   // ── Fetch ──────────────────────────────────────────────────────
 
-  const fetchEntries = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('sitemap_entries')
-      .select('*')
-      .order('loc', { ascending: true });
+  const { data: entries = [], isLoading: loading, refetch: fetchEntries } = useQuery({
+    queryKey: ['sitemap_entries'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('sitemap_entries')
+        .select('*')
+        .order('loc', { ascending: true });
 
-    if (err) {
-      setError(err.message);
-      setEntries([]);
-    } else {
-      setEntries((data as SitemapEntry[]) || []);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchEntries();
-  }, [fetchEntries]);
+      if (err) throw err;
+      return (data as SitemapEntry[]) || [];
+    },
+  });
 
   // ── Filter ─────────────────────────────────────────────────────
 
@@ -165,7 +157,7 @@ export default function AdminSeoHub() {
     }
     setSaving(false);
     resetForm();
-    fetchEntries();
+    void queryClient.invalidateQueries({ queryKey: ['sitemap_entries'] });
     setTimeout(() => setSuccessMsg(null), 3000);
   };
 
@@ -173,7 +165,7 @@ export default function AdminSeoHub() {
     if (!window.confirm('Delete this sitemap entry?')) return;
     const { error: err } = await supabase.from('sitemap_entries').delete().eq('id', id);
     if (err) setError(err.message);
-    else fetchEntries();
+    else void queryClient.invalidateQueries({ queryKey: ['sitemap_entries'] });
   };
 
   const toggleActive = async (entry: SitemapEntry) => {
@@ -182,7 +174,7 @@ export default function AdminSeoHub() {
       .update({ is_active: !entry.is_active, lastmod: new Date().toISOString() })
       .eq('id', entry.id);
     if (err) setError(err.message);
-    else fetchEntries();
+    else void queryClient.invalidateQueries({ queryKey: ['sitemap_entries'] });
   };
 
   const handleCancel = () => {
@@ -308,7 +300,7 @@ export default function AdminSeoHub() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={fetchEntries} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
+          <button onClick={() => void fetchEntries()} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </button>
           <button

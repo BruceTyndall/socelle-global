@@ -3,6 +3,7 @@ import {
   Search, Plus, Package, Star, Edit2, AlertCircle,
   RefreshCw, DollarSign, Layers,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   StatCard, Badge, Input, Button, EmptyState,
   Modal, ModalBody, ModalFooter,
@@ -541,25 +542,16 @@ function Toggle({
 
 export default function BrandProducts() {
   const { brandId } = useAuth();
-  const [products, setProducts]           = useState<Product[]>([]);
-  const [loading, setLoading]             = useState(true);
-  const [error, setError]                 = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [search, setSearch]               = useState('');
   const [typeFilter, setTypeFilter]       = useState<'all' | ProductType>('all');
   const [showInactive, setShowInactive]   = useState(false);
   const [modalOpen, setModalOpen]         = useState(false);
   const [editProduct, setEditProduct]     = useState<Product | null>(null);
 
-  useEffect(() => {
-    if (brandId) fetchProducts();
-    else setLoading(false);
-  }, [brandId]);
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: products = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['brand-products', brandId],
+    queryFn: async () => {
       const [proRes, retailRes] = await Promise.all([
         supabase
           .from('pro_products')
@@ -601,17 +593,15 @@ export default function BrandProducts() {
         function:       p.product_function ?? null,
       });
 
-      setProducts([
+      return [
         ...(proRes.data ?? []).map(p => mapProduct(p, 'PRO')),
         ...(retailRes.data ?? []).map(p => mapProduct(p, 'Retail')),
-      ]);
-    } catch (err: any) {
-      console.warn('Products fetch error:', err);
-      setError('Unable to load products. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      ];
+    },
+    enabled: !!brandId,
+  });
+
+  const error = queryError ? 'Unable to load products. Please try again.' : null;
 
   const openAdd = () => {
     setEditProduct(null);
@@ -624,7 +614,7 @@ export default function BrandProducts() {
   };
 
   const handleSaved = () => {
-    fetchProducts();
+    queryClient.invalidateQueries({ queryKey: ['brand-products', brandId] });
   };
 
   const filtered = products.filter(p => {
@@ -686,7 +676,7 @@ export default function BrandProducts() {
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <p className="text-red-700 font-sans text-sm flex-1">{error}</p>
           <button
-            onClick={fetchProducts}
+            onClick={() => refetch()}
             className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800"
           >
             <RefreshCw className="w-3.5 h-3.5" />

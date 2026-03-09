@@ -8,6 +8,7 @@ import { BrandCardSkeleton } from '../../components/Skeleton';
 import BrandCard from '../../components/BrandCard';
 import { getDemandSignal, getGrowthOpportunity } from '../../lib/intelligence/businessIntelligence';
 import { TrendingUp, Zap, Brain } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 interface Brand {
   id: string;
@@ -28,10 +29,6 @@ interface BrandStats {
 export default function PortalHome() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [brandStats, setBrandStats] = useState<Record<string, BrandStats>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Logged-in users go straight to their dashboard
@@ -41,15 +38,9 @@ export default function PortalHome() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    fetchBrands();
-  }, []);
-
-  const fetchBrands = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: brandsData, isLoading: loading, error: queryError, refetch: fetchBrands } = useQuery({
+    queryKey: ['portal-brands'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('brands')
         .select('*')
@@ -59,7 +50,6 @@ export default function PortalHome() {
       if (error) throw error;
 
       const safeBrands = Array.isArray(data) ? data : [];
-      setBrands(safeBrands);
 
       const stats: Record<string, BrandStats> = {};
       await Promise.all(
@@ -87,15 +77,13 @@ export default function PortalHome() {
         })
       );
 
-      setBrandStats(stats);
-    } catch (err: any) {
-      console.warn('Error fetching brands:', err);
-      setBrands([]);
-      setError('Unable to load brands right now. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return { brands: safeBrands as Brand[], brandStats: stats };
+    },
+  });
+
+  const brands = brandsData?.brands ?? [];
+  const brandStats = brandsData?.brandStats ?? {};
+  const error = queryError ? 'Unable to load brands right now. Please try again.' : null;
 
   const filteredBrands = brands.filter((brand) =>
     brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

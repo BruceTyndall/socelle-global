@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { MessageSquare, Send, ChevronRight, Store, Clock, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -162,17 +163,15 @@ function SelectConversation() {
 
 export default function BusinessMessages() {
   const { user, profile } = useAuth();
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const conversationIdFromUrl = searchParams.get('conversation');
 
-  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConv, setActiveConv] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [sending, setSending] = useState(false);
-  const [loadingConvs, setLoadingConvs] = useState(true);
+  const [showThread, setShowThread] = useState(false);
   const [loadingThread, setLoadingThread] = useState(false);
-  const [showThread, setShowThread] = useState(false); // mobile: show thread panel
   const [urlSelectAttempted, setUrlSelectAttempted] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -180,9 +179,11 @@ export default function BusinessMessages() {
 
   // ── Fetch conversations ───────────────────────────────────────────────────
 
-  const fetchConversations = useCallback(async (): Promise<Conversation[]> => {
-    if (!user) return [];
-    try {
+  const { data: conversations = [], isLoading: loadingConvs } = useQuery({
+    queryKey: ['conversations', user?.id],
+    queryFn: async (): Promise<Conversation[]> => {
+      if (!user) return [];
+
       const [p1Res, p2Res] = await Promise.all([
         supabase
           .from('conversations')
@@ -208,7 +209,7 @@ export default function BusinessMessages() {
           return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
         });
 
-      const list = deduped.map(c => {
+      return deduped.map(c => {
         const brand = c.brands as unknown as { name: string; slug: string } | null;
         return {
           id: c.id,
@@ -221,12 +222,9 @@ export default function BusinessMessages() {
           last_message_preview: c.last_message_preview,
         };
       });
-      setConversations(list);
-      return list;
-    } finally {
-      setLoadingConvs(false);
-    }
-  }, [user]);
+    },
+    enabled: !!user,
+  });
 
   // ── Fetch thread ──────────────────────────────────────────────────────────
 
@@ -244,32 +242,31 @@ export default function BusinessMessages() {
 
   // ── Send message ──────────────────────────────────────────────────────────
 
-  const handleSend = async () => {
-    if (!user || !activeConv || !newMessage.trim() || sending) return;
-    setSending(true);
-    const body = newMessage.trim();
-    setNewMessage('');
+  const sendMutation = useMutation({
+    mutationFn: async ({ convId, body }: { convId: string; body: string }) => {
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: convId,
+          sender_id: user!.id,
+          sender_role: profile?.role ?? 'business_user',
+          body,
+        })
+        .select('id, sender_id, sender_role, body, created_at')
+        .single();
 
-    const { data, error } = await supabase
-      .from('messages')
-      .insert({
-        conversation_id: activeConv.id,
-        sender_id: user.id,
-        sender_role: profile?.role ?? 'business_user',
-        body,
-      })
-      .select('id, sender_id, sender_role, body, created_at')
-      .single();
-
-    if (!error && data) {
-      setMessages(prev => [...prev, data as Message]);
+      if (error) throw error;
+      return data as Message;
+    },
+    onSuccess: (data, { convId, body }) => {
+      setMessages(prev => [...prev, data]);
 
       // Update conversation preview optimistically
       const preview = body.slice(0, 120);
       const now = new Date().toISOString();
-      setConversations(prev =>
-        prev.map(c =>
-          c.id === activeConv.id
+      queryClient.setQueryData<Conversation[]>(['conversations', user?.id], (old) =>
+        (old ?? []).map(c =>
+          c.id === convId
             ? { ...c, last_message_at: now, last_message_preview: preview }
             : c
         )
@@ -279,10 +276,16 @@ export default function BusinessMessages() {
       supabase
         .from('conversations')
         .update({ last_message_at: now, last_message_preview: preview })
-        .eq('id', activeConv.id)
+        .eq('id', convId)
         .then(() => {});
-    }
-    setSending(false);
+    },
+  });
+
+  const handleSend = async () => {
+    if (!user || !activeConv || !newMessage.trim() || sendMutation.isPending) return;
+    const body = newMessage.trim();
+    setNewMessage('');
+    sendMutation.mutate({ convId: activeConv.id, body });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -300,10 +303,6 @@ export default function BusinessMessages() {
 
   // ── Effects ───────────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    fetchConversations();
-  }, [fetchConversations]);
-
   // Open conversation from ?conversation= id (e.g. from Order detail "Message about this order")
   useEffect(() => {
     if (!conversationIdFromUrl || loadingConvs) return;
@@ -315,16 +314,9 @@ export default function BusinessMessages() {
       setUrlSelectAttempted(true);
     } else if (!urlSelectAttempted) {
       setUrlSelectAttempted(true);
-      fetchConversations().then((list) => {
-        const c = list.find(x => x.id === conversationIdFromUrl);
-        if (c) {
-          setActiveConv(c);
-          setShowThread(true);
-          fetchThread(c.id);
-        }
-      });
+      // Conversations already loaded via useQuery, no need to refetch
     }
-  }, [conversationIdFromUrl, loadingConvs, conversations, urlSelectAttempted, fetchConversations, fetchThread]);
+  }, [conversationIdFromUrl, loadingConvs, conversations, urlSelectAttempted, fetchThread]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -489,7 +481,7 @@ export default function BusinessMessages() {
                 />
                 <button
                   onClick={handleSend}
-                  disabled={!newMessage.trim() || sending}
+                  disabled={!newMessage.trim() || sendMutation.isPending}
                   className="flex-shrink-0 w-10 h-10 rounded-xl bg-graphite hover:bg-graphite disabled:bg-accent-soft disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                   aria-label="Send message"
                 >

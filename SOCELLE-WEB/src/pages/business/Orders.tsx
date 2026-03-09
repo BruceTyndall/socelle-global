@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Package, ChevronRight, AlertCircle, RefreshCw } from 'lucide-react';
 import { Badge, EmptyState } from '../../components/ui';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { useQuery } from '@tanstack/react-query';
 
 interface Order {
   id: string;
@@ -26,20 +26,12 @@ const STATUS_CONFIG: Record<string, { label: string; variant: 'amber' | 'gray' |
 
 export default function BusinessOrders() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) loadOrders();
-    else setLoading(false);
-  }, [user]);
+  const { data: orders = [], isLoading: loading, error: queryError, refetch: loadOrders } = useQuery({
+    queryKey: ['business-orders', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
 
-  const loadOrders = async () => {
-    if (!user) return;
-    setLoading(true);
-    setError(null);
-    try {
       const { data: ordersData, error: ordersErr } = await supabase
         .from('orders')
         .select('id, order_number, created_at, status, subtotal, brands(name)')
@@ -62,7 +54,7 @@ export default function BusinessOrders() {
         }
       }
 
-      setOrders((ordersData || []).map(o => ({
+      return (ordersData || []).map(o => ({
         id: o.id,
         order_number: o.order_number,
         created_at: o.created_at,
@@ -70,13 +62,12 @@ export default function BusinessOrders() {
         subtotal: o.subtotal,
         brand_name: (o as any).brands?.name || '—',
         items_count: itemCountMap[o.id] || 0,
-      })));
-    } catch {
-      setError('Unable to load orders. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      })) as Order[];
+    },
+    enabled: !!user,
+  });
+
+  const error = queryError ? 'Unable to load orders. Please try again.' : null;
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });

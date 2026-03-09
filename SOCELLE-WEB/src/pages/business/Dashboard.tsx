@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, DollarSign, Store, ArrowRight, CheckCircle, Clock, AlertCircle, Sparkles, TrendingUp, BarChart3, AlertTriangle, Brain } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { getOperatorInsights } from '../../lib/intelligence/businessIntelligence';
 import type { OperatorInsight } from '../../lib/intelligence/businessIntelligence';
+import { useQuery } from '@tanstack/react-query';
 
 interface DashboardStats {
   ordersCount: number;
@@ -54,20 +54,12 @@ const INSIGHT_CONFIG: Record<OperatorInsight['category'], { icon: typeof Trendin
 
 export default function Dashboard() {
   const { profile, user } = useAuth();
-  const [stats, setStats] = useState<DashboardStats>({ ordersCount: 0, totalSpend: 0, activeBrandsCount: 0 });
-  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
-  const [businessInfo, setBusinessInfo] = useState<BusinessInfo | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) fetchDashboardData();
-    else setLoading(false);
-  }, [user?.id]);
+  const { data: dashboardData, isLoading: loading } = useQuery({
+    queryKey: ['business-dashboard', user?.id, profile?.business_id],
+    queryFn: async () => {
+      if (!user) return { stats: { ordersCount: 0, totalSpend: 0, activeBrandsCount: 0 }, recentOrders: [] as RecentOrder[], businessInfo: null as BusinessInfo | null };
 
-  const fetchDashboardData = async () => {
-    if (!user) return;
-
-    try {
       const [ordersRes, recentOrdersRes, businessRes] = await Promise.allSettled([
         supabase
           .from('orders')
@@ -91,34 +83,40 @@ export default function Dashboard() {
           : Promise.resolve({ data: null, error: null }),
       ]);
 
+      let stats: DashboardStats = { ordersCount: 0, totalSpend: 0, activeBrandsCount: 0 };
       if (ordersRes.status === 'fulfilled' && ordersRes.value.data) {
         const orders = ordersRes.value.data;
         const uniqueBrands = new Set(orders.map(o => o.brand_id).filter(Boolean));
         const spend = orders.reduce((sum, o) => sum + (Number(o.subtotal) || 0), 0);
-        setStats({ ordersCount: orders.length, totalSpend: spend, activeBrandsCount: uniqueBrands.size });
+        stats = { ordersCount: orders.length, totalSpend: spend, activeBrandsCount: uniqueBrands.size };
       }
 
+      let recentOrders: RecentOrder[] = [];
       if (recentOrdersRes.status === 'fulfilled' && recentOrdersRes.value.data) {
-        setRecentOrders(
-          recentOrdersRes.value.data.map(o => ({
-            id: o.id,
-            order_number: o.order_number,
-            status: o.status,
-            subtotal: Number(o.subtotal),
-            created_at: o.created_at,
-            brand_name: (o.brands as any)?.name || 'Unknown Brand',
-            brand_slug: (o.brands as any)?.slug || '',
-          }))
-        );
+        recentOrders = recentOrdersRes.value.data.map(o => ({
+          id: o.id,
+          order_number: o.order_number,
+          status: o.status,
+          subtotal: Number(o.subtotal),
+          created_at: o.created_at,
+          brand_name: (o.brands as any)?.name || 'Unknown Brand',
+          brand_slug: (o.brands as any)?.slug || '',
+        }));
       }
 
+      let businessInfo: BusinessInfo | null = null;
       if (businessRes.status === 'fulfilled' && businessRes.value.data) {
-        setBusinessInfo(businessRes.value.data);
+        businessInfo = businessRes.value.data;
       }
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      return { stats, recentOrders, businessInfo };
+    },
+    enabled: !!user,
+  });
+
+  const stats = dashboardData?.stats ?? { ordersCount: 0, totalSpend: 0, activeBrandsCount: 0 };
+  const recentOrders = dashboardData?.recentOrders ?? [];
+  const businessInfo = dashboardData?.businessInfo ?? null;
 
   const verificationBadge = businessInfo
     ? (VERIFICATION_BADGE[businessInfo.verification_status] || VERIFICATION_BADGE['unverified'])

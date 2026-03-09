@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { User, Check, CheckCircle, Clock, AlertCircle, Globe, Instagram, Phone, MapPin, Building2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const BUSINESS_TYPES = [
   { value: 'salon',    label: 'Salon' },
@@ -60,49 +61,42 @@ function VerificationBadge({ status }: { status: string }) {
 
 export default function BusinessAccount() {
   const { user, profile } = useAuth();
+  const queryClient = useQueryClient();
 
-  const [business, setBusiness] = useState<BusinessData>(EMPTY_BUSINESS);
   const [form, setForm]         = useState<BusinessData>(EMPTY_BUSINESS);
-  const [loading, setLoading]   = useState(true);
-  const [saving, setSaving]     = useState(false);
   const [saved, setSaved]       = useState(false);
-  const [error, setError]       = useState<string | null>(null);
+  const [formInitialized, setFormInitialized] = useState(false);
 
-  // ── Fetch business record ──────────────────────────────────────────────────
-  useEffect(() => {
-    if (!profile?.business_id) { setLoading(false); return; }
-    fetchBusiness();
-  }, [profile?.business_id]);
+  const { data: business = EMPTY_BUSINESS, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['business-account', profile?.business_id],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('businesses')
+        .select('name, type, city, state, phone, website_url, instagram_handle, verification_status')
+        .eq('id', profile!.business_id)
+        .single();
 
-  const fetchBusiness = async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('businesses')
-      .select('name, type, city, state, phone, website_url, instagram_handle, verification_status')
-      .eq('id', profile!.business_id)
-      .single();
+      if (err || !data) throw new Error('Could not load business profile.');
 
-    if (err || !data) {
-      setError('Could not load business profile.');
-      setLoading(false);
-      return;
-    }
+      return {
+        name:               data.name               || '',
+        type:               data.type               || 'spa',
+        city:               data.city               || '',
+        state:              data.state              || '',
+        phone:              data.phone              || '',
+        website_url:        data.website_url        || '',
+        instagram_handle:   data.instagram_handle   || '',
+        verification_status: data.verification_status || 'unverified',
+      } as BusinessData;
+    },
+    enabled: !!profile?.business_id,
+  });
 
-    const biz: BusinessData = {
-      name:               data.name               || '',
-      type:               data.type               || 'spa',
-      city:               data.city               || '',
-      state:              data.state              || '',
-      phone:              data.phone              || '',
-      website_url:        data.website_url        || '',
-      instagram_handle:   data.instagram_handle   || '',
-      verification_status: data.verification_status || 'unverified',
-    };
-    setBusiness(biz);
-    setForm(biz);
-    setLoading(false);
-  };
+  // Sync form state when business data loads or changes
+  if (business !== EMPTY_BUSINESS && !formInitialized) {
+    setForm(business);
+    setFormInitialized(true);
+  }
 
   // ── Field helper ───────────────────────────────────────────────────────────
   const set = (field: keyof BusinessData) =>
@@ -120,11 +114,10 @@ export default function BusinessAccount() {
     form.instagram_handle !== business.instagram_handle;
 
   // ── Save ───────────────────────────────────────────────────────────────────
-  const handleSave = async () => {
-    if (!user || !profile?.business_id || !form.name.trim()) return;
-    setSaving(true);
-    setError(null);
-    try {
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!user || !profile?.business_id || !form.name.trim()) throw new Error('Missing required data');
+
       const { error: bizErr } = await supabase
         .from('businesses')
         .update({
@@ -146,16 +139,24 @@ export default function BusinessAccount() {
         .update({ spa_name: form.name.trim() })
         .eq('id', user.id);
 
-      const updated = { ...form, name: form.name.trim(), instagram_handle: form.instagram_handle.replace(/^@/, '').trim() };
-      setBusiness(updated);
+      return { ...form, name: form.name.trim(), instagram_handle: form.instagram_handle.replace(/^@/, '').trim() };
+    },
+    onSuccess: (updated) => {
       setForm(updated);
+      queryClient.invalidateQueries({ queryKey: ['business-account', profile?.business_id] });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Save failed. Please try again.');
-    } finally {
-      setSaving(false);
-    }
+    },
+  });
+
+  const error = queryError
+    ? 'Could not load business profile.'
+    : saveMutation.error
+    ? (saveMutation.error instanceof Error ? saveMutation.error.message : 'Save failed. Please try again.')
+    : null;
+
+  const handleSave = () => {
+    saveMutation.mutate();
   };
 
   // ── Loading skeleton ───────────────────────────────────────────────────────
@@ -350,10 +351,10 @@ export default function BusinessAccount() {
           <div className="flex items-center gap-3 pt-1">
             <button
               onClick={handleSave}
-              disabled={saving || !form.name.trim() || !isDirty}
+              disabled={saveMutation.isPending || !form.name.trim() || !isDirty}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-graphite hover:bg-graphite/90 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium font-sans rounded-lg transition-colors"
             >
-              {saving ? 'Saving…' : 'Save changes'}
+              {saveMutation.isPending ? 'Saving…' : 'Save changes'}
             </button>
             {saved && (
               <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-sans">

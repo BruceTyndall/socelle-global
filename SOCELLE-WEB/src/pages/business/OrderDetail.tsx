@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, AlertCircle, Truck, ExternalLink, RotateCcw, MessageSquare } from 'lucide-react';
 import { Badge } from '../../components/ui';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface OrderItem {
   id: string;
@@ -49,25 +50,16 @@ const STATUS_STEPS = ['submitted', 'reviewing', 'sent_to_brand', 'confirmed', 'f
 export default function BusinessOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
-  const [order, setOrder] = useState<OrderDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [returnReason, setReturnReason] = useState('');
-  const [returnRequesting, setReturnRequesting] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
-  const [messageLoading, setMessageLoading] = useState(false);
   const [messageError, setMessageError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user && id) fetchOrder();
-  }, [user, id]);
-
-  const fetchOrder = async () => {
-    if (!user || !id) return;
-    try {
-      setLoading(true);
-      setError(null);
+  const { data: order = null, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['order', id, user?.id],
+    queryFn: async () => {
+      if (!user || !id) return null;
 
       const { data: orderData, error: orderErr } = await supabase
         .from('orders')
@@ -86,7 +78,7 @@ export default function BusinessOrderDetail() {
         .order('product_name');
 
       const row = orderData as any;
-      setOrder({
+      return {
         id: row.id,
         order_number: row.order_number,
         created_at: row.created_at,
@@ -102,13 +94,12 @@ export default function BusinessOrderDetail() {
         return_requested_at: row.return_requested_at ?? null,
         return_reason: row.return_reason ?? null,
         items: itemsData || [],
-      });
-    } catch {
-      setError('Unable to load order. It may not exist or you may not have access.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      } as OrderDetail;
+    },
+    enabled: !!user && !!id,
+  });
+
+  const error = queryError ? 'Unable to load order. It may not exist or you may not have access.' : null;
 
   const stepIndex = (status: string) => {
     const idx = STATUS_STEPS.indexOf(status);
@@ -121,47 +112,56 @@ export default function BusinessOrderDetail() {
   const formatDateTime = (iso: string) =>
     new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-  const handleMessageOrder = async () => {
-    if (!order?.id) return;
-    setMessageError(null);
-    setMessageLoading(true);
-    try {
+  const messageMutation = useMutation({
+    mutationFn: async (orderId: string) => {
       const { data, error: rpcErr } = await supabase.rpc('get_or_create_order_conversation', {
-        p_order_id: order.id,
+        p_order_id: orderId,
       });
       const result = data as { ok?: boolean; error?: string; conversation_id?: string } | null;
       if (rpcErr) throw new Error(rpcErr.message);
       if (result && !result.ok) throw new Error(result.error || 'Could not start conversation');
+      return result;
+    },
+    onSuccess: (result) => {
       if (result?.conversation_id) {
         navigate(`/portal/messages?conversation=${result.conversation_id}`);
       }
-    } catch (err: unknown) {
+    },
+    onError: (err: unknown) => {
       setMessageError(err instanceof Error ? err.message : 'Could not open conversation.');
-    } finally {
-      setMessageLoading(false);
-    }
+    },
+  });
+
+  const handleMessageOrder = async () => {
+    if (!order?.id) return;
+    setMessageError(null);
+    messageMutation.mutate(order.id);
   };
 
-  const handleRequestReturn = async () => {
-    if (!order?.id) return;
-    setReturnRequesting(true);
-    setError(null);
-    try {
+  const returnMutation = useMutation({
+    mutationFn: async ({ orderId, reason }: { orderId: string; reason: string }) => {
       const { data, error: rpcErr } = await supabase.rpc('request_return', {
-        p_order_id: order.id,
-        p_reason: returnReason.trim() || 'Requested by reseller',
+        p_order_id: orderId,
+        p_reason: reason,
       });
       const result = data as { ok?: boolean; error?: string } | null;
       if (rpcErr) throw new Error(rpcErr.message);
       if (result && !result.ok) throw new Error(result.error || 'Request failed');
+      return result;
+    },
+    onSuccess: () => {
       setShowReturnForm(false);
       setReturnReason('');
-      fetchOrder();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Could not submit return request.');
-    } finally {
-      setReturnRequesting(false);
-    }
+      queryClient.invalidateQueries({ queryKey: ['order', id, user?.id] });
+    },
+  });
+
+  const handleRequestReturn = async () => {
+    if (!order?.id) return;
+    returnMutation.mutate({
+      orderId: order.id,
+      reason: returnReason.trim() || 'Requested by reseller',
+    });
   };
 
   // Build track URL for common carriers (reseller can open in new tab)
@@ -360,11 +360,11 @@ export default function BusinessOrderDetail() {
               <button
                 type="button"
                 onClick={handleMessageOrder}
-                disabled={messageLoading}
+                disabled={messageMutation.isPending}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-medium bg-graphite text-white hover:bg-graphite disabled:opacity-60 transition-colors"
               >
                 <MessageSquare className="w-4 h-4" />
-                {messageLoading ? 'Opening…' : 'Message about this order'}
+                {messageMutation.isPending ? 'Opening…' : 'Message about this order'}
               </button>
               {messageError && (
                 <p className="text-sm text-red-600 font-sans mt-2">{messageError}</p>
@@ -400,10 +400,10 @@ export default function BusinessOrderDetail() {
                       <button
                         type="button"
                         onClick={handleRequestReturn}
-                        disabled={returnRequesting}
+                        disabled={returnMutation.isPending}
                         className="btn-gold px-4 py-2 rounded-lg text-sm font-sans font-medium"
                       >
-                        {returnRequesting ? 'Submitting…' : 'Submit request'}
+                        {returnMutation.isPending ? 'Submitting…' : 'Submit request'}
                       </button>
                       <button
                         type="button"
@@ -413,6 +413,9 @@ export default function BusinessOrderDetail() {
                         Cancel
                       </button>
                     </div>
+                    {returnMutation.error && (
+                      <p className="text-sm text-red-600 font-sans">{returnMutation.error instanceof Error ? returnMutation.error.message : 'Could not submit return request.'}</p>
+                    )}
                   </div>
                 )}
                 {order.return_status === 'requested' && (

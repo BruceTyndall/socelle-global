@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { CheckCircle, FileText, Loader2 } from 'lucide-react';
@@ -15,23 +16,21 @@ interface SeedRow {
 export default function ClaimReview() {
   const navigate = useNavigate();
   const { profile, brandId } = useAuth();
-  const [seedContent, setSeedContent] = useState<SeedRow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    if (!brandId) return;
-    (async () => {
+  const { data: seedContent = [], isLoading: loading } = useQuery({
+    queryKey: ['brand-seed-content', brandId],
+    queryFn: async () => {
       const { data } = await supabase
         .from('brand_seed_content')
         .select('id, content_type, content_data, source_url, status')
-        .eq('brand_id', brandId)
+        .eq('brand_id', brandId!)
         .order('created_at', { ascending: false });
-      setSeedContent((data as SeedRow[]) || []);
-      setLoading(false);
-    })();
-  }, [brandId]);
+      return (data as SeedRow[]) || [];
+    },
+    enabled: !!brandId,
+  });
 
   const handleSubmitForVerification = async () => {
     if (!brandId) return;

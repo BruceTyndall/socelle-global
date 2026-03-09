@@ -3,7 +3,8 @@
  * Data source: courses, scorm_packages, certificate_templates, course_enrollments (LIVE)
  * Route: /admin/courses
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   Search,
@@ -63,85 +64,79 @@ interface ScormRow {
 /* ── Main component ────────────────────────────────────────────────── */
 
 export default function AdminCoursesHub() {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<Tab>('courses');
-  const [courses, setCourses] = useState<CourseListItem[]>([]);
-  const [scormPackages, setScormPackages] = useState<ScormRow[]>([]);
-  const [templates, setTemplates] = useState<CertificateTemplate[]>([]);
-  const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isLive, setIsLive] = useState(false);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  /* ── Fetch helpers ─────────────────────────────────────────────── */
+  /* ── Fetch helpers (TanStack Query) ────────────────────────────── */
 
-  const fetchCourses = useCallback(async () => {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
-    setLoading(true);
-    try {
+  const { data: courses = [], isLoading: coursesLoading } = useQuery({
+    queryKey: ['admin-courses', search],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) return [];
       let query = supabase.from('courses').select('*').order('created_at', { ascending: false });
       if (search.trim()) query = query.ilike('title', `%${search.trim()}%`);
       const { data, error: e } = await query;
-      if (e) { setError(e.message); setIsLive(false); }
-      else { setCourses((data as CourseListItem[]) || []); setIsLive(true); }
-    } catch (err) { setError(err instanceof Error ? err.message : 'Failed'); setIsLive(false); }
-    finally { setLoading(false); }
-  }, [search]);
+      if (e) { setError(e.message); setIsLive(false); throw e; }
+      setIsLive(true);
+      return (data as CourseListItem[]) || [];
+    },
+    enabled: activeTab === 'courses',
+  });
 
-  const fetchScorm = useCallback(async () => {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
-    setLoading(true);
-    try {
+  const { data: scormPackages = [], isLoading: scormLoading } = useQuery({
+    queryKey: ['admin-scorm-packages'],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) return [];
       const { data, error: e } = await supabase.from('scorm_packages').select('*').order('uploaded_at', { ascending: false });
-      if (e) setError(e.message);
-      else setScormPackages((data as ScormRow[]) || []);
-    } catch { /* */ }
-    finally { setLoading(false); }
-  }, []);
+      if (e) throw e;
+      return (data as ScormRow[]) || [];
+    },
+    enabled: activeTab === 'scorm',
+  });
 
-  const fetchTemplates = useCallback(async () => {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
-    setLoading(true);
-    try {
+  const { data: templates = [], isLoading: templatesLoading } = useQuery({
+    queryKey: ['admin-certificate-templates'],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) return [];
       const { data, error: e } = await supabase.from('certificate_templates').select('*').order('created_at', { ascending: false });
-      if (e) setError(e.message);
-      else setTemplates((data as CertificateTemplate[]) || []);
-    } catch { /* */ }
-    finally { setLoading(false); }
-  }, []);
+      if (e) throw e;
+      return (data as CertificateTemplate[]) || [];
+    },
+    enabled: activeTab === 'templates',
+  });
 
-  const fetchEnrollments = useCallback(async () => {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
-    setLoading(true);
-    try {
+  const { data: enrollments = [], isLoading: enrollmentsLoading } = useQuery({
+    queryKey: ['admin-course-enrollments'],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) return [];
       const { data, error: e } = await supabase.from('course_enrollments').select('*').order('enrolled_at', { ascending: false }).limit(100);
-      if (e) setError(e.message);
-      else setEnrollments((data as EnrollmentRow[]) || []);
-    } catch { /* */ }
-    finally { setLoading(false); }
-  }, []);
+      if (e) throw e;
+      return (data as EnrollmentRow[]) || [];
+    },
+    enabled: activeTab === 'enrollments',
+  });
 
-  useEffect(() => {
-    setError(null);
-    if (activeTab === 'courses') fetchCourses();
-    else if (activeTab === 'scorm') fetchScorm();
-    else if (activeTab === 'templates') fetchTemplates();
-    else if (activeTab === 'enrollments') fetchEnrollments();
-  }, [activeTab, fetchCourses, fetchScorm, fetchTemplates, fetchEnrollments]);
+  const loading = (activeTab === 'courses' && coursesLoading) ||
+    (activeTab === 'scorm' && scormLoading) ||
+    (activeTab === 'templates' && templatesLoading) ||
+    (activeTab === 'enrollments' && enrollmentsLoading);
 
   /* ── Course actions ────────────────────────────────────────────── */
 
   const togglePublish = async (course: CourseListItem) => {
     if (!isSupabaseConfigured) return;
     await supabase.from('courses').update({ is_published: !course.is_published }).eq('id', course.id);
-    fetchCourses();
+    void queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
   };
 
   const deleteCourse = async (id: string) => {
     if (!isSupabaseConfigured || !confirm('Delete this course? This cannot be undone.')) return;
     await supabase.from('courses').delete().eq('id', id);
-    fetchCourses();
+    void queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
   };
 
   /* ── SCORM upload ──────────────────────────────────────────────── */
@@ -164,7 +159,7 @@ export default function AdminCoursesHub() {
       if (fnError) {
         setError(fnError.message);
       } else {
-        fetchScorm();
+        void queryClient.invalidateQueries({ queryKey: ['admin-scorm-packages'] });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'SCORM upload failed');
@@ -314,7 +309,7 @@ export default function AdminCoursesHub() {
                 className="hidden"
               />
             </label>
-            <button onClick={fetchScorm} className="p-2 text-graphite/40 hover:text-graphite rounded-lg hover:bg-graphite/5 transition-colors">
+            <button onClick={() => void queryClient.invalidateQueries({ queryKey: ['admin-scorm-packages'] })} className="p-2 text-graphite/40 hover:text-graphite rounded-lg hover:bg-graphite/5 transition-colors">
               <RefreshCw className="w-4 h-4" />
             </button>
           </div>
@@ -372,7 +367,7 @@ export default function AdminCoursesHub() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-graphite/50">{enrollments.length} enrollment{enrollments.length !== 1 ? 's' : ''}</p>
-            <button onClick={fetchEnrollments} className="p-2 text-graphite/40 hover:text-graphite rounded-lg hover:bg-graphite/5 transition-colors">
+            <button onClick={() => void queryClient.invalidateQueries({ queryKey: ['admin-course-enrollments'] })} className="p-2 text-graphite/40 hover:text-graphite rounded-lg hover:bg-graphite/5 transition-colors">
               <RefreshCw className="w-4 h-4" />
             </button>
           </div>

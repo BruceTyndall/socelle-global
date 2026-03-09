@@ -3,8 +3,8 @@
  * Lists instructor's courses with create new button
  * Data: courses table filtered by author (LIVE)
  */
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import {
   Plus,
@@ -26,33 +26,20 @@ import type { CourseListItem } from '../../../lib/education/useCourses';
 
 export default function AuthorDashboard() {
   const { user } = useAuth();
-  const [courses, setCourses] = useState<CourseListItem[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user?.id || !isSupabaseConfigured) {
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function fetchMyCourses() {
+  const { data: courses = [], isLoading: loading } = useQuery({
+    queryKey: ['author-courses', user?.id],
+    queryFn: async () => {
       const { data } = await supabase
         .from('courses')
         .select('*')
         .eq('author_id', user!.id)
         .order('updated_at', { ascending: false });
 
-      if (!cancelled) {
-        setCourses((data as CourseListItem[]) || []);
-        setLoading(false);
-      }
-    }
-
-    fetchMyCourses();
-    return () => { cancelled = true; };
-  }, [user?.id]);
+      return (data as CourseListItem[]) || [];
+    },
+    enabled: !!user?.id && isSupabaseConfigured,
+  });
 
   const publishedCount = courses.filter(c => c.is_published).length;
   const totalEnrollments = courses.reduce((sum, c) => sum + (c.enrollment_count || 0), 0);

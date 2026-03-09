@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, ShoppingBag, Users, AlertCircle, RefreshCw, Brain, BarChart3, MapPin } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { StatCard, Card, CardHeader, CardTitle } from '../../components/ui';
 import {
   getBrandPerformanceMetrics,
@@ -206,23 +206,10 @@ function PerformanceIntelligenceSection({ brandSlug }: { brandSlug: string }) {
 
 export default function BrandPerformance() {
   const { brandId } = useAuth();
-  const [monthlyData, setMonthlyData] = useState<MonthBucket[]>([]);
-  const [topRetailers, setTopRetailers] = useState<TopRetailer[]>([]);
-  const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
-  const [totalPlans, setTotalPlans] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (brandId) fetchPerformance();
-    else setLoading(false);
-  }, [brandId]);
-
-  const fetchPerformance = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: perfData, isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['brand-performance', brandId],
+    queryFn: async () => {
       const since = new Date();
       since.setFullYear(since.getFullYear() - 1);
 
@@ -243,8 +230,8 @@ export default function BrandPerformance() {
       if (ordersRes.error) throw ordersRes.error;
 
       const orders = ordersRes.data || [];
-      setTotalPlans(plansRes.count ?? 0);
-      setMonthlyData(buildMonthBuckets(orders));
+      const totalPlans = plansRes.count ?? 0;
+      const monthlyData = buildMonthBuckets(orders);
 
       // Top retailers by revenue
       const retailerMap = new Map<string, TopRetailer>();
@@ -259,9 +246,10 @@ export default function BrandPerformance() {
           r.orders  += 1;
         }
       }
-      setTopRetailers(Array.from(retailerMap.values()).sort((a, b) => b.revenue - a.revenue).slice(0, 5));
+      const topRetailers = Array.from(retailerMap.values()).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
 
       // Top products from order_items
+      let topProducts: TopProduct[] = [];
       if (orders.length > 0) {
         const orderIds = orders.map(o => o.id);
         const { data: items } = await supabase
@@ -279,15 +267,19 @@ export default function BrandPerformance() {
             p.revenue += item.line_total || 0;
           }
         }
-        setTopProducts(Array.from(productMap.values()).sort((a, b) => b.revenue - a.revenue).slice(0, 5));
+        topProducts = Array.from(productMap.values()).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
       }
-    } catch (err: any) {
-      console.warn('Performance fetch error:', err);
-      setError('Unable to load performance data. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      return { monthlyData, topRetailers, topProducts, totalPlans };
+    },
+    enabled: !!brandId,
+  });
+
+  const monthlyData = perfData?.monthlyData ?? [];
+  const topRetailers = perfData?.topRetailers ?? [];
+  const topProducts = perfData?.topProducts ?? [];
+  const totalPlans = perfData?.totalPlans ?? 0;
+  const error = queryError ? 'Unable to load performance data. Please try again.' : null;
 
   const currentMonth = monthlyData[monthlyData.length - 1];
   const prevMonth    = monthlyData[monthlyData.length - 2];
@@ -318,7 +310,7 @@ export default function BrandPerformance() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <p className="text-red-700 font-sans text-sm flex-1">{error}</p>
-          <button onClick={fetchPerformance} className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800">
+          <button onClick={() => refetch()} className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800">
             <RefreshCw className="w-3.5 h-3.5" />
             Retry
           </button>

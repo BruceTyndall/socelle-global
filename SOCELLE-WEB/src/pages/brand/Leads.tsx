@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { Users, Mail, Building, Phone, Calendar, AlertCircle } from 'lucide-react';
@@ -16,22 +16,12 @@ interface Lead {
 
 export default function BrandLeads() {
   const { profile } = useAuth();
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchLeads();
-  }, [profile]);
+  const { data: leads = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['brand-leads', profile?.brand_id],
+    queryFn: async () => {
+      if (!profile?.brand_id) throw new Error('No brand associated with your account');
 
-  const fetchLeads = async () => {
-    if (!profile?.brand_id) {
-      setError('No brand associated with your account');
-      setLoading(false);
-      return;
-    }
-
-    try {
       const { data: plansData, error: plansError } = await supabase
         .from('plans')
         .select('business_id, fit_score, created_at, businesses!inner(name, owner_email)')
@@ -67,14 +57,12 @@ export default function BrandLeads() {
         }
       });
 
-      setLeads(Array.from(businessMap.values()));
-    } catch (err: any) {
-      console.error('Error fetching leads:', err);
-      setError(err.message || 'Failed to load leads');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return Array.from(businessMap.values());
+    },
+    enabled: !!profile?.brand_id,
+  });
+
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load leads') : null;
 
   if (loading) {
     return (

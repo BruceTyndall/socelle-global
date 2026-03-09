@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, ShoppingBag, TrendingUp, CheckCircle,
@@ -8,6 +8,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { createScopedLogger } from '../../lib/logger';
 import { mapSupabaseError } from '../../lib/errors';
+import { useQuery } from '@tanstack/react-query';
 import BusinessNav from '../../components/BusinessNav';
 import BrandPageRenderer from '../../components/BrandPageRenderer';
 import BrandShop from '../../components/BrandShop';
@@ -128,14 +129,6 @@ export default function BrandDetail() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
 
-  const [brand, setBrand] = useState<BrandRow | null>(null);
-  const [protocols, setProtocols] = useState<ProtocolRow[]>([]);
-  const [proProducts, setProProducts] = useState<ProProductRow[]>([]);
-  const [retailProducts, setRetailProducts] = useState<RetailProductRow[]>([]);
-  const [marketingItems, setMarketingItems] = useState<MarketingItem[]>([]);
-  const [modules, setModules] = useState<unknown[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('all');
 
@@ -146,20 +139,10 @@ export default function BrandDetail() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successOrderNumber, setSuccessOrderNumber] = useState('');
 
-  const { items, addItem, updateQty, removeItem, clearCart, subtotal, itemCount } = useCart(
-    brand?.id || ''
-  );
-
-  useEffect(() => {
-    if (slug) fetchBrandData();
-  }, [slug]);
-
-  const fetchBrandData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data: brandData, error: brandError } = await supabase
+  const { data: brandData, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['brand-detail', slug],
+    queryFn: async () => {
+      const { data: brandRow, error: brandError } = await supabase
         .from('brands')
         .select('*')
         .eq('slug', slug)
@@ -167,33 +150,29 @@ export default function BrandDetail() {
         .maybeSingle();
 
       if (brandError) throw mapSupabaseError(brandError);
-      if (!brandData) {
-        setError('Brand not found or not active');
-        setLoading(false);
-        return;
-      }
+      if (!brandRow) throw new Error('Brand not found or not active');
 
-      setBrand(brandData as BrandRow);
+      const typedBrand = brandRow as BrandRow;
 
       const [protocolsRes, proProductsRes, retailProductsRes, marketingRes, modulesRes] =
         await Promise.all([
           supabase
             .from('canonical_protocols')
             .select('id, protocol_name, duration_minutes, description')
-            .eq('brand_id', brandData.id)
+            .eq('brand_id', typedBrand.id)
             .in('completion_status', ['steps_complete', 'fully_complete'])
             .order('protocol_name'),
 
           supabase
             .from('pro_products')
             .select('id, product_name, size, unit_cost, category, image_url')
-            .eq('brand_id', brandData.id)
+            .eq('brand_id', typedBrand.id)
             .order('product_name'),
 
           supabase
             .from('retail_products')
             .select('id, product_name, size, retail_price, category, image_url')
-            .eq('brand_id', brandData.id)
+            .eq('brand_id', typedBrand.id)
             .order('product_name'),
 
           supabase
@@ -205,7 +184,7 @@ export default function BrandDetail() {
           supabase
             .from('brand_page_modules')
             .select('*')
-            .eq('brand_id', brandData.id)
+            .eq('brand_id', typedBrand.id)
             .eq('is_enabled', true)
             .order('sort_order', { ascending: true }),
         ]);
@@ -216,18 +195,29 @@ export default function BrandDetail() {
       if (marketingRes.error) log.warn('Marketing query error', { error: marketingRes.error });
       if (modulesRes.error) log.warn('Modules query error', { error: modulesRes.error });
 
-      setProtocols(protocolsRes.data || []);
-      setProProducts((proProductsRes.data || []) as ProProductRow[]);
-      setRetailProducts((retailProductsRes.data || []) as RetailProductRow[]);
-      setMarketingItems(marketingRes.data || []);
-      setModules(modulesRes.data || []);
-    } catch (err) {
-      log.error('Error fetching brand data', { err });
-      setError('Failed to load brand details');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return {
+        brand: typedBrand,
+        protocols: (protocolsRes.data || []) as ProtocolRow[],
+        proProducts: (proProductsRes.data || []) as ProProductRow[],
+        retailProducts: (retailProductsRes.data || []) as RetailProductRow[],
+        marketingItems: (marketingRes.data || []) as MarketingItem[],
+        modules: modulesRes.data || [],
+      };
+    },
+    enabled: !!slug,
+  });
+
+  const brand = brandData?.brand ?? null;
+  const protocols = brandData?.protocols ?? [];
+  const proProducts = brandData?.proProducts ?? [];
+  const retailProducts = brandData?.retailProducts ?? [];
+  const marketingItems = brandData?.marketingItems ?? [];
+  const modules = brandData?.modules ?? [];
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load brand details') : null;
+
+  const { items, addItem, updateQty, removeItem, clearCart, subtotal, itemCount } = useCart(
+    brand?.id || ''
+  );
 
   const handleSubmitOrder = async () => {
     if (!user || !brand || items.length === 0) return;

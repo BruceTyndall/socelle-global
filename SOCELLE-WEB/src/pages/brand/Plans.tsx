@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { FileText, TrendingUp, DollarSign, Calendar, AlertCircle, Search } from 'lucide-react';
@@ -15,24 +16,14 @@ interface BrandPlan {
 
 export default function BrandPlans() {
   const { profile } = useAuth();
-  const [plans, setPlans] = useState<BrandPlan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [minFit, setMinFit] = useState(0);
 
-  useEffect(() => {
-    fetchPlans();
-  }, [profile]);
+  const { data: plans = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['brand-plans', profile?.brand_id],
+    queryFn: async () => {
+      if (!profile?.brand_id) throw new Error('No brand associated with your account');
 
-  const fetchPlans = async () => {
-    if (!profile?.brand_id) {
-      setError('No brand associated with your account');
-      setLoading(false);
-      return;
-    }
-
-    try {
       const { data: plansData, error: plansError } = await supabase
         .from('plans')
         .select('id, business_id, fit_score, created_at, status, businesses!inner(name)')
@@ -57,7 +48,7 @@ export default function BrandPlans() {
         }
       }
 
-      const plansWithOrders = (plansData || []).map(plan => ({
+      return (plansData || []).map(plan => ({
         id: plan.id,
         business_id: plan.business_id,
         business_name: (plan.businesses as any)?.name || 'Unknown Business',
@@ -66,15 +57,11 @@ export default function BrandPlans() {
         status: plan.status || 'draft',
         opening_order_value: outputByPlanId.get(plan.id) ?? 0,
       }));
+    },
+    enabled: !!profile?.brand_id,
+  });
 
-      setPlans(plansWithOrders);
-    } catch (err: any) {
-      console.error('Error fetching plans:', err);
-      setError(err.message || 'Failed to load plans');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load plans') : null;
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {

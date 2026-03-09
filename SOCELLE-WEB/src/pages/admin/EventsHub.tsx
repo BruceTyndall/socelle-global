@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Calendar,
   RefreshCw,
@@ -62,16 +63,12 @@ function formatEventDate(date: string, dateEnd: string | null) {
 }
 
 export default function EventsHub() {
-  const [rows, setRows] = useState<EventRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState(false);
   const [filter, setFilter] = useState<string>('all');
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: rows = [], isLoading: loading, error: queryError, refetch: loadData } = useQuery({
+    queryKey: ['events', filter],
+    queryFn: async () => {
       let query = supabase
         .from('events')
         .select('id, name, date, date_end, location, type, verticals, description, url, attendees, featured, status, created_at, updated_at')
@@ -82,26 +79,20 @@ export default function EventsHub() {
       }
 
       const { data, error: dbError } = await query;
-      if (dbError) throw dbError;
-      setRows(data ?? []);
-      setIsLive(true);
-    } catch (err: any) {
-      console.error('EventsHub: load error', err);
-      const msg = err?.message?.toLowerCase() || '';
-      if (msg.includes('does not exist') || err?.code === '42P01') {
-        setIsLive(false);
-        setRows([]);
-      } else {
-        setError('Failed to load events data.');
+      if (dbError) {
+        const msg = dbError.message?.toLowerCase() || '';
+        if (msg.includes('does not exist') || dbError.code === '42P01') {
+          setIsLive(false);
+          return [];
+        }
+        throw dbError;
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [filter]);
+      setIsLive(true);
+      return (data as EventRow[]) ?? [];
+    },
+  });
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const error = queryError ? 'Failed to load events data.' : null;
 
   if (error) {
     return (
@@ -109,7 +100,7 @@ export default function EventsHub() {
         icon={ShieldAlert}
         title="Events Hub Unavailable"
         message={error}
-        action={{ label: 'Retry', onClick: loadData }}
+        action={{ label: 'Retry', onClick: () => void loadData() }}
       />
     );
   }
@@ -136,7 +127,7 @@ export default function EventsHub() {
         </div>
         <button
           type="button"
-          onClick={loadData}
+          onClick={() => void loadData()}
           disabled={loading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >

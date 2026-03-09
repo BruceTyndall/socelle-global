@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MessageSquare, Send, Clock, ArrowLeft, Building2 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 
@@ -142,15 +143,14 @@ function SelectConv() {
 
 export default function BrandMessages() {
   const { user, profile, brandId } = useAuth();
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const conversationIdFromUrl = searchParams.get('conversation');
 
-  const [conversations, setConversations] = useState<BrandConversation[]>([]);
   const [activeConv, setActiveConv]       = useState<BrandConversation | null>(null);
   const [messages, setMessages]           = useState<Message[]>([]);
   const [newMsg, setNewMsg]               = useState('');
   const [sending, setSending]             = useState(false);
-  const [loadingConvs, setLoadingConvs]   = useState(true);
   const [loadingThread, setLoadingThread]  = useState(false);
   const [showThread, setShowThread]       = useState(false);
   const [urlSelectAttempted, setUrlSelectAttempted] = useState(false);
@@ -158,15 +158,15 @@ export default function BrandMessages() {
   const endRef  = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // ── Fetch conversations scoped to brand ───────────────────────────────────
+  // ── Fetch conversations scoped to brand (TanStack Query) ──────────────────
 
-  const fetchConversations = useCallback(async (): Promise<BrandConversation[]> => {
-    if (!brandId) { setLoadingConvs(false); return []; }
-    try {
+  const { data: conversations = [], isLoading: loadingConvs } = useQuery({
+    queryKey: ['brand-conversations', brandId],
+    queryFn: async () => {
       const { data: convRows, error } = await supabase
         .from('conversations')
         .select('id, type, subject, participant_one_id, participant_two_id, last_message_at, last_message_preview')
-        .eq('brand_id', brandId)
+        .eq('brand_id', brandId!)
         .eq('is_archived', false)
         .order('last_message_at', { ascending: false, nullsFirst: false });
 
@@ -174,12 +174,10 @@ export default function BrandMessages() {
 
       const rows = convRows ?? [];
 
-      // Determine the reseller participant for each conversation
       const peerIds = rows.map(c =>
         c.participant_one_id === user?.id ? c.participant_two_id : c.participant_one_id
       ).filter(Boolean) as string[];
 
-      // Batch-fetch business names for peer users
       const peerMap: Record<string, { name: string; type: string | null }> = {};
       if (peerIds.length > 0) {
         const { data: profiles } = await supabase
@@ -196,7 +194,7 @@ export default function BrandMessages() {
         }
       }
 
-      const list = rows.map(c => {
+      return rows.map(c => {
         const peerId = (c.participant_one_id === user?.id
           ? c.participant_two_id
           : c.participant_one_id) ?? null;
@@ -212,15 +210,9 @@ export default function BrandMessages() {
           last_message_preview: c.last_message_preview,
         };
       });
-      setConversations(list);
-      return list;
-    } catch (err) {
-      console.warn('Brand conversations fetch error:', err);
-      return [];
-    } finally {
-      setLoadingConvs(false);
-    }
-  }, [brandId, user?.id]);
+    },
+    enabled: !!brandId,
+  });
 
   // ── Fetch thread ──────────────────────────────────────────────────────────
 
@@ -259,13 +251,7 @@ export default function BrandMessages() {
       setMessages(prev => [...prev, data as Message]);
       const preview = body.slice(0, 120);
       const now = new Date().toISOString();
-      setConversations(prev =>
-        prev.map(c =>
-          c.id === activeConv.id
-            ? { ...c, last_message_at: now, last_message_preview: preview }
-            : c
-        )
-      );
+      queryClient.invalidateQueries({ queryKey: ['brand-conversations', brandId] });
       supabase
         .from('conversations')
         .update({ last_message_at: now, last_message_preview: preview })
@@ -304,29 +290,18 @@ export default function BrandMessages() {
 
   // ── Effects ───────────────────────────────────────────────────────────────
 
-  useEffect(() => { fetchConversations(); }, [fetchConversations]);
-
   // Open conversation from ?conversation= id (e.g. from Order detail "Message reseller")
   useEffect(() => {
-    if (!conversationIdFromUrl || loadingConvs) return;
+    if (!conversationIdFromUrl || loadingConvs || conversations.length === 0) return;
+    if (urlSelectAttempted) return;
     const conv = conversations.find(c => c.id === conversationIdFromUrl);
     if (conv) {
       setActiveConv(conv);
       setShowThread(true);
       fetchThread(conv.id);
       setUrlSelectAttempted(true);
-    } else if (!urlSelectAttempted) {
-      setUrlSelectAttempted(true);
-      fetchConversations().then((list) => {
-        const c = list.find(x => x.id === conversationIdFromUrl);
-        if (c) {
-          setActiveConv(c);
-          setShowThread(true);
-          fetchThread(c.id);
-        }
-      });
     }
-  }, [conversationIdFromUrl, loadingConvs, conversations, urlSelectAttempted, fetchConversations, fetchThread]);
+  }, [conversationIdFromUrl, loadingConvs, conversations, urlSelectAttempted, fetchThread]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
   useEffect(() => {

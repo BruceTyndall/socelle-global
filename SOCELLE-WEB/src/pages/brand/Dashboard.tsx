@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { Package, ShoppingBag, Users, DollarSign, ArrowRight, CheckCircle, Clock, AlertCircle, Sparkles, Brain, TrendingUp, TrendingDown } from 'lucide-react';
@@ -163,87 +163,82 @@ function BrandTopSignalsCard({ brandSlug }: { brandSlug: string }) {
 
 export default function BrandDashboard() {
   const { profile } = useAuth();
-  const [stats, setStats] = useState<DashboardStats>({
-    ordersCount: 0,
-    revenueTotal: 0,
-    productsCount: 0,
-    resellersCount: 0,
-  });
-  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
-  const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (profile?.brand_id) fetchDashboardData();
-    else setLoading(false);
-  }, [profile?.brand_id]);
+  const { data: dashboardData, isLoading: loading } = useQuery({
+    queryKey: ['brand-dashboard', profile?.brand_id],
+    queryFn: async () => {
+      const brandId = profile!.brand_id!;
 
-  const fetchDashboardData = async () => {
-    if (!profile?.brand_id) return;
-
-    try {
       const [ordersRes, productsRes, recentOrdersRes, brandRes] = await Promise.allSettled([
         supabase
           .from('orders')
           .select('subtotal, business_id')
-          .eq('brand_id', profile.brand_id)
+          .eq('brand_id', brandId)
           .neq('status', 'cancelled'),
 
         supabase
           .from('pro_products')
           .select('id', { count: 'exact', head: true })
-          .eq('brand_id', profile.brand_id),
+          .eq('brand_id', brandId),
 
         supabase
           .from('orders')
           .select('id, order_number, status, subtotal, created_at, businesses(name)')
-          .eq('brand_id', profile.brand_id)
+          .eq('brand_id', brandId)
           .order('created_at', { ascending: false })
           .limit(5),
 
         supabase
           .from('brands')
           .select('name, verification_status')
-          .eq('id', profile.brand_id)
+          .eq('id', brandId)
           .maybeSingle(),
       ]);
+
+      const stats: DashboardStats = {
+        ordersCount: 0,
+        revenueTotal: 0,
+        productsCount: 0,
+        resellersCount: 0,
+      };
 
       if (ordersRes.status === 'fulfilled' && ordersRes.value.data) {
         const orders = ordersRes.value.data;
         const uniqueResellers = new Set(orders.map(o => o.business_id).filter(Boolean));
-        const revenue = orders.reduce((sum, o) => sum + (Number(o.subtotal) || 0), 0);
-        setStats(prev => ({
-          ...prev,
-          ordersCount: orders.length,
-          revenueTotal: revenue,
-          resellersCount: uniqueResellers.size,
-        }));
+        stats.ordersCount = orders.length;
+        stats.revenueTotal = orders.reduce((sum, o) => sum + (Number(o.subtotal) || 0), 0);
+        stats.resellersCount = uniqueResellers.size;
       }
 
       if (productsRes.status === 'fulfilled') {
-        setStats(prev => ({ ...prev, productsCount: productsRes.value.count || 0 }));
+        stats.productsCount = productsRes.value.count || 0;
       }
 
+      let recentOrders: RecentOrder[] = [];
       if (recentOrdersRes.status === 'fulfilled' && recentOrdersRes.value.data) {
-        setRecentOrders(
-          recentOrdersRes.value.data.map(o => ({
-            id: o.id,
-            order_number: o.order_number,
-            status: o.status,
-            subtotal: Number(o.subtotal),
-            created_at: o.created_at,
-            business_name: (o.businesses as any)?.name || 'Unknown Business',
-          }))
-        );
+        recentOrders = recentOrdersRes.value.data.map(o => ({
+          id: o.id,
+          order_number: o.order_number,
+          status: o.status,
+          subtotal: Number(o.subtotal),
+          created_at: o.created_at,
+          business_name: (o.businesses as any)?.name || 'Unknown Business',
+        }));
       }
 
+      let brandInfo: BrandInfo | null = null;
       if (brandRes.status === 'fulfilled' && brandRes.value.data) {
-        setBrandInfo(brandRes.value.data);
+        brandInfo = brandRes.value.data;
       }
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      return { stats, recentOrders, brandInfo };
+    },
+    enabled: !!profile?.brand_id,
+  });
+
+  const stats = dashboardData?.stats ?? { ordersCount: 0, revenueTotal: 0, productsCount: 0, resellersCount: 0 };
+  const recentOrders = dashboardData?.recentOrders ?? [];
+  const brandInfo = dashboardData?.brandInfo ?? null;
 
   const verificationBadge = brandInfo
     ? (VERIFICATION_BADGE[brandInfo.verification_status] || VERIFICATION_BADGE['unverified'])

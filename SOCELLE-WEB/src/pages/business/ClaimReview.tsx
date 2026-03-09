@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { CheckCircle, FileText, Loader2 } from 'lucide-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 interface SeedRow {
   id: string;
@@ -15,28 +16,24 @@ interface SeedRow {
 export default function BusinessClaimReview() {
   const navigate = useNavigate();
   const { profile, businessId } = useAuth();
-  const [seedContent, setSeedContent] = useState<SeedRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    if (!businessId) return;
-    (async () => {
+  const { data: seedContent = [], isLoading: loading } = useQuery({
+    queryKey: ['claim-review-seed', businessId],
+    queryFn: async () => {
       const { data } = await supabase
         .from('business_seed_content')
         .select('id, content_type, content_data, source_url, status')
-        .eq('business_id', businessId)
+        .eq('business_id', businessId!)
         .order('created_at', { ascending: false });
-      setSeedContent((data as SeedRow[]) || []);
-      setLoading(false);
-    })();
-  }, [businessId]);
+      return (data as SeedRow[]) || [];
+    },
+    enabled: !!businessId,
+  });
 
-  const handleSubmitForVerification = async () => {
-    if (!businessId) return;
-    setSubmitting(true);
-    try {
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      if (!businessId) throw new Error('No business ID');
       const { error } = await supabase
         .from('businesses')
         .update({
@@ -45,11 +42,15 @@ export default function BusinessClaimReview() {
         })
         .eq('id', businessId);
       if (error) throw error;
+    },
+    onSuccess: () => {
       setDone(true);
       setTimeout(() => navigate('/portal/dashboard', { replace: true }), 2000);
-    } catch {
-      setSubmitting(false);
-    }
+    },
+  });
+
+  const handleSubmitForVerification = () => {
+    submitMutation.mutate();
   };
 
   if (!profile || !businessId) {
@@ -123,10 +124,10 @@ export default function BusinessClaimReview() {
             <button
               type="button"
               onClick={handleSubmitForVerification}
-              disabled={submitting}
+              disabled={submitMutation.isPending}
               className="btn-gold px-6 py-2 rounded-lg font-sans font-medium flex items-center gap-2"
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              {submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               Submit for verification
             </button>
             <Link

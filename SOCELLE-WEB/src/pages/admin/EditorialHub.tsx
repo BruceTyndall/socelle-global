@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Newspaper,
   RefreshCw,
@@ -46,41 +47,31 @@ function confidenceBadge(score: number) {
 }
 
 export default function EditorialHub() {
-  const [rows, setRows] = useState<RssItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState(false);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: rows = [], isLoading: loading, error: queryError, refetch: loadData } = useQuery({
+    queryKey: ['rss_items'],
+    queryFn: async () => {
       const { data, error: dbError } = await supabase
         .from('rss_items')
         .select('id, title, link, description, author, published_at, created_at, is_new, confidence_score, attribution_text, brand_mentions, vertical_tags')
         .order('published_at', { ascending: false, nullsFirst: false })
         .limit(50);
 
-      if (dbError) throw dbError;
-      setRows(data ?? []);
-      setIsLive(true);
-    } catch (err: any) {
-      console.error('EditorialHub: load error', err);
-      const msg = err?.message?.toLowerCase() || '';
-      if (msg.includes('does not exist') || err?.code === '42P01') {
-        setIsLive(false);
-        setRows([]);
-      } else {
-        setError('Failed to load editorial data.');
+      if (dbError) {
+        const msg = dbError.message?.toLowerCase() || '';
+        if (msg.includes('does not exist') || dbError.code === '42P01') {
+          setIsLive(false);
+          return [];
+        }
+        throw dbError;
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      setIsLive(true);
+      return (data as RssItem[]) ?? [];
+    },
+  });
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const error = queryError ? 'Failed to load editorial data.' : null;
 
   if (error) {
     return (
@@ -88,7 +79,7 @@ export default function EditorialHub() {
         icon={ShieldAlert}
         title="Editorial Hub Unavailable"
         message={error}
-        action={{ label: 'Retry', onClick: loadData }}
+        action={{ label: 'Retry', onClick: () => void loadData() }}
       />
     );
   }
@@ -120,6 +111,7 @@ export default function EditorialHub() {
           onClick={loadData}
           disabled={loading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
+          onClick={() => void loadData()}
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh

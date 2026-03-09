@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Download, Eye, Package, AlertCircle, RefreshCw } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { StatCard, Badge, Table, TableHead, TableBody, TableRow, Th, Td, Input, Button, EmptyState } from '../../components/ui';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -31,22 +32,12 @@ const STATUS_FILTERS = ['all', 'submitted', 'reviewing', 'sent_to_brand', 'confi
 
 export default function BrandOrders() {
   const { brandId } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  useEffect(() => {
-    if (brandId) fetchOrders();
-    else setLoading(false);
-  }, [brandId]);
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: orders = [], isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['brand-orders', brandId],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('orders')
         .select(`
@@ -74,7 +65,7 @@ export default function BrandOrders() {
         )
       );
 
-      const enriched: Order[] = orderList.map((o, i) => ({
+      return orderList.map((o, i) => ({
         id: o.id,
         order_number: o.order_number,
         business_id: o.business_id,
@@ -84,15 +75,11 @@ export default function BrandOrders() {
         businesses: o.businesses as unknown as { name: string; type: string } | null,
         item_count: countsResult[i]?.count ?? 0,
       }));
+    },
+    enabled: !!brandId,
+  });
 
-      setOrders(enriched);
-    } catch (err: any) {
-      console.warn('Orders fetch error:', err);
-      setError('Unable to load orders. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = queryError ? 'Unable to load orders. Please try again.' : null;
 
   const filtered = orders.filter(o => {
     const name = o.businesses?.name ?? '';
@@ -147,7 +134,7 @@ export default function BrandOrders() {
           <div className="flex-1">
             <p className="text-red-700 font-sans text-sm">{error}</p>
           </div>
-          <button onClick={fetchOrders} className="flex items-center gap-1.5 text-red-600 text-sm font-medium font-sans hover:text-red-800">
+          <button onClick={() => refetch()} className="flex items-center gap-1.5 text-red-600 text-sm font-medium font-sans hover:text-red-800">
             <RefreshCw className="w-3.5 h-3.5" />
             Retry
           </button>

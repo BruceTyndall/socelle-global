@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, useMemo, type KeyboardEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   Brain, Send, ThumbsUp, ThumbsDown, Package, Sparkles, BarChart2,
@@ -8,6 +8,7 @@ import { useChatSession } from '../../lib/ai/useChatSession';
 import type { ChatAction } from '../../lib/ai/types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { useQuery } from '@tanstack/react-query';
 
 /* ── Action icon mapping ──────────────────────────────── */
 function actionIcon(type: ChatAction['type']) {
@@ -96,9 +97,6 @@ export default function AIAdvisor() {
   const { profile } = useAuth();
   const [input, setInput] = useState('');
   const [contextOpen, setContextOpen] = useState(true);
-  const [businessLocation, setBusinessLocation] = useState<BusinessLocation>({ city: null, state: null });
-  const [recentSignals, setRecentSignals] = useState<ContextSignal[]>([]);
-  const [signalsLoading, setSignalsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -111,11 +109,10 @@ export default function AIAdvisor() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchBusinessContext() {
-      if (!isSupabaseConfigured || !profile?.business_id) return;
+  const { data: businessLocation = { city: null, state: null } } = useQuery({
+    queryKey: ['business-location', profile?.business_id],
+    queryFn: async (): Promise<BusinessLocation> => {
+      if (!isSupabaseConfigured || !profile?.business_id) return { city: null, state: null };
 
       const { data } = await supabase
         .from('businesses')
@@ -123,31 +120,20 @@ export default function AIAdvisor() {
         .eq('id', profile.business_id)
         .maybeSingle();
 
-      if (cancelled || !data) return;
+      if (!data) return { city: null, state: null };
       const parsed = parseLocation(data.location as string | null);
-      setBusinessLocation({
+      return {
         city: (data.city as string | null) ?? parsed.city,
         state: (data.state as string | null) ?? parsed.state,
-      });
-    }
+      };
+    },
+    enabled: isSupabaseConfigured && !!profile?.business_id,
+  });
 
-    void fetchBusinessContext();
-    return () => {
-      cancelled = true;
-    };
-  }, [profile?.business_id]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchSignals() {
-      setSignalsLoading(true);
-
-      if (!isSupabaseConfigured) {
-        setRecentSignals([]);
-        setSignalsLoading(false);
-        return;
-      }
+  const { data: recentSignals = [], isLoading: signalsLoading } = useQuery({
+    queryKey: ['advisor-signals', businessLocation.city, businessLocation.state],
+    queryFn: async (): Promise<ContextSignal[]> => {
+      if (!isSupabaseConfigured) return [];
 
       const { data, error } = await supabase
         .from('market_signals')
@@ -157,12 +143,7 @@ export default function AIAdvisor() {
         .order('updated_at', { ascending: false })
         .limit(36);
 
-      if (cancelled) return;
-      if (error || !data || data.length === 0) {
-        setRecentSignals([]);
-        setSignalsLoading(false);
-        return;
-      }
+      if (error || !data || data.length === 0) return [];
 
       const cityNeedle = businessLocation.city?.toLowerCase() ?? '';
       const stateNeedle = businessLocation.state?.toLowerCase() ?? '';
@@ -184,7 +165,7 @@ export default function AIAdvisor() {
         return (cityNeedle && haystack.includes(cityNeedle)) || (stateNeedle && haystack.includes(stateNeedle));
       });
 
-      const selected = (regional.length > 0 ? regional : rows)
+      return (regional.length > 0 ? regional : rows)
         .slice(0, 3)
         .map((row) => ({
           id: row.id,
@@ -194,16 +175,9 @@ export default function AIAdvisor() {
           confidenceScore: row.confidence_score,
           updatedAt: row.updated_at,
         }));
-
-      setRecentSignals(selected);
-      setSignalsLoading(false);
-    }
-
-    void fetchSignals();
-    return () => {
-      cancelled = true;
-    };
-  }, [businessLocation.city, businessLocation.state]);
+    },
+    enabled: isSupabaseConfigured,
+  });
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;

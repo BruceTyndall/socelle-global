@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, GitCompare, TrendingUp, DollarSign, ChevronDown } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import BusinessNav from '../../components/BusinessNav';
 import { Skeleton } from '../../components/Skeleton';
+import { useQuery } from '@tanstack/react-query';
 
 interface PlanSummary {
   id: string;
@@ -140,40 +141,33 @@ export default function PlanComparison() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [allPlans, setAllPlans] = useState<PlanSummary[]>([]);
   const [planAId, setPlanAId] = useState<string>(searchParams.get('a') || '');
   const [planBId, setPlanBId] = useState<string>(searchParams.get('b') || '');
-  const [outputA, setOutputA] = useState<PlanOutput | null>(null);
-  const [outputB, setOutputB] = useState<PlanOutput | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [comparing, setComparing] = useState(false);
 
-  useEffect(() => {
-    if (!user) return;
-    supabase
-      .from('plans')
-      .select('id, name, status, created_at, brands(name)')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        setAllPlans((data as unknown as PlanSummary[]) || []);
-        setLoading(false);
-      });
-  }, [user]);
+  const { data: allPlans = [], isLoading: loading } = useQuery({
+    queryKey: ['comparison-plans', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('plans')
+        .select('id, name, status, created_at, brands(name)')
+        .order('created_at', { ascending: false });
+      return (data as unknown as PlanSummary[]) || [];
+    },
+    enabled: !!user,
+  });
 
-  useEffect(() => {
-    if (!planAId || !planBId) {
-      setOutputA(null);
-      setOutputB(null);
-      return;
-    }
-    setComparing(true);
-    setSearchParams({ a: planAId, b: planBId });
-    Promise.all([fetchPlanOutput(planAId), fetchPlanOutput(planBId)]).then(([a, b]) => {
-      setOutputA(a);
-      setOutputB(b);
-      setComparing(false);
-    });
-  }, [planAId, planBId]);
+  const { data: comparisonData, isLoading: comparing } = useQuery({
+    queryKey: ['plan-comparison', planAId, planBId],
+    queryFn: async () => {
+      setSearchParams({ a: planAId, b: planBId });
+      const [a, b] = await Promise.all([fetchPlanOutput(planAId), fetchPlanOutput(planBId)]);
+      return { outputA: a, outputB: b };
+    },
+    enabled: !!planAId && !!planBId,
+  });
+
+  const outputA = comparisonData?.outputA ?? null;
+  const outputB = comparisonData?.outputB ?? null;
 
   const planA = allPlans.find(p => p.id === planAId);
   const planB = allPlans.find(p => p.id === planBId);

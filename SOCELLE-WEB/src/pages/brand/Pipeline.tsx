@@ -5,8 +5,9 @@
  * "Flag as Potential Fit" to record interest (business_interest_signals).
  * Migration 10; RLS allows brand users to insert for their brand_id.
  */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MapPin, Users, Flag, Check } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { Badge, Button, EmptyState } from '../../components/ui';
@@ -29,19 +30,12 @@ const STATUS_BADGE: Record<string, string> = {
 
 export default function BrandPipeline() {
   const { user, brandId } = useAuth();
-  const [businesses, setBusinesses] = useState<BusinessRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [flagging, setFlagging] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (brandId) fetchData();
-  }, [brandId]);
-
-  const fetchData = async () => {
-    if (!brandId) return;
-    try {
-      setLoading(true);
-
+  const { data: businesses = [], isLoading: loading } = useQuery({
+    queryKey: ['brand-pipeline', brandId],
+    queryFn: async () => {
       const [bizRes, signalsRes] = await Promise.all([
         supabase
           .from('businesses')
@@ -51,12 +45,12 @@ export default function BrandPipeline() {
         supabase
           .from('business_interest_signals')
           .select('business_id')
-          .eq('brand_id', brandId)
+          .eq('brand_id', brandId!)
           .eq('signal_type', 'potential_fit'),
       ]);
 
       const flaggedSet = new Set((signalsRes.data ?? []).map((r: any) => r.business_id));
-      setBusinesses((bizRes.data ?? []).map((b: any) => ({
+      return (bizRes.data ?? []).map((b: any) => ({
         id: b.id,
         name: b.name,
         type: b.type,
@@ -64,11 +58,10 @@ export default function BrandPipeline() {
         state: b.state,
         verification_status: b.verification_status || 'unverified',
         flagged: flaggedSet.has(b.id),
-      })));
-    } finally {
-      setLoading(false);
-    }
-  };
+      }));
+    },
+    enabled: !!brandId,
+  });
 
   const handleFlag = async (businessId: string) => {
     if (!user || !brandId) return;
@@ -83,9 +76,7 @@ export default function BrandPipeline() {
         },
         { onConflict: 'business_id,brand_id,signal_type' }
       );
-      setBusinesses(prev =>
-        prev.map(b => (b.id === businessId ? { ...b, flagged: true } : b))
-      );
+      queryClient.invalidateQueries({ queryKey: ['brand-pipeline', brandId] });
     } finally {
       setFlagging(null);
     }

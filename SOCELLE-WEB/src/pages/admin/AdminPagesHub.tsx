@@ -2,7 +2,8 @@
 // CMS page editor. CRUD on cms_pages table.
 // Data label: LIVE — reads/writes cms_pages with real updated_at
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
   Pencil,
@@ -70,8 +71,7 @@ const STATUS_COLORS: Record<PageStatus, string> = {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminPagesHub() {
-  const [pages, setPages] = useState<CmsPage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [editing, setEditing] = useState<CmsPage | null>(null);
@@ -94,26 +94,18 @@ export default function AdminPagesHub() {
 
   // ── Fetch ──────────────────────────────────────────────────────
 
-  const fetchPages = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('cms_pages')
-      .select('*')
-      .order('updated_at', { ascending: false });
+  const { data: pages = [], isLoading: loading, refetch: fetchPages } = useQuery({
+    queryKey: ['cms_pages'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('cms_pages')
+        .select('*')
+        .order('updated_at', { ascending: false });
 
-    if (err) {
-      setError(err.message);
-      setPages([]);
-    } else {
-      setPages((data as CmsPage[]) || []);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchPages();
-  }, [fetchPages]);
+      if (err) throw err;
+      return (data as CmsPage[]) || [];
+    },
+  });
 
   // ── Filter ─────────────────────────────────────────────────────
 
@@ -212,7 +204,7 @@ export default function AdminPagesHub() {
     }
     setSaving(false);
     resetForm();
-    fetchPages();
+    void queryClient.invalidateQueries({ queryKey: ['cms_pages'] });
     setTimeout(() => setSuccessMsg(null), 3000);
   };
 
@@ -220,7 +212,7 @@ export default function AdminPagesHub() {
     if (!window.confirm('Delete this page? This cannot be undone.')) return;
     const { error: err } = await supabase.from('cms_pages').delete().eq('id', id);
     if (err) setError(err.message);
-    else fetchPages();
+    else void queryClient.invalidateQueries({ queryKey: ['cms_pages'] });
   };
 
   const handleCancel = () => {
@@ -390,7 +382,7 @@ export default function AdminPagesHub() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={fetchPages}
+            onClick={() => void fetchPages()}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             title="Refresh"
           >

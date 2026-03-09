@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import {
   Code,
@@ -273,19 +274,17 @@ function CreateIntegrationModal({
 
 export default function ApiDashboard() {
   const { addToast } = useToast();
+  const queryClient = useQueryClient();
 
-  const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [query, setQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | ApiCategory>('all');
-  const [rows, setRows] = useState<ApiRegistryRow[]>([]);
-  const [routeCount, setRouteCount] = useState(0);
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
+  const { data: registryData, isLoading: loading, refetch: load } = useQuery({
+    queryKey: ['api_registry'],
+    queryFn: async () => {
       const [{ data, error }, { count, error: routeError }] = await Promise.all([
         supabase.from('api_registry').select(SAFE_COLUMNS).order('name', { ascending: true }),
         supabase.from('api_route_map').select('*', { count: 'exact', head: true }),
@@ -294,27 +293,16 @@ export default function ApiDashboard() {
       if (error) throw error;
       if (routeError) throw routeError;
 
-      setRows((data as ApiRegistryRow[]) ?? []);
-      setRouteCount(count ?? 0);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load API registry';
-      addToast(message, 'error');
-      setRows([]);
-      setRouteCount(0);
-    } finally {
-      setLoading(false);
-    }
-  }, [addToast]);
+      return {
+        rows: (data as ApiRegistryRow[]) ?? [],
+        routeCount: count ?? 0,
+      };
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) {
-      setLoading(false);
-      setRows([]);
-      return;
-    }
-
-    void load();
-  }, [load]);
+  const rows = registryData?.rows ?? [];
+  const routeCount = registryData?.routeCount ?? 0;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -366,7 +354,7 @@ export default function ApiDashboard() {
         .eq('id', row.id);
 
       if (error) throw error;
-      await load();
+      await queryClient.invalidateQueries({ queryKey: ['api_registry'] });
       addToast(`${row.name} ${row.is_active ? 'deactivated' : 'activated'}`, 'info');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to update integration status';
@@ -389,7 +377,7 @@ export default function ApiDashboard() {
         .eq('id', row.id);
 
       if (error) throw error;
-      await load();
+      await queryClient.invalidateQueries({ queryKey: ['api_registry'] });
       addToast(`Key revoked for ${row.name}`, 'success');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to revoke key';
@@ -407,7 +395,7 @@ export default function ApiDashboard() {
       });
 
       if (error) throw error;
-      await load();
+      await queryClient.invalidateQueries({ queryKey: ['api_registry'] });
       const status = (data as { status?: string })?.status ?? 'UNKNOWN';
       addToast(`${row.name} test status: ${status}`, 'info');
     } catch (error) {
@@ -436,7 +424,7 @@ export default function ApiDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => void load()} disabled={loading}>
+            <Button variant="ghost" onClick={() => void queryClient.invalidateQueries({ queryKey: ['api_registry'] })} disabled={loading}>
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
             <Button onClick={() => setShowCreate(true)}>
@@ -603,7 +591,7 @@ export default function ApiDashboard() {
         <CreateIntegrationModal
           open={showCreate}
           onClose={() => setShowCreate(false)}
-          onCreated={load}
+          onCreated={async () => { await queryClient.invalidateQueries({ queryKey: ['api_registry'] }); }}
         />
       </div>
     </>

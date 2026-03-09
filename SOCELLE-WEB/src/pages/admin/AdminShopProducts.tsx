@@ -1,27 +1,26 @@
 // AdminShopProducts.tsx — /admin/shop/products — Product management (LIVE — products table)
-import { useState, useCallback, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Pencil, Trash2, Search, Package, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import type { Product } from '../../lib/shop/types';
 import { formatCents } from '../../lib/shop/types';
 
 export default function AdminShopProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    let query = supabase.from('products').select('*').order('created_at', { ascending: false });
-    if (search) query = query.ilike('name', `%${search}%`);
-    const { data } = await query;
-    setProducts((data as Product[]) ?? []);
-    setLoading(false);
-  }, [search]);
-
-  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+  const { data: products = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-products', search],
+    queryFn: async () => {
+      let query = supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (search) query = query.ilike('name', `%${search}%`);
+      const { data } = await query;
+      return (data as Product[]) ?? [];
+    },
+  });
 
   const [form, setForm] = useState({
     name: '', slug: '', description: '', short_description: '', price_cents: 0,
@@ -64,13 +63,13 @@ export default function AdminShopProducts() {
       await supabase.from('products').insert(payload);
     }
     setShowForm(false);
-    fetchProducts();
+    void queryClient.invalidateQueries({ queryKey: ['admin-products'] });
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this product?')) return;
     await supabase.from('products').delete().eq('id', id);
-    fetchProducts();
+    void queryClient.invalidateQueries({ queryKey: ['admin-products'] });
   };
 
   return (

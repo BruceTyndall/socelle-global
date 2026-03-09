@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import {
   FileText,
@@ -19,6 +19,7 @@ import BusinessNav from '../../components/BusinessNav';
 import UpgradeGate from '../../components/UpgradeGate';
 import { getBrandIntelligenceContext } from '../../lib/intelligence/businessIntelligence';
 import { Brain } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface Plan {
   id: string;
@@ -45,43 +46,14 @@ export default function PlanResults() {
   const location = useLocation();
   const menuQualityWarning = (location.state as any)?.menuQuality === 'low';
   const { user } = useAuth();
-  const [plan, setPlan] = useState<Plan | null>(null);
-  const [outputs, setOutputs] = useState<PlanOutputs>({});
-  const [menuUpload, setMenuUpload] = useState<any>(null);
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(true);
   const [reanalyzing, setReanalyzing] = useState(false);
-  const [error, setError] = useState('');
+  const [reanalyzeError, setReanalyzeError] = useState('');
 
-  useEffect(() => {
-    if (id) {
-      fetchPlanData();
-    }
-  }, [id]);
-
-  // Poll every 3s while plan is processing — stops when status leaves 'processing'
-  useEffect(() => {
-    if (!plan || plan.status !== 'processing') return;
-
-    const startTime = Date.now();
-    const TIMEOUT_MS = 3 * 60 * 1000; // 3 minutes
-
-    const interval = setInterval(async () => {
-      if (Date.now() - startTime > TIMEOUT_MS) {
-        clearInterval(interval);
-        setError('Analysis timed out after 3 minutes. Please try reanalyzing.');
-        return;
-      }
-      await fetchPlanData(false);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [plan?.status]);
-
-  const fetchPlanData = async (showLoading = true) => {
-    try {
-      if (showLoading) setLoading(true);
-
+  const { data: planQueryData, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['plan-results', id],
+    queryFn: async () => {
       const { data: planData, error: planError } = await supabase
         .from('plans')
         .select('*, brands(name, slug)')
@@ -95,8 +67,6 @@ export default function PlanResults() {
         throw new Error('You do not have permission to view this plan');
       }
 
-      setPlan(planData);
-
       const { data: uploadsData, error: uploadsError } = await supabase
         .from('menu_uploads')
         .select('*')
@@ -106,7 +76,6 @@ export default function PlanResults() {
         .maybeSingle();
 
       if (uploadsError) throw uploadsError;
-      setMenuUpload(uploadsData);
 
       const { data: outputsData, error: outputsError } = await supabase
         .from('business_plan_outputs')
@@ -119,20 +88,41 @@ export default function PlanResults() {
       for (const output of outputsData || []) {
         (outputsMap as any)[output.output_type] = output.output_data;
       }
-      setOutputs(outputsMap);
-    } catch (err) {
-      console.error('Error fetching plan:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load report');
-    } finally {
-      if (showLoading) setLoading(false);
-    }
-  };
+
+      return { plan: planData as Plan, menuUpload: uploadsData, outputs: outputsMap };
+    },
+    enabled: !!id,
+  });
+
+  const plan = planQueryData?.plan ?? null;
+  const outputs = planQueryData?.outputs ?? {};
+  const menuUpload = planQueryData?.menuUpload ?? null;
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load report') : reanalyzeError;
+
+  // Poll every 3s while plan is processing
+  useEffect(() => {
+    if (!plan || plan.status !== 'processing') return;
+
+    const startTime = Date.now();
+    const TIMEOUT_MS = 3 * 60 * 1000; // 3 minutes
+
+    const interval = setInterval(async () => {
+      if (Date.now() - startTime > TIMEOUT_MS) {
+        clearInterval(interval);
+        setReanalyzeError('Analysis timed out after 3 minutes. Please try reanalyzing.');
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['plan-results', id] });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [plan?.status, id, queryClient]);
 
   const handleReanalyze = async () => {
     if (!plan || !menuUpload) return;
 
     setReanalyzing(true);
-    setError('');
+    setReanalyzeError('');
 
     try {
       await supabase
@@ -147,10 +137,10 @@ export default function PlanResults() {
 
       await runMenuAnalysis(plan.id, plan.brand_id, menuUpload.raw_text);
 
-      await fetchPlanData();
+      queryClient.invalidateQueries({ queryKey: ['plan-results', id] });
     } catch (err) {
       console.error('Error reanalyzing:', err);
-      setError(err instanceof Error ? err.message : 'Failed to reanalyze');
+      setReanalyzeError(err instanceof Error ? err.message : 'Failed to reanalyze');
     } finally {
       setReanalyzing(false);
     }

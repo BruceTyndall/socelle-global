@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Users, Search, ChevronDown, Loader2, Plus, Save, X,
   Shield, ShieldOff, Calendar, AlertTriangle,
@@ -35,18 +36,15 @@ interface ModuleOverride {
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function AdminSubscriptionAccounts() {
-  const [accounts, setAccounts] = useState<AccountSub[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
-  const [overrides, setOverrides] = useState<ModuleOverride[]>([]);
-  const [overrideLoading, setOverrideLoading] = useState(false);
   const [grantForm, setGrantForm] = useState<{ module_key: string; expires_at: string; notes: string } | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const fetchAccounts = useCallback(async () => {
-    setLoading(true);
-    try {
+  const { data: accounts = [], isLoading: loading } = useQuery({
+    queryKey: ['account_subscriptions'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('account_subscriptions')
         .select(`
@@ -58,76 +56,60 @@ export default function AdminSubscriptionAccounts() {
 
       if (error) {
         console.warn('[AdminSubscriptionAccounts] fetch error:', error.message);
-        setAccounts([]);
-      } else {
-        // Fetch account names (businesses or brands)
-        const accountIds = [...new Set((data ?? []).map((d: { account_id: string }) => d.account_id))];
-
-        let nameMap: Record<string, string> = {};
-        if (accountIds.length > 0) {
-          const { data: businesses } = await supabase
-            .from('businesses')
-            .select('id, name')
-            .in('id', accountIds);
-          businesses?.forEach((b: { id: string; name: string }) => { nameMap[b.id] = b.name; });
-
-          const { data: brands } = await supabase
-            .from('brands')
-            .select('id, name')
-            .in('id', accountIds);
-          brands?.forEach((b: { id: string; name: string }) => { nameMap[b.id] = b.name; });
-        }
-
-        setAccounts(
-          (data ?? []).map((d: Record<string, unknown>) => {
-            const planObj = Array.isArray(d.plan) ? d.plan[0] : d.plan;
-            return {
-              id: d.id as string,
-              account_id: d.account_id as string,
-              account_name: nameMap[d.account_id as string] ?? (d.account_id as string).slice(0, 8) + '...',
-              plan_name: (planObj as Record<string, unknown>)?.name as string ?? 'Unknown',
-              plan_id: (planObj as Record<string, unknown>)?.id as string ?? '',
-              status: d.status as string,
-              billing_cycle: d.billing_cycle as string | null,
-              current_period_start: d.current_period_start as string | null,
-              current_period_end: d.current_period_end as string | null,
-              price_monthly: (planObj as Record<string, unknown>)?.price_monthly as number ?? 0,
-            };
-          }),
-        );
+        return [];
       }
-    } catch {
-      setAccounts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  useEffect(() => {
-    fetchAccounts();
-  }, [fetchAccounts]);
+      // Fetch account names (businesses or brands)
+      const accountIds = [...new Set((data ?? []).map((d: { account_id: string }) => d.account_id))];
+
+      const nameMap: Record<string, string> = {};
+      if (accountIds.length > 0) {
+        const { data: businesses } = await supabase
+          .from('businesses')
+          .select('id, name')
+          .in('id', accountIds);
+        businesses?.forEach((b: { id: string; name: string }) => { nameMap[b.id] = b.name; });
+
+        const { data: brands } = await supabase
+          .from('brands')
+          .select('id, name')
+          .in('id', accountIds);
+        brands?.forEach((b: { id: string; name: string }) => { nameMap[b.id] = b.name; });
+      }
+
+      return (data ?? []).map((d: Record<string, unknown>) => {
+        const planObj = Array.isArray(d.plan) ? d.plan[0] : d.plan;
+        return {
+          id: d.id as string,
+          account_id: d.account_id as string,
+          account_name: nameMap[d.account_id as string] ?? (d.account_id as string).slice(0, 8) + '...',
+          plan_name: (planObj as Record<string, unknown>)?.name as string ?? 'Unknown',
+          plan_id: (planObj as Record<string, unknown>)?.id as string ?? '',
+          status: d.status as string,
+          billing_cycle: d.billing_cycle as string | null,
+          current_period_start: d.current_period_start as string | null,
+          current_period_end: d.current_period_end as string | null,
+          price_monthly: (planObj as Record<string, unknown>)?.price_monthly as number ?? 0,
+        };
+      }) as AccountSub[];
+    },
+  });
 
   // Fetch module overrides for selected account
-  const fetchOverrides = useCallback(async (accountId: string) => {
-    setOverrideLoading(true);
-    try {
+  const { data: overrides = [], isLoading: overrideLoading } = useQuery({
+    queryKey: ['account_module_access', selectedAccount],
+    queryFn: async () => {
+      if (!selectedAccount) return [];
       const { data } = await supabase
         .from('account_module_access')
         .select('*')
-        .eq('account_id', accountId)
+        .eq('account_id', selectedAccount)
         .order('granted_at', { ascending: false });
 
-      setOverrides((data as ModuleOverride[]) ?? []);
-    } catch {
-      setOverrides([]);
-    } finally {
-      setOverrideLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (selectedAccount) fetchOverrides(selectedAccount);
-  }, [selectedAccount, fetchOverrides]);
+      return (data as ModuleOverride[]) ?? [];
+    },
+    enabled: !!selectedAccount,
+  });
 
   const handleGrantModule = async () => {
     if (!grantForm || !selectedAccount) return;
@@ -145,7 +127,7 @@ export default function AdminSubscriptionAccounts() {
         });
       if (error) throw error;
       setGrantForm(null);
-      fetchOverrides(selectedAccount);
+      void queryClient.invalidateQueries({ queryKey: ['account_module_access', selectedAccount] });
     } catch (e) {
       console.warn('Grant failed:', e);
     } finally {
@@ -159,7 +141,7 @@ export default function AdminSubscriptionAccounts() {
       .from('account_module_access')
       .update({ is_active: false })
       .eq('id', overrideId);
-    fetchOverrides(selectedAccount);
+    void queryClient.invalidateQueries({ queryKey: ['account_module_access', selectedAccount] });
   };
 
   const filteredAccounts = accounts.filter(

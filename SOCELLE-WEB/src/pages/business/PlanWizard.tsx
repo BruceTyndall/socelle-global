@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   FileText,
@@ -21,6 +21,7 @@ import { createScopedLogger } from '../../lib/logger';
 import { PaywallGate } from '../../components/PaywallGate';
 import { checkCreditBalance, ENGINE_CREDIT_COSTS, type CreditCheckResult } from '../../lib/analysis/creditGate';
 import { validateInput } from '../../lib/analysis/guardrails';
+import { useQuery } from '@tanstack/react-query';
 
 const log = createScopedLogger('PlanWizard');
 
@@ -45,9 +46,8 @@ export default function PlanWizard() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [brandsLoading, setBrandsLoading] = useState(true);
   const [selectedBrandId, setSelectedBrandId] = useState<string>('');
+  const [brandSelectionInitialized, setBrandSelectionInitialized] = useState(false);
   const [menuText, setMenuText] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [extracting, setExtracting] = useState(false);
@@ -74,13 +74,9 @@ export default function PlanWizard() {
     }
   }, [user]);
 
-  useEffect(() => {
-    fetchBrands();
-  }, [user]);
-
-  const fetchBrands = async () => {
-    try {
-      setBrandsLoading(true);
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+    queryKey: ['wizard-brands'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('brands')
         .select('id, name, slug, description, status, is_featured')
@@ -88,32 +84,32 @@ export default function PlanWizard() {
         .order('is_featured', { ascending: false })
         .order('name');
 
-      if (error) throw error;
-
-      const safeBrands = Array.isArray(data) ? data : [];
-      setBrands(safeBrands);
-
-      const preselectedBrand = searchParams.get('brand');
-      if (preselectedBrand && safeBrands.length > 0) {
-        const brand = safeBrands.find((b) => b.id === preselectedBrand || b.slug === preselectedBrand);
-        if (brand) setSelectedBrandId(brand.id);
-      } else if (safeBrands.length > 0) {
-        const firstBrand = safeBrands[0];
-        if (firstBrand) setSelectedBrandId(firstBrand.id);
+      if (error) {
+        const appError = mapSupabaseError(
+          error && typeof error === 'object' && 'code' in error
+            ? (error as { message?: string; code?: string })
+            : { message: error instanceof Error ? (error as Error).message : String(error) },
+          'fetchBrands'
+        );
+        throw new Error(appError.userMessage);
       }
-    } catch (err: unknown) {
-      log.error('Error fetching brands', { error: err instanceof Error ? err.message : String(err) });
-      const appError = mapSupabaseError(
-        err && typeof err === 'object' && 'code' in err
-          ? (err as { message?: string; code?: string })
-          : { message: err instanceof Error ? err.message : String(err) },
-        'fetchBrands'
-      );
-      setError(appError.userMessage);
-    } finally {
-      setBrandsLoading(false);
+
+      return (Array.isArray(data) ? data : []) as Brand[];
+    },
+  });
+
+  // Initialize brand selection once brands load
+  if (brands.length > 0 && !brandSelectionInitialized) {
+    const preselectedBrand = searchParams.get('brand');
+    if (preselectedBrand) {
+      const brand = brands.find((b) => b.id === preselectedBrand || b.slug === preselectedBrand);
+      if (brand) setSelectedBrandId(brand.id);
+    } else {
+      const firstBrand = brands[0];
+      if (firstBrand) setSelectedBrandId(firstBrand.id);
     }
-  };
+    setBrandSelectionInitialized(true);
+  }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

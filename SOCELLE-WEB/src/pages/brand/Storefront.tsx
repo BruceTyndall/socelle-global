@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Store, Edit2, Eye, Globe, Star, Package, Users, AlertCircle, RefreshCw, Check } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, Badge } from '../../components/ui';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -30,58 +31,44 @@ interface StorefrontStats {
 
 export default function BrandStorefront() {
   const { brandId } = useAuth();
-  const [brand, setBrand] = useState<BrandData | null>(null);
-  const [products, setProducts] = useState<FeaturedProduct[]>([]);
-  const [stats, setStats] = useState<StorefrontStats>({ productCount: 0, retailerCount: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => {
-    if (brandId) fetchData();
-    else setLoading(false);
-  }, [brandId]);
-
-  const fetchData = async () => {
-    if (!brandId) return;
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { data: storefrontData, isLoading: loading, error: queryError, refetch } = useQuery({
+    queryKey: ['brand-storefront', brandId],
+    queryFn: async () => {
       const [brandRes, proRes, retailRes, plansRes] = await Promise.all([
         supabase
           .from('brands')
           .select('id, name, description, long_description, short_description, category_tags, logo_url, website_url')
-          .eq('id', brandId)
+          .eq('id', brandId!)
           .single(),
         supabase
           .from('pro_products')
           .select('id, product_name, msrp_price, is_bestseller')
-          .eq('brand_id', brandId)
+          .eq('brand_id', brandId!)
           .eq('is_active', true)
           .order('is_bestseller', { ascending: false })
           .limit(4),
         supabase
           .from('retail_products')
           .select('id, product_name, msrp_price, is_bestseller')
-          .eq('brand_id', brandId)
+          .eq('brand_id', brandId!)
           .eq('is_active', true)
           .order('is_bestseller', { ascending: false })
           .limit(4),
         supabase
           .from('plans')
           .select('business_id')
-          .eq('brand_id', brandId),
+          .eq('brand_id', brandId!),
       ]);
 
       if (brandRes.error) throw brandRes.error;
 
-      const brandData = brandRes.data;
-      setBrand(brandData);
-      setDescription(brandData.long_description || brandData.description || '');
+      const brandData = brandRes.data as BrandData;
 
       const proProducts: FeaturedProduct[] = (proRes.data || []).map(p => ({
         id: p.id,
@@ -97,23 +84,32 @@ export default function BrandStorefront() {
         msrp: p.msrp_price ?? null,
         bestseller: p.is_bestseller ?? false,
       }));
-      const allProducts = [...proProducts, ...retailProducts]
+      const products = [...proProducts, ...retailProducts]
         .sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0))
         .slice(0, 4);
-      setProducts(allProducts);
 
       const uniqueRetailers = new Set((plansRes.data || []).map(p => p.business_id)).size;
-      setStats({
+      const stats: StorefrontStats = {
         productCount: (proRes.data?.length || 0) + (retailRes.data?.length || 0),
         retailerCount: uniqueRetailers,
-      });
-    } catch (err: any) {
-      console.warn('Storefront fetch error:', err);
-      setError('Unable to load storefront data. Please try again.');
-    } finally {
-      setLoading(false);
+      };
+
+      return { brand: brandData, products, stats };
+    },
+    enabled: !!brandId,
+  });
+
+  const brand = storefrontData?.brand ?? null;
+  const products = storefrontData?.products ?? [];
+  const stats = storefrontData?.stats ?? { productCount: 0, retailerCount: 0 };
+  const error = queryError ? 'Unable to load storefront data. Please try again.' : null;
+
+  // Sync description from fetched brand data
+  useEffect(() => {
+    if (brand) {
+      setDescription(brand.long_description || brand.description || '');
     }
-  };
+  }, [brand]);
 
   const handleSave = async () => {
     if (!brandId) return;
@@ -124,7 +120,7 @@ export default function BrandStorefront() {
         .update({ long_description: description })
         .eq('id', brandId);
       if (updateErr) throw updateErr;
-      setBrand(prev => prev ? { ...prev, long_description: description } : prev);
+      queryClient.invalidateQueries({ queryKey: ['brand-storefront', brandId] });
       setSaved(true);
       setEditing(false);
       setTimeout(() => setSaved(false), 2500);
@@ -178,7 +174,7 @@ export default function BrandStorefront() {
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <p className="text-red-700 font-sans text-sm flex-1">{error}</p>
-          <button onClick={fetchData} className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800">
+          <button onClick={() => refetch()} className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800">
             <RefreshCw className="w-3.5 h-3.5" />
             Retry
           </button>

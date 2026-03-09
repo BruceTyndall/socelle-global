@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   AlertTriangle,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import type { IntelligenceReport as IReport, ReportSection } from '../../lib/brandTiers/types';
@@ -302,95 +303,62 @@ function SectionCard({ section }: { section: ReportSection }) {
 
 export default function IntelligenceReport() {
   const { user, profile } = useAuth();
-  const [brandName, setBrandName] = useState('Your Brand');
-  const [reports, setReports] = useState<IReport[]>([]);
-  const [jobs, setJobs] = useState<ReportJobRow[]>([]);
+  const queryClient = useQueryClient();
   const [selectedReportId, setSelectedReportId] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [queueingFormat, setQueueingFormat] = useState<'pdf' | 'email' | null>(null);
 
-  const fetchJobs = useCallback(async (brandId: string) => {
-    const { data, error: jobsError } = await supabase
-      .from('brand_intelligence_report_jobs')
-      .select('id,report_month,output_format,delivery_email,status,status_message,artifact_url,created_at,updated_at,completed_at')
-      .eq('brand_id', brandId)
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    if (jobsError) throw jobsError;
-    setJobs((data as ReportJobRow[]) ?? []);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadReports() {
-      setLoading(true);
-      setError(null);
-
+  const { data: reportData, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['brand-intelligence-report', profile?.brand_id],
+    queryFn: async () => {
       if (!isSupabaseConfigured) {
-        setReports([]);
-        setJobs([]);
-        setLoading(false);
-        return;
+        return { brandName: 'Your Brand', reports: [] as IReport[], jobs: [] as ReportJobRow[] };
       }
 
-      if (!profile?.brand_id) {
-        setReports([]);
-        setJobs([]);
-        setLoading(false);
-        return;
-      }
+      const brandId = profile!.brand_id!;
 
-      try {
-        const [{ data: brandRow }, { data: rawSignals, error: signalsError }] = await Promise.all([
-          supabase.from('brands').select('name').eq('id', profile.brand_id).maybeSingle(),
-          supabase
-            .from('market_signals')
-            .select('id,title,description,signal_type,magnitude,direction,updated_at,source,source_name,related_brands,region')
-            .eq('active', true)
-            .eq('is_duplicate', false)
-            .order('updated_at', { ascending: false })
-            .limit(300),
-        ]);
+      const [{ data: brandRow }, { data: rawSignals, error: signalsError }, { data: jobsData, error: jobsError }] = await Promise.all([
+        supabase.from('brands').select('name').eq('id', brandId).maybeSingle(),
+        supabase
+          .from('market_signals')
+          .select('id,title,description,signal_type,magnitude,direction,updated_at,source,source_name,related_brands,region')
+          .eq('active', true)
+          .eq('is_duplicate', false)
+          .order('updated_at', { ascending: false })
+          .limit(300),
+        supabase
+          .from('brand_intelligence_report_jobs')
+          .select('id,report_month,output_format,delivery_email,status,status_message,artifact_url,created_at,updated_at,completed_at')
+          .eq('brand_id', brandId)
+          .order('created_at', { ascending: false })
+          .limit(20),
+      ]);
 
-        if (signalsError) throw signalsError;
+      if (signalsError) throw signalsError;
+      if (jobsError) throw jobsError;
 
-        const resolvedBrandName =
-          (brandRow?.name as string | undefined) ||
-          (user?.user_metadata?.brand_name as string | undefined) ||
-          'Your Brand';
+      const resolvedBrandName =
+        (brandRow?.name as string | undefined) ||
+        (user?.user_metadata?.brand_name as string | undefined) ||
+        'Your Brand';
 
-        if (cancelled) return;
+      const allSignals = (rawSignals as MarketSignalRow[]) ?? [];
+      const brandSignals = allSignals.filter((signal) => isBrandSignal(signal, resolvedBrandName));
+      const reportSignals = brandSignals.length > 0 ? brandSignals : allSignals;
 
-        setBrandName(resolvedBrandName);
+      return {
+        brandName: resolvedBrandName,
+        reports: buildReports(reportSignals, brandId, resolvedBrandName),
+        jobs: (jobsData as ReportJobRow[]) ?? [],
+      };
+    },
+    enabled: !!profile?.brand_id,
+  });
 
-        const allSignals = (rawSignals as MarketSignalRow[]) ?? [];
-        const brandSignals = allSignals.filter((signal) => isBrandSignal(signal, resolvedBrandName));
-        const reportSignals = brandSignals.length > 0 ? brandSignals : allSignals;
-
-        setReports(buildReports(reportSignals, profile.brand_id, resolvedBrandName));
-        await fetchJobs(profile.brand_id);
-      } catch (err) {
-        if (!cancelled) {
-          const message = err instanceof Error ? err.message : 'Failed to load intelligence report';
-          setError(message);
-          setReports([]);
-          setJobs([]);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    void loadReports();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchJobs, profile?.brand_id, user?.user_metadata?.brand_name]);
+  const brandName = reportData?.brandName ?? 'Your Brand';
+  const reports = reportData?.reports ?? [];
+  const jobs = reportData?.jobs ?? [];
+  const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load intelligence report') : null;
 
   useEffect(() => {
     if (reports.length === 0) {
@@ -441,7 +409,7 @@ export default function IntelligenceReport() {
             : 'Email delivery queued successfully.'
         );
 
-        await fetchJobs(profile.brand_id);
+        queryClient.invalidateQueries({ queryKey: ['brand-intelligence-report', profile.brand_id] });
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to queue report request';
         setActionMessage(message);
@@ -449,7 +417,7 @@ export default function IntelligenceReport() {
         setQueueingFormat(null);
       }
     },
-    [fetchJobs, profile?.brand_id, report, user?.email, user?.id]
+    [queryClient, profile?.brand_id, report, user?.email, user?.id]
   );
 
   if (loading) {

@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Rss,
   RefreshCw,
@@ -136,8 +137,7 @@ function formatCat(cat: string): string {
 }
 
 export default function AdminFeedsHub() {
-  const [rows, setRows] = useState<DataFeed[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -155,67 +155,52 @@ export default function AdminFeedsHub() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState<string | null>(null);
   const [expandedFeedId, setExpandedFeedId] = useState<string | null>(null);
-  const [runLogs, setRunLogs] = useState<FeedRunLog[]>([]);
-  const [loadingLogs, setLoadingLogs] = useState(false);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: rows = [], isLoading: loading, refetch: loadData } = useQuery({
+    queryKey: ['data_feeds'],
+    queryFn: async () => {
       const { data, error: dbError } = await supabase
         .from('data_feeds')
         .select('*')
         .order('category', { ascending: true })
         .order('name', { ascending: true });
 
-      if (dbError) throw dbError;
-      setRows(data ?? []);
-      setIsLive(true);
-    } catch (err: any) {
-      console.error('AdminFeedsHub: load error', err);
-      const msg = err?.message?.toLowerCase() || '';
-      if (msg.includes('does not exist') || err?.code === '42P01') {
-        setIsLive(false);
-        setRows([]);
-      } else {
-        setError('Failed to load feeds data.');
+      if (dbError) {
+        const msg = dbError.message?.toLowerCase() || '';
+        if (msg.includes('does not exist') || dbError.code === '42P01') {
+          setIsLive(false);
+          return [];
+        }
+        throw dbError;
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+      setIsLive(true);
+      return (data as DataFeed[]) ?? [];
+    },
+  });
 
   // ── Load run logs for expanded feed ─────────────────────────────────────
-  const loadRunLogs = useCallback(async (feedId: string) => {
-    setLoadingLogs(true);
-    try {
+  const { data: runLogs = [], isLoading: loadingLogs } = useQuery({
+    queryKey: ['feed_run_log', expandedFeedId],
+    queryFn: async () => {
+      if (!expandedFeedId) return [];
       const { data, error: logErr } = await supabase
         .from('feed_run_log')
         .select('*')
-        .eq('feed_id', feedId)
+        .eq('feed_id', expandedFeedId)
         .order('started_at', { ascending: false })
         .limit(5);
 
       if (logErr) throw logErr;
-      setRunLogs(data ?? []);
-    } catch {
-      setRunLogs([]);
-    } finally {
-      setLoadingLogs(false);
-    }
-  }, []);
+      return (data as FeedRunLog[]) ?? [];
+    },
+    enabled: !!expandedFeedId,
+  });
 
   const handleExpandToggle = (feedId: string) => {
     if (expandedFeedId === feedId) {
       setExpandedFeedId(null);
-      setRunLogs([]);
     } else {
       setExpandedFeedId(feedId);
-      loadRunLogs(feedId);
     }
   };
 
@@ -229,9 +214,7 @@ export default function AdminFeedsHub() {
         .eq('id', feed.id);
 
       if (updateError) throw updateError;
-      setRows((prev) =>
-        prev.map((r) => (r.id === feed.id ? { ...r, is_enabled: !r.is_enabled } : r))
-      );
+      void queryClient.invalidateQueries({ queryKey: ['data_feeds'] });
     } catch (err: any) {
       console.error('Toggle error:', err);
       setError('Failed to toggle feed status.');
@@ -272,8 +255,8 @@ export default function AdminFeedsHub() {
           ? `Test complete: ${feedResult.status} — ${feedResult.signals_created} signals, ${feedResult.duration_ms}ms`
           : `Test complete: ${result.signals ?? 0} signals`
       );
-      await loadData();
-      if (expandedFeedId === feedId) loadRunLogs(feedId);
+      await queryClient.invalidateQueries({ queryKey: ['data_feeds'] });
+      if (expandedFeedId === feedId) void queryClient.invalidateQueries({ queryKey: ['feed_run_log', feedId] });
     } catch (err: any) {
       console.error('Test feed error:', err);
       setOrchestratorResult(`Test error: ${err.message}`);
@@ -309,7 +292,7 @@ export default function AdminFeedsHub() {
       if (insertError) throw insertError;
       setNewFeed(EMPTY_FORM);
       setShowAddForm(false);
-      await loadData();
+      await queryClient.invalidateQueries({ queryKey: ['data_feeds'] });
     } catch (err: any) {
       console.error('Add feed error:', err);
       setError('Failed to add feed.');
@@ -328,7 +311,7 @@ export default function AdminFeedsHub() {
         .eq('id', id);
 
       if (deleteError) throw deleteError;
-      setRows((prev) => prev.filter((r) => r.id !== id));
+      void queryClient.invalidateQueries({ queryKey: ['data_feeds'] });
       setConfirmDeleteId(null);
       setSelectedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     } catch (err: any) {
@@ -351,9 +334,7 @@ export default function AdminFeedsHub() {
         .in('id', ids);
 
       if (bulkErr) throw bulkErr;
-      setRows((prev) =>
-        prev.map((r) => selectedIds.has(r.id) ? { ...r, is_enabled: action === 'enable' } : r)
-      );
+      void queryClient.invalidateQueries({ queryKey: ['data_feeds'] });
       setSelectedIds(new Set());
     } catch (err: any) {
       console.error('Bulk action error:', err);
@@ -391,7 +372,7 @@ export default function AdminFeedsHub() {
       setOrchestratorResult(
         `Orchestrator complete: ${result.processed ?? 0} feeds processed, ${result.signals ?? 0} signals, ${result.errors ?? 0} errors.`
       );
-      await loadData();
+      await queryClient.invalidateQueries({ queryKey: ['data_feeds'] });
     } catch (err: any) {
       console.error('Orchestrator error:', err);
       setOrchestratorResult(`Orchestrator error: ${err.message}`);
@@ -424,7 +405,7 @@ export default function AdminFeedsHub() {
         icon={ShieldAlert}
         title="Feeds Hub Unavailable"
         message={error}
-        action={{ label: 'Retry', onClick: loadData }}
+        action={{ label: 'Retry', onClick: () => void loadData() }}
       />
     );
   }
@@ -490,7 +471,7 @@ export default function AdminFeedsHub() {
           </button>
           <button
             type="button"
-            onClick={loadData}
+            onClick={() => void loadData()}
             disabled={loading}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
           >

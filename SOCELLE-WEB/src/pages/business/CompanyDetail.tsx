@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Building2, Users, MessageSquare, Globe, Phone, Mail, MapPin, Pencil } from 'lucide-react';
 import { useCrmCompanyDetail } from '../../lib/useCrmCompanies';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import type { CrmContact, CrmInteraction } from '../../lib/useCrmContacts';
+import { useQuery } from '@tanstack/react-query';
 
 const TABS = ['Contacts', 'Interactions', 'Deals'] as const;
 type Tab = typeof TABS[number];
@@ -14,31 +15,24 @@ export default function CompanyDetail() {
   const { profile } = useAuth();
   const { company, loading, isLive } = useCrmCompanyDetail(id);
   const [tab, setTab] = useState<Tab>('Contacts');
-  const [contacts, setContacts] = useState<CrmContact[]>([]);
-  const [interactions, setInteractions] = useState<CrmInteraction[]>([]);
-  const [loadingSub, setLoadingSub] = useState(true);
 
-  useEffect(() => {
-    if (!id || !profile?.business_id) return;
-    const loadSub = async () => {
-      setLoadingSub(true);
-      try {
-        const [cRes, iRes] = await Promise.all([
-          supabase.from('crm_contacts').select('*').eq('company_id', id).order('last_name'),
-          supabase.from('crm_interactions').select('*').eq('business_id', profile.business_id).order('occurred_at', { ascending: false }).limit(20),
-        ]);
-        setContacts((cRes.data ?? []) as CrmContact[]);
-        // Filter interactions to those belonging to company contacts
-        const contactIds = new Set((cRes.data ?? []).map((c: CrmContact) => c.id));
-        setInteractions(((iRes.data ?? []) as CrmInteraction[]).filter(i => contactIds.has(i.contact_id)));
-      } catch {
-        // silent
-      } finally {
-        setLoadingSub(false);
-      }
-    };
-    loadSub();
-  }, [id, profile?.business_id]);
+  const { data: subData, isLoading: loadingSub } = useQuery({
+    queryKey: ['company-sub-data', id, profile?.business_id],
+    queryFn: async () => {
+      const [cRes, iRes] = await Promise.all([
+        supabase.from('crm_contacts').select('*').eq('company_id', id!).order('last_name'),
+        supabase.from('crm_interactions').select('*').eq('business_id', profile!.business_id).order('occurred_at', { ascending: false }).limit(20),
+      ]);
+      const contacts = (cRes.data ?? []) as CrmContact[];
+      const contactIds = new Set(contacts.map((c) => c.id));
+      const interactions = ((iRes.data ?? []) as CrmInteraction[]).filter(i => contactIds.has(i.contact_id));
+      return { contacts, interactions };
+    },
+    enabled: !!id && !!profile?.business_id,
+  });
+
+  const contacts = subData?.contacts ?? [];
+  const interactions = subData?.interactions ?? [];
 
   if (loading) {
     return (
