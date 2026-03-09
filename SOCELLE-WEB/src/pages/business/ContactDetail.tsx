@@ -1,12 +1,35 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Tag, Plus, Phone, Mail, Calendar, FileText, Users, X, Shield, Droplets, Scissors, AlertTriangle, Pencil, Zap, TrendingUp, Sparkles, StickyNote, Globe } from 'lucide-react';
+import {
+  ArrowLeft,
+  Tag,
+  Plus,
+  Phone,
+  Mail,
+  Calendar,
+  FileText,
+  Users,
+  X,
+  Shield,
+  Droplets,
+  Scissors,
+  AlertTriangle,
+  Pencil,
+  Zap,
+  TrendingUp,
+  Sparkles,
+  StickyNote,
+  Globe,
+  ShoppingBag,
+  RefreshCw,
+} from 'lucide-react';
 import { useCrmContactDetail, useCrmInteractions, type NewInteraction } from '../../lib/useCrmContacts';
 import { useAppointments } from '../../lib/useBooking';
 import { useClientTreatmentRecords } from '../../lib/useClientRecords';
 import { useAuth } from '../../lib/auth';
-import { useCrmTasksForContact } from '../../lib/useCrmTasks';
+import { useCrmTasks, useCrmTasksForContact } from '../../lib/useCrmTasks';
+import { useCrmPurchaseHistory, type ContactPurchase } from '../../lib/useCrmPurchaseHistory';
 import { supabase } from '../../lib/supabase';
 
 interface RelevantSignal {
@@ -19,7 +42,15 @@ interface RelevantSignal {
   updated_at: string;
 }
 
-const TABS = ['Overview', 'Interactions', 'Appointments', 'Service Records', 'Preferences', 'Intelligence'] as const;
+const TABS = [
+  'Overview',
+  'Interactions',
+  'Appointments',
+  'Service Records',
+  'Purchases',
+  'Preferences',
+  'Intelligence',
+] as const;
 type Tab = typeof TABS[number];
 
 const INTERACTION_ICONS: Record<string, typeof Phone> = { call: Phone, email: Mail, meeting: Users, note: FileText };
@@ -34,12 +65,34 @@ export default function ContactDetail() {
   const { appointments } = useAppointments(businessId);
   const { records } = useClientTreatmentRecords(id);
   const { tasks: contactTasks } = useCrmTasksForContact(id);
+  const { createTask } = useCrmTasks(businessId);
+  const {
+    purchases,
+    summary: purchaseSummary,
+    loading: purchasesLoading,
+    error: purchasesError,
+    refetch: refetchPurchases,
+  } = useCrmPurchaseHistory({
+    contactId: id,
+    businessId,
+    email: contact?.email ?? null,
+    phone: contact?.phone ?? null,
+    metadata:
+      contact?.metadata && typeof contact.metadata === 'object' && !Array.isArray(contact.metadata)
+        ? (contact.metadata as Record<string, unknown>)
+        : null,
+  });
 
   const [tab, setTab] = useState<Tab>('Overview');
   const [tagInput, setTagInput] = useState('');
   const [showAddInteraction, setShowAddInteraction] = useState(false);
   const [newIx, setNewIx] = useState({ type: 'note', subject: '', notes: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [purchaseActionId, setPurchaseActionId] = useState<string | null>(null);
+  const [purchaseActionNotice, setPurchaseActionNotice] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
 
   const contactAppts = useMemo(() =>
     appointments.filter(a => a.contact_id === id), [appointments, id]
@@ -88,6 +141,64 @@ export default function ContactDetail() {
       setShowAddInteraction(false);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleCreatePurchaseFollowUpTask = async (purchase: ContactPurchase) => {
+    if (!businessId || !id) return;
+    setPurchaseActionId(purchase.id);
+    setPurchaseActionNotice(null);
+    try {
+      const followUpDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10);
+      await createTask({
+        business_id: businessId,
+        contact_id: id,
+        title: `Follow up on ${purchase.order_number}`,
+        description: `Order status: ${purchase.status}. Total: $${(purchase.total_cents / 100).toFixed(2)}. Review reorder and cross-sell opportunities.`,
+        due_date: followUpDate,
+        priority: 'medium',
+        status: 'open',
+      });
+      setPurchaseActionNotice({
+        type: 'success',
+        text: `Follow-up task created for ${purchase.order_number}.`,
+      });
+    } catch (error) {
+      setPurchaseActionNotice({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to create follow-up task.',
+      });
+    } finally {
+      setPurchaseActionId(null);
+    }
+  };
+
+  const handleAddPurchaseNote = async (purchase: ContactPurchase) => {
+    if (!id || !businessId) return;
+    setPurchaseActionId(purchase.id);
+    setPurchaseActionNotice(null);
+    try {
+      const payload: NewInteraction = {
+        contact_id: id,
+        business_id: businessId,
+        type: 'note',
+        subject: `Purchase linked: ${purchase.order_number}`,
+        notes: `Linked ecommerce purchase. Status: ${purchase.status}. Total: $${(purchase.total_cents / 100).toFixed(2)}.`,
+      };
+      await addInteraction(payload);
+      setPurchaseActionNotice({
+        type: 'success',
+        text: `Purchase note added for ${purchase.order_number}.`,
+      });
+    } catch (error) {
+      setPurchaseActionNotice({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to add purchase note.',
+      });
+    } finally {
+      setPurchaseActionId(null);
     }
   };
 
@@ -403,6 +514,148 @@ export default function ContactDetail() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {tab === 'Purchases' && (
+        <div className="space-y-5">
+          {purchaseActionNotice && (
+            <div
+              className={`rounded-xl border px-4 py-3 text-sm ${
+                purchaseActionNotice.type === 'success'
+                  ? 'bg-signal-up/5 border-signal-up/20 text-signal-up'
+                  : 'bg-signal-down/5 border-signal-down/20 text-signal-down'
+              }`}
+            >
+              {purchaseActionNotice.text}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white rounded-xl border border-accent-soft/30 p-4">
+              <p className="text-xs uppercase tracking-wide text-graphite/50">Orders</p>
+              <p className="text-2xl font-semibold text-graphite mt-1">
+                {purchaseSummary.total_orders}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl border border-accent-soft/30 p-4">
+              <p className="text-xs uppercase tracking-wide text-graphite/50">Total Spend</p>
+              <p className="text-2xl font-semibold text-graphite mt-1">
+                ${(purchaseSummary.total_spent_cents / 100).toFixed(2)}
+              </p>
+            </div>
+            <div className="bg-white rounded-xl border border-accent-soft/30 p-4">
+              <p className="text-xs uppercase tracking-wide text-graphite/50">Last Purchase</p>
+              <p className="text-sm font-semibold text-graphite mt-2">
+                {purchaseSummary.last_purchase_at
+                  ? new Date(purchaseSummary.last_purchase_at).toLocaleDateString()
+                  : 'No purchases yet'}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl border border-accent-soft/30 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-accent" /> Ecommerce Purchase History
+              </h2>
+              <button
+                onClick={() => refetchPurchases()}
+                className="text-xs text-accent hover:text-accent-hover font-medium inline-flex items-center gap-1"
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> Refresh
+              </button>
+            </div>
+
+            {purchasesLoading ? (
+              <div className="space-y-3 animate-pulse">
+                {[1, 2, 3].map((index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="h-3 bg-graphite/10 rounded w-48" />
+                    <div className="h-3 bg-graphite/10 rounded w-72" />
+                  </div>
+                ))}
+              </div>
+            ) : purchasesError ? (
+              <div className="bg-signal-down/5 border border-signal-down/20 rounded-lg p-4 text-sm text-signal-down">
+                {purchasesError}
+              </div>
+            ) : purchases.length === 0 ? (
+              <p className="text-sm text-graphite/50 py-4">
+                No ecommerce purchases linked yet for this contact.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {purchases.map((purchase) => (
+                  <div
+                    key={purchase.id}
+                    className="p-4 rounded-lg border border-accent-soft/20"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-semibold text-graphite">
+                          {purchase.order_number}
+                        </p>
+                        <p className="text-xs text-graphite/60">
+                          {new Date(purchase.placed_at).toLocaleString()} ·{' '}
+                          {purchase.item_count} item{purchase.item_count === 1 ? '' : 's'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-graphite">
+                          ${(purchase.total_cents / 100).toFixed(2)}
+                        </p>
+                        <p className="text-[10px] uppercase tracking-wide text-graphite/50">
+                          {purchase.status}
+                        </p>
+                      </div>
+                    </div>
+
+                    {purchase.items.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {purchase.items.slice(0, 4).map((item) => (
+                          <span
+                            key={item.id}
+                            className="text-[10px] bg-accent-soft/20 text-graphite/70 px-2 py-0.5 rounded-full"
+                          >
+                            {item.product_name} × {item.quantity}
+                          </span>
+                        ))}
+                        {purchase.items.length > 4 && (
+                          <span className="text-[10px] text-graphite/50 px-1 py-0.5">
+                            +{purchase.items.length - 4} more
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => handleCreatePurchaseFollowUpTask(purchase)}
+                        disabled={purchaseActionId === purchase.id}
+                        className="h-8 px-3 rounded-full bg-accent/10 text-accent text-xs font-medium hover:bg-accent/20 disabled:opacity-50 transition-colors"
+                      >
+                        {purchaseActionId === purchase.id ? 'Saving...' : 'Create follow-up task'}
+                      </button>
+                      <button
+                        onClick={() => handleAddPurchaseNote(purchase)}
+                        disabled={purchaseActionId === purchase.id}
+                        className="h-8 px-3 rounded-full border border-accent-soft/30 text-graphite/70 text-xs font-medium hover:border-accent/30 disabled:opacity-50 transition-colors"
+                      >
+                        Add purchase note
+                      </button>
+                      <Link
+                        to={`/portal/orders/${purchase.id}`}
+                        className="h-8 px-3 rounded-full border border-accent-soft/30 text-graphite/70 text-xs font-medium hover:border-accent/30 transition-colors inline-flex items-center"
+                      >
+                        View order
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

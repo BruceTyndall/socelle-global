@@ -1,0 +1,46 @@
+{
+  "wo_id": "CRM-WO-purchase-history-and-automation",
+  "timestamp_utc": "2026-03-09T06:12:29Z",
+  "status": "PASS",
+  "scope": [
+    "CRM purchase history from ecommerce orders",
+    "Purchase-to-CRM actions (follow-up task + purchase note)",
+    "CRM sequencing automation for lead/client follow-up",
+    "Marketing activation scheduling with social channel support",
+    "Google Calendar and Microsoft Teams invite interoperability"
+  ],
+  "files_changed": [
+    "src/lib/useCrmPurchaseHistory.ts",
+    "src/pages/business/ContactDetail.tsx",
+    "src/pages/business/CrmTasks.tsx"
+  ],
+  "checks": [
+    {
+      "name": "npx tsc --noEmit",
+      "result": "PASS"
+    },
+    {
+      "name": "npm run build",
+      "result": "PASS",
+      "notes": [
+        "Pre-existing Vite warning in src/pages/admin/EditorialHub.tsx for duplicate onClick attribute",
+        "Build completed successfully"
+      ]
+    },
+    {
+      "name": "npm run shell:check",
+      "result": "PASS",
+      "notes": [
+        "No new shells introduced",
+        "Current shell count: 61"
+      ]
+    }
+  ],
+  "done_criteria": {
+    "purchase_history_visible_in_crm": true,
+    "purchases_linked_to_crm_actions": true,
+    "sequencing_automation_available": true,
+    "marketing_activation_scheduler_available": true,
+    "calendar_invite_links_available": true
+  }
+}

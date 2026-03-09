@@ -1,9 +1,9 @@
 {
-  "scan_date": "2026-03-09T05:56:47.612Z",
+  "scan_date": "2026-03-09T06:12:07.644Z",
   "summary": {
     "total": 269,
-    "live": 110,
-    "demo": 98,
+    "live": 111,
+    "demo": 97,
     "shell": 61,
     "shell_rate": "22.7"
   },
@@ -533,8 +533,8 @@
       ]
     },
     "business": {
-      "live": 24,
-      "demo": 36,
+      "live": 25,
+      "demo": 35,
       "shell": 14,
       "pages": [
         {
@@ -640,7 +640,7 @@
         {
           "file": "src/pages/business/ContactDetail.tsx",
           "classification": "LIVE",
-          "feature_score": 3
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/ContactList.tsx",
@@ -664,8 +664,8 @@
         },
         {
           "file": "src/pages/business/CrmTasks.tsx",
-          "classification": "DEMO",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/Dashboard.tsx",
@@ -3256,12 +3256,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
-        "crud": false,
+        "crud": true,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/ContactList.tsx",
@@ -3326,17 +3326,17 @@
     {
       "file": "src/pages/business/CrmTasks.tsx",
       "hub": "business",
-      "classification": "DEMO",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
+        "error_state": true,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/Dashboard.tsx",
