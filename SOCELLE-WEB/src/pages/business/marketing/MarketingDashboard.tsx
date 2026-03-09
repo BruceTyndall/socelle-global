@@ -9,10 +9,13 @@ import {
   AlertCircle,
   RefreshCw,
   Loader2,
+  Zap,
 } from 'lucide-react';
 import { useMarketingCampaigns } from '../../../lib/marketing/useMarketingCampaigns';
 import { useAudienceSegments } from '../../../lib/useAudienceSegments';
 import { useContentTemplates } from '../../../lib/useContentTemplates';
+import { useActionableSignals } from '../../../lib/intelligence/useActionableSignals';
+import { CrossHubActionDispatcher } from '../../../components/CrossHubActionDispatcher';
 
 // ── V2-HUBS-08: Marketing Dashboard ────────────────────────────────
 // KPI strip + recent campaigns + quick actions.
@@ -78,6 +81,12 @@ export default function MarketingDashboard() {
   } = useMarketingCampaigns();
   const { segments, isLive: segmentsLive, loading: segmentsLoading } = useAudienceSegments();
   const { templates, isLive: templatesLive, loading: templatesLoading } = useContentTemplates();
+  const {
+    signals: actionableSignals,
+    loading: signalsLoading,
+    error: signalsError,
+    refetch: refetchSignals,
+  } = useActionableSignals(4);
 
   const isLive = campaignsLive || segmentsLive || templatesLive;
   const loading = campaignsLoading || segmentsLoading || templatesLoading;
@@ -190,6 +199,76 @@ export default function MarketingDashboard() {
               <ArrowRight className="w-4 h-4 text-graphite/30 ml-auto" />
             </Link>
           ))}
+        </div>
+
+        {/* ── Signal Action Dispatcher ───────────────────────── */}
+        <div className="bg-white rounded-xl border border-graphite/8 overflow-hidden">
+          <div className="px-6 py-4 border-b border-graphite/8 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-sans font-semibold text-graphite">Signal-Triggered Actions</h2>
+              <p className="text-xs text-graphite/50 font-sans mt-0.5">
+                Launch campaigns from live intelligence signals using the shared dispatcher
+              </p>
+            </div>
+            <Link
+              to="/portal/intelligence"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent-hover transition-colors"
+            >
+              Open Intelligence <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {signalsLoading ? (
+            <div className="p-6 space-y-3">
+              <SkeletonRow />
+              <SkeletonRow />
+            </div>
+          ) : signalsError ? (
+            <div className="px-6 py-8 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-signal-down" />
+                <p className="text-sm text-graphite/70 font-sans">{signalsError}</p>
+              </div>
+              <button
+                onClick={() => {
+                  void refetchSignals();
+                }}
+                className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-graphite/10 text-xs font-sans font-medium text-graphite hover:bg-graphite/5 transition-colors"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Retry
+              </button>
+            </div>
+          ) : actionableSignals.length === 0 ? (
+            <div className="px-6 py-10 text-center">
+              <Zap className="w-8 h-8 text-graphite/15 mx-auto mb-2" />
+              <p className="text-sm text-graphite/50 font-sans">No active signals available yet</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-graphite/5">
+              {actionableSignals.map((signal) => (
+                <div key={signal.id} className="px-6 py-4 flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-graphite truncate">{signal.title}</p>
+                    <p className="text-xs text-graphite/50 font-sans mt-0.5">
+                      {signal.category} • Δ {signal.delta.toFixed(1)} • Confidence {(signal.confidence * 100).toFixed(0)}%
+                    </p>
+                  </div>
+                  <CrossHubActionDispatcher
+                    compact
+                    signal={{
+                      id: signal.id,
+                      title: signal.title,
+                      category: signal.category,
+                      delta: signal.delta,
+                      confidence: signal.confidence,
+                      source: signal.source,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* ── Recent Campaigns ────────────────────────────────── */}

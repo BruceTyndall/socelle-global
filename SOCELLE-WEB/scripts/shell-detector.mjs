@@ -34,6 +34,7 @@ const LIVE_PATTERNS = [
   /\.delete\s*\(/,
   /\.upsert\s*\(/,
   /\.rpc\s*\(/,
+  /use(?:Campaigns|MarketingCampaigns|CampaignMetrics|AudienceSegments|ContentTemplates|Notifications|Appointments|AppointmentDetail|BookingServices|BookingStaff|Products|Automations|TierDiscounts|VolumeDiscounts|DataFeedStats|PlatformStats|Intelligence|TalentSignals|JobPostings)\s*\(/,
 ];
 
 // ── Patterns that indicate DEMO labeling ──
@@ -50,6 +51,7 @@ const EMPTY_STATE_PATTERNS = [
   /EmptyState/,
   /empty.state/i,
   /No\s+\w+\s+found/,
+  /No\s+\w+\s+(yet|available|scheduled|configured|on this day)/i,
   /Nothing\s+here/i,
   /Get\s+started/i,
 ];
@@ -69,6 +71,10 @@ const LOADING_STATE_PATTERNS = [
   /isLoading/,
   /isPending/,
   /isFetching/,
+  /if\s*\(\s*loading\s*\)/,
+  /loading\s*\?/,
+  /loading\s*&&/,
+  /loading:\s*\w+/,
   /loading.state/i,
   /shimmer/i,
 ];
@@ -90,6 +96,8 @@ const CRUD_PATTERNS = [
 // ── Export patterns ──
 const EXPORT_PATTERNS = [
   /exportCSV/i,
+  /exportToCsv/i,
+  /exportToCSV/i,
   /exportPDF/i,
   /download.*csv/i,
   /download.*pdf/i,

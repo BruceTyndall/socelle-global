@@ -6,6 +6,7 @@ import { Bell, Mail, Info } from 'lucide-react';
 import { useState } from 'react';
 import { useNotifications } from '../../lib/notifications/useNotifications';
 import type { EmailFrequency } from '../../lib/notifications/types';
+import NotificationLedgerPanel from '../../components/notifications/NotificationLedgerPanel';
 
 const TOGGLE_ITEMS = [
   { key: 'intelligence_alerts' as const, label: 'Intelligence Alerts', desc: 'Market trends, peer benchmarks, and category signals' },
@@ -24,7 +25,16 @@ const FREQUENCY_OPTIONS: { value: EmailFrequency; label: string }[] = [
 ];
 
 export default function NotificationPreferences() {
-  const { preferences, loading, error, updatePreferences, refresh } = useNotifications();
+  const {
+    notifications,
+    markAsRead,
+    markAllAsRead,
+    preferences,
+    loading,
+    error,
+    updatePreferences,
+    refresh,
+  } = useNotifications();
   const [savingKey, setSavingKey] = useState<string | null>(null);
 
   const handleToggle = async (key: keyof typeof preferences) => {
@@ -65,6 +75,17 @@ export default function NotificationPreferences() {
             </p>
           </div>
         </div>
+
+        <NotificationLedgerPanel
+          notifications={notifications}
+          loading={loading && notifications.length === 0}
+          error={error}
+          onRefresh={refresh}
+          onMarkAsRead={markAsRead}
+          onMarkAllAsRead={markAllAsRead}
+          title="Notification Ledger"
+          description="Transactional notification events for your business workspace"
+        />
 
         {/* In-app notification toggles */}
         <div className="bg-white rounded-xl border border-accent-soft shadow-sm mb-6">

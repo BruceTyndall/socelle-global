@@ -10,6 +10,7 @@ import {
   Archive,
   Trash2,
   Pencil,
+  Download,
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -19,6 +20,7 @@ import { Modal, ModalBody, ModalFooter } from '../../components/ui/Modal';
 import { Tabs, TabList, Tab, TabPanel } from '../../components/ui/Tabs';
 import { useToast } from '../../components/Toast';
 import { useCampaigns } from '../../lib/campaigns/useCampaigns';
+import { exportToCsv } from '../../lib/csvExport';
 import { useProducts } from '../../lib/shop/useProducts';
 import type { Campaign, CampaignStatus, DiscountType, OperatorTier } from '../../lib/campaigns/types';
 
@@ -174,6 +176,22 @@ export default function BrandCampaigns() {
       .join(', ');
   };
 
+  const handleExportCsv = () => {
+    exportToCsv(
+      campaigns.map((campaign) => ({
+        name: campaign.name,
+        status: campaign.status,
+        start_date: campaign.startDate,
+        end_date: campaign.endDate,
+        discount_type: campaign.discountType,
+        discount_value: campaign.discountValue,
+        target_operators: campaign.targetOperatorCount,
+        eligible_tiers: campaign.eligibleTiers.join(';'),
+      })),
+      'brand_campaigns',
+    );
+  };
+
   const renderCampaignCard = (campaign: Campaign) => {
     const statusCfg = STATUS_BADGE[campaign.status];
     return (
@@ -287,6 +305,15 @@ export default function BrandCampaigns() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              iconLeft={<Download className="w-4 h-4" />}
+              onClick={handleExportCsv}
+              disabled={campaigns.length === 0}
+            >
+              Export CSV
+            </Button>
             <Button
               variant="gold"
               size="sm"

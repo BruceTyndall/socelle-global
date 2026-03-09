@@ -1,0 +1,23 @@
+{
+  "wo_id": "BUILD3-GROWTH-HARDENING-WAVE2",
+  "timestamp": "2026-03-09T16-00-18Z",
+  "skills_run": [
+    "hub-shell-detector",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npm run shell:check => LIVE 151, DEMO 66, SHELL 52 (down from baseline 65). marketing hub shells: 0."
+    },
+    "build-gate": {
+      "status": "FAIL",
+      "failures": [
+        "npx tsc --noEmit -p tsconfig.app.json exits 2 with pre-existing type failures across unrelated admin/shop/test files"
+      ],
+      "evidence": "npm run build exits 0; tsc currently not green at repository baseline."
+    }
+  },
+  "overall": "FAIL"
+}

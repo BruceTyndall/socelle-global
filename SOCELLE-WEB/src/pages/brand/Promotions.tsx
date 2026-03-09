@@ -8,6 +8,7 @@ import {
   Star,
   Shield,
   Package,
+  Download,
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -16,6 +17,7 @@ import { Input } from '../../components/ui/Input';
 import { Modal, ModalBody, ModalFooter } from '../../components/ui/Modal';
 import { useToast } from '../../components/Toast';
 import { useTierDiscounts, useVolumeDiscounts } from '../../lib/campaigns/useCampaigns';
+import { exportToCsv } from '../../lib/csvExport';
 import type { OperatorTier } from '../../lib/campaigns/types';
 
 const TIER_CONFIG: Record<OperatorTier, { icon: typeof Shield; label: string; color: string; bgColor: string }> = {
@@ -198,6 +200,29 @@ export default function BrandPromotions() {
     setBusyAction(null);
   };
 
+  const handleExportTierCsv = () => {
+    exportToCsv(
+      tierDiscounts.map((discount) => ({
+        tier: discount.tier,
+        discount_percent: discount.discountPercent,
+        min_units: discount.minUnits ?? '',
+        description: discount.description,
+      })),
+      'brand_tier_discounts',
+    );
+  };
+
+  const handleExportVolumeCsv = () => {
+    exportToCsv(
+      volumeDiscounts.map((discount) => ({
+        min_units: discount.minUnits,
+        max_units: discount.maxUnits ?? '',
+        discount_percent: discount.discountPercent,
+      })),
+      'brand_volume_discounts',
+    );
+  };
+
   return (
     <>
       <Helmet>
@@ -212,11 +237,33 @@ export default function BrandPromotions() {
         )}
 
         {/* Header */}
-        <div>
-          <h1 className="font-sans text-2xl text-graphite">Pricing & Promotions</h1>
-          <p className="text-sm text-graphite/60 font-sans mt-0.5">
-            Manage tier-based pricing and volume discounts for your operator network
-          </p>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div>
+            <h1 className="font-sans text-2xl text-graphite">Pricing & Promotions</h1>
+            <p className="text-sm text-graphite/60 font-sans mt-0.5">
+              Manage tier-based pricing and volume discounts for your operator network
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              iconLeft={<Download className="w-3.5 h-3.5" />}
+              onClick={handleExportTierCsv}
+              disabled={tierDiscounts.length === 0}
+            >
+              Export Tier CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              iconLeft={<Download className="w-3.5 h-3.5" />}
+              onClick={handleExportVolumeCsv}
+              disabled={volumeDiscounts.length === 0}
+            >
+              Export Volume CSV
+            </Button>
+          </div>
         </div>
 
         {/* Section 1: Tier-Based Pricing */}

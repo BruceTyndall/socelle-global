@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Users, Scissors, ArrowRight, CheckCircle, XCircle, AlertTriangle, UserPlus } from 'lucide-react';
+import { Calendar, Clock, Users, Scissors, ArrowRight, CheckCircle, XCircle, AlertTriangle, UserPlus, Zap, AlertCircle, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useAppointments, useBookingServices, useBookingStaff } from '../../lib/useBooking';
+import { useActionableSignals } from '../../lib/intelligence/useActionableSignals';
+import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
 
 const STATUS_COLORS: Record<string, string> = {
   scheduled: 'bg-blue-50 text-blue-700',
@@ -19,6 +21,7 @@ export default function BookingDashboard() {
   const { appointments, loading: apptLoading, isLive } = useAppointments(businessId, { start: `${today}T00:00:00`, end: `${today}T23:59:59` });
   const { services, loading: svcLoading } = useBookingServices(businessId);
   const { staff, loading: staffLoading } = useBookingStaff(businessId);
+  const { signals, loading: signalsLoading, error: signalsError, refetch: refetchSignals } = useActionableSignals(3);
 
   const loading = apptLoading || svcLoading || staffLoading;
 
@@ -107,6 +110,67 @@ export default function BookingDashboard() {
                     Add to CRM
                   </Link>
                 )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Signal-driven actions */}
+      <div className="bg-white rounded-xl border border-accent-soft/30 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider">Signals to Activate</h2>
+          <Link to="/portal/intelligence" className="text-xs font-medium text-accent hover:text-accent-hover transition-colors">
+            Open Intelligence
+          </Link>
+        </div>
+        {signalsLoading ? (
+          <div className="space-y-2 animate-pulse">
+            <div className="h-11 bg-accent-soft/10 rounded-lg" />
+            <div className="h-11 bg-accent-soft/10 rounded-lg" />
+          </div>
+        ) : signalsError ? (
+          <div className="flex items-center justify-between gap-3 bg-signal-down/5 border border-signal-down/20 rounded-lg px-4 py-3">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-signal-down" />
+              <p className="text-xs text-graphite/70">{signalsError}</p>
+            </div>
+            <button
+              onClick={() => {
+                void refetchSignals();
+              }}
+              className="inline-flex items-center gap-1 text-xs text-graphite/70 hover:text-graphite transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Retry
+            </button>
+          </div>
+        ) : signals.length === 0 ? (
+          <div className="text-center py-6">
+            <Zap className="w-6 h-6 text-graphite/20 mx-auto mb-2" />
+            <p className="text-xs text-graphite/60">No active signals available</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {signals.map((signal) => (
+              <div key={signal.id} className="flex items-center gap-2 border border-accent-soft/20 rounded-lg px-3 py-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-graphite truncate">{signal.title}</p>
+                  <p className="text-xs text-graphite/60">
+                    {signal.category} • Δ {signal.delta.toFixed(1)} • {(signal.confidence * 100).toFixed(0)}% confidence
+                  </p>
+                </div>
+                <CrossHubActionDispatcher
+                  compact
+                  signal={{
+                    id: signal.id,
+                    title: signal.title,
+                    category: signal.category,
+                    delta: signal.delta,
+                    confidence: signal.confidence,
+                    source: signal.source,
+                  }}
+                />
               </div>
             ))}
           </div>

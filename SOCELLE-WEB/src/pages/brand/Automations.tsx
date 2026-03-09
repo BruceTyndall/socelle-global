@@ -10,6 +10,7 @@ import {
   Info,
   Clock,
   Hash,
+  Download,
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -18,6 +19,7 @@ import { Input } from '../../components/ui/Input';
 import { Modal, ModalBody, ModalFooter } from '../../components/ui/Modal';
 import { useToast } from '../../components/Toast';
 import { useAutomations } from '../../lib/campaigns/useCampaigns';
+import { exportToCsv } from '../../lib/csvExport';
 import type { AutomationType } from '../../lib/campaigns/types';
 
 const TYPE_CONFIG: Record<AutomationType, { icon: typeof Mail; label: string; variant: 'green' | 'gold' | 'amber' }> = {
@@ -111,6 +113,20 @@ export default function BrandAutomations() {
     });
   };
 
+  const handleExportCsv = () => {
+    exportToCsv(
+      automations.map((rule) => ({
+        name: rule.name,
+        type: rule.type,
+        enabled: rule.enabled,
+        trigger_days: rule.triggerDays ?? '',
+        trigger_count: rule.triggerCount,
+        last_triggered: rule.lastTriggered ?? '',
+      })),
+      'brand_automation_rules',
+    );
+  };
+
   return (
     <>
       <Helmet>
@@ -132,14 +148,25 @@ export default function BrandAutomations() {
               Configure triggered workflows that engage your operator network automatically
             </p>
           </div>
-          <Button
-            variant="gold"
-            size="sm"
-            iconLeft={<Plus className="w-4 h-4" />}
-            onClick={openCreate}
-          >
-            Create Rule
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              iconLeft={<Download className="w-4 h-4" />}
+              onClick={handleExportCsv}
+              disabled={automations.length === 0}
+            >
+              Export CSV
+            </Button>
+            <Button
+              variant="gold"
+              size="sm"
+              iconLeft={<Plus className="w-4 h-4" />}
+              onClick={openCreate}
+            >
+              Create Rule
+            </Button>
+          </div>
         </div>
 
         {/* Info Banner */}
