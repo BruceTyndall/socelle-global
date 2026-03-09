@@ -12,7 +12,7 @@ Last Updated: 2026-03-09 (Command Center — CRM Unified Timeline + Cross-Hub Re
 | CTRL-WO-03 | Audit log table + writers (admin + AI + entitlements) | COMPLETE | `8556d86` | `docs/qa/verify_CTRL-WO-03_2026-03-09T04-14-51Z.json` |
 | CTRL-WO-04 | Entitlements chain verification (ModuleRoute -> UpgradePrompt) | COMPLETE | `eee5ffc` | `docs/qa/verify_CTRL-WO-04_2026-03-09T04-17-09Z.json` |
 | CRM-WO-calendar-oauth-sync | CRM Tasks Google/Microsoft OAuth connections + server-side event creation | COMPLETE | `ea341c6` | `docs/qa/verify_CRM-WO-calendar-oauth-sync_2026-03-09T06-25-39Z.json` |
-| CRM-WO-unified-timeline | Contact-level unified timeline + CRM dashboard commerce/sales reinforcement | COMPLETE | `TBD` | `docs/qa/verify_CRM-WO-unified-timeline_2026-03-09T06-38-37Z.json` |
+| CRM-WO-unified-timeline | Contact-level unified timeline + CRM dashboard commerce/sales reinforcement | COMPLETE | `176a01d` | `docs/qa/verify_CRM-WO-unified-timeline_2026-03-09T06-38-37Z.json` |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|
