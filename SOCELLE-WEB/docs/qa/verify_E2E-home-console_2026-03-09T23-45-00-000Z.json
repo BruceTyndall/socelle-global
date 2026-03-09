@@ -1,0 +1,21 @@
+{
+  "wo_id": "E2E-home-console",
+  "timestamp": "2026-03-09T23:45:00.000Z",
+  "action": "Fix root cause of homepage console errors on / route",
+  "root_cause": "Two console errors were captured by the Playwright routes.spec.ts on the / route: (1) CSP violation — vite.config.ts server.headers was missing 'https://api.fontshare.com' in style-src and font-src, causing a Content Security Policy error for the General Sans font loaded from index.html (this error was already filtered by ignoredConsolePatterns but indicated a misconfigured CSP). (2) A 408 (Offline) network error for the JetBrains Mono woff2 file at fonts.gstatic.com — this was NOT filtered and caused the test to fail. The 408 occurred because the JetBrains Mono font was loaded exclusively from the Google Fonts CDN, which is unreachable in network-isolated test environments.",
+  "fix_applied": "Two-part fix: (1) Synced vite.config.ts dev server CSP to match public/_headers production CSP — added 'https://api.fontshare.com' to style-src and both 'https://api.fontshare.com' and 'https://cdn.fontshare.com' to font-src. (2) Self-hosted JetBrains Mono woff2 files in public/fonts/ — downloaded the latin-subset woff2 files (weights 400, 500, 700) from Google Fonts CDN, placed them at public/fonts/jetbrains-mono-{400,500,700}.woff2, added @font-face declaration in src/styles/fonts.css pointing to local files, and replaced the Google Fonts CDN <link> tags in index.html with a <link rel='preload'> for the local font file. This eliminates the external CDN request to fonts.gstatic.com that was failing with 408.",
+  "files_changed": [
+    "vite.config.ts",
+    "index.html",
+    "src/styles/fonts.css",
+    "public/fonts/jetbrains-mono-400.woff2",
+    "public/fonts/jetbrains-mono-500.woff2",
+    "public/fonts/jetbrains-mono-700.woff2"
+  ],
+  "results": {
+    "console_errors_on_load": 0,
+    "tsc": { "status": "PASS", "errors": 0 },
+    "build": { "status": "PASS" }
+  },
+  "overall": "PASS"
+}

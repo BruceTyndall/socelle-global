@@ -23,10 +23,8 @@
     <!-- General Sans (primary — ALL public pages) via Fontshare -->
     <link rel="preconnect" href="https://api.fontshare.com">
     <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
-    <!-- JetBrains Mono (data values / timestamps only) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- JetBrains Mono (data values / timestamps only) — self-hosted; ui-monospace fallback applies -->
+    <link rel="preload" href="/fonts/jetbrains-mono-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <style>
       #loading-splash {
         position: fixed;
