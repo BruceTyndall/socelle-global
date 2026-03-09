@@ -244,6 +244,7 @@ const AdminResellerHub = lazy(() => import('./pages/admin/AdminResellerHub'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminAuditLog = lazy(() => import('./pages/admin/AdminAuditLog'));
 const AdminFeatureFlags = lazy(() => import('./pages/admin/AdminFeatureFlags'));
+const AdminApiControls = lazy(() => import('./pages/admin/AdminApiControls'));
 const AdminPlatformSettings = lazy(() => import('./pages/admin/AdminPlatformSettings'));
 
 // ── Sales Platform (WO-OVERHAUL-14)
@@ -1116,6 +1117,7 @@ function App() {
                     <Route path="users" element={<AdminUsers />} />
                     <Route path="audit-log" element={<AdminAuditLog />} />
                     <Route path="feature-flags" element={<AdminFeatureFlags />} />
+                    <Route path="api-controls" element={<AdminApiControls />} />
                     <Route path="platform-settings" element={<AdminPlatformSettings />} />
 
                     {/* ── Education (WO-OVERHAUL-13) ── */}

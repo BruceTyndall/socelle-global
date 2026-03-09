@@ -11,6 +11,7 @@ supabase/.temp/
 SOCELLE-WEB/
 playwright-report/
 test-results/
+/playwright-report/
 
 # Local Netlify folder
 .netlify

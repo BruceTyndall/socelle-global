@@ -1,9 +1,8 @@
-// ── AdminAuditLog — V2-HUBS-05: Audit Log ─────────────────────────────────
-// Data source: audit_events table (DEMO fallback if table missing — 42P01)
-// Authority: build_tracker.md WO V2-HUBS-05
+// ── AdminAuditLog — CTRL-WO-03: Audit Log System ────────────────────────────
+// Data source: audit_logs table (empty fallback if table missing — 42P01)
+// Authority: build_tracker.md WO CTRL-WO-03
 
 import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import {
   ClipboardList,
   Search,
@@ -11,44 +10,50 @@ import {
   RefreshCw,
   ShieldAlert,
   Filter,
+  ChevronDown,
+  ChevronRight,
+  ChevronLeft,
 } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { useAuditLogs } from '../../lib/useAuditLogs';
+import type { AuditLogEntry } from '../../lib/useAuditLogs';
 import { exportToCsv } from '../../lib/csvExport';
 
-// ── Types ─────────────────────────────────────────────────────────────────
-
-interface AuditEvent {
-  id: string;
-  timestamp: string;
-  user_email: string;
-  action: string;
-  target: string;
-  details: string;
-}
+// ── Constants ─────────────────────────────────────────────────────────────
 
 const ACTION_TYPES = [
   'All',
+  'feature_flag.create',
+  'feature_flag.update',
+  'feature_flag.delete',
+  'entitlement.change',
+  'module.toggle',
+  'ai.request',
+  'ai.blocked',
+  'ai.rate_limited',
+  'admin.login',
+  'admin.action',
+  'content.publish',
+  'content.unpublish',
   'user.role_change',
-  'user.deactivate',
-  'user.reactivate',
-  'feed.create',
-  'feed.delete',
-  'feed.toggle',
-  'settings.update',
-  'cms.publish',
-  'cms.unpublish',
-  'export.csv',
+  'user.tier_change',
+  'credit.deduct',
+  'credit.purchase',
 ] as const;
 
-// ── Helpers ───────────────────────────────────────────────────────────────
+const RESOURCE_TYPES = [
+  'All',
+  'feature_flag',
+  'entitlement',
+  'module',
+  'ai_tool',
+  'user',
+  'content',
+  'credit',
+] as const;
 
-function isMissingTableError(error: unknown): boolean {
-  if (!error || typeof error !== 'object') return false;
-  const e = error as Record<string, unknown>;
-  const code = typeof e.code === 'string' ? e.code : '';
-  const message = typeof e.message === 'string' ? e.message.toLowerCase() : '';
-  return code === '42P01' || message.includes('does not exist');
-}
+const PAGE_SIZE = 50;
+
+// ── Helpers ───────────────────────────────────────────────────────────────
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -62,122 +67,44 @@ function timeAgo(iso: string): string {
 }
 
 function actionBadgeClasses(action: string): string {
-  if (action.includes('delete') || action.includes('deactivate'))
+  if (action.includes('delete') || action.includes('blocked'))
     return 'bg-[#8E6464]/10 text-[#8E6464]';
-  if (action.includes('create') || action.includes('publish') || action.includes('reactivate'))
+  if (action.includes('create') || action.includes('publish') || action.includes('login') || action.includes('purchase'))
     return 'bg-[#5F8A72]/10 text-[#5F8A72]';
-  if (action.includes('update') || action.includes('change') || action.includes('toggle'))
+  if (action.includes('update') || action.includes('change') || action.includes('toggle') || action.includes('deduct'))
     return 'bg-[#A97A4C]/10 text-[#A97A4C]';
   return 'bg-[#6E879B]/10 text-[#6E879B]';
 }
 
-// ── DEMO data ─────────────────────────────────────────────────────────────
+// ── Expandable Details Cell ───────────────────────────────────────────────
 
-function generateDemoEvents(): AuditEvent[] {
-  const now = Date.now();
-  return [
-    {
-      id: 'demo-1',
-      timestamp: new Date(now - 12 * 60000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'user.role_change',
-      target: 'user:jane@example.com',
-      details: 'Changed role from user to business_user',
-    },
-    {
-      id: 'demo-2',
-      timestamp: new Date(now - 45 * 60000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'feed.create',
-      target: 'feed:beauty-independent-rss',
-      details: 'Created new RSS feed: Beauty Independent',
-    },
-    {
-      id: 'demo-3',
-      timestamp: new Date(now - 2 * 3600000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'cms.publish',
-      target: 'post:spring-trends-2026',
-      details: 'Published blog post: Spring Trends 2026',
-    },
-    {
-      id: 'demo-4',
-      timestamp: new Date(now - 5 * 3600000).toISOString(),
-      user_email: 'platform@socelle.com',
-      action: 'settings.update',
-      target: 'setting:maintenance_mode',
-      details: 'Set MAINTENANCE_MODE to false',
-    },
-    {
-      id: 'demo-5',
-      timestamp: new Date(now - 8 * 3600000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'user.deactivate',
-      target: 'user:test-user@example.com',
-      details: 'Deactivated user account',
-    },
-    {
-      id: 'demo-6',
-      timestamp: new Date(now - 24 * 3600000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'export.csv',
-      target: 'export:users_list',
-      details: 'Exported 142 user records to CSV',
-    },
-    {
-      id: 'demo-7',
-      timestamp: new Date(now - 36 * 3600000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'feed.toggle',
-      target: 'feed:cosmetics-business-rss',
-      details: 'Disabled feed: Cosmetics Business',
-    },
-    {
-      id: 'demo-8',
-      timestamp: new Date(now - 48 * 3600000).toISOString(),
-      user_email: 'platform@socelle.com',
-      action: 'cms.unpublish',
-      target: 'page:about-old',
-      details: 'Unpublished page: About (old version)',
-    },
-    {
-      id: 'demo-9',
-      timestamp: new Date(now - 72 * 3600000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'user.reactivate',
-      target: 'user:provider@example.com',
-      details: 'Reactivated provider account',
-    },
-    {
-      id: 'demo-10',
-      timestamp: new Date(now - 96 * 3600000).toISOString(),
-      user_email: 'admin@socelle.com',
-      action: 'feed.delete',
-      target: 'feed:deprecated-api',
-      details: 'Deleted deprecated API feed',
-    },
-  ];
-}
+function DetailsCell({ details }: { details: Record<string, unknown> }) {
+  const [expanded, setExpanded] = useState(false);
+  const keys = Object.keys(details);
 
-// ── Data fetching ─────────────────────────────────────────────────────────
-
-async function fetchAuditEvents(): Promise<{ events: AuditEvent[]; isDemo: boolean }> {
-  const { data, error } = await supabase
-    .from('audit_events')
-    .select('id, timestamp, user_email, action, target, details')
-    .order('timestamp', { ascending: false })
-    .limit(200);
-
-  if (error && isMissingTableError(error)) {
-    return { events: generateDemoEvents(), isDemo: true };
+  if (keys.length === 0) {
+    return <span className="text-graphite/40 text-xs font-sans">--</span>;
   }
-  if (error) {
-    throw error;
-  }
-  if (!data || data.length === 0) {
-    return { events: generateDemoEvents(), isDemo: true };
-  }
-  return { events: data as AuditEvent[], isDemo: false };
+
+  const preview = JSON.stringify(details).slice(0, 60);
+
+  return (
+    <div className="text-xs font-sans">
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors"
+      >
+        {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+        {expanded ? 'Collapse' : preview.length >= 60 ? `${preview}...` : preview}
+      </button>
+      {expanded && (
+        <pre className="mt-1 p-2 bg-[#F6F3EF] rounded text-[11px] text-graphite/80 overflow-x-auto max-w-[400px] whitespace-pre-wrap font-mono">
+          {JSON.stringify(details, null, 2)}
+        </pre>
+      )}
+    </div>
+  );
 }
 
 // ── Component ─────────────────────────────────────────────────────────────
@@ -185,62 +112,58 @@ async function fetchAuditEvents(): Promise<{ events: AuditEvent[]; isDemo: boole
 export default function AdminAuditLog() {
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('All');
+  const [resourceTypeFilter, setResourceTypeFilter] = useState('All');
+  const [page, setPage] = useState(0);
 
   const {
-    data,
+    logs,
+    isLive,
     isLoading,
-    isError,
     error: errorObj,
-    refetch,
-  } = useQuery({
-    queryKey: ['admin', 'audit-log'],
-    queryFn: fetchAuditEvents,
-    staleTime: 30_000,
+    total,
+  } = useAuditLogs({
+    action: actionFilter !== 'All' ? actionFilter : undefined,
+    resourceType: resourceTypeFilter !== 'All' ? resourceTypeFilter : undefined,
+    resourceId: search.trim() || undefined,
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
   });
 
-  const events = data?.events ?? [];
-  const isDemo = data?.isDemo ?? true;
+  const isError = !!errorObj;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  // ── Filtering ───────────────────────────────────────────────────────
-
+  // ── Local text search (within current page) ───────────────────────
   const filtered = useMemo(() => {
-    let result = events;
-
-    if (actionFilter !== 'All') {
-      result = result.filter((e) => e.action === actionFilter);
-    }
-
     const q = search.toLowerCase().trim();
-    if (q) {
-      result = result.filter(
-        (e) =>
-          e.user_email.toLowerCase().includes(q) ||
-          e.action.toLowerCase().includes(q) ||
-          e.target.toLowerCase().includes(q) ||
-          e.details.toLowerCase().includes(q)
-      );
-    }
-
-    return result;
-  }, [events, search, actionFilter]);
+    if (!q) return logs;
+    return logs.filter(
+      (e: AuditLogEntry) =>
+        e.action.toLowerCase().includes(q) ||
+        e.resource_type.toLowerCase().includes(q) ||
+        (e.resource_id ?? '').toLowerCase().includes(q) ||
+        JSON.stringify(e.details).toLowerCase().includes(q)
+    );
+  }, [logs, search]);
 
   // ── CSV Export ──────────────────────────────────────────────────────
 
   const handleExport = () => {
     exportToCsv(
-      filtered.map((e) => ({
-        timestamp: e.timestamp,
-        user: e.user_email,
+      filtered.map((e: AuditLogEntry) => ({
+        created_at: e.created_at,
+        user_id: e.user_id,
         action: e.action,
-        target: e.target,
-        details: e.details,
+        resource_type: e.resource_type,
+        resource_id: e.resource_id ?? '',
+        details: JSON.stringify(e.details),
       })),
       'socelle_audit_log',
       [
-        { key: 'timestamp', label: 'Timestamp' },
-        { key: 'user', label: 'User' },
+        { key: 'created_at', label: 'Timestamp' },
+        { key: 'user_id', label: 'User ID' },
         { key: 'action', label: 'Action' },
-        { key: 'target', label: 'Target' },
+        { key: 'resource_type', label: 'Resource Type' },
+        { key: 'resource_id', label: 'Resource ID' },
         { key: 'details', label: 'Details' },
       ]
     );
@@ -256,12 +179,6 @@ export default function AdminAuditLog() {
         <ShieldAlert className="w-12 h-12 text-[#8E6464] mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-graphite font-sans">Audit Log Unavailable</h3>
         <p className="text-sm text-graphite/60 mt-1 max-w-md mx-auto font-sans">{message}</p>
-        <button
-          onClick={() => void refetch()}
-          className="mt-4 px-4 py-2 border border-accent text-accent font-medium rounded-lg hover:bg-accent-soft transition-colors font-sans text-sm"
-        >
-          Retry
-        </button>
       </div>
     );
   }
@@ -303,24 +220,17 @@ export default function AdminAuditLog() {
           <div>
             <h1 className="text-3xl font-semibold text-graphite font-sans">Audit Log</h1>
             <p className="text-graphite/60 font-sans mt-1 text-sm">
-              {filtered.length} event{filtered.length !== 1 ? 's' : ''}
+              {total} event{total !== 1 ? 's' : ''} total
+              {filtered.length !== logs.length ? ` (${filtered.length} matching)` : ''}
             </p>
           </div>
-          {isDemo && (
+          {!isLive && (
             <span className="text-[10px] font-semibold bg-[#A97A4C]/10 text-[#A97A4C] px-2 py-0.5 rounded-full">
               DEMO
             </span>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => void refetch()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Refresh
-          </button>
           <button
             type="button"
             onClick={handleExport}
@@ -333,21 +243,21 @@ export default function AdminAuditLog() {
       </div>
 
       {/* DEMO banner */}
-      {isDemo && (
+      {!isLive && (
         <div className="bg-[#A97A4C]/10 text-[#A97A4C] text-xs font-medium px-4 py-2 rounded-lg text-center font-sans">
-          DEMO -- audit_events table not yet created. Showing sample data for layout preview.
+          DEMO -- audit_logs table is empty or not yet created. Events will appear once actions are logged.
         </div>
       )}
 
-      {/* Search + Filter */}
+      {/* Search + Filters */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by user, action, target, or details..."
+            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+            placeholder="Search by resource ID or keyword..."
             className="w-full pl-10 pr-4 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-accent/30 font-sans"
           />
         </div>
@@ -355,12 +265,25 @@ export default function AdminAuditLog() {
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
           <select
             value={actionFilter}
-            onChange={(e) => setActionFilter(e.target.value)}
+            onChange={(e) => { setActionFilter(e.target.value); setPage(0); }}
             className="pl-10 pr-8 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-accent/30 font-sans"
           >
             {ACTION_TYPES.map((t) => (
               <option key={t} value={t}>
                 {t === 'All' ? 'All actions' : t}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="relative">
+          <select
+            value={resourceTypeFilter}
+            onChange={(e) => { setResourceTypeFilter(e.target.value); setPage(0); }}
+            className="px-4 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-accent/30 font-sans"
+          >
+            {RESOURCE_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t === 'All' ? 'All resource types' : t}
               </option>
             ))}
           </select>
@@ -374,20 +297,21 @@ export default function AdminAuditLog() {
             <thead>
               <tr className="border-b border-accent-soft bg-[#F6F3EF]">
                 <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">Timestamp</th>
-                <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">User</th>
+                <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">User ID</th>
                 <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">Action</th>
-                <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">Target</th>
+                <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">Resource Type</th>
+                <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">Resource ID</th>
                 <th className="text-left px-4 py-3 font-medium text-graphite/70 font-sans">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-accent-soft">
-              {filtered.map((event) => (
+              {filtered.map((event: AuditLogEntry) => (
                 <tr key={event.id} className="hover:bg-[#F6F3EF]/50 transition-colors">
                   <td className="px-4 py-3 font-sans text-graphite/60 text-xs whitespace-nowrap">
-                    <span title={event.timestamp}>{timeAgo(event.timestamp)}</span>
+                    <span title={event.created_at}>{timeAgo(event.created_at)}</span>
                   </td>
-                  <td className="px-4 py-3 font-sans text-graphite text-xs truncate max-w-[180px]">
-                    {event.user_email}
+                  <td className="px-4 py-3 font-sans text-graphite text-xs truncate max-w-[180px] font-mono">
+                    {event.user_id.slice(0, 8)}...
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -396,11 +320,14 @@ export default function AdminAuditLog() {
                       {event.action}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-sans text-graphite/70 text-xs font-mono truncate max-w-[200px]">
-                    {event.target}
+                  <td className="px-4 py-3 font-sans text-graphite/70 text-xs">
+                    {event.resource_type}
                   </td>
-                  <td className="px-4 py-3 font-sans text-graphite/60 text-xs truncate max-w-[280px]">
-                    {event.details}
+                  <td className="px-4 py-3 font-sans text-graphite/70 text-xs font-mono truncate max-w-[160px]">
+                    {event.resource_id ?? '--'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <DetailsCell details={event.details} />
                   </td>
                 </tr>
               ))}
@@ -408,7 +335,7 @@ export default function AdminAuditLog() {
           </table>
         </div>
 
-        {/* No results from filter */}
+        {/* No results */}
         {filtered.length === 0 && (
           <div className="py-10 text-center">
             <ClipboardList className="w-8 h-8 text-graphite/30 mx-auto mb-2" />
@@ -418,6 +345,35 @@ export default function AdminAuditLog() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-graphite/60 font-sans">
+            Page {page + 1} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={page === 0}
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="w-3 h-3" />
+              Previous
+            </button>
+            <button
+              type="button"
+              disabled={page >= totalPages - 1}
+              onClick={() => setPage((p) => p + 1)}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Next
+              <ChevronRight className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
