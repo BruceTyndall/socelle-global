@@ -20,6 +20,9 @@ export interface AuditLogFilters {
   action?: string;
   resourceType?: string;
   resourceId?: string;
+  userId?: string;
+  from?: string;
+  to?: string;
   limit?: number;
   offset?: number;
 }
@@ -56,6 +59,15 @@ async function fetchAuditLogs(
   }
   if (filters.resourceId) {
     query = query.eq('resource_id', filters.resourceId);
+  }
+  if (filters.userId) {
+    query = query.eq('user_id', filters.userId);
+  }
+  if (filters.from) {
+    query = query.gte('created_at', filters.from);
+  }
+  if (filters.to) {
+    query = query.lte('created_at', filters.to);
   }
 
   const { data, error, count } = await query;

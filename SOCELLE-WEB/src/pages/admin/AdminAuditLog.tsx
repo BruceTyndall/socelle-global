@@ -113,7 +113,13 @@ export default function AdminAuditLog() {
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('All');
   const [resourceTypeFilter, setResourceTypeFilter] = useState('All');
+  const [userFilter, setUserFilter] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [page, setPage] = useState(0);
+
+  const dateFromIso = fromDate ? new Date(`${fromDate}T00:00:00.000Z`).toISOString() : undefined;
+  const dateToIso = toDate ? new Date(`${toDate}T23:59:59.999Z`).toISOString() : undefined;
 
   const {
     logs,
@@ -124,7 +130,9 @@ export default function AdminAuditLog() {
   } = useAuditLogs({
     action: actionFilter !== 'All' ? actionFilter : undefined,
     resourceType: resourceTypeFilter !== 'All' ? resourceTypeFilter : undefined,
-    resourceId: search.trim() || undefined,
+    userId: userFilter.trim() || undefined,
+    from: dateFromIso,
+    to: dateToIso,
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
   });
@@ -261,6 +269,27 @@ export default function AdminAuditLog() {
             className="w-full pl-10 pr-4 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-accent/30 font-sans"
           />
         </div>
+        <input
+          type="text"
+          value={userFilter}
+          onChange={(e) => { setUserFilter(e.target.value); setPage(0); }}
+          placeholder="Filter by user UUID..."
+          className="px-4 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-accent/30 font-mono min-w-[220px]"
+        />
+        <input
+          type="date"
+          value={fromDate}
+          onChange={(e) => { setFromDate(e.target.value); setPage(0); }}
+          className="px-3 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30 font-sans"
+          aria-label="From date"
+        />
+        <input
+          type="date"
+          value={toDate}
+          onChange={(e) => { setToDate(e.target.value); setPage(0); }}
+          className="px-3 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30 font-sans"
+          aria-label="To date"
+        />
         <div className="relative">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
           <select
@@ -288,6 +317,22 @@ export default function AdminAuditLog() {
             ))}
           </select>
         </div>
+        {(userFilter || fromDate || toDate || actionFilter !== 'All' || resourceTypeFilter !== 'All') && (
+          <button
+            type="button"
+            onClick={() => {
+              setUserFilter('');
+              setFromDate('');
+              setToDate('');
+              setActionFilter('All');
+              setResourceTypeFilter('All');
+              setPage(0);
+            }}
+            className="px-3 py-2.5 border border-accent-soft rounded-lg text-sm text-graphite hover:bg-accent-soft font-sans transition-colors"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
       {/* Table */}
