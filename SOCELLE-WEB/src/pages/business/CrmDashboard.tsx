@@ -2,9 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  Users, Calendar, ArrowRight, CheckSquare, Layers,
+  Users, Calendar, ArrowRight, CheckSquare,
   AlertTriangle, TrendingUp, Clock, DollarSign, Zap,
-  Plus, RefreshCw, MessageSquare, Megaphone,
+  Plus, RefreshCw, MessageSquare, Megaphone, ShoppingBag, Briefcase,
 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -68,6 +68,7 @@ interface DashboardData {
   expiringSubscriptions: number;
   milestoneClients: { id: string; first_name: string; last_name: string; total_visits: number }[];
   topSignals: { id: string; title: string; magnitude: number; direction: string; category: string | null }[];
+  recentOrders: { id: string; order_number: string; status: string; total_cents: number; created_at: string }[];
 }
 
 /* ── Component ─────────────────────────────────────────────────────────── */
@@ -155,6 +156,7 @@ export default function CrmDashboard() {
         milestoneRes,
         signalsRes,
         revenueRes,
+        recentOrdersRes,
       ] = await Promise.all([
         // Contact count
         supabase.from('crm_contacts').select('id', { count: 'exact', head: true }).eq('business_id', businessId!),
@@ -192,6 +194,11 @@ export default function CrmDashboard() {
         // Revenue sum
         supabase.from('crm_contacts').select('total_spend')
           .eq('business_id', businessId!),
+        // Recent commerce orders
+        supabase.from('orders').select('id, order_number, status, total_cents, subtotal_cents, subtotal, created_at')
+          .eq('business_id', businessId!)
+          .order('created_at', { ascending: false })
+          .limit(6),
       ]);
 
       const mappedUpcoming = (upcomingRes.data ?? []).map((row: Record<string, unknown>) => {
@@ -218,6 +225,28 @@ export default function CrmDashboard() {
 
       const totalRevenue = (revenueRes.data ?? []).reduce((sum: number, r: Record<string, unknown>) => sum + (Number(r.total_spend) || 0), 0);
       const todayTasks = (todayTasksRes.data ?? []) as DashboardData['todayTasks'];
+      const recentOrders = (recentOrdersRes.data ?? []).map((row: Record<string, unknown>) => {
+        const totalCentsRaw = Number(row.total_cents);
+        const subtotalCentsRaw = Number(row.subtotal_cents);
+        const subtotalRaw = Number(row.subtotal);
+        const totalCents = Number.isFinite(totalCentsRaw)
+          ? Math.round(totalCentsRaw)
+          : Number.isFinite(subtotalCentsRaw)
+            ? Math.round(subtotalCentsRaw)
+            : Number.isFinite(subtotalRaw)
+              ? Math.round(subtotalRaw * 100)
+              : 0;
+        return {
+          id: row.id as string,
+          order_number:
+            (typeof row.order_number === 'string' && row.order_number.length > 0)
+              ? row.order_number
+              : `ORD-${String(row.id).slice(0, 8).toUpperCase()}`,
+          status: (row.status as string) || 'pending',
+          total_cents: totalCents,
+          created_at: row.created_at as string,
+        };
+      });
 
       return {
         contactCount: contactRes.count ?? 0,
@@ -230,6 +259,7 @@ export default function CrmDashboard() {
         expiringSubscriptions: 0,
         milestoneClients: (milestoneRes.data ?? []) as DashboardData['milestoneClients'],
         topSignals: (signalsRes.data ?? []) as DashboardData['topSignals'],
+        recentOrders,
       };
     },
     enabled: !!businessId,
@@ -410,6 +440,45 @@ export default function CrmDashboard() {
         </div>
       </div>
 
+      {/* ── Commerce Orders ─────────────────────────────────────────────── */}
+      <div className="bg-white rounded-xl border border-graphite/5 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider flex items-center gap-2">
+            <ShoppingBag className="w-4 h-4 text-signal-warn" /> Recent Commerce Orders
+          </h2>
+          <Link to="/portal/orders" className="text-xs text-accent hover:text-accent-hover font-medium">View Orders</Link>
+        </div>
+        {stats.recentOrders.length === 0 ? (
+          <p className="text-sm text-graphite/50 py-2">No orders yet. Commerce activity will appear here when purchases start flowing.</p>
+        ) : (
+          <div className="space-y-2">
+            {stats.recentOrders.map((order) => (
+              <Link
+                key={order.id}
+                to={`/portal/orders/${order.id}`}
+                className="flex items-center justify-between gap-3 py-2.5 px-2 -mx-2 rounded-lg hover:bg-accent-soft/50 transition-colors"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-graphite truncate">{order.order_number}</p>
+                  <p className="text-xs text-graphite/50">
+                    {new Date(order.created_at).toLocaleString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-graphite">${(order.total_cents / 100).toFixed(2)}</p>
+                  <p className="text-[10px] uppercase tracking-wide text-graphite/40">{order.status}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* ── Needs Attention ──────────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-graphite/5 p-5">
         <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider mb-4">Needs Attention</h2>
@@ -472,14 +541,14 @@ export default function CrmDashboard() {
             <ArrowRight className="w-4 h-4 text-graphite/30 group-hover:text-accent transition-colors" />
           </div>
         </Link>
-        <Link to="/portal/crm/segments" className="bg-white rounded-xl border border-graphite/5 p-5 hover:border-accent/30 transition-colors group">
+        <Link to="/portal/sales/pipeline" className="bg-white rounded-xl border border-graphite/5 p-5 hover:border-accent/30 transition-colors group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-              <Layers className="w-5 h-5 text-accent" />
+              <Briefcase className="w-5 h-5 text-accent" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-graphite">Segments</p>
-              <p className="text-xs text-graphite/50">Group contacts by criteria</p>
+              <p className="text-sm font-medium text-graphite">Sales Pipeline</p>
+              <p className="text-xs text-graphite/50">Turn CRM demand into active deals</p>
             </div>
             <ArrowRight className="w-4 h-4 text-graphite/30 group-hover:text-accent transition-colors" />
           </div>

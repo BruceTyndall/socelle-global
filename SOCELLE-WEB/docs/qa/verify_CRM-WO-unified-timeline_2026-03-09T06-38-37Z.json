@@ -1,0 +1,44 @@
+{
+  "wo_id": "CRM-WO-unified-timeline",
+  "timestamp_utc": "2026-03-09T06:38:37Z",
+  "status": "PASS_WITH_BASELINE_TYPECHECK_DEBT",
+  "scope": "CRM cross-hub timeline + dashboard reinforcement for Booking, Commerce, Tasks, and Sales",
+  "files_changed": [
+    "SOCELLE-WEB/src/pages/business/ContactDetail.tsx",
+    "SOCELLE-WEB/src/pages/business/CrmDashboard.tsx"
+  ],
+  "commands": [
+    {
+      "command": "npm run build",
+      "workdir": "SOCELLE-WEB",
+      "result": "PASS",
+      "notes": "Build completed successfully."
+    },
+    {
+      "command": "npm run shell:check",
+      "workdir": "SOCELLE-WEB",
+      "result": "PASS",
+      "notes": "No new shells introduced; shell gate passed."
+    },
+    {
+      "command": "npm run typecheck",
+      "workdir": "SOCELLE-WEB",
+      "result": "FAIL",
+      "notes": "Pre-existing repository-wide TypeScript baseline errors remain outside this WO scope."
+    }
+  ],
+  "acceptance": {
+    "contact_unified_timeline_tab": "PASS",
+    "timeline_filters_and_csv_export": "PASS",
+    "timeline_stream_includes_interactions_appointments_purchases_tasks_service_records": "PASS",
+    "timeline_loading_empty_error_states": "PASS",
+    "crm_dashboard_recent_commerce_orders": "PASS",
+    "crm_dashboard_sales_pipeline_quick_link": "PASS",
+    "tanstack_query_data_flow_preserved": "PASS"
+  },
+  "user_visible_changes": [
+    "Contact Detail now has a Unified Timeline tab combining CRM interactions, booking appointments, ecommerce purchases, tasks, and service records in one chronological stream.",
+    "Timeline supports source filtering and CSV export for operational handoff/reporting.",
+    "CRM Dashboard now shows a Recent Commerce Orders section and a direct Sales Pipeline quick action, strengthening CRM as the core across commerce/booking/sales hubs."
+  ]
+}

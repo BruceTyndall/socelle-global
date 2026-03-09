@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
+  Activity,
   ArrowLeft,
   Tag,
   Plus,
@@ -31,6 +32,7 @@ import { useAuth } from '../../lib/auth';
 import { useCrmTasks, useCrmTasksForContact } from '../../lib/useCrmTasks';
 import { useCrmPurchaseHistory, type ContactPurchase } from '../../lib/useCrmPurchaseHistory';
 import { supabase } from '../../lib/supabase';
+import { exportToCsv } from '../../lib/csvExport';
 
 interface RelevantSignal {
   id: string;
@@ -43,6 +45,7 @@ interface RelevantSignal {
 }
 
 const TABS = [
+  'Timeline',
   'Overview',
   'Interactions',
   'Appointments',
@@ -55,16 +58,48 @@ type Tab = typeof TABS[number];
 
 const INTERACTION_ICONS: Record<string, typeof Phone> = { call: Phone, email: Mail, meeting: Users, note: FileText };
 const INTERACTION_TYPES = ['call', 'email', 'meeting', 'note'];
+type TimelineSource = 'interaction' | 'appointment' | 'purchase' | 'task' | 'service_record';
+
+interface UnifiedTimelineEntry {
+  id: string;
+  source: TimelineSource;
+  occurredAt: string;
+  title: string;
+  subtitle: string;
+  status: string;
+  href: string | null;
+}
+
+const TIMELINE_SOURCE_META: Record<TimelineSource, { label: string; chip: string }> = {
+  interaction: { label: 'Interaction', chip: 'bg-accent/10 text-accent' },
+  appointment: { label: 'Booking', chip: 'bg-signal-up/10 text-signal-up' },
+  purchase: { label: 'Purchase', chip: 'bg-signal-warn/10 text-signal-warn' },
+  task: { label: 'Task', chip: 'bg-graphite/10 text-graphite/70' },
+  service_record: { label: 'Service Record', chip: 'bg-mn-dark/10 text-mn-dark' },
+};
 
 export default function ContactDetail() {
   const { id } = useParams<{ id: string }>();
   const { profile } = useAuth();
   const businessId = profile?.business_id;
   const { contact, tags, loading, isLive, addTag, removeTag } = useCrmContactDetail(id);
-  const { interactions, addInteraction } = useCrmInteractions(id);
-  const { appointments } = useAppointments(businessId);
-  const { records } = useClientTreatmentRecords(id);
-  const { tasks: contactTasks } = useCrmTasksForContact(id);
+  const {
+    interactions,
+    addInteraction,
+    loading: interactionsLoading,
+    error: interactionsError,
+  } = useCrmInteractions(id);
+  const {
+    appointments,
+    loading: appointmentsLoading,
+    error: appointmentsError,
+  } = useAppointments(businessId);
+  const {
+    records,
+    loading: recordsLoading,
+    error: recordsError,
+  } = useClientTreatmentRecords(id);
+  const { tasks: contactTasks, loading: contactTasksLoading } = useCrmTasksForContact(id);
   const { createTask } = useCrmTasks(businessId);
   const {
     purchases,
@@ -93,6 +128,7 @@ export default function ContactDetail() {
     type: 'success' | 'error';
     text: string;
   } | null>(null);
+  const [timelineFilter, setTimelineFilter] = useState<'all' | TimelineSource>('all');
 
   const contactAppts = useMemo(() =>
     appointments.filter(a => a.contact_id === id), [appointments, id]
@@ -118,6 +154,99 @@ export default function ContactDetail() {
       linkedin_url: typeof channels.linkedin_url === 'string' ? channels.linkedin_url : '',
     };
   }, [contact?.metadata]);
+
+  const timelineEntries = useMemo(() => {
+    const entries: UnifiedTimelineEntry[] = [];
+
+    interactions.forEach((interaction) => {
+      entries.push({
+        id: `interaction-${interaction.id}`,
+        source: 'interaction',
+        occurredAt: interaction.occurred_at,
+        title: interaction.subject || `${interaction.type} logged`,
+        subtitle: interaction.notes || 'CRM interaction captured',
+        status: interaction.type,
+        href: null,
+      });
+    });
+
+    contactAppts.forEach((appointment) => {
+      entries.push({
+        id: `appointment-${appointment.id}`,
+        source: 'appointment',
+        occurredAt: appointment.start_time,
+        title: appointment.service_name || 'Appointment',
+        subtitle: appointment.staff_name || 'Booking hub',
+        status: appointment.status,
+        href: `/portal/booking/appointments/${appointment.id}`,
+      });
+    });
+
+    records.forEach((record) => {
+      entries.push({
+        id: `record-${record.id}`,
+        source: 'service_record',
+        occurredAt: record.performed_at,
+        title: record.service_name,
+        subtitle: record.notes || 'Service record added',
+        status: 'recorded',
+        href: null,
+      });
+    });
+
+    contactTasks.forEach((task) => {
+      entries.push({
+        id: `task-${task.id}`,
+        source: 'task',
+        occurredAt: task.due_date ? `${task.due_date}T09:00:00.000Z` : task.updated_at,
+        title: task.title,
+        subtitle: task.description || 'Follow-up task',
+        status: task.status,
+        href: '/portal/crm/tasks',
+      });
+    });
+
+    purchases.forEach((purchase) => {
+      entries.push({
+        id: `purchase-${purchase.id}`,
+        source: 'purchase',
+        occurredAt: purchase.placed_at,
+        title: purchase.order_number,
+        subtitle: `${purchase.item_count} items · $${(purchase.total_cents / 100).toFixed(2)}`,
+        status: purchase.status,
+        href: `/portal/orders/${purchase.id}`,
+      });
+    });
+
+    return entries.sort(
+      (a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+    );
+  }, [contactAppts, contactTasks, interactions, purchases, records]);
+
+  const filteredTimelineEntries = useMemo(
+    () =>
+      timelineFilter === 'all'
+        ? timelineEntries
+        : timelineEntries.filter((entry) => entry.source === timelineFilter),
+    [timelineEntries, timelineFilter],
+  );
+
+  const timelineLoading =
+    interactionsLoading || appointmentsLoading || recordsLoading || contactTasksLoading || purchasesLoading;
+  const timelineError = interactionsError || appointmentsError || recordsError || purchasesError || null;
+
+  const handleExportTimeline = () => {
+    exportToCsv(
+      filteredTimelineEntries.map((entry) => ({
+        source: entry.source,
+        occurred_at: entry.occurredAt,
+        title: entry.title,
+        subtitle: entry.subtitle,
+        status: entry.status,
+      })),
+      `crm_contact_timeline_${id ?? 'contact'}`,
+    );
+  };
 
   const handleAddTag = async () => {
     if (!tagInput.trim()) return;
@@ -306,6 +435,121 @@ export default function ContactDetail() {
       </div>
 
       {/* Tab Content */}
+      {tab === 'Timeline' && (
+        <div className="bg-white rounded-xl border border-accent-soft/30 p-5 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider flex items-center gap-2">
+                <Activity className="w-4 h-4 text-accent" /> Unified CRM Timeline
+              </h2>
+              <p className="text-xs text-graphite/50 mt-1">
+                Booking, commerce, service records, tasks, and interactions in one operational stream.
+              </p>
+            </div>
+            <button
+              onClick={handleExportTimeline}
+              className="h-8 px-3 rounded-full border border-accent-soft/30 text-xs text-graphite/70 hover:border-accent/30 transition-colors"
+            >
+              Export CSV
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setTimelineFilter('all')}
+              className={`h-7 px-3 rounded-full text-xs font-medium border transition-colors ${
+                timelineFilter === 'all'
+                  ? 'bg-accent text-white border-accent'
+                  : 'border-accent-soft/30 text-graphite/60 hover:border-accent/30'
+              }`}
+            >
+              All
+            </button>
+            {(Object.keys(TIMELINE_SOURCE_META) as TimelineSource[]).map((source) => (
+              <button
+                key={source}
+                onClick={() => setTimelineFilter(source)}
+                className={`h-7 px-3 rounded-full text-xs font-medium border transition-colors ${
+                  timelineFilter === source
+                    ? 'bg-accent text-white border-accent'
+                    : 'border-accent-soft/30 text-graphite/60 hover:border-accent/30'
+                }`}
+              >
+                {TIMELINE_SOURCE_META[source].label}
+              </button>
+            ))}
+          </div>
+
+          {timelineLoading ? (
+            <div className="space-y-3 animate-pulse">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="p-3 rounded-lg border border-accent-soft/20 space-y-2">
+                  <div className="h-3 bg-graphite/10 rounded w-48" />
+                  <div className="h-3 bg-graphite/10 rounded w-72" />
+                </div>
+              ))}
+            </div>
+          ) : timelineError ? (
+            <div className="rounded-lg border border-signal-down/20 bg-signal-down/5 p-3 text-sm text-signal-down">
+              {timelineError}
+            </div>
+          ) : filteredTimelineEntries.length === 0 ? (
+            <div className="rounded-lg border border-accent-soft/20 bg-background p-4 text-sm text-graphite/60">
+              <p>No timeline events yet for this filter.</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  onClick={() => setTab('Interactions')}
+                  className="h-8 px-3 rounded-full bg-accent/10 text-accent text-xs font-medium hover:bg-accent/20 transition-colors"
+                >
+                  Add Interaction
+                </button>
+                <Link
+                  to="/portal/booking/calendar"
+                  className="h-8 px-3 rounded-full border border-accent-soft/30 text-graphite/70 text-xs font-medium hover:border-accent/30 transition-colors inline-flex items-center"
+                >
+                  Create Appointment
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredTimelineEntries.map((entry) => {
+                const sourceMeta = TIMELINE_SOURCE_META[entry.source];
+                const content = (
+                  <div className="p-3 rounded-lg border border-accent-soft/20 hover:border-accent/30 transition-colors">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${sourceMeta.chip}`}>
+                            {sourceMeta.label}
+                          </span>
+                          <span className="text-[10px] text-graphite/40 uppercase">{entry.status}</span>
+                        </div>
+                        <p className="text-sm font-semibold text-graphite mt-1">{entry.title}</p>
+                        <p className="text-xs text-graphite/60 mt-0.5">{entry.subtitle}</p>
+                      </div>
+                      <div className="text-xs text-graphite/50">
+                        {new Date(entry.occurredAt).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                );
+
+                if (!entry.href) {
+                  return <div key={entry.id}>{content}</div>;
+                }
+
+                return (
+                  <Link key={entry.id} to={entry.href}>
+                    {content}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {tab === 'Overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div className="bg-white rounded-xl border border-accent-soft/30 p-5 space-y-4">
