@@ -1,0 +1,4 @@
+interface:
+  display_name: "Css Variable Font System Validator"
+  short_description: "Help with Css Variable Font System Validator tasks"
+  default_prompt: "Use $css-variable-font-system-validator to run a PASS/FAIL verification with evidence."

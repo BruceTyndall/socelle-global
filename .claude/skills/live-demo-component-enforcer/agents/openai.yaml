@@ -1,0 +1,4 @@
+interface:
+  display_name: "Live Demo Component Enforcer"
+  short_description: "Help with Live Demo Component Enforcer tasks"
+  default_prompt: "Use $live-demo-component-enforcer to run a PASS/FAIL verification with evidence."

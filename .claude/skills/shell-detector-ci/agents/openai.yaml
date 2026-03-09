@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shell Detector CI"
+  short_description: "Help with Shell Detector CI tasks"
+  default_prompt: "Use $shell-detector-ci to run a PASS/FAIL verification with evidence."

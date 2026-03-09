@@ -1,0 +1,4 @@
+interface:
+  display_name: "Inventory Report Generator"
+  short_description: "Help with Inventory Report Generator tasks"
+  default_prompt: "Use $inventory-report-generator to run a PASS/FAIL verification with evidence."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rate Limiter Tester"
+  short_description: "Help with Rate Limiter Tester tasks"
+  default_prompt: "Use $rate-limiter-tester to run a PASS/FAIL verification with evidence."

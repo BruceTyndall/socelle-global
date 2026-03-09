@@ -1,0 +1,4 @@
+interface:
+  display_name: "Database Types Generator"
+  short_description: "Help with Database Types Generator tasks"
+  default_prompt: "Use $database-types-generator to run a PASS/FAIL verification with evidence."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Authoring Core Schema Validator"
+  short_description: "Help with Authoring Core Schema Validator tasks"
+  default_prompt: "Use $authoring-core-schema-validator to run a PASS/FAIL verification with evidence."

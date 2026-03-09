@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dlq System Checker"
+  short_description: "Help with Dlq System Checker tasks"
+  default_prompt: "Use $dlq-system-checker to run a PASS/FAIL verification with evidence."

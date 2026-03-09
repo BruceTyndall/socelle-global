@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loading Skeleton Enforcer"
+  short_description: "Help with Loading Skeleton Enforcer tasks"
+  default_prompt: "Use $loading-skeleton-enforcer to run a PASS/FAIL verification with evidence."

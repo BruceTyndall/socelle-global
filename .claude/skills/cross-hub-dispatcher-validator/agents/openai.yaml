@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cross Hub Dispatcher Validator"
+  short_description: "Help with Cross Hub Dispatcher Validator tasks"
+  default_prompt: "Use $cross-hub-dispatcher-validator to run a PASS/FAIL verification with evidence."

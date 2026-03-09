@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pg Cron Scheduler Validator"
+  short_description: "Help with Pg Cron Scheduler Validator tasks"
+  default_prompt: "Use $pg-cron-scheduler-validator to run a PASS/FAIL verification with evidence."

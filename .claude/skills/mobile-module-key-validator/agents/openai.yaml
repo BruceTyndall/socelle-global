@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mobile Module Key Validator"
+  short_description: "Help with Mobile Module Key Validator tasks"
+  default_prompt: "Use $mobile-module-key-validator to run a PASS/FAIL verification with evidence."
