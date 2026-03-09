@@ -1,0 +1,81 @@
+{
+  "wo_id": "INTEL-FLOW-01",
+  "timestamp": "2026-03-09T23:55:00.000Z",
+  "verified_at": "2026-03-10T00:05:00.000Z",
+  "skills_run": ["live-demo-detector", "dev-best-practice-checker", "build-gate", "token-drift-scanner"],
+  "steps_completed": {
+    "STEP_1_api_status_ribbon": {
+      "status": "PASS",
+      "evidence": "src/components/intelligence/ApiStatusRibbon.tsx created. Reads api_registry (active APIs) + data_feeds (enabled feeds). Props: showDetailed (compact pill ribbon | expanded grid cards). Pearl Mineral V2 tokens only — no hardcoded hex. TanStack Query v5 useQuery for both data sources."
+    },
+    "STEP_2_ribbon_on_public_intelligence": {
+      "status": "PASS",
+      "evidence": "src/pages/public/Intelligence.tsx: import ApiStatusRibbon added. Rendered as {isLive && <div ...><ApiStatusRibbon showDetailed={false} /></div>} directly above IntelligenceFeedSection. Only visible when isLive=true (fake-live compliant)."
+    },
+    "STEP_2_ribbon_on_business_hub": {
+      "status": "PASS",
+      "evidence": "src/pages/business/IntelligenceHub.tsx: import ApiStatusRibbon added. Rendered as <ApiStatusRibbon showDetailed={true} /> at top of OverviewTab above KPIStrip. Business portal users see detailed card grid. Not wrapped in isLive guard — portal users are authenticated and see DEMO badge via hub-level isLive check."
+    },
+    "STEP_3_realtime_subscription": {
+      "status": "PASS",
+      "evidence": "src/lib/intelligence/useIntelligence.ts: useEffect + useQueryClient added. Supabase Realtime channel 'intelligence-hub-signals' subscribes to market_signals INSERT. payload.new transformed via rowToSignal(), prepended to queryCache ['market_signals'] via setQueryData, capped at 50 items. Channel cleaned up on unmount."
+    },
+    "STEP_4_slide_in_animation": {
+      "status": "PASS",
+      "evidence": "src/index.css: @keyframes slideInFromTop (opacity 0→1, translateY -6px→0, 0.25s ease-out) + .signal-new-item class added (ADD ONLY — no existing content modified). IntelligenceFeedSection.tsx: featured card and grid cards wrapped in div with className={isNew ? 'signal-new-item' : undefined} where isNew = updated_at > Date.now() - 2min."
+    },
+    "STEP_5_fake_live_compliance": {
+      "status": "PASS",
+      "evidence": "animate-ping appears in ApiStatusRibbon.tsx at lines 149 + 201. Both are inside {showPing && (...)} blocks. showPing is set to true ONLY in getDotStyle() when status === 'pass' AND isRecentlyActive(lastActiveAt) === true (< 10 min). No animate-ping on any component where isLive=false. Zero new fake-live violations."
+    },
+    "STEP_5_tsc": {
+      "status": "PASS",
+      "tsc_exit_code": 0
+    },
+    "STEP_5_build": {
+      "status": "PASS",
+      "build_exit_code": 0,
+      "evidence": "✓ built in 5.81s"
+    }
+  },
+  "results": {
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "ApiStatusRibbon: queries backed by real api_registry + data_feeds tables. No hardcoded counts or fake freshness. Ribbon on public page gated behind isLive=true. animate-ping strictly conditional on pass+recent. signal-new-item strictly conditional on updated_at < 2 min."
+    },
+    "dev-best-practice-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All data fetching via TanStack Query v5 useQuery. No raw useEffect+supabase.from() patterns. Realtime channel in useEffect with proper cleanup (removeChannel). useQueryClient for cache updates."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc=0 errors, build=exit 0"
+    },
+    "token-drift-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "ApiStatusRibbon.tsx: zero hardcoded hex colors. Uses bg-signal-up/bg-signal-warn/bg-signal-down/bg-graphite/bg-accent-soft/text-accent/text-graphite/text-graphite/60 etc. — all Pearl Mineral V2 Tailwind tokens. No pro-* / brand-* / intel-* / natura-* tokens. No font-serif."
+    }
+  },
+  "overall": "PASS",
+  "api_status_ribbon_created": true,
+  "ribbon_on_public_intelligence": true,
+  "ribbon_on_business_hub": true,
+  "realtime_subscription_active": true,
+  "slide_in_animation_added": true,
+  "fake_live_violations": 0,
+  "tsc_exit_code": 0,
+  "build_exit_code": 0,
+  "prohibited_checks": {
+    "auth_tsx_touched": false,
+    "useCart_touched": false,
+    "commerce_flow_touched": false,
+    "hardcoded_hex_in_ribbon": false,
+    "animate_ping_without_pass_status": false,
+    "pro_tokens_used": false,
+    "font_serif_used": false
+  }
+}

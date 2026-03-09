@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useMemo, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
 
@@ -149,6 +149,34 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     },
     enabled: isSupabaseConfigured,
   });
+
+  // ── Realtime: prepend new signals to top of feed with slide-in animation ──────
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
+    const channel = supabase
+      .channel('intelligence-hub-signals')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'market_signals' },
+        (payload) => {
+          const newSignal = rowToSignal(payload.new as MarketSignalRow);
+          queryClient.setQueryData(
+            ['market_signals'],
+            (old: IntelligenceSignal[] | undefined) => {
+              if (!old) return [newSignal];
+              return [newSignal, ...old].slice(0, 50);
+            },
+          );
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const isLive = rawSignals.length > 0;
 

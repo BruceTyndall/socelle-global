@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-09 (INTEL-ADMIN-01 COMPLETE — IntelligenceDashboard wired to live DB via useAdminIntelligence (TanStack Query v5); LIVE/DEMO badge; API Health Panel + Feed Status Strip wired; adminIntelligence.ts @deprecated; tsc=0, build=0. Proof: docs/qa/verify_INTEL-ADMIN-01_2026-03-09T23-45-00-000Z.json. Next: BUILD 2 — CRM-WO-01..12 + EDU-WO-01..10 + SALES-WO-01..08 + COMMERCE-WO-01..07 + AUTH-CORE-01..06 + ADMIN-WO-01..05)
+Last Updated: 2026-03-09 (INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed cards); ribbon on /intelligence (isLive guard) + /portal/intelligence (detailed); realtime market_signals INSERT in useIntelligence; slide-in CSS animation; fake-live verified (0 violations). tsc=0, build=0. Proof: docs/qa/verify_INTEL-FLOW-01_2026-03-09T23-55-00-000Z.json)
 
 ---
 
@@ -9,6 +9,7 @@ Last Updated: 2026-03-09 (INTEL-ADMIN-01 COMPLETE — IntelligenceDashboard wire
 |---|---|---|---|---|
 | API-DEPLOY-01 | api_registry (31 rows, real URLs) + api_route_map (20 routes linked) seeded; RLS fixed (user_profiles + platform_admin); test-api-connection edge fn deployed ACTIVE (ver 1, JWT=true); profiles→user_profiles + super_admin→platform_admin fixed; 24/27 endpoints pass, 3 timeout (Google Trends, NPI Registry, OpenFDA — slow external) | COMPLETE | — | `docs/qa/verify_API-DEPLOY-01_2026-03-09T23-00-00-000Z.json` |
 | INTEL-ADMIN-01 | IntelligenceDashboard wired to live DB via useAdminIntelligence (TanStack Query v5); LIVE/DEMO badge; API Health Panel (api_registry) + Feed Status Strip (data_feeds); realtime invalidation on market_signals INSERT; adminIntelligence.ts @deprecated; tsc=0, build=0 | COMPLETE | — | `docs/qa/verify_INTEL-ADMIN-01_2026-03-09T23-45-00-000Z.json` |
+| INTEL-FLOW-01 | ApiStatusRibbon component (compact pill + detailed grid cards); ribbon on /intelligence (isLive guard) + /portal/intelligence (detailed); realtime market_signals INSERT subscription in useIntelligence; slide-in signal-new-item CSS animation; fake-live compliance verified (0 violations) | COMPLETE | — | `docs/qa/verify_INTEL-FLOW-01_2026-03-09T23-55-00-000Z.json` |
 | FEED-WO-01 | data_feeds table (39 feeds, 11 categories) + feed_run_log + pg_cron hourly schedule | COMPLETE | `cf32089` | `docs/qa/verify_FEED-WO-01_2026-03-09T23-10-00-000Z.json` |
 | FEED-WO-02 | 39 feeds seeded, rss-to-signals live (20 signals promoted from 375 rss_items) | COMPLETE | `cf32089` | `docs/qa/verify_FEED-WO-02_2026-03-09T23-10-00-000Z.json` |
 | FEED-WO-03 | Dedup: fingerprint column + non-partial unique index + rss-to-signals fingerprint population | COMPLETE | `cf32089` | `docs/qa/verify_FEED-WO-03_2026-03-09T23-10-00-000Z.json` |

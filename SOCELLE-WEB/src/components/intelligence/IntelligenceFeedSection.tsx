@@ -264,9 +264,11 @@ export default function IntelligenceFeedSection({
                 <EmptyState hasSearch={!!searchQuery.trim()} />
               ) : (
                 <div className="space-y-6">
-                  {/* Featured lead card */}
+                  {/* Featured lead card — slide-in if arrived in last 2 min */}
                   {featured && (
-                    <SignalCardFeatured signal={featured} index={0} />
+                    <div className={new Date(featured.updated_at).getTime() > Date.now() - 2 * 60 * 1000 ? 'signal-new-item' : undefined}>
+                      <SignalCardFeatured signal={featured} index={0} />
+                    </div>
                   )}
 
                   {/* Grid — 2 columns at sm+ */}
@@ -281,9 +283,14 @@ export default function IntelligenceFeedSection({
                       )}
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        {gridSignals.map((signal, i) => (
-                          <SignalCardStandard key={signal.id} signal={signal} index={i} />
-                        ))}
+                        {gridSignals.map((signal, i) => {
+                          const isNew = new Date(signal.updated_at).getTime() > Date.now() - 2 * 60 * 1000;
+                          return (
+                            <div key={signal.id} className={isNew ? 'signal-new-item' : undefined}>
+                              <SignalCardStandard signal={signal} index={i} />
+                            </div>
+                          );
+                        })}
                       </div>
                     </>
                   )}

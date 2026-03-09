@@ -22,6 +22,7 @@ import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPanel';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
 import { TierGate, CreditGate } from '../../components/gates';
+import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 
 // ── Cloud Modules (10) ──────────────────────────────────────────────
 import {
@@ -389,6 +390,11 @@ function OverviewTab({
 }) {
   return (
     <>
+      {/* Data source status — detailed cards for portal users */}
+      <div className="mb-6">
+        <ApiStatusRibbon showDetailed={true} />
+      </div>
+
       <KPIStrip signals={signals} loading={loading} />
 
       <SignalTable

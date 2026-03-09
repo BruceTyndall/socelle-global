@@ -23,6 +23,7 @@ import { ImageMosaic } from '../../components/modules/ImageMosaic';
 import { CTASection } from '../../components/modules/CTASection';
 import { StickyConversionBar } from '../../components/modules/StickyConversionBar';
 import IntelligenceFeedSection from '../../components/intelligence/IntelligenceFeedSection';
+import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
@@ -214,6 +215,13 @@ export default function Intelligence() {
           { value: lastOrchestratorRun ? timeAgo(lastOrchestratorRun) : '--', label: 'Last Feed Run' },
         ]}
       />
+
+      {/* ═══ API SOURCE RIBBON (live only) ════════════════════════ */}
+      {isLive && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <ApiStatusRibbon showDetailed={false} />
+        </div>
+      )}
 
       {/* ═══ EDITORIAL SIGNAL FEED ════════════════════════════════ */}
       <IntelligenceFeedSection

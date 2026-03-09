@@ -701,3 +701,13 @@ dialog.mobile-nav-dialog[open] {
 
 /* ── Clean Room UI System loaded via @import at top of this file ── */
 /* See src/styles/socelle-cleanroom.css for all --scl-* tokens     */
+
+/* ── INTEL-FLOW-01: Slide-in animation for new arriving signals ── */
+@keyframes slideInFromTop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.signal-new-item {
+  animation: slideInFromTop 0.25s ease-out;
+}
