@@ -36,12 +36,14 @@ import ChatPanel from '../components/ai/ChatPanel';
 import NotificationCenter from '../components/notifications/NotificationCenter';
 import LocationSwitcher from '../components/locations/LocationSwitcher';
 import { LocationProvider } from '../lib/locations/useLocationContext';
+import { useCreditBalance } from '../lib/credits/useCreditBalance';
 
 export default function BusinessLayout() {
   const { user, profile, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { balance: creditBalance, loading: creditLoading } = useCreditBalance();
 
   const handleSignOut = async () => {
     await signOut();
@@ -165,6 +167,25 @@ export default function BusinessLayout() {
           </nav>
 
           <div className="p-4 border-t border-accent-soft">
+            {/* PAY-WO-02: Credit balance strip */}
+            <Link
+              to="/portal/credits"
+              className="flex items-center justify-between px-3 py-2 mb-2 rounded-lg bg-accent-soft hover:bg-accent-soft/80 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-3.5 h-3.5 text-accent flex-shrink-0" />
+                <span className="text-[11px] font-sans font-medium text-graphite/70">Credits</span>
+              </div>
+              {creditLoading ? (
+                <div className="h-3 w-12 bg-graphite/10 rounded animate-pulse" />
+              ) : (
+                <span className="text-[11px] font-sans font-semibold text-graphite">
+                  {creditBalance.isLive ? creditBalance.display : (
+                    <span className="text-graphite/40">DEMO</span>
+                  )}
+                </span>
+              )}
+            </Link>
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}

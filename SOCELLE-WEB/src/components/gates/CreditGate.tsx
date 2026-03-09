@@ -13,7 +13,10 @@ import { useCreditBalance } from '../../lib/credits/useCreditBalance';
 import { useAuth } from '../../lib/auth';
 
 interface CreditGateProps {
-  /** Number of credits this action costs. */
+  /**
+   * Cost of this action in USD cents (integer).
+   * e.g. cost=1 = $0.01 USD. Compared against tenant_balances.credit_balance_usd.
+   */
   cost: number;
   children: ReactNode;
   /** Called when user does not have enough credits. */
@@ -38,8 +41,10 @@ export function CreditGate({ cost, children, onInsufficientCredits }: CreditGate
     );
   }
 
-  // Sufficient credits
-  if (balance.remaining >= cost) {
+  // Sufficient credits — cost prop is in USD cents (e.g. cost=1 = $0.01)
+  // Convert to USD for comparison against credit_balance_usd
+  const costUsd = cost / 100;
+  if (balance.credit_balance_usd >= costUsd) {
     return <>{children}</>;
   }
 
@@ -47,6 +52,8 @@ export function CreditGate({ cost, children, onInsufficientCredits }: CreditGate
   if (onInsufficientCredits) {
     onInsufficientCredits();
   }
+
+  const shortfall = (costUsd - balance.credit_balance_usd).toFixed(4);
 
   return (
     <div className="bg-white rounded-xl border border-signal-warn/20 shadow-sm p-6 md:p-8 max-w-md mx-auto">
@@ -57,10 +64,10 @@ export function CreditGate({ cost, children, onInsufficientCredits }: CreditGate
         </div>
         <div>
           <h3 className="font-sans font-semibold text-graphite text-base leading-tight">
-            Not enough credits
+            Insufficient credit balance
           </h3>
           <p className="text-graphite/50 text-xs mt-0.5">
-            This action requires {cost} credits
+            This action costs ${costUsd.toFixed(4)} USD
           </p>
         </div>
       </div>
@@ -69,16 +76,16 @@ export function CreditGate({ cost, children, onInsufficientCredits }: CreditGate
       <div className="bg-background rounded-lg p-4 mb-6 space-y-2">
         <div className="flex justify-between text-sm font-sans">
           <span className="text-graphite/60">Your balance</span>
-          <span className="font-medium text-graphite">{balance.remaining.toLocaleString()} credits</span>
+          <span className="font-medium text-graphite">{balance.display}</span>
         </div>
         <div className="flex justify-between text-sm font-sans">
           <span className="text-graphite/60">Action cost</span>
-          <span className="font-medium text-signal-warn">{cost.toLocaleString()} credits</span>
+          <span className="font-medium text-signal-warn">${costUsd.toFixed(4)}</span>
         </div>
         <div className="border-t border-graphite/10 pt-2 flex justify-between text-sm font-sans">
           <span className="text-graphite/60">Shortfall</span>
           <span className="font-medium text-signal-down">
-            {(cost - balance.remaining).toLocaleString()} credits
+            ${shortfall}
           </span>
         </div>
       </div>

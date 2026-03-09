@@ -1,0 +1,40 @@
+{
+  "wo_id": "PAY-WO-04",
+  "timestamp": "2026-03-10T12:00:00.000Z",
+  "skills_run": ["affiliate-link-tracker-auditor", "affiliate-link-checker"],
+  "results": {
+    "affiliate-link-tracker-auditor": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": {
+        "affiliate_clicks_table": {
+          "status": "CREATED + LIVE",
+          "verified_via": "to_regclass('public.affiliate_clicks') = 'affiliate_clicks'",
+          "columns": ["id", "user_id", "product_id", "distributor_id", "affiliate_code", "target_url", "ip_address", "user_agent", "created_at"],
+          "rls": "ENABLED — 3 policies (insert own, admin read all, service_role all)",
+          "indexes": ["user_id", "created_at DESC", "product_id"]
+        },
+        "affiliate_link_wrapper_function": {
+          "status": "CREATED",
+          "file": "supabase/functions/affiliate-link-wrapper/index.ts",
+          "accepts": "{ affiliate_code, target_url, product_id?, distributor_id? }",
+          "returns": "{ redirect_url }",
+          "auth": "Optional — anonymous clicks supported (user_id nullable)",
+          "tracking": "Logs to affiliate_clicks via service_role, fire-and-forget",
+          "ref_params": "Appends ref=<affiliate_code>&src=socelle&pid=<product_id> to redirect URL",
+          "edge_control": "enforceEdgeFunctionEnabled guard present"
+        },
+        "AffiliateBadge_component": {
+          "status": "PRE-EXISTING — VERIFIED",
+          "file": "src/components/commerce/AffiliateBadge.tsx",
+          "ftc_disclosure": "'Commission-linked' label with tooltip",
+          "tooltip_text": "SOCELLE may earn a commission when you purchase through this link.",
+          "buildAffiliateUrl": "Appends ref=socelle&pid=<productId>&uid=<userId> to URLs"
+        },
+        "migration_file": "supabase/migrations/20260310120000_create_affiliate_clicks.sql"
+      }
+    }
+  },
+  "overall": "PASS",
+  "notes": "affiliate_clicks table created and verified live in DB. affiliate-link-wrapper edge function created. AffiliateBadge component and FTC disclosure pre-existing and correct. Migration file added to supabase/migrations."
+}

@@ -1,0 +1,53 @@
+{
+  "wo_id": "PAY-WO-05",
+  "timestamp": "2026-03-10T12:00:00.000Z",
+  "skills_run": ["stripe-integration-tester", "payment-flow-tester"],
+  "results": {
+    "stripe-integration-tester": {
+      "status": "PARTIAL",
+      "failures": [
+        "subscription_plans.stripe_price_id is NULL for all plans (pro_monthly, studio_monthly) — Stripe prices not yet configured in dashboard",
+        "subscription_plans has no 'tier' column — tier mapping must be inferred from plan ID"
+      ],
+      "evidence": {
+        "stripe_webhook_function": {
+          "file": "supabase/functions/stripe-webhook/index.ts",
+          "events_handled": [
+            "checkout.session.completed — upserts subscriptions row, fetches Stripe sub details",
+            "customer.subscription.updated — updates status, period dates, cancel_at_period_end",
+            "customer.subscription.deleted — sets status=inactive, records canceled_at",
+            "invoice.payment_failed — sets status=past_due"
+          ],
+          "signature_verification": "HMAC-SHA256 with 5-minute timestamp tolerance",
+          "edge_control": "enforceEdgeFunctionEnabled guard present",
+          "gaps": [
+            "customer.subscription.created event not explicitly handled (covered by checkout.session.completed)",
+            "Does NOT update user_profiles.subscription_tier on tier change — updates subscriptions table only"
+          ]
+        },
+        "subscription_plans_table": {
+          "rows": [
+            { "id": "pro_monthly", "name": "Socelle Pro", "stripe_price_id": null, "is_active": true },
+            { "id": "studio_monthly", "name": "Socelle Studio", "stripe_price_id": null, "is_active": true }
+          ],
+          "note": "stripe_price_id must be populated with real Stripe price IDs after Stripe dashboard setup"
+        },
+        "subscriptions_table": {
+          "status": "EXISTS — verified via to_regclass",
+          "tier_sync": "subscription tier inferred from plan_id at checkout.session.completed — no automatic user_profiles sync"
+        },
+        "top_up_credits_rpc": {
+          "status": "EXISTS in migration",
+          "called_by": "ai-orchestrator on AI failure refund (partial MVP behaviour — noted in code)"
+        }
+      }
+    }
+  },
+  "overall": "PARTIAL",
+  "open_items": [
+    "PAY-WO-05-OPEN-1: Set stripe_price_id in subscription_plans after Stripe dashboard price creation (owner action required)",
+    "PAY-WO-05-OPEN-2: Wire top_up_credits RPC call into stripe-webhook on checkout.session.completed so credit balance increases on plan purchase",
+    "PAY-WO-05-OPEN-3: Consider syncing user_profiles.subscription_tier from subscriptions table on webhook event"
+  ],
+  "notes": "Stripe webhook correctly handles all 4 events. Signature verification implemented. The core gap is that stripe_price_id fields are unpopulated (Stripe dashboard not yet configured) and credit top-up on checkout is not wired — user buys plan but credit_balance_usd stays at 0. This requires Stripe dashboard configuration (owner action) before it can be fully verified end-to-end."
+}

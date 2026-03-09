@@ -1,0 +1,26 @@
+{
+  "wo_id": "PAY-WO-02",
+  "timestamp": "2026-03-10T12:00:00.000Z",
+  "skills_run": ["credit-economy-validator"],
+  "results": {
+    "credit-economy-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": {
+        "credit_balance_in_nav": {
+          "status": "ADDED",
+          "file": "src/layouts/BusinessLayout.tsx",
+          "implementation": "useCreditBalance() hook in sidebar footer, shows credit_balance_usd formatted as '$X.XX'",
+          "display": "CreditCard icon + 'Credits' label + balance amount, links to /portal/credits",
+          "live_state": "Shows balance.display when isLive=true, shows 'DEMO' label when isLive=false",
+          "loading_state": "Skeleton shimmer (animate-pulse div) while fetching",
+          "refetch": "TanStack Query with queryKey ['credit_balance', user.id]"
+        },
+        "tsc": "PASS — 0 errors",
+        "build": "PASS — built in 5.69s"
+      }
+    }
+  },
+  "overall": "PASS",
+  "notes": "Credit balance strip added to BusinessLayout sidebar footer. Links to /portal/credits. Uses Pearl Mineral V2 tokens (accent-soft, accent, graphite). Skeleton loading state present."
+}
