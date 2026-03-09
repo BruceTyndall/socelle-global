@@ -1,6 +1,4 @@
 Using workdir /Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL
-WARN: no SMS provider is enabled. Disabling phone login
-Initialising login role...
 export type Json =
   | string
   | number
@@ -14,31 +12,6 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.1"
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
   }
   public: {
     Tables: {
@@ -124,6 +97,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      affiliate_clicks: {
+        Row: {
+          affiliate_code: string | null
+          created_at: string
+          distributor_id: string | null
+          id: string
+          ip_address: string | null
+          product_id: string | null
+          target_url: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          affiliate_code?: string | null
+          created_at?: string
+          distributor_id?: string | null
+          id?: string
+          ip_address?: string | null
+          product_id?: string | null
+          target_url: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          affiliate_code?: string | null
+          created_at?: string
+          distributor_id?: string | null
+          id?: string
+          ip_address?: string | null
+          product_id?: string | null
+          target_url?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       ai_concierge_approved_tables: {
         Row: {
@@ -276,6 +285,110 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      api_registry: {
+        Row: {
+          api_key_vault_ref: string | null
+          base_url: string | null
+          category: string
+          created_at: string | null
+          docs_url: string | null
+          environment: string
+          id: string
+          is_active: boolean | null
+          last_test_latency_ms: number | null
+          last_test_status: string | null
+          last_tested_at: string | null
+          name: string
+          notes: string | null
+          provider: string
+          updated_at: string | null
+        }
+        Insert: {
+          api_key_vault_ref?: string | null
+          base_url?: string | null
+          category: string
+          created_at?: string | null
+          docs_url?: string | null
+          environment?: string
+          id?: string
+          is_active?: boolean | null
+          last_test_latency_ms?: number | null
+          last_test_status?: string | null
+          last_tested_at?: string | null
+          name: string
+          notes?: string | null
+          provider: string
+          updated_at?: string | null
+        }
+        Update: {
+          api_key_vault_ref?: string | null
+          base_url?: string | null
+          category?: string
+          created_at?: string | null
+          docs_url?: string | null
+          environment?: string
+          id?: string
+          is_active?: boolean | null
+          last_test_latency_ms?: number | null
+          last_test_status?: string | null
+          last_tested_at?: string | null
+          name?: string
+          notes?: string | null
+          provider?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      api_route_map: {
+        Row: {
+          api_registry_id: string | null
+          auth_required: boolean | null
+          created_at: string | null
+          description: string | null
+          edge_function_name: string | null
+          id: string
+          is_active: boolean | null
+          method: string
+          rate_limit_rpm: number | null
+          route: string
+          updated_at: string | null
+        }
+        Insert: {
+          api_registry_id?: string | null
+          auth_required?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          edge_function_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          method?: string
+          rate_limit_rpm?: number | null
+          route: string
+          updated_at?: string | null
+        }
+        Update: {
+          api_registry_id?: string | null
+          auth_required?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          edge_function_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          method?: string
+          rate_limit_rpm?: number | null
+          route?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_route_map_api_registry_id_fkey"
+            columns: ["api_registry_id"]
+            isOneToOne: false
+            referencedRelation: "api_registry"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_log: {
         Row: {
@@ -1972,6 +2085,69 @@ export type Database = {
           },
         ]
       }
+      data_feeds: {
+        Row: {
+          api_key_env_var: string | null
+          attribution_label: string | null
+          category: string
+          consecutive_failures: number | null
+          created_at: string | null
+          endpoint_url: string | null
+          feed_type: string
+          health_status: string | null
+          id: string
+          is_enabled: boolean | null
+          last_error: string | null
+          last_fetched_at: string | null
+          last_success_at: string | null
+          name: string
+          poll_interval_minutes: number | null
+          provenance_tier: number | null
+          signal_count: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          api_key_env_var?: string | null
+          attribution_label?: string | null
+          category: string
+          consecutive_failures?: number | null
+          created_at?: string | null
+          endpoint_url?: string | null
+          feed_type: string
+          health_status?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_error?: string | null
+          last_fetched_at?: string | null
+          last_success_at?: string | null
+          name: string
+          poll_interval_minutes?: number | null
+          provenance_tier?: number | null
+          signal_count?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          api_key_env_var?: string | null
+          attribution_label?: string | null
+          category?: string
+          consecutive_failures?: number | null
+          created_at?: string | null
+          endpoint_url?: string | null
+          feed_type?: string
+          health_status?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_error?: string | null
+          last_fetched_at?: string | null
+          last_success_at?: string | null
+          name?: string
+          poll_interval_minutes?: number | null
+          provenance_tier?: number | null
+          signal_count?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       discount_codes: {
         Row: {
           code: string
@@ -2130,6 +2306,97 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      feed_dlq: {
+        Row: {
+          attempt_count: number | null
+          created_at: string | null
+          error_message: string | null
+          feed_id: string | null
+          feed_url: string
+          id: string
+          raw_payload: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+        }
+        Insert: {
+          attempt_count?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          feed_id?: string | null
+          feed_url: string
+          id?: string
+          raw_payload?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+        }
+        Update: {
+          attempt_count?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          feed_id?: string | null
+          feed_url?: string
+          id?: string
+          raw_payload?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_dlq_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "data_feeds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_run_log: {
+        Row: {
+          created_at: string | null
+          duration_ms: number | null
+          error_message: string | null
+          feed_id: string | null
+          finished_at: string | null
+          id: string
+          items_fetched: number | null
+          signals_created: number | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          feed_id?: string | null
+          finished_at?: string | null
+          id?: string
+          items_fetched?: number | null
+          signals_created?: number | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          feed_id?: string | null
+          finished_at?: string | null
+          id?: string
+          items_fetched?: number | null
+          signals_created?: number | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_run_log_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "data_feeds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       firebase_uid_map: {
         Row: {
@@ -2516,6 +2783,7 @@ export type Database = {
         Row: {
           active: boolean
           category: string | null
+          confidence: number | null
           confidence_score: number | null
           confidence_tier: string | null
           created_at: string
@@ -2525,7 +2793,9 @@ export type Database = {
           display_order: number | null
           expires_at: string | null
           external_id: string | null
+          fingerprint: string | null
           id: string
+          is_duplicate: boolean
           magnitude: number
           region: string | null
           related_brands: string[] | null
@@ -2533,13 +2803,18 @@ export type Database = {
           signal_key: string
           signal_type: Database["public"]["Enums"]["signal_type_enum"]
           source: string | null
+          source_feed_id: string | null
+          source_name: string | null
           source_type: string | null
+          status: string | null
+          tier_visibility: string | null
           title: string
           updated_at: string
         }
         Insert: {
           active?: boolean
           category?: string | null
+          confidence?: number | null
           confidence_score?: number | null
           confidence_tier?: string | null
           created_at?: string
@@ -2549,7 +2824,9 @@ export type Database = {
           display_order?: number | null
           expires_at?: string | null
           external_id?: string | null
+          fingerprint?: string | null
           id?: string
+          is_duplicate?: boolean
           magnitude: number
           region?: string | null
           related_brands?: string[] | null
@@ -2557,13 +2834,18 @@ export type Database = {
           signal_key: string
           signal_type: Database["public"]["Enums"]["signal_type_enum"]
           source?: string | null
+          source_feed_id?: string | null
+          source_name?: string | null
           source_type?: string | null
+          status?: string | null
+          tier_visibility?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           active?: boolean
           category?: string | null
+          confidence?: number | null
           confidence_score?: number | null
           confidence_tier?: string | null
           created_at?: string
@@ -2573,7 +2855,9 @@ export type Database = {
           display_order?: number | null
           expires_at?: string | null
           external_id?: string | null
+          fingerprint?: string | null
           id?: string
+          is_duplicate?: boolean
           magnitude?: number
           region?: string | null
           related_brands?: string[] | null
@@ -2581,11 +2865,23 @@ export type Database = {
           signal_key?: string
           signal_type?: Database["public"]["Enums"]["signal_type_enum"]
           source?: string | null
+          source_feed_id?: string | null
+          source_name?: string | null
           source_type?: string | null
+          status?: string | null
+          tier_visibility?: string | null
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "market_signals_source_feed_id_fkey"
+            columns: ["source_feed_id"]
+            isOneToOne: false
+            referencedRelation: "data_feeds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       marketing_calendar: {
         Row: {
@@ -5857,9 +6153,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       brand_status: ["active", "inactive", "pending"],

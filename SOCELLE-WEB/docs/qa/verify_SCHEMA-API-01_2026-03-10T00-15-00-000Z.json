@@ -1,0 +1,69 @@
+{
+  "wo_id": "SCHEMA-API-01",
+  "timestamp": "2026-03-10T00:15:00.000Z",
+  "verified_at": "2026-03-10T00:20:00.000Z",
+  "project_id": "rumdmulxzmjtsplsjngi",
+  "steps_completed": {
+    "STEP_1_tables_present": {
+      "status": "PASS",
+      "tables_present": ["api_registry", "api_route_map", "data_feeds", "feed_run_log", "market_signals"]
+    },
+    "STEP_2_market_signals_columns": {
+      "status": "PASS",
+      "columns_verified": ["id","title","signal_type","confidence","updated_at","source_name","tier_visibility"],
+      "columns_added": ["confidence (numeric(5,4) DEFAULT 0.5)", "source_name (text)", "tier_visibility (text DEFAULT 'free')", "status (text DEFAULT 'active')"],
+      "migration": "add_market_signals_missing_cols_and_route_map_trigger"
+    },
+    "STEP_3_api_key_vault_ref": {
+      "status": "PASS",
+      "column_present": "api_key_vault_ref",
+      "api_key_encrypted_present": false
+    },
+    "STEP_4_api_route_map_trigger": {
+      "status": "PASS",
+      "updated_at_column_added": true,
+      "trigger_name": "set_api_route_map_updated_at",
+      "trigger_function": "update_updated_at_column()"
+    },
+    "STEP_5_rls": {
+      "status": "PASS",
+      "api_registry_rls": true,
+      "api_route_map_rls": true,
+      "policies": [
+        { "table": "api_registry", "policy": "Admins can manage API registry", "using": "user_profiles + platform_admin" },
+        { "table": "api_route_map", "policy": "Admins can manage route map", "using": "user_profiles + platform_admin" }
+      ]
+    },
+    "STEP_6_types_regenerated": {
+      "status": "PASS",
+      "file": "src/lib/database.types.ts",
+      "command": "npx supabase gen types typescript --project-id rumdmulxzmjtsplsjngi",
+      "tsc_exit_code": 0
+    },
+    "STEP_7_row_counts": {
+      "status": "PASS",
+      "api_registry": 31,
+      "api_route_map": 28,
+      "market_signals": 30,
+      "data_feeds": 39
+    }
+  },
+  "overall": "PASS",
+  "tables_present": ["api_registry", "api_route_map", "data_feeds", "feed_run_log", "market_signals"],
+  "rls_active": true,
+  "types_regenerated": true,
+  "row_counts": {
+    "api_registry": 31,
+    "api_route_map": 28,
+    "market_signals": 30,
+    "data_feeds": 39
+  },
+  "tsc_exit_code": 0,
+  "prohibited_checks": {
+    "existing_migrations_modified": false,
+    "columns_dropped": false,
+    "tables_dropped": false,
+    "api_key_encrypted_read": false,
+    "service_role_key_logged": false
+  }
+}
