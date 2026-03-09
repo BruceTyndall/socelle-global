@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SOCELLE Intelligence Cloud — For Professionals</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --graphite: #141418;
+    --mn-bg: #F6F3EF;
+    --accent: #6E879B;
+    --warm-gray: #8A8A8E;
+    --stone: #E2DDD7;
+    --ivory: #FAF8F5;
+    --gold: #B8860B;
+    --white: #FFFFFF;
+    --charcoal: #1E1E22;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--graphite);
+    color: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(circle, rgba(110,135,155,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    background: var(--glass);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+    backdrop-filter: blur(12px);
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4ADE80;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    max-width: 800px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--accent) 0%, #A0B8C8 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 400;
+    color: var(--warm-gray);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    background: var(--white);
+    color: var(--graphite);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(255,255,255,0.15);
+  }
+
+  .hero-cta .arrow { transition: transform 0.3s; }
+  .hero-cta:hover .arrow { transform: translateX(4px); }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .num {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--white), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-stat .label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-top: 6px;
+  }
+
+  /* ── SECTION ── */
+  section {
+    padding: 100px 24px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .section-desc {
+    font-size: 17px;
+    color: var(--warm-gray);
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 56px;
+  }
+
+  /* ── AI FEATURES GRID ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .feature-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(110,135,155,0.3);
+    transform: translateY(-4px);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(110,135,155,0.2), rgba(110,135,155,0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .feature-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--warm-gray);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .feature-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag-live { background: rgba(74,222,128,0.15); color: #4ADE80; }
+  .tag-pro { background: rgba(184,134,11,0.15); color: var(--gold); }
+  .tag-coming { background: rgba(110,135,155,0.15); color: var(--accent); }
+
+  /* ── HOW IT WORKS ── */
+  .how-section {
+    background: linear-gradient(180deg, var(--graphite) 0%, var(--charcoal) 100%);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    counter-reset: step;
+  }
+
+  .step {
+    position: relative;
+    padding: 40px 28px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    counter-increment: step;
+  }
+
+  .step::before {
+    content: counter(step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 20px;
+  }
+
+  .step h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .step p {
+    font-size: 14px;
+    color: var(--warm-gray);
+    line-height: 1.6;
+  }
+
+  /* ── PRICING ── */
+  .pricing-section {
+    background: var(--charcoal);
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .price-card {
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+  }
+
+  .price-card.featured {
+    border-color: var(--accent);
+    background: rgba(110,135,155,0.08);
+    position: relative;
+  }
+
+  .price-card.featured::after {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    background: var(--accent);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .price-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .price-amount {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+
+  .price-amount span {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--warm-gray);
+  }
+
+  .price-credits {
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .price-features {
+    list-style: none;
+    flex: 1;
+    margin-bottom: 32px;
+  }
+
+  .price-features li {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+
+  .price-features li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: rgba(74,222,128,0.15);
+    border: 2px solid #4ADE80;
+  }
+
+  .price-btn {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s;
+    letter-spacing: 0.02em;
+  }
+
+  .price-btn-primary {
+    background: var(--white);
+    color: var(--graphite);
+  }
+
+  .price-btn-secondary {
+    background: var(--glass);
+    color: var(--white);
+    border: 1px solid var(--glass-border);
+  }
+
+  .price-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    text-align: center;
+    padding: 80px 24px;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .trust-bar p {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 32px;
+  }
+
+  .trust-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .trust-logos span {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--warm-gray);
+  }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    text-align: center;
+    padding: 120px 24px;
+    position: relative;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(110,135,155,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .final-cta p {
+    font-size: 16px;
+    color: var(--warm-gray);
+    margin-bottom: 40px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero-stats { flex-direction: column; gap: 24px; }
+    .steps { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(20,20,24,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .nav-logo {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--warm-gray);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--white) !important;
+    font-weight: 600 !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">SOCELLE <span>Intelligence</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/request-access" class="nav-btn">Get Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Agentic Intelligence Cloud — Live
+  </div>
+
+  <h1>
+    Your AI-Powered<br/>
+    <span class="gradient-text">Beauty Business Partner</span>
+  </h1>
+
+  <p class="hero-sub">
+    202 data feeds. 6 AI models. One intelligence engine that turns market signals into revenue-ready services for your chair — before your competitors even see the trend.
+  </p>
+
+  <a href="/request-access" class="hero-cta">
+    Get Intelligence Access
+    <span class="arrow">&rarr;</span>
+  </a>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">202</div>
+      <div class="label">Global Data Feeds</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">6</div>
+      <div class="label">AI Models</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">&lt;30s</div>
+      <div class="label">Signal to Action Plan</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">97%+</div>
+      <div class="label">Accuracy Score</div>
+    </div>
+  </div>
+</section>
+
+<!-- AI FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">AI Technology Suite</div>
+    <h2 class="section-title">Intelligence that works<br/>while you work on clients</h2>
+    <p class="section-desc">
+      Six AI engines running 24/7 — scanning trends, matching protocols, finding savings, and generating the content you need to grow.
+    </p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F50D;</div>
+        <h3>Signal Intelligence</h3>
+        <p>Real-time market signals localized to your zip code. Know what treatments are spiking in YOUR neighborhood before anyone else markets them.</p>
+        <span class="feature-tag tag-live">Live</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F9E0;</div>
+        <h3>AI Menu Analysis</h3>
+        <p>Upload your service menu. Our engine parses every service, matches to brand protocols, identifies revenue gaps, and generates a phased growth plan.</p>
+        <span class="feature-tag tag-live">Live</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4CA;</div>
+        <h3>Activation Plans</h3>
+        <p>One-click AI generates a step-by-step plan: which product to buy, how to train staff in 15 minutes, and the social post to announce your new service.</p>
+        <span class="feature-tag tag-pro">Pro Feature</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4B0;</div>
+        <h3>Wholesale Arbitrage Bot</h3>
+        <p>AI scans distributor pricing across SalonCentric, CosmoProf, and more — finds the lowest cost for every product on your backbar. Protects your margins automatically.</p>
+        <span class="feature-tag tag-coming">Coming Soon</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F3AF;</div>
+        <h3>Brand Fit Scoring</h3>
+        <p>Quantifies exactly how well a professional brand aligns with your current menu. Category matching, keyword analysis, duration compatibility — all automated.</p>
+        <span class="feature-tag tag-live">Live</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#x2728;</div>
+        <h3>AI Content Studio</h3>
+        <p>Generate trend moodboards, product photography, and social captions. Your weekly content calendar handled by AI — clinically accurate, brand-safe.</p>
+        <span class="feature-tag tag-coming">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="how-section">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From data to revenue<br/>in three steps</h2>
+    <p class="section-desc">
+      No spreadsheets. No guesswork. SOCELLE turns 202 global feeds into localized, revenue-ready intelligence for your business.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>Upload Your Menu</h3>
+        <p>Paste your service menu or upload a PDF/DOCX. Our AI parses every service — name, duration, price, category — using 4 pattern-matching algorithms.</p>
+      </div>
+      <div class="step">
+        <h3>AI Analyzes Everything</h3>
+        <p>Protocol matching, gap analysis, retail product recommendations, seasonal opportunity detection, and brand fit scoring — all in under 30 seconds.</p>
+      </div>
+      <div class="step">
+        <h3>Act on Intelligence</h3>
+        <p>Receive a phased implementation plan: what to add, what to order, how to train staff, and ready-to-post marketing content. Revenue-ready by Monday.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Intelligence that pays<br/>for itself in week one</h2>
+    <p class="section-desc">
+      Credit-based AI access. Use what you need. Every plan includes the core intelligence feed.
+    </p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <div class="price-amount">$49<span>/mo</span></div>
+        <div class="price-credits">500 AI credits / month</div>
+        <ul class="price-features">
+          <li>Signal Intelligence Feed</li>
+          <li>AI Menu Analysis (1/month)</li>
+          <li>Brand Fit Scoring</li>
+          <li>Weekly Market Brief</li>
+          <li>Basic Gap Analysis</li>
+        </ul>
+        <a href="/request-access" class="price-btn price-btn-secondary">Start Free Preview</a>
+      </div>
+
+      <div class="price-card featured">
+        <h3>Professional</h3>
+        <div class="price-amount">$149<span>/mo</span></div>
+        <div class="price-credits">2,500 AI credits / month</div>
+        <ul class="price-features">
+          <li>Everything in Starter</li>
+          <li>Unlimited Menu Analyses</li>
+          <li>Activation Plan Generator</li>
+          <li>Wholesale Arbitrage Bot</li>
+          <li>AI Content Studio (5 assets/mo)</li>
+          <li>Seasonal Protocol Alerts</li>
+          <li>Revenue Impact Projections</li>
+        </ul>
+        <a href="/request-access" class="price-btn price-btn-primary">Get Pro Access</a>
+      </div>
+
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price-amount">$499<span>/mo</span></div>
+        <div class="price-credits">10,000 AI credits / month</div>
+        <ul class="price-features">
+          <li>Everything in Professional</li>
+          <li>Multi-Location Intelligence</li>
+          <li>Competitor Synthesis Reports</li>
+          <li>Deep Dive Market Briefs</li>
+          <li>Custom AI Training on Your Data</li>
+          <li>Priority Support (4-hour SLA)</li>
+          <li>API Access</li>
+        </ul>
+        <a href="/request-access" class="price-btn price-btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust-bar">
+  <p>Powered by the same AI trusted by enterprise</p>
+  <div class="trust-logos">
+    <span>Claude 4.6</span>
+    <span>GPT-4o</span>
+    <span>Gemini 3.1</span>
+    <span>Supabase</span>
+    <span>Cloudflare</span>
+    <span>Stripe</span>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Stop guessing.<br/>Start knowing.</h2>
+  <p>Limited to 50 operators per region to maintain competitive exclusivity.</p>
+  <a href="/request-access" class="hero-cta">
+    Secure Your Market Feed
+    <span class="arrow">&rarr;</span>
+  </a>
+</section>
+
+</body>
+</html>

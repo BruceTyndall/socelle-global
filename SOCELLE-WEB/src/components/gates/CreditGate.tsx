@@ -10,6 +10,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ArrowRight } from 'lucide-react';
 import { useCreditBalance } from '../../lib/credits/useCreditBalance';
+import { useAuth } from '../../lib/auth';
 
 interface CreditGateProps {
   /** Number of credits this action costs. */
@@ -20,7 +21,11 @@ interface CreditGateProps {
 }
 
 export function CreditGate({ cost, children, onInsufficientCredits }: CreditGateProps) {
+  const { isAdmin } = useAuth();
   const { balance, loading } = useCreditBalance();
+
+  // Admin bypasses all credit gates — unlimited access for auditing/testing
+  if (isAdmin) return <>{children}</>;
 
   // Loading skeleton
   if (loading) {

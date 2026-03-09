@@ -1,0 +1,4190 @@
+{
+  "generated_at": "2026-03-09T17:06:58.228Z",
+  "total_pages": 269,
+  "hubs": {
+    "admin": {
+      "pages": 77,
+      "hook_refs": 35,
+      "tables": [
+        "audience_segments",
+        "audit_logs",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "certificate_templates",
+        "certificates",
+        "cms_assets",
+        "cms_blocks",
+        "cms_pages",
+        "cms_posts",
+        "cms_spaces",
+        "cms_templates",
+        "commission_payouts",
+        "commission_rules",
+        "content_templates",
+        "courses",
+        "deals",
+        "edge_function_controls",
+        "feature_flags",
+        "landing_pages",
+        "notifications",
+        "pipeline_stages",
+        "product_categories",
+        "products",
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "sales_pipelines",
+        "white_label_config"
+      ],
+      "edge_functions": [
+        "verify-certificate"
+      ],
+      "rpcs": []
+    },
+    "brand": {
+      "pages": 25,
+      "hook_refs": 10,
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "market_signals",
+        "notification_preferences",
+        "notifications",
+        "products"
+      ],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "business": {
+      "pages": 74,
+      "hook_refs": 77,
+      "tables": [
+        "account_subscriptions",
+        "affiliate_links",
+        "appointment_history",
+        "appointments",
+        "audience_segments",
+        "b2b_prospect_touchpoints",
+        "b2b_prospects",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "brands",
+        "business_analytics",
+        "businesses",
+        "campaign_metrics",
+        "campaigns",
+        "client_product_history",
+        "client_treatment_records",
+        "client_visit_summary",
+        "cms_docs",
+        "commission_payouts",
+        "commission_rules",
+        "content_templates",
+        "credit_ledger",
+        "crm_companies",
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions",
+        "crm_segments",
+        "crm_tasks",
+        "deal_activities",
+        "deals",
+        "feature_flags",
+        "market_signals",
+        "notification_preferences",
+        "notifications",
+        "order_items",
+        "orders",
+        "pipeline_stages",
+        "proposals",
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "sales_pipelines",
+        "subscriptions",
+        "white_label_config"
+      ],
+      "edge_functions": [
+        "create-checkout"
+      ],
+      "rpcs": []
+    },
+    "claim": {
+      "pages": 2,
+      "hook_refs": 0,
+      "tables": [],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "dev": {
+      "pages": 1,
+      "hook_refs": 0,
+      "tables": [],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "education": {
+      "pages": 12,
+      "hook_refs": 13,
+      "tables": [
+        "business_members",
+        "businesses",
+        "certificate_templates",
+        "certificates",
+        "course_enrollments",
+        "courses",
+        "lesson_progress",
+        "profiles",
+        "quiz_attempts",
+        "quizzes"
+      ],
+      "edge_functions": [
+        "verify-certificate"
+      ],
+      "rpcs": []
+    },
+    "marketing": {
+      "pages": 8,
+      "hook_refs": 10,
+      "tables": [
+        "audience_segments",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaign_metrics",
+        "campaigns",
+        "content_templates",
+        "landing_pages",
+        "notifications"
+      ],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "public": {
+      "pages": 61,
+      "hook_refs": 92,
+      "tables": [
+        "access_requests",
+        "account_subscriptions",
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "brands",
+        "businesses",
+        "canonical_protocols",
+        "cart_items",
+        "carts",
+        "certificate_templates",
+        "certificates",
+        "cms_pages",
+        "cms_posts",
+        "course_enrollments",
+        "courses",
+        "crm_tasks",
+        "data_feeds",
+        "events",
+        "ingredient_aliases",
+        "ingredient_collection_items",
+        "ingredient_collections",
+        "ingredient_interactions",
+        "ingredients",
+        "job_postings",
+        "lesson_progress",
+        "market_signals",
+        "notifications",
+        "order_items",
+        "orders",
+        "product_categories",
+        "product_variants",
+        "products",
+        "quiz_attempts",
+        "quizzes",
+        "reviews",
+        "rss_items",
+        "scorm_packages",
+        "scorm_tracking",
+        "shipping_methods",
+        "stories",
+        "subscription_plans",
+        "subscriptions",
+        "wishlist_items",
+        "wishlists"
+      ],
+      "edge_functions": [
+        "create-checkout",
+        "scorm-runtime",
+        "verify-certificate"
+      ],
+      "rpcs": []
+    },
+    "sales": {
+      "pages": 9,
+      "hook_refs": 17,
+      "tables": [
+        "commission_payouts",
+        "commission_rules",
+        "deal_activities",
+        "deals",
+        "pipeline_stages",
+        "proposals",
+        "sales_pipelines"
+      ],
+      "edge_functions": [],
+      "rpcs": []
+    }
+  },
+  "pages": [
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminApiControlHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminApiControls.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useEdgeFunctionControls"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useEdgeFunctionControls.ts"
+      ],
+      "tables": [
+        "edge_function_controls"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminApiSitemapHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminApprovalQueue.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminAuditLog.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useAuditLogs"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useAuditLogs.ts"
+      ],
+      "tables": [
+        "audit_logs"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminBlogHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminBrandList.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminCourseEditor.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminCoursesHub.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCertificates",
+        "useCourses"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts"
+      ],
+      "tables": [
+        "certificate_templates",
+        "certificates",
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "verify-certificate"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminDashboard.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminEducationHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminFeatureFlags.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useFeatureFlag"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useFeatureFlag.ts"
+      ],
+      "tables": [
+        "feature_flags"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminFeedsHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminInbox.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminIngredientCollections.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminIngredientInteractions.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminIngredientsHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminInventoryReport.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminLiveDataHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminLogin.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminMarketSignals.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminMarketingHub.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useAudienceSegments",
+        "useCampaigns",
+        "useContentTemplates",
+        "useLandingPages"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts",
+        "SOCELLE-WEB/src/lib/useLandingPages.ts"
+      ],
+      "tables": [
+        "audience_segments",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "content_templates",
+        "landing_pages",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminMediaHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminOrderDetail.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminOrders.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminPagesHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminPlatformSettings.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminResellerHub.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useReseller"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useReseller.ts"
+      ],
+      "tables": [
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "white_label_config"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSalesPlatformHub.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCommissions",
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCommissions.ts",
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "commission_payouts",
+        "commission_rules",
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSeeding.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSeoHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSettingsHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShellDetection.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopCategories.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopDiscounts.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopHub.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCategories",
+        "useProducts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useCategories.ts",
+        "SOCELLE-WEB/src/lib/shop/useProducts.ts"
+      ],
+      "tables": [
+        "product_categories",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopOrders.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopProducts.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopReviews.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminShopShipping.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSignals.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSubscriptionAccounts.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSubscriptionMetrics.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminSubscriptionPlans.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AdminUsers.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AffiliatesHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/ApiDashboard.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/AuthDebug.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/BrandAdminEditor.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/BrandHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/BulkProtocolImport.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/CrmHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/DebugPanel.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/EditorialHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/EventsHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/IntelligenceDashboard.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/JobsHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/RecruitmentHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/RegionManagement.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/ReportsLibrary.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/SalesHub.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCommissions",
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCommissions.ts",
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "commission_payouts",
+        "commission_rules",
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/SocialHub.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/SubmissionDetail.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubAnalytics.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubEducation.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubOrders.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubProducts.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubProtocols.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubRetailers.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/brand-hub/HubSettings.tsx",
+      "hub": "admin",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsBlockLibrary.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsBlocks"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsBlocks.ts"
+      ],
+      "tables": [
+        "cms_blocks"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsDashboard.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsAssets",
+        "useCmsBlocks",
+        "useCmsPages",
+        "useCmsPosts",
+        "useCmsSpaces",
+        "useCmsTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsAssets.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsBlocks.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsPages.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsSpaces.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsTemplates.ts"
+      ],
+      "tables": [
+        "cms_assets",
+        "cms_blocks",
+        "cms_pages",
+        "cms_posts",
+        "cms_spaces",
+        "cms_templates"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsMediaLibrary.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsAssets"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsAssets.ts"
+      ],
+      "tables": [
+        "cms_assets"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsPagesList.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsPages",
+        "useCmsSpaces",
+        "useCmsTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPages.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsSpaces.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsTemplates.ts"
+      ],
+      "tables": [
+        "cms_pages",
+        "cms_spaces",
+        "cms_templates"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsPostsList.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsPosts",
+        "useCmsSpaces"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsSpaces.ts"
+      ],
+      "tables": [
+        "cms_posts",
+        "cms_spaces"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsSpacesConfig.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsPages",
+        "useCmsPosts",
+        "useCmsSpaces"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPages.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts",
+        "SOCELLE-WEB/src/lib/cms/useCmsSpaces.ts"
+      ],
+      "tables": [
+        "cms_pages",
+        "cms_posts",
+        "cms_spaces"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/admin/cms/CmsTemplatesList.tsx",
+      "hub": "admin",
+      "hooks": [
+        "useCmsTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsTemplates.ts"
+      ],
+      "tables": [
+        "cms_templates"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/ApplicationReceived.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Apply.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Automations.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/BrandAIAdvisor.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useChatSession"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/ai/useChatSession.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/BrandIntelligenceHub.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useBrandTier",
+        "useIntelligence"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/brandTiers/useBrandTier.ts",
+        "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts"
+      ],
+      "tables": [
+        "market_signals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/BrandNotificationPreferences.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useNotifications"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/notifications/useNotifications.ts"
+      ],
+      "tables": [
+        "notification_preferences",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/CampaignBuilder.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Campaigns.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useCampaigns",
+        "useProducts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/shop/useProducts.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/ClaimReview.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Customers.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Dashboard.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/IntelligencePricing.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useBrandTier"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/brandTiers/useBrandTier.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/IntelligenceReport.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Leads.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Login.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Messages.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Onboarding.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/OrderDetail.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Orders.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Performance.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Pipeline.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Plans.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Products.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Promotions.tsx",
+      "hub": "brand",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/brand/Storefront.tsx",
+      "hub": "brand",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AIAdvisor.tsx",
+      "hub": "business",
+      "hooks": [
+        "useChatSession"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/ai/useChatSession.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Account.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AddCompany.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmCompanies"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmCompanies.ts"
+      ],
+      "tables": [
+        "crm_companies"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AddContact.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmContacts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts"
+      ],
+      "tables": [
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AddServiceRecord.tsx",
+      "hub": "business",
+      "hooks": [
+        "useClientRecords",
+        "useCrmContacts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useClientRecords.ts",
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts"
+      ],
+      "tables": [
+        "client_product_history",
+        "client_treatment_records",
+        "client_visit_summary",
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Apply.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AppointmentCalendar.tsx",
+      "hub": "business",
+      "hooks": [
+        "useBooking"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useBooking.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "crm_tasks",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AppointmentDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useBooking"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useBooking.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "crm_tasks",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/AudienceSegments.tsx",
+      "hub": "business",
+      "hooks": [
+        "useAudienceSegments"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts"
+      ],
+      "tables": [
+        "audience_segments"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/BenchmarkDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useBenchmarkData"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useBenchmarkData.ts"
+      ],
+      "tables": [
+        "brands",
+        "business_analytics",
+        "businesses",
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/BookingDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useActionableSignals",
+        "useBooking"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useActionableSignals.ts",
+        "SOCELLE-WEB/src/lib/useBooking.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "crm_tasks",
+        "market_signals",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/BrandDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCart.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CECredits.tsx",
+      "hub": "business",
+      "hooks": [
+        "useProtocols"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/protocols/useProtocols.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CampaignDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCampaignMetrics",
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaignMetrics.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaign_metrics",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CampaignEditor.tsx",
+      "hub": "business",
+      "hooks": [
+        "useAudienceSegments",
+        "useCampaigns",
+        "useContentTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts"
+      ],
+      "tables": [
+        "audience_segments",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "content_templates",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ClaimReview.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ClientRecords.tsx",
+      "hub": "business",
+      "hooks": [
+        "useClientRecords",
+        "useCrmContacts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useClientRecords.ts",
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts"
+      ],
+      "tables": [
+        "client_product_history",
+        "client_treatment_records",
+        "client_visit_summary",
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CommissionsDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCommissions"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCommissions.ts"
+      ],
+      "tables": [
+        "commission_payouts",
+        "commission_rules"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CompanyDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmCompanies",
+        "useCrmContacts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmCompanies.ts",
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts"
+      ],
+      "tables": [
+        "crm_companies",
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CompanyList.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmCompanies"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmCompanies.ts"
+      ],
+      "tables": [
+        "crm_companies"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ContactDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useBooking",
+        "useClientRecords",
+        "useCrmContacts",
+        "useCrmPurchaseHistory",
+        "useCrmTasks"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useBooking.ts",
+        "SOCELLE-WEB/src/lib/useClientRecords.ts",
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts",
+        "SOCELLE-WEB/src/lib/useCrmPurchaseHistory.ts",
+        "SOCELLE-WEB/src/lib/useCrmTasks.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "client_product_history",
+        "client_treatment_records",
+        "client_visit_summary",
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions",
+        "crm_tasks",
+        "notifications",
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ContactList.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmContacts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts"
+      ],
+      "tables": [
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ContentTemplates.tsx",
+      "hub": "business",
+      "hooks": [
+        "useContentTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts"
+      ],
+      "tables": [
+        "content_templates"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CrmDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmTasks"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmTasks.ts"
+      ],
+      "tables": [
+        "crm_tasks"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CrmSegments.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmContacts",
+        "useCrmSegments"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts",
+        "SOCELLE-WEB/src/lib/useCrmSegments.ts"
+      ],
+      "tables": [
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions",
+        "crm_segments"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/CrmTasks.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmContacts",
+        "useCrmTasks",
+        "useFeatureFlag"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts",
+        "SOCELLE-WEB/src/lib/useCrmTasks.ts",
+        "SOCELLE-WEB/src/lib/useFeatureFlag.ts"
+      ],
+      "tables": [
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions",
+        "crm_tasks",
+        "feature_flags"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Dashboard.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/DealDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useDealActivities",
+        "useDeals",
+        "useProposals"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDealActivities.ts",
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/useProposals.ts"
+      ],
+      "tables": [
+        "deal_activities",
+        "deals",
+        "proposals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/EditCompany.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmCompanies"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmCompanies.ts"
+      ],
+      "tables": [
+        "crm_companies"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/EditContact.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCrmContacts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCrmContacts.ts"
+      ],
+      "tables": [
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/IntelligenceHub.tsx",
+      "hub": "business",
+      "hooks": [
+        "useIntelligence"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts"
+      ],
+      "tables": [
+        "market_signals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/LocationsDashboard.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Login.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/MarketingAnalytics.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCampaignMetrics",
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaignMetrics.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaign_metrics",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/MarketingCalendar.tsx",
+      "hub": "business",
+      "hooks": [
+        "useMarketingCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/marketing/useMarketingCampaigns.ts"
+      ],
+      "tables": [
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/MarketingDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Messages.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/NotificationPreferences.tsx",
+      "hub": "business",
+      "hooks": [
+        "useNotifications"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/notifications/useNotifications.ts"
+      ],
+      "tables": [
+        "notification_preferences",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/OrderDetail.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Orders.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/PipelineBoard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/PlanComparison.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/PlanResults.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/PlanWizard.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/PlansList.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/PortalHome.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ProposalEditor.tsx",
+      "hub": "business",
+      "hooks": [
+        "useProposals"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useProposals.ts"
+      ],
+      "tables": [
+        "proposals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ProspectDetail.tsx",
+      "hub": "business",
+      "hooks": [
+        "useProspects"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useProspects.ts"
+      ],
+      "tables": [
+        "b2b_prospect_touchpoints",
+        "b2b_prospects"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ProspectList.tsx",
+      "hub": "business",
+      "hooks": [
+        "useProspects"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useProspects.ts"
+      ],
+      "tables": [
+        "b2b_prospect_touchpoints",
+        "b2b_prospects"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ResellerClients.tsx",
+      "hub": "business",
+      "hooks": [
+        "useReseller"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useReseller.ts"
+      ],
+      "tables": [
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "white_label_config"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ResellerDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useReseller"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useReseller.ts"
+      ],
+      "tables": [
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "white_label_config"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ResellerRevenue.tsx",
+      "hub": "business",
+      "hooks": [
+        "useReseller"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useReseller.ts"
+      ],
+      "tables": [
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "white_label_config"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/SalesDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/ServiceManager.tsx",
+      "hub": "business",
+      "hooks": [
+        "useBooking"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useBooking.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "crm_tasks",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/Signup.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/StaffManager.tsx",
+      "hub": "business",
+      "hooks": [
+        "useBooking"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useBooking.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "crm_tasks",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/SubscriptionManagement.tsx",
+      "hub": "business",
+      "hooks": [
+        "useSubscription"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useSubscription.ts",
+        "SOCELLE-WEB/src/modules/_core/hooks/useSubscription.ts"
+      ],
+      "tables": [
+        "account_subscriptions",
+        "subscriptions"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "create-checkout"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/WhiteLabelConfig.tsx",
+      "hub": "business",
+      "hooks": [
+        "useReseller"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useReseller.ts"
+      ],
+      "tables": [
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "white_label_config"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/affiliates/AffiliateDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useAffiliateData"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/affiliates/useAffiliateData.ts"
+      ],
+      "tables": [
+        "affiliate_links"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/affiliates/AffiliateLinks.tsx",
+      "hub": "business",
+      "hooks": [
+        "useAffiliateData"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/affiliates/useAffiliateData.ts"
+      ],
+      "tables": [
+        "affiliate_links"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/credits/CreditDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useCreditBalance"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/credits/useCreditBalance.ts"
+      ],
+      "tables": [
+        "credit_ledger"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/credits/CreditPurchase.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/marketing/CampaignBuilder.tsx",
+      "hub": "business",
+      "hooks": [
+        "useAudienceSegments",
+        "useContentTemplates",
+        "useMarketingCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/marketing/useMarketingCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts",
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts"
+      ],
+      "tables": [
+        "audience_segments",
+        "campaigns",
+        "content_templates",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/marketing/CampaignList.tsx",
+      "hub": "business",
+      "hooks": [
+        "useMarketingCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/marketing/useMarketingCampaigns.ts"
+      ],
+      "tables": [
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/marketing/MarketingDashboard.tsx",
+      "hub": "business",
+      "hooks": [
+        "useActionableSignals",
+        "useAudienceSegments",
+        "useContentTemplates",
+        "useMarketingCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useActionableSignals.ts",
+        "SOCELLE-WEB/src/lib/marketing/useMarketingCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts",
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts"
+      ],
+      "tables": [
+        "audience_segments",
+        "campaigns",
+        "content_templates",
+        "market_signals",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/marketing/MarketingTemplates.tsx",
+      "hub": "business",
+      "hooks": [
+        "useContentTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts"
+      ],
+      "tables": [
+        "content_templates"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/onboarding/OnboardingComplete.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/onboarding/OnboardingFlow.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/onboarding/OnboardingInterests.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/onboarding/OnboardingRole.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/onboarding/OnboardingWelcome.tsx",
+      "hub": "business",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/studio/CourseBuilder.tsx",
+      "hub": "business",
+      "hooks": [
+        "useStudioDocs"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/studio/useStudioDocs.ts"
+      ],
+      "tables": [
+        "cms_docs"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/studio/StudioEditor.tsx",
+      "hub": "business",
+      "hooks": [
+        "useStudioDocs"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/studio/useStudioDocs.ts"
+      ],
+      "tables": [
+        "cms_docs"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/business/studio/StudioHome.tsx",
+      "hub": "business",
+      "hooks": [
+        "useStudioDocs"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/studio/useStudioDocs.ts"
+      ],
+      "tables": [
+        "cms_docs"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/claim/ClaimBrand.tsx",
+      "hub": "claim",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/claim/ClaimBusiness.tsx",
+      "hub": "claim",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/dev/MasterIndex.tsx",
+      "hub": "dev",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/CECreditDashboard.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCECredits"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCECredits.ts"
+      ],
+      "tables": [
+        "certificates",
+        "course_enrollments"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/CertificateVerify.tsx",
+      "hub": "education",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/CourseCatalog.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCourses"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts"
+      ],
+      "tables": [
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/CourseDetail.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCourse",
+        "useEnrollment"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourse.ts",
+        "SOCELLE-WEB/src/lib/education/useEnrollment.ts"
+      ],
+      "tables": [
+        "course_enrollments",
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/CoursePlayer.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCourse",
+        "useEnrollment",
+        "useLessonProgress"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourse.ts",
+        "SOCELLE-WEB/src/lib/education/useEnrollment.ts",
+        "SOCELLE-WEB/src/lib/education/useLessonProgress.ts"
+      ],
+      "tables": [
+        "course_enrollments",
+        "courses",
+        "lesson_progress"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/EducationHub.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCertificates",
+        "useCourses"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts"
+      ],
+      "tables": [
+        "certificate_templates",
+        "certificates",
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "verify-certificate"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/MyCertificates.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCertificates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/useCertificates.ts"
+      ],
+      "tables": [
+        "certificate_templates",
+        "certificates"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "verify-certificate"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/QuizPlayer.tsx",
+      "hub": "education",
+      "hooks": [
+        "useQuiz"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useQuiz.ts"
+      ],
+      "tables": [
+        "quiz_attempts",
+        "quizzes"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/ScormPlayer.tsx",
+      "hub": "education",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/StaffTraining.tsx",
+      "hub": "education",
+      "hooks": [
+        "useStaffTraining"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useStaffTraining.ts"
+      ],
+      "tables": [
+        "business_members",
+        "businesses",
+        "certificates",
+        "course_enrollments",
+        "profiles"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/author/AuthorDashboard.tsx",
+      "hub": "education",
+      "hooks": [
+        "useCourses"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts"
+      ],
+      "tables": [
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/education/author/CourseBuilder.tsx",
+      "hub": "education",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/CampaignBuilder.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useAudienceSegments",
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "audience_segments",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/CampaignDetail.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useCampaignMetrics",
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaignMetrics.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaign_metrics",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/CampaignList.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/LandingPageList.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useLandingPages"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useLandingPages.ts"
+      ],
+      "tables": [
+        "landing_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/MarketingCalendar.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/MarketingDashboard.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useCampaigns"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/campaigns/useCampaigns.ts",
+        "SOCELLE-WEB/src/lib/useCampaigns.ts"
+      ],
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/SegmentList.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useAudienceSegments"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useAudienceSegments.ts"
+      ],
+      "tables": [
+        "audience_segments"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/marketing/TemplateGallery.tsx",
+      "hub": "marketing",
+      "hooks": [
+        "useContentTemplates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useContentTemplates.ts"
+      ],
+      "tables": [
+        "content_templates"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/About.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ApiDocs.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ApiPricing.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/BlogListPage.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPosts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts"
+      ],
+      "tables": [
+        "cms_posts"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/BlogPostPage.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPosts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts"
+      ],
+      "tables": [
+        "cms_posts"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/BookingWidget.tsx",
+      "hub": "public",
+      "hooks": [
+        "useBooking"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useBooking.ts"
+      ],
+      "tables": [
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "businesses",
+        "crm_tasks",
+        "notifications"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/BrandStorefront.tsx",
+      "hub": "public",
+      "hooks": [
+        "useBrandIntelligence",
+        "useCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useBrandIntelligence.ts",
+        "SOCELLE-WEB/src/lib/useCart.ts"
+      ],
+      "tables": [
+        "brands",
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Brands.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Cart.tsx",
+      "hub": "public",
+      "hooks": [
+        "useShopCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_variants",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/CertificateVerify.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCertificates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/useCertificates.ts"
+      ],
+      "tables": [
+        "certificate_templates",
+        "certificates"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "verify-certificate"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Checkout.tsx",
+      "hub": "public",
+      "hooks": [
+        "useShippingMethods",
+        "useShopCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useShippingMethods.ts",
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_variants",
+        "products",
+        "shipping_methods"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/CourseDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCourse",
+        "useCourses",
+        "useEnrollment",
+        "useEnrollments"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourse.ts",
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/education/useEnrollment.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useEnrollments.ts"
+      ],
+      "tables": [
+        "course_enrollments",
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/CoursePlayer.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCourse",
+        "useCourses",
+        "useEnrollment",
+        "useEnrollments",
+        "useLessonProgress",
+        "useQuiz",
+        "useQuizzes",
+        "useScorm"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourse.ts",
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/education/useEnrollment.ts",
+        "SOCELLE-WEB/src/lib/education/useLessonProgress.ts",
+        "SOCELLE-WEB/src/lib/education/useQuiz.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useEnrollments.ts",
+        "SOCELLE-WEB/src/lib/useQuizzes.ts",
+        "SOCELLE-WEB/src/lib/useScorm.ts"
+      ],
+      "tables": [
+        "course_enrollments",
+        "courses",
+        "lesson_progress",
+        "quiz_attempts",
+        "quizzes",
+        "scorm_packages",
+        "scorm_tracking"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "scorm-runtime"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/CoursesCatalog.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCourses"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCourses.ts",
+        "SOCELLE-WEB/src/lib/useCourses.ts"
+      ],
+      "tables": [
+        "courses"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Education.tsx",
+      "hub": "public",
+      "hooks": [
+        "useEducation"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useEducation.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/EducationArticles.tsx",
+      "hub": "public",
+      "hooks": [
+        "useEducationContent"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useEducationContent.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Events.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/FAQ.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ForBrands.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage",
+        "usePlatformStats"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts",
+        "SOCELLE-WEB/src/lib/usePlatformStats.ts"
+      ],
+      "tables": [
+        "access_requests",
+        "brands",
+        "canonical_protocols",
+        "cms_pages",
+        "data_feeds",
+        "events",
+        "job_postings",
+        "market_signals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ForMedspas.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ForSalons.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ForgotPassword.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/HelpCenter.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPosts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts"
+      ],
+      "tables": [
+        "cms_posts"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Home.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage",
+        "useDataFeedStats",
+        "usePlatformStats"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useDataFeedStats.ts",
+        "SOCELLE-WEB/src/lib/useCmsPage.ts",
+        "SOCELLE-WEB/src/lib/usePlatformStats.ts"
+      ],
+      "tables": [
+        "access_requests",
+        "brands",
+        "canonical_protocols",
+        "cms_pages",
+        "data_feeds",
+        "events",
+        "job_postings",
+        "market_signals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/HowItWorks.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/IngredientCollection.tsx",
+      "hub": "public",
+      "hooks": [
+        "useIngredientCollections",
+        "useIngredientDetail"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useIngredientCollections.ts",
+        "SOCELLE-WEB/src/lib/useIngredientDetail.ts"
+      ],
+      "tables": [
+        "ingredient_aliases",
+        "ingredient_collection_items",
+        "ingredient_collections",
+        "ingredient_interactions",
+        "ingredients"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/IngredientDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useIngredientDetail"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useIngredientDetail.ts"
+      ],
+      "tables": [
+        "ingredient_aliases",
+        "ingredient_interactions",
+        "ingredients"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Ingredients.tsx",
+      "hub": "public",
+      "hooks": [
+        "useIngredientCollections",
+        "useIngredientDetail",
+        "useIngredientSearch",
+        "useIngredients"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useIngredientCollections.ts",
+        "SOCELLE-WEB/src/lib/useIngredientDetail.ts",
+        "SOCELLE-WEB/src/lib/useIngredientSearch.ts",
+        "SOCELLE-WEB/src/lib/useIngredients.ts"
+      ],
+      "tables": [
+        "ingredient_aliases",
+        "ingredient_collection_items",
+        "ingredient_collections",
+        "ingredient_interactions",
+        "ingredients"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Insights.tsx",
+      "hub": "public",
+      "hooks": [
+        "useRssItems"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useRssItems.ts"
+      ],
+      "tables": [
+        "rss_items"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Intelligence.tsx",
+      "hub": "public",
+      "hooks": [
+        "useDataFeedStats",
+        "useIntelligence",
+        "useStories"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/editorial/useStories.ts",
+        "SOCELLE-WEB/src/lib/intelligence/useDataFeedStats.ts",
+        "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts"
+      ],
+      "tables": [
+        "data_feeds",
+        "market_signals",
+        "stories"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/IntelligenceBriefDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useIntelligencePosts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useIntelligencePosts.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/IntelligenceBriefs.tsx",
+      "hub": "public",
+      "hooks": [
+        "useIntelligencePosts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useIntelligencePosts.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/IntelligenceCommerce.tsx",
+      "hub": "public",
+      "hooks": [
+        "useIntelligence",
+        "useProductSignals",
+        "useProducts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts",
+        "SOCELLE-WEB/src/lib/shop/useProductSignals.ts",
+        "SOCELLE-WEB/src/lib/shop/useProducts.ts"
+      ],
+      "tables": [
+        "market_signals",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/JobDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useJobPostings"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useJobPostings.ts"
+      ],
+      "tables": [
+        "job_postings",
+        "market_signals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Jobs.tsx",
+      "hub": "public",
+      "hooks": [
+        "useJobPostings"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useJobPostings.ts"
+      ],
+      "tables": [
+        "job_postings",
+        "market_signals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/MyCertificates.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCertificates"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/education/useCertificates.ts",
+        "SOCELLE-WEB/src/lib/useCertificates.ts"
+      ],
+      "tables": [
+        "certificate_templates",
+        "certificates"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "verify-certificate"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/OrderDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useOrders"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useOrders.ts"
+      ],
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/OrderHistory.tsx",
+      "hub": "public",
+      "hooks": [
+        "useOrders"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useOrders.ts"
+      ],
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Plans.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/PrelaunchQuiz.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Pricing.tsx",
+      "hub": "public",
+      "hooks": [
+        "useSubscription",
+        "useSubscriptionPlans"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useSubscription.ts",
+        "SOCELLE-WEB/src/modules/_core/hooks/useSubscription.ts",
+        "SOCELLE-WEB/src/modules/_core/hooks/useSubscriptionPlans.ts"
+      ],
+      "tables": [
+        "account_subscriptions",
+        "subscription_plans",
+        "subscriptions"
+      ],
+      "rpcs": [],
+      "edge_functions": [
+        "create-checkout"
+      ]
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Privacy.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ProductDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useProduct",
+        "useProductReviews",
+        "useProductSignals",
+        "useShopCart",
+        "useWishlist"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useProduct.ts",
+        "SOCELLE-WEB/src/lib/shop/useProductReviews.ts",
+        "SOCELLE-WEB/src/lib/shop/useProductSignals.ts",
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/shop/useWishlist.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useWishlist.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "market_signals",
+        "product_variants",
+        "products",
+        "reviews",
+        "wishlist_items",
+        "wishlists"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Professionals.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ProtocolDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useProtocols"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/protocols/useProtocols.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Protocols.tsx",
+      "hub": "public",
+      "hooks": [
+        "useProtocols"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/protocols/useProtocols.ts"
+      ],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/RequestAccess.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ResetPassword.tsx",
+      "hub": "public",
+      "hooks": [],
+      "hook_files": [],
+      "tables": [],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Shop.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCategories",
+        "useProductSignals",
+        "useProducts",
+        "useShopCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useCategories.ts",
+        "SOCELLE-WEB/src/lib/shop/useProductSignals.ts",
+        "SOCELLE-WEB/src/lib/shop/useProducts.ts",
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "market_signals",
+        "product_categories",
+        "product_variants",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopCart.tsx",
+      "hub": "public",
+      "hooks": [
+        "useShopCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_variants",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopCategory.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCategories",
+        "useProducts",
+        "useShopCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useCategories.ts",
+        "SOCELLE-WEB/src/lib/shop/useProducts.ts",
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_categories",
+        "product_variants",
+        "products"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopCheckout.tsx",
+      "hub": "public",
+      "hooks": [
+        "useShippingMethods",
+        "useShopCart"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useShippingMethods.ts",
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_variants",
+        "products",
+        "shipping_methods"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopOrderDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useOrders"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useOrders.ts"
+      ],
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopOrders.tsx",
+      "hub": "public",
+      "hooks": [
+        "useOrders"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useOrders.ts"
+      ],
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopProduct.tsx",
+      "hub": "public",
+      "hooks": [
+        "useProduct",
+        "useProductReviews",
+        "useProductSignals",
+        "useShopCart",
+        "useWishlist"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useProduct.ts",
+        "SOCELLE-WEB/src/lib/shop/useProductReviews.ts",
+        "SOCELLE-WEB/src/lib/shop/useProductSignals.ts",
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/shop/useWishlist.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useWishlist.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "market_signals",
+        "product_variants",
+        "products",
+        "reviews",
+        "wishlist_items",
+        "wishlists"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/ShopWishlist.tsx",
+      "hub": "public",
+      "hooks": [
+        "useShopCart",
+        "useWishlist"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/shop/useWishlist.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useWishlist.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_variants",
+        "products",
+        "wishlist_items",
+        "wishlists"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Stories.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPosts"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/cms/useCmsPosts.ts"
+      ],
+      "tables": [
+        "cms_posts"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/StoriesIndex.tsx",
+      "hub": "public",
+      "hooks": [
+        "useStories"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/editorial/useStories.ts"
+      ],
+      "tables": [
+        "stories"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/StoryDetail.tsx",
+      "hub": "public",
+      "hooks": [
+        "useStories"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/editorial/useStories.ts"
+      ],
+      "tables": [
+        "stories"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/Terms.tsx",
+      "hub": "public",
+      "hooks": [
+        "useCmsPage"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCmsPage.ts"
+      ],
+      "tables": [
+        "cms_pages"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/public/WishlistPage.tsx",
+      "hub": "public",
+      "hooks": [
+        "useShopCart",
+        "useWishlist"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/shop/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/shop/useWishlist.ts",
+        "SOCELLE-WEB/src/lib/useShopCart.ts",
+        "SOCELLE-WEB/src/lib/useWishlist.ts"
+      ],
+      "tables": [
+        "cart_items",
+        "carts",
+        "product_variants",
+        "products",
+        "wishlist_items",
+        "wishlists"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/CommissionDashboard.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useCommissions"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useCommissions.ts"
+      ],
+      "tables": [
+        "commission_payouts",
+        "commission_rules"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/DealDetail.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDealActivities",
+        "useDeals",
+        "useProposals"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDealActivities.ts",
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/useProposals.ts"
+      ],
+      "tables": [
+        "deal_activities",
+        "deals",
+        "proposals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/DealEditor.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/OpportunityFinder.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/PipelineBoard.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/ProposalBuilder.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDeals",
+        "useProposals"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/useProposals.ts"
+      ],
+      "tables": [
+        "deals",
+        "proposals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/ProposalView.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useProposals"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useProposals.ts"
+      ],
+      "tables": [
+        "proposals"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/RevenueAnalytics.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    },
+    {
+      "page": "SOCELLE-WEB/src/pages/sales/SalesDashboard.tsx",
+      "hub": "sales",
+      "hooks": [
+        "useDeals",
+        "usePipelines"
+      ],
+      "hook_files": [
+        "SOCELLE-WEB/src/lib/useDeals.ts",
+        "SOCELLE-WEB/src/lib/usePipelines.ts"
+      ],
+      "tables": [
+        "deals",
+        "pipeline_stages",
+        "sales_pipelines"
+      ],
+      "rpcs": [],
+      "edge_functions": []
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "wo_id": "BUILD3-BRANDS",
+  "timestamp": "2026-03-09T18:21:10.888Z",
+  "app": "BRANDS",
+  "skills_run": [
+    "hub-shell-detector",
+    "design-audit-suite",
+    "rls-auditor",
+    "entitlement-validator",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "scanned_files": 3,
+        "live_count": 3,
+        "demo_count": 0,
+        "shell_count": 0
+      }
+    },
+    "design-audit-suite": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "font_serif_count": 0,
+        "token_reference_hits": 357,
+        "css_vars": {
+          "font_primary": true,
+          "font_display": true,
+          "font_mono": true,
+          "tailwind_font_sans": true
+        }
+      }
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "enable_row_level_security_count": 179,
+        "create_policy_count": 516
+      }
+    },
+    "entitlement-validator": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "route_checks": [
+          {
+            "snippet": "path=\"/brands\"",
+            "found": true
+          },
+          {
+            "snippet": "path=\"/brands/:slug\"",
+            "found": true
+          },
+          {
+            "snippet": "path=\"brands/:slug\"",
+            "found": true
+          },
+          {
+            "snippet": "ModuleRoute moduleKey=\"MODULE_SHOP\"",
+            "found": true
+          }
+        ],
+        "entitlement_refs": 246
+      }
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": 0,
+      "evidence": {
+        "tsc_no_emit": "PASS",
+        "npm_build": "PASS",
+        "route_manifest": "PASS",
+        "fake_live_guard": "PASS",
+        "e2e_route_coverage": "PASS"
+      }
+    }
+  },
+  "additional_checks": {
+    "useEffect_supabase_hits": 1,
+    "cross_hub_dispatcher_refs": 3,
+    "mobile_artifacts": [
+      {
+        "file": "data/repositories/brands_repository.dart",
+        "found": true
+      }
+    ]
+  },
+  "overall": "FAIL"
+}

@@ -1,0 +1,15 @@
+
+> vite-react-typescript-starter@0.0.0 dev
+> vite --host 127.0.0.1 --port 4173
+
+10:54:14 AM [vite] (client) Re-optimizing dependencies because vite config has changed
+
+  VITE v6.4.1  ready in 164 ms
+
+  ➜  Local:   http://127.0.0.1:4173/
+10:58:08 AM [vite] (client) page reload src/lib/database.types.ts
+10:58:10 AM [vite] (client) page reload src/lib/database.types.ts
+11:03:16 AM [vite] (client) hmr update /src/pages/business/PortalHome.tsx, /src/index.css
+11:03:25 AM [vite] (client) page reload src/components/PaywallGate.tsx
+11:03:30 AM [vite] (client) page reload src/components/PlanOutputView.tsx
+11:03:48 AM [vite] (client) page reload src/components/SalesPipelineView.tsx

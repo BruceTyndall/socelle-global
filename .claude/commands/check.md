@@ -1,0 +1,1 @@
+Run: npx tsc --noEmit && npm run build && echo "CLEAN" || echo "BROKEN"

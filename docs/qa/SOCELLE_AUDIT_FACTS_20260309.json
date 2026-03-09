@@ -1,0 +1,1193 @@
+{
+  "generated_at": "2026-03-09T17:12:20.470Z",
+  "flow_summary": {
+    "routes_in_inventory": 738,
+    "routes_audited": 114,
+    "sessions": {
+      "public": {
+        "success": false,
+        "blocked": false
+      },
+      "professional": {
+        "success": false,
+        "blocked": true
+      },
+      "brand": {
+        "success": false,
+        "blocked": true
+      },
+      "admin": {
+        "success": false,
+        "blocked": true
+      }
+    },
+    "errors": 797,
+    "dead_ends": 9,
+    "confusing_loops": 0,
+    "screenshots": 114
+  },
+  "blocked_by_auth": [
+    {
+      "user_type": "professional",
+      "reason": "missing_credentials",
+      "requirements": [
+        "E2E_BUSINESS_EMAIL",
+        "E2E_BUSINESS_PASSWORD"
+      ]
+    },
+    {
+      "user_type": "brand",
+      "reason": "missing_credentials",
+      "requirements": [
+        "E2E_BRAND_EMAIL",
+        "E2E_BRAND_PASSWORD"
+      ]
+    },
+    {
+      "user_type": "admin",
+      "reason": "missing_credentials",
+      "requirements": [
+        "E2E_ADMIN_EMAIL",
+        "E2E_ADMIN_PASSWORD"
+      ]
+    }
+  ],
+  "dead_ends": [
+    {
+      "session": "public",
+      "route": "/education",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_006_education.png"
+    },
+    {
+      "session": "public",
+      "route": "/account/orders",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_026_account__orders.png"
+    },
+    {
+      "session": "public",
+      "route": "/account/orders/sample-id",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_027_account__orders__sample-id.png"
+    },
+    {
+      "session": "public",
+      "route": "/account/wishlist",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_028_account__wishlist.png"
+    },
+    {
+      "session": "public",
+      "route": "/book/sample-slug",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_032_book__sample-slug.png"
+    },
+    {
+      "session": "public",
+      "route": "/cart",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_033_cart.png"
+    },
+    {
+      "session": "public",
+      "route": "/checkout",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_036_checkout.png"
+    },
+    {
+      "session": "public",
+      "route": "/courses",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_039_courses.png"
+    },
+    {
+      "session": "public",
+      "route": "/courses/sample-slug",
+      "reason": "No meaningful outbound actions detected",
+      "evidence": "docs/qa/e2e-flow-audit_20260309_105413/screens/public_040_courses__sample-slug.png"
+    }
+  ],
+  "top_broken_flows": [
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/dashboard",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/intelligence",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/plans",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/orders",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/crm",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/crm/contacts",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/booking",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/prospects",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/sales",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/marketing",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/studio",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/credits",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/affiliates",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/reseller",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/benchmarks",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/sales",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/account",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/advisor",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/affiliates/links",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    },
+    {
+      "severity": "P1",
+      "session": "professional",
+      "route": "/portal/apply",
+      "issue": "Permission trap or auth loop",
+      "evidence": "http://127.0.0.1:4173/portal/login"
+    }
+  ],
+  "error_types": [
+    [
+      "console_error",
+      314
+    ],
+    [
+      "request_failed",
+      297
+    ],
+    [
+      "http_error",
+      186
+    ]
+  ],
+  "top_error_targets": [
+    {
+      "target": "api.fontshare.com",
+      "count": 114
+    },
+    {
+      "target": "fonts.gstatic.com",
+      "count": 101
+    },
+    {
+      "target": "market_signals?select=id%2Csignal_type%2Csignal_key%2Ctitle%2Cdescription%2Cmagnitude%2Cdirection%2Cregion%2Ccategory%2Crelated_brands%2Crelated_products%2Cupdated_at%2Csource%2Csource_url%2Csource_name%2Csource_feed_id%2Cconfidence_score%2Ctier_visibility%2Cimage_url%2Cis_duplicate",
+      "count": 43
+    },
+    {
+      "target": "stories?select=id%2Ctitle%2Cslug%2Cexcerpt%2Cbody%2Chero_image_url%2Cauthor_name%2Cstatus%2Ccategory%2Ctags%2Crelated_signal_ids%2Cseo_title%2Cseo_description%2Csource_type%2Creading_time_minutes%2Cfeatured%2Cpublished_at%2Ccreated_at%2Cupdated_at",
+      "count": 41
+    },
+    {
+      "target": "brands?select=id%2Cname%2Cslug%2Cdescription%2Cstatus%2Clogo_url%2Chero_image_url%2Ccategory%2Ctheme",
+      "count": 40
+    },
+    {
+      "target": "data_feeds?select=id%2Cis_enabled%2Ccategory%2Cfeed_type%2Csignal_count%2Clast_fetched_at%2Clast_error",
+      "count": 39
+    },
+    {
+      "target": "videos/brand/dropper.mp4",
+      "count": 33
+    },
+    {
+      "target": "https://rumdmulxzmjtsplsjngi.supabase.co/auth/v1/token?grant_type=password",
+      "count": 20
+    },
+    {
+      "target": "cms_pages?select=id%2Cslug%2Ctitle%2Cmeta_title%2Cmeta_description%2Cog_image_url%2Cblocks%2Cstatus%2Ccreated_at%2Cupdated_at",
+      "count": 7
+    },
+    {
+      "target": "subscription_plans?select=*",
+      "count": 6
+    },
+    {
+      "target": "market_signals?select=confidence_score",
+      "count": 5
+    },
+    {
+      "target": "cms_posts?select=*%2Cspace%3Acms_spaces%21cms_posts_space_id_fkey%28slug%2Cname%29",
+      "count": 3
+    },
+    {
+      "target": "brands?select=*",
+      "count": 2
+    },
+    {
+      "target": "market_signals?select=*",
+      "count": 1
+    },
+    {
+      "target": "access_requests?select=*",
+      "count": 1
+    },
+    {
+      "target": "data_feeds?select=*",
+      "count": 1
+    },
+    {
+      "target": "events?select=*",
+      "count": 1
+    },
+    {
+      "target": "job_postings?select=*",
+      "count": 1
+    },
+    {
+      "target": "canonical_protocols?select=*",
+      "count": 1
+    },
+    {
+      "target": "http://127.0.0.1:4173/videos/yellow-drops.mp4",
+      "count": 1
+    }
+  ],
+  "gate_counts": {
+    "module_locked": 1,
+    "redirect_to_login": 53
+  },
+  "shell_summary": {
+    "total": 269,
+    "live": 151,
+    "demo": 66,
+    "shell": 52,
+    "shell_rate": "19.3"
+  },
+  "hub_shell_breakdown": {
+    "admin": {
+      "live": 55,
+      "demo": 9,
+      "shell": 13
+    },
+    "brand": {
+      "live": 21,
+      "demo": 0,
+      "shell": 4
+    },
+    "business": {
+      "live": 43,
+      "demo": 19,
+      "shell": 12
+    },
+    "claim": {
+      "live": 2,
+      "demo": 0,
+      "shell": 0
+    },
+    "dev": {
+      "live": 0,
+      "demo": 1,
+      "shell": 0
+    },
+    "education": {
+      "live": 7,
+      "demo": 4,
+      "shell": 1
+    },
+    "marketing": {
+      "live": 7,
+      "demo": 1,
+      "shell": 0
+    },
+    "public": {
+      "live": 14,
+      "demo": 26,
+      "shell": 21
+    },
+    "sales": {
+      "live": 2,
+      "demo": 6,
+      "shell": 1
+    }
+  },
+  "shell_files": [
+    "src/pages/admin/AdminLogin.tsx",
+    "src/pages/admin/IntelligenceDashboard.tsx",
+    "src/pages/admin/RegionManagement.tsx",
+    "src/pages/admin/ReportsLibrary.tsx",
+    "src/pages/admin/brand-hub/HubEducation.tsx",
+    "src/pages/admin/brand-hub/HubProtocols.tsx",
+    "src/pages/admin/cms/CmsBlockLibrary.tsx",
+    "src/pages/admin/cms/CmsDashboard.tsx",
+    "src/pages/admin/cms/CmsMediaLibrary.tsx",
+    "src/pages/admin/cms/CmsPagesList.tsx",
+    "src/pages/admin/cms/CmsPostsList.tsx",
+    "src/pages/admin/cms/CmsSpacesConfig.tsx",
+    "src/pages/admin/cms/CmsTemplatesList.tsx",
+    "src/pages/brand/ApplicationReceived.tsx",
+    "src/pages/brand/BrandAIAdvisor.tsx",
+    "src/pages/brand/IntelligencePricing.tsx",
+    "src/pages/brand/Login.tsx",
+    "src/pages/business/AddServiceRecord.tsx",
+    "src/pages/business/BenchmarkDashboard.tsx",
+    "src/pages/business/CECredits.tsx",
+    "src/pages/business/LocationsDashboard.tsx",
+    "src/pages/business/Login.tsx",
+    "src/pages/business/onboarding/OnboardingComplete.tsx",
+    "src/pages/business/onboarding/OnboardingInterests.tsx",
+    "src/pages/business/onboarding/OnboardingRole.tsx",
+    "src/pages/business/onboarding/OnboardingWelcome.tsx",
+    "src/pages/business/studio/CourseBuilder.tsx",
+    "src/pages/business/studio/StudioEditor.tsx",
+    "src/pages/business/studio/StudioHome.tsx",
+    "src/pages/education/QuizPlayer.tsx",
+    "src/pages/public/ApiDocs.tsx",
+    "src/pages/public/ApiPricing.tsx",
+    "src/pages/public/BlogPostPage.tsx",
+    "src/pages/public/Cart.tsx",
+    "src/pages/public/Checkout.tsx",
+    "src/pages/public/CoursePlayer.tsx",
+    "src/pages/public/Education.tsx",
+    "src/pages/public/ForgotPassword.tsx",
+    "src/pages/public/Insights.tsx",
+    "src/pages/public/OrderDetail.tsx",
+    "src/pages/public/OrderHistory.tsx",
+    "src/pages/public/ProductDetail.tsx",
+    "src/pages/public/Protocols.tsx",
+    "src/pages/public/ResetPassword.tsx",
+    "src/pages/public/ShopCart.tsx",
+    "src/pages/public/ShopCheckout.tsx",
+    "src/pages/public/ShopOrderDetail.tsx",
+    "src/pages/public/ShopOrders.tsx",
+    "src/pages/public/ShopProduct.tsx",
+    "src/pages/public/ShopWishlist.tsx",
+    "src/pages/public/WishlistPage.tsx",
+    "src/pages/sales/ProposalBuilder.tsx"
+  ],
+  "demo_files": [
+    "src/pages/admin/AdminApiControls.tsx",
+    "src/pages/admin/AdminAuditLog.tsx",
+    "src/pages/admin/AdminPlatformSettings.tsx",
+    "src/pages/admin/AdminResellerHub.tsx",
+    "src/pages/admin/AdminSalesPlatformHub.tsx",
+    "src/pages/admin/AdminSettingsHub.tsx",
+    "src/pages/admin/AffiliatesHub.tsx",
+    "src/pages/admin/RecruitmentHub.tsx",
+    "src/pages/admin/SocialHub.tsx",
+    "src/pages/business/ClientRecords.tsx",
+    "src/pages/business/CommissionsDashboard.tsx",
+    "src/pages/business/CompanyList.tsx",
+    "src/pages/business/ContactList.tsx",
+    "src/pages/business/CrmSegments.tsx",
+    "src/pages/business/PipelineBoard.tsx",
+    "src/pages/business/ProposalEditor.tsx",
+    "src/pages/business/ProspectDetail.tsx",
+    "src/pages/business/ProspectList.tsx",
+    "src/pages/business/ResellerClients.tsx",
+    "src/pages/business/ResellerDashboard.tsx",
+    "src/pages/business/ResellerRevenue.tsx",
+    "src/pages/business/SalesDashboard.tsx",
+    "src/pages/business/SubscriptionManagement.tsx",
+    "src/pages/business/WhiteLabelConfig.tsx",
+    "src/pages/business/affiliates/AffiliateDashboard.tsx",
+    "src/pages/business/affiliates/AffiliateLinks.tsx",
+    "src/pages/business/credits/CreditDashboard.tsx",
+    "src/pages/business/credits/CreditPurchase.tsx",
+    "src/pages/dev/MasterIndex.tsx",
+    "src/pages/education/CourseCatalog.tsx",
+    "src/pages/education/EducationHub.tsx",
+    "src/pages/education/MyCertificates.tsx",
+    "src/pages/education/StaffTraining.tsx",
+    "src/pages/marketing/LandingPageList.tsx",
+    "src/pages/public/About.tsx",
+    "src/pages/public/BlogListPage.tsx",
+    "src/pages/public/CertificateVerify.tsx",
+    "src/pages/public/CourseDetail.tsx",
+    "src/pages/public/CoursesCatalog.tsx",
+    "src/pages/public/EducationArticles.tsx",
+    "src/pages/public/Events.tsx",
+    "src/pages/public/FAQ.tsx",
+    "src/pages/public/ForMedspas.tsx",
+    "src/pages/public/ForSalons.tsx",
+    "src/pages/public/HelpCenter.tsx",
+    "src/pages/public/HowItWorks.tsx",
+    "src/pages/public/IngredientCollection.tsx",
+    "src/pages/public/IngredientDetail.tsx",
+    "src/pages/public/Ingredients.tsx",
+    "src/pages/public/IntelligenceBriefDetail.tsx",
+    "src/pages/public/IntelligenceBriefs.tsx",
+    "src/pages/public/MyCertificates.tsx",
+    "src/pages/public/Plans.tsx",
+    "src/pages/public/Pricing.tsx",
+    "src/pages/public/Privacy.tsx",
+    "src/pages/public/ProtocolDetail.tsx",
+    "src/pages/public/Stories.tsx",
+    "src/pages/public/StoriesIndex.tsx",
+    "src/pages/public/StoryDetail.tsx",
+    "src/pages/public/Terms.tsx",
+    "src/pages/sales/CommissionDashboard.tsx",
+    "src/pages/sales/DealDetail.tsx",
+    "src/pages/sales/DealEditor.tsx",
+    "src/pages/sales/PipelineBoard.tsx",
+    "src/pages/sales/RevenueAnalytics.tsx",
+    "src/pages/sales/SalesDashboard.tsx"
+  ],
+  "route_summary": {
+    "total": 295,
+    "protected": 213,
+    "public": 82,
+    "prelaunch_guarded": 78,
+    "module_gated": 81
+  },
+  "route_groups": {
+    "public": 76,
+    "admin": 88,
+    "brand": 32,
+    "marketing": 8,
+    "portal": 72,
+    "sales": 10,
+    "legacy": 9
+  },
+  "hub_map": [
+    {
+      "hub": "Intelligence",
+      "route_count": 15,
+      "protected_routes": 10,
+      "page_count": 16,
+      "live": 8,
+      "demo": 2,
+      "shell": 6,
+      "ship_readiness_score": 56,
+      "sample_shell_files": [
+        "src/pages/admin/IntelligenceDashboard.tsx",
+        "src/pages/admin/ReportsLibrary.tsx",
+        "src/pages/brand/BrandAIAdvisor.tsx",
+        "src/pages/brand/IntelligencePricing.tsx",
+        "src/pages/business/BenchmarkDashboard.tsx",
+        "src/pages/public/Insights.tsx"
+      ],
+      "sample_routes": [
+        "/admin/intelligence",
+        "/admin/market-signals",
+        "/admin/reports",
+        "/brand/advisor",
+        "/brand/intelligence",
+        "/brand/intelligence-pricing",
+        "/brand/intelligence-report",
+        "/insights",
+        "/intelligence",
+        "/intelligence/briefs",
+        "/intelligence/briefs/:slug",
+        "/portal/advisor",
+        "/portal/benchmarks",
+        "/portal/intelligence",
+        "/shop/intelligence"
+      ]
+    },
+    {
+      "hub": "Jobs",
+      "route_count": 4,
+      "protected_routes": 2,
+      "page_count": 4,
+      "live": 3,
+      "demo": 1,
+      "shell": 0,
+      "ship_readiness_score": 88,
+      "sample_shell_files": [],
+      "sample_routes": [
+        "/admin/jobs",
+        "/admin/recruitment",
+        "/jobs",
+        "/jobs/:slug"
+      ]
+    },
+    {
+      "hub": "CRM",
+      "route_count": 20,
+      "protected_routes": 20,
+      "page_count": 15,
+      "live": 9,
+      "demo": 6,
+      "shell": 0,
+      "ship_readiness_score": 80,
+      "sample_shell_files": [],
+      "sample_routes": [
+        "/admin/crm",
+        "/brand/crm",
+        "/brand/crm/leads",
+        "/brand/crm/messages",
+        "/brand/crm/pipeline",
+        "/portal/crm",
+        "/portal/crm/companies",
+        "/portal/crm/companies/:id",
+        "/portal/crm/companies/:id/edit",
+        "/portal/crm/companies/new",
+        "/portal/crm/contacts",
+        "/portal/crm/contacts/:id",
+        "/portal/crm/contacts/:id/edit",
+        "/portal/crm/contacts/:id/records",
+        "/portal/crm/contacts/:id/records/new",
+        "/portal/crm/contacts/new",
+        "/portal/crm/segments",
+        "/portal/crm/tasks"
+      ]
+    },
+    {
+      "hub": "CMS/Editorial",
+      "route_count": 14,
+      "protected_routes": 8,
+      "page_count": 17,
+      "live": 2,
+      "demo": 7,
+      "shell": 8,
+      "ship_readiness_score": 32,
+      "sample_shell_files": [
+        "src/pages/admin/cms/CmsBlockLibrary.tsx",
+        "src/pages/admin/cms/CmsDashboard.tsx",
+        "src/pages/admin/cms/CmsMediaLibrary.tsx",
+        "src/pages/admin/cms/CmsPagesList.tsx",
+        "src/pages/admin/cms/CmsPostsList.tsx",
+        "src/pages/admin/cms/CmsSpacesConfig.tsx",
+        "src/pages/admin/cms/CmsTemplatesList.tsx",
+        "src/pages/public/BlogPostPage.tsx"
+      ],
+      "sample_routes": [
+        "/admin/blog",
+        "/admin/cms",
+        "/admin/cms/blocks",
+        "/admin/cms/media",
+        "/admin/cms/pages",
+        "/admin/cms/posts",
+        "/admin/cms/spaces",
+        "/admin/cms/templates",
+        "/blog",
+        "/blog/:slug",
+        "/help/:slug",
+        "/pages/:slug",
+        "/stories",
+        "/stories/:slug"
+      ]
+    },
+    {
+      "hub": "Education",
+      "route_count": 21,
+      "protected_routes": 13,
+      "page_count": 26,
+      "live": 11,
+      "demo": 9,
+      "shell": 6,
+      "ship_readiness_score": 60,
+      "sample_shell_files": [
+        "src/pages/admin/brand-hub/HubEducation.tsx",
+        "src/pages/business/CECredits.tsx",
+        "src/pages/business/studio/CourseBuilder.tsx",
+        "src/pages/education/QuizPlayer.tsx",
+        "src/pages/public/CoursePlayer.tsx",
+        "src/pages/public/Education.tsx"
+      ],
+      "sample_routes": [
+        "/admin/brands/:id/education",
+        "/admin/courses",
+        "/admin/courses/:id/edit",
+        "/admin/education",
+        "/certificates/verify/:token",
+        "/courses",
+        "/courses/:slug",
+        "/courses/:slug/learn",
+        "/education",
+        "/education/articles",
+        "/education/author",
+        "/education/author/courses/:id/edit",
+        "/education/author/courses/new",
+        "/education/ce-credits",
+        "/education/certificates",
+        "/education/certificates/verify/:token",
+        "/education/courses",
+        "/education/courses/:slug"
+      ]
+    },
+    {
+      "hub": "Sales",
+      "route_count": 17,
+      "protected_routes": 16,
+      "page_count": 16,
+      "live": 4,
+      "demo": 11,
+      "shell": 1,
+      "ship_readiness_score": 59,
+      "sample_shell_files": [
+        "src/pages/sales/ProposalBuilder.tsx"
+      ],
+      "sample_routes": [
+        "/admin/sales",
+        "/admin/sales-platform",
+        "/portal/sales",
+        "/portal/sales/commissions",
+        "/portal/sales/deals/:id",
+        "/portal/sales/pipeline",
+        "/portal/sales/proposals/new",
+        "/sales",
+        "/sales/analytics",
+        "/sales/commissions",
+        "/sales/deals/:id",
+        "/sales/deals/:id/edit",
+        "/sales/deals/new",
+        "/sales/opportunities",
+        "/sales/pipeline",
+        "/sales/proposals/:id/view",
+        "/sales/proposals/new"
+      ]
+    },
+    {
+      "hub": "Marketing",
+      "route_count": 20,
+      "protected_routes": 20,
+      "page_count": 24,
+      "live": 21,
+      "demo": 2,
+      "shell": 1,
+      "ship_readiness_score": 92,
+      "sample_shell_files": [
+        "src/pages/admin/cms/CmsTemplatesList.tsx"
+      ],
+      "sample_routes": [
+        "/admin/marketing",
+        "/admin/marketing-platform",
+        "/marketing",
+        "/marketing/calendar",
+        "/marketing/campaigns",
+        "/marketing/campaigns/:id",
+        "/marketing/campaigns/new",
+        "/marketing/landing-pages",
+        "/marketing/segments",
+        "/marketing/templates",
+        "/portal/marketing",
+        "/portal/marketing-hub",
+        "/portal/marketing-hub/campaigns",
+        "/portal/marketing-hub/campaigns/new",
+        "/portal/marketing-hub/templates",
+        "/portal/marketing/analytics",
+        "/portal/marketing/campaigns/:id",
+        "/portal/marketing/campaigns/new"
+      ]
+    },
+    {
+      "hub": "Booking",
+      "route_count": 6,
+      "protected_routes": 5,
+      "page_count": 7,
+      "live": 6,
+      "demo": 0,
+      "shell": 1,
+      "ship_readiness_score": 86,
+      "sample_shell_files": [
+        "src/pages/business/AddServiceRecord.tsx"
+      ],
+      "sample_routes": [
+        "/book/:slug",
+        "/portal/booking",
+        "/portal/booking/appointments/:id",
+        "/portal/booking/calendar",
+        "/portal/booking/services",
+        "/portal/booking/staff"
+      ]
+    },
+    {
+      "hub": "Commerce",
+      "route_count": 22,
+      "protected_routes": 13,
+      "page_count": 29,
+      "live": 17,
+      "demo": 0,
+      "shell": 12,
+      "ship_readiness_score": 59,
+      "sample_shell_files": [
+        "src/pages/public/Cart.tsx",
+        "src/pages/public/Checkout.tsx",
+        "src/pages/public/OrderDetail.tsx",
+        "src/pages/public/OrderHistory.tsx",
+        "src/pages/public/ProductDetail.tsx",
+        "src/pages/public/ShopCart.tsx",
+        "src/pages/public/ShopCheckout.tsx",
+        "src/pages/public/ShopOrderDetail.tsx",
+        "src/pages/public/ShopOrders.tsx",
+        "src/pages/public/ShopProduct.tsx",
+        "src/pages/public/ShopWishlist.tsx",
+        "src/pages/public/WishlistPage.tsx"
+      ],
+      "sample_routes": [
+        "/account/orders",
+        "/account/orders/:id",
+        "/account/wishlist",
+        "/admin/shop",
+        "/admin/shop/categories",
+        "/admin/shop/discounts",
+        "/admin/shop/orders",
+        "/admin/shop/products",
+        "/admin/shop/reviews",
+        "/admin/shop/shipping",
+        "/cart",
+        "/checkout",
+        "/shop",
+        "/shop/:slug",
+        "/shop/cart",
+        "/shop/category/:slug",
+        "/shop/checkout",
+        "/shop/intelligence"
+      ]
+    },
+    {
+      "hub": "Admin",
+      "route_count": 88,
+      "protected_routes": 86,
+      "page_count": 77,
+      "live": 55,
+      "demo": 9,
+      "shell": 13,
+      "ship_readiness_score": 77,
+      "sample_shell_files": [
+        "src/pages/admin/AdminLogin.tsx",
+        "src/pages/admin/IntelligenceDashboard.tsx",
+        "src/pages/admin/RegionManagement.tsx",
+        "src/pages/admin/ReportsLibrary.tsx",
+        "src/pages/admin/brand-hub/HubEducation.tsx",
+        "src/pages/admin/brand-hub/HubProtocols.tsx",
+        "src/pages/admin/cms/CmsBlockLibrary.tsx",
+        "src/pages/admin/cms/CmsDashboard.tsx",
+        "src/pages/admin/cms/CmsMediaLibrary.tsx",
+        "src/pages/admin/cms/CmsPagesList.tsx",
+        "src/pages/admin/cms/CmsPostsList.tsx",
+        "src/pages/admin/cms/CmsSpacesConfig.tsx"
+      ],
+      "sample_routes": [
+        "/admin",
+        "/admin/affiliates",
+        "/admin/api",
+        "/admin/api-control",
+        "/admin/api-controls",
+        "/admin/api-sitemap",
+        "/admin/approvals",
+        "/admin/audit-log",
+        "/admin/blog",
+        "/admin/brands",
+        "/admin/brands/:id",
+        "/admin/brands/:id/analytics",
+        "/admin/brands/:id/education",
+        "/admin/brands/:id/orders",
+        "/admin/brands/:id/products",
+        "/admin/brands/:id/profile",
+        "/admin/brands/:id/protocols",
+        "/admin/brands/:id/retailers"
+      ]
+    },
+    {
+      "hub": "Search",
+      "route_count": 6,
+      "protected_routes": 3,
+      "page_count": 0,
+      "live": 0,
+      "demo": 0,
+      "shell": 0,
+      "ship_readiness_score": 0,
+      "sample_shell_files": [],
+      "sample_routes": [
+        "/admin/ingredients",
+        "/admin/ingredients/collections",
+        "/admin/ingredients/interactions",
+        "/ingredients",
+        "/ingredients/:slug",
+        "/ingredients/collections/:slug"
+      ]
+    },
+    {
+      "hub": "Notifications",
+      "route_count": 6,
+      "protected_routes": 6,
+      "page_count": 5,
+      "live": 5,
+      "demo": 0,
+      "shell": 0,
+      "ship_readiness_score": 100,
+      "sample_shell_files": [],
+      "sample_routes": [
+        "/admin/inbox",
+        "/brand/crm/messages",
+        "/brand/messages",
+        "/brand/notifications",
+        "/portal/messages",
+        "/portal/notifications"
+      ]
+    },
+    {
+      "hub": "Authoring",
+      "route_count": 10,
+      "protected_routes": 10,
+      "page_count": 13,
+      "live": 6,
+      "demo": 2,
+      "shell": 5,
+      "ship_readiness_score": 54,
+      "sample_shell_files": [
+        "src/pages/admin/cms/CmsBlockLibrary.tsx",
+        "src/pages/admin/cms/CmsTemplatesList.tsx",
+        "src/pages/business/studio/CourseBuilder.tsx",
+        "src/pages/business/studio/StudioEditor.tsx",
+        "src/pages/business/studio/StudioHome.tsx"
+      ],
+      "sample_routes": [
+        "/admin/cms/blocks",
+        "/admin/cms/templates",
+        "/education/author",
+        "/education/author/courses/:id/edit",
+        "/education/author/courses/new",
+        "/portal/studio",
+        "/portal/studio/course",
+        "/portal/studio/course/:id",
+        "/portal/studio/editor",
+        "/portal/studio/editor/:id"
+      ]
+    }
+  ],
+  "dependency_hubs": {
+    "admin": {
+      "pages": 77,
+      "hook_refs": 35,
+      "tables": [
+        "audience_segments",
+        "audit_logs",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "certificate_templates",
+        "certificates",
+        "cms_assets",
+        "cms_blocks",
+        "cms_pages",
+        "cms_posts",
+        "cms_spaces",
+        "cms_templates",
+        "commission_payouts",
+        "commission_rules",
+        "content_templates",
+        "courses",
+        "deals",
+        "edge_function_controls",
+        "feature_flags",
+        "landing_pages",
+        "notifications",
+        "pipeline_stages",
+        "product_categories",
+        "products",
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "sales_pipelines",
+        "white_label_config"
+      ],
+      "edge_functions": [
+        "verify-certificate"
+      ],
+      "rpcs": []
+    },
+    "brand": {
+      "pages": 25,
+      "hook_refs": 10,
+      "tables": [
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaigns",
+        "market_signals",
+        "notification_preferences",
+        "notifications",
+        "products"
+      ],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "business": {
+      "pages": 74,
+      "hook_refs": 77,
+      "tables": [
+        "account_subscriptions",
+        "affiliate_links",
+        "appointment_history",
+        "appointments",
+        "audience_segments",
+        "b2b_prospect_touchpoints",
+        "b2b_prospects",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "brands",
+        "business_analytics",
+        "businesses",
+        "campaign_metrics",
+        "campaigns",
+        "client_product_history",
+        "client_treatment_records",
+        "client_visit_summary",
+        "cms_docs",
+        "commission_payouts",
+        "commission_rules",
+        "content_templates",
+        "credit_ledger",
+        "crm_companies",
+        "crm_contact_tags",
+        "crm_contacts",
+        "crm_interactions",
+        "crm_segments",
+        "crm_tasks",
+        "deal_activities",
+        "deals",
+        "feature_flags",
+        "market_signals",
+        "notification_preferences",
+        "notifications",
+        "order_items",
+        "orders",
+        "pipeline_stages",
+        "proposals",
+        "reseller_accounts",
+        "reseller_clients",
+        "reseller_revenue",
+        "sales_pipelines",
+        "subscriptions",
+        "white_label_config"
+      ],
+      "edge_functions": [
+        "create-checkout"
+      ],
+      "rpcs": []
+    },
+    "claim": {
+      "pages": 2,
+      "hook_refs": 0,
+      "tables": [],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "dev": {
+      "pages": 1,
+      "hook_refs": 0,
+      "tables": [],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "education": {
+      "pages": 12,
+      "hook_refs": 13,
+      "tables": [
+        "business_members",
+        "businesses",
+        "certificate_templates",
+        "certificates",
+        "course_enrollments",
+        "courses",
+        "lesson_progress",
+        "profiles",
+        "quiz_attempts",
+        "quizzes"
+      ],
+      "edge_functions": [
+        "verify-certificate"
+      ],
+      "rpcs": []
+    },
+    "marketing": {
+      "pages": 8,
+      "hook_refs": 10,
+      "tables": [
+        "audience_segments",
+        "brand_automation_rules",
+        "brand_tier_discounts",
+        "brand_volume_discounts",
+        "campaign_metrics",
+        "campaigns",
+        "content_templates",
+        "landing_pages",
+        "notifications"
+      ],
+      "edge_functions": [],
+      "rpcs": []
+    },
+    "public": {
+      "pages": 61,
+      "hook_refs": 92,
+      "tables": [
+        "access_requests",
+        "account_subscriptions",
+        "appointment_history",
+        "appointments",
+        "booking_schedules",
+        "booking_service_addons",
+        "booking_services",
+        "booking_staff",
+        "booking_staff_services",
+        "booking_time_off",
+        "brands",
+        "businesses",
+        "canonical_protocols",
+        "cart_items",
+        "carts",
+        "certificate_templates",
+        "certificates",
+        "cms_pages",
+        "cms_posts",
+        "course_enrollments",
+        "courses",
+        "crm_tasks",
+        "data_feeds",
+        "events",
+        "ingredient_aliases",
+        "ingredient_collection_items",
+        "ingredient_collections",
+        "ingredient_interactions",
+        "ingredients",
+        "job_postings",
+        "lesson_progress",
+        "market_signals",
+        "notifications",
+        "order_items",
+        "orders",
+        "product_categories",
+        "product_variants",
+        "products",
+        "quiz_attempts",
+        "quizzes",
+        "reviews",
+        "rss_items",
+        "scorm_packages",
+        "scorm_tracking",
+        "shipping_methods",
+        "stories",
+        "subscription_plans",
+        "subscriptions",
+        "wishlist_items",
+        "wishlists"
+      ],
+      "edge_functions": [
+        "create-checkout",
+        "scorm-runtime",
+        "verify-certificate"
+      ],
+      "rpcs": []
+    },
+    "sales": {
+      "pages": 9,
+      "hook_refs": 17,
+      "tables": [
+        "commission_payouts",
+        "commission_rules",
+        "deal_activities",
+        "deals",
+        "pipeline_stages",
+        "proposals",
+        "sales_pipelines"
+      ],
+      "edge_functions": [],
+      "rpcs": []
+    }
+  }
+}

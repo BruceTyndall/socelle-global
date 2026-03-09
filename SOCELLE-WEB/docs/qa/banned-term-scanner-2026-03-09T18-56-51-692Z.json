@@ -1,0 +1,11 @@
+{
+  "skill": "banned-term-scanner",
+  "timestamp": "2026-03-09T18:56:52.663Z",
+  "total_violations": 129,
+  "by_term": {
+    "dashboard": 128,
+    "holistic": 1
+  },
+  "compliance": "FAIL",
+  "report_json": "docs/qa/token_drift_banned_terms_audit_2026-03-09T18-56-51-692Z.json"
+}

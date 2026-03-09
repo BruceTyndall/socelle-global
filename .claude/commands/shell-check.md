@@ -1,0 +1,1 @@
+Run hub-shell-detector on ALL hubs. Report which hubs pass and which are shells. For each shell, list exactly what is missing.

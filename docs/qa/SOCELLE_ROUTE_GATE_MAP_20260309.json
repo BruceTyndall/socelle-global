@@ -1,0 +1,2038 @@
+{
+  "generated_at": "2026-03-09T17:07:25.922Z",
+  "source": "SOCELLE-WEB/docs/qa/route_manifest.generated.json + App.tsx rules",
+  "summary": {
+    "total": 265,
+    "public": 229,
+    "protected": 27,
+    "legacy_redirect": 9,
+    "by_module": {
+      "MODULE_SHOP": 15,
+      "MODULE_EDUCATION": 7,
+      "MODULE_INGREDIENTS": 3,
+      "MODULE_MARKETING": 1,
+      "MODULE_SALES": 10
+    }
+  },
+  "routes": [
+    {
+      "route": "*",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "fallback"
+      ]
+    },
+    {
+      "route": "/",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/about",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/account/orders",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/account/orders/:id",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/account/wishlist",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/admin",
+      "auth": "protected",
+      "roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/admin/debug-auth",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/admin/login",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/api/docs",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/api/pricing",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/blog",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/blog/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/book/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/brand",
+      "auth": "protected",
+      "roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/brand/apply",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/brand/apply/received",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/brand/login",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/brands",
+      "auth": "protected",
+      "roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/brands/:slug",
+      "auth": "protected",
+      "roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/cart",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/case-studies",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/certificates/verify/:token",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/checkout",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/claim/brand/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/claim/business/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/courses",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/courses/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/courses/:slug/learn",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/dev-index",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/education/articles",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/author",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/author/courses/:id/edit",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/author/courses/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/ce-credits",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/education/certificates",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/certificates/verify/:token",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/courses",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/education/courses/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/education/learn/:slug",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/education/staff",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/events",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/faq",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/for-brands",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/for-buyers",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/for-medspas",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/for-salons",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/forgot-password",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/help",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/help/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/home",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/how-it-works",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/ingredients",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_INGREDIENTS",
+      "notes": []
+    },
+    {
+      "route": "/ingredients/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_INGREDIENTS",
+      "notes": []
+    },
+    {
+      "route": "/ingredients/collections/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_INGREDIENTS",
+      "notes": []
+    },
+    {
+      "route": "/insights",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/intelligence",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/intelligence/briefs",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/intelligence/briefs/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/jobs",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "inside PrelaunchGuard in App.tsx"
+      ]
+    },
+    {
+      "route": "/jobs/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/marketing",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_MARKETING",
+      "notes": []
+    },
+    {
+      "route": "/my-certificates",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_EDUCATION",
+      "notes": []
+    },
+    {
+      "route": "/pages/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/plans",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/portal",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/pricing",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/privacy",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/professionals",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/protocols",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/protocols/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/request-access",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/reset-password",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/sales",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/analytics",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/commissions",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/deals/:id",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/deals/:id/edit",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/deals/new",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/opportunities",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/pipeline",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/proposals/:id/view",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/sales/proposals/new",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SALES",
+      "notes": []
+    },
+    {
+      "route": "/shop",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/cart",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/category/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/checkout",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/intelligence",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/orders",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/orders/:id",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/product/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/shop/wishlist",
+      "auth": "protected",
+      "roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module": "MODULE_SHOP",
+      "notes": []
+    },
+    {
+      "route": "/spa/*",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/dashboard",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/login",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/plan/:id",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/plan/new",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/plans",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/plans/:id",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/plans/new",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/spa/signup",
+      "auth": "legacy_redirect",
+      "roles": [],
+      "module": null,
+      "notes": [
+        "legacy spa redirect"
+      ]
+    },
+    {
+      "route": "/stories",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/stories/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "/terms",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "account",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "advisor",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "affiliates",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "affiliates/links",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "analytics",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "api",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "api-control",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "api-controls",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "api-sitemap",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "apply",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "approvals",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "audit-log",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "automations",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "benchmarks",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "blog",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "booking",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "booking/appointments/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "booking/calendar",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "booking/services",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "booking/staff",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "brands",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "brands/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "brands/:slug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "brands/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "calendar",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "campaigns",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "campaigns/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "campaigns/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "ce-credits",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "claim/review",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms/blocks",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms/media",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms/pages",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms/posts",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms/spaces",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "cms/templates",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "costs",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "courses",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "courses/:id/edit",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "credits",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "credits/purchase",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/companies",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/companies/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/companies/:id/edit",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/companies/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/contacts",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/contacts/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/contacts/:id/edit",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/contacts/:id/records",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/contacts/:id/records/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/contacts/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/leads",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/messages",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/pipeline",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/segments",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "crm/tasks",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "customers",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "dashboard",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "debug",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "editorial",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "education",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "events",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "feature-flags",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "feeds",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "health",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "inbox",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "ingestion",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "ingredients",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "ingredients/collections",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "ingredients/interactions",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "intelligence",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "intelligence-pricing",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "intelligence-report",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "inventory-report",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "jobs",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "landing-pages",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "leads",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "live-data",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "locations",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "login",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "market-signals",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing-hub",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing-hub/campaigns",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing-hub/campaigns/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing-hub/templates",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing-platform",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing/analytics",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing/campaigns/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing/campaigns/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing/segments",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "marketing/templates",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "media",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "messages",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "mixing",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "notifications",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "onboarding",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "orders",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "orders/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "pages",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "performance",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "pipeline",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "plans",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "plans/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "plans/compare",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "plans/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "platform-settings",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "products",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "profile",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "promotions",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "prospects",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "prospects/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "protocols",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "protocols/import",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "recruitment",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "regions",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "reports",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "reseller",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "reseller/clients",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "reseller/revenue",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "reseller/white-label",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "retailers",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "rules",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "sales",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "sales-platform",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "sales/commissions",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "sales/deals/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "sales/pipeline",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "sales/proposals/new",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "seeding",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "segments",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "seo",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "settings",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shell-detection",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop/categories",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop/discounts",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop/orders",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop/products",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop/reviews",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "shop/shipping",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "signals",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "signup",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "social",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "storefront",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "studio",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "studio/course",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "studio/course/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "studio/editor",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "studio/editor/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "submissions/:id",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "subscription",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "subscriptions",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "subscriptions/accounts",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "subscriptions/metrics",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "templates",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    },
+    {
+      "route": "users",
+      "auth": "public",
+      "roles": [],
+      "module": null,
+      "notes": []
+    }
+  ]
+}

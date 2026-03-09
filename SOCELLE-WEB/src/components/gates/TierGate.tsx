@@ -9,6 +9,7 @@
 import type { ReactNode } from 'react';
 import { useTier, type Tier } from '../../hooks/useTier';
 import { PaywallOverlay } from './PaywallOverlay';
+import { useAuth } from '../../lib/auth';
 
 interface TierGateProps {
   requiredTier: Tier;
@@ -20,7 +21,11 @@ interface TierGateProps {
 }
 
 export function TierGate({ requiredTier, children, fallback, contextMessage }: TierGateProps) {
+  const { isAdmin } = useAuth();
   const { tier, meetsMinimumTier, isLoading } = useTier();
+
+  // Admin bypasses all tier gates — full platform access for auditing/testing
+  if (isAdmin) return <>{children}</>;
 
   // Loading skeleton
   if (isLoading) {

@@ -1,0 +1,98 @@
+{
+  "wo_id": "BUILD3-PROFESSIONALS",
+  "app": "PROFESSIONALS",
+  "timestamp": "2026-03-09T18:20:05.548Z",
+  "skills_run": [
+    "hub-shell-detector",
+    "design-audit-suite",
+    "rls-auditor",
+    "entitlement-validator",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "evidence": {
+        "liveCount": 2,
+        "demoCount": 0,
+        "shellCount": 0,
+        "scanned_files": 2,
+        "missing_state_files": 1
+      },
+      "details": [
+        {
+          "file": "src/pages/public/ProfessionalDetail.tsx",
+          "missing": [
+            "error"
+          ]
+        }
+      ]
+    },
+    "design-audit-suite": {
+      "status": "PASS",
+      "evidence": {
+        "token_refs": 114,
+        "unapproved_hex_count": 0,
+        "font_serif_count": 0,
+        "css_font_variables": {
+          "font_primary": true,
+          "font_display": true,
+          "font_mono": true,
+          "tailwind_font_sans_var": true
+        }
+      },
+      "findings": []
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "evidence": {
+        "enable_row_level_security_count": 179,
+        "create_policy_count": 516
+      }
+    },
+    "entitlement-validator": {
+      "status": "PASS",
+      "evidence": {
+        "app_routes_gated_or_public": [
+          {
+            "snippet": "path=\"/professionals\"",
+            "found": true
+          },
+          {
+            "snippet": "path=\"/professionals/:id\"",
+            "found": true
+          }
+        ],
+        "bypass_tier_subscription_refs": 246
+      }
+    },
+    "build-gate": {
+      "status": "PASS",
+      "evidence": {
+        "tsc_no_emit": "PASS",
+        "npm_build": "PASS",
+        "qa_scripts": {
+          "route_manifest": "PASS",
+          "fake_live_guard": "PASS",
+          "e2e_route_coverage": "PASS"
+        }
+      }
+    }
+  },
+  "checks": {
+    "tanstack_query_enforced_pages": true,
+    "raw_page_fetch_hits": 0,
+    "cross_hub_dispatcher_refs": 3,
+    "mobile_artifacts": [
+      {
+        "file": "features/crm/screens/contact_list_screen.dart",
+        "found": true
+      },
+      {
+        "file": "features/crm/screens/contact_detail_screen.dart",
+        "found": true
+      }
+    ]
+  },
+  "overall": "PASS"
+}

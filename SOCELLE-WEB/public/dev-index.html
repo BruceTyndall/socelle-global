@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOCELLE — Master Page Index</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #F6F3EF;
+      color: #141418;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    /* ── Top bar ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: #141418; color: #fff;
+      padding: 10px 24px;
+      display: flex; align-items: center; gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .topbar h1 { font-size: 14px; font-weight: 600; letter-spacing: -0.3px; }
+    .topbar .meta { font-size: 11px; color: rgba(255,255,255,0.35); }
+    .topbar .spacer { flex: 1; }
+    .topbar .stats { display: flex; gap: 12px; font-size: 11px; }
+    .stat-live  { color: #5F8A72; }
+    .stat-demo  { color: #A97A4C; }
+    .stat-shell { color: #8E6464; }
+    .topbar button {
+      background: rgba(255,255,255,0.08);
+      border: none; color: rgba(255,255,255,0.7);
+      padding: 6px 12px; border-radius: 6px; font-size: 11px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .topbar button:hover { background: rgba(255,255,255,0.15); }
+
+    /* ── Controls ── */
+    .controls {
+      max-width: 860px; margin: 0 auto;
+      padding: 24px 20px 12px;
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    }
+    .controls input, .controls select {
+      border: 1px solid rgba(20,20,24,0.12);
+      background: #fff; color: #141418;
+      border-radius: 8px; padding: 8px 12px; font-size: 13px;
+      outline: none; transition: border-color 0.15s;
+    }
+    .controls input { flex: 1; min-width: 200px; }
+    .controls input:focus, .controls select:focus { border-color: #6E879B; }
+
+    /* ── Legend ── */
+    .legend {
+      max-width: 860px; margin: 0 auto;
+      padding: 0 20px 16px;
+      display: flex; gap: 20px; flex-wrap: wrap; font-size: 11px; color: rgba(20,20,24,0.4);
+    }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot-live  { background: #5F8A72; }
+    .dot-demo  { background: #A97A4C; }
+    .dot-shell { background: #8E6464; }
+    .dot-admin { background: #6E879B; }
+    .dot-auth  { background: #141418; opacity: 0.4; }
+
+    /* ── Groups ── */
+    .main { max-width: 860px; margin: 0 auto; padding: 0 20px 60px; }
+    .group { border: 1px solid rgba(20,20,24,0.08); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+    .group-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: rgba(20,20,24,0.025);
+      cursor: pointer; user-select: none;
+      transition: background 0.15s;
+    }
+    .group-header:hover { background: rgba(20,20,24,0.045); }
+    .group-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .group-title { font-size: 13px; font-weight: 600; flex: 1; }
+    .group-count { font-size: 11px; color: rgba(20,20,24,0.35); }
+    .group-badges { display: flex; gap: 8px; font-size: 10px; }
+    .chevron { font-size: 10px; color: rgba(20,20,24,0.35); transition: transform 0.15s; }
+    .chevron.open { transform: rotate(90deg); }
+    .group-desc { font-size: 11px; color: rgba(20,20,24,0.35); padding: 6px 14px; border-bottom: 1px solid rgba(20,20,24,0.06); }
+    .group-body { display: none; }
+    .group-body.open { display: block; }
+
+    /* ── Page rows ── */
+    .page-row {
+      border-bottom: 1px solid rgba(20,20,24,0.055);
+      padding: 10px 14px;
+      transition: background 0.1s;
+    }
+    .page-row:last-child { border-bottom: none; }
+    .page-row:hover { background: rgba(20,20,24,0.012); }
+    .row-top { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+    .page-link {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+      color: #6E879B; text-decoration: none;
+    }
+    .page-link:hover { text-decoration: underline; color: #5A7185; }
+    .page-path {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+      color: rgba(20,20,24,0.4);
+    }
+    .badge {
+      font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px;
+    }
+    .badge-live  { background: rgba(95,138,114,0.12); color: #5F8A72; border: 1px solid rgba(95,138,114,0.25); }
+    .badge-demo  { background: rgba(169,122,76,0.12); color: #A97A4C; border: 1px solid rgba(169,122,76,0.25); }
+    .badge-shell { background: rgba(142,100,100,0.12); color: #8E6464; border: 1px solid rgba(142,100,100,0.25); }
+    .badge-admin { background: rgba(110,135,155,0.12); color: #6E879B; border: 1px solid rgba(110,135,155,0.25); }
+    .badge-auth  { background: rgba(20,20,24,0.06); color: rgba(20,20,24,0.5); border: 1px solid rgba(20,20,24,0.1); }
+    .access-label { font-size: 10px; color: rgba(20,20,24,0.35); margin-top: 1px; }
+    .page-label { font-size: 11px; color: rgba(20,20,24,0.45); margin-top: 2px; }
+    .saved-indicator { font-size: 10px; color: #5F8A72; margin-left: auto; }
+    textarea {
+      width: 100%; margin-top: 6px;
+      font-size: 12px; color: rgba(20,20,24,0.75);
+      border: 1px solid rgba(20,20,24,0.08); border-radius: 6px;
+      padding: 6px 10px; resize: none; background: transparent;
+      font-family: inherit; line-height: 1.5; outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    textarea:focus { border-color: rgba(110,135,155,0.4); background: rgba(110,135,155,0.02); }
+    textarea::placeholder { color: rgba(20,20,24,0.22); }
+
+    /* ── Export hint ── */
+    .export-hint {
+      display: none;
+      max-width: 860px; margin: 0 auto 0;
+      padding: 0 20px 12px;
+    }
+    .export-hint .inner {
+      background: rgba(95,138,114,0.08); color: #5F8A72;
+      border: 1px solid rgba(95,138,114,0.2); border-radius: 8px;
+      padding: 10px 14px; font-size: 12px;
+    }
+    .footer {
+      text-align: center; padding: 32px; font-size: 11px; color: rgba(20,20,24,0.25);
+    }
+    code { font-family: monospace; }
+
+    /* ── Hidden class ── */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <h1>SOCELLE — Master Page Index</h1>
+  <div class="meta" id="total-count">— routes</div>
+  <div class="spacer"></div>
+  <div class="stats">
+    <span class="stat-live" id="stat-live">0 live</span>
+    <span class="stat-demo" id="stat-demo">0 demo</span>
+    <span class="stat-shell" id="stat-shell">0 shell</span>
+  </div>
+  <button onclick="exportMarkdown()">📋 Export MD</button>
+  <button onclick="resetNotes()" title="Clear all notes from localStorage" style="color:rgba(255,255,255,0.35)">↺ Reset Notes</button>
+</div>
+
+<div class="export-hint" id="export-hint">
+  <div class="inner">Markdown copied to clipboard — paste into <code>docs/MASTER_PAGE_INDEX.md</code> for agents to read.</div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <input type="text" id="search" placeholder="Search routes, labels, or notes…" oninput="filterAll()" />
+  <select onchange="filterAll()" id="status-filter">
+    <option value="all">All statuses</option>
+    <option value="live">Live only</option>
+    <option value="demo">Demo only</option>
+    <option value="shell">Shells only</option>
+    <option value="admin">Admin only</option>
+    <option value="auth">Auth only</option>
+  </select>
+</div>
+
+<div class="legend">
+  <span><span class="dot dot-live"></span> live = real DB data</span>
+  <span><span class="dot dot-demo"></span> demo = mock/hardcoded</span>
+  <span><span class="dot dot-shell"></span> shell = placeholder</span>
+  <span><span class="dot dot-admin"></span> admin = admin tool</span>
+  <span><span class="dot dot-auth"></span> auth = login flow</span>
+  <span style="margin-left:auto">Notes auto-save as you type</span>
+</div>
+
+<!-- GROUPS -->
+<div class="main" id="main"></div>
+
+<div class="footer">
+  Data source: <code>src/data/pageIndex.ts</code> &nbsp;·&nbsp;
+  Notes stored in <code>localStorage</code> key <code>socelle_page_notes_v1</code> &nbsp;·&nbsp;
+  Accessible at <code>/dev-index.html</code> — no login required
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const BASE = 'http://localhost:5174';
+const STORAGE_KEY = 'socelle_page_notes_v1';
+
+const GROUPS = [
+  {
+    id: 'public', title: 'Public / Marketing', color: '#5F8A72',
+    desc: 'Publicly accessible pages — no login required.',
+    pages: [
+      { path: '/', label: 'Prelaunch Quiz / Home', status: 'live', access: 'public' },
+      { path: '/home', label: 'Public Home', status: 'demo', access: 'public' },
+      { path: '/about', label: 'About', status: 'live', access: 'public' },
+      { path: '/intelligence', label: 'Intelligence (public)', status: 'live', access: 'public' },
+      { path: '/intelligence/briefs', label: 'Intelligence Briefs', status: 'demo', access: 'public' },
+      { path: '/brands', label: 'Brands Directory', status: 'live', access: 'public' },
+      { path: '/brands/:slug', label: 'Brand Storefront', status: 'live', access: 'public', param: true },
+      { path: '/pricing', label: 'Pricing', status: 'demo', access: 'public' },
+      { path: '/plans', label: 'Plans', status: 'demo', access: 'public' },
+      { path: '/how-it-works', label: 'How It Works', status: 'live', access: 'public' },
+      { path: '/professionals', label: 'For Professionals', status: 'demo', access: 'public', notes: 'Stats array hardcoded — needs DEMO label.' },
+      { path: '/for-brands', label: 'For Brands', status: 'demo', access: 'public', notes: 'Stats array hardcoded — needs DEMO label.' },
+      { path: '/for-medspas', label: 'For Medspas', status: 'demo', access: 'public' },
+      { path: '/for-salons', label: 'For Salons', status: 'demo', access: 'public' },
+      { path: '/stories', label: 'Stories Index', status: 'demo', access: 'public' },
+      { path: '/blog', label: 'Blog', status: 'demo', access: 'public' },
+      { path: '/events', label: 'Events', status: 'demo', access: 'public', notes: 'events table not yet created (W10-05).' },
+      { path: '/jobs', label: 'Jobs Board', status: 'demo', access: 'public', notes: 'job_postings table not yet created (W10-06).' },
+      { path: '/education', label: 'Education Hub', status: 'live', access: 'public' },
+      { path: '/education/courses', label: 'Course Catalog', status: 'live', access: 'public' },
+      { path: '/education/articles', label: 'Education Articles', status: 'demo', access: 'public' },
+      { path: '/protocols', label: 'Protocols', status: 'live', access: 'public' },
+      { path: '/ingredients', label: 'Ingredients', status: 'live', access: 'public' },
+      { path: '/case-studies', label: 'Case Studies', status: 'demo', access: 'public' },
+      { path: '/faq', label: 'FAQ', status: 'live', access: 'public' },
+      { path: '/help', label: 'Help Center', status: 'demo', access: 'public' },
+      { path: '/api/docs', label: 'API Docs', status: 'demo', access: 'public' },
+      { path: '/api/pricing', label: 'API Pricing', status: 'demo', access: 'public' },
+      { path: '/request-access', label: 'Request Access', status: 'live', access: 'public' },
+      { path: '/privacy', label: 'Privacy Policy', status: 'live', access: 'public' },
+      { path: '/terms', label: 'Terms of Service', status: 'live', access: 'public' },
+    ]
+  },
+  {
+    id: 'auth', title: 'Auth Flows', color: '#A97A4C',
+    desc: 'Login, signup, and password reset pages.',
+    pages: [
+      { path: '/forgot-password', label: 'Forgot Password', status: 'auth', access: 'public' },
+      { path: '/reset-password', label: 'Reset Password', status: 'auth', access: 'public' },
+      { path: '/portal/login', label: 'Business Portal Login', status: 'auth', access: 'public' },
+      { path: '/portal/signup', label: 'Business Portal Signup', status: 'auth', access: 'public' },
+      { path: '/brand/login', label: 'Brand Portal Login', status: 'auth', access: 'public' },
+      { path: '/brand/apply', label: 'Brand Apply', status: 'live', access: 'public' },
+      { path: '/brand/apply/received', label: 'Brand Apply Received', status: 'live', access: 'public' },
+      { path: '/spa/login', label: 'Spa Login (legacy)', status: 'auth', access: 'public' },
+      { path: '/admin/login', label: 'Admin Login', status: 'auth', access: 'public' },
+    ]
+  },
+  {
+    id: 'portal', title: 'Business Portal (/portal)', color: '#5F8A72',
+    desc: 'Portal for spa/salon/medspa operators. Requires business_user login.',
+    pages: [
+      { path: '/portal', label: 'Portal Home', status: 'live', access: 'auth-required' },
+      { path: '/portal/dashboard', label: 'Business Dashboard', status: 'live', access: 'auth-required' },
+      { path: '/portal/intelligence', label: 'Business Intelligence Hub', status: 'demo', access: 'auth-required', notes: 'Heavy mock data — Phase 4 target.' },
+      { path: '/portal/advisor', label: 'AI Advisor', status: 'demo', access: 'auth-required' },
+      { path: '/portal/plans', label: 'Plans List', status: 'demo', access: 'auth-required' },
+      { path: '/portal/plans/new', label: 'Plan Wizard', status: 'demo', access: 'auth-required' },
+      { path: '/portal/plans/compare', label: 'Plan Comparison', status: 'demo', access: 'auth-required' },
+      { path: '/portal/account', label: 'Business Account', status: 'live', access: 'auth-required' },
+      { path: '/portal/subscription', label: 'Subscription Management', status: 'demo', access: 'auth-required' },
+      { path: '/portal/messages', label: 'Business Messages', status: 'demo', access: 'auth-required' },
+      { path: '/portal/calendar', label: 'Marketing Calendar', status: 'demo', access: 'auth-required' },
+      { path: '/portal/benchmarks', label: 'Benchmark Dashboard', status: 'demo', access: 'auth-required', notes: 'All mock peer data.' },
+      { path: '/portal/locations', label: 'Locations Dashboard', status: 'demo', access: 'auth-required' },
+      { path: '/portal/crm', label: 'CRM Dashboard', status: 'demo', access: 'auth-required' },
+      { path: '/portal/crm/contacts', label: 'Contact List', status: 'live', access: 'auth-required' },
+      { path: '/portal/crm/contacts/new', label: 'Add Contact', status: 'live', access: 'auth-required' },
+      { path: '/portal/crm/contacts/:id', label: 'Contact Detail', status: 'live', access: 'auth-required', param: true },
+      { path: '/portal/crm/companies', label: 'Company List', status: 'live', access: 'auth-required' },
+      { path: '/portal/crm/companies/:id', label: 'Company Detail', status: 'live', access: 'auth-required', param: true },
+      { path: '/portal/crm/tasks', label: 'CRM Tasks', status: 'demo', access: 'auth-required' },
+      { path: '/portal/crm/segments', label: 'CRM Segments', status: 'demo', access: 'auth-required' },
+      { path: '/portal/sales', label: 'Sales Dashboard', status: 'demo', access: 'auth-required' },
+      { path: '/portal/sales/pipeline', label: 'Pipeline Board', status: 'demo', access: 'auth-required' },
+      { path: '/portal/marketing', label: 'Marketing Dashboard', status: 'demo', access: 'auth-required' },
+      { path: '/portal/marketing/campaigns/new', label: 'New Campaign', status: 'demo', access: 'auth-required' },
+      { path: '/portal/marketing/segments', label: 'Audience Segments', status: 'demo', access: 'auth-required' },
+      { path: '/portal/marketing/analytics', label: 'Marketing Analytics', status: 'demo', access: 'auth-required' },
+      { path: '/portal/reseller', label: 'Reseller Dashboard', status: 'shell', access: 'auth-required' },
+      { path: '/portal/ce-credits', label: 'CE Credits', status: 'demo', access: 'auth-required' },
+      { path: '/portal/notifications', label: 'Notification Preferences', status: 'demo', access: 'auth-required' },
+    ]
+  },
+  {
+    id: 'brand', title: 'Brand Portal (/brand)', color: '#6E879B',
+    desc: 'Portal for beauty brands. Requires brand_admin login.',
+    pages: [
+      { path: '/brand/dashboard', label: 'Brand Dashboard', status: 'live', access: 'auth-required' },
+      { path: '/brand/intelligence', label: 'Brand Intelligence Hub', status: 'demo', access: 'auth-required', notes: 'Heavy mock data.' },
+      { path: '/brand/intelligence-report', label: 'Brand Intelligence Report', status: 'demo', access: 'auth-required' },
+      { path: '/brand/products', label: 'Brand Products', status: 'live', access: 'auth-required' },
+      { path: '/brand/products/new', label: 'New Product', status: 'live', access: 'auth-required' },
+      { path: '/brand/analytics', label: 'Brand Analytics', status: 'demo', access: 'auth-required' },
+      { path: '/brand/campaigns', label: 'Brand Campaigns', status: 'demo', access: 'auth-required' },
+      { path: '/brand/campaigns/new', label: 'New Campaign', status: 'demo', access: 'auth-required' },
+      { path: '/brand/storefront', label: 'Brand Storefront Editor', status: 'live', access: 'auth-required' },
+      { path: '/brand/orders', label: 'Brand Orders', status: 'demo', access: 'auth-required' },
+      { path: '/brand/leads', label: 'Brand Leads', status: 'demo', access: 'auth-required' },
+      { path: '/brand/profile', label: 'Brand Profile', status: 'live', access: 'auth-required' },
+      { path: '/brand/settings', label: 'Brand Settings', status: 'live', access: 'auth-required' },
+    ]
+  },
+  {
+    id: 'admin', title: 'Admin Portal (/admin)', color: '#8E6464',
+    desc: 'Platform admin tools. Requires admin or platform_admin role.',
+    pages: [
+      { path: '/admin/login', label: 'Admin Login', status: 'auth', access: 'public' },
+      { path: '/admin/debug-auth', label: 'Auth Debug', status: 'admin', access: 'admin-only' },
+      { path: '/admin/inbox', label: 'Admin Inbox', status: 'live', access: 'admin-only' },
+      { path: '/admin/dashboard', label: 'Admin Dashboard', status: 'live', access: 'admin-only' },
+      { path: '/admin/users', label: 'User Management', status: 'live', access: 'admin-only' },
+      { path: '/admin/brands', label: 'Brand List', status: 'live', access: 'admin-only' },
+      { path: '/admin/brands/new', label: 'New Brand', status: 'live', access: 'admin-only' },
+      { path: '/admin/orders', label: 'Admin Orders', status: 'live', access: 'admin-only' },
+      { path: '/admin/signals', label: 'Admin Signals', status: 'live', access: 'admin-only' },
+      { path: '/admin/market-signals', label: 'Market Signals', status: 'live', access: 'admin-only' },
+      { path: '/admin/intelligence', label: 'Intelligence Dashboard', status: 'live', access: 'admin-only' },
+      { path: '/admin/reports', label: 'Reports Library', status: 'live', access: 'admin-only' },
+      { path: '/admin/api', label: 'API Dashboard', status: 'live', access: 'admin-only' },
+      { path: '/admin/regions', label: 'Region Management', status: 'live', access: 'admin-only' },
+      { path: '/admin/approvals', label: 'Approval Queue', status: 'live', access: 'admin-only' },
+      { path: '/admin/seeding', label: 'Data Seeding', status: 'admin', access: 'admin-only' },
+      { path: '/admin/debug', label: 'Debug Panel', status: 'admin', access: 'admin-only' },
+      { path: '/admin/protocols/import', label: 'Protocol Bulk Import', status: 'admin', access: 'admin-only' },
+      { path: '/admin/crm', label: 'Admin CRM Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/social', label: 'Social Hub', status: 'shell', access: 'admin-only' },
+      { path: '/admin/sales', label: 'Admin Sales Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/editorial', label: 'Editorial Hub', status: 'shell', access: 'admin-only' },
+      { path: '/admin/affiliates', label: 'Affiliates Hub', status: 'shell', access: 'admin-only' },
+      { path: '/admin/events', label: 'Events Hub', status: 'shell', access: 'admin-only' },
+      { path: '/admin/jobs', label: 'Jobs Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/feeds', label: 'Feeds Hub', status: 'live', access: 'admin-only' },
+      { path: '/admin/blog', label: 'Blog Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/shop', label: 'Admin Shop Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/shop/products', label: 'Shop Products', status: 'demo', access: 'admin-only' },
+      { path: '/admin/shop/orders', label: 'Shop Orders', status: 'demo', access: 'admin-only' },
+      { path: '/admin/subscriptions', label: 'Subscriptions Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/cms', label: 'CMS Hub', status: 'demo', access: 'admin-only' },
+      { path: '/admin/cms/pages', label: 'CMS Pages', status: 'demo', access: 'admin-only' },
+      { path: '/admin/cms/posts', label: 'CMS Posts', status: 'demo', access: 'admin-only' },
+      { path: '/admin/cms/media', label: 'CMS Media', status: 'demo', access: 'admin-only' },
+    ]
+  },
+  {
+    id: 'sales', title: 'Sales Platform (top-level)', color: '#6E879B',
+    desc: 'Top-level /sales routes — MODULE_SALES gated.',
+    pages: [
+      { path: '/sales', label: 'Sales Dashboard', status: 'demo', access: 'auth-required' },
+      { path: '/sales/pipeline', label: 'Pipeline Board', status: 'demo', access: 'auth-required' },
+      { path: '/sales/deals/new', label: 'New Deal', status: 'demo', access: 'auth-required' },
+      { path: '/sales/deals/:id', label: 'Deal Detail', status: 'demo', access: 'auth-required', param: true },
+      { path: '/sales/proposals/new', label: 'New Proposal', status: 'demo', access: 'auth-required' },
+      { path: '/sales/commissions', label: 'Commission Dashboard', status: 'demo', access: 'auth-required' },
+      { path: '/sales/opportunities', label: 'Opportunity Finder', status: 'demo', access: 'auth-required' },
+      { path: '/sales/analytics', label: 'Revenue Analytics', status: 'demo', access: 'auth-required' },
+    ]
+  },
+  {
+    id: 'shop', title: 'Shop / Commerce', color: '#8E6464',
+    desc: 'Commerce routes — MODULE_SHOP gated. Not in MainNav.',
+    pages: [
+      { path: '/shop', label: 'Shop Home', status: 'demo', access: 'public' },
+      { path: '/shop/intelligence', label: 'Intelligence Commerce', status: 'demo', access: 'public' },
+      { path: '/shop/cart', label: 'Shop Cart', status: 'demo', access: 'public' },
+      { path: '/shop/checkout', label: 'Shop Checkout', status: 'demo', access: 'public' },
+      { path: '/shop/orders', label: 'Shop Orders', status: 'demo', access: 'auth-required' },
+      { path: '/shop/wishlist', label: 'Shop Wishlist', status: 'demo', access: 'auth-required' },
+      { path: '/cart', label: 'Cart (legacy)', status: 'demo', access: 'public' },
+      { path: '/checkout', label: 'Checkout (legacy)', status: 'demo', access: 'public' },
+      { path: '/account/orders', label: 'Order History', status: 'demo', access: 'auth-required' },
+      { path: '/account/wishlist', label: 'Wishlist', status: 'demo', access: 'auth-required' },
+    ]
+  },
+  {
+    id: 'education-admin', title: 'Education Authoring', color: '#5F8A72',
+    desc: 'Course authoring tools — admin role required.',
+    pages: [
+      { path: '/education/author', label: 'Author Dashboard', status: 'demo', access: 'admin-only' },
+      { path: '/education/author/courses/new', label: 'New Course', status: 'demo', access: 'admin-only' },
+      { path: '/courses', label: 'Courses Catalog (alt path)', status: 'live', access: 'public' },
+      { path: '/my-certificates', label: 'My Certificates (alt)', status: 'live', access: 'auth-required' },
+    ]
+  },
+  {
+    id: 'spa', title: 'Spa Portal (legacy /spa)', color: '#A97A4C',
+    desc: 'Legacy portal routes — may be deprecated.',
+    pages: [
+      { path: '/spa', label: 'Spa Root', status: 'shell', access: 'public' },
+      { path: '/spa/login', label: 'Spa Login', status: 'auth', access: 'public' },
+      { path: '/spa/signup', label: 'Spa Signup', status: 'auth', access: 'public' },
+      { path: '/spa/dashboard', label: 'Spa Dashboard', status: 'shell', access: 'auth-required' },
+      { path: '/spa/plans', label: 'Spa Plans', status: 'shell', access: 'auth-required' },
+    ]
+  },
+];
+
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+}
+function saveNote(path, val) {
+  const n = loadNotes(); n[path] = val;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(n));
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  const notes = loadNotes();
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  let totalRoutes = 0, liveCount = 0, demoCount = 0, shellCount = 0;
+
+  GROUPS.forEach(group => {
+    totalRoutes += group.pages.length;
+    liveCount  += group.pages.filter(p => p.status === 'live').length;
+    demoCount  += group.pages.filter(p => p.status === 'demo').length;
+    shellCount += group.pages.filter(p => p.status === 'shell').length;
+
+    const div = document.createElement('div');
+    div.className = 'group';
+    div.dataset.groupId = group.id;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'group-header';
+    hdr.innerHTML = `
+      <span class="group-dot" style="background:${group.color}"></span>
+      <span class="group-title">${group.title}</span>
+      <span class="group-count">${group.pages.length} routes</span>
+      <span class="group-badges">
+        ${group.pages.filter(p=>p.status==='live').length > 0 ? `<span class="stat-live">${group.pages.filter(p=>p.status==='live').length} live</span>` : ''}
+        ${group.pages.filter(p=>p.status==='demo').length > 0 ? `<span class="stat-demo">${group.pages.filter(p=>p.status==='demo').length} demo</span>` : ''}
+        ${group.pages.filter(p=>p.status==='shell').length > 0 ? `<span class="stat-shell">${group.pages.filter(p=>p.status==='shell').length} shell</span>` : ''}
+      </span>
+      <span class="chevron">▶</span>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'group-body';
+    body.innerHTML = `<div class="group-desc">${group.desc}</div>`;
+
+    hdr.onclick = () => {
+      const isOpen = body.classList.toggle('open');
+      hdr.querySelector('.chevron').classList.toggle('open', isOpen);
+    };
+
+    group.pages.forEach(page => {
+      const note = notes[page.path] ?? (page.notes || '');
+      const row = document.createElement('div');
+      row.className = 'page-row';
+      row.dataset.path = page.path;
+      row.dataset.label = page.label;
+      row.dataset.status = page.status;
+      row.dataset.note = note;
+
+      const linkHtml = page.param
+        ? `<span class="page-path">${page.path}</span>`
+        : `<a class="page-link" href="${BASE}${page.path}" target="_blank" rel="noreferrer">${page.path} ↗</a>`;
+
+      row.innerHTML = `
+        <div class="row-top">
+          ${linkHtml}
+          <span class="badge badge-${page.status}">${page.status}</span>
+          <span class="access-label">${page.access}</span>
+        </div>
+        <div class="page-label">${page.label}</div>
+        <textarea
+          placeholder="Add notes — agents and future sessions will read this…"
+          rows="${note ? Math.min(3, note.split('\n').length + 1) : 1}"
+          data-path="${page.path}"
+        >${note}</textarea>
+      `;
+
+      body.appendChild(row);
+    });
+
+    div.appendChild(hdr);
+    div.appendChild(body);
+    main.appendChild(div);
+  });
+
+  // Stats
+  document.getElementById('total-count').textContent = `${totalRoutes} routes`;
+  document.getElementById('stat-live').textContent  = `${liveCount} live`;
+  document.getElementById('stat-demo').textContent  = `${demoCount} demo`;
+  document.getElementById('stat-shell').textContent = `${shellCount} shell`;
+
+  // Wire textarea autosave
+  main.querySelectorAll('textarea').forEach(ta => {
+    let timer;
+    const savedEl = document.createElement('span');
+    savedEl.className = 'saved-indicator';
+    savedEl.style.display = 'none';
+    savedEl.textContent = '✓ saved';
+    ta.parentNode.insertBefore(savedEl, ta.nextSibling);
+
+    ta.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        saveNote(ta.dataset.path, ta.value);
+        ta.parentNode.dataset.note = ta.value;
+        savedEl.style.display = 'inline';
+        setTimeout(() => { savedEl.style.display = 'none'; }, 1500);
+        // Auto-resize
+        ta.rows = ta.value ? Math.min(4, ta.value.split('\n').length + 1) : 1;
+      }, 500);
+    });
+  });
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterAll() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const sf = document.getElementById('status-filter').value;
+  const notes = loadNotes();
+
+  document.querySelectorAll('.group').forEach(grp => {
+    let anyVisible = false;
+    grp.querySelectorAll('.page-row').forEach(row => {
+      const matchStatus = sf === 'all' || row.dataset.status === sf;
+      const note = notes[row.dataset.path] || row.dataset.note || '';
+      const matchSearch = !q ||
+        row.dataset.path.includes(q) ||
+        row.dataset.label.toLowerCase().includes(q) ||
+        note.toLowerCase().includes(q);
+      const show = matchStatus && matchSearch;
+      row.style.display = show ? '' : 'none';
+      if (show) anyVisible = true;
+    });
+    grp.style.display = anyVisible ? '' : 'none';
+
+    // Auto-open groups when searching
+    if (q || sf !== 'all') {
+      grp.querySelector('.group-body').classList.add('open');
+      grp.querySelector('.chevron').classList.add('open');
+    }
+  });
+}
+
+// ── EXPORT MARKDOWN ───────────────────────────────────────────────────────────
+function exportMarkdown() {
+  const notes = loadNotes();
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const lines = [
+    '# SOCELLE Master Page Index',
+    `*Exported ${date} — agent-readable reference for all routes.*`,
+    '',
+    '> **Status:** `live` = real DB data | `demo` = mock | `shell` = placeholder | `admin` = admin tool | `auth` = login flow',
+    '',
+  ];
+  GROUPS.forEach(g => {
+    lines.push(`## ${g.title}`);
+    lines.push(`*${g.desc}*`);
+    lines.push('');
+    lines.push('| Route | Label | Status | Access | Notes |');
+    lines.push('|-------|-------|--------|--------|-------|');
+    g.pages.forEach(p => {
+      const note = (notes[p.path] ?? (p.notes || '')).replace(/\n/g, ' ').replace(/\|/g, '\\|');
+      lines.push(`| \`${p.path}\` | ${p.label} | ${p.status} | ${p.access} | ${note || '—'} |`);
+    });
+    lines.push('');
+  });
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    const hint = document.getElementById('export-hint');
+    hint.style.display = 'block';
+    setTimeout(() => { hint.style.display = 'none'; }, 5000);
+  });
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetNotes() {
+  if (!confirm('Clear all notes from localStorage?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+Check CMS status: list all cms_* tables, count rows, check RLS policies, verify useCmsPage hook, list admin CMS pages.

@@ -1,0 +1,1 @@
+Run all 6 consolidation suites in parallel using sub-agents: design-audit-suite, copy-quality-suite, data-integrity-suite, billing-payments-suite, security-compliance-suite, platform-health-suite. Output results to docs/qa/

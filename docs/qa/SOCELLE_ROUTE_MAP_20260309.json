@@ -1,0 +1,3916 @@
+{
+  "generated_at": "2026-03-09T17:09:16.736Z",
+  "source": "SOCELLE-WEB/src/App.tsx",
+  "summary": {
+    "total": 295,
+    "protected": 213,
+    "public": 82,
+    "prelaunch_guarded": 78,
+    "module_gated": 81
+  },
+  "routes": [
+    {
+      "route": "/",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 396,
+      "raw_path": "/"
+    },
+    {
+      "route": "/*",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1194,
+      "raw_path": "*"
+    },
+    {
+      "route": "/about",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 418,
+      "raw_path": "/about"
+    },
+    {
+      "route": "/account/orders",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 536,
+      "raw_path": "/account/orders"
+    },
+    {
+      "route": "/account/orders/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 541,
+      "raw_path": "/account/orders/:id"
+    },
+    {
+      "route": "/account/wishlist",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 546,
+      "raw_path": "/account/wishlist"
+    },
+    {
+      "route": "/admin",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1049,
+      "raw_path": "/admin"
+    },
+    {
+      "route": "/admin/affiliates",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1113,
+      "raw_path": "affiliates"
+    },
+    {
+      "route": "/admin/api",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1101,
+      "raw_path": "api"
+    },
+    {
+      "route": "/admin/api-control",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1148,
+      "raw_path": "api-control"
+    },
+    {
+      "route": "/admin/api-controls",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1128,
+      "raw_path": "api-controls"
+    },
+    {
+      "route": "/admin/api-sitemap",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1149,
+      "raw_path": "api-sitemap"
+    },
+    {
+      "route": "/admin/approvals",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1095,
+      "raw_path": "approvals"
+    },
+    {
+      "route": "/admin/audit-log",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1124,
+      "raw_path": "audit-log"
+    },
+    {
+      "route": "/admin/blog",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1118,
+      "raw_path": "blog"
+    },
+    {
+      "route": "/admin/brands",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1176,
+      "raw_path": "brands"
+    },
+    {
+      "route": "/admin/brands/:id",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1180,
+      "raw_path": "brands/:id"
+    },
+    {
+      "route": "/admin/brands/:id/analytics",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1188,
+      "raw_path": "analytics"
+    },
+    {
+      "route": "/admin/brands/:id/education",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1185,
+      "raw_path": "education"
+    },
+    {
+      "route": "/admin/brands/:id/orders",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1186,
+      "raw_path": "orders"
+    },
+    {
+      "route": "/admin/brands/:id/products",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1183,
+      "raw_path": "products"
+    },
+    {
+      "route": "/admin/brands/:id/profile",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1182,
+      "raw_path": "profile"
+    },
+    {
+      "route": "/admin/brands/:id/protocols",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1184,
+      "raw_path": "protocols"
+    },
+    {
+      "route": "/admin/brands/:id/retailers",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1187,
+      "raw_path": "retailers"
+    },
+    {
+      "route": "/admin/brands/:id/settings",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1189,
+      "raw_path": "settings"
+    },
+    {
+      "route": "/admin/brands/new",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1178,
+      "raw_path": "brands/new"
+    },
+    {
+      "route": "/admin/calendar",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1072,
+      "raw_path": "calendar"
+    },
+    {
+      "route": "/admin/cms",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1153,
+      "raw_path": "cms"
+    },
+    {
+      "route": "/admin/cms/blocks",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1156,
+      "raw_path": "cms/blocks"
+    },
+    {
+      "route": "/admin/cms/media",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1157,
+      "raw_path": "cms/media"
+    },
+    {
+      "route": "/admin/cms/pages",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1154,
+      "raw_path": "cms/pages"
+    },
+    {
+      "route": "/admin/cms/posts",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1155,
+      "raw_path": "cms/posts"
+    },
+    {
+      "route": "/admin/cms/spaces",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1159,
+      "raw_path": "cms/spaces"
+    },
+    {
+      "route": "/admin/cms/templates",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1158,
+      "raw_path": "cms/templates"
+    },
+    {
+      "route": "/admin/costs",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1071,
+      "raw_path": "costs"
+    },
+    {
+      "route": "/admin/courses",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1135,
+      "raw_path": "courses"
+    },
+    {
+      "route": "/admin/courses/:id/edit",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1136,
+      "raw_path": "courses/:id/edit"
+    },
+    {
+      "route": "/admin/crm",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1109,
+      "raw_path": "crm"
+    },
+    {
+      "route": "/admin/dashboard",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1061,
+      "raw_path": "dashboard"
+    },
+    {
+      "route": "/admin/debug",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1065,
+      "raw_path": "debug"
+    },
+    {
+      "route": "/admin/debug-auth",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1047,
+      "raw_path": "/admin/debug-auth"
+    },
+    {
+      "route": "/admin/editorial",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1112,
+      "raw_path": "editorial"
+    },
+    {
+      "route": "/admin/education",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1132,
+      "raw_path": "education"
+    },
+    {
+      "route": "/admin/events",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1114,
+      "raw_path": "events"
+    },
+    {
+      "route": "/admin/feature-flags",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1125,
+      "raw_path": "feature-flags"
+    },
+    {
+      "route": "/admin/feeds",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1117,
+      "raw_path": "feeds"
+    },
+    {
+      "route": "/admin/health",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1074,
+      "raw_path": "health"
+    },
+    {
+      "route": "/admin/inbox",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1062,
+      "raw_path": "inbox"
+    },
+    {
+      "route": "/admin/ingestion",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1068,
+      "raw_path": "ingestion"
+    },
+    {
+      "route": "/admin/ingredients",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1139,
+      "raw_path": "ingredients"
+    },
+    {
+      "route": "/admin/ingredients/collections",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1140,
+      "raw_path": "ingredients/collections"
+    },
+    {
+      "route": "/admin/ingredients/interactions",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1141,
+      "raw_path": "ingredients/interactions"
+    },
+    {
+      "route": "/admin/intelligence",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1099,
+      "raw_path": "intelligence"
+    },
+    {
+      "route": "/admin/inventory-report",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1127,
+      "raw_path": "inventory-report"
+    },
+    {
+      "route": "/admin/jobs",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1115,
+      "raw_path": "jobs"
+    },
+    {
+      "route": "/admin/live-data",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1147,
+      "raw_path": "live-data"
+    },
+    {
+      "route": "/admin/login",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1046,
+      "raw_path": "/admin/login"
+    },
+    {
+      "route": "/admin/market-signals",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1098,
+      "raw_path": "market-signals"
+    },
+    {
+      "route": "/admin/marketing",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1105,
+      "raw_path": "marketing"
+    },
+    {
+      "route": "/admin/marketing-platform",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1106,
+      "raw_path": "marketing-platform"
+    },
+    {
+      "route": "/admin/media",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1145,
+      "raw_path": "media"
+    },
+    {
+      "route": "/admin/mixing",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1070,
+      "raw_path": "mixing"
+    },
+    {
+      "route": "/admin/orders",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1063,
+      "raw_path": "orders"
+    },
+    {
+      "route": "/admin/orders/:id",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1064,
+      "raw_path": "orders/:id"
+    },
+    {
+      "route": "/admin/pages",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1144,
+      "raw_path": "pages"
+    },
+    {
+      "route": "/admin/platform-settings",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1129,
+      "raw_path": "platform-settings"
+    },
+    {
+      "route": "/admin/products",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1075,
+      "raw_path": "products"
+    },
+    {
+      "route": "/admin/protocols",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1069,
+      "raw_path": "protocols"
+    },
+    {
+      "route": "/admin/protocols/import",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1067,
+      "raw_path": "protocols/import"
+    },
+    {
+      "route": "/admin/recruitment",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1116,
+      "raw_path": "recruitment"
+    },
+    {
+      "route": "/admin/regions",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1102,
+      "raw_path": "regions"
+    },
+    {
+      "route": "/admin/reports",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1100,
+      "raw_path": "reports"
+    },
+    {
+      "route": "/admin/reseller",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1120,
+      "raw_path": "reseller"
+    },
+    {
+      "route": "/admin/rules",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1073,
+      "raw_path": "rules"
+    },
+    {
+      "route": "/admin/sales",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1111,
+      "raw_path": "sales"
+    },
+    {
+      "route": "/admin/sales-platform",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1119,
+      "raw_path": "sales-platform"
+    },
+    {
+      "route": "/admin/seeding",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1096,
+      "raw_path": "seeding"
+    },
+    {
+      "route": "/admin/seo",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1146,
+      "raw_path": "seo"
+    },
+    {
+      "route": "/admin/settings",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1150,
+      "raw_path": "settings"
+    },
+    {
+      "route": "/admin/shell-detection",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1126,
+      "raw_path": "shell-detection"
+    },
+    {
+      "route": "/admin/shop",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1162,
+      "raw_path": "shop"
+    },
+    {
+      "route": "/admin/shop/categories",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1164,
+      "raw_path": "shop/categories"
+    },
+    {
+      "route": "/admin/shop/discounts",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1166,
+      "raw_path": "shop/discounts"
+    },
+    {
+      "route": "/admin/shop/orders",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1165,
+      "raw_path": "shop/orders"
+    },
+    {
+      "route": "/admin/shop/products",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1163,
+      "raw_path": "shop/products"
+    },
+    {
+      "route": "/admin/shop/reviews",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1168,
+      "raw_path": "shop/reviews"
+    },
+    {
+      "route": "/admin/shop/shipping",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1167,
+      "raw_path": "shop/shipping"
+    },
+    {
+      "route": "/admin/signals",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1097,
+      "raw_path": "signals"
+    },
+    {
+      "route": "/admin/social",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1110,
+      "raw_path": "social"
+    },
+    {
+      "route": "/admin/submissions/:id",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1066,
+      "raw_path": "submissions/:id"
+    },
+    {
+      "route": "/admin/subscriptions",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1171,
+      "raw_path": "subscriptions"
+    },
+    {
+      "route": "/admin/subscriptions/accounts",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1172,
+      "raw_path": "subscriptions/accounts"
+    },
+    {
+      "route": "/admin/subscriptions/metrics",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1173,
+      "raw_path": "subscriptions/metrics"
+    },
+    {
+      "route": "/admin/users",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1123,
+      "raw_path": "users"
+    },
+    {
+      "route": "/api/docs",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 474,
+      "raw_path": "/api/docs"
+    },
+    {
+      "route": "/api/pricing",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 475,
+      "raw_path": "/api/pricing"
+    },
+    {
+      "route": "/blog",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 481,
+      "raw_path": "/blog"
+    },
+    {
+      "route": "/blog/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 482,
+      "raw_path": "/blog/:slug"
+    },
+    {
+      "route": "/book/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 508,
+      "raw_path": "/book/:slug"
+    },
+    {
+      "route": "/brand",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 966,
+      "raw_path": "/brand"
+    },
+    {
+      "route": "/brand/advisor",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 998,
+      "raw_path": "advisor"
+    },
+    {
+      "route": "/brand/apply",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 964,
+      "raw_path": "/brand/apply"
+    },
+    {
+      "route": "/brand/apply/received",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 965,
+      "raw_path": "/brand/apply/received"
+    },
+    {
+      "route": "/brand/automations",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 988,
+      "raw_path": "automations"
+    },
+    {
+      "route": "/brand/campaigns",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 986,
+      "raw_path": "campaigns"
+    },
+    {
+      "route": "/brand/campaigns/new",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 987,
+      "raw_path": "campaigns/new"
+    },
+    {
+      "route": "/brand/claim/review",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 979,
+      "raw_path": "claim/review"
+    },
+    {
+      "route": "/brand/crm",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 992,
+      "raw_path": "crm"
+    },
+    {
+      "route": "/brand/crm/leads",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 993,
+      "raw_path": "crm/leads"
+    },
+    {
+      "route": "/brand/crm/messages",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 995,
+      "raw_path": "crm/messages"
+    },
+    {
+      "route": "/brand/crm/pipeline",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 994,
+      "raw_path": "crm/pipeline"
+    },
+    {
+      "route": "/brand/customers",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 990,
+      "raw_path": "customers"
+    },
+    {
+      "route": "/brand/dashboard",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 978,
+      "raw_path": "dashboard"
+    },
+    {
+      "route": "/brand/intelligence",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 997,
+      "raw_path": "intelligence"
+    },
+    {
+      "route": "/brand/intelligence-pricing",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1000,
+      "raw_path": "intelligence-pricing"
+    },
+    {
+      "route": "/brand/intelligence-report",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1001,
+      "raw_path": "intelligence-report"
+    },
+    {
+      "route": "/brand/leads",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1004,
+      "raw_path": "leads"
+    },
+    {
+      "route": "/brand/login",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 963,
+      "raw_path": "/brand/login"
+    },
+    {
+      "route": "/brand/messages",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 985,
+      "raw_path": "messages"
+    },
+    {
+      "route": "/brand/notifications",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 999,
+      "raw_path": "notifications"
+    },
+    {
+      "route": "/brand/onboarding",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 980,
+      "raw_path": "onboarding"
+    },
+    {
+      "route": "/brand/orders",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 981,
+      "raw_path": "orders"
+    },
+    {
+      "route": "/brand/orders/:id",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 982,
+      "raw_path": "orders/:id"
+    },
+    {
+      "route": "/brand/performance",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 984,
+      "raw_path": "performance"
+    },
+    {
+      "route": "/brand/pipeline",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 991,
+      "raw_path": "pipeline"
+    },
+    {
+      "route": "/brand/plans",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1003,
+      "raw_path": "plans"
+    },
+    {
+      "route": "/brand/products",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 983,
+      "raw_path": "products"
+    },
+    {
+      "route": "/brand/promotions",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 989,
+      "raw_path": "promotions"
+    },
+    {
+      "route": "/brand/storefront",
+      "auth": "protected",
+      "required_roles": [
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 996,
+      "raw_path": "storefront"
+    },
+    {
+      "route": "/brands",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 414,
+      "raw_path": "/brands"
+    },
+    {
+      "route": "/brands/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 415,
+      "raw_path": "/brands/:slug"
+    },
+    {
+      "route": "/cart",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 534,
+      "raw_path": "/cart"
+    },
+    {
+      "route": "/case-studies",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 491,
+      "raw_path": "/case-studies"
+    },
+    {
+      "route": "/certificates/verify/:token",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 405,
+      "raw_path": "/certificates/verify/:token"
+    },
+    {
+      "route": "/checkout",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 535,
+      "raw_path": "/checkout"
+    },
+    {
+      "route": "/claim/brand/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 506,
+      "raw_path": "/claim/brand/:slug"
+    },
+    {
+      "route": "/claim/business/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 507,
+      "raw_path": "/claim/business/:slug"
+    },
+    {
+      "route": "/courses",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 494,
+      "raw_path": "/courses"
+    },
+    {
+      "route": "/courses/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 495,
+      "raw_path": "/courses/:slug"
+    },
+    {
+      "route": "/courses/:slug/learn",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 496,
+      "raw_path": "/courses/:slug/learn"
+    },
+    {
+      "route": "/dev-index",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1043,
+      "raw_path": "/dev-index"
+    },
+    {
+      "route": "/education",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 429,
+      "raw_path": "/education"
+    },
+    {
+      "route": "/education/articles",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 489,
+      "raw_path": "/education/articles"
+    },
+    {
+      "route": "/education/author",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 442,
+      "raw_path": "/education/author"
+    },
+    {
+      "route": "/education/author/courses/:id/edit",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 452,
+      "raw_path": "/education/author/courses/:id/edit"
+    },
+    {
+      "route": "/education/author/courses/new",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 447,
+      "raw_path": "/education/author/courses/new"
+    },
+    {
+      "route": "/education/ce-credits",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 457,
+      "raw_path": "/education/ce-credits"
+    },
+    {
+      "route": "/education/certificates",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 437,
+      "raw_path": "/education/certificates"
+    },
+    {
+      "route": "/education/certificates/verify/:token",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 404,
+      "raw_path": "/education/certificates/verify/:token"
+    },
+    {
+      "route": "/education/courses",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 430,
+      "raw_path": "/education/courses"
+    },
+    {
+      "route": "/education/courses/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 431,
+      "raw_path": "/education/courses/:slug"
+    },
+    {
+      "route": "/education/learn/:slug",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 432,
+      "raw_path": "/education/learn/:slug"
+    },
+    {
+      "route": "/education/staff",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 462,
+      "raw_path": "/education/staff"
+    },
+    {
+      "route": "/events",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 476,
+      "raw_path": "/events"
+    },
+    {
+      "route": "/faq",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 473,
+      "raw_path": "/faq"
+    },
+    {
+      "route": "/for-brands",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 424,
+      "raw_path": "/for-brands"
+    },
+    {
+      "route": "/for-buyers",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 427,
+      "raw_path": "/for-buyers"
+    },
+    {
+      "route": "/for-medspas",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 425,
+      "raw_path": "/for-medspas"
+    },
+    {
+      "route": "/for-salons",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 426,
+      "raw_path": "/for-salons"
+    },
+    {
+      "route": "/forgot-password",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 398,
+      "raw_path": "/forgot-password"
+    },
+    {
+      "route": "/help",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 490,
+      "raw_path": "/help"
+    },
+    {
+      "route": "/help/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 484,
+      "raw_path": "/help/:slug"
+    },
+    {
+      "route": "/home",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 413,
+      "raw_path": "/home"
+    },
+    {
+      "route": "/how-it-works",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 428,
+      "raw_path": "/how-it-works"
+    },
+    {
+      "route": "/ingredients",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_INGREDIENTS"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 468,
+      "raw_path": "/ingredients"
+    },
+    {
+      "route": "/ingredients/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_INGREDIENTS"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 470,
+      "raw_path": "/ingredients/:slug"
+    },
+    {
+      "route": "/ingredients/collections/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_INGREDIENTS"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 469,
+      "raw_path": "/ingredients/collections/:slug"
+    },
+    {
+      "route": "/insights",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 420,
+      "raw_path": "/insights"
+    },
+    {
+      "route": "/intelligence",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 419,
+      "raw_path": "/intelligence"
+    },
+    {
+      "route": "/intelligence/briefs",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 487,
+      "raw_path": "/intelligence/briefs"
+    },
+    {
+      "route": "/intelligence/briefs/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 488,
+      "raw_path": "/intelligence/briefs/:slug"
+    },
+    {
+      "route": "/jobs",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 477,
+      "raw_path": "/jobs"
+    },
+    {
+      "route": "/jobs/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 478,
+      "raw_path": "/jobs/:slug"
+    },
+    {
+      "route": "/marketing",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1019,
+      "raw_path": "/marketing"
+    },
+    {
+      "route": "/marketing/calendar",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1039,
+      "raw_path": "calendar"
+    },
+    {
+      "route": "/marketing/campaigns",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1033,
+      "raw_path": "campaigns"
+    },
+    {
+      "route": "/marketing/campaigns/:id",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1035,
+      "raw_path": "campaigns/:id"
+    },
+    {
+      "route": "/marketing/campaigns/new",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1034,
+      "raw_path": "campaigns/new"
+    },
+    {
+      "route": "/marketing/landing-pages",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1038,
+      "raw_path": "landing-pages"
+    },
+    {
+      "route": "/marketing/segments",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1036,
+      "raw_path": "segments"
+    },
+    {
+      "route": "/marketing/templates",
+      "auth": "protected",
+      "required_roles": [
+        "admin",
+        "platform_admin",
+        "brand_admin",
+        "business_user"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1037,
+      "raw_path": "templates"
+    },
+    {
+      "route": "/my-certificates",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_EDUCATION"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 501,
+      "raw_path": "/my-certificates"
+    },
+    {
+      "route": "/pages/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 483,
+      "raw_path": "/pages/:slug"
+    },
+    {
+      "route": "/plans",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 416,
+      "raw_path": "/plans"
+    },
+    {
+      "route": "/portal",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 602,
+      "raw_path": "/portal"
+    },
+    {
+      "route": "/portal/account",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 657,
+      "raw_path": "account"
+    },
+    {
+      "route": "/portal/advisor",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 616,
+      "raw_path": "advisor"
+    },
+    {
+      "route": "/portal/affiliates",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 928,
+      "raw_path": "affiliates"
+    },
+    {
+      "route": "/portal/affiliates/links",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 933,
+      "raw_path": "affiliates/links"
+    },
+    {
+      "route": "/portal/apply",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 677,
+      "raw_path": "apply"
+    },
+    {
+      "route": "/portal/benchmarks",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 697,
+      "raw_path": "benchmarks"
+    },
+    {
+      "route": "/portal/booking",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 836,
+      "raw_path": "booking"
+    },
+    {
+      "route": "/portal/booking/appointments/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 846,
+      "raw_path": "booking/appointments/:id"
+    },
+    {
+      "route": "/portal/booking/calendar",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 841,
+      "raw_path": "booking/calendar"
+    },
+    {
+      "route": "/portal/booking/services",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 851,
+      "raw_path": "booking/services"
+    },
+    {
+      "route": "/portal/booking/staff",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 856,
+      "raw_path": "booking/staff"
+    },
+    {
+      "route": "/portal/brands/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 646,
+      "raw_path": "brands/:slug"
+    },
+    {
+      "route": "/portal/calendar",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 672,
+      "raw_path": "calendar"
+    },
+    {
+      "route": "/portal/ce-credits",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 687,
+      "raw_path": "ce-credits"
+    },
+    {
+      "route": "/portal/claim/review",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 682,
+      "raw_path": "claim/review"
+    },
+    {
+      "route": "/portal/credits",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 916,
+      "raw_path": "credits"
+    },
+    {
+      "route": "/portal/credits/purchase",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 921,
+      "raw_path": "credits/purchase"
+    },
+    {
+      "route": "/portal/crm",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 781,
+      "raw_path": "crm"
+    },
+    {
+      "route": "/portal/crm/companies",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 801,
+      "raw_path": "crm/companies"
+    },
+    {
+      "route": "/portal/crm/companies/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 806,
+      "raw_path": "crm/companies/:id"
+    },
+    {
+      "route": "/portal/crm/companies/:id/edit",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 821,
+      "raw_path": "crm/companies/:id/edit"
+    },
+    {
+      "route": "/portal/crm/companies/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 816,
+      "raw_path": "crm/companies/new"
+    },
+    {
+      "route": "/portal/crm/contacts",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 786,
+      "raw_path": "crm/contacts"
+    },
+    {
+      "route": "/portal/crm/contacts/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 796,
+      "raw_path": "crm/contacts/:id"
+    },
+    {
+      "route": "/portal/crm/contacts/:id/edit",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 811,
+      "raw_path": "crm/contacts/:id/edit"
+    },
+    {
+      "route": "/portal/crm/contacts/:id/records",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 861,
+      "raw_path": "crm/contacts/:id/records"
+    },
+    {
+      "route": "/portal/crm/contacts/:id/records/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 866,
+      "raw_path": "crm/contacts/:id/records/new"
+    },
+    {
+      "route": "/portal/crm/contacts/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 791,
+      "raw_path": "crm/contacts/new"
+    },
+    {
+      "route": "/portal/crm/segments",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 831,
+      "raw_path": "crm/segments"
+    },
+    {
+      "route": "/portal/crm/tasks",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 826,
+      "raw_path": "crm/tasks"
+    },
+    {
+      "route": "/portal/dashboard",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 606,
+      "raw_path": "dashboard"
+    },
+    {
+      "route": "/portal/intelligence",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 611,
+      "raw_path": "intelligence"
+    },
+    {
+      "route": "/portal/locations",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 692,
+      "raw_path": "locations"
+    },
+    {
+      "route": "/portal/login",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 604,
+      "raw_path": "login"
+    },
+    {
+      "route": "/portal/marketing",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 750,
+      "raw_path": "marketing"
+    },
+    {
+      "route": "/portal/marketing-hub",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 940,
+      "raw_path": "marketing-hub"
+    },
+    {
+      "route": "/portal/marketing-hub/campaigns",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 945,
+      "raw_path": "marketing-hub/campaigns"
+    },
+    {
+      "route": "/portal/marketing-hub/campaigns/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 950,
+      "raw_path": "marketing-hub/campaigns/new"
+    },
+    {
+      "route": "/portal/marketing-hub/templates",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 955,
+      "raw_path": "marketing-hub/templates"
+    },
+    {
+      "route": "/portal/marketing/analytics",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 775,
+      "raw_path": "marketing/analytics"
+    },
+    {
+      "route": "/portal/marketing/campaigns/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 755,
+      "raw_path": "marketing/campaigns/:id"
+    },
+    {
+      "route": "/portal/marketing/campaigns/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 760,
+      "raw_path": "marketing/campaigns/new"
+    },
+    {
+      "route": "/portal/marketing/segments",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 765,
+      "raw_path": "marketing/segments"
+    },
+    {
+      "route": "/portal/marketing/templates",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_MARKETING"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 770,
+      "raw_path": "marketing/templates"
+    },
+    {
+      "route": "/portal/messages",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 667,
+      "raw_path": "messages"
+    },
+    {
+      "route": "/portal/notifications",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 621,
+      "raw_path": "notifications"
+    },
+    {
+      "route": "/portal/onboarding",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 882,
+      "raw_path": "onboarding"
+    },
+    {
+      "route": "/portal/orders",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 647,
+      "raw_path": "orders"
+    },
+    {
+      "route": "/portal/orders/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 652,
+      "raw_path": "orders/:id"
+    },
+    {
+      "route": "/portal/plans",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 626,
+      "raw_path": "plans"
+    },
+    {
+      "route": "/portal/plans/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 641,
+      "raw_path": "plans/:id"
+    },
+    {
+      "route": "/portal/plans/compare",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 636,
+      "raw_path": "plans/compare"
+    },
+    {
+      "route": "/portal/plans/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 631,
+      "raw_path": "plans/new"
+    },
+    {
+      "route": "/portal/prospects",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 871,
+      "raw_path": "prospects"
+    },
+    {
+      "route": "/portal/prospects/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_CRM"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 876,
+      "raw_path": "prospects/:id"
+    },
+    {
+      "route": "/portal/reseller",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_RESELLER"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 703,
+      "raw_path": "reseller"
+    },
+    {
+      "route": "/portal/reseller/clients",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_RESELLER"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 708,
+      "raw_path": "reseller/clients"
+    },
+    {
+      "route": "/portal/reseller/revenue",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_RESELLER"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 713,
+      "raw_path": "reseller/revenue"
+    },
+    {
+      "route": "/portal/reseller/white-label",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_RESELLER"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 718,
+      "raw_path": "reseller/white-label"
+    },
+    {
+      "route": "/portal/sales",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 724,
+      "raw_path": "sales"
+    },
+    {
+      "route": "/portal/sales/commissions",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 744,
+      "raw_path": "sales/commissions"
+    },
+    {
+      "route": "/portal/sales/deals/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 734,
+      "raw_path": "sales/deals/:id"
+    },
+    {
+      "route": "/portal/sales/pipeline",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 729,
+      "raw_path": "sales/pipeline"
+    },
+    {
+      "route": "/portal/sales/proposals/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 739,
+      "raw_path": "sales/proposals/new"
+    },
+    {
+      "route": "/portal/signup",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 605,
+      "raw_path": "signup"
+    },
+    {
+      "route": "/portal/studio",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 889,
+      "raw_path": "studio"
+    },
+    {
+      "route": "/portal/studio/course",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 909,
+      "raw_path": "studio/course"
+    },
+    {
+      "route": "/portal/studio/course/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 904,
+      "raw_path": "studio/course/:id"
+    },
+    {
+      "route": "/portal/studio/editor",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 899,
+      "raw_path": "studio/editor"
+    },
+    {
+      "route": "/portal/studio/editor/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 894,
+      "raw_path": "studio/editor/:id"
+    },
+    {
+      "route": "/portal/subscription",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 662,
+      "raw_path": "subscription"
+    },
+    {
+      "route": "/pricing",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 417,
+      "raw_path": "/pricing"
+    },
+    {
+      "route": "/privacy",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 400,
+      "raw_path": "/privacy"
+    },
+    {
+      "route": "/professionals",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 423,
+      "raw_path": "/professionals"
+    },
+    {
+      "route": "/protocols",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 471,
+      "raw_path": "/protocols"
+    },
+    {
+      "route": "/protocols/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 472,
+      "raw_path": "/protocols/:slug"
+    },
+    {
+      "route": "/request-access",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 402,
+      "raw_path": "/request-access"
+    },
+    {
+      "route": "/reset-password",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 399,
+      "raw_path": "/reset-password"
+    },
+    {
+      "route": "/sales",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 553,
+      "raw_path": "/sales"
+    },
+    {
+      "route": "/sales/analytics",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 584,
+      "raw_path": "/sales/analytics"
+    },
+    {
+      "route": "/sales/commissions",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 574,
+      "raw_path": "/sales/commissions"
+    },
+    {
+      "route": "/sales/deals/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 563,
+      "raw_path": "/sales/deals/:id"
+    },
+    {
+      "route": "/sales/deals/:id/edit",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 594,
+      "raw_path": "/sales/deals/:id/edit"
+    },
+    {
+      "route": "/sales/deals/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 589,
+      "raw_path": "/sales/deals/new"
+    },
+    {
+      "route": "/sales/opportunities",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 579,
+      "raw_path": "/sales/opportunities"
+    },
+    {
+      "route": "/sales/pipeline",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 558,
+      "raw_path": "/sales/pipeline"
+    },
+    {
+      "route": "/sales/proposals/:id/view",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 573,
+      "raw_path": "/sales/proposals/:id/view"
+    },
+    {
+      "route": "/sales/proposals/new",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SALES"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 568,
+      "raw_path": "/sales/proposals/new"
+    },
+    {
+      "route": "/shop",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 511,
+      "raw_path": "/shop"
+    },
+    {
+      "route": "/shop/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 533,
+      "raw_path": "/shop/:slug"
+    },
+    {
+      "route": "/shop/cart",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 515,
+      "raw_path": "/shop/cart"
+    },
+    {
+      "route": "/shop/category/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 513,
+      "raw_path": "/shop/category/:slug"
+    },
+    {
+      "route": "/shop/checkout",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 516,
+      "raw_path": "/shop/checkout"
+    },
+    {
+      "route": "/shop/intelligence",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 512,
+      "raw_path": "/shop/intelligence"
+    },
+    {
+      "route": "/shop/orders",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 517,
+      "raw_path": "/shop/orders"
+    },
+    {
+      "route": "/shop/orders/:id",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 522,
+      "raw_path": "/shop/orders/:id"
+    },
+    {
+      "route": "/shop/product/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 514,
+      "raw_path": "/shop/product/:slug"
+    },
+    {
+      "route": "/shop/wishlist",
+      "auth": "protected",
+      "required_roles": [
+        "business_user",
+        "brand_admin",
+        "admin",
+        "platform_admin"
+      ],
+      "module_gates": [
+        "MODULE_SHOP"
+      ],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 527,
+      "raw_path": "/shop/wishlist"
+    },
+    {
+      "route": "/spa/*",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1016,
+      "raw_path": "/spa/*"
+    },
+    {
+      "route": "/spa/dashboard",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1010,
+      "raw_path": "/spa/dashboard"
+    },
+    {
+      "route": "/spa/login",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1008,
+      "raw_path": "/spa/login"
+    },
+    {
+      "route": "/spa/plan/:id",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1013,
+      "raw_path": "/spa/plan/:id"
+    },
+    {
+      "route": "/spa/plan/new",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1012,
+      "raw_path": "/spa/plan/new"
+    },
+    {
+      "route": "/spa/plans",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1011,
+      "raw_path": "/spa/plans"
+    },
+    {
+      "route": "/spa/plans/:id",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1015,
+      "raw_path": "/spa/plans/:id"
+    },
+    {
+      "route": "/spa/plans/new",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1014,
+      "raw_path": "/spa/plans/new"
+    },
+    {
+      "route": "/spa/signup",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 1009,
+      "raw_path": "/spa/signup"
+    },
+    {
+      "route": "/stories",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 421,
+      "raw_path": "/stories"
+    },
+    {
+      "route": "/stories/:slug",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": true,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 422,
+      "raw_path": "/stories/:slug"
+    },
+    {
+      "route": "/terms",
+      "auth": "public",
+      "required_roles": [],
+      "module_gates": [],
+      "prelaunch_guarded": false,
+      "source": "SOCELLE-WEB/src/App.tsx",
+      "line": 401,
+      "raw_path": "/terms"
+    }
+  ]
+}

@@ -11,6 +11,8 @@ export default function AdminLogin() {
   const { signIn, user, profile, loading: authLoading, effectiveRole, profileError, lastAuthError } = useAuth();
   const navigate = useNavigate();
   const isDev = import.meta.env.DEV;
+  const devEmail = import.meta.env.VITE_DEV_ADMIN_EMAIL as string | undefined;
+  const devPassword = import.meta.env.VITE_DEV_ADMIN_PASSWORD as string | undefined;
 
   useEffect(() => {
     if (!authLoading && user && effectiveRole) {
@@ -146,6 +148,23 @@ export default function AdminLogin() {
             Having trouble? Debug Auth
           </Link>
         </div>
+
+        {isDev && devEmail && devPassword && (
+          <button
+            type="button"
+            onClick={async () => {
+              setError('');
+              setLoading(true);
+              const { error: e } = await signIn(devEmail, devPassword);
+              if (e) setError(e.message);
+              setLoading(false);
+            }}
+            disabled={loading}
+            className="w-full mt-4 py-2.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+          >
+            ⚡ Dev Quick Login (local only)
+          </button>
+        )}
 
         {isDev && (
           <div className="mt-4 p-3 bg-slate-900/50 border border-slate-700 rounded-lg">

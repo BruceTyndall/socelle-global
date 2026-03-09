@@ -1,0 +1,4504 @@
+{
+  "scan_timestamp": "2026-03-09T18:56:52.663Z",
+  "scope": "SOCELLE-WEB/src/**",
+  "source_token_map": "../ULTRA_DRIVE_PROMPT.md §3",
+  "totals": {
+    "findings_total": 448,
+    "legacy_tokens": 230,
+    "hardcoded_hex_outside_pearl": 218,
+    "banned_terms": 129,
+    "directories_with_findings": 21,
+    "directories_with_banned_terms": 23
+  },
+  "findings": [
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 322,
+      "offending": "brand-centric",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 324,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 325,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 326,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 327,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 328,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 329,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 330,
+      "offending": "brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/App.tsx",
+      "line": 1187,
+      "offending": "brand-centric",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/App.tsx",
+      "line": 1210,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/App.tsx",
+      "line": 1210,
+      "offending": "#2a3038",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/App.tsx",
+      "line": 1210,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 15,
+      "offending": "#EFEBE6",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 16,
+      "offending": "#FFFFFF",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 17,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 18,
+      "offending": "#15191D",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 24,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 95,
+      "offending": "#47201c",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 96,
+      "offending": "#29120f",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 97,
+      "offending": "#ac9b98",
+      "replacement": "#6E879B (accent)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 98,
+      "offending": "#8C6B6E",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 99,
+      "offending": "#6E5254",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 100,
+      "offending": "#D4A44C",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 101,
+      "offending": "#F5EDE0",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 102,
+      "offending": "#F5F3F0",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 103,
+      "offending": "#EDEDE5",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 104,
+      "offending": "#D6D1C9",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 105,
+      "offending": "#1A1714",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 106,
+      "offending": "#6B6560",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 109,
+      "offending": "#f8f6f2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 110,
+      "offending": "#f3e9e3",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 111,
+      "offending": "#faf9f5",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 114,
+      "offending": "#ff6568",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 115,
+      "offending": "#fff7ed",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 116,
+      "offending": "#ff8b1a",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 117,
+      "offending": "#c53c00",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 118,
+      "offending": "#fac800",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 119,
+      "offending": "#f0fdf4",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 120,
+      "offending": "#05df72",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 121,
+      "offending": "#00a544",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 122,
+      "offending": "#0d542b",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 123,
+      "offending": "#00d3bd",
+      "replacement": "#6E879B (accent)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 124,
+      "offending": "#54a2ff",
+      "replacement": "#6E879B (accent)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 125,
+      "offending": "#e9d5ff",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 126,
+      "offending": "#c07eff",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 127,
+      "offending": "#d1d5dc",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 128,
+      "offending": "#364153",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 129,
+      "offending": "#101828",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 331,
+      "offending": "#000",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 405,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 407,
+      "offending": "bg-brand-surface-alt",
+      "replacement": "bg-accent-soft",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 447,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 453,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 461,
+      "offending": "bg-brand-surface-alt",
+      "replacement": "bg-accent-soft",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 461,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/index.css",
+      "line": 466,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 611,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 626,
+      "offending": "#C5C0B8",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 692,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/index.css",
+      "line": 695,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 70,
+      "offending": "#f1f5f9",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 76,
+      "offending": "#dc2626",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 80,
+      "offending": "#1e293b",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 84,
+      "offending": "#fecaca",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 84,
+      "offending": "#fef2f2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 87,
+      "offending": "#991b1b",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/main.tsx",
+      "line": 93,
+      "offending": "#1e293b",
+      "replacement": "#141418 (graphite)",
+      "directory": "src"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/BrandPageRenderer.tsx",
+      "line": 51,
+      "offending": "brand-primary",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/BrandPageRenderer.tsx",
+      "line": 52,
+      "offending": "brand-secondary",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/BrandPageRenderer.tsx",
+      "line": 53,
+      "offending": "brand-accent",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/BrandPageRenderer.tsx",
+      "line": 54,
+      "offending": "brand-surface",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/BrandPageRenderer.tsx",
+      "line": 55,
+      "offending": "brand-text",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/BrandShop.tsx",
+      "line": 46,
+      "offending": "#3b82f6",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/BrandShop.tsx",
+      "line": 49,
+      "offending": "brand-shop-products",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/PaywallGate.tsx",
+      "line": 48,
+      "offending": "Pro-only",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/PaywallGate.tsx",
+      "line": 158,
+      "offending": "Pro-only",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/StagingBanner.tsx",
+      "line": 36,
+      "offending": "#92400e",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/components"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/StagingBanner.tsx",
+      "line": 37,
+      "offending": "#fef3c7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/StagingBanner.tsx",
+      "line": 55,
+      "offending": "#fca5a5",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/UpgradeGate.tsx",
+      "line": 41,
+      "offending": "brand-specific",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/UpgradeGate.tsx",
+      "line": 57,
+      "offending": "brand-specific",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/UpgradeGate.tsx",
+      "line": 119,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src/components"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/ai/ChatPanel.tsx",
+      "line": 113,
+      "offending": "#6B4F52",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src/components/ai"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/BrandHealthMonitor.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/CategoryIntelligence.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/CompetitiveBenchmarking.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/CompetitiveBenchmarking.tsx",
+      "line": 107,
+      "offending": "brand-signal",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/ConfidenceProvenance.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/index.ts",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/KPIStrip.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/LocalMarketView.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/OpportunitySignals.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/SignalTable.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/TrendStacks.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/cloud/WhatChangedTimeline.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 39,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 40,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 40,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 40,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 43,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 48,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 60,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 65,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/BigStatBannerModule.tsx",
+      "line": 68,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 16,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 19,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 23,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 27,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 28,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/CTASectionModule.tsx",
+      "line": 30,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 21,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 21,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 22,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 23,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 50,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EditorialScrollModule.tsx",
+      "line": 53,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 66,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 70,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 89,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 89,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 89,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 89,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EmailCaptureModule.tsx",
+      "line": 111,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/EvidenceStripModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EvidenceStripModule.tsx",
+      "line": 19,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EvidenceStripModule.tsx",
+      "line": 19,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EvidenceStripModule.tsx",
+      "line": 20,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EvidenceStripModule.tsx",
+      "line": 21,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/EvidenceStripModule.tsx",
+      "line": 22,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 28,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 28,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 29,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 30,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 31,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 61,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 63,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 63,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 71,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/FeaturedCardGridModule.tsx",
+      "line": 74,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/freshness.ts",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 50,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 51,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 54,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 81,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 91,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/HeroMediaRailModule.tsx",
+      "line": 96,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/ImageMosaicModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ImageMosaicModule.tsx",
+      "line": 15,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ImageMosaicModule.tsx",
+      "line": 15,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ImageMosaicModule.tsx",
+      "line": 16,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ImageMosaicModule.tsx",
+      "line": 58,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/ImageWithFallback.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/index.ts",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 57,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 57,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 58,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 59,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 60,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 61,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 62,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/KPIStripModule.tsx",
+      "line": 76,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 13,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 13,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 14,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 31,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 31,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 32,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 48,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/ModuleStates.tsx",
+      "line": 48,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 15,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 15,
+      "offending": "#8FAEC4",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 15,
+      "offending": "#8FAEC4",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 20,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 20,
+      "offending": "#8FAEC4",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 20,
+      "offending": "#8FAEC4",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 78,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 79,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 81,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 85,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 86,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 98,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 99,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 105,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 107,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 111,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/NewsTickerModule.tsx",
+      "line": 117,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 28,
+      "offending": "#9ca3af",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 77,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 77,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 78,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 79,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 80,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 80,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 81,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 82,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 83,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 84,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 85,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SignalTableModule.tsx",
+      "line": 85,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 29,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 30,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 38,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 38,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 47,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 47,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 47,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SocialProofModule.tsx",
+      "line": 48,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/SpotlightPanelModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SpotlightPanelModule.tsx",
+      "line": 21,
+      "offending": "#1F2428",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SpotlightPanelModule.tsx",
+      "line": 21,
+      "offending": "#FAF9F7",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SpotlightPanelModule.tsx",
+      "line": 22,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SpotlightPanelModule.tsx",
+      "line": 23,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/SpotlightPanelModule.tsx",
+      "line": 51,
+      "offending": "#3F5465",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/StickyConversionBarModule.tsx",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/StickyConversionBarModule.tsx",
+      "line": 31,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/StickyConversionBarModule.tsx",
+      "line": 42,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/StickyConversionBarModule.tsx",
+      "line": 43,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/StickyConversionBarModule.tsx",
+      "line": 65,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/components/intelligence/modules/StickyConversionBarModule.tsx",
+      "line": 65,
+      "offending": "#F7F5F2",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/types.ts",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/intelligence/modules/useModuleAdapters.ts",
+      "line": 1,
+      "offending": "INTEL-01",
+      "replacement": "text-graphite",
+      "directory": "src/components/intelligence/modules"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/Button.tsx",
+      "line": 17,
+      "offending": "bg-brand-surface-alt",
+      "replacement": "bg-accent-soft",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/Button.tsx",
+      "line": 21,
+      "offending": "bg-brand-surface-alt",
+      "replacement": "bg-accent-soft",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/DarkPanel.tsx",
+      "line": 12,
+      "offending": "bg-intel-dark",
+      "replacement": "bg-background",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/DarkPanel.tsx",
+      "line": 12,
+      "offending": "border-intel-border",
+      "replacement": "text-graphite",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/DarkPanel.tsx",
+      "line": 17,
+      "offending": "intel-dark",
+      "replacement": "text-graphite",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/EmptyState.tsx",
+      "line": 18,
+      "offending": "bg-brand-surface-alt",
+      "replacement": "bg-accent-soft",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 11,
+      "offending": "bg-intel-up",
+      "replacement": "text-signal-up",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 11,
+      "offending": "text-intel-up",
+      "replacement": "text-signal-up",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 12,
+      "offending": "bg-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 12,
+      "offending": "text-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 13,
+      "offending": "bg-intel-text",
+      "replacement": "bg-background",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 13,
+      "offending": "text-intel-text",
+      "replacement": "text-graphite",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 14,
+      "offending": "bg-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 14,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 15,
+      "offending": "bg-edu-primary",
+      "replacement": "bg-accent",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/GlowBadge.tsx",
+      "line": 15,
+      "offending": "text-edu-primary",
+      "replacement": "text-accent",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/components/ui/StatCard.tsx",
+      "line": 32,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src/components/ui"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/data/appFeatureGuide.ts",
+      "line": 156,
+      "offending": "Brand-level",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/data"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/data/appFeatureGuide.ts",
+      "line": 161,
+      "offending": "brand-specific",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/data"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/data/appFeatureGuide.ts",
+      "line": 298,
+      "offending": "brand-kit",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/data"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/platformConfig.ts",
+      "line": 3,
+      "offending": "brand-specific",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/platformConfig.ts",
+      "line": 117,
+      "offending": "#059669",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src/lib"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/platformConfig.ts",
+      "line": 128,
+      "offending": "#3b82f6",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/lib"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/ai/mockAdvisor.ts",
+      "line": 243,
+      "offending": "brand-related",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/ai"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/analysis/creditGate.ts",
+      "line": 7,
+      "offending": "INTEL-02",
+      "replacement": "text-graphite",
+      "directory": "src/lib/analysis"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/analysis/signalEnrichment.ts",
+      "line": 103,
+      "offending": "brand-filtered",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/analysis"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 178,
+      "offending": "mock-brand-001",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/brandTiers"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 191,
+      "offending": "mock-brand-001",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/brandTiers"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 262,
+      "offending": "mock-brand-001",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/brandTiers"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/brandTiers/mockTierData.ts",
+      "line": 323,
+      "offending": "mock-brand-001",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/brandTiers"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 8,
+      "offending": "edu-tp-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 22,
+      "offending": "edu-tp-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 36,
+      "offending": "edu-tp-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 49,
+      "offending": "edu-tp-004",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 63,
+      "offending": "edu-tp-005",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 78,
+      "offending": "edu-is-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 92,
+      "offending": "edu-is-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 105,
+      "offending": "edu-is-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 119,
+      "offending": "edu-is-004",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 134,
+      "offending": "edu-bo-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 147,
+      "offending": "edu-bo-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 160,
+      "offending": "edu-bo-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 173,
+      "offending": "edu-bo-004",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 189,
+      "offending": "edu-cr-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 203,
+      "offending": "edu-cr-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 217,
+      "offending": "edu-cr-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 233,
+      "offending": "edu-dt-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 247,
+      "offending": "edu-dt-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 262,
+      "offending": "edu-rs-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 275,
+      "offending": "edu-rs-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 288,
+      "offending": "edu-rs-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 305,
+      "offending": "edu-tp-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 306,
+      "offending": "edu-tp-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 307,
+      "offending": "edu-is-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 308,
+      "offending": "edu-cr-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 309,
+      "offending": "edu-bo-004",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/education/mockContent.ts",
+      "line": 310,
+      "offending": "edu-cr-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/education"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/adminIntelligence.ts",
+      "line": 294,
+      "offending": "brand-certified",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+      "line": 4,
+      "offending": "brand-specific",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+      "line": 299,
+      "offending": "Pro-tier",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 255,
+      "offending": "#8C6B6E",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 256,
+      "offending": "#D4A44C",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 257,
+      "offending": "#3B82F6",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 258,
+      "offending": "#22C55E",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 259,
+      "offending": "#A855F7",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 260,
+      "offending": "#94A3B8",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 353,
+      "offending": "edu-tp-002",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 354,
+      "offending": "edu-is-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 355,
+      "offending": "edu-bo-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 356,
+      "offending": "edu-cr-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 357,
+      "offending": "edu-tp-004",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 358,
+      "offending": "edu-rs-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 359,
+      "offending": "edu-bo-004",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "line": 360,
+      "offending": "edu-dt-001",
+      "replacement": "text-graphite",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/mockSignals.ts",
+      "line": 64,
+      "offending": "c-pro-backbar",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/mockSignals.ts",
+      "line": 226,
+      "offending": "clinical-brand-expansion",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/intelligence/mockSignals.ts",
+      "line": 383,
+      "offending": "brand-certified",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/protocols/mockProtocols.ts",
+      "line": 409,
+      "offending": "Pro-Heal",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/lib/protocols"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/protocols/mockProtocols.ts",
+      "line": 576,
+      "offending": "edu-003",
+      "replacement": "text-graphite",
+      "directory": "src/lib/protocols"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/lib/protocols/mockProtocols.ts",
+      "line": 594,
+      "offending": "edu-007",
+      "replacement": "text-graphite",
+      "directory": "src/lib/protocols"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/AdminApiControls.tsx",
+      "line": 335,
+      "offending": "#7A5555",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/AdminBrandList.tsx",
+      "line": 34,
+      "offending": "admin-brand-list",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/AdminBrandList.tsx",
+      "line": 246,
+      "offending": "#475569",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/AdminBrandList.tsx",
+      "line": 253,
+      "offending": "#475569",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/AdminSeeding.tsx",
+      "line": 265,
+      "offending": "brand-slug",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 150,
+      "offending": "#3B82F6",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 151,
+      "offending": "#8B5CF6",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 152,
+      "offending": "#10B981",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 153,
+      "offending": "#F9FAFB",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 154,
+      "offending": "#111827",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 192,
+      "offending": "brand-editor",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 246,
+      "offending": "brand-page-modules",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 267,
+      "offending": "brand-publish-stats",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 799,
+      "offending": "brand-slug",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 1113,
+      "offending": "brand-builder-modules",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 1689,
+      "offending": "brand-protocols-config",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 1773,
+      "offending": "brand-products-config",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 2335,
+      "offending": "brand-media-assets",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 2398,
+      "offending": "brand-assets",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 2409,
+      "offending": "brand-assets",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 2772,
+      "offending": "brand-assets",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 2775,
+      "offending": "brand-assets",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 3126,
+      "offending": "brand-training-modules",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 3479,
+      "offending": "brand-commercial-assets",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 3807,
+      "offending": "brand-shop-settings",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 4075,
+      "offending": "#1e293b",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 4076,
+      "offending": "#475569",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 4077,
+      "offending": "#3b82f6",
+      "replacement": "#6E879B (accent)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 4078,
+      "offending": "#f8fafc",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "line": 4079,
+      "offending": "#0f172a",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/BrandHub.tsx",
+      "line": 46,
+      "offending": "admin-brand-hub",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/admin/BrandHub.tsx",
+      "line": 65,
+      "offending": "#1E3A5F",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/admin"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/brand-hub/HubAnalytics.tsx",
+      "line": 31,
+      "offending": "brand-hub-analytics",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin/brand-hub"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/brand-hub/HubOrders.tsx",
+      "line": 30,
+      "offending": "brand-hub-orders",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin/brand-hub"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/brand-hub/HubProducts.tsx",
+      "line": 23,
+      "offending": "brand-hub-products",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin/brand-hub"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/brand-hub/HubRetailers.tsx",
+      "line": 23,
+      "offending": "brand-hub-retailers",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin/brand-hub"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/admin/brand-hub/HubSettings.tsx",
+      "line": 44,
+      "offending": "brand-hub-settings",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/admin/brand-hub"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/ClaimReview.tsx",
+      "line": 23,
+      "offending": "brand-seed-content",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Customers.tsx",
+      "line": 37,
+      "offending": "brand-customers",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Dashboard.tsx",
+      "line": 168,
+      "offending": "brand-dashboard",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "line": 312,
+      "offending": "brand-intelligence-report",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "line": 412,
+      "offending": "brand-intelligence-report",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Leads.tsx",
+      "line": 21,
+      "offending": "brand-leads",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Messages.tsx",
+      "line": 164,
+      "offending": "brand-conversations",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Messages.tsx",
+      "line": 254,
+      "offending": "brand-conversations",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Messages.tsx",
+      "line": 269,
+      "offending": "brand-thread",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/OrderDetail.tsx",
+      "line": 97,
+      "offending": "brand-order-detail",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/OrderDetail.tsx",
+      "line": 183,
+      "offending": "brand-order-detail",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/OrderDetail.tsx",
+      "line": 236,
+      "offending": "brand-order-detail",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Orders.tsx",
+      "line": 39,
+      "offending": "brand-orders",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/brand/Performance.tsx",
+      "line": 13,
+      "offending": "#1E3A5F",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Performance.tsx",
+      "line": 211,
+      "offending": "brand-performance",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Pipeline.tsx",
+      "line": 37,
+      "offending": "brand-pipeline",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Pipeline.tsx",
+      "line": 79,
+      "offending": "brand-pipeline",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Plans.tsx",
+      "line": 23,
+      "offending": "brand-plans",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Products.tsx",
+      "line": 553,
+      "offending": "brand-products",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Products.tsx",
+      "line": 617,
+      "offending": "brand-products",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Storefront.tsx",
+      "line": 41,
+      "offending": "brand-storefront",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/brand/Storefront.tsx",
+      "line": 123,
+      "offending": "brand-storefront",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/brand"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 31,
+      "offending": "bg-intel-up",
+      "replacement": "text-signal-up",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 33,
+      "offending": "bg-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 37,
+      "offending": "text-intel-up",
+      "replacement": "text-signal-up",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 39,
+      "offending": "text-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 88,
+      "offending": "#22C55E",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 88,
+      "offending": "#EF4444",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 88,
+      "offending": "#F59E0B",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 188,
+      "offending": "bg-intel-dark",
+      "replacement": "bg-background",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 198,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 247,
+      "offending": "text-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 250,
+      "offending": "text-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 271,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 271,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 312,
+      "offending": "text-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 312,
+      "offending": "text-intel-down",
+      "replacement": "text-signal-down",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 352,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "line": 352,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 143,
+      "offending": "brand-detail",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 351,
+      "offending": "#1E3A5F",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 351,
+      "offending": "#2D2D2D",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 351,
+      "offending": "#6B6560",
+      "replacement": "#8E6464 (signal-down)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 351,
+      "offending": "#C5A572",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 351,
+      "offending": "#F5F1EC",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 707,
+      "offending": "bg-intel-up",
+      "replacement": "text-signal-up",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/BrandDetail.tsx",
+      "line": 707,
+      "offending": "text-intel-up",
+      "replacement": "text-signal-up",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/CECredits.tsx",
+      "line": 39,
+      "offending": "edu-003",
+      "replacement": "text-graphite",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/CECredits.tsx",
+      "line": 40,
+      "offending": "edu-007",
+      "replacement": "text-graphite",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 49,
+      "offending": "bg-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 49,
+      "offending": "l-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 49,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 49,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 334,
+      "offending": "bg-intel-dark",
+      "replacement": "bg-background",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 335,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 210,
+      "offending": "#c9963f",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 210,
+      "offending": "#D4A44C",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 212,
+      "offending": "#bfb9b0",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 212,
+      "offending": "#D6D1C9",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 213,
+      "offending": "#d4a87a",
+      "replacement": "#A97A4C (signal-warn)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 213,
+      "offending": "#e8c4a0",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/MarketingAnalytics.tsx",
+      "line": 221,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/MarketingAnalytics.tsx",
+      "line": 228,
+      "offending": "bg-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 353,
+      "offending": "bg-intel-dark",
+      "replacement": "bg-background",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 354,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 407,
+      "offending": "brand-protocol",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 428,
+      "offending": "bg-brand-border",
+      "replacement": "bg-background",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 428,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 474,
+      "offending": "border-brand-border",
+      "replacement": "border-graphite/20",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 474,
+      "offending": "divide-brand-border",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 476,
+      "offending": "bg-brand-surface-alt",
+      "replacement": "bg-accent-soft",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 214,
+      "offending": "bg-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 215,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 248,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 249,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 254,
+      "offending": "bg-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 254,
+      "offending": "text-intel-accent",
+      "replacement": "text-accent",
+      "directory": "src/pages/business"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/pages/business/studio/CourseBuilder.tsx",
+      "line": 1093,
+      "offending": "#4A7A5F",
+      "replacement": "#5F8A72 (signal-up)",
+      "directory": "src/pages/business/studio"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/Brands.tsx",
+      "line": 146,
+      "offending": "socelle-brand-directory",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/Brands.tsx",
+      "line": 183,
+      "offending": "brand-mentions",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/Brands.tsx",
+      "line": 376,
+      "offending": "brand-search",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/Brands.tsx",
+      "line": 411,
+      "offending": "brand-search",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/BrandStorefront.tsx",
+      "line": 763,
+      "offending": "brand-storefront",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/BrandStorefront.tsx",
+      "line": 966,
+      "offending": "Brand-specific",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/BrandStorefront.tsx",
+      "line": 968,
+      "offending": "brand-signals",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/FAQ.tsx",
+      "line": 84,
+      "offending": "intel-1",
+      "replacement": "text-graphite",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/FAQ.tsx",
+      "line": 91,
+      "offending": "intel-2",
+      "replacement": "text-graphite",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/FAQ.tsx",
+      "line": 98,
+      "offending": "intel-3",
+      "replacement": "text-graphite",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/FAQ.tsx",
+      "line": 105,
+      "offending": "intel-4",
+      "replacement": "text-graphite",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/HowItWorks.tsx",
+      "line": 58,
+      "offending": "Brand-authored",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/Professionals.tsx",
+      "line": 285,
+      "offending": "pro-search",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "legacy-token",
+      "file": "src/pages/public/Professionals.tsx",
+      "line": 309,
+      "offending": "pro-search",
+      "replacement": "map manually to Pearl Mineral V2 token",
+      "directory": "src/pages/public"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 20,
+      "offending": "#343438",
+      "replacement": "#141418 (graphite)",
+      "directory": "src/styles"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 21,
+      "offending": "#6E6E74",
+      "replacement": "#5A7185 (accent-hover)",
+      "directory": "src/styles"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 23,
+      "offending": "#EFEBE6",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src/styles"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 24,
+      "offending": "#DDD8D2",
+      "replacement": "#E8EDF1 (accent-soft)",
+      "directory": "src/styles"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 25,
+      "offending": "#FFFFFF",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/styles"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 26,
+      "offending": "#F8F5F1",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/styles"
+    },
+    {
+      "type": "hardcoded-hex",
+      "file": "src/styles/socelle-cleanroom.css",
+      "line": 202,
+      "offending": "#fff",
+      "replacement": "#F6F3EF (background)",
+      "directory": "src/styles"
+    }
+  ],
+  "banned_term_findings": [
+    {
+      "file": "src/App.tsx",
+      "line": 118,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 188,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 609,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 984,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 985,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 1017,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 1069,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src"
+    },
+    {
+      "file": "src/components/BusinessNav.tsx",
+      "line": 45,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/BusinessNav.tsx",
+      "line": 56,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/BusinessNav.tsx",
+      "line": 127,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/DevOnlyMasterLinks.tsx",
+      "line": 15,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/DevOnlyMasterLinks.tsx",
+      "line": 18,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/IngestionView.tsx",
+      "line": 426,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/MainNav.tsx",
+      "line": 154,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/MainNav.tsx",
+      "line": 162,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/MainNav.tsx",
+      "line": 275,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/MainNav.tsx",
+      "line": 284,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/UpgradeGate.tsx",
+      "line": 63,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components"
+    },
+    {
+      "file": "src/components/intelligence/cloud/BrandHealthMonitor.tsx",
+      "line": 2,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/components/intelligence/cloud"
+    },
+    {
+      "file": "src/data/appFeatureGuide.ts",
+      "line": 315,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/appFeatureGuide.ts",
+      "line": 358,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 80,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 136,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 143,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 188,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 205,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 206,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 208,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 212,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 214,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 220,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 243,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 273,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 282,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 284,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 335,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/data/pageIndex.ts",
+      "line": 353,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/data"
+    },
+    {
+      "file": "src/layouts/AdminLayout.tsx",
+      "line": 53,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/AdminLayout.tsx",
+      "line": 84,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/AdminLayout.tsx",
+      "line": 190,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/AdminLayout.tsx",
+      "line": 312,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/BrandLayout.tsx",
+      "line": 37,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/BrandLayout.tsx",
+      "line": 112,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/BusinessLayout.tsx",
+      "line": 55,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/layouts/MarketingLayout.tsx",
+      "line": 24,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/layouts"
+    },
+    {
+      "file": "src/lib/aiConciergeEngine.ts",
+      "line": 297,
+      "offending": "holistic",
+      "replacement": "complete / comprehensive",
+      "directory": "src/lib"
+    },
+    {
+      "file": "src/lib/analyticsService.ts",
+      "line": 29,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib"
+    },
+    {
+      "file": "src/lib/analyticsService.ts",
+      "line": 132,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib"
+    },
+    {
+      "file": "src/lib/analyticsService.ts",
+      "line": 187,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib"
+    },
+    {
+      "file": "src/lib/ai/mockAdvisor.ts",
+      "line": 256,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib/ai"
+    },
+    {
+      "file": "src/lib/i18n/regions.ts",
+      "line": 211,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib/i18n"
+    },
+    {
+      "file": "src/lib/i18n/types.ts",
+      "line": 53,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib/i18n"
+    },
+    {
+      "file": "src/lib/intelligence/benchmarkTypes.ts",
+      "line": 2,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "file": "src/lib/intelligence/useBenchmarkData.ts",
+      "line": 1,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/lib/intelligence"
+    },
+    {
+      "file": "src/pages/admin/AdminDashboard.tsx",
+      "line": 321,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin"
+    },
+    {
+      "file": "src/pages/admin/AdminDashboard.tsx",
+      "line": 325,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin"
+    },
+    {
+      "file": "src/pages/admin/AdminLogin.tsx",
+      "line": 23,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin"
+    },
+    {
+      "file": "src/pages/admin/AdminShellDetection.tsx",
+      "line": 76,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin"
+    },
+    {
+      "file": "src/pages/admin/AdminShellDetection.tsx",
+      "line": 156,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin"
+    },
+    {
+      "file": "src/pages/admin/AdminShellDetection.tsx",
+      "line": 191,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin"
+    },
+    {
+      "file": "src/pages/admin/cms/CmsDashboard.tsx",
+      "line": 2,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin/cms"
+    },
+    {
+      "file": "src/pages/admin/cms/CmsDashboard.tsx",
+      "line": 69,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin/cms"
+    },
+    {
+      "file": "src/pages/admin/cms/CmsDashboard.tsx",
+      "line": 82,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin/cms"
+    },
+    {
+      "file": "src/pages/admin/cms/CmsDashboard.tsx",
+      "line": 93,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/admin/cms"
+    },
+    {
+      "file": "src/pages/brand/ClaimReview.tsx",
+      "line": 48,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/ClaimReview.tsx",
+      "line": 76,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/ClaimReview.tsx",
+      "line": 132,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Dashboard.tsx",
+      "line": 168,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Dashboard.tsx",
+      "line": 338,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Login.tsx",
+      "line": 22,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Login.tsx",
+      "line": 26,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Onboarding.tsx",
+      "line": 315,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Onboarding.tsx",
+      "line": 317,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Onboarding.tsx",
+      "line": 318,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Onboarding.tsx",
+      "line": 343,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/brand/Onboarding.tsx",
+      "line": 346,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/brand"
+    },
+    {
+      "file": "src/pages/business/Apply.tsx",
+      "line": 162,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Apply.tsx",
+      "line": 163,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Apply.tsx",
+      "line": 344,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ClaimReview.tsx",
+      "line": 48,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ClaimReview.tsx",
+      "line": 78,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ClaimReview.tsx",
+      "line": 134,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/CommissionsDashboard.tsx",
+      "line": 14,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/CrmDashboard.tsx",
+      "line": 17,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/CrmDashboard.tsx",
+      "line": 297,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 55,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 59,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Dashboard.tsx",
+      "line": 162,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "line": 1,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Login.tsx",
+      "line": 35,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Login.tsx",
+      "line": 39,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Login.tsx",
+      "line": 87,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/MarketingDashboard.tsx",
+      "line": 21,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 34,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/PortalHome.tsx",
+      "line": 37,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ResellerDashboard.tsx",
+      "line": 16,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ResellerDashboard.tsx",
+      "line": 56,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ResellerDashboard.tsx",
+      "line": 64,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ResellerRevenue.tsx",
+      "line": 16,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/ResellerRevenue.tsx",
+      "line": 72,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/SalesDashboard.tsx",
+      "line": 15,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/SalesDashboard.tsx",
+      "line": 93,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/Signup.tsx",
+      "line": 65,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business"
+    },
+    {
+      "file": "src/pages/business/affiliates/AffiliateDashboard.tsx",
+      "line": 16,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/affiliates"
+    },
+    {
+      "file": "src/pages/business/affiliates/AffiliateLinks.tsx",
+      "line": 84,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/affiliates"
+    },
+    {
+      "file": "src/pages/business/credits/CreditDashboard.tsx",
+      "line": 16,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/credits"
+    },
+    {
+      "file": "src/pages/business/credits/CreditPurchase.tsx",
+      "line": 41,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/credits"
+    },
+    {
+      "file": "src/pages/business/marketing/MarketingDashboard.tsx",
+      "line": 20,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/marketing"
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingComplete.tsx",
+      "line": 87,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/onboarding"
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingComplete.tsx",
+      "line": 91,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/business/onboarding"
+    },
+    {
+      "file": "src/pages/dev/MasterIndex.tsx",
+      "line": 266,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/dev"
+    },
+    {
+      "file": "src/pages/education/CECreditDashboard.tsx",
+      "line": 3,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/education"
+    },
+    {
+      "file": "src/pages/education/StaffTraining.tsx",
+      "line": 3,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/education"
+    },
+    {
+      "file": "src/pages/education/StaffTraining.tsx",
+      "line": 119,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/education"
+    },
+    {
+      "file": "src/pages/education/author/AuthorDashboard.tsx",
+      "line": 50,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/education/author"
+    },
+    {
+      "file": "src/pages/education/author/CourseBuilder.tsx",
+      "line": 373,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/education/author"
+    },
+    {
+      "file": "src/pages/marketing/MarketingDashboard.tsx",
+      "line": 6,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/marketing"
+    },
+    {
+      "file": "src/pages/marketing/MarketingDashboard.tsx",
+      "line": 47,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/marketing"
+    },
+    {
+      "file": "src/pages/public/ApiDocs.tsx",
+      "line": 297,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/ApiDocs.tsx",
+      "line": 308,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/ApiPricing.tsx",
+      "line": 38,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/BrandStorefront.tsx",
+      "line": 1090,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/FAQ.tsx",
+      "line": 160,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/ForBrands.tsx",
+      "line": 352,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/Intelligence.tsx",
+      "line": 243,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/public/Plans.tsx",
+      "line": 56,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/public"
+    },
+    {
+      "file": "src/pages/sales/CommissionDashboard.tsx",
+      "line": 13,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/sales"
+    },
+    {
+      "file": "src/pages/sales/SalesDashboard.tsx",
+      "line": 19,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/sales"
+    },
+    {
+      "file": "src/pages/sales/SalesDashboard.tsx",
+      "line": 168,
+      "offending": "dashboard",
+      "replacement": "Control Center / Intelligence Hub",
+      "directory": "src/pages/sales"
+    }
+  ]
+}

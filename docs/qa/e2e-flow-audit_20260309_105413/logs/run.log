@@ -1,0 +1,14 @@
+[start] 2026-03-09T16:54:13.869Z
+[config] baseUrl=http://127.0.0.1:4173
+[server] no running server detected; starting SOCELLE-WEB dev server
+[server] dev server started
+[session:start] public routes=40
+[session:done] public success=false blocked=false
+[session:start] professional routes=28
+[session:done] professional success=false blocked=true
+[session:start] brand routes=22
+[session:done] brand success=false blocked=true
+[session:start] admin routes=24
+[session:done] admin success=false blocked=true
+[report] docs/qa/e2e-flow-audit_20260309_105413.json
+[done] 2026-03-09T17:05:44.477Z

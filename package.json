@@ -11,16 +11,21 @@
         "build": "turbo run build",
         "lint": "turbo run lint",
         "typecheck": "turbo run typecheck",
-        "dev:marketing": "turbo run dev --filter=marketing-site",
-        "dev:portal": "turbo run dev --filter=web-portal",
-        "build:marketing": "turbo run build --filter=marketing-site",
-        "build:portal": "turbo run build --filter=web-portal"
-    },
+    "dev:marketing": "turbo run dev --filter=marketing-site",
+    "dev:portal": "turbo run dev --filter=web-portal",
+    "build:marketing": "turbo run build --filter=marketing-site",
+    "build:portal": "turbo run build --filter=web-portal",
+    "audit:flow": "node tools/e2e-flow-auditor/run.js"
+  },
     "devDependencies": {
+        "@types/fabric": "^5.3.11",
         "turbo": "^2.3.3"
     },
     "engines": {
         "node": ">=20.0.0"
     },
-    "packageManager": "npm@10.8.1"
+    "packageManager": "npm@10.8.1",
+    "dependencies": {
+        "fabric": "^7.2.0"
+    }
 }
