@@ -1,6 +1,6 @@
 # SOCELLE GLOBAL — INVENTORY REPORT
 
-**Generated:** 2026-03-09T03:19:22.615Z
+**Generated:** 2026-03-09T03:42:15.512Z
 **Generator:** `scripts/generate-inventory.mjs`
 **Rule:** Regenerate before each build (`npm run inventory`)
 
@@ -19,7 +19,7 @@
 | Migrations | 160 |
 | Unit test files | 16 |
 | E2E spec files | 9 |
-| Installed skills | 97 |
+| Installed skills | 123 |
 
 ## Quality Gates
 
