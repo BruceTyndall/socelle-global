@@ -15,9 +15,11 @@ class SocelleTheme {
   static const mnDark = Color(0xFF1F2428);
   static const accent = Color(0xFF6E879B);
   static const warmIvory = Color(0xFFF7F5F2);
-  static const signalUp = Color(0xFF22C55E);
-  static const signalDown = Color(0xFFEF4444);
-  static const signalWarn = Color(0xFFF59E0B);
+  // Signal colors — Pearl Mineral V2 doctrine (FOUND-WO-09)
+  // Synced with web: signal.up=#5F8A72, signal.down=#8E6464, signal.warn=#A97A4C
+  static const signalUp = Color(0xFF5F8A72);
+  static const signalDown = Color(0xFF8E6464);
+  static const signalWarn = Color(0xFFA97A4C);
   static const pearlWhite = Color(0xFFFFFFFF);
 
   // Extended palette

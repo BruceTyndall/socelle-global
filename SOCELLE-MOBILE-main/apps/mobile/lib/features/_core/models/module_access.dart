@@ -2,9 +2,10 @@
 // SOCELLE — Module Access & Subscription Data Models
 // ═══════════════════════════════════════════════════════════════════════════
 //
-// Canonical module keys:
+// Canonical module keys (FOUND-WO-10 — added BOOKING, BRANDS, JOBS, EVENTS, STUDIO):
 //   MODULE_SHOP, MODULE_INGREDIENTS, MODULE_EDUCATION, MODULE_SALES,
-//   MODULE_MARKETING, MODULE_RESELLER, MODULE_CRM, MODULE_MOBILE
+//   MODULE_MARKETING, MODULE_RESELLER, MODULE_CRM, MODULE_MOBILE,
+//   MODULE_BOOKING, MODULE_BRANDS, MODULE_JOBS, MODULE_EVENTS, MODULE_STUDIO
 //
 // These models map to the Supabase tables:
 //   account_module_access, account_subscriptions, subscription_plans
@@ -268,6 +269,42 @@ class ModuleInfo {
       description:
           'Full mobile app access with push notifications and offline support.',
       iconName: 'phone_iphone',
+    ),
+    // ── FOUND-WO-10: Added missing module keys ──
+    'MODULE_BOOKING': ModuleInfo(
+      key: 'MODULE_BOOKING',
+      name: 'Booking',
+      description:
+          'Appointment scheduling, calendar management, and client booking flows.',
+      iconName: 'calendar_today',
+    ),
+    'MODULE_BRANDS': ModuleInfo(
+      key: 'MODULE_BRANDS',
+      name: 'Brands',
+      description:
+          'Brand directory, competitive intelligence, and product catalogs.',
+      iconName: 'verified',
+    ),
+    'MODULE_JOBS': ModuleInfo(
+      key: 'MODULE_JOBS',
+      name: 'Jobs',
+      description:
+          'Job board for professional beauty roles with talent matching.',
+      iconName: 'work',
+    ),
+    'MODULE_EVENTS': ModuleInfo(
+      key: 'MODULE_EVENTS',
+      name: 'Events',
+      description:
+          'Industry events, trade shows, and continuing education workshops.',
+      iconName: 'event',
+    ),
+    'MODULE_STUDIO': ModuleInfo(
+      key: 'MODULE_STUDIO',
+      name: 'Studio',
+      description:
+          'Content authoring studio for creating branded materials and courses.',
+      iconName: 'design_services',
     ),
   };
 

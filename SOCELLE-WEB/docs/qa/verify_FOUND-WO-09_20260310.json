@@ -1,0 +1,14 @@
+{
+  "wo_id": "FOUND-WO-09",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "description": "Fix mobile signal colors to match Pearl Mineral V2 doctrine",
+  "skills_run": ["mobile-parity-checker"],
+  "results": {
+    "mobile-parity-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "socelle_theme.dart signal colors updated: signalUp 0xFF22C55E → 0xFF5F8A72 (matches web signal.up #5F8A72), signalDown 0xFFEF4444 → 0xFF8E6464 (matches web signal.down #8E6464), signalWarn 0xFFF59E0B → 0xFFA97A4C (matches web signal.warn #A97A4C). All 60+ references across mobile features now use Pearl Mineral V2 doctrine colors."
+    }
+  },
+  "overall": "PASS"
+}

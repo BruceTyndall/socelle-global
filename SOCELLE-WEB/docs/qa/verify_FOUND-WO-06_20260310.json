@@ -1,0 +1,19 @@
+{
+  "wo_id": "FOUND-WO-06",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "description": "Universal font system (CSS variable-based)",
+  "skills_run": ["build-gate", "token-drift-scanner"],
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc --noEmit = 0 errors, npm run build = success (4.99s)"
+    },
+    "token-drift-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "CSS variables defined in index.css :root — --font-primary (General Sans), --font-display (General Sans), --font-mono (JetBrains Mono). Tailwind config wired: font-sans → var(--font-primary), font-display → var(--font-display), font-mono → var(--font-mono). 0 font-serif in src/. Change one CSS variable = change all fonts site-wide."
+    }
+  },
+  "overall": "PASS"
+}

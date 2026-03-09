@@ -45,11 +45,13 @@
   --shadow-soft:          0 8px 24px rgba(19, 24, 29, 0.06);
   --shadow-panel:         0 20px 60px rgba(19, 24, 29, 0.12);
 
-  /* Fonts — General Sans locked primary (CANONICAL_DOCTRINE §4) */
-  --font-sans:            'General Sans', system-ui, -apple-system, sans-serif;
+  /* ── Universal Font System (FOUND-WO-06) ────────────────────────
+     Change one variable = change all fonts site-wide.
+     Tailwind font-sans → var(--font-primary) via tailwind.config.js.
+     ─────────────────────────────────────────────────────────────── */
+  --font-primary:         'General Sans', system-ui, -apple-system, sans-serif;
+  --font-display:         'General Sans', system-ui, -apple-system, sans-serif;
   --font-mono:            'JetBrains Mono', ui-monospace, monospace;
-  /* --font-sans kept for portal backward compat only — BANNED on public pages */
-  --font-sans:           'General Sans', Georgia, sans-serif;
 
   /* Motion */
   --transition-smooth:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

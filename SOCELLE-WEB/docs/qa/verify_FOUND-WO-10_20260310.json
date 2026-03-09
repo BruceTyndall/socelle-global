@@ -1,0 +1,14 @@
+{
+  "wo_id": "FOUND-WO-10",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "description": "Missing mobile MODULE_* keys (BOOKING, BRANDS, JOBS, EVENTS, STUDIO)",
+  "skills_run": ["mobile-parity-checker"],
+  "results": {
+    "mobile-parity-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "module_access.dart updated. Previous: 8 keys (SHOP, INGREDIENTS, EDUCATION, SALES, MARKETING, RESELLER, CRM, MOBILE). Now: 13 keys. Added MODULE_BOOKING (calendar_today), MODULE_BRANDS (verified), MODULE_JOBS (work), MODULE_EVENTS (event), MODULE_STUDIO (design_services) with full ModuleInfo registry entries."
+    }
+  },
+  "overall": "PASS"
+}

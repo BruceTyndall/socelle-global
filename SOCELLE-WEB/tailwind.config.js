@@ -97,14 +97,17 @@ export default {
         'ds-gray':   { 300: '#d1d5dc', 700: '#364153', 900: '#101828' },
       },
       fontFamily: {
+        // ── Universal Font System (FOUND-WO-06) ──────────────────────────
+        // All font usage goes through CSS variables. Change --font-primary
+        // in index.css = change ALL fonts site-wide without touching components.
         // Primary — General Sans via Fontshare CDN (ALL text on ALL public pages)
-        sans:    ['"General Sans"', 'system-ui', 'sans-serif'],
+        sans:    ['var(--font-primary)', 'system-ui', 'sans-serif'],
+        // Display — same as primary by default; override --font-display for editorial headlines
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
         // Mono — JetBrains Mono for data values, timestamps, deltas ONLY
-        mono:    ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
-        // Legacy aliases kept for portal backward compat — DO NOT USE on public pages
+        mono:    ['var(--font-mono)', 'ui-monospace', 'monospace'],
+        // Legacy alias — BANNED on public pages
         serif:   ['Georgia', 'serif'],       // was DM Serif Display — BANNED
-        display: ['Georgia', 'serif'],       // was DM Serif Display — BANNED
-        heading: ['Georgia', 'serif'],       // was Playfair Display — BANNED
       },
       fontSize: {
         // ── Mineral display scale ──
