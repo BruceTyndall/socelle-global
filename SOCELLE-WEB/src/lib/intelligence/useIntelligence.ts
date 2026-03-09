@@ -3,13 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
 
-// ── useIntelligence — V3 (W15-04): provenance columns + tier gating ──
-// Fetches live signals from market_signals table (active + non-expired).
+// ── useIntelligence — resilient live signal hook ──
+// Fetches live signals from market_signals (active + non-expired) using a
+// schema-safe column set so public pages do not hard-fail when optional
+// provenance columns are absent in the current environment.
 // Falls back to empty state when Supabase is unavailable.
 // Returns isLive flag so UI can show DEMO/PREVIEW banners accordingly.
-// V3: selects provenance fields (source_url, source_name, source_feed_id,
-//     confidence_score, tier_visibility, image_url, is_duplicate).
-//     Filters out duplicates. Applies tier gating based on userTier prop.
 // Migrated to TanStack Query v5 (V2-TECH-04).
 
 interface UseIntelligenceOptions {
@@ -32,51 +31,80 @@ interface UseIntelligenceReturn {
 
 interface MarketSignalRow {
   id: string;
-  signal_type: SignalType;
-  signal_key: string;
-  title: string;
-  description: string;
-  magnitude: number;
-  direction: 'up' | 'down' | 'stable';
+  signal_type: string | null;
+  signal_key: string | null;
+  title: string | null;
+  description: string | null;
+  magnitude: number | null;
+  direction: string | null;
   region: string | null;
   category: string | null;
   related_brands: string[] | null;
   related_products: string[] | null;
-  updated_at: string;
+  updated_at: string | null;
   source: string | null;
-  // W15-04: provenance + tier columns
-  source_url: string | null;
-  source_name: string | null;
-  source_feed_id: string | null;
+  source_type: string | null;
+  data_source: string | null;
   confidence_score: number | null;
-  tier_visibility: TierVisibility | null;
-  image_url: string | null;
-  is_duplicate: boolean;
+}
+
+const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
+  'product_velocity',
+  'treatment_trend',
+  'ingredient_momentum',
+  'brand_adoption',
+  'regional',
+  'pricing_benchmark',
+  'regulatory_alert',
+  'education',
+  'industry_news',
+  'brand_update',
+  'press_release',
+  'social_trend',
+  'job_market',
+  'event_signal',
+  'research_insight',
+  'ingredient_trend',
+  'market_data',
+  'regional_market',
+  'supply_chain',
+]);
+
+function normalizeSignalType(value: string | null): SignalType {
+  if (value && VALID_SIGNAL_TYPES.has(value as SignalType)) {
+    return value as SignalType;
+  }
+  return 'market_data';
+}
+
+function normalizeDirection(value: string | null): 'up' | 'down' | 'stable' {
+  if (value === 'up' || value === 'down' || value === 'stable') return value;
+  return 'stable';
 }
 
 function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
+  const resolvedSource = row.source ?? row.data_source ?? row.source_type ?? undefined;
+
   return {
     id: row.id,
-    signal_type: row.signal_type,
-    signal_key: row.signal_key,
-    title: row.title,
-    description: row.description,
-    magnitude: row.magnitude,
-    direction: row.direction,
+    signal_type: normalizeSignalType(row.signal_type),
+    signal_key: row.signal_key ?? `signal-${row.id}`,
+    title: row.title ?? 'Market signal',
+    description: row.description ?? '',
+    magnitude: typeof row.magnitude === 'number' ? row.magnitude : 0,
+    direction: normalizeDirection(row.direction),
     region: row.region ?? undefined,
     category: row.category ?? undefined,
     related_brands: row.related_brands ?? [],
     related_products: row.related_products ?? [],
-    updated_at: row.updated_at,
-    source: row.source ?? undefined,
-    // W15-04: provenance fields
-    source_url: row.source_url ?? undefined,
-    source_name: row.source_name ?? undefined,
-    source_feed_id: row.source_feed_id ?? undefined,
+    updated_at: row.updated_at ?? new Date().toISOString(),
+    source: resolvedSource,
+    source_name: row.data_source ?? row.source_type ?? row.source ?? undefined,
     confidence_score: row.confidence_score ?? undefined,
-    tier_visibility: row.tier_visibility ?? undefined,
-    image_url: row.image_url ?? undefined,
-    is_duplicate: row.is_duplicate,
+    // Older/leaner environments may not have tier/provenance columns; default
+    // to free visibility and non-duplicate for downstream UI compatibility.
+    tier_visibility: 'free' as TierVisibility,
+    is_duplicate: false,
   };
 }
 
@@ -105,15 +133,17 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       const { data, error } = await supabase
         .from('market_signals')
         .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_url, source_name, source_feed_id, confidence_score, tier_visibility, image_url, is_duplicate'
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, data_source, confidence_score'
         )
         .eq('active', true)
-        .eq('is_duplicate', false)
         .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
         .order('display_order', { ascending: true })
         .order('updated_at', { ascending: false });
 
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.warn('[useIntelligence] fetch error:', error.message);
+        return [];
+      }
       if (!data || data.length === 0) return [];
       return (data as MarketSignalRow[]).map(rowToSignal);
     },

@@ -1,6 +1,6 @@
 /**
  * useDataFeedStats — W13-05
- * Provides data_feeds table statistics for intelligence surfaces.
+ * Provides feed-like stats for intelligence surfaces.
  * Follows useIntelligence() canonical pattern: isLive + preview fallback.
  *
  * Data label: LIVE when DB-connected, PREVIEW when fallback.
@@ -48,51 +48,70 @@ interface FeedStatsResult {
   avgConfidence: number | null;
 }
 
+interface SignalStatsRow {
+  id: string;
+  category: string | null;
+  source: string | null;
+  source_type: string | null;
+  data_source: string | null;
+  confidence_score: number | null;
+  updated_at: string | null;
+}
+
 export function useDataFeedStats(): UseDataFeedStatsReturn {
   const { data, isLoading: loading } = useQuery({
     queryKey: ['data_feed_stats'],
     queryFn: async (): Promise<FeedStatsResult> => {
-      const [{ data: feedData, error }, { data: confidenceRows, error: confidenceError }] = await Promise.all([
-        supabase
-          .from('data_feeds')
-          .select('id, is_enabled, category, feed_type, signal_count, last_fetched_at, last_error'),
-        supabase
-          .from('market_signals')
-          .select('confidence_score')
-          .eq('active', true)
-          .not('confidence_score', 'is', null)
-          .limit(5000),
-      ]);
+      const { data, error } = await supabase
+        .from('market_signals')
+        .select('id, category, source, source_type, data_source, confidence_score, updated_at')
+        .eq('active', true)
+        .order('updated_at', { ascending: false })
+        .limit(5000);
 
-      if (error || !feedData) throw new Error(error?.message ?? 'Failed to fetch feed stats');
+      if (error) {
+        console.warn('[useDataFeedStats] fetch error:', error.message);
+        return { stats: EMPTY_STATS, avgConfidence: null };
+      }
 
-      const totalFeeds = feedData.length;
-      const enabledFeeds = feedData.filter((f) => f.is_enabled).length;
-      const totalSignals = feedData.reduce((sum, f) => sum + (f.signal_count || 0), 0);
+      const signalRows = (data ?? []) as SignalStatsRow[];
+      const totalSignals = signalRows.length;
+      const sourceKeys = new Set<string>();
 
       const feedsByCategory: Record<string, number> = {};
       const feedsByType: Record<string, number> = {};
 
-      for (const feed of feedData) {
-        feedsByCategory[feed.category] = (feedsByCategory[feed.category] || 0) + 1;
-        feedsByType[feed.feed_type] = (feedsByType[feed.feed_type] || 0) + 1;
+      for (const row of signalRows) {
+        const categoryKey = row.category ?? 'uncategorized';
+        const sourceTypeKey = row.source_type ?? 'unknown';
+        const sourceKey = row.data_source ?? row.source ?? row.source_type ?? null;
+
+        feedsByCategory[categoryKey] = (feedsByCategory[categoryKey] || 0) + 1;
+        feedsByType[sourceTypeKey] = (feedsByType[sourceTypeKey] || 0) + 1;
+        if (sourceKey) sourceKeys.add(sourceKey);
       }
 
-      const fetchedDates = feedData
-        .filter((f) => f.last_fetched_at)
-        .map((f) => new Date(f.last_fetched_at).getTime());
+      const totalFeeds = sourceKeys.size;
+      const enabledFeeds = totalFeeds;
+
+      const fetchedDates = signalRows
+        .filter((s) => s.updated_at)
+        .map((s) => new Date(s.updated_at as string).getTime())
+        .filter((ts) => Number.isFinite(ts));
+
       const lastOrchestratorRun =
         fetchedDates.length > 0
           ? new Date(Math.max(...fetchedDates)).toISOString()
           : null;
 
-      const feedsWithErrors = feedData.filter((f) => f.last_error).length;
-      const feedsNeverFetched = feedData.filter((f) => !f.last_fetched_at).length;
+      const confidenceValues = signalRows
+        .map((row) => row.confidence_score)
+        .filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
+
       const avgConfidence =
-        confidenceError || !confidenceRows || confidenceRows.length === 0
+        confidenceValues.length === 0
           ? null
-          : confidenceRows.reduce((sum, row) => sum + Number(row.confidence_score ?? 0), 0) /
-            confidenceRows.length;
+          : confidenceValues.reduce((sum, v) => sum + v, 0) / confidenceValues.length;
 
       return {
         stats: {
@@ -102,8 +121,8 @@ export function useDataFeedStats(): UseDataFeedStatsReturn {
           feedsByCategory,
           feedsByType,
           lastOrchestratorRun,
-          feedsWithErrors,
-          feedsNeverFetched,
+          feedsWithErrors: 0,
+          feedsNeverFetched: 0,
         },
         avgConfidence,
       };

@@ -46,6 +46,16 @@ export interface BrandSearchResult {
   category: string | null;
 }
 
+interface BrandSearchRow {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logo_url: string | null;
+  hero_image_url: string | null;
+  category_tags: string[] | null;
+}
+
 export interface SearchResponse<T> {
   data: T[];
   totalCount: number;
@@ -64,11 +74,11 @@ export async function searchBrands(
 
   let qb = supabase
     .from('brands')
-    .select('id, name, slug, description, logo_url, hero_image_url, category', { count: 'exact' })
+    .select('id, name, slug, description, logo_url, hero_image_url, category_tags', { count: 'exact' })
     .or('is_published.eq.true,status.eq.active');
 
   if (category && category !== 'all') {
-    qb = qb.ilike('category', `%${category}%`);
+    qb = qb.contains('category_tags', [category]);
   }
 
   if (query.trim()) {
@@ -97,7 +107,19 @@ export async function searchBrands(
   await logSearchAnalytics('brand', query, filters, totalCount);
 
   return {
-    data: (data as BrandSearchResult[]) ?? [],
+    data:
+      ((data as BrandSearchRow[]) ?? []).map((row) => ({
+        id: row.id,
+        name: row.name,
+        slug: row.slug,
+        description: row.description,
+        logo_url: row.logo_url,
+        hero_image_url: row.hero_image_url,
+        category:
+          Array.isArray(row.category_tags) && row.category_tags.length > 0
+            ? row.category_tags[0]
+            : null,
+      })) ?? [],
     totalCount,
     page,
     pageSize,

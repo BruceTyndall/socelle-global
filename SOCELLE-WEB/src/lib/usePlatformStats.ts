@@ -39,18 +39,26 @@ export function usePlatformStats(): UsePlatformStatsReturn {
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
 
-      const [brands, signals, protocols, jobs, events, operators, dataSources] = await Promise.all([
-        supabase.from('brands').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-        supabase.from('market_signals').select('*', { count: 'exact', head: true }).eq('active', true),
-        supabase.from('canonical_protocols').select('*', { count: 'exact', head: true }),
-        supabase.from('job_postings').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-        supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'active').gte('date', today),
-        supabase.from('access_requests').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
-        supabase.from('data_feeds').select('*', { count: 'exact', head: true }),
+      const [brands, signals, protocols, jobs, events, operators, signalSources] = await Promise.all([
+        supabase.from('brands').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('market_signals').select('id', { count: 'exact', head: true }).eq('active', true),
+        supabase.from('canonical_protocols').select('id', { count: 'exact', head: true }),
+        supabase.from('job_postings').select('slug', { count: 'exact', head: true }),
+        supabase.from('events').select('id', { count: 'exact', head: true }).gte('date', today),
+        supabase.from('access_requests').select('id', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('market_signals').select('source').eq('active', true).limit(2000),
       ]);
 
       const countOrZero = (result: { error: unknown; count: number | null }) =>
         result.error ? 0 : (result.count ?? 0);
+
+      const uniqueSources = signalSources.error
+        ? 0
+        : new Set(
+            ((signalSources.data ?? []) as Array<{ source: string | null }>)
+              .map((row) => row.source)
+              .filter((value): value is string => typeof value === 'string' && value.length > 0)
+          ).size;
 
       return {
         brandsCount: countOrZero(brands),
@@ -59,7 +67,7 @@ export function usePlatformStats(): UsePlatformStatsReturn {
         jobsCount: countOrZero(jobs),
         eventsCount: countOrZero(events),
         operatorsCount: countOrZero(operators),
-        dataSourcesCount: countOrZero(dataSources),
+        dataSourcesCount: uniqueSources,
       } satisfies PlatformStats;
     },
     enabled: isSupabaseConfigured,

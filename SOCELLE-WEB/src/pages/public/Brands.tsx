@@ -52,6 +52,7 @@ interface BrandRow {
   status: string;
   logo_url: string | null;
   hero_image_url: string | null;
+  category_tags?: string[] | null;
   category?: string | null;
   theme?: {
     colors: { primary: string; secondary: string; accent: string; surface: string; text: string };
@@ -158,12 +159,20 @@ function useBrands() {
       }
       const { data, error } = await supabase
         .from('brands')
-        .select('id, name, slug, description, status, logo_url, hero_image_url, category, theme')
+        .select('id, name, slug, description, status, logo_url, hero_image_url, category_tags, theme')
         .or('is_published.eq.true,status.eq.active')
         .order('name');
 
       if (error) throw error;
-      return (data ?? []) as BrandRow[];
+      const rows = (data ?? []) as BrandRow[];
+      return rows.map((row) => ({
+        ...row,
+        category:
+          row.category ??
+          (Array.isArray(row.category_tags) && row.category_tags.length > 0
+            ? row.category_tags[0]
+            : null),
+      }));
     },
     staleTime: 5 * 60 * 1000,
   });

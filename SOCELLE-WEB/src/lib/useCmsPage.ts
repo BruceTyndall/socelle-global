@@ -27,22 +27,58 @@ interface UseCmsPageReturn {
   error: string | null;
 }
 
+interface CmsPageRow {
+  id: string;
+  slug: string;
+  title: string;
+  seo_title: string | null;
+  seo_description: string | null;
+  seo_og_image: string | null;
+  metadata: unknown;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export function useCmsPage(slug: string): UseCmsPageReturn {
   const { data: page = null, isLoading: loading, error: queryError } = useQuery({
     queryKey: ['cms_page', slug],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cms_pages')
-        .select('id, slug, title, meta_title, meta_description, og_image_url, blocks, status, created_at, updated_at')
+        .select('id, slug, title, seo_title, seo_description, seo_og_image, metadata, status, created_at, updated_at')
         .eq('slug', slug)
         .eq('status', 'published')
-        .single();
+        .maybeSingle();
 
       if (error) {
-        if (error.code === '42P01') return null;
-        throw new Error(error.message);
+        console.warn('[useCmsPage] fetch error:', error.message);
+        return null;
       }
-      return (data as CmsPage) ?? null;
+      if (!data) return null;
+
+      const row = data as CmsPageRow;
+      const metadata =
+        row.metadata && typeof row.metadata === 'object'
+          ? (row.metadata as Record<string, unknown>)
+          : null;
+
+      const blocks = Array.isArray(metadata?.blocks)
+        ? (metadata?.blocks as Record<string, unknown>[])
+        : [];
+
+      return {
+        id: row.id,
+        slug: row.slug,
+        title: row.title,
+        meta_title: row.seo_title,
+        meta_description: row.seo_description,
+        og_image_url: row.seo_og_image,
+        blocks,
+        status: 'published',
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+      } satisfies CmsPage;
     },
     enabled: isSupabaseConfigured && !!slug,
   });
