@@ -1,0 +1,67 @@
+{
+  "wo_id": "INTEL-ADMIN-01",
+  "timestamp": "2026-03-09T23:45:00.000Z",
+  "verified_at": "2026-03-09T23:50:00.000Z",
+  "skills_run": ["hub-shell-detector", "live-demo-detector", "dev-best-practice-checker", "build-gate"],
+  "steps_completed": {
+    "STEP_1_hook_created": {
+      "status": "PASS",
+      "evidence": "src/lib/intelligence/useAdminIntelligence.ts — TanStack Query v5, 4 queries (metrics, signals, apiHealth, feedHealth), realtime subscription on market_signals INSERT, isLive flag, refetch()"
+    },
+    "STEP_2_dashboard_wired": {
+      "status": "PASS",
+      "evidence": "src/pages/admin/IntelligenceDashboard.tsx imports useAdminIntelligence (not adminIntelligence.ts). LiveDemoBadge, DashboardSkeleton, ApiStatusIcon, DirectionIcon all implemented. Signal CREATE writes to market_signals DB."
+    },
+    "STEP_3_no_static_imports": {
+      "status": "PASS",
+      "evidence": "IntelligenceDashboard.tsx has zero imports from adminIntelligence.ts. adminIntelligence.ts marked @deprecated with note pointing to useAdminIntelligence."
+    },
+    "STEP_4_live_demo_badge": {
+      "status": "PASS",
+      "evidence": "LiveDemoBadge component present — renders LIVE (green) when isLive=true, DEMO (amber) when false. isLive derived from enabled && !error && data !== undefined."
+    },
+    "STEP_5_api_feed_panels": {
+      "status": "PASS",
+      "evidence": "API Health Panel: apiHealth[] from api_registry query, renders per-row status (pass/fail/timeout/untested). Feed Status Strip: feedHealth[] from data_feeds query, renders last_fetched_at + last_error."
+    },
+    "STEP_6_verify": {
+      "status": "PASS",
+      "tsc_exit_code": 0,
+      "build_exit_code": 0,
+      "evidence": "npx tsc --noEmit → 0 errors. npm run build → ✓ built in 6.18s. No hardcoded static data imports in IntelligenceDashboard."
+    }
+  },
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "IntelligenceDashboard.tsx: live_data via useAdminIntelligence, loading skeleton (DashboardSkeleton), error state present, CRUD (signal create to DB), metrics panel. Non-shell."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "LIVE/DEMO badge present via LiveDemoBadge component. isLive derived from real DB query state — not hardcoded. No unlabeled mock data on user-facing surface."
+    },
+    "dev-best-practice-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All data fetching via TanStack Query v5 useQuery. No raw useEffect + supabase.from() patterns in useAdminIntelligence.ts. Realtime via supabase.channel() only (not data fetching — compliant)."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc=0 errors, build=exit 0"
+    }
+  },
+  "overall": "PASS",
+  "prohibited_checks": {
+    "auth_tsx_touched": false,
+    "useCart_touched": false,
+    "adminIntelligence_deleted": false
+  },
+  "notes": [
+    "adminIntelligence.ts retained but marked @deprecated — safe to delete after BUILD 2 QA pass",
+    "useAdminIntelligence realtime channel subscribes to market_signals INSERT — invalidates both signals + metrics queries",
+    "data_feeds table may be empty initially — feedHealth gracefully returns [] with no error"
+  ]
+}

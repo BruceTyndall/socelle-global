@@ -1,4 +1,7 @@
 // ── Admin Intelligence Mock Data — WO-14 ──────────────────────────────────
+// @deprecated — INTEL-ADMIN-01 complete. IntelligenceDashboard now uses
+// useAdminIntelligence (TanStack Query v5, live DB). Do NOT import from this file.
+// Retained for reference only. Will be deleted after BUILD 2 QA pass.
 // Mock data layer for admin portal intelligence features.
 // All data is local; no Supabase calls. Will be wired to real queries in later waves.
 
