@@ -1,5 +1,5 @@
 // ── AdminFeatureFlags — CTRL-WO-01: Feature Flags ───────────────────────────
-// Data source: feature_flags table (DEMO fallback if table missing — 42P01)
+// Data source: feature_flags + subscriptions tables (live)
 // Authority: docs/operations/OPERATION_BREAKOUT.md → CTRL-WO-01
 
 import { useState, useMemo } from 'react';
@@ -18,21 +18,26 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { logAudit } from '../../lib/auditLog';
-import type { FeatureFlagRow } from '../../lib/useFeatureFlag';
+import { evaluateFlag, type FeatureFlagRow } from '../../lib/useFeatureFlag';
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
 const TIER_OPTIONS = ['free', 'starter', 'pro', 'enterprise'] as const;
+const PREVIEW_TIERS = ['starter', 'pro', 'enterprise'] as const;
+type PreviewTier = (typeof PREVIEW_TIERS)[number];
+
+interface FeatureFlagData {
+  flags: FeatureFlagRow[];
+  tierUsers: Record<PreviewTier, string[]>;
+}
+
+interface TierCoverage {
+  enabled: number;
+  total: number;
+  percent: number;
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-
-function isMissingTableError(error: unknown): boolean {
-  if (!error || typeof error !== 'object') return false;
-  const e = error as Record<string, unknown>;
-  const code = typeof e.code === 'string' ? e.code : '';
-  const message = typeof e.message === 'string' ? e.message.toLowerCase() : '';
-  return code === '42P01' || message.includes('does not exist');
-}
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -45,68 +50,59 @@ function timeAgo(iso: string): string {
   return `${days}d ago`;
 }
 
-// ── DEMO data ─────────────────────────────────────────────────────────────
-
-function generateDemoFlags(): FeatureFlagRow[] {
-  const now = new Date().toISOString();
-  return [
-    {
-      id: 'demo-1',
-      flag_key: 'NEW_INTELLIGENCE_UI',
-      display_name: 'New Intelligence UI',
-      description: 'Enables the redesigned Intelligence Hub interface with enhanced signal views.',
-      default_enabled: false,
-      enabled_tiers: ['pro', 'enterprise'],
-      enabled_user_ids: [],
-      rollout_percentage: 25,
-      created_at: now,
-      updated_at: now,
-    },
-    {
-      id: 'demo-2',
-      flag_key: 'AI_CREDIT_TRACKING',
-      display_name: 'AI Credit Tracking',
-      description: 'Tracks and deducts credits for AI tool usage across the platform.',
-      default_enabled: true,
-      enabled_tiers: [],
-      enabled_user_ids: [],
-      rollout_percentage: 0,
-      created_at: now,
-      updated_at: now,
-    },
-    {
-      id: 'demo-3',
-      flag_key: 'SCORM_ENABLED',
-      display_name: 'SCORM Playback',
-      description: 'Enables SCORM package upload and playback in the Education Hub.',
-      default_enabled: false,
-      enabled_tiers: ['enterprise'],
-      enabled_user_ids: [],
-      rollout_percentage: 0,
-      created_at: now,
-      updated_at: now,
-    },
-  ];
+function normalizePlanTier(raw: string | null | undefined): PreviewTier | null {
+  if (!raw) return null;
+  const plan = raw.toLowerCase().trim();
+  if (plan === 'starter') return 'starter';
+  if (plan === 'pro' || plan === 'growth') return 'pro';
+  if (plan === 'enterprise') return 'enterprise';
+  return null;
 }
 
 // ── Data fetching ─────────────────────────────────────────────────────────
 
-async function fetchFlags(): Promise<{ flags: FeatureFlagRow[]; isDemo: boolean }> {
-  const { data, error } = await supabase
+async function fetchFlags(): Promise<FeatureFlagData> {
+  const { data: featureFlags, error: flagsError } = await supabase
     .from('feature_flags')
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error && isMissingTableError(error)) {
-    return { flags: generateDemoFlags(), isDemo: true };
+  if (flagsError) {
+    throw flagsError;
   }
-  if (error) {
-    throw error;
+
+  const tierUsers: Record<PreviewTier, string[]> = {
+    starter: [],
+    pro: [],
+    enterprise: [],
+  };
+
+  const { data: subscriptions, error: subscriptionsError } = await supabase
+    .from('subscriptions')
+    .select('user_id, plan_id, status, created_at')
+    .in('status', ['active', 'trialing'])
+    .order('created_at', { ascending: false });
+
+  if (subscriptionsError) {
+    throw subscriptionsError;
   }
-  if (!data || data.length === 0) {
-    return { flags: [], isDemo: false };
+
+  const latestPlanByUser = new Map<string, string>();
+  for (const row of subscriptions ?? []) {
+    const userId = typeof row.user_id === 'string' ? row.user_id : '';
+    const planId = typeof row.plan_id === 'string' ? row.plan_id : '';
+    if (!userId || !planId || latestPlanByUser.has(userId)) continue;
+    latestPlanByUser.set(userId, planId);
   }
-  return { flags: data as FeatureFlagRow[], isDemo: false };
+
+  for (const [userId, planId] of latestPlanByUser.entries()) {
+    const tier = normalizePlanTier(planId);
+    if (tier) {
+      tierUsers[tier].push(userId);
+    }
+  }
+
+  return { flags: (featureFlags as FeatureFlagRow[]) ?? [], tierUsers };
 }
 
 // ── Component ─────────────────────────────────────────────────────────────
@@ -134,7 +130,7 @@ export default function AdminFeatureFlags() {
   });
 
   const flags = data?.flags ?? [];
-  const isDemo = data?.isDemo ?? true;
+  const tierUsers = data?.tierUsers ?? { starter: [], pro: [], enterprise: [] };
 
   // ── Mutations ─────────────────────────────────────────────────────────
 
@@ -254,7 +250,6 @@ export default function AdminFeatureFlags() {
   // ── Handlers ──────────────────────────────────────────────────────────
 
   const handleToggle = (flag: FeatureFlagRow) => {
-    if (isDemo) return;
     toggleMutation.mutate({
       id: flag.id,
       enabled: !flag.default_enabled,
@@ -272,13 +267,11 @@ export default function AdminFeatureFlags() {
   };
 
   const handleDelete = (id: string) => {
-    if (isDemo) return;
     const flag = flags.find((f) => f.id === id);
     deleteMutation.mutate({ id, flagKey: flag?.flag_key ?? 'unknown' });
   };
 
   const handleTierToggle = (flag: FeatureFlagRow, tier: string) => {
-    if (isDemo) return;
     const tiers = flag.enabled_tiers.includes(tier)
       ? flag.enabled_tiers.filter((t) => t !== tier)
       : [...flag.enabled_tiers, tier];
@@ -291,7 +284,6 @@ export default function AdminFeatureFlags() {
   };
 
   const handleRolloutChange = (flag: FeatureFlagRow, pct: number) => {
-    if (isDemo) return;
     updateMutation.mutate({
       id: flag.id,
       rollout_percentage: pct,
@@ -301,7 +293,6 @@ export default function AdminFeatureFlags() {
   };
 
   const handleUserIdsChange = (flag: FeatureFlagRow, raw: string) => {
-    if (isDemo) return;
     const ids = raw
       .split(/[\n,]+/)
       .map((s) => s.trim())
@@ -320,6 +311,27 @@ export default function AdminFeatureFlags() {
     () => flags.filter((f) => f.default_enabled).length,
     [flags]
   );
+
+  const coverageByFlag = useMemo(() => {
+    const result = new Map<string, Record<PreviewTier, TierCoverage>>();
+
+    for (const flag of flags) {
+      const coverage = {} as Record<PreviewTier, TierCoverage>;
+      for (const tier of PREVIEW_TIERS) {
+        const users = tierUsers[tier];
+        const enabled = users.filter((userId) => evaluateFlag(flag, userId, tier)).length;
+        const total = users.length;
+        coverage[tier] = {
+          enabled,
+          total,
+          percent: total > 0 ? Math.round((enabled / total) * 100) : 0,
+        };
+      }
+      result.set(flag.id, coverage);
+    }
+
+    return result;
+  }, [flags, tierUsers]);
 
   // ── Error state ───────────────────────────────────────────────────────
 
@@ -380,11 +392,6 @@ export default function AdminFeatureFlags() {
               {enabledCount} enabled, {flags.length - enabledCount} disabled
             </p>
           </div>
-          {isDemo && (
-            <span className="text-[10px] font-semibold bg-[#A97A4C]/10 text-[#A97A4C] px-2 py-0.5 rounded-full">
-              DEMO
-            </span>
-          )}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -405,13 +412,6 @@ export default function AdminFeatureFlags() {
           </button>
         </div>
       </div>
-
-      {/* DEMO banner */}
-      {isDemo && (
-        <div className="bg-[#A97A4C]/10 text-[#A97A4C] text-xs font-medium px-4 py-2 rounded-lg text-center font-sans">
-          DEMO -- feature_flags table not yet created. Showing sample data for layout preview.
-        </div>
-      )}
 
       {/* Create form */}
       {showCreate && (
@@ -495,7 +495,7 @@ export default function AdminFeatureFlags() {
 
       {/* Flags list */}
       <div className="space-y-3">
-        {flags.length === 0 && !isDemo && (
+        {flags.length === 0 && (
           <div className="py-10 text-center bg-white border border-accent-soft rounded-xl">
             <Flag className="w-8 h-8 text-graphite/30 mx-auto mb-2" />
             <p className="text-sm text-graphite/60 font-sans">
@@ -506,6 +506,8 @@ export default function AdminFeatureFlags() {
 
         {flags.map((flag) => {
           const isExpanded = expandedId === flag.id;
+          const coverage = coverageByFlag.get(flag.id);
+          const proCoverage = coverage?.pro;
           return (
             <div
               key={flag.id}
@@ -558,6 +560,12 @@ export default function AdminFeatureFlags() {
                   </p>
                   <div className="flex items-center gap-4 mt-2 text-[10px] text-graphite/40 font-sans">
                     <span>Updated {timeAgo(flag.updated_at)}</span>
+                    {proCoverage && proCoverage.total > 0 && (
+                      <span>
+                        ON for {proCoverage.percent}% of Pro users ({proCoverage.enabled}/
+                        {proCoverage.total})
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -644,6 +652,30 @@ export default function AdminFeatureFlags() {
                       placeholder="Enter user UUIDs..."
                       className="w-full px-3 py-2 border border-accent-soft rounded-lg text-xs text-graphite bg-white placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-accent/30 font-mono"
                     />
+                  </div>
+
+                  <div>
+                    <p className="block text-xs font-medium text-graphite/70 font-sans mb-2">
+                      Rollout Preview
+                    </p>
+                    <div className="grid sm:grid-cols-3 gap-2">
+                      {PREVIEW_TIERS.map((tier) => {
+                        const tierCoverage = coverage?.[tier] ?? { enabled: 0, total: 0, percent: 0 };
+                        return (
+                          <div key={tier} className="rounded-lg border border-accent-soft bg-white p-3">
+                            <p className="text-[10px] uppercase tracking-wide text-graphite/50 font-sans">
+                              {tier}
+                            </p>
+                            <p className="text-lg font-semibold text-graphite font-sans mt-1">
+                              {tierCoverage.percent}%
+                            </p>
+                            <p className="text-[11px] text-graphite/60 font-sans">
+                              ON for {tierCoverage.enabled}/{tierCoverage.total} users
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}

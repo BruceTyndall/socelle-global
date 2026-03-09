@@ -1,0 +1,86 @@
+{
+  "wo_id": "ADMIN-WO-02",
+  "timestamp_utc": "2026-03-09T04:49:07Z",
+  "branch": "main",
+  "description": "Feature flags UI now uses live-only data and shows per-tier rollout preview including Pro coverage percentage",
+  "skills_run": [
+    "feature-flag-validator",
+    "hub-shell-detector",
+    "system-health-dashboard-validator",
+    "audit-log-auditor",
+    "build-gate"
+  ],
+  "results": {
+    "feature-flag-validator": {
+      "status": "PASS",
+      "checks": {
+        "schema_columns_present": true,
+        "client_hook_evaluation_order_present": true,
+        "admin_ui_controls_present": true,
+        "admin_ui_preview_present": true,
+        "edge_flag_check_present": true
+      },
+      "evidence": [
+        "supabase/migrations/20260310120001_unify_feature_flags_and_add_check_flag.sql:20",
+        "src/lib/useFeatureFlag.ts:69",
+        "src/pages/admin/AdminFeatureFlags.tsx:626",
+        "src/pages/admin/AdminFeatureFlags.tsx:565",
+        "supabase/functions/ai-orchestrator/index.ts:410"
+      ]
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "checks": {
+        "shell_gate_exit_code": 0,
+        "new_shells_introduced": 0,
+        "admin_feature_flags_classification": "LIVE"
+      },
+      "evidence": [
+        "npm run shell:check",
+        "docs/qa/shell_detector_report.json"
+      ]
+    },
+    "system-health-dashboard-validator": {
+      "status": "PASS",
+      "checks": {
+        "dashboard_feed_metrics_present": true,
+        "dashboard_ai_cost_metrics_present": true,
+        "dashboard_user_metrics_present": true,
+        "dashboard_error_metrics_present": true
+      },
+      "evidence": [
+        "src/pages/admin/AdminDashboard.tsx:116",
+        "src/pages/admin/AdminDashboard.tsx:121",
+        "src/pages/admin/AdminDashboard.tsx:120",
+        "src/pages/admin/AdminDashboard.tsx:142"
+      ]
+    },
+    "audit-log-auditor": {
+      "status": "PASS",
+      "checks": {
+        "audit_table_schema_present": true,
+        "audit_writer_present": true,
+        "required_action_types_present": true,
+        "admin_viewer_search_export_present": true
+      },
+      "evidence": [
+        "supabase/migrations/20260309213001_create_audit_logs.sql:5",
+        "src/lib/auditLog.ts:17",
+        "src/lib/auditLog.ts:13",
+        "src/pages/admin/AdminAuditLog.tsx:240"
+      ]
+    },
+    "build-gate": {
+      "status": "PASS",
+      "checks": {
+        "tsc_no_emit_exit_code": 0,
+        "build_exit_code": 0
+      },
+      "notes": [
+        "existing duplicate onClick warning remains in src/pages/admin/EditorialHub.tsx",
+        "production build completed successfully"
+      ]
+    }
+  },
+  "overall": "PASS"
+}
