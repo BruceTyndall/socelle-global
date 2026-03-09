@@ -93,7 +93,7 @@
 | subscription_plans.modules_included | UNKNOWN | Table exists per migrations, but column shape not confirmed via live DB query |
 | RLS policies on subscription tables | UNKNOWN | Migrations exist but RLS correctness not verified against live DB |
 | Server-side credit check in ai-orchestrator | VERIFIED | ai-orchestrator calls `deduct_credits()` RPC at line 371 with atomic row-level locking, returns 402 on insufficient balance. Cost reconciliation at lines 440-451. (corrected 2026-03-08) |
-| Rate limiting in ai-orchestrator | **NOT PRESENT** | No rate limit check exists — MUST BUILD (5/15/60 per tier) |
+| Rate limiting in ai-orchestrator | **NOT PRESENT** | No rate limit check exists — MUST BUILD |
 
 ### INFRA-02: Data + API + Query Patterns
 | Item | Status | Evidence |
