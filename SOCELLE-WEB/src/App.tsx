@@ -91,6 +91,20 @@ const StudioHome = lazy(() => import('./pages/business/studio/StudioHome'));
 const StudioEditor = lazy(() => import('./pages/business/studio/StudioEditor'));
 const CourseBuilder = lazy(() => import('./pages/business/studio/CourseBuilder'));
 
+// ── Credit Economy (V2-HUBS-12)
+const CreditDashboard = lazy(() => import('./pages/business/credits/CreditDashboard'));
+const CreditPurchase = lazy(() => import('./pages/business/credits/CreditPurchase'));
+
+// ── Affiliate Engine (V2-HUBS-13)
+const AffiliateDashboard = lazy(() => import('./pages/business/affiliates/AffiliateDashboard'));
+const AffiliateLinks = lazy(() => import('./pages/business/affiliates/AffiliateLinks'));
+
+// ── Marketing Hub (V2-HUBS-08)
+const BizMarketingDashboard = lazy(() => import('./pages/business/marketing/MarketingDashboard'));
+const BizCampaignList = lazy(() => import('./pages/business/marketing/CampaignList'));
+const BizCampaignBuilder = lazy(() => import('./pages/business/marketing/CampaignBuilder'));
+const BizMarketingTemplates = lazy(() => import('./pages/business/marketing/MarketingTemplates'));
+
 // ── Business portal
 const PortalHome = lazy(() => import('./pages/business/PortalHome'));
 const BusinessLogin = lazy(() => import('./pages/business/Login'));
@@ -861,6 +875,52 @@ function App() {
                     <Route path="studio/course" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <CourseBuilder />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* ── Credit Economy (V2-HUBS-12) ── */}
+                    <Route path="credits" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <CreditDashboard />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="credits/purchase" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <CreditPurchase />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* ── Affiliate Engine (V2-HUBS-13) ── */}
+                    <Route path="affiliates" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <AffiliateDashboard />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="affiliates/links" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <AffiliateLinks />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* ── Marketing Hub (V2-HUBS-08) ── */}
+                    <Route path="marketing-hub" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <BizMarketingDashboard />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing-hub/campaigns" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <BizCampaignList />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing-hub/campaigns/new" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <BizCampaignBuilder />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing-hub/templates" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <BizMarketingTemplates />
                       </ProtectedRoute>
                     } />
                   </Route>

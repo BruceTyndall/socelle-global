@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, CheckCircle, Lock, Users, TrendingUp, Star, ShoppingCart, GraduationCap, MessageSquare, Palette } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, ShoppingBag, CheckCircle, Lock, Users, TrendingUp, Star, ShoppingCart, GraduationCap, MessageSquare, Palette, BarChart3, AlertCircle, BookOpen, FlaskConical } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { useCart } from '../../lib/useCart';
 import { sendNewOrderEmail } from '../../lib/emailService';
@@ -753,6 +754,7 @@ export default function BrandStorefront() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'pro' | 'retail'>('all');
+  const [activeSection, setActiveSection] = useState<'overview' | 'products' | 'education' | 'protocols' | 'intelligence'>('overview');
 
   const [cartOpen, setCartOpen] = useState(false);
   const [orderNotes, setOrderNotes] = useState('');
@@ -964,6 +966,34 @@ export default function BrandStorefront() {
     { num: '$0', label: 'Min First Order' },
   ];
 
+  // ── Brand-specific signals from market_signals ──
+  const brandSignalsQuery = useQuery({
+    queryKey: ['brand-signals', brand?.name],
+    queryFn: async () => {
+      if (!isSupabaseConfigured || !brand) return [];
+      const { data, error: sigErr } = await supabase
+        .from('market_signals')
+        .select('id, title, description, category, magnitude, direction, updated_at')
+        .eq('active', true)
+        .order('updated_at', { ascending: false })
+        .limit(200);
+
+      if (sigErr) throw sigErr;
+      if (!data) return [];
+
+      const name = brand.name.toLowerCase();
+      return data.filter(
+        (s: { title: string; description: string }) =>
+          s.title.toLowerCase().includes(name) ||
+          s.description.toLowerCase().includes(name)
+      );
+    },
+    enabled: !!brand?.name,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const brandSignals = brandSignalsQuery.data ?? [];
+
   // Guards
   if (loading) return <StorefrontSkeleton />;
   if (error || !brand) {
@@ -1089,134 +1119,324 @@ export default function BrandStorefront() {
           {/* Stats bar */}
           <StatsBar stats={isVerified ? verifiedStats : unverifiedStats} />
 
-          {/* Press mentions */}
-          <PressMentions mentions={pressMentions} isVerified={isVerified} />
-
-          {/* Industry presence / trust badges */}
-          {trustBadges.length > 0 && <SectionDivider />}
-          <IndustryPresence badges={trustBadges} isVerified={isVerified} />
-
-          {/* Products section */}
-          <SectionDivider />
-          <div className="pt-7 px-8 lg:px-10">
-            <SectionHead
-              title="Products"
-              source={isUnverified ? 'Shopify Catalog' : undefined}
-              linkLabel={allProducts.length > 0 ? `All ${allProducts.length} products` : undefined}
-              linkHref="#"
-            />
-
-            {/* Tab bar — only for verified with products */}
-            {isVerified && allProducts.length > 0 && (
-              <div className="flex gap-2 mb-5">
-                {([
-                  { key: 'all', label: `All (${allProducts.length})` },
-                  { key: 'pro', label: `PRO (${proProducts.length})` },
-                  { key: 'retail', label: `Retail (${retailProducts.length})` },
-                ] as const).map(tab => (
-                  <button
-                    key={tab.key}
-                    onClick={() => setActiveTab(tab.key)}
-                    className={`px-5 py-2 rounded-pill font-sans text-[13px] font-medium border transition-all duration-200 cursor-pointer ${activeTab === tab.key
-                      ? 'bg-mn-dark text-mn-bg border-mn-dark'
-                      : 'bg-white text-graphite/60 border-graphite/[0.08] hover:border-graphite hover:text-graphite'
-                      }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* ── Section Tabs ── */}
+          <div className="flex items-center gap-1 px-8 lg:px-10 pt-6 pb-2 border-b border-graphite/[0.08] overflow-x-auto">
+            {([
+              { key: 'overview' as const, label: 'Overview', icon: Star },
+              { key: 'products' as const, label: 'Products', icon: ShoppingBag },
+              { key: 'education' as const, label: 'Education', icon: GraduationCap },
+              { key: 'protocols' as const, label: 'Protocols', icon: FlaskConical },
+              { key: 'intelligence' as const, label: 'Intelligence', icon: BarChart3 },
+            ]).map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeSection === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveSection(tab.key)}
+                  className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-sans font-medium border-b-2 transition-all flex-shrink-0 ${
+                    isActive
+                      ? 'border-accent text-accent'
+                      : 'border-transparent text-graphite/50 hover:text-graphite hover:border-graphite/20'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Product grid */}
-          {(isVerified && filtered.length === 0) || (!isVerified && allProducts.length === 0 && proProducts.length === 0 && retailProducts.length === 0) ? (
-            <div className="mx-8 lg:mx-10 mb-9 py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center">
-              <p className="font-sans text-graphite/40">No products listed yet.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 px-8 lg:px-10 pb-9">
-              {(isVerified ? filtered : allProducts.slice(0, 8)).map((p, i) => (
-                <ProductTile
-                  key={p.id}
-                  name={p.product_name}
-                  category={p.category}
-                  price={p.price ?? null}
-                  msrp={p.msrp ?? null}
-                  type={p.type}
-                  showPrice={showPrices && isVerified}
-                  onAddToCart={
-                    isReseller && isVerified
-                      ? () => p.type === 'pro'
-                        ? handleAddProToCart(p as ProProduct)
-                        : handleAddRetailToCart(p as RetailProduct)
-                      : undefined
-                  }
-                  index={i}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Sign-up banner for guests on verified brands */}
-          {!user && isVerified && allProducts.length > 0 && (
-            <div className="mx-8 lg:mx-10 mb-9 bg-mn-dark rounded-card p-8 lg:p-10 text-center">
-              <h2 className="font-sans font-semibold text-[22px] font-medium text-mn-bg m-0">
-                Ready to order from {brand.name}?
-              </h2>
-              <p className="font-sans text-mn-bg/55 text-sm mt-2 leading-relaxed">
-                Create a free reseller account to access wholesale pricing and place orders.
-              </p>
-              <Link
-                to="/portal/signup"
-                className="inline-flex items-center mt-5 bg-mn-bg text-graphite rounded-full h-[48px] px-8 font-sans text-sm font-medium no-underline transition-colors hover:bg-white"
-              >
-                Create free account
-              </Link>
-            </div>
-          )}
-
-          {/* Verified extras */}
-          {isVerified && (
+          {/* ── Overview Tab ── */}
+          {activeSection === 'overview' && (
             <>
-              <SectionDivider />
-              <VerifiedExtras brandName={brand.name} />
+              {/* Press mentions */}
+              <PressMentions mentions={pressMentions} isVerified={isVerified} />
+
+              {/* Industry presence / trust badges */}
+              {trustBadges.length > 0 && <SectionDivider />}
+              <IndustryPresence badges={trustBadges} isVerified={isVerified} />
+
+              {/* Peer Adoption */}
+              {slug && (
+                <>
+                  <SectionDivider />
+                  <div className="py-6">
+                    <PeerAdoptionBanner
+                      peerData={brandIntel.peerData}
+                      trending={brandIntel.trending}
+                      adoptionCount={brandIntel.adoptionCount}
+                      isLive={brandIntel.isLive}
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Verified extras */}
+              {isVerified && (
+                <>
+                  <SectionDivider />
+                  <VerifiedExtras brandName={brand.name} />
+                </>
+              )}
+
+              {/* Claim CTA for unclaimed brands */}
+              {isUnverified && (
+                <div className="mx-8 lg:mx-10 my-6 bg-accent-soft border border-accent/15 rounded-2xl p-6 text-center">
+                  <h3 className="font-sans font-semibold text-graphite text-lg mb-2">
+                    Is this your brand?
+                  </h3>
+                  <p className="font-sans text-graphite/60 text-sm mb-4 max-w-md mx-auto">
+                    Claim this page to manage your profile, access wholesale tools, and connect with professionals.
+                  </p>
+                  <Link
+                    to={`/claim/brand/${brand.slug}`}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-accent text-white text-sm font-sans font-medium no-underline hover:bg-accent-hover transition-colors"
+                  >
+                    Claim this brand
+                  </Link>
+                </div>
+              )}
             </>
           )}
 
-
-          {/* ── Intelligence: Peer Adoption ── */}
-          {slug && (
+          {/* ── Products Tab ── */}
+          {activeSection === 'products' && (
             <>
               <SectionDivider />
-              <div className="py-6">
-                <PeerAdoptionBanner
-                  peerData={brandIntel.peerData}
-                  trending={brandIntel.trending}
-                  adoptionCount={brandIntel.adoptionCount}
-                  isLive={brandIntel.isLive}
+              <div className="pt-7 px-8 lg:px-10">
+                <SectionHead
+                  title="Products"
+                  source={isUnverified ? 'Shopify Catalog' : undefined}
+                  linkLabel={allProducts.length > 0 ? `All ${allProducts.length} products` : undefined}
+                  linkHref="#"
                 />
+
+                {isVerified && allProducts.length > 0 && (
+                  <div className="flex gap-2 mb-5">
+                    {([
+                      { key: 'all', label: `All (${allProducts.length})` },
+                      { key: 'pro', label: `PRO (${proProducts.length})` },
+                      { key: 'retail', label: `Retail (${retailProducts.length})` },
+                    ] as const).map(tab => (
+                      <button
+                        key={tab.key}
+                        onClick={() => setActiveTab(tab.key)}
+                        className={`px-5 py-2 rounded-pill font-sans text-[13px] font-medium border transition-all duration-200 cursor-pointer ${activeTab === tab.key
+                          ? 'bg-mn-dark text-mn-bg border-mn-dark'
+                          : 'bg-white text-graphite/60 border-graphite/[0.08] hover:border-graphite hover:text-graphite'
+                          }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {(isVerified && filtered.length === 0) || (!isVerified && allProducts.length === 0 && proProducts.length === 0 && retailProducts.length === 0) ? (
+                <div className="mx-8 lg:mx-10 mb-9 py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center">
+                  <p className="font-sans text-graphite/40">No products listed yet.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 px-8 lg:px-10 pb-9">
+                  {(isVerified ? filtered : allProducts.slice(0, 8)).map((p, i) => (
+                    <ProductTile
+                      key={p.id}
+                      name={p.product_name}
+                      category={p.category}
+                      price={p.price ?? null}
+                      msrp={p.msrp ?? null}
+                      type={p.type}
+                      showPrice={showPrices && isVerified}
+                      onAddToCart={
+                        isReseller && isVerified
+                          ? () => p.type === 'pro'
+                            ? handleAddProToCart(p as ProProduct)
+                            : handleAddRetailToCart(p as RetailProduct)
+                          : undefined
+                      }
+                      index={i}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {!user && isVerified && allProducts.length > 0 && (
+                <div className="mx-8 lg:mx-10 mb-9 bg-mn-dark rounded-card p-8 lg:p-10 text-center">
+                  <h2 className="font-sans font-semibold text-[22px] font-medium text-mn-bg m-0">
+                    Ready to order from {brand.name}?
+                  </h2>
+                  <p className="font-sans text-mn-bg/55 text-sm mt-2 leading-relaxed">
+                    Create a free reseller account to access wholesale pricing and place orders.
+                  </p>
+                  <Link
+                    to="/portal/signup"
+                    className="inline-flex items-center mt-5 bg-mn-bg text-graphite rounded-full h-[48px] px-8 font-sans text-sm font-medium no-underline transition-colors hover:bg-white"
+                  >
+                    Create free account
+                  </Link>
+                </div>
+              )}
+
+              {/* Professionals Also Bought */}
+              {slug && (
+                <>
+                  <SectionDivider />
+                  <ProfessionalsAlsoBoughtSection
+                    alsoBought={brandIntel.alsoBought}
+                    isLive={brandIntel.isLive}
+                  />
+                </>
+              )}
+            </>
+          )}
+
+          {/* ── Education Tab ── */}
+          {activeSection === 'education' && (
+            <>
+              <div className="pt-7 px-8 lg:px-10 pb-8">
+                <SectionHead title={`Education from ${brand.name}`} />
+                {isVerified ? (
+                  <div className="grid sm:grid-cols-2 gap-4 mt-4">
+                    {[
+                      { icon: GraduationCap, title: 'Brand Certifications', desc: `Complete ${brand.name} certification programs for licensed professionals.` },
+                      { icon: BookOpen, title: 'Training Modules', desc: `Product application techniques, ingredient science, and protocol training from ${brand.name}.` },
+                    ].map((c, i) => (
+                      <div key={i} className="bg-mn-surface border border-graphite/[0.08] rounded-2xl p-6 transition-all hover:shadow-soft">
+                        <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mb-3">
+                          <c.icon className="w-5 h-5 text-accent" />
+                        </div>
+                        <h4 className="font-sans font-semibold text-graphite text-sm mb-1">{c.title}</h4>
+                        <p className="font-sans text-xs text-graphite/60 leading-relaxed">{c.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center mt-4">
+                    <GraduationCap className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
+                    <p className="font-sans text-graphite/50 text-sm">
+                      Education content will be available when {brand.name} joins Socelle.
+                    </p>
+                  </div>
+                )}
               </div>
             </>
           )}
 
-          {/* ── Intelligence: Treatment Protocols ── */}
-          {slug && (
+          {/* ── Protocols Tab ── */}
+          {activeSection === 'protocols' && (
             <>
-              <SectionDivider />
-              <TreatmentProtocolsSection brandSlug={slug} brandName={brand.name} />
+              {slug && (
+                <TreatmentProtocolsSection brandSlug={slug} brandName={brand.name} />
+              )}
+              {(!slug || getBrandProtocols(slug ?? '').length === 0) && (
+                <div className="pt-7 px-8 lg:px-10 pb-8">
+                  <div className="py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center">
+                    <FlaskConical className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
+                    <p className="font-sans text-graphite/50 text-sm">
+                      No treatment protocols linked to {brand.name} yet.
+                    </p>
+                  </div>
+                </div>
+              )}
             </>
           )}
 
-          {/* ── Intelligence: Professionals Also Bought ── */}
-          {slug && (
-            <>
-              <SectionDivider />
-              <ProfessionalsAlsoBoughtSection
-                alsoBought={brandIntel.alsoBought}
-                isLive={brandIntel.isLive}
-              />
-            </>
+          {/* ── Intelligence Tab ── */}
+          {activeSection === 'intelligence' && (
+            <div className="pt-7 px-8 lg:px-10 pb-8">
+              <div className="flex items-center gap-2 mb-1">
+                <BarChart3 className="w-4 h-4 text-accent" />
+                <h3 className="font-sans font-semibold text-[17px] text-graphite m-0">
+                  Market Signals for {brand.name}
+                </h3>
+                {brandSignals.length > 0 && (
+                  <span className="ml-auto text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-full">
+                    LIVE
+                  </span>
+                )}
+              </div>
+              <p className="font-sans text-xs text-graphite/40 mb-5">
+                Active market signals that mention {brand.name} across the intelligence feed
+              </p>
+
+              {brandSignalsQuery.isLoading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="bg-white border border-graphite/[0.08] rounded-2xl p-4">
+                      <div className="h-4 w-2/3 rounded animate-pulse bg-mn-surface mb-2" />
+                      <div className="h-3 w-full rounded animate-pulse bg-mn-surface" />
+                    </div>
+                  ))}
+                </div>
+              ) : brandSignalsQuery.isError ? (
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-5 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-sans font-semibold text-red-900 text-sm mb-1">Unable to load signals</p>
+                    <p className="font-sans text-red-700 text-xs mb-3">Check your connection and try again.</p>
+                    <button
+                      onClick={() => brandSignalsQuery.refetch()}
+                      className="btn-mineral-primary btn-mineral-sm"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                </div>
+              ) : brandSignals.length === 0 ? (
+                <div className="py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center">
+                  <BarChart3 className="w-10 h-10 text-graphite/20 mx-auto mb-3" />
+                  <h4 className="font-sans font-semibold text-graphite text-base mb-1">No signals yet</h4>
+                  <p className="font-sans text-graphite/50 text-sm max-w-md mx-auto">
+                    No market signals currently mention {brand.name}. Signals update as new data flows into the intelligence feed.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {brandSignals.map((signal: { id: string; title: string; description: string; category: string | null; magnitude: number; direction: string; updated_at: string }) => {
+                    const dirColor =
+                      signal.direction === 'up' ? 'text-signal-up' :
+                      signal.direction === 'down' ? 'text-signal-down' :
+                      'text-signal-warn';
+                    const dirBg =
+                      signal.direction === 'up' ? 'bg-signal-up/10' :
+                      signal.direction === 'down' ? 'bg-signal-down/10' :
+                      'bg-signal-warn/10';
+                    return (
+                      <div key={signal.id} className="bg-white border border-graphite/[0.08] rounded-2xl p-4 transition-all hover:shadow-soft">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-sans font-semibold text-sm text-graphite m-0 leading-snug">
+                              {signal.title}
+                            </h4>
+                            <p className="font-sans text-xs text-graphite/50 mt-1 line-clamp-2 leading-relaxed">
+                              {signal.description}
+                            </p>
+                            <div className="flex items-center gap-2 mt-2 flex-wrap">
+                              {signal.category && (
+                                <span className="font-sans text-[10px] font-medium px-2 py-0.5 rounded-full bg-mn-surface text-graphite/50">
+                                  {signal.category}
+                                </span>
+                              )}
+                              <span className="font-sans text-[10px] text-graphite/30">
+                                {new Date(signal.updated_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                            <span className={`inline-flex items-center gap-0.5 font-sans text-[11px] font-semibold px-2 py-0.5 rounded-full ${dirBg} ${dirColor}`}>
+                              <TrendingUp className={`w-3 h-3 ${signal.direction === 'down' ? 'rotate-180' : signal.direction === 'flat' ? 'rotate-90' : ''}`} />
+                              {signal.magnitude}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
 
           {/* CTA */}

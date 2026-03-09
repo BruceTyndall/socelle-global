@@ -10,3 +10,11 @@ export { useCmsPosts, useCmsPostBySlug } from './useCmsPosts';
 export { useCmsAssets, getAssetPublicUrl } from './useCmsAssets';
 export { useCmsDocs, useCmsDocBySlug } from './useCmsDocs';
 export { useCmsTemplates, useCmsTemplate } from './useCmsTemplates';
+
+// ── Hub Integration Hooks — WO-CMS-06 ────────────────────────────────
+export { useIntelligencePosts, useIntelligenceBriefBySlug } from './useIntelligencePosts';
+export { useEducationContent, useEducationArticleBySlug } from './useEducationContent';
+export { useMarketingPages, useMarketingPageBySlug } from './useMarketingPages';
+export { useSalesPlaybooks, useSalesPlaybookBySlug } from './useSalesPlaybooks';
+export { useJobsContent, useJobsGuideBySlug } from './useJobsContent';
+export { useBrandsContent, useBrandsContentBySlug } from './useBrandsContent';

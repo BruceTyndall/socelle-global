@@ -1,13 +1,14 @@
 /* ═══════════════════════════════════════════════════════════════
-   Brands.tsx — Brand Directory
-   WO-OVERHAUL-03 Phase 3 rebuild
-   Data: LIVE from Supabase `brands` table via inline fetch
+   Brands.tsx — Brand Directory (V2-HUBS-03 Non-Shell Upgrade)
+   Data: LIVE from Supabase `brands` table via TanStack Query v5
+   Competitive Intelligence: LIVE from `market_signals` brand mentions
    Intelligence overlays: DEMO (mock brandIntelligence layer)
    Pearl Mineral V2 tokens only — no pro-*, no font-serif
    ═══════════════════════════════════════════════════════════════ */
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useQuery } from '@tanstack/react-query';
 import {
   ArrowRight,
   Package,
@@ -19,10 +20,11 @@ import {
   Sparkles,
   Building2,
   Search,
+  Download,
+  BarChart3,
 } from 'lucide-react';
 import { isSupabaseConfigured, supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
-import { createScopedLogger } from '../../lib/logger';
 import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
@@ -31,14 +33,11 @@ import { TrustBadge } from '../../components/ui/TrustBadge';
 import BrandCard from '../../components/BrandCard';
 import {
   isBrandTrending,
-  getBrandAdoptionCount,
   getBrandCategoryTags,
   brandPassesIntelFilter,
   BRAND_INTEL_FILTERS,
 } from '../../lib/intelligence/brandIntelligence';
 import type { BrandIntelFilter } from '../../lib/intelligence/brandIntelligence';
-
-const log = createScopedLogger('Brands');
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,6 +55,11 @@ interface BrandRow {
   } | null;
 }
 
+interface BrandMention {
+  brandName: string;
+  count: number;
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CATEGORY_CHIPS = [
@@ -71,11 +75,11 @@ const CATEGORY_CHIPS = [
 
 const SORT_OPTIONS = [
   { key: 'name', label: 'Name A\u2013Z' },
-  { key: 'newest', label: 'Newest' },
-  { key: 'top_rated', label: 'Top rated' },
+  { key: 'name_desc', label: 'Name Z\u2013A' },
+  { key: 'popularity', label: 'Most mentioned' },
 ];
 
-type SortKey = 'name' | 'newest' | 'top_rated';
+type SortKey = 'name' | 'name_desc' | 'popularity';
 
 /** Decorative brand photos for the hero collage */
 const HERO_PHOTOS = [7, 8, 9, 10, 11, 12].map(
@@ -107,16 +111,104 @@ function BrandGridSkeleton() {
   );
 }
 
+function CompetitiveIntelSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex items-center justify-between p-3 bg-white rounded-xl border border-graphite/8">
+          <div className="h-4 w-32 rounded animate-pulse bg-mn-surface" />
+          <div className="h-4 w-20 rounded animate-pulse bg-mn-surface" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── CSV Export ────────────────────────────────────────────────────────────────
+
+function exportBrandsCSV(brands: BrandRow[]) {
+  const headers = ['Name', 'Category', 'Description', 'URL'];
+  const rows = brands.map((b) => [
+    b.name,
+    b.category ?? '',
+    (b.description ?? '').replace(/"/g, '""'),
+    `https://socelle.com/brands/${b.slug}`,
+  ]);
+  const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `socelle-brand-directory-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── Hooks ────────────────────────────────────────────────────────────────────
+
+function useBrands() {
+  return useQuery<BrandRow[], Error>({
+    queryKey: ['brands', 'directory'],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) {
+        throw new Error('Platform is being configured. Check back soon.');
+      }
+      const { data, error } = await supabase
+        .from('brands')
+        .select('id, name, slug, description, status, logo_url, hero_image_url, category, theme')
+        .or('is_published.eq.true,status.eq.active')
+        .order('name');
+
+      if (error) throw error;
+      return (data ?? []) as BrandRow[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+function useBrandMentions(brandNames: string[]) {
+  return useQuery<BrandMention[], Error>({
+    queryKey: ['brand-mentions', brandNames.length],
+    queryFn: async () => {
+      if (!isSupabaseConfigured || brandNames.length === 0) return [];
+
+      const { data, error } = await supabase
+        .from('market_signals')
+        .select('title, description')
+        .eq('active', true);
+
+      if (error) throw error;
+      if (!data || data.length === 0) return [];
+
+      // Count mentions of each brand name in signal titles/descriptions
+      const mentionMap = new Map<string, number>();
+      for (const name of brandNames) {
+        mentionMap.set(name, 0);
+      }
+
+      for (const signal of data) {
+        const text = `${signal.title} ${signal.description}`.toLowerCase();
+        for (const name of brandNames) {
+          if (text.includes(name.toLowerCase())) {
+            mentionMap.set(name, (mentionMap.get(name) ?? 0) + 1);
+          }
+        }
+      }
+
+      return Array.from(mentionMap.entries())
+        .map(([brandName, count]) => ({ brandName, count }))
+        .filter((m) => m.count > 0)
+        .sort((a, b) => b.count - a.count);
+    },
+    enabled: brandNames.length > 0,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function Brands() {
-  const [brands, setBrands] = useState<BrandRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<'content' | 'network' | 'generic'>('generic');
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Filters
   const [activeCategory, setActiveCategory] = useState('all');
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [filterNew, setFilterNew] = useState(false);
@@ -125,74 +217,27 @@ export default function Brands() {
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    fetchBrands();
-  }, []);
+  const { data: brands = [], isLoading: loading, error: queryError, refetch } = useBrands();
 
-  const fetchBrands = async () => {
-    setLoading(true);
-    setError(null);
-    setErrorType('generic');
+  const brandNames = useMemo(() => brands.map((b) => b.name), [brands]);
+  const { data: brandMentions = [], isLoading: mentionsLoading } = useBrandMentions(brandNames);
 
-    if (!isSupabaseConfigured) {
-      setError('Platform is being configured. Check back soon.');
-      setErrorType('content');
-      setLoading(false);
-      return;
+  const mentionsByName = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const m of brandMentions) {
+      map.set(m.brandName, m.count);
     }
+    return map;
+  }, [brandMentions]);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10_000);
-
-    try {
-      const { data, error: supabaseError } = await supabase
-        .from('brands')
-        .select('id, name, slug, description, status, logo_url, hero_image_url, category, theme')
-        .or('is_published.eq.true,status.eq.active')
-        .order('name')
-        .abortSignal(controller.signal);
-
-      clearTimeout(timeoutId);
-
-      if (supabaseError) {
-        log.warn('Supabase error fetching brands', { error: supabaseError });
-        const isRls = ['PGRST301', 'PGRST116', '42501'].includes(supabaseError.code ?? '') ||
-          supabaseError.message?.toLowerCase().includes('permission') ||
-          supabaseError.message?.toLowerCase().includes('rls');
-
-        if (isRls) {
-          setError('Content is being prepared. Please check back shortly.');
-          setErrorType('content');
-        } else {
-          throw supabaseError;
-        }
-      } else {
-        setBrands(data || []);
-      }
-    } catch (err: unknown) {
-      clearTimeout(timeoutId);
-      const isAbort = err instanceof Error && err.name === 'AbortError';
-      const isNetwork = err instanceof Error && (err.message.includes('fetch') || err.message.includes('network'));
-
-      if (isAbort || isNetwork) {
-        setError('Connection issue. Please check your internet and refresh.');
-        setErrorType('network');
-      } else {
-        log.warn('Error fetching brands', { err });
-        setError('Content is being prepared. Please check back shortly.');
-        setErrorType('content');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = queryError?.message ?? null;
+  const isNetworkError = queryError instanceof Error && (queryError.message.includes('fetch') || queryError.message.includes('network'));
 
   // ── Derived / filtered brands ─────────────────────────────────
 
   const filteredBrands = useMemo(() => {
     let result = [...brands];
 
-    // Search query
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
@@ -209,12 +254,10 @@ export default function Brands() {
       );
     }
 
-    // "New" filter: crude proxy -- first 20% alphabetically per category
     if (filterNew) {
       result = result.slice(0, Math.max(1, Math.ceil(result.length * 0.2)));
     }
 
-    // Intelligence-based filter (DEMO)
     if (activeIntelFilter) {
       result = result.filter((b) => brandPassesIntelFilter(b.slug, activeIntelFilter));
     }
@@ -223,20 +266,20 @@ export default function Brands() {
       case 'name':
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'newest':
+      case 'name_desc':
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case 'top_rated':
+      case 'popularity':
+        result.sort((a, b) => (mentionsByName.get(b.name) ?? 0) - (mentionsByName.get(a.name) ?? 0));
         break;
     }
 
     return result;
-  }, [brands, activeCategory, sortKey, filterNew, activeIntelFilter, searchQuery]);
+  }, [brands, activeCategory, sortKey, filterNew, activeIntelFilter, searchQuery, mentionsByName]);
 
-  const getAuthAwareHref = (brand: BrandRow) => {
-    const target = `/brands/${brand.slug}`;
-    return target;
-  };
+  const handleExportCSV = useCallback(() => {
+    exportBrandsCSV(filteredBrands);
+  }, [filteredBrands]);
 
   const activeFilterCount = (activeCategory !== 'all' ? 1 : 0) + (filterNew ? 1 : 0) + (activeIntelFilter ? 1 : 0);
 
@@ -277,7 +320,6 @@ export default function Brands() {
 
       {/* ── Hero: Photo Collage + Glass Overlay ──────────────────── */}
       <section className="relative overflow-hidden bg-graphite">
-        {/* Photo collage grid behind overlay */}
         <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-1 opacity-40">
           {HERO_PHOTOS.map((src, i) => (
             <img
@@ -290,10 +332,8 @@ export default function Brands() {
             />
           ))}
         </div>
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-graphite/60 via-graphite/80 to-graphite" />
 
-        {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36 text-center">
           <BlockReveal>
             <p className="text-[0.8125rem] uppercase tracking-[0.12em] font-medium text-accent font-sans mb-4">
@@ -329,7 +369,6 @@ export default function Brands() {
           </BlockReveal>
         </div>
 
-        {/* Decorative swatch strip */}
         <div className="relative z-10 flex justify-center gap-2 pb-8 px-4">
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <img
@@ -347,8 +386,8 @@ export default function Brands() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* ── Search bar ──────────────────────────────────────────── */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
             <input
               id="brand-search"
@@ -367,6 +406,16 @@ export default function Brands() {
               </button>
             )}
           </div>
+          {/* CSV Export */}
+          <button
+            onClick={handleExportCSV}
+            disabled={filteredBrands.length === 0}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-graphite/12 bg-white text-sm font-sans font-medium text-graphite/62 hover:border-graphite hover:text-graphite disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            title="Export brand directory to CSV"
+          >
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">Export CSV</span>
+          </button>
         </div>
 
         {/* ── Category filter chips ──────────────────────────────── */}
@@ -419,7 +468,6 @@ export default function Brands() {
               </button>
             );
           })}
-          {/* DEMO label for intel filters */}
           <span className="flex-shrink-0 text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full ml-1">
             DEMO
           </span>
@@ -447,7 +495,6 @@ export default function Brands() {
               )}
             </button>
 
-            {/* Active filter chips */}
             {filterNew && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-mn-surface text-graphite text-xs font-medium font-sans rounded-full border border-graphite/12">
                 New brands
@@ -471,7 +518,6 @@ export default function Brands() {
               {filteredBrands.length} brand{filteredBrands.length !== 1 ? 's' : ''}
             </span>
 
-            {/* Sort dropdown */}
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
@@ -512,33 +558,75 @@ export default function Brands() {
           </div>
         )}
 
+        {/* ── Competitive Intelligence Section ────────────────── */}
+        {!error && !loading && brandMentions.length > 0 && (
+          <div className="mb-10 bg-white border border-graphite/8 rounded-2xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <BarChart3 className="w-5 h-5 text-accent" />
+              <h3 className="font-sans font-semibold text-graphite text-base">Competitive Intelligence</h3>
+              <span className="text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-full ml-auto">
+                LIVE
+              </span>
+            </div>
+            <p className="text-xs text-graphite/50 font-sans mb-4">
+              Brand mentions across active market signals this month
+            </p>
+            {mentionsLoading ? (
+              <CompetitiveIntelSkeleton />
+            ) : (
+              <div className="space-y-2">
+                {brandMentions.slice(0, 10).map((m) => {
+                  const maxCount = brandMentions[0]?.count ?? 1;
+                  const pct = Math.round((m.count / maxCount) * 100);
+                  return (
+                    <div key={m.brandName} className="flex items-center gap-3">
+                      <span className="text-sm font-sans font-medium text-graphite w-40 truncate flex-shrink-0">
+                        {m.brandName}
+                      </span>
+                      <div className="flex-1 h-2 bg-mn-surface rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-accent rounded-full transition-all"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-sans font-semibold text-graphite/60 w-20 text-right flex-shrink-0">
+                        {m.count} mention{m.count !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ── Main content ──────────────────────────────────────── */}
         {error ? (
           <div className="max-w-2xl mx-auto">
             <div
-              className={`border rounded-2xl p-6 ${errorType === 'network'
+              className={`border rounded-2xl p-6 ${isNetworkError
                 ? 'bg-red-50 border-red-200'
                 : 'bg-mn-surface border-graphite/8'
                 }`}
             >
               <div className="flex items-start gap-3">
                 <AlertCircle
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${errorType === 'network' ? 'text-red-600' : 'text-graphite'
+                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${isNetworkError ? 'text-red-600' : 'text-graphite'
                     }`}
                 />
                 <div>
                   <h3
-                    className={`font-sans font-semibold mb-1 ${errorType === 'network' ? 'text-red-900' : 'text-graphite'
+                    className={`font-sans font-semibold mb-1 ${isNetworkError ? 'text-red-900' : 'text-graphite'
                       }`}
                   >
-                    {errorType === 'network' ? 'Brand discovery unavailable' : 'Content being prepared'}
+                    {isNetworkError ? 'Brand discovery unavailable' : 'Content being prepared'}
                   </h3>
-                  <p className={`text-sm font-sans mb-4 ${errorType === 'network' ? 'text-red-700' : 'text-graphite/62'
+                  <p className={`text-sm font-sans mb-4 ${isNetworkError ? 'text-red-700' : 'text-graphite/62'
                     }`}>
                     {error}
                   </p>
                   <button
-                    onClick={fetchBrands}
+                    onClick={() => refetch()}
                     className="btn-mineral-primary btn-mineral-sm"
                   >
                     Try again
@@ -571,11 +659,9 @@ export default function Brands() {
           </div>
         ) : (
           <>
-            {/* Editorial moment: curated gallery feel */}
             <div className="mb-10 pb-8 border-b border-graphite/8">
               <div className="flex items-center justify-center gap-3 mb-3">
                 <TrustBadge variant="authorized" size="md" />
-                {/* LIVE label: brand data is from Supabase brands table */}
                 <span className="text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-full">
                   LIVE
                 </span>
@@ -585,17 +671,30 @@ export default function Brands() {
               </p>
             </div>
 
-            {/* Brand grid — LIVE data from brands table */}
+            {/* Brand grid with Schema.org Organization JSON-LD per card */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
               {filteredBrands.map((brand, idx) => {
                 const trending = isBrandTrending(brand.slug);
                 const tags = getBrandCategoryTags(brand.slug);
-                // Use decorative photo as fallback if no hero image
                 const fallbackImg = !brand.hero_image_url
                   ? DECORATIVE_PHOTOS[idx % DECORATIVE_PHOTOS.length]
                   : undefined;
+
+                const orgSchema = {
+                  '@context': 'https://schema.org',
+                  '@type': 'Organization',
+                  name: brand.name,
+                  url: `https://socelle.com/brands/${brand.slug}`,
+                  ...(brand.description && { description: brand.description }),
+                  ...(brand.logo_url && { logo: brand.logo_url }),
+                };
+
                 return (
                   <div key={brand.id} className="relative group/intel">
+                    <script
+                      type="application/ld+json"
+                      dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+                    />
                     <BrandCard
                       id={brand.id}
                       name={brand.name}
@@ -604,10 +703,9 @@ export default function Brands() {
                       logoUrl={brand.logo_url}
                       heroImageUrl={brand.hero_image_url ?? fallbackImg ?? null}
                       category={brand.category ?? undefined}
-                      href={getAuthAwareHref(brand)}
+                      href={`/brands/${brand.slug}`}
                       keyStat={undefined}
                     />
-                    {/* Intelligence overlay — trending badge (DEMO) */}
                     {trending && (
                       <div className="absolute top-2 right-2 z-10 pointer-events-none">
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-graphite text-white text-[10px] font-sans font-bold tracking-wider uppercase rounded-full shadow-sm backdrop-blur-sm">
@@ -616,7 +714,6 @@ export default function Brands() {
                         </span>
                       </div>
                     )}
-                    {/* Intelligence overlay — category tags (DEMO) */}
                     {tags.length > 0 && (
                       <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pointer-events-none">
                         <div className="flex flex-wrap gap-1">
