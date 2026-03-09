@@ -9,7 +9,7 @@
  *   Query param: ?api_registry_id=<uuid>  (alternative to body)
  *   Body: { "registry_id": "<uuid>" }
  *
- * Admin-only: Requires a valid JWT with role = admin or super_admin.
+ * Admin-only: Requires a valid JWT with role = admin or platform_admin.
  *
  * SECURITY: NEVER reads or exposes api_key_encrypted from api_registry.
  *           The api_key_encrypted column is NEVER selected, logged, or returned.
@@ -80,7 +80,7 @@ async function verifyAdmin(
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
   const { data: profile, error: profileErr } = await adminClient
-    .from('profiles')
+    .from('user_profiles')
     .select('role')
     .eq('id', user.id)
     .single();
@@ -89,7 +89,7 @@ async function verifyAdmin(
     return { authorized: false, reason: 'Profile not found' };
   }
 
-  if (!['admin', 'super_admin'].includes(profile.role)) {
+  if (!['admin', 'platform_admin'].includes(profile.role)) {
     return { authorized: false, reason: 'Insufficient role — admin required' };
   }
 
