@@ -289,6 +289,20 @@ async function callOpenRouter(
   return res.json() as Promise<OpenRouterResponse>;
 }
 
+// ── Rate limit tiers ─────────────────────────────────────────────────────────
+// Owner decision #7: 5/min Starter, 15/min Pro, 60/min Enterprise.
+
+const RATE_LIMITS: Record<string, number> = {
+  starter: 5,
+  pro: 15,
+  enterprise: 60,
+};
+
+function getTierLimit(subscriptionTier?: string): number {
+  const tier = (subscriptionTier ?? 'starter').toLowerCase();
+  return RATE_LIMITS[tier] ?? RATE_LIMITS.starter;
+}
+
 // ── JSON response helper ──────────────────────────────────────────────────────
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -353,18 +367,52 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: 'task_type and messages are required' }, 400);
   }
 
-  // ── 4. Select tier based on task + context size ────────────────────────────
+  // ── 4. Rate limit check (sliding window per user) ──────────────────────────
+  // Look up the user's subscription tier to determine their rate limit.
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+  const { data: profileData } = await supabaseAdmin
+    .from('user_profiles')
+    .select('subscription_tier')
+    .eq('id', user.id)
+    .single();
+
+  const userTier = profileData?.subscription_tier ?? 'starter';
+  const tierLimit = getTierLimit(userTier);
+
+  const { data: rateLimitResult, error: rateLimitError } = await supabaseAdmin
+    .rpc('check_rate_limit', {
+      p_user_id: user.id,
+      p_tier_limit: tierLimit,
+    });
+
+  if (rateLimitError) {
+    console.error('Rate limit check error:', rateLimitError.message);
+    // Fail open on rate limit infrastructure errors — log but don't block
+  } else if (rateLimitResult && !rateLimitResult.allowed) {
+    return jsonResponse(
+      {
+        error: 'Rate limit exceeded',
+        code: 'rate_limit_exceeded',
+        message: `You have exceeded your rate limit of ${tierLimit} requests per minute. Please wait and try again.`,
+        limit: rateLimitResult.limit,
+        current_count: rateLimitResult.current_count,
+        resets_at: rateLimitResult.resets_at,
+      },
+      429,
+    );
+  }
+
+  // ── 5. Select tier based on task + context size ────────────────────────────
   const contextStr = context ? JSON.stringify(context) : '';
   const allText = messages.map((m) => m.content).join(' ') + contextStr;
   const tierConfig = selectTier(task_type, allText.length);
 
-  // ── 5. Estimate cost and pre-check credit balance ──────────────────────────
+  // ── 6. Estimate cost and pre-check credit balance ──────────────────────────
   // We estimate conservatively before the call. After the call we write the
   // actual cost to the ledger. The pre-check prevents requests that are
   // guaranteed to fail due to insufficient balance.
   const estimatedCostUsd = estimateCost(tierConfig, allText);
-
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
   // Call deduct_credits() — this acquires a row-level lock and deducts atomically.
   // It raises a PostgreSQL exception (ERRCODE P0002) if balance is insufficient.
@@ -397,7 +445,7 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: 'Billing error — request cancelled' }, 500);
   }
 
-  // ── 6. Build system prompt and call OpenRouter ─────────────────────────────
+  // ── 7. Build system prompt and call OpenRouter ─────────────────────────────
   const systemPrompt = buildSystemPrompt(task_type, mode);
 
   // Inject context data as a system-level data block if present
@@ -428,7 +476,7 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  // ── 7. Extract usage and compute actual cost ───────────────────────────────
+  // ── 8. Extract usage and compute actual cost ───────────────────────────────
   const tokensIn = aiResult.usage?.prompt_tokens ?? 0;
   const tokensOut = aiResult.usage?.completion_tokens ?? 0;
   const actualCostUsd = actualCost(tierConfig, tokensIn, tokensOut);
@@ -450,7 +498,7 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // ── 8. Return structured response ─────────────────────────────────────────
+  // ── 9. Return structured response ─────────────────────────────────────────
   return jsonResponse({
     answer,
     tier: tierConfig.tier,

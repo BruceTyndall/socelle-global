@@ -1,0 +1,24 @@
+{
+  "wo_id": "FOUND-WO-12",
+  "timestamp": "2026-03-10T21:17:00Z",
+  "description": "Wire pg_cron hourly schedule for feed-orchestrator",
+  "skills_run": ["build-gate"],
+  "results": {
+    "cron_migration": {
+      "status": "PASS",
+      "evidence": "Migration 20260310000002_pg_cron_feed_orchestrator_hourly.sql unschedules the old 'feed-orchestrator-6h' job and creates 'feed-orchestrator-hourly' at '0 * * * *' (every hour on the hour). Uses pg_net http_post to call feed-orchestrator edge function with service_role_key auth.",
+      "failures": []
+    },
+    "existing_schedules_preserved": {
+      "status": "PASS",
+      "evidence": "ingest-rss-30m and rss-to-signals-30m schedules from 20260309100002 are untouched. Only feed-orchestrator cadence changes from 6h to hourly.",
+      "failures": []
+    },
+    "build-gate": {
+      "status": "PASS",
+      "evidence": "tsc --noEmit = 0 errors. 117/117 tests pass.",
+      "failures": []
+    }
+  },
+  "overall": "PASS"
+}

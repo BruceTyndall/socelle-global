@@ -1,0 +1,34 @@
+{
+  "wo_id": "FOUND-WO-03",
+  "timestamp": "2026-03-10T21:17:00Z",
+  "description": "Rate limiting in ai-orchestrator — ai_rate_limits table + sliding window + 429 response",
+  "skills_run": ["build-gate"],
+  "results": {
+    "migration": {
+      "status": "PASS",
+      "evidence": "Migration 20260310000001_create_ai_rate_limits.sql creates ai_rate_limits table (user_id PK, request_count, window_start), RLS enabled with 2 policies (users read own, service_role manages all), check_rate_limit() SECURITY DEFINER RPC with sliding 60-second window, row-level locking via FOR UPDATE.",
+      "failures": []
+    },
+    "edge_function": {
+      "status": "PASS",
+      "evidence": "ai-orchestrator step 4 (lines 370-404): looks up user subscription_tier from user_profiles, maps to rate limit (starter=5, pro=15, enterprise=60), calls check_rate_limit RPC, returns 429 with code 'rate_limit_exceeded' when exceeded. Fails open on infrastructure errors.",
+      "failures": []
+    },
+    "rls": {
+      "status": "PASS",
+      "evidence": "RLS enabled on ai_rate_limits. Policy 'Users can read own rate limit' (SELECT, auth.uid()=user_id). Policy 'Service role manages rate limits' (ALL, auth.role()='service_role').",
+      "failures": []
+    },
+    "tier_config": {
+      "status": "PASS",
+      "evidence": "Rate limits match owner decision #7: starter=5/min, pro=15/min, enterprise=60/min. Default fallback to starter tier.",
+      "failures": []
+    },
+    "build-gate": {
+      "status": "PASS",
+      "evidence": "tsc --noEmit = 0 errors. 117/117 tests pass.",
+      "failures": []
+    }
+  },
+  "overall": "PASS"
+}
