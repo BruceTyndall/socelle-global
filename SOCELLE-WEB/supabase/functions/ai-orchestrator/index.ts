@@ -314,6 +314,29 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
+// ── Audit logging (CTRL-WO-03) ───────────────────────────────────────────────
+
+async function writeAuditLog(params: {
+  supabaseAdmin: ReturnType<typeof createClient>;
+  userId: string;
+  action: 'ai.request' | 'ai.blocked' | 'ai.rate_limited';
+  resourceType?: string;
+  resourceId?: string | null;
+  details?: Record<string, unknown>;
+}) {
+  const { error } = await params.supabaseAdmin.from('audit_logs').insert({
+    user_id: params.userId,
+    action: params.action,
+    resource_type: params.resourceType ?? 'ai_orchestrator',
+    resource_id: params.resourceId ?? null,
+    details: params.details ?? {},
+  });
+
+  if (error) {
+    console.warn('[ai-orchestrator] audit log write failed:', error.message);
+  }
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
@@ -391,6 +414,17 @@ Deno.serve(async (req: Request) => {
     userTier,
   });
   if (!aiOrchestratorEnabled) {
+    await writeAuditLog({
+      supabaseAdmin,
+      userId: user.id,
+      action: 'ai.blocked',
+      details: {
+        reason: 'feature_flag_disabled',
+        flag_key: 'AI_ORCHESTRATOR_ENABLED',
+        user_tier: userTier,
+      },
+    });
+
     return jsonResponse(
       {
         error: 'AI service is currently disabled by feature flag.',
@@ -413,6 +447,17 @@ Deno.serve(async (req: Request) => {
     console.error('Rate limit check error:', rateLimitError.message);
     // Fail open on rate limit infrastructure errors — log but don't block
   } else if (rateLimitResult && !rateLimitResult.allowed) {
+    await writeAuditLog({
+      supabaseAdmin,
+      userId: user.id,
+      action: 'ai.rate_limited',
+      details: {
+        tier_limit: tierLimit,
+        current_count: rateLimitResult.current_count,
+        resets_at: rateLimitResult.resets_at,
+      },
+    });
+
     return jsonResponse(
       {
         error: 'Rate limit exceeded',
@@ -455,6 +500,19 @@ Deno.serve(async (req: Request) => {
     // P0002 = insufficient funds (set in deduct_credits function)
     const isInsufficientFunds = creditError.message?.toLowerCase().includes('insufficient credit');
     if (isInsufficientFunds) {
+      await writeAuditLog({
+        supabaseAdmin,
+        userId: user.id,
+        action: 'ai.blocked',
+        details: {
+          reason: 'insufficient_credits',
+          estimated_cost_usd: estimatedCostUsd,
+          feature,
+          task_type,
+          model: tierConfig.model,
+        },
+      });
+
       return jsonResponse(
         {
           error: 'Insufficient credit balance',
@@ -465,6 +523,17 @@ Deno.serve(async (req: Request) => {
       );
     }
     console.error('Credit deduction error:', creditError.message);
+    await writeAuditLog({
+      supabaseAdmin,
+      userId: user.id,
+      action: 'ai.blocked',
+      details: {
+        reason: 'billing_error',
+        message: creditError.message,
+        feature,
+        task_type,
+      },
+    });
     return jsonResponse({ error: 'Billing error — request cancelled' }, 500);
   }
 
@@ -489,6 +558,17 @@ Deno.serve(async (req: Request) => {
     );
   } catch (err) {
     console.error('OpenRouter call failed:', err);
+    await writeAuditLog({
+      supabaseAdmin,
+      userId: user.id,
+      action: 'ai.blocked',
+      details: {
+        reason: 'ai_error',
+        feature,
+        task_type,
+        model: tierConfig.model,
+      },
+    });
     // On AI failure, log the failed attempt (balance already deducted — MVP behaviour)
     return jsonResponse(
       {
@@ -520,6 +600,23 @@ Deno.serve(async (req: Request) => {
       if (error) console.warn('Cost reconciliation failed:', error.message);
     });
   }
+
+  await writeAuditLog({
+    supabaseAdmin,
+    userId: user.id,
+    action: 'ai.request',
+    resourceId: aiResult.id,
+    details: {
+      feature,
+      task_type,
+      model: tierConfig.model,
+      tier: tierConfig.tier,
+      user_tier: userTier,
+      tokens_in: tokensIn,
+      tokens_out: tokensOut,
+      cost_usd: actualCostUsd,
+    },
+  });
 
   // ── 9. Return structured response ─────────────────────────────────────────
   return jsonResponse({

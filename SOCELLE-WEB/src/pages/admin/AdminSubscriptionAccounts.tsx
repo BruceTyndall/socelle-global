@@ -5,6 +5,7 @@ import {
   Shield, ShieldOff, Calendar, AlertTriangle,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { logAudit } from '../../lib/auditLog';
 import { MODULE_KEYS } from '../../modules/_core/context/ModuleAccessContext';
 import { getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
 
@@ -115,7 +116,7 @@ export default function AdminSubscriptionAccounts() {
     if (!grantForm || !selectedAccount) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data: insertedOverride, error } = await supabase
         .from('account_module_access')
         .insert({
           account_id: selectedAccount,
@@ -124,8 +125,23 @@ export default function AdminSubscriptionAccounts() {
           expires_at: grantForm.expires_at || null,
           notes: grantForm.notes || null,
           is_active: true,
-        });
+        })
+        .select('id')
+        .single();
       if (error) throw error;
+
+      await logAudit({
+        action: 'module.toggle',
+        resourceType: 'account_module_access',
+        resourceId: insertedOverride?.id,
+        details: {
+          operation: 'grant',
+          account_id: selectedAccount,
+          module_key: grantForm.module_key,
+          expires_at: grantForm.expires_at || null,
+        },
+      });
+
       setGrantForm(null);
       void queryClient.invalidateQueries({ queryKey: ['account_module_access', selectedAccount] });
     } catch (e) {
@@ -137,10 +153,27 @@ export default function AdminSubscriptionAccounts() {
 
   const handleRevokeModule = async (overrideId: string) => {
     if (!selectedAccount) return;
-    await supabase
+    const current = overrides.find((entry) => entry.id === overrideId);
+    const { error } = await supabase
       .from('account_module_access')
       .update({ is_active: false })
       .eq('id', overrideId);
+    if (error) {
+      console.warn('Revoke failed:', error);
+      return;
+    }
+
+    await logAudit({
+      action: 'module.toggle',
+      resourceType: 'account_module_access',
+      resourceId: overrideId,
+      details: {
+        operation: 'revoke',
+        account_id: selectedAccount,
+        module_key: current?.module_key ?? null,
+      },
+    });
+
     void queryClient.invalidateQueries({ queryKey: ['account_module_access', selectedAccount] });
   };
 

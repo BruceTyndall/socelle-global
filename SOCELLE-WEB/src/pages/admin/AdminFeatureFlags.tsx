@@ -17,6 +17,7 @@ import {
   Info,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { logAudit } from '../../lib/auditLog';
 import type { FeatureFlagRow } from '../../lib/useFeatureFlag';
 
 // ── Types ─────────────────────────────────────────────────────────────────
@@ -144,31 +145,68 @@ export default function AdminFeatureFlags() {
   };
 
   const toggleMutation = useMutation({
-    mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
+    mutationFn: async ({
+      id,
+      enabled,
+      flagKey,
+    }: {
+      id: string;
+      enabled: boolean;
+      flagKey: string;
+    }) => {
       const { error } = await supabase
         .from('feature_flags')
         .update({ default_enabled: enabled, updated_at: new Date().toISOString() })
         .eq('id', id);
       if (error) throw error;
+
+      await logAudit({
+        action: 'feature_flag.update',
+        resourceType: 'feature_flag',
+        resourceId: id,
+        details: {
+          flag_key: flagKey,
+          field: 'default_enabled',
+          value: enabled,
+        },
+      });
     },
     onSuccess: invalidate,
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (updates: Partial<FeatureFlagRow> & { id: string }) => {
-      const { id, ...rest } = updates;
+    mutationFn: async (
+      updates: Partial<FeatureFlagRow> & {
+        id: string;
+        auditContext?: string;
+        flagKey?: string;
+      }
+    ) => {
+      const { id, auditContext, flagKey, ...rest } = updates;
       const { error } = await supabase
         .from('feature_flags')
         .update({ ...rest, updated_at: new Date().toISOString() })
         .eq('id', id);
       if (error) throw error;
+
+      await logAudit({
+        action: 'feature_flag.update',
+        resourceType: 'feature_flag',
+        resourceId: id,
+        details: {
+          flag_key: flagKey ?? null,
+          context: auditContext ?? 'generic_update',
+          changed_fields: Object.keys(rest),
+          patch: rest,
+        },
+      });
     },
     onSuccess: invalidate,
   });
 
   const createMutation = useMutation({
     mutationFn: async (flag: { flag_key: string; display_name: string; description: string }) => {
-      const { error } = await supabase.from('feature_flags').insert({
+      const { data, error } = await supabase.from('feature_flags').insert({
         flag_key: flag.flag_key,
         display_name: flag.display_name,
         description: flag.description,
@@ -176,8 +214,18 @@ export default function AdminFeatureFlags() {
         enabled_tiers: [],
         enabled_user_ids: [],
         rollout_percentage: 0,
-      });
+      }).select('id, flag_key').single();
       if (error) throw error;
+
+      await logAudit({
+        action: 'feature_flag.create',
+        resourceType: 'feature_flag',
+        resourceId: data?.id,
+        details: {
+          flag_key: data?.flag_key ?? flag.flag_key,
+          display_name: flag.display_name,
+        },
+      });
     },
     onSuccess: () => {
       invalidate();
@@ -189,9 +237,16 @@ export default function AdminFeatureFlags() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({ id, flagKey }: { id: string; flagKey: string }) => {
       const { error } = await supabase.from('feature_flags').delete().eq('id', id);
       if (error) throw error;
+
+      await logAudit({
+        action: 'feature_flag.delete',
+        resourceType: 'feature_flag',
+        resourceId: id,
+        details: { flag_key: flagKey },
+      });
     },
     onSuccess: invalidate,
   });
@@ -200,7 +255,11 @@ export default function AdminFeatureFlags() {
 
   const handleToggle = (flag: FeatureFlagRow) => {
     if (isDemo) return;
-    toggleMutation.mutate({ id: flag.id, enabled: !flag.default_enabled });
+    toggleMutation.mutate({
+      id: flag.id,
+      enabled: !flag.default_enabled,
+      flagKey: flag.flag_key,
+    });
   };
 
   const handleCreate = () => {
@@ -214,7 +273,8 @@ export default function AdminFeatureFlags() {
 
   const handleDelete = (id: string) => {
     if (isDemo) return;
-    deleteMutation.mutate(id);
+    const flag = flags.find((f) => f.id === id);
+    deleteMutation.mutate({ id, flagKey: flag?.flag_key ?? 'unknown' });
   };
 
   const handleTierToggle = (flag: FeatureFlagRow, tier: string) => {
@@ -222,12 +282,22 @@ export default function AdminFeatureFlags() {
     const tiers = flag.enabled_tiers.includes(tier)
       ? flag.enabled_tiers.filter((t) => t !== tier)
       : [...flag.enabled_tiers, tier];
-    updateMutation.mutate({ id: flag.id, enabled_tiers: tiers });
+    updateMutation.mutate({
+      id: flag.id,
+      enabled_tiers: tiers,
+      auditContext: 'tier_toggle',
+      flagKey: flag.flag_key,
+    });
   };
 
   const handleRolloutChange = (flag: FeatureFlagRow, pct: number) => {
     if (isDemo) return;
-    updateMutation.mutate({ id: flag.id, rollout_percentage: pct });
+    updateMutation.mutate({
+      id: flag.id,
+      rollout_percentage: pct,
+      auditContext: 'rollout_percentage',
+      flagKey: flag.flag_key,
+    });
   };
 
   const handleUserIdsChange = (flag: FeatureFlagRow, raw: string) => {
@@ -236,7 +306,12 @@ export default function AdminFeatureFlags() {
       .split(/[\n,]+/)
       .map((s) => s.trim())
       .filter(Boolean);
-    updateMutation.mutate({ id: flag.id, enabled_user_ids: ids });
+    updateMutation.mutate({
+      id: flag.id,
+      enabled_user_ids: ids,
+      auditContext: 'user_override',
+      flagKey: flag.flag_key,
+    });
   };
 
   // ── KPI counts ────────────────────────────────────────────────────────

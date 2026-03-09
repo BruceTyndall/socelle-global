@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
+import { logAudit } from '../../lib/auditLog';
 import { MODULE_KEYS } from '../../modules/_core/context/ModuleAccessContext';
 import { getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
 
@@ -83,7 +84,19 @@ export default function AdminSubscriptionPlans() {
       .update({ is_active: !plan.is_active })
       .eq('id', plan.id);
 
-    if (!err) queryClient.invalidateQueries({ queryKey: ['admin-subscription-plans'] });
+    if (!err) {
+      await logAudit({
+        action: 'entitlement.change',
+        resourceType: 'subscription_plan',
+        resourceId: plan.id,
+        details: {
+          plan_slug: plan.slug,
+          field: 'is_active',
+          value: !plan.is_active,
+        },
+      });
+      void queryClient.invalidateQueries({ queryKey: ['admin-subscription-plans'] });
+    }
   };
 
   const handleSave = async () => {
@@ -112,11 +125,43 @@ export default function AdminSubscriptionPlans() {
           .update(payload)
           .eq('id', editing.id);
         if (err) throw err;
+
+        await logAudit({
+          action: 'entitlement.change',
+          resourceType: 'subscription_plan',
+          resourceId: editing.id,
+          details: {
+            operation: 'update',
+            plan_slug: payload.slug,
+            modules_included: payload.modules_included,
+            is_active: payload.is_active,
+            is_featured: payload.is_featured,
+            price_monthly: payload.price_monthly,
+            price_annual: payload.price_annual,
+          },
+        });
       } else {
-        const { error: err } = await supabase
+        const { data: insertedPlan, error: err } = await supabase
           .from('subscription_plans')
-          .insert(payload);
+          .insert(payload)
+          .select('id')
+          .single();
         if (err) throw err;
+
+        await logAudit({
+          action: 'entitlement.change',
+          resourceType: 'subscription_plan',
+          resourceId: insertedPlan?.id,
+          details: {
+            operation: 'create',
+            plan_slug: payload.slug,
+            modules_included: payload.modules_included,
+            is_active: payload.is_active,
+            is_featured: payload.is_featured,
+            price_monthly: payload.price_monthly,
+            price_annual: payload.price_annual,
+          },
+        });
       }
 
       setEditing(null);
