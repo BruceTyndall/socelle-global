@@ -109,7 +109,6 @@ export default function EditorialHub() {
         </div>
         <button
           type="button"
-          onClick={loadData}
           disabled={loading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
           onClick={() => void loadData()}
@@ -215,4 +214,3 @@ export default function EditorialHub() {
     </div>
   );
 }
-

@@ -222,10 +222,10 @@ export default function Shop() {
                           </div>
                           <button
                             onClick={() => addItem(product.id, null, 1, product.price_cents)}
-                            disabled={product.stock_quantity < 1}
+                            disabled={(product.stock_quantity ?? 0) < 1}
                             className="w-full h-10 bg-mn-dark text-white text-sm font-sans font-semibold rounded-pill hover:bg-graphite transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            {product.stock_quantity < 1 ? 'Out of Stock' : 'Add to Cart'}
+                            {(product.stock_quantity ?? 0) < 1 ? 'Out of Stock' : 'Add to Cart'}
                           </button>
                           {hasAffiliate && (
                             <div className="mt-2">

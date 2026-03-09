@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useStudioDocs } from '../../../lib/studio/useStudioDocs';
 import type { CmsDoc, CmsStatus } from '../../../lib/cms/types';
+import type { Json } from '../../../lib/database.types';
 
 // ── Template definitions ────────────────────────────────────────────
 
@@ -190,7 +191,7 @@ export default function StudioHome() {
       status: 'draft',
       category: 'document',
       body: null,
-      metadata,
+      metadata: metadata as Json,
     });
     navigate(`/portal/studio/editor/${result.id}`);
   }

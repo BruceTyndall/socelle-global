@@ -39,8 +39,8 @@ export default function AdminShopProducts() {
     const imgs = (p.images as string[]) ?? [];
     setForm({
       name: p.name, slug: p.slug, description: p.description ?? '', short_description: p.short_description ?? '',
-      price_cents: p.price_cents, compare_at_price_cents: p.compare_at_price_cents ?? 0,
-      sku: p.sku ?? '', stock_quantity: p.stock_quantity, is_active: p.is_active, is_featured: p.is_featured,
+      price_cents: p.price_cents ?? 0, compare_at_price_cents: p.compare_at_price_cents ?? 0,
+      sku: p.sku ?? '', stock_quantity: p.stock_quantity ?? 0, is_active: p.is_active ?? true, is_featured: p.is_featured ?? false,
       category_id: p.category_id ?? '', brand_id: p.brand_id ?? '', images: imgs.join('\n'),
     });
     setShowForm(true);

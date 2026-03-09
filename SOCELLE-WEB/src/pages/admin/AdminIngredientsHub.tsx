@@ -80,7 +80,7 @@ export default function AdminIngredientsHub() {
     return () => clearTimeout(t);
   }, [search]);
 
-  const { data: queryResult, isLoading: loading, error: queryError } = useQuery({
+  const { data: queryResult, isLoading: loading, error: queryError, refetch: fetchIngredients } = useQuery({
     queryKey: ['admin-ingredients', debouncedSearch],
     queryFn: async () => {
       let query = supabase

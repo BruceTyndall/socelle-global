@@ -75,7 +75,7 @@ function useTrendingSignals() {
   return useQuery<TrendingSignal[]>({
     queryKey: ['education_trending_signals'],
     queryFn: async () => {
-      if (!isSupabaseConfigured()) return [];
+      if (!isSupabaseConfigured) return [];
       const { data, error } = await supabase
         .from('market_signals')
         .select('id, title, magnitude, direction, signal_key, category')

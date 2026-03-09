@@ -59,7 +59,7 @@ function CheckoutForm() {
   const shippingCost = useMemo(() => {
     if (!selectedMethod) return 0;
     if (selectedMethod.free_above_cents && summary.subtotal_cents >= selectedMethod.free_above_cents) return 0;
-    return selectedMethod.base_rate_cents + selectedMethod.per_item_rate_cents * summary.item_count;
+    return selectedMethod.base_rate_cents + (selectedMethod.per_item_rate_cents ?? 0) * summary.item_count;
   }, [selectedMethod, summary]);
 
   const totalWithShipping = summary.subtotal_cents + shippingCost + summary.tax_cents - summary.discount_cents;
@@ -182,7 +182,7 @@ function CheckoutForm() {
           <h3 className="text-lg font-sans font-semibold text-graphite mt-8 mb-4">Shipping Method</h3>
           <div className="space-y-3">
             {shippingMethods.map(m => {
-              const cost = (m.free_above_cents && summary.subtotal_cents >= m.free_above_cents) ? 0 : m.base_rate_cents + m.per_item_rate_cents * summary.item_count;
+              const cost = (m.free_above_cents && summary.subtotal_cents >= m.free_above_cents) ? 0 : m.base_rate_cents + (m.per_item_rate_cents ?? 0) * summary.item_count;
               return (
                 <label key={m.id} className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-colors ${selectedShipping === m.id ? 'border-accent bg-accent/5' : 'border-graphite/10 hover:border-graphite/20'}`}>
                   <input type="radio" name="shipping" value={m.id} checked={selectedShipping === m.id} onChange={() => setSelectedShipping(m.id)} className="text-accent focus:ring-accent" />

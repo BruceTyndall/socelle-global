@@ -213,7 +213,7 @@ export default function AdminMediaHub() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={fetchMedia}
+            onClick={() => void fetchMedia()}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             title="Refresh"
           >

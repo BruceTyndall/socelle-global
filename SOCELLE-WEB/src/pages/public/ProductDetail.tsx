@@ -387,7 +387,7 @@ export default function ProductDetail() {
                 <div key={review.id} className="bg-mn-card rounded-xl p-5 shadow-soft">
                   <div className="flex items-center justify-between mb-2">
                     <StarRating rating={review.rating} />
-                    <span className="text-xs font-mono text-graphite/30">{new Date(review.created_at).toLocaleDateString()}</span>
+                    <span className="text-xs font-mono text-graphite/30">{review.created_at ? new Date(review.created_at).toLocaleDateString() : '—'}</span>
                   </div>
                   {review.title && <p className="text-sm font-sans font-semibold text-graphite mb-1">{review.title}</p>}
                   {review.body && <p className="text-sm font-sans text-graphite/70">{review.body}</p>}

@@ -131,10 +131,11 @@ function PropertyPanel({
     );
   }
 
+  const activeBlock = block;
   const blockDef = BLOCK_TYPES.find((bt) => bt.type === block.type);
 
   function handleFieldChange(field: string, value: unknown) {
-    onUpdate(block.id, { ...block.content, [field]: value });
+    onUpdate(activeBlock.id, { ...activeBlock.content, [field]: value });
   }
 
   return (

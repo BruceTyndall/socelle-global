@@ -64,7 +64,7 @@ describe('useTier', () => {
 
   it('tierRank values are correct (free=0, starter=1, pro=2, enterprise=3)', async () => {
     // Test with a logged in user who gets 'pro' from DEMO fallback
-    mockUseAuth.mockReturnValue({ user: { id: 'user-123' } });
+    mockUseAuth.mockReturnValue({ user: { id: 'user-123' } as any });
 
     // Subscriptions table missing (42P01) => falls back to demo 'pro'
     mockMaybeSingle.mockResolvedValue({

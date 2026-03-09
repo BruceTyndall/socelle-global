@@ -19,7 +19,7 @@ export default function SalesPipelineView() {
     followUpDate: ''
   });
 
-  const { data: leads = [], isLoading: loading, error: leadsQueryError } = useQuery({
+  const { data: leads = [], isLoading: loading, error: leadsQueryError, refetch: loadLeads } = useQuery({
     queryKey: ['sales-pipeline-leads', filterStatus],
     queryFn: async () => {
       let query = supabase

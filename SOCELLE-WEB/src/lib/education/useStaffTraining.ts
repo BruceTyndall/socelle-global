@@ -163,6 +163,7 @@ async function fetchStaffData(businessId: string) {
     .in('user_id', userIds)
     .order('enrolled_at', { ascending: false });
 
+  type JoinedCourse = { title: string | null; category: string | null; ce_credits: number | null };
   const enrollments: StaffEnrollment[] = ((enrollmentsRaw ?? []) as Array<{
     id: string;
     user_id: string;
@@ -171,19 +172,22 @@ async function fetchStaffData(businessId: string) {
     progress_pct: number;
     enrolled_at: string;
     completed_at: string | null;
-    courses: { title: string | null; category: string | null; ce_credits: number | null } | null;
-  }>).map(e => ({
-    id: e.id,
-    user_id: e.user_id,
-    course_id: e.course_id,
-    course_title: e.courses?.title ?? null,
-    course_category: e.courses?.category ?? null,
-    status: e.status,
-    progress_pct: e.progress_pct,
-    enrolled_at: e.enrolled_at,
-    completed_at: e.completed_at,
-    ce_credits: e.courses?.ce_credits ?? null,
-  }));
+    courses: JoinedCourse | JoinedCourse[] | null;
+  }>).map((e) => {
+    const course: JoinedCourse | null = Array.isArray(e.courses) ? (e.courses[0] ?? null) : (e.courses ?? null);
+    return {
+      id: e.id,
+      user_id: e.user_id,
+      course_id: e.course_id,
+      course_title: course?.title ?? null,
+      course_category: course?.category ?? null,
+      status: e.status,
+      progress_pct: e.progress_pct,
+      enrolled_at: e.enrolled_at,
+      completed_at: e.completed_at,
+      ce_credits: course?.ce_credits ?? null,
+    };
+  });
 
   // Get certificates for all staff
   const { data: certsRaw } = await supabase

@@ -248,7 +248,7 @@ export default function DebugPanel() {
               <h2 className="text-xl font-bold text-graphite">Database Query Tests</h2>
             </div>
             <button
-              onClick={runDatabaseTests}
+              onClick={() => void runDatabaseTests()}
               disabled={testing}
               className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-accent-soft transition-colors text-sm"
             >

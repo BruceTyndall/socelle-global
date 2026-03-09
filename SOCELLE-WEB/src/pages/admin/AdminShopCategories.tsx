@@ -28,7 +28,7 @@ export default function AdminShopCategories() {
 
   const openEdit = (c: ProductCategory) => {
     setEditing(c);
-    setForm({ name: c.name, slug: c.slug, description: c.description ?? '', parent_id: c.parent_id ?? '', sort_order: c.sort_order, is_active: c.is_active, image_url: c.image_url ?? '' });
+    setForm({ name: c.name, slug: c.slug, description: c.description ?? '', parent_id: c.parent_id ?? '', sort_order: c.sort_order ?? 0, is_active: c.is_active ?? true, image_url: c.image_url ?? '' });
     setShowForm(true);
   };
 

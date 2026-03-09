@@ -80,7 +80,7 @@ export default function AdminShopReviews() {
                 {review.body && <p className="text-sm font-sans text-graphite/60">{review.body}</p>}
                 <div className="flex items-center gap-4 mt-2 text-xs font-sans text-graphite/60/60">
                   <span>Product: <span className="font-mono">{review.product_id.slice(0, 8)}...</span></span>
-                  <span>{new Date(review.created_at).toLocaleDateString()}</span>
+                  <span>{review.created_at ? new Date(review.created_at).toLocaleDateString() : '—'}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 ml-4">

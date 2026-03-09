@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, Download, Share2, TrendingUp, Calendar, Package, GraduationCap, Award, AlertCircle, Loader2, Link as LinkIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { Skeleton } from './Skeleton';
+import { Skeleton } from './ui/Skeleton';
 
 interface PlanOutputViewProps {
   planId: string;

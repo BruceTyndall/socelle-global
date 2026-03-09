@@ -25,7 +25,7 @@
  *   </PaywallGate>
  */
 
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';

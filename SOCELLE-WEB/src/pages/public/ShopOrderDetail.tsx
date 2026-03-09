@@ -84,7 +84,7 @@ export default function ShopOrderDetail() {
             <div>
               <h1 className="text-2xl font-sans font-semibold text-graphite">Order #{order.id.slice(0, 8)}</h1>
               <p className="text-sm font-sans text-graphite/50 mt-1">
-                Placed on {new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                Placed on {order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
               </p>
             </div>
             {isCancelled && (

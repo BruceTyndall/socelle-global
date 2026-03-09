@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // We need to mock the supabase module before importing the logger.
 const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
-const mockFrom = vi.fn(() => ({ insert: mockInsert }));
+const mockFrom = vi.fn((_table?: string) => ({ insert: mockInsert }));
 const mockGetUser = vi.fn();
 
 vi.mock('../supabase', () => ({

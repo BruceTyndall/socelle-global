@@ -119,7 +119,7 @@ export default function SchemaHealthView() {
         </div>
 
         <button
-          onClick={performHealthCheck}
+          onClick={() => void performHealthCheck()}
           className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite flex items-center gap-2"
         >
           <RefreshCw className="w-5 h-5" />

@@ -157,7 +157,7 @@ export default function PortalHome() {
             <div>
               <p className="text-red-700 font-sans text-sm mb-3">{error}</p>
               <button
-                onClick={fetchBrands}
+                onClick={() => void fetchBrands()}
                 className="px-4 py-2 bg-white border border-red-200 text-red-700 text-sm font-medium font-sans rounded-lg hover:bg-red-50 transition-colors"
               >
                 Try again

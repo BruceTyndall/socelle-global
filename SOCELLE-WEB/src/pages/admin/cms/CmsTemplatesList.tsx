@@ -16,6 +16,7 @@ import {
   AlertCircle,
   RefreshCw,
 } from 'lucide-react';
+import type { Json } from '../../../lib/database.types';
 import {
   useCmsTemplates,
   type CmsTemplate,
@@ -109,16 +110,16 @@ export default function CmsTemplatesList() {
           name: formName,
           slug: formSlug,
           description: formDescription || null,
-          block_schema: parsedSchema as Record<string, unknown>,
-          seo_defaults: parsedSeo as Record<string, unknown>,
+          block_schema: parsedSchema as Json,
+          seo_defaults: parsedSeo as Json,
         });
       } else {
         const input: CmsTemplateInsert = {
           name: formName,
           slug: formSlug || slugify(formName),
           description: formDescription || null,
-          block_schema: parsedSchema as Record<string, unknown>,
-          seo_defaults: parsedSeo as Record<string, unknown>,
+          block_schema: parsedSchema as Json,
+          seo_defaults: parsedSeo as Json,
           preview_image: null,
         };
         await createTemplate.mutateAsync(input);

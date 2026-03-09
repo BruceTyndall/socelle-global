@@ -72,8 +72,8 @@ export default function RetailProductsView() {
     setFormData({
       product_name: product.product_name,
       product_function: product.product_function,
-      target_concerns: product.target_concerns.join(', '),
-      key_ingredients: product.key_ingredients.join(', '),
+      target_concerns: (product.target_concerns ?? []).join(', '),
+      key_ingredients: (product.key_ingredients ?? []).join(', '),
       regimen_placement: product.regimen_placement || '',
     });
   };
@@ -222,7 +222,7 @@ export default function RetailProductsView() {
                   <td className="px-4 py-3 text-sm font-medium text-graphite">{product.product_name}</td>
                   <td className="px-4 py-3 text-sm text-graphite/60">{product.product_function}</td>
                   <td className="px-4 py-3 text-sm text-graphite/60">
-                    {product.target_concerns.join(', ') || '—'}
+                    {(product.target_concerns ?? []).join(', ') || '—'}
                   </td>
                   <td className="px-4 py-3 text-sm text-graphite/60">{product.regimen_placement || '—'}</td>
                   <td className="px-4 py-3 text-right">

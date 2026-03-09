@@ -72,9 +72,9 @@ export default function ProProductsView() {
     setFormData({
       product_name: product.product_name,
       product_function: product.product_function,
-      key_ingredients: product.key_ingredients.join(', '),
-      in_service_usage_allowed: product.in_service_usage_allowed,
-      contraindications: product.contraindications.join(', '),
+      key_ingredients: (product.key_ingredients ?? []).join(', '),
+      in_service_usage_allowed: product.in_service_usage_allowed ?? '',
+      contraindications: (product.contraindications ?? []).join(', '),
     });
   };
 

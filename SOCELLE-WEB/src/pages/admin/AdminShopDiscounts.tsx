@@ -39,7 +39,7 @@ export default function AdminShopDiscounts() {
       code: d.code, type: d.type,
       percentage: d.percentage ?? 0, value_cents: d.value_cents ?? 0,
       minimum_order_cents: d.minimum_order_cents ?? 0, maximum_uses: d.maximum_uses ?? 0,
-      is_active: d.is_active, expires_at: d.expires_at?.split('T')[0] ?? '',
+      is_active: d.is_active ?? true, expires_at: d.expires_at?.split('T')[0] ?? '',
     });
     setShowForm(true);
   };

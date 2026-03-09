@@ -37,8 +37,8 @@ export default function AdminShopShipping() {
     setForm({
       name: m.name, description: m.description ?? '', carrier: m.carrier ?? '',
       estimated_days_min: m.estimated_days_min ?? 0, estimated_days_max: m.estimated_days_max ?? 0,
-      base_rate_cents: m.base_rate_cents, per_item_rate_cents: m.per_item_rate_cents,
-      free_above_cents: m.free_above_cents ?? 0, is_active: m.is_active, sort_order: m.sort_order,
+      base_rate_cents: m.base_rate_cents ?? 0, per_item_rate_cents: m.per_item_rate_cents ?? 0,
+      free_above_cents: m.free_above_cents ?? 0, is_active: m.is_active ?? true, sort_order: m.sort_order ?? 0,
     });
     setShowForm(true);
   };

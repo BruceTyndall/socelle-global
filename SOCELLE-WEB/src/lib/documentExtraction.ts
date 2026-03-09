@@ -140,7 +140,7 @@ export async function extractGuardedTextFromFile(
   const result = await extractTextFromFile(file);
 
   if (!result.success || !result.text) {
-    return validateOutput(result, 'documentExtraction', ['uploaded_file']);
+    return validateOutput(result as any, 'documentExtraction', ['uploaded_file']) as GuardrailResult<ExtractionResult>;
   }
 
   // Guardrail check on extracted text
@@ -155,5 +155,5 @@ export async function extractGuardedTextFromFile(
   // Credit gate (deduct for successful extraction)
   await withCreditGate(userId, 'documentExtraction', async () => result);
 
-  return validateOutput(result, 'documentExtraction', ['uploaded_file']);
+  return validateOutput(result as any, 'documentExtraction', ['uploaded_file']) as GuardrailResult<ExtractionResult>;
 }

@@ -91,7 +91,7 @@ export default function AdminApprovalQueue() {
   const [tab, setTab] = useState<Tab>('brands');
   const [actioningId, setActioningId] = useState<string | null>(null);
 
-  const { data: queueData, isLoading: loading, error: queryError } = useQuery({
+  const { data: queueData, isLoading: loading, error: queryError, refetch: loadQueue } = useQuery({
     queryKey: ['admin-approval-queue'],
     queryFn: async () => {
       const [brandsRes, bizRes] = await Promise.all([
@@ -216,7 +216,7 @@ export default function AdminApprovalQueue() {
         icon={ShieldAlert}
         title="Queue Unavailable"
         message={error}
-        action={{ label: 'Retry', onClick: loadQueue }}
+        action={{ label: 'Retry', onClick: () => void loadQueue() }}
       />
     );
   }
@@ -237,7 +237,7 @@ export default function AdminApprovalQueue() {
         </div>
         <button
           type="button"
-          onClick={loadQueue}
+          onClick={() => void loadQueue()}
           disabled={loading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >

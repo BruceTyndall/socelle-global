@@ -69,9 +69,9 @@ export default function MixingRulesView() {
     setEditingId(rule.id);
     setFormData({
       rule_type: rule.rule_type,
-      product_references: rule.product_references.join(', '),
+      product_references: (rule.product_references ?? []).join(', '),
       rule_description: rule.rule_description,
-      severity: rule.severity,
+      severity: rule.severity ?? 'mandatory',
     });
   };
 
@@ -228,12 +228,12 @@ export default function MixingRulesView() {
                 <tr key={rule.id} className="hover:bg-background">
                   <td className="px-4 py-3 text-sm text-graphite capitalize">{rule.rule_type}</td>
                   <td className="px-4 py-3 text-sm text-graphite/60">
-                    {rule.product_references.join(', ')}
+                    {(rule.product_references ?? []).join(', ')}
                   </td>
                   <td className="px-4 py-3 text-sm text-graphite/60">{rule.rule_description}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getSeverityBadge(rule.severity)}`}>
-                      {rule.severity}
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getSeverityBadge(rule.severity ?? 'mandatory')}`}>
+                      {rule.severity ?? 'mandatory'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">

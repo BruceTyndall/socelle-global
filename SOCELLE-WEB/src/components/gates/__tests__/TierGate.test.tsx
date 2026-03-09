@@ -35,8 +35,10 @@ describe('TierGate', () => {
     });
 
     render(
-      createElement(TierGate, { requiredTier: 'starter' },
-        createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content')),
+      createElement(TierGate, {
+        requiredTier: 'starter',
+        children: createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content'),
+      }),
     );
 
     expect(screen.getByTestId('gated-content')).toBeInTheDocument();
@@ -56,8 +58,10 @@ describe('TierGate', () => {
     });
 
     render(
-      createElement(TierGate, { requiredTier: 'pro' },
-        createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content')),
+      createElement(TierGate, {
+        requiredTier: 'pro',
+        children: createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content'),
+      }),
     );
 
     expect(screen.getByTestId('paywall-overlay')).toBeInTheDocument();
@@ -74,8 +78,10 @@ describe('TierGate', () => {
     });
 
     const { container } = render(
-      createElement(TierGate, { requiredTier: 'pro' },
-        createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content')),
+      createElement(TierGate, {
+        requiredTier: 'pro',
+        children: createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content'),
+      }),
     );
 
     // Should show skeleton (animate-pulse class)
@@ -100,8 +106,8 @@ describe('TierGate', () => {
       createElement(TierGate, {
         requiredTier: 'pro',
         fallback: createElement('div', { 'data-testid': 'custom-fallback' }, 'Custom Fallback'),
-      },
-        createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content')),
+        children: createElement('div', { 'data-testid': 'gated-content' }, 'Premium Content'),
+      }),
     );
 
     expect(screen.getByTestId('custom-fallback')).toBeInTheDocument();

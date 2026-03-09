@@ -1,0 +1,29 @@
+{
+  "wo_id": "TYPECHECK-RECOVERY",
+  "timestamp_utc": "2026-03-09T17:13:06Z",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "supabase_schema_recovery",
+      "status": "PASS",
+      "evidence": "Applied root migration 20260311000001_add_ecommerce_and_audit_tables.sql via supabase db push. Verified products/product_categories/product_variants/carts/cart_items/discount_codes/shipping_methods/reviews/wishlists/wishlist_items/audit_logs all return status=200 via service-role queries."
+    },
+    {
+      "name": "database_types_regenerated",
+      "status": "PASS",
+      "evidence": "Regenerated src/lib/database.types.ts (5884 lines) using supabase gen types --project-id rumdmulxzmjtsplsjngi --schema public."
+    },
+    {
+      "name": "tsc_gate",
+      "status": "PASS",
+      "command": "npx tsc --noEmit -p tsconfig.app.json",
+      "evidence": "EXIT:0"
+    },
+    {
+      "name": "build_gate",
+      "status": "PASS",
+      "command": "npm run build",
+      "evidence": "vite build completed successfully."
+    }
+  ]
+}

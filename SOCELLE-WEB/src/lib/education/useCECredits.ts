@@ -72,15 +72,16 @@ export function useCECredits() {
 
       // Build credit entries
       const credits: CECreditEntry[] = [];
+      type JoinedCourse = { title: string | null; category: string | null; ce_credits: number | null };
       const rows = (enrollments ?? []) as Array<{
         id: string;
         course_id: string;
         completed_at: string | null;
-        courses: { title: string | null; category: string | null; ce_credits: number | null } | null;
+        courses: JoinedCourse | JoinedCourse[] | null;
       }>;
 
       for (const row of rows) {
-        const course = row.courses;
+        const course = Array.isArray(row.courses) ? row.courses[0] : row.courses;
         if (!course?.ce_credits || course.ce_credits <= 0) continue;
 
         const cert = certMap.get(row.course_id);

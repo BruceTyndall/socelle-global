@@ -50,7 +50,7 @@ export default function ProtocolsView() {
     currentMonthData: MarketingMonth | null;
   }
 
-  const { data: queryResult, isLoading: loading, error: queryError } = useQuery<ProtocolsData>({
+  const { data: queryResult, isLoading: loading, error: queryError, refetch: loadInitialData } = useQuery<ProtocolsData>({
     queryKey: ['protocols-view'],
     queryFn: async () => {
       const [protocolsRes, brandsRes, marketingRes] = await Promise.all([
@@ -117,10 +117,10 @@ export default function ProtocolsView() {
     setFormData({
       protocol_name: protocol.protocol_name,
       category: protocol.category,
-      target_concerns: protocol.target_concerns.join(', '),
+      target_concerns: (protocol.target_concerns ?? []).join(', '),
       typical_duration: protocol.typical_duration || '',
-      allowed_products: protocol.allowed_products.join(', '),
-      contraindications: protocol.contraindications.join(', '),
+      allowed_products: (protocol.allowed_products ?? []).join(', '),
+      contraindications: (protocol.contraindications ?? []).join(', '),
     });
   };
 
@@ -227,7 +227,7 @@ export default function ProtocolsView() {
               <h3 className="text-sm font-semibold text-red-900 mb-1">Error Loading Protocols</h3>
               <p className="text-sm text-red-700 mb-3">{error}</p>
               <button
-                onClick={loadInitialData}
+                onClick={() => void loadInitialData()}
                 className="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors font-medium"
               >
                 Retry
@@ -514,7 +514,7 @@ export default function ProtocolsView() {
                       {getCompletionStatusBadge(protocol.completion_status || 'incomplete')}
                     </td>
                     <td className="px-4 py-3 text-sm text-graphite/60">
-                      {protocol.target_concerns.join(', ') || '—'}
+                      {(protocol.target_concerns ?? []).join(', ') || '—'}
                     </td>
                     <td className="px-4 py-3 text-sm text-graphite/60">{protocol.typical_duration || '—'}</td>
                     <td className="px-4 py-3 text-right">

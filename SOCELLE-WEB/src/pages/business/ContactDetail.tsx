@@ -176,7 +176,11 @@ export default function ContactDetail() {
         source: 'appointment',
         occurredAt: appointment.start_time,
         title: appointment.service_name || 'Appointment',
-        subtitle: appointment.staff_name || 'Booking hub',
+        subtitle:
+          [appointment.staff_first_name, appointment.staff_last_name]
+            .filter(Boolean)
+            .join(' ')
+            .trim() || 'Booking hub',
         status: appointment.status,
         href: `/portal/booking/appointments/${appointment.id}`,
       });

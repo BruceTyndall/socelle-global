@@ -414,7 +414,7 @@ export default function ShopProduct() {
                     <p className="text-sm font-sans text-graphite/70">{review.body}</p>
                   )}
                   <p className="text-xs font-sans text-graphite/40 mt-2">
-                    {new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    {review.created_at ? new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—'}
                   </p>
                 </div>
               ))}

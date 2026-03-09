@@ -443,7 +443,7 @@ export async function analyzeSpaMenu(
   spaMenuId: string,
   services: SpaService[],
   spaType: 'medspa' | 'spa' | 'hybrid' = 'spa'
-): Promise<{ mappings: ServiceMapping[]; summary: any }> {
+): Promise<{ mappings: ServiceMapping[]; summary: any; signalEnrichment: SignalEnrichment | null }> {
   const mappings: ServiceMapping[] = [];
 
   for (const service of services) {

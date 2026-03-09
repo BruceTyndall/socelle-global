@@ -17,6 +17,7 @@ import {
   RefreshCw,
   Code2,
 } from 'lucide-react';
+import type { Json } from '../../../lib/database.types';
 import {
   useCmsBlocks,
   type CmsBlock,
@@ -105,14 +106,14 @@ export default function CmsBlockLibrary() {
           id: editingBlock.id,
           name: formName || null,
           type: formType,
-          content: parsed as Record<string, unknown>,
+          content: parsed as Json,
           is_reusable: formReusable,
         });
       } else {
         const input: CmsBlockInsert = {
           name: formName || null,
           type: formType,
-          content: parsed as Record<string, unknown>,
+          content: parsed as Json,
           is_reusable: formReusable,
           created_by: null,
         };

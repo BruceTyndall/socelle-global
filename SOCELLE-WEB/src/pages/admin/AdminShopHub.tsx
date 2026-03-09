@@ -199,7 +199,7 @@ export default function AdminShopHub() {
                           {p.is_active ? 'Active' : 'Inactive'}
                         </span>
                         <button
-                          onClick={() => handleToggleProduct(p.id, p.is_active)}
+                          onClick={() => handleToggleProduct(p.id, Boolean(p.is_active))}
                           className="p-1.5 text-graphite/60 hover:text-graphite transition-colors"
                           title={p.is_active ? 'Deactivate' : 'Activate'}
                         >
@@ -250,7 +250,7 @@ export default function AdminShopHub() {
           <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
               <p className="text-sm font-sans font-semibold text-graphite">{adminOrders.length} Orders</p>
-              <button onClick={refetchOrders} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
+              <button onClick={() => void refetchOrders()} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>
@@ -335,7 +335,7 @@ export default function AdminShopHub() {
           <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
               <p className="text-sm font-sans font-semibold text-graphite">Discount Codes</p>
-              <button onClick={refetchDiscounts} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
+              <button onClick={() => void refetchDiscounts()} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>
@@ -372,7 +372,7 @@ export default function AdminShopHub() {
           <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
               <p className="text-sm font-sans font-semibold text-graphite">Reviews Moderation</p>
-              <button onClick={refetchReviews} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
+              <button onClick={() => void refetchReviews()} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>

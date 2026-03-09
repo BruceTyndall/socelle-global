@@ -217,7 +217,7 @@ export default function AdminMarketSignals() {
         </div>
         <div className="flex gap-3">
           <button
-            onClick={fetchSignals}
+            onClick={() => void fetchSignals()}
             disabled={loading}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-graphite/5 hover:bg-graphite/10 text-graphite text-sm font-sans font-medium transition-colors disabled:opacity-40"
           >

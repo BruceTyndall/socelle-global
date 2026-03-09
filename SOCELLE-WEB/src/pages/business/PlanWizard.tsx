@@ -88,7 +88,7 @@ export default function PlanWizard() {
         const appError = mapSupabaseError(
           error && typeof error === 'object' && 'code' in error
             ? (error as { message?: string; code?: string })
-            : { message: error instanceof Error ? (error as Error).message : String(error) },
+            : { message: String((error as { message?: string } | null)?.message ?? error) },
           'fetchBrands'
         );
         throw new Error(appError.userMessage);

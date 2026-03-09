@@ -76,7 +76,7 @@ export default function AdminShopOrders() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-6 text-sm font-sans">
-              <div><span className="text-graphite/60">Date:</span> <span className="text-graphite">{new Date(detail.order.created_at).toLocaleDateString()}</span></div>
+              <div><span className="text-graphite/60">Date:</span> <span className="text-graphite">{detail.order.created_at ? new Date(detail.order.created_at).toLocaleDateString() : '—'}</span></div>
               <div><span className="text-graphite/60">Total:</span> <span className="font-semibold text-graphite">{formatCents(detail.order.total_cents)}</span></div>
               <div><span className="text-graphite/60">User ID:</span> <span className="text-graphite font-mono text-xs">{detail.order.user_id}</span></div>
               <div>
@@ -159,7 +159,7 @@ export default function AdminShopOrders() {
             {orders.map(o => (
               <tr key={o.id} className="border-b border-accent-soft/50 hover:bg-accent-soft/50">
                 <td className="px-4 py-3 font-mono font-semibold text-graphite">#{o.order_number}</td>
-                <td className="px-4 py-3 text-graphite/60">{new Date(o.created_at).toLocaleDateString()}</td>
+                <td className="px-4 py-3 text-graphite/60">{o.created_at ? new Date(o.created_at).toLocaleDateString() : '—'}</td>
                 <td className="px-4 py-3">
                   <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${STATUS_COLORS[o.status] ?? ''}`}>{o.status}</span>
                 </td>

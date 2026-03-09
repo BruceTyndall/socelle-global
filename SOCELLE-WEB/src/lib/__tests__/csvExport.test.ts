@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock DOM APIs that csvExport uses for download
 const mockClick = vi.fn();
-const mockCreateObjectURL = vi.fn(() => 'blob:test-url');
+const mockCreateObjectURL = vi.fn((_: Blob) => 'blob:test-url');
 const mockRevokeObjectURL = vi.fn();
 
 vi.stubGlobal('URL', {
@@ -33,7 +33,7 @@ describe('exportToCsv', () => {
 
     // Verify Blob was created
     expect(mockCreateObjectURL).toHaveBeenCalledTimes(1);
-    const blobArg = mockCreateObjectURL.mock.calls[0][0];
+    const blobArg = mockCreateObjectURL.mock.calls[0]?.[0];
     expect(blobArg).toBeInstanceOf(Blob);
 
     // Verify download was triggered
@@ -58,11 +58,11 @@ describe('exportToCsv', () => {
     exportToCsv(rows, 'escaped');
 
     expect(mockCreateObjectURL).toHaveBeenCalledTimes(1);
-    const blobArg = mockCreateObjectURL.mock.calls[0][0] as Blob;
+    const blobArg = mockCreateObjectURL.mock.calls[0]?.[0] as Blob | undefined;
 
     // Read the blob content to verify escaping
     // Blob constructor receives [csv] where csv has proper escaping
-    expect(blobArg.size).toBeGreaterThan(0);
+    expect(blobArg?.size ?? 0).toBeGreaterThan(0);
     expect(mockClick).toHaveBeenCalledTimes(1);
   });
 

@@ -85,7 +85,7 @@ export default function BusinessOrders() {
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <p className="text-red-700 font-sans text-sm flex-1">{error}</p>
             <button
-              onClick={loadOrders}
+              onClick={() => void loadOrders()}
               className="flex items-center gap-1.5 text-red-600 text-sm font-medium hover:text-red-800 flex-shrink-0"
             >
               <RefreshCw className="w-3.5 h-3.5" />

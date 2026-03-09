@@ -76,7 +76,7 @@ describe('Entitlements Chain — useTier', () => {
   });
 
   it('returns pro tier from active subscription', async () => {
-    mockUseAuth.mockReturnValue({ user: { id: 'user-1' }, profile: null });
+    mockUseAuth.mockReturnValue({ user: { id: 'user-1' } as any, profile: null });
     mockMaybeSingle.mockResolvedValueOnce({
       data: { plan_id: 'pro', status: 'active' },
       error: null,
@@ -91,7 +91,7 @@ describe('Entitlements Chain — useTier', () => {
   });
 
   it('normalizes legacy "growth" tier to "pro"', async () => {
-    mockUseAuth.mockReturnValue({ user: { id: 'user-2' }, profile: null });
+    mockUseAuth.mockReturnValue({ user: { id: 'user-2' } as any, profile: null });
     mockMaybeSingle.mockResolvedValueOnce({
       data: { plan_id: 'growth', status: 'active' },
       error: null,
@@ -104,7 +104,7 @@ describe('Entitlements Chain — useTier', () => {
   });
 
   it('falls back to DEMO pro when subscriptions table is missing', async () => {
-    mockUseAuth.mockReturnValue({ user: { id: 'user-3' }, profile: null });
+    mockUseAuth.mockReturnValue({ user: { id: 'user-3' } as any, profile: null });
     mockMaybeSingle.mockResolvedValueOnce({
       data: null,
       error: { code: '42P01', message: 'relation "subscriptions" does not exist' },
@@ -118,7 +118,7 @@ describe('Entitlements Chain — useTier', () => {
   });
 
   it('meetsMinimumTier correctly gates by rank', async () => {
-    mockUseAuth.mockReturnValue({ user: { id: 'user-4' }, profile: null });
+    mockUseAuth.mockReturnValue({ user: { id: 'user-4' } as any, profile: null });
     mockMaybeSingle.mockResolvedValueOnce({
       data: { plan_id: 'starter', status: 'active' },
       error: null,

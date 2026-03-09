@@ -9,6 +9,8 @@ type JsonRecord = Record<string, Json | undefined>;
 export type Product = Tables<'products'> & {
   // Some surfaces expect rating projection from views/materialized joins.
   avg_rating?: number | null;
+  // Legacy OpenGraph and PDP surfaces still read a single-image alias.
+  image_url?: string | null;
 };
 export type ProductCategory = Tables<'product_categories'>;
 export type ProductVariant = Tables<'product_variants'>;

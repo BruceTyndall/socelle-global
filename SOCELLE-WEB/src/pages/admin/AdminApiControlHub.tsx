@@ -180,7 +180,7 @@ export default function AdminApiControlHub() {
             {stats.total} APIs registered &mdash; {stats.active} active
           </p>
         </div>
-        <button onClick={fetchApis} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
+        <button onClick={() => void fetchApis()} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Refresh">
           <RefreshCw className="w-4 h-4 text-gray-500" />
         </button>
       </div>

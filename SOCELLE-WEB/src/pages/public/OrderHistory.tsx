@@ -69,7 +69,7 @@ export default function OrderHistory() {
                     <div>
                       <p className="text-sm font-mono font-semibold text-graphite">#{order.order_number}</p>
                       <p className="text-xs font-sans text-graphite/50 mt-0.5">
-                        {new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        {order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">

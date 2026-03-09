@@ -72,7 +72,7 @@ export default function OrderDetailPage() {
             <div>
               <h1 className="text-subsection text-graphite">Order #{order.order_number}</h1>
               <p className="text-sm font-sans text-graphite/50 mt-1">
-                Placed {new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                Placed {order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
               </p>
             </div>
             <span className="text-2xl font-sans font-bold text-graphite">{formatCents(order.total_cents)}</span>

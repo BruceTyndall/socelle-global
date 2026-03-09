@@ -117,7 +117,7 @@ export default function SalesHub() {
         icon={ShieldAlert}
         title="Sales Hub Unavailable"
         message={ordersError}
-        action={{ label: 'Retry', onClick: refetchOrders }}
+        action={{ label: 'Retry', onClick: () => void refetchOrders() }}
       />
     );
   }
@@ -147,7 +147,7 @@ export default function SalesHub() {
         </div>
         <button
           type="button"
-          onClick={tab === 'orders' ? refetchOrders : undefined}
+          onClick={tab === 'orders' ? () => void refetchOrders() : undefined}
           disabled={isLoading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >

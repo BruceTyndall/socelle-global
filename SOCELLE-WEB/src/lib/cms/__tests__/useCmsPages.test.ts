@@ -7,7 +7,7 @@ import { createElement, type ReactNode } from 'react';
 // useCmsPages chains: .from().select() then optionally .eq() then .order()
 // We build a chainable mock that resolves when awaited.
 const { mockFrom, setChainResult, mockCalls } = vi.hoisted(() => {
-  let chainResult = { data: [] as unknown[], error: null as unknown };
+  let chainResult: { data: unknown[] | null; error: unknown } = { data: [], error: null };
   const mockCalls = { eq: [] as unknown[][] };
 
   function makeChainable(): Record<string, unknown> {
@@ -25,7 +25,7 @@ const { mockFrom, setChainResult, mockCalls } = vi.hoisted(() => {
 
   const mockFrom = vi.fn(() => makeChainable());
 
-  function setChainResult(result: { data: unknown; error: unknown }) {
+  function setChainResult(result: { data: unknown[] | null; error: unknown }) {
     chainResult = result;
   }
 

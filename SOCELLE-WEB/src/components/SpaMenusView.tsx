@@ -199,19 +199,19 @@ export default function SpaMenusView() {
                   <div className="flex items-center space-x-3 mb-2">
                     <h3 className="text-lg font-semibold text-graphite">{menu.spa_name}</h3>
                     <div className="flex items-center space-x-2">
-                      {getStatusIcon(menu.parse_status)}
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(menu.parse_status)}`}>
-                        {menu.parse_status}
+                      {getStatusIcon(menu.parse_status ?? 'uploaded')}
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(menu.parse_status ?? 'uploaded')}`}>
+                        {menu.parse_status ?? 'uploaded'}
                       </span>
                     </div>
                   </div>
                   <p className="text-sm text-graphite/60">
-                    Uploaded {new Date(menu.upload_date).toLocaleDateString()} at {new Date(menu.upload_date).toLocaleTimeString()}
+                    Uploaded {menu.upload_date ? new Date(menu.upload_date).toLocaleDateString() : '—'} at {menu.upload_date ? new Date(menu.upload_date).toLocaleTimeString() : '—'}
                   </p>
                   <div className="mt-3 p-3 bg-background rounded border border-accent-soft max-h-32 overflow-y-auto">
                     <pre className="text-xs text-graphite whitespace-pre-wrap font-mono">
-                      {menu.raw_menu_data.substring(0, 300)}
-                      {menu.raw_menu_data.length > 300 && '...'}
+                      {(menu.raw_menu_data ?? '').substring(0, 300)}
+                      {(menu.raw_menu_data ?? '').length > 300 && '...'}
                     </pre>
                   </div>
                 </div>

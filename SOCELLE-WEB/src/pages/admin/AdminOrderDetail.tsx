@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Send, CheckCircle, XCircle, Trash2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 interface Order {
@@ -37,6 +37,7 @@ interface OrderItem {
 
 export default function AdminOrderDetail() {
   const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [saving, setSaving] = useState(false);

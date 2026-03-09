@@ -85,9 +85,9 @@ export default function ShopOrders() {
                             Order #{order.id.slice(0, 8)}
                           </p>
                           <p className="text-xs font-sans text-graphite/50 mt-0.5">
-                            {new Date(order.created_at).toLocaleDateString('en-US', {
+                            {order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', {
                               year: 'numeric', month: 'short', day: 'numeric',
-                            })}
+                            }) : '—'}
                           </p>
                         </div>
                       </div>

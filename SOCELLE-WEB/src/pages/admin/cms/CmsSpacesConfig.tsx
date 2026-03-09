@@ -18,6 +18,7 @@ import {
   FileText,
   BookOpen,
 } from 'lucide-react';
+import type { Json } from '../../../lib/database.types';
 import {
   useCmsSpaces,
   useCmsPages,
@@ -139,14 +140,14 @@ export default function CmsSpacesConfig() {
           name: formName,
           slug: formSlug,
           description: formDescription || null,
-          settings: parsedSettings as Record<string, unknown>,
+          settings: parsedSettings as Json,
         });
       } else {
         const input: CmsSpaceInsert = {
           name: formName,
           slug: formSlug || slugify(formName),
           description: formDescription || null,
-          settings: parsedSettings as Record<string, unknown>,
+          settings: parsedSettings as Json,
         };
         await createSpace.mutateAsync(input);
       }
