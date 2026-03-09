@@ -25,6 +25,7 @@ const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
 
 // ── Public
 const PublicHome = lazy(() => import('./pages/public/Home'));
+const IntelligenceHome = lazy(() => import('./pages/public/IntelligenceHome'));
 const PublicBrands = lazy(() => import('./pages/public/Brands'));
 const PublicBrandStorefront = lazy(() => import('./pages/public/BrandStorefront'));
 const ClaimBrand = lazy(() => import('./pages/claim/ClaimBrand'));
@@ -415,7 +416,7 @@ function App() {
                       Local dev (env var unset) → full access for development agents. */}
                   <Route element={<PrelaunchGuard />}>
                   {/* Full cinematic home kept accessible for internal preview */}
-                  <Route path="/home" element={<PublicHome />} />
+                  <Route path="/home" element={<IntelligenceHome />} />
                   <Route path="/brands" element={<PublicBrands />} />
                   <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
                   <Route path="/plans" element={<Plans />} />

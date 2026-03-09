@@ -1,5 +1,7 @@
-import { X, TrendingUp, TrendingDown, Minus, ExternalLink, Shield, UserPlus, Target, Megaphone } from 'lucide-react';
+import { useEffect } from 'react';
+import { X, TrendingUp, TrendingDown, Minus, ExternalLink, Shield } from 'lucide-react';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
+import { CrossHubActionDispatcher } from '../CrossHubActionDispatcher';
 
 interface SignalDetailPanelProps {
   signal: IntelligenceSignal;
@@ -25,6 +27,15 @@ function getConfidenceLabel(score: number | undefined): { label: string; color: 
 }
 
 export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
+  // INTEL-WO-06: ESC key closes panel
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
   const directionConfig = {
     up: { icon: TrendingUp, cls: 'text-[#5F8A72]', bg: 'bg-[#5F8A72]/10', label: 'Trending Up' },
     down: { icon: TrendingDown, cls: 'text-[#8E6464]', bg: 'bg-[#8E6464]/10', label: 'Trending Down' },
@@ -180,33 +191,19 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
             </div>
           )}
 
-          {/* Actions */}
-          <div className="border-t border-[#6E879B]/20 pt-6 space-y-3">
-            <p className="text-[10px] font-sans font-semibold text-gray-400 uppercase tracking-wider">Actions</p>
-            <button
-              type="button"
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#6E879B]/20 hover:bg-[#E8EDF1] transition-colors"
-            >
-              <UserPlus className="w-4 h-4 text-[#6E879B]" />
-              <span className="text-sm font-sans font-medium text-[#141418]">Add to CRM</span>
-              <span className="ml-auto text-[9px] font-semibold bg-[#A97A4C]/20 text-[#A97A4C] px-1.5 py-0.5 rounded-full">DEMO</span>
-            </button>
-            <button
-              type="button"
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#6E879B]/20 hover:bg-[#E8EDF1] transition-colors"
-            >
-              <Target className="w-4 h-4 text-[#6E879B]" />
-              <span className="text-sm font-sans font-medium text-[#141418]">Create Deal</span>
-              <span className="ml-auto text-[9px] font-semibold bg-[#A97A4C]/20 text-[#A97A4C] px-1.5 py-0.5 rounded-full">DEMO</span>
-            </button>
-            <button
-              type="button"
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#6E879B]/20 hover:bg-[#E8EDF1] transition-colors"
-            >
-              <Megaphone className="w-4 h-4 text-[#6E879B]" />
-              <span className="text-sm font-sans font-medium text-[#141418]">Create Campaign</span>
-              <span className="ml-auto text-[9px] font-semibold bg-[#A97A4C]/20 text-[#A97A4C] px-1.5 py-0.5 rounded-full">DEMO</span>
-            </button>
+          {/* Cross-Hub Actions — wired via CrossHubActionDispatcher (INTEL-WO-07) */}
+          <div className="border-t border-[#6E879B]/20 pt-6">
+            <p className="text-[10px] font-sans font-semibold text-gray-400 uppercase tracking-wider mb-3">Actions</p>
+            <CrossHubActionDispatcher
+              signal={{
+                id: signal.id,
+                title: signal.title,
+                category: signal.category ?? signal.signal_type,
+                delta: signal.magnitude,
+                confidence: signal.confidence_score ?? 0,
+                source: signal.source_name ?? signal.source ?? 'market_signals',
+              }}
+            />
           </div>
         </div>
       </div>
