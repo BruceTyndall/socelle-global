@@ -1,0 +1,47 @@
+{
+  "wo_id": "BUILD-1-GLOBAL",
+  "timestamp": "2026-03-09T23:13:05.000Z",
+  "commits": {
+    "INTEL-WO-01..11": "97b55c4",
+    "PAY-WO-01..05": "de9ebef",
+    "FEED-WO-01..05": "cf32089"
+  },
+  "skills_run": ["build-gate", "tsc"],
+  "results": {
+    "tsc": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit → 0 errors"
+    },
+    "build": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npm run build → built in 5.73s, exit 0"
+    },
+    "INTEL-WO-01-11": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "See docs/qa/verify_INTEL-WO-01-11_2026-03-10T00-00-00-000Z.json",
+      "deferred": ["INTEL-WO-09 Flutter → MOBILE-WO-01..08 (BUILD 5)"]
+    },
+    "PAY-WO-01-05": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc=0, build=PASS, affiliate_clicks live, CreditGate fixed",
+      "partial": ["PAY-WO-05: stripe_price_id=null — Stripe dashboard config required from owner"]
+    },
+    "FEED-WO-01-05": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "39 feeds seeded, 30 market_signals live, dedup verified, DLQ active",
+      "admin_action": "Toggle data_feeds.is_enabled=true from /admin/feeds to begin live ingestion"
+    }
+  },
+  "open_items": [
+    "PAY-WO-05: stripe_price_id null — owner must configure Stripe dashboard + price IDs",
+    "INTEL-WO-09: Flutter mobile deferred to BUILD 5 MOBILE-WO-01..08",
+    "FEED: 39 feeds are is_enabled=false — owner must enable from /admin/feeds",
+    "32 E2E SEO failures → SITE-WO-04 (not blocking BUILD 1)"
+  ],
+  "overall": "PASS"
+}
