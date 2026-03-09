@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { syncSignupToCrm } from '../../lib/crmRegistration';
 import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 
 interface BusinessRow {
@@ -76,6 +77,22 @@ export default function ClaimBusiness() {
       const result = data as { ok?: boolean; error?: string } | null;
       if (rpcError) throw new Error(rpcError.message);
       if (result && !result.ok) throw new Error(result.error || 'Claim failed');
+
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      if (authUser?.id) {
+        await syncSignupToCrm({
+          businessId: business.id,
+          userId: authUser.id,
+          email: authUser.email ?? email,
+          source: signUp ? 'claim_business_signup' : 'claim_business_existing',
+          metadata: {
+            claim_slug: slug ?? null,
+          },
+        });
+      }
+
       setClaimDone(true);
       setTimeout(() => navigate('/portal/claim/review', { replace: true }), 1500);
     } catch (err: unknown) {

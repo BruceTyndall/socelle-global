@@ -1,0 +1,17 @@
+{
+  "wo_id": "DOC-WO-app-feature-guide",
+  "timestamp_utc": "2026-03-09T05-57-08Z",
+  "scope": [
+    "Add in-product app feature/functionality guide in Help Center",
+    "Add operations doc explaining all app capabilities and cross-hub flows"
+  ],
+  "commands": [
+    {"cmd": "npx tsc --noEmit", "status": "PASS"},
+    {"cmd": "npm run build", "status": "PASS"}
+  ],
+  "checks": [
+    {"name": "help_center_platform_app_guide", "status": "PASS"},
+    {"name": "operations_app_functionality_guide_doc", "status": "PASS"}
+  ],
+  "definition_of_done": "PASS"
+}

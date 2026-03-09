@@ -38,6 +38,11 @@ export default function EditContact() {
     sensitivities: '',
     preferred_contact_method: 'email',
     gdpr_consent: false,
+    website_url: '',
+    instagram_handle: '',
+    facebook_handle: '',
+    tiktok_handle: '',
+    linkedin_url: '',
   });
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -45,6 +50,17 @@ export default function EditContact() {
 
   useEffect(() => {
     if (!contact) return;
+    const metadata =
+      contact.metadata && typeof contact.metadata === 'object' && !Array.isArray(contact.metadata)
+        ? (contact.metadata as Record<string, unknown>)
+        : {};
+    const channels =
+      metadata.contact_channels &&
+      typeof metadata.contact_channels === 'object' &&
+      !Array.isArray(metadata.contact_channels)
+        ? (metadata.contact_channels as Record<string, unknown>)
+        : {};
+
     setForm({
       type: contact.type,
       first_name: contact.first_name,
@@ -60,6 +76,11 @@ export default function EditContact() {
       sensitivities: contact.sensitivities?.join(', ') ?? '',
       preferred_contact_method: contact.preferred_contact_method ?? 'email',
       gdpr_consent: contact.gdpr_consent,
+      website_url: typeof channels.website_url === 'string' ? channels.website_url : '',
+      instagram_handle: typeof channels.instagram_handle === 'string' ? channels.instagram_handle : '',
+      facebook_handle: typeof channels.facebook_handle === 'string' ? channels.facebook_handle : '',
+      tiktok_handle: typeof channels.tiktok_handle === 'string' ? channels.tiktok_handle : '',
+      linkedin_url: typeof channels.linkedin_url === 'string' ? channels.linkedin_url : '',
     });
   }, [contact]);
 
@@ -72,6 +93,25 @@ export default function EditContact() {
     }
     setError(null);
     try {
+      const channelEntries = Object.entries({
+        website_url: form.website_url.trim(),
+        instagram_handle: form.instagram_handle.trim(),
+        facebook_handle: form.facebook_handle.trim(),
+        tiktok_handle: form.tiktok_handle.trim(),
+        linkedin_url: form.linkedin_url.trim(),
+      }).filter(([, value]) => value.length > 0);
+
+      const existingMetadata =
+        contact?.metadata && typeof contact.metadata === 'object' && !Array.isArray(contact.metadata)
+          ? ({ ...contact.metadata } as Record<string, unknown>)
+          : {};
+
+      if (channelEntries.length > 0) {
+        existingMetadata.contact_channels = Object.fromEntries(channelEntries);
+      } else {
+        delete existingMetadata.contact_channels;
+      }
+
       const updates: Partial<NewContact> = {
         type: form.type,
         first_name: form.first_name.trim(),
@@ -87,6 +127,7 @@ export default function EditContact() {
         sensitivities: form.sensitivities ? form.sensitivities.split(',').map(s => s.trim()).filter(Boolean) : undefined,
         preferred_contact_method: form.preferred_contact_method,
         gdpr_consent: form.gdpr_consent,
+        metadata: existingMetadata,
       };
       await updateContactMutation.mutateAsync({ contactId: id, updates });
       navigate(`/portal/crm/contacts/${id}`);
@@ -231,6 +272,32 @@ export default function EditContact() {
             <div>
               <label className="block text-xs font-medium text-graphite/60 mb-1.5">Sensitivities (comma-separated)</label>
               <input type="text" value={form.sensitivities} onChange={set('sensitivities')} placeholder="e.g., retinol, AHA" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-accent-soft/20 pt-4">
+          <h3 className="text-sm font-semibold text-graphite mb-3">Website + Social</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">Website</label>
+              <input type="url" value={form.website_url} onChange={set('website_url')} placeholder="https://example.com" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">Instagram</label>
+              <input type="text" value={form.instagram_handle} onChange={set('instagram_handle')} placeholder="@handle" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">Facebook</label>
+              <input type="text" value={form.facebook_handle} onChange={set('facebook_handle')} placeholder="facebook.com/page or @handle" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">TikTok</label>
+              <input type="text" value={form.tiktok_handle} onChange={set('tiktok_handle')} placeholder="@handle" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">LinkedIn</label>
+              <input type="url" value={form.linkedin_url} onChange={set('linkedin_url')} placeholder="https://linkedin.com/in/..." className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
             </div>
           </div>
         </div>

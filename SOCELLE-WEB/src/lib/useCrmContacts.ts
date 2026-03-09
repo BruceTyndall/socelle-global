@@ -28,6 +28,7 @@ export interface CrmContact {
   last_visit_date: string | null;
   total_visits: number;
   total_spend: number;
+  metadata: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
 }
@@ -69,6 +70,7 @@ export interface NewContact {
   sensitivities?: string[];
   preferred_contact_method?: string;
   gdpr_consent?: boolean;
+  metadata?: Record<string, unknown>;
 }
 
 export interface NewInteraction {

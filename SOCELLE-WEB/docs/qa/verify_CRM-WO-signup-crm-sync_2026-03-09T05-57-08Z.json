@@ -1,0 +1,21 @@
+{
+  "wo_id": "CRM-WO-signup-crm-sync",
+  "timestamp_utc": "2026-03-09T05-57-08Z",
+  "scope": [
+    "Sync business registrations and claim-business signups into CRM contacts",
+    "Capture website and social handles on CRM contacts",
+    "Persist social/web channels in CRM metadata and show in contact detail"
+  ],
+  "commands": [
+    {"cmd": "npx tsc --noEmit", "status": "PASS"},
+    {"cmd": "npm run build", "status": "PASS", "notes": ["Known pre-existing duplicate onClick warning in src/pages/admin/EditorialHub.tsx"]},
+    {"cmd": "npm run shell:check", "status": "PASS", "notes": ["No new shells introduced"]}
+  ],
+  "checks": [
+    {"name": "portal_signup_to_crm_contact", "status": "PASS"},
+    {"name": "claim_business_signup_to_crm_contact", "status": "PASS"},
+    {"name": "contact_website_social_capture", "status": "PASS"},
+    {"name": "contact_website_social_display", "status": "PASS"}
+  ],
+  "definition_of_done": "PASS"
+}

@@ -6,6 +6,7 @@ import { RETRY_CONFIG } from './platformConfig';
 import { createScopedLogger } from './logger';
 import { getErrorMessage } from './errors';
 import { PAYMENT_BYPASS } from './paymentBypass';
+import { syncSignupToCrm } from './crmRegistration';
 
 export type SubscriptionTier = 'free' | 'starter' | 'growth' | 'pro';
 
@@ -299,6 +300,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (profileError) {
           log.warn('Profile creation error', { error: profileError.message });
           setLastAuthError(profileError.message);
+        }
+
+        if (newBusinessId) {
+          await syncSignupToCrm({
+            businessId: newBusinessId,
+            userId: data.user.id,
+            email,
+            source: 'portal_signup',
+            metadata: {
+              role,
+              business_type: businessType ?? null,
+              spa_name: spaName ?? null,
+            },
+          });
         }
 
         // Send welcome email (best-effort, non-blocking)

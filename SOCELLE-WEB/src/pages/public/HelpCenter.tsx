@@ -9,6 +9,7 @@ import { Search, ChevronDown, HelpCircle, BookOpen } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useCmsPosts } from '../../lib/cms';
+import { APP_FEATURE_GUIDE } from '../../data/appFeatureGuide';
 
 // ── DEMO FAQ Data ────────────────────────────────────────────────────
 
@@ -161,6 +162,7 @@ export default function HelpCenter() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [appSearch, setAppSearch] = useState('');
 
   // Try loading CMS help content
   const { posts, isLoading, isLive } = useCmsPosts({
@@ -210,6 +212,23 @@ export default function HelpCenter() {
     });
     return map;
   }, [filtered]);
+
+  const filteredApps = useMemo(() => {
+    if (!appSearch.trim()) return APP_FEATURE_GUIDE;
+    const term = appSearch.toLowerCase();
+    return APP_FEATURE_GUIDE.filter((app) => {
+      const haystack = [
+        app.name,
+        app.audience,
+        app.purpose,
+        ...app.coreFeatures,
+        ...app.crossHubFlows,
+      ]
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(term);
+    });
+  }, [appSearch]);
 
   return (
     <>
@@ -334,6 +353,87 @@ export default function HelpCenter() {
               ))}
             </div>
           )}
+
+          <section className="mt-16">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-[#141418] font-sans">
+                Platform App Guide
+              </h2>
+              <p className="mt-2 text-[#141418]/60 font-sans text-sm">
+                What each SOCELLE app does, who it serves, and how it connects
+                to the rest of the platform.
+              </p>
+            </div>
+
+            <div className="max-w-md mb-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#141418]/30" />
+                <input
+                  type="text"
+                  placeholder="Search apps, audiences, or workflows..."
+                  value={appSearch}
+                  onChange={(e) => setAppSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#141418]/10 bg-white text-sm font-sans text-[#141418] placeholder:text-[#141418]/30 focus:outline-none focus:ring-2 focus:ring-[#6E879B]/30 focus:border-[#6E879B]"
+                />
+              </div>
+            </div>
+
+            {filteredApps.length === 0 ? (
+              <div className="rounded-xl border border-[#141418]/10 bg-white p-6 text-sm text-[#141418]/60">
+                No app guide entries match this search.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredApps.map((app) => (
+                  <details
+                    key={app.key}
+                    className="border border-[#141418]/8 rounded-xl bg-white overflow-hidden group"
+                  >
+                    <summary className="list-none cursor-pointer p-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-[#141418] font-sans font-semibold text-base">
+                          {app.name}
+                        </p>
+                        <p className="text-[#141418]/55 font-sans text-sm mt-1">
+                          {app.purpose}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#6E879B]/12 text-[#6E879B] font-sans font-semibold">
+                          {app.phase}
+                        </span>
+                        <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#141418]/6 text-[#141418]/65 font-sans font-semibold">
+                          {app.audience}
+                        </span>
+                      </div>
+                    </summary>
+                    <div className="px-5 pb-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
+                      <div>
+                        <p className="text-xs font-semibold tracking-wide uppercase text-[#6E879B] mb-2">
+                          Core Features
+                        </p>
+                        <ul className="space-y-1.5 text-sm text-[#141418]/70 font-sans">
+                          {app.coreFeatures.map((feature) => (
+                            <li key={feature}>- {feature}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold tracking-wide uppercase text-[#6E879B] mb-2">
+                          Cross-hub Flows
+                        </p>
+                        <ul className="space-y-1.5 text-sm text-[#141418]/70 font-sans">
+                          {app.crossHubFlows.map((flow) => (
+                            <li key={flow}>- {flow}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            )}
+          </section>
 
           {/* Contact CTA */}
           <div className="mt-16 text-center p-8 bg-white rounded-xl border border-[#141418]/5">

@@ -34,6 +34,11 @@ export default function AddContact() {
     sensitivities: '',
     preferred_contact_method: 'email',
     gdpr_consent: false,
+    website_url: '',
+    instagram_handle: '',
+    facebook_handle: '',
+    tiktok_handle: '',
+    linkedin_url: '',
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -66,6 +71,21 @@ export default function AddContact() {
     }
     setError(null);
     try {
+      const channelEntries = Object.entries({
+        website_url: form.website_url.trim(),
+        instagram_handle: form.instagram_handle.trim(),
+        facebook_handle: form.facebook_handle.trim(),
+        tiktok_handle: form.tiktok_handle.trim(),
+        linkedin_url: form.linkedin_url.trim(),
+      }).filter(([, value]) => value.length > 0);
+
+      const metadata =
+        channelEntries.length > 0
+          ? {
+              contact_channels: Object.fromEntries(channelEntries),
+            }
+          : undefined;
+
       const payload: NewContact = {
         business_id: profile.business_id,
         type: form.type,
@@ -82,6 +102,7 @@ export default function AddContact() {
         sensitivities: form.sensitivities ? form.sensitivities.split(',').map(s => s.trim()).filter(Boolean) : undefined,
         preferred_contact_method: form.preferred_contact_method,
         gdpr_consent: form.gdpr_consent,
+        metadata,
       };
       await createContactMutation.mutateAsync(payload);
       navigate('/portal/crm/contacts');
@@ -182,6 +203,33 @@ export default function AddContact() {
             <div>
               <label className="block text-xs font-medium text-graphite/60 mb-1.5">Sensitivities (comma-separated)</label>
               <input type="text" value={form.sensitivities} onChange={set('sensitivities')} placeholder="e.g., retinol, AHA" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+          </div>
+        </div>
+
+        {/* Website + Social */}
+        <div className="border-t border-accent-soft/20 pt-4">
+          <h3 className="text-sm font-semibold text-graphite mb-3">Website + Social</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">Website</label>
+              <input type="url" value={form.website_url} onChange={set('website_url')} placeholder="https://example.com" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">Instagram</label>
+              <input type="text" value={form.instagram_handle} onChange={set('instagram_handle')} placeholder="@handle" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">Facebook</label>
+              <input type="text" value={form.facebook_handle} onChange={set('facebook_handle')} placeholder="facebook.com/page or @handle" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">TikTok</label>
+              <input type="text" value={form.tiktok_handle} onChange={set('tiktok_handle')} placeholder="@handle" className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-graphite/60 mb-1.5">LinkedIn</label>
+              <input type="url" value={form.linkedin_url} onChange={set('linkedin_url')} placeholder="https://linkedin.com/in/..." className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50" />
             </div>
           </div>
         </div>

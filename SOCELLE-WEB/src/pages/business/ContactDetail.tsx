@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Tag, Plus, Phone, Mail, Calendar, FileText, Users, X, Shield, Droplets, Scissors, AlertTriangle, Pencil, Zap, TrendingUp, Sparkles, StickyNote } from 'lucide-react';
+import { ArrowLeft, Tag, Plus, Phone, Mail, Calendar, FileText, Users, X, Shield, Droplets, Scissors, AlertTriangle, Pencil, Zap, TrendingUp, Sparkles, StickyNote, Globe } from 'lucide-react';
 import { useCrmContactDetail, useCrmInteractions, type NewInteraction } from '../../lib/useCrmContacts';
 import { useAppointments } from '../../lib/useBooking';
 import { useClientTreatmentRecords } from '../../lib/useClientRecords';
@@ -46,6 +46,25 @@ export default function ContactDetail() {
   );
   const upcomingAppts = contactAppts.filter(a => new Date(a.start_time) > new Date());
   const pastAppts = contactAppts.filter(a => new Date(a.start_time) <= new Date());
+  const contactChannels = useMemo(() => {
+    const metadata =
+      contact?.metadata && typeof contact.metadata === 'object' && !Array.isArray(contact.metadata)
+        ? (contact.metadata as Record<string, unknown>)
+        : {};
+    const channels =
+      metadata.contact_channels &&
+      typeof metadata.contact_channels === 'object' &&
+      !Array.isArray(metadata.contact_channels)
+        ? (metadata.contact_channels as Record<string, unknown>)
+        : {};
+    return {
+      website_url: typeof channels.website_url === 'string' ? channels.website_url : '',
+      instagram_handle: typeof channels.instagram_handle === 'string' ? channels.instagram_handle : '',
+      facebook_handle: typeof channels.facebook_handle === 'string' ? channels.facebook_handle : '',
+      tiktok_handle: typeof channels.tiktok_handle === 'string' ? channels.tiktok_handle : '',
+      linkedin_url: typeof channels.linkedin_url === 'string' ? channels.linkedin_url : '',
+    };
+  }, [contact?.metadata]);
 
   const handleAddTag = async () => {
     if (!tagInput.trim()) return;
@@ -188,6 +207,36 @@ export default function ContactDetail() {
               <div><span className="text-graphite/60">Total visits:</span> <span className="text-graphite">{contact.total_visits}</span></div>
               <div><span className="text-graphite/60">Total spend:</span> <span className="text-graphite">${contact.total_spend.toFixed(2)}</span></div>
               {contact.last_visit_date && <div><span className="text-graphite/60">Last visit:</span> <span className="text-graphite">{new Date(contact.last_visit_date).toLocaleDateString()}</span></div>}
+              {(contactChannels.website_url || contactChannels.instagram_handle || contactChannels.facebook_handle || contactChannels.tiktok_handle || contactChannels.linkedin_url) && (
+                <div className="pt-2 border-t border-accent-soft/20 space-y-1.5">
+                  <p className="text-graphite/60 text-xs uppercase tracking-wide">Website + Social</p>
+                  {contactChannels.website_url && (
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-graphite/60" />
+                      <a href={contactChannels.website_url} target="_blank" rel="noreferrer" className="text-accent hover:text-accent-hover break-all">
+                        {contactChannels.website_url}
+                      </a>
+                    </div>
+                  )}
+                  {contactChannels.instagram_handle && (
+                    <div><span className="text-graphite/60">Instagram:</span> <span className="text-graphite">{contactChannels.instagram_handle}</span></div>
+                  )}
+                  {contactChannels.facebook_handle && (
+                    <div><span className="text-graphite/60">Facebook:</span> <span className="text-graphite">{contactChannels.facebook_handle}</span></div>
+                  )}
+                  {contactChannels.tiktok_handle && (
+                    <div><span className="text-graphite/60">TikTok:</span> <span className="text-graphite">{contactChannels.tiktok_handle}</span></div>
+                  )}
+                  {contactChannels.linkedin_url && (
+                    <div>
+                      <span className="text-graphite/60">LinkedIn:</span>{' '}
+                      <a href={contactChannels.linkedin_url} target="_blank" rel="noreferrer" className="text-accent hover:text-accent-hover break-all">
+                        {contactChannels.linkedin_url}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
