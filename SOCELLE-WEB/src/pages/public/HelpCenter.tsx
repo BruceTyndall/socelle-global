@@ -78,9 +78,9 @@ const DEMO_FAQS: FaqItem[] = [
   },
   {
     id: 'demo-9',
-    question: 'What is the AI Service Menu Optimizer?',
+    question: 'What is the AI Service Menu Analyst?',
     answer:
-      'The AI Service Menu Optimizer analyzes your current treatment menu against local demand signals, competitive benchmarks, and margin data to suggest additions, removals, or pricing adjustments. It uses 2 credits per analysis and provides a detailed action plan with projected revenue impact.',
+      'The AI Service Menu Analyst evaluates your current treatment menu against local demand signals, competitive benchmarks, and margin data to suggest additions, removals, or pricing adjustments. It uses 2 credits per analysis and provides a detailed action plan with projected revenue impact.',
     category: 'Intelligence',
   },
   {

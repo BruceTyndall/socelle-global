@@ -1,0 +1,5417 @@
+{
+  "scan_date": "2026-03-09T03:19:23.694Z",
+  "summary": {
+    "total": 267,
+    "live": 104,
+    "demo": 98,
+    "shell": 65,
+    "shell_rate": "24.3"
+  },
+  "by_hub": {
+    "admin": {
+      "live": 52,
+      "demo": 10,
+      "shell": 13,
+      "pages": [
+        {
+          "file": "src/pages/admin/AdminApiControlHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminApiControls.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminApiSitemapHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminApprovalQueue.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminAuditLog.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminBlogHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminBrandList.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminCourseEditor.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminCoursesHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminEducationHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminFeatureFlags.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminFeedsHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/AdminInbox.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminIngredientCollections.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminIngredientInteractions.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminIngredientsHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/AdminLiveDataHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminLogin.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/admin/AdminMarketSignals.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminMarketingHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/AdminMediaHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminOrderDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminOrders.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminPagesHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminPlatformSettings.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/AdminResellerHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/AdminSalesPlatformHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/AdminSeeding.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminSeoHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminSettingsHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShopCategories.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShopDiscounts.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShopHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShopOrders.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShopProducts.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShopReviews.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AdminShopShipping.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminSignals.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminSubscriptionAccounts.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/AdminSubscriptionMetrics.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminSubscriptionPlans.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/AdminUsers.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/AffiliatesHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/ApiDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/AuthDebug.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/admin/BrandAdminEditor.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/BrandHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/admin/BulkProtocolImport.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/CrmHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/DebugPanel.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/EditorialHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/EventsHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/IntelligenceDashboard.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/JobsHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/RecruitmentHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/RegionManagement.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/admin/ReportsLibrary.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/admin/SalesHub.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/SocialHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/admin/SubmissionDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubAnalytics.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubEducation.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubOrders.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubProducts.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubProtocols.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubRetailers.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/brand-hub/HubSettings.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/cms/CmsBlockLibrary.tsx",
+          "classification": "SHELL",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/cms/CmsDashboard.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/admin/cms/CmsMediaLibrary.tsx",
+          "classification": "SHELL",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/cms/CmsPagesList.tsx",
+          "classification": "SHELL",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/cms/CmsPostsList.tsx",
+          "classification": "SHELL",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/cms/CmsSpacesConfig.tsx",
+          "classification": "SHELL",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/cms/CmsTemplatesList.tsx",
+          "classification": "SHELL",
+          "feature_score": 4
+        }
+      ]
+    },
+    "brand": {
+      "live": 15,
+      "demo": 1,
+      "shell": 9,
+      "pages": [
+        {
+          "file": "src/pages/brand/ApplicationReceived.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/brand/Apply.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/brand/Automations.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/BrandAIAdvisor.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/brand/BrandIntelligenceHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/brand/BrandNotificationPreferences.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/brand/CampaignBuilder.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/Campaigns.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/ClaimReview.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/brand/Customers.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/brand/Dashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/IntelligencePricing.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/brand/IntelligenceReport.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/brand/Leads.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/Login.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/Messages.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/brand/Onboarding.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/brand/OrderDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/brand/Orders.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/brand/Performance.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/brand/Pipeline.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/brand/Plans.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/brand/Products.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/brand/Promotions.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/brand/Storefront.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        }
+      ]
+    },
+    "business": {
+      "live": 20,
+      "demo": 36,
+      "shell": 18,
+      "pages": [
+        {
+          "file": "src/pages/business/AIAdvisor.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/Account.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/AddCompany.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/AddContact.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/AddServiceRecord.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/Apply.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/AppointmentCalendar.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/AppointmentDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/AudienceSegments.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/BenchmarkDashboard.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/BookingDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/BrandDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/CECredits.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/CampaignDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/CampaignEditor.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/ClaimReview.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/ClientRecords.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/CommissionsDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/CompanyDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/CompanyList.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/ContactDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/ContactList.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/ContentTemplates.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/CrmDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/CrmSegments.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/CrmTasks.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/Dashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/DealDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/EditCompany.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/EditContact.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/IntelligenceHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/LocationsDashboard.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/Login.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/MarketingAnalytics.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/MarketingCalendar.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/MarketingDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/Messages.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/NotificationPreferences.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/OrderDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/Orders.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/PipelineBoard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/PlanComparison.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/PlanResults.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/business/PlanWizard.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/business/PlansList.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/PortalHome.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/ProposalEditor.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/ProspectDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/ProspectList.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/ResellerClients.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/ResellerDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/ResellerRevenue.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/SalesDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/ServiceManager.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/Signup.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/StaffManager.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/SubscriptionManagement.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/WhiteLabelConfig.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/affiliates/AffiliateDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/affiliates/AffiliateLinks.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/credits/CreditDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/credits/CreditPurchase.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/marketing/CampaignBuilder.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/marketing/CampaignList.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/marketing/MarketingDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/marketing/MarketingTemplates.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/onboarding/OnboardingComplete.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/onboarding/OnboardingFlow.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/onboarding/OnboardingInterests.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/onboarding/OnboardingRole.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/onboarding/OnboardingWelcome.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/business/studio/CourseBuilder.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/business/studio/StudioEditor.tsx",
+          "classification": "SHELL",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/studio/StudioHome.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        }
+      ]
+    },
+    "claim": {
+      "live": 2,
+      "demo": 0,
+      "shell": 0,
+      "pages": [
+        {
+          "file": "src/pages/claim/ClaimBrand.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/claim/ClaimBusiness.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        }
+      ]
+    },
+    "dev": {
+      "live": 0,
+      "demo": 1,
+      "shell": 0,
+      "pages": [
+        {
+          "file": "src/pages/dev/MasterIndex.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        }
+      ]
+    },
+    "education": {
+      "live": 7,
+      "demo": 4,
+      "shell": 1,
+      "pages": [
+        {
+          "file": "src/pages/education/CECreditDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/education/CertificateVerify.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/education/CourseCatalog.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/education/CourseDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/education/CoursePlayer.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/education/EducationHub.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/education/MyCertificates.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/education/QuizPlayer.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/education/ScormPlayer.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/education/StaffTraining.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/education/author/AuthorDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/education/author/CourseBuilder.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        }
+      ]
+    },
+    "marketing": {
+      "live": 0,
+      "demo": 8,
+      "shell": 0,
+      "pages": [
+        {
+          "file": "src/pages/marketing/CampaignBuilder.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/marketing/CampaignDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/marketing/CampaignList.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/marketing/LandingPageList.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/marketing/MarketingCalendar.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/marketing/MarketingDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/marketing/SegmentList.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/marketing/TemplateGallery.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        }
+      ]
+    },
+    "public": {
+      "live": 6,
+      "demo": 32,
+      "shell": 23,
+      "pages": [
+        {
+          "file": "src/pages/public/About.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ApiDocs.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/ApiPricing.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/BlogListPage.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/BlogPostPage.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/BookingWidget.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/BrandStorefront.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/public/Brands.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/public/Cart.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/CertificateVerify.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/Checkout.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/CourseDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/CoursePlayer.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/CoursesCatalog.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/Education.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/EducationArticles.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/public/Events.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/FAQ.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ForBrands.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ForMedspas.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ForSalons.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ForgotPassword.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/HelpCenter.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/Home.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/HowItWorks.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/IngredientCollection.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/IngredientDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/Ingredients.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/Insights.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/Intelligence.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/IntelligenceBriefDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/IntelligenceBriefs.tsx",
+          "classification": "DEMO",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/public/IntelligenceCommerce.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/JobDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/Jobs.tsx",
+          "classification": "DEMO",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/public/MyCertificates.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/OrderDetail.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/OrderHistory.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/Plans.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/PrelaunchQuiz.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/public/Pricing.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/Privacy.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ProductDetail.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/Professionals.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
+        },
+        {
+          "file": "src/pages/public/ProtocolDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/Protocols.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/RequestAccess.tsx",
+          "classification": "LIVE",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/ResetPassword.tsx",
+          "classification": "SHELL",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/Shop.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ShopCart.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/ShopCategory.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ShopCheckout.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ShopOrderDetail.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/ShopOrders.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/ShopProduct.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/ShopWishlist.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/Stories.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/StoriesIndex.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/StoryDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/Terms.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/public/WishlistPage.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
+        }
+      ]
+    },
+    "sales": {
+      "live": 2,
+      "demo": 6,
+      "shell": 1,
+      "pages": [
+        {
+          "file": "src/pages/sales/CommissionDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/sales/DealDetail.tsx",
+          "classification": "DEMO",
+          "feature_score": 2
+        },
+        {
+          "file": "src/pages/sales/DealEditor.tsx",
+          "classification": "DEMO",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/sales/OpportunityFinder.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
+        },
+        {
+          "file": "src/pages/sales/PipelineBoard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/sales/ProposalBuilder.tsx",
+          "classification": "SHELL",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/sales/ProposalView.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/sales/RevenueAnalytics.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        },
+        {
+          "file": "src/pages/sales/SalesDashboard.tsx",
+          "classification": "DEMO",
+          "feature_score": 1
+        }
+      ]
+    }
+  },
+  "classifications": [
+    {
+      "file": "src/pages/admin/AdminApiControlHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminApiControls.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminApiSitemapHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminApprovalQueue.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminAuditLog.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminBlogHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminBrandList.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminCourseEditor.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminCoursesHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminDashboard.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminEducationHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminFeatureFlags.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminFeedsHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/admin/AdminInbox.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminIngredientCollections.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminIngredientInteractions.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminIngredientsHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/admin/AdminLiveDataHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminLogin.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/admin/AdminMarketSignals.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminMarketingHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/AdminMediaHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminOrderDetail.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminOrders.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminPagesHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminPlatformSettings.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/AdminResellerHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/AdminSalesPlatformHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/AdminSeeding.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminSeoHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminSettingsHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShopCategories.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShopDiscounts.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShopHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShopOrders.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShopProducts.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShopReviews.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AdminShopShipping.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminSignals.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminSubscriptionAccounts.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/AdminSubscriptionMetrics.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminSubscriptionPlans.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/admin/AdminUsers.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/admin/AffiliatesHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/ApiDashboard.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/AuthDebug.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": true
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/admin/BrandHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/admin/BulkProtocolImport.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": true
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/CrmHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/DebugPanel.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/EditorialHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/EventsHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/IntelligenceDashboard.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/JobsHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/RecruitmentHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/RegionManagement.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/admin/ReportsLibrary.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/admin/SalesHub.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/SocialHub.tsx",
+      "hub": "admin",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/admin/SubmissionDetail.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubAnalytics.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubEducation.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubOrders.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubProducts.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubProtocols.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubRetailers.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/brand-hub/HubSettings.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/cms/CmsBlockLibrary.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/cms/CmsDashboard.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/admin/cms/CmsMediaLibrary.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": true
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/admin/cms/CmsPagesList.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/cms/CmsPostsList.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/cms/CmsSpacesConfig.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/admin/cms/CmsTemplatesList.tsx",
+      "hub": "admin",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/brand/ApplicationReceived.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/brand/Apply.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/brand/Automations.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/BrandAIAdvisor.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/brand/BrandIntelligenceHub.tsx",
+      "hub": "brand",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/brand/BrandNotificationPreferences.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/brand/CampaignBuilder.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": true
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/Campaigns.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/ClaimReview.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/brand/Customers.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/brand/Dashboard.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/IntelligencePricing.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/brand/Leads.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/Login.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/Messages.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/brand/Onboarding.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/brand/OrderDetail.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/brand/Orders.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/brand/Performance.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/brand/Pipeline.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/brand/Plans.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/brand/Products.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/brand/Promotions.tsx",
+      "hub": "brand",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/brand/Storefront.tsx",
+      "hub": "brand",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/AIAdvisor.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/Account.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/AddCompany.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/AddContact.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/AddServiceRecord.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/Apply.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/AppointmentCalendar.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/AppointmentDetail.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/AudienceSegments.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/BenchmarkDashboard.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/BookingDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/BrandDetail.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/CECredits.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/CampaignDetail.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/CampaignEditor.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/ClaimReview.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/ClientRecords.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/CommissionsDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/CompanyDetail.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/CompanyList.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/ContactDetail.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/ContactList.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/ContentTemplates.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/CrmDashboard.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/CrmSegments.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/CrmTasks.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/Dashboard.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/DealDetail.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/EditCompany.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/EditContact.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/IntelligenceHub.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/LocationsDashboard.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/Login.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/MarketingAnalytics.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/MarketingCalendar.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/MarketingDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/Messages.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/NotificationPreferences.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/OrderDetail.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/Orders.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/PipelineBoard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/PlanComparison.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/PlanResults.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/business/PlanWizard.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/business/PlansList.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/PortalHome.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/ProposalEditor.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": true
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/ProspectDetail.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/ProspectList.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/ResellerClients.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/ResellerDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/ResellerRevenue.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/SalesDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/ServiceManager.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/Signup.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/StaffManager.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/SubscriptionManagement.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/WhiteLabelConfig.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/affiliates/AffiliateDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/affiliates/AffiliateLinks.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/credits/CreditDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/credits/CreditPurchase.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/marketing/CampaignBuilder.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/marketing/CampaignList.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/marketing/MarketingDashboard.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/marketing/MarketingTemplates.tsx",
+      "hub": "business",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingComplete.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingFlow.tsx",
+      "hub": "business",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingInterests.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingRole.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingWelcome.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/business/studio/CourseBuilder.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/business/studio/StudioEditor.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/studio/StudioHome.tsx",
+      "hub": "business",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/claim/ClaimBrand.tsx",
+      "hub": "claim",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/claim/ClaimBusiness.tsx",
+      "hub": "claim",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/dev/MasterIndex.tsx",
+      "hub": "dev",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/education/CECreditDashboard.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/education/CertificateVerify.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/education/CourseCatalog.tsx",
+      "hub": "education",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/education/CourseDetail.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/education/CoursePlayer.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/education/EducationHub.tsx",
+      "hub": "education",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/education/MyCertificates.tsx",
+      "hub": "education",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/education/QuizPlayer.tsx",
+      "hub": "education",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/education/ScormPlayer.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/education/StaffTraining.tsx",
+      "hub": "education",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/education/author/AuthorDashboard.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/education/author/CourseBuilder.tsx",
+      "hub": "education",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/marketing/CampaignBuilder.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/marketing/CampaignDetail.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/marketing/CampaignList.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/marketing/LandingPageList.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/marketing/MarketingCalendar.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/marketing/MarketingDashboard.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/marketing/SegmentList.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/marketing/TemplateGallery.tsx",
+      "hub": "marketing",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/About.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ApiDocs.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/ApiPricing.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/BlogListPage.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/BlogPostPage.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/BookingWidget.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/BrandStorefront.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/public/Brands.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 6
+    },
+    {
+      "file": "src/pages/public/Cart.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/CertificateVerify.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/Checkout.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/CourseDetail.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/CoursePlayer.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/CoursesCatalog.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/Education.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/EducationArticles.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/public/Events.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/FAQ.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ForBrands.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ForMedspas.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ForSalons.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ForgotPassword.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/HelpCenter.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/Home.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/HowItWorks.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/IngredientCollection.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/IngredientDetail.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/Ingredients.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/Insights.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/Intelligence.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/IntelligenceBriefDetail.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/IntelligenceBriefs.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/public/IntelligenceCommerce.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/JobDetail.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/Jobs.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/public/MyCertificates.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/OrderDetail.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/OrderHistory.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/Plans.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/PrelaunchQuiz.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/public/Pricing.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/Privacy.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ProductDetail.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/Professionals.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 5
+    },
+    {
+      "file": "src/pages/public/ProtocolDetail.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/Protocols.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/RequestAccess.tsx",
+      "hub": "public",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/ResetPassword.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/public/Shop.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ShopCart.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/ShopCategory.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ShopCheckout.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ShopOrderDetail.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/ShopOrders.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/ShopProduct.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/ShopWishlist.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/Stories.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/StoriesIndex.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/StoryDetail.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/Terms.tsx",
+      "hub": "public",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/public/WishlistPage.tsx",
+      "hub": "public",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/sales/CommissionDashboard.tsx",
+      "hub": "sales",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/sales/DealDetail.tsx",
+      "hub": "sales",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 2
+    },
+    {
+      "file": "src/pages/sales/DealEditor.tsx",
+      "hub": "sales",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/sales/OpportunityFinder.tsx",
+      "hub": "sales",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
+      "file": "src/pages/sales/PipelineBoard.tsx",
+      "hub": "sales",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/sales/ProposalBuilder.tsx",
+      "hub": "sales",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/sales/ProposalView.tsx",
+      "hub": "sales",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/sales/RevenueAnalytics.tsx",
+      "hub": "sales",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    },
+    {
+      "file": "src/pages/sales/SalesDashboard.tsx",
+      "hub": "sales",
+      "classification": "DEMO",
+      "features": {
+        "live_data": false,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 1
+    }
+  ]
+}

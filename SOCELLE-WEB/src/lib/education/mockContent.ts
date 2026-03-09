@@ -66,7 +66,7 @@ export const mockEducationContent: EducationContent[] = [
     category: 'treatment_protocols',
     tags: ['express facial', 'efficiency', 'high volume', 'time management'],
     summary:
-      'Streamlined 30-minute facial protocol designed for high-volume practices. Maximizes results while maintaining treatment room throughput and client satisfaction.',
+      'Efficient 30-minute facial protocol designed for high-volume practices. Maximizes results while maintaining treatment room throughput and client satisfaction.',
     duration_minutes: 15,
     ce_eligible: false,
     difficulty: 'beginner',

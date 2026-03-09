@@ -280,7 +280,7 @@ export function getAdminSignals(): AdminSignal[] {
     {
       id: 'as-016',
       title: 'Polyglutamic Acid Hydration Signal',
-      description: 'PGA emerging as next-generation hydration ingredient with 4x water-binding capacity vs hyaluronic acid.',
+      description: 'PGA emerging as a leading hydration ingredient with 4x water-binding capacity vs hyaluronic acid.',
       type: 'ingredient_momentum',
       status: 'active',
       createdAt: daysAgo(6),

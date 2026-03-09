@@ -58,6 +58,9 @@ jobs:
       - name: Fake-Live Regression Guard
         run: npm run fakelive:check
 
+      - name: Shell Detector Gate
+        run: npm run shell:check
+
   # ── 3a. Build (production — TEST_MODE off) ───────────────────
   build:
     name: Build

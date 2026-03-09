@@ -1,0 +1,24 @@
+{
+  "wo_id": "FOUND-WO-04",
+  "timestamp": "2026-03-09T03:20:00.000Z",
+  "description": "Shell Detector — skill + CI gate script that classifies pages as LIVE/DEMO/SHELL and blocks merges if new shells introduced",
+  "skills_run": ["hub-shell-detector", "build-gate"],
+  "results": {
+    "shell-detector-script": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "scripts/shell-detector.mjs created + runs successfully. Baseline: 65 shells (24.3%). CI gate in .github/workflows/ci.yml. npm run shell:check + shell:baseline wired."
+    },
+    "ci-integration": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Shell Detector Gate step added to CI lint job. Regression detection blocks merges if new shells introduced."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc --noEmit = 0 errors"
+    }
+  },
+  "overall": "PASS"
+}

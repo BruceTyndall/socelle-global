@@ -138,7 +138,7 @@ export default function ForSalons() {
             </p>
           </BlockReveal>
           <WordReveal
-            text="Empower Your Salon with Intelligence"
+            text="Elevate Your Salon with Intelligence"
             as="h1"
             className="font-sans font-semibold text-hero text-graphite mb-7 justify-center max-w-4xl mx-auto"
           />

@@ -171,7 +171,7 @@ export function getOperatorInsights(
       id: 'oi-004',
       title: 'Your brand diversity is above average — but concentrated',
       description:
-        'You source from 6 brands (peer average: 4.2). However, 68% of your spend goes to a single brand. Diversifying your back bar can improve margin negotiation leverage and reduce supply chain risk.',
+        'You source from 6 brands (peer average: 4.2). However, 68% of your spend goes to a single brand. Diversifying your back bar can improve margin negotiation power and reduce supply chain risk.',
       category: 'benchmark',
       urgency: 'low',
       updatedAt: daysAgo(3),

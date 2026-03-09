@@ -297,7 +297,7 @@ export function getGreeting(userRole: UserRole, userName?: string): ChatMessage 
 
   const content =
     userRole === 'operator'
-      ? `Hi ${name}, I'm your Socelle intelligence advisor. I can help you discover products, optimize your treatment protocols, find CE education, and surface market insights tailored to your business. What can I help you with today?`
+      ? `Hi ${name}, I'm your Socelle intelligence advisor. I can help you discover products, refine your treatment protocols, find CE education, and surface market insights tailored to your business. What can I help you with today?`
       : `Hi ${name}, I'm your Socelle market intelligence advisor. I can help you analyze retailer adoption, track competitive positioning, plan campaigns, and surface performance insights for your brand. How can I assist you?`;
 
   return {

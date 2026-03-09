@@ -171,7 +171,7 @@ export default function Insights() {
             Ready to connect with professional beauty?
           </h2>
           <p className="text-mn-bg/55 font-sans text-sm font-light max-w-md mx-auto mb-8">
-            Join Socelle to browse verified brands, access wholesale pricing, and streamline procurement.
+            Join Socelle to browse verified brands, access wholesale pricing, and simplify procurement.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link

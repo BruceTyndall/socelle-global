@@ -182,7 +182,7 @@ export default function ImplementationPlannerView() {
         <div className="bg-accent-soft border border-accent-soft rounded-lg p-4 flex gap-3">
           <FileText className="w-5 h-5 text-graphite flex-shrink-0 mt-0.5" />
           <div className="text-sm text-graphite">
-            <strong>Implementation Enablement:</strong> Converts intelligence into executable 30/60/90 day plans.
+            <strong>Implementation Planning:</strong> Converts intelligence into executable 30/60/90 day plans.
             All scoring is deterministic and traceable. No estimates without data inputs.
           </div>
         </div>

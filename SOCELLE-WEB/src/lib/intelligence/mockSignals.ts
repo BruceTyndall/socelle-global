@@ -163,7 +163,7 @@ export const mockSignals: IntelligenceSignal[] = [
     signal_type: 'ingredient_momentum',
     signal_key: 'polyglutamic-acid-hydration',
     title: 'Polyglutamic Acid',
-    description: 'Polyglutamic acid (PGA) emerging as next-generation hydration ingredient. Professional buyers noting 4x water-binding capacity versus hyaluronic acid in supplier education materials.',
+    description: 'Polyglutamic acid (PGA) emerging as a leading hydration ingredient. Professional buyers noting 4x water-binding capacity versus hyaluronic acid in supplier education materials.',
     magnitude: 45,
     direction: 'up',
     category: 'Hydration',

@@ -143,7 +143,7 @@ function assignToPhases(items: ReadinessItem[]): PhaseAssignment[] {
   }
 
   phases[0].rationale = 'Quick wins with minimal risk. Build staff confidence and operational momentum.';
-  phases[1].rationale = 'Expand service portfolio with moderate-complexity offerings. Leverage Phase 1 success.';
+  phases[1].rationale = 'Expand service portfolio with moderate-complexity offerings. Build on Phase 1 success.';
   phases[2].rationale = 'Implement advanced protocols requiring specialized training and higher skill levels.';
 
   return phases;

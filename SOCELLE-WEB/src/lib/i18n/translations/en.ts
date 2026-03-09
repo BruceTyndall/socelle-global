@@ -22,7 +22,7 @@ const en: TranslationDictionary = {
 
   // ── Home / Hero ─────────────────────────────────────────────────
   'home.hero.title': 'Professional Beauty Intelligence',
-  'home.hero.subtitle': 'Data-driven insights for the professional beauty industry. Discover trends, optimize purchasing, and grow your business.',
+  'home.hero.subtitle': 'Data-driven insights for the professional beauty industry. Discover trends, sharpen purchasing, and grow your business.',
   'home.hero.cta': 'Explore Intelligence',
   'home.hero.secondaryCta': 'Request Access',
   'home.stats.signals': 'Market Signals',
