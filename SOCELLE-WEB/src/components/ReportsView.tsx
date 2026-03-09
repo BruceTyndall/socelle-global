@@ -67,21 +67,21 @@ export default function ReportsView() {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-pro-charcoal">Report Generator</h2>
-        <p className="text-sm text-pro-warm-gray mt-1">
+        <h2 className="text-2xl font-semibold text-graphite">Report Generator</h2>
+        <p className="text-sm text-graphite/60 mt-1">
           Generate comprehensive mapping tables, gap analyses, and follow-up materials
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-        <h3 className="text-lg font-medium text-pro-charcoal mb-4">Select Mapped Menu</h3>
+      <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+        <h3 className="text-lg font-medium text-graphite mb-4">Select Mapped Menu</h3>
         <div className="flex items-end space-x-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Spa Menu</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Spa Menu</label>
             <select
               value={selectedMenuId}
               onChange={(e) => setSelectedMenuId(e.target.value)}
-              className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+              className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               disabled={isGenerating}
             >
               <option value="">Select a mapped spa menu...</option>
@@ -95,7 +95,7 @@ export default function ReportsView() {
           <button
             onClick={handleGenerateReports}
             disabled={!selectedMenuId || isGenerating}
-            className="flex items-center space-x-2 px-6 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:bg-pro-stone disabled:cursor-not-allowed transition-colors"
+            className="flex items-center space-x-2 px-6 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:bg-accent-soft disabled:cursor-not-allowed transition-colors"
           >
             {isGenerating ? (
               <>
@@ -118,10 +118,10 @@ export default function ReportsView() {
       </div>
 
       {isGenerating && (
-        <div className="bg-white rounded-lg border border-pro-stone p-12 text-center">
-          <Loader2 className="w-12 h-12 text-pro-navy animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-pro-charcoal mb-2">Generating Reports</h3>
-          <p className="text-pro-warm-gray">
+        <div className="bg-white rounded-lg border border-accent-soft p-12 text-center">
+          <Loader2 className="w-12 h-12 text-graphite animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-graphite mb-2">Generating Reports</h3>
+          <p className="text-graphite/60">
             Creating mapping tables, gap analysis, executive summary, and follow-up email...
           </p>
         </div>
@@ -129,76 +129,76 @@ export default function ReportsView() {
 
       {reports && !isGenerating && (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-pro-charcoal">Service Mapping Table</h3>
+              <h3 className="text-lg font-semibold text-graphite">Service Mapping Table</h3>
               <button
                 onClick={() => copyToClipboard(reports.mappingTable, 'Mapping Table')}
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-pro-stone rounded-lg hover:bg-pro-ivory"
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-accent-soft rounded-lg hover:bg-background"
               >
                 <Download className="w-4 h-4" />
                 <span>Copy</span>
               </button>
             </div>
-            <div className="bg-pro-ivory rounded border border-pro-stone p-4 max-h-96 overflow-y-auto">
-              <pre className="text-xs text-pro-charcoal whitespace-pre-wrap font-mono">
+            <div className="bg-background rounded border border-accent-soft p-4 max-h-96 overflow-y-auto">
+              <pre className="text-xs text-graphite whitespace-pre-wrap font-mono">
                 {reports.mappingTable}
               </pre>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-pro-charcoal">Gap & Expansion Summary</h3>
+              <h3 className="text-lg font-semibold text-graphite">Gap & Expansion Summary</h3>
               <button
                 onClick={() => copyToClipboard(reports.gapSummary, 'Gap Summary')}
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-pro-stone rounded-lg hover:bg-pro-ivory"
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-accent-soft rounded-lg hover:bg-background"
               >
                 <Download className="w-4 h-4" />
                 <span>Copy</span>
               </button>
             </div>
-            <div className="bg-pro-ivory rounded border border-pro-stone p-4 max-h-96 overflow-y-auto">
-              <pre className="text-xs text-pro-charcoal whitespace-pre-wrap font-mono">
+            <div className="bg-background rounded border border-accent-soft p-4 max-h-96 overflow-y-auto">
+              <pre className="text-xs text-graphite whitespace-pre-wrap font-mono">
                 {reports.gapSummary}
               </pre>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-pro-charcoal">Executive Prospect Summary</h3>
+              <h3 className="text-lg font-semibold text-graphite">Executive Prospect Summary</h3>
               <button
                 onClick={() => copyToClipboard(reports.executiveSummary, 'Executive Summary')}
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-pro-stone rounded-lg hover:bg-pro-ivory"
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-accent-soft rounded-lg hover:bg-background"
               >
                 <Download className="w-4 h-4" />
                 <span>Copy</span>
               </button>
             </div>
-            <div className="bg-pro-ivory rounded border border-pro-stone p-4">
-              <pre className="text-sm text-pro-charcoal whitespace-pre-wrap">
+            <div className="bg-background rounded border border-accent-soft p-4">
+              <pre className="text-sm text-graphite whitespace-pre-wrap">
                 {reports.executiveSummary}
               </pre>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                <Mail className="w-5 h-5 text-pro-charcoal" />
-                <h3 className="text-lg font-semibold text-pro-charcoal">Follow-Up Email</h3>
+                <Mail className="w-5 h-5 text-graphite" />
+                <h3 className="text-lg font-semibold text-graphite">Follow-Up Email</h3>
               </div>
               <button
                 onClick={() => copyToClipboard(reports.followUpEmail, 'Follow-Up Email')}
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-pro-stone rounded-lg hover:bg-pro-ivory"
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm border border-accent-soft rounded-lg hover:bg-background"
               >
                 <Download className="w-4 h-4" />
                 <span>Copy</span>
               </button>
             </div>
-            <div className="bg-pro-ivory rounded border border-pro-stone p-4">
-              <pre className="text-sm text-pro-charcoal whitespace-pre-wrap">
+            <div className="bg-background rounded border border-accent-soft p-4">
+              <pre className="text-sm text-graphite whitespace-pre-wrap">
                 {reports.followUpEmail}
               </pre>
             </div>
@@ -207,10 +207,10 @@ export default function ReportsView() {
       )}
 
       {!reports && !isGenerating && (
-        <div className="bg-white rounded-lg border border-pro-stone p-12 text-center">
-          <FileText className="w-12 h-12 text-pro-warm-gray mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-pro-charcoal mb-2">No Reports Generated</h3>
-          <p className="text-pro-warm-gray">Select a mapped spa menu and click Generate Reports to begin</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-12 text-center">
+          <FileText className="w-12 h-12 text-graphite/60 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-graphite mb-2">No Reports Generated</h3>
+          <p className="text-graphite/60">Select a mapped spa menu and click Generate Reports to begin</p>
         </div>
       )}
     </div>

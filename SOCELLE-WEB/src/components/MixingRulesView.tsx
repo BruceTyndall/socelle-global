@@ -101,7 +101,7 @@ export default function MixingRulesView() {
     const colors = {
       mandatory: 'bg-red-100 text-red-800',
       warning: 'bg-amber-100 text-amber-800',
-      info: 'bg-pro-stone text-pro-charcoal',
+      info: 'bg-accent-soft text-graphite',
     };
     return colors[severity as keyof typeof colors] || colors.info;
   };
@@ -110,13 +110,13 @@ export default function MixingRulesView() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-semibold text-pro-charcoal">Mixing Rules</h2>
-          <p className="text-sm text-pro-warm-gray mt-1">Product combination and formulation constraints</p>
+          <h2 className="text-2xl font-semibold text-graphite">Mixing Rules</h2>
+          <p className="text-sm text-graphite/60 mt-1">Product combination and formulation constraints</p>
         </div>
         {!isAdding && !editingId && (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add Rule</span>
@@ -135,17 +135,17 @@ export default function MixingRulesView() {
       </div>
 
       {(isAdding || editingId) && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-          <h3 className="text-lg font-medium text-pro-charcoal mb-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+          <h3 className="text-lg font-medium text-graphite mb-4">
             {editingId ? 'Edit Rule' : 'New Rule'}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Rule Type</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Rule Type</label>
               <select
                 value={formData.rule_type}
                 onChange={(e) => setFormData({ ...formData, rule_type: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               >
                 <option value="compatibility">Compatibility</option>
                 <option value="concentration">Concentration</option>
@@ -153,11 +153,11 @@ export default function MixingRulesView() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Severity</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Severity</label>
               <select
                 value={formData.severity}
                 onChange={(e) => setFormData({ ...formData, severity: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               >
                 <option value="mandatory">Mandatory</option>
                 <option value="warning">Warning</option>
@@ -165,7 +165,7 @@ export default function MixingRulesView() {
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Product References (comma-separated)
               </label>
               <input
@@ -173,19 +173,19 @@ export default function MixingRulesView() {
                 required
                 value={formData.product_references}
                 onChange={(e) => setFormData({ ...formData, product_references: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="Product A, Product B"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Rule Description
               </label>
               <textarea
                 required
                 value={formData.rule_description}
                 onChange={(e) => setFormData({ ...formData, rule_description: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 rows={3}
                 placeholder="Describe the constraint or rule..."
               />
@@ -194,7 +194,7 @@ export default function MixingRulesView() {
           <div className="flex space-x-3 mt-4">
             <button
               type="submit"
-              className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal"
+              className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite"
             >
               <Save className="w-4 h-4" />
               <span>{editingId ? 'Update' : 'Save'}</span>
@@ -202,7 +202,7 @@ export default function MixingRulesView() {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center space-x-2 px-4 py-2 border border-pro-stone rounded-lg hover:bg-pro-ivory"
+              className="flex items-center space-x-2 px-4 py-2 border border-accent-soft rounded-lg hover:bg-background"
             >
               <X className="w-4 h-4" />
               <span>Cancel</span>
@@ -211,26 +211,26 @@ export default function MixingRulesView() {
         </form>
       )}
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-pro-ivory border-b border-pro-stone">
+            <thead className="bg-background border-b border-accent-soft">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Type</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Products</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Description</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Severity</th>
-                <th className="px-4 py-3 text-right text-sm font-medium text-pro-charcoal">Actions</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Type</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Products</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Description</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Severity</th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-graphite">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pro-stone">
+            <tbody className="divide-y divide-accent-soft">
               {rules.map((rule) => (
-                <tr key={rule.id} className="hover:bg-pro-ivory">
-                  <td className="px-4 py-3 text-sm text-pro-charcoal capitalize">{rule.rule_type}</td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray">
+                <tr key={rule.id} className="hover:bg-background">
+                  <td className="px-4 py-3 text-sm text-graphite capitalize">{rule.rule_type}</td>
+                  <td className="px-4 py-3 text-sm text-graphite/60">
                     {rule.product_references.join(', ')}
                   </td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray">{rule.rule_description}</td>
+                  <td className="px-4 py-3 text-sm text-graphite/60">{rule.rule_description}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getSeverityBadge(rule.severity)}`}>
                       {rule.severity}
@@ -240,7 +240,7 @@ export default function MixingRulesView() {
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(rule)}
-                        className="p-1 text-pro-warm-gray hover:text-pro-charcoal"
+                        className="p-1 text-graphite/60 hover:text-graphite"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -258,7 +258,7 @@ export default function MixingRulesView() {
           </table>
         </div>
         {rules.length === 0 && (
-          <div className="text-center py-12 text-pro-warm-gray">
+          <div className="text-center py-12 text-graphite/60">
             No mixing rules yet. Add your first rule to get started.
           </div>
         )}

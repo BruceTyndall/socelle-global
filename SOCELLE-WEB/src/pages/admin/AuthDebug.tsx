@@ -77,10 +77,10 @@ export default function AuthDebug() {
 
   if (loading || loadingDebug) {
     return (
-      <div className="min-h-screen bg-pro-navy flex items-center justify-center">
+      <div className="min-h-screen bg-graphite flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-pro-warm-gray">Loading debug info...</p>
+          <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-graphite/60">Loading debug info...</p>
         </div>
       </div>
     );
@@ -91,8 +91,8 @@ export default function AuthDebug() {
   }
 
   const InfoRow = ({ label, value, status }: { label: string; value: string; status?: 'success' | 'error' | 'warning' }) => (
-    <div className="flex items-start justify-between py-3 border-b border-pro-charcoal last:border-0">
-      <span className="text-sm font-medium text-pro-warm-gray">{label}</span>
+    <div className="flex items-start justify-between py-3 border-b border-graphite last:border-0">
+      <span className="text-sm font-medium text-graphite/60">{label}</span>
       <div className="flex items-center gap-2">
         {status === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
         {status === 'error' && <XCircle className="w-4 h-4 text-red-400" />}
@@ -101,7 +101,7 @@ export default function AuthDebug() {
           status === 'success' ? 'text-green-300' :
           status === 'error' ? 'text-red-300' :
           status === 'warning' ? 'text-amber-300' :
-          'text-pro-stone'
+          'text-accent-soft'
         }`}>
           {value}
         </span>
@@ -110,12 +110,12 @@ export default function AuthDebug() {
   );
 
   return (
-    <div className="min-h-screen bg-pro-navy p-4">
+    <div className="min-h-screen bg-graphite p-4">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/admin/login"
-            className="flex items-center gap-2 text-pro-warm-gray hover:text-white transition-colors"
+            className="flex items-center gap-2 text-graphite/60 hover:text-white transition-colors"
           >
             <Home className="w-4 h-4" />
             <span className="text-sm">Back to Login</span>
@@ -124,22 +124,22 @@ export default function AuthDebug() {
           {isAdmin && (
             <Link
               to="/admin/brands"
-              className="px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors text-sm font-medium"
+              className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors text-sm font-medium"
             >
               Go to Admin Portal
             </Link>
           )}
         </div>
 
-        <div className="bg-pro-charcoal rounded-xl shadow-2xl border border-pro-charcoal overflow-hidden">
-          <div className="bg-pro-navy px-6 py-4 border-b border-pro-charcoal">
+        <div className="bg-graphite rounded-xl shadow-2xl border border-graphite overflow-hidden">
+          <div className="bg-graphite px-6 py-4 border-b border-graphite">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-pro-navy to-pro-charcoal rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-graphite to-graphite rounded-lg flex items-center justify-center">
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-white">Admin Auth Debug</h1>
-                <p className="text-sm text-pro-warm-gray">Diagnostic information for authentication</p>
+                <p className="text-sm text-graphite/60">Diagnostic information for authentication</p>
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function AuthDebug() {
               <>
                 <div>
                   <h2 className="text-lg font-semibold text-white mb-4">Environment</h2>
-                  <div className="bg-pro-navy rounded-lg p-4 border border-pro-charcoal">
+                  <div className="bg-graphite rounded-lg p-4 border border-graphite">
                     <InfoRow
                       label="Window Origin"
                       value={debugInfo.windowOrigin}
@@ -164,7 +164,7 @@ export default function AuthDebug() {
 
                 <div>
                   <h2 className="text-lg font-semibold text-white mb-4">Session</h2>
-                  <div className="bg-pro-navy rounded-lg p-4 border border-pro-charcoal">
+                  <div className="bg-graphite rounded-lg p-4 border border-graphite">
                     <InfoRow
                       label="Session Exists"
                       value={debugInfo.sessionExists ? 'Yes' : 'No'}
@@ -187,7 +187,7 @@ export default function AuthDebug() {
 
                 <div>
                   <h2 className="text-lg font-semibold text-white mb-4">User Profile</h2>
-                  <div className="bg-pro-navy rounded-lg p-4 border border-pro-charcoal">
+                  <div className="bg-graphite rounded-lg p-4 border border-graphite">
                     <InfoRow
                       label="Profile Exists"
                       value={debugInfo.profileExists ? 'Yes' : 'No'}
@@ -227,7 +227,7 @@ export default function AuthDebug() {
 
                 <div>
                   <h2 className="text-lg font-semibold text-white mb-4">Access Control</h2>
-                  <div className="bg-pro-navy rounded-lg p-4 border border-pro-charcoal">
+                  <div className="bg-graphite rounded-lg p-4 border border-graphite">
                     <InfoRow
                       label="Effective Role"
                       value={debugInfo.effectiveRole || 'None'}

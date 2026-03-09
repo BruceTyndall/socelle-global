@@ -504,7 +504,7 @@ export default function BrandAdminEditor() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-pro-ivory flex items-center justify-center p-8">
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <ErrorState
           icon={Package}
           title="Failed to Load Brand"
@@ -520,26 +520,26 @@ export default function BrandAdminEditor() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-pro-ivory p-8">
+      <div className="min-h-screen bg-background p-8">
         <div className="max-w-5xl mx-auto space-y-6">
-          <div className="h-12 bg-pro-stone rounded animate-pulse w-64"></div>
-          <div className="bg-white rounded-lg border border-pro-stone p-8 space-y-6">
+          <div className="h-12 bg-accent-soft rounded animate-pulse w-64"></div>
+          <div className="bg-white rounded-lg border border-accent-soft p-8 space-y-6">
             <div className="space-y-4">
-              <div className="h-6 bg-pro-stone rounded animate-pulse w-32"></div>
-              <div className="h-10 bg-pro-stone rounded animate-pulse"></div>
+              <div className="h-6 bg-accent-soft rounded animate-pulse w-32"></div>
+              <div className="h-10 bg-accent-soft rounded animate-pulse"></div>
             </div>
             <div className="space-y-4">
-              <div className="h-6 bg-pro-stone rounded animate-pulse w-32"></div>
-              <div className="h-10 bg-pro-stone rounded animate-pulse"></div>
+              <div className="h-6 bg-accent-soft rounded animate-pulse w-32"></div>
+              <div className="h-10 bg-accent-soft rounded animate-pulse"></div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">
-                <div className="h-6 bg-pro-stone rounded animate-pulse w-24"></div>
-                <div className="h-10 bg-pro-stone rounded animate-pulse"></div>
+                <div className="h-6 bg-accent-soft rounded animate-pulse w-24"></div>
+                <div className="h-10 bg-accent-soft rounded animate-pulse"></div>
               </div>
               <div className="space-y-4">
-                <div className="h-6 bg-pro-stone rounded animate-pulse w-24"></div>
-                <div className="h-10 bg-pro-stone rounded animate-pulse"></div>
+                <div className="h-6 bg-accent-soft rounded animate-pulse w-24"></div>
+                <div className="h-10 bg-accent-soft rounded animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -550,7 +550,7 @@ export default function BrandAdminEditor() {
 
   if (!brand) {
     return (
-      <div className="min-h-screen bg-pro-ivory flex items-center justify-center p-8">
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <ErrorState
           icon={Package}
           title="Brand Not Found"
@@ -587,13 +587,13 @@ export default function BrandAdminEditor() {
   const missingPublishItems = publishChecks.filter((c) => !c.passed).map((c) => c.label);
 
   return (
-    <div className="min-h-screen bg-pro-ivory">
-      <div className="sticky top-0 z-40 bg-white border-b border-pro-stone">
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-0 z-40 bg-white border-b border-accent-soft">
         <div className="py-3 px-6 flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <Link
               to="/admin/brands"
-              className="p-2 text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-stone rounded-lg transition-colors flex-shrink-0"
+              className="p-2 text-graphite/60 hover:text-graphite hover:bg-accent-soft rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
@@ -602,13 +602,13 @@ export default function BrandAdminEditor() {
               value={brand.name}
               onChange={(e) => updateBrandField('name', e.target.value)}
               placeholder="Brand Name"
-              className="text-2xl font-bold text-pro-charcoal bg-transparent border-none focus:outline-none focus:ring-0 p-0 flex-1 min-w-0"
+              className="text-2xl font-bold text-graphite bg-transparent border-none focus:outline-none focus:ring-0 p-0 flex-1 min-w-0"
             />
           </div>
 
           <div className="flex items-center gap-3 flex-shrink-0">
             {saving && (
-              <span className="text-sm text-pro-warm-gray flex items-center gap-2">
+              <span className="text-sm text-graphite/60 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Saving...
               </span>
@@ -618,13 +618,13 @@ export default function BrandAdminEditor() {
               {brand.is_published ? 'Published' : 'Draft'}
             </div>
 
-            <div className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-pro-stone text-pro-charcoal">
+            <div className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent-soft text-graphite">
               Publish Readiness {publishReadyCount}/{publishChecks.length}
             </div>
 
             <button
               onClick={() => setActiveTab('preview')}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2 border border-accent-soft text-graphite rounded-lg hover:bg-background transition-colors font-medium"
             >
               <Eye className="w-4 h-4" />
               Preview
@@ -636,8 +636,8 @@ export default function BrandAdminEditor() {
               rel="noreferrer"
               className={`inline-flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors font-medium ${
                 brand.slug
-                  ? 'border-pro-stone text-pro-charcoal hover:bg-pro-ivory'
-                  : 'border-pro-stone text-pro-warm-gray pointer-events-none'
+                  ? 'border-accent-soft text-graphite hover:bg-background'
+                  : 'border-accent-soft text-graphite/60 pointer-events-none'
               }`}
             >
               <ExternalLink className="w-4 h-4" />
@@ -647,7 +647,7 @@ export default function BrandAdminEditor() {
             <button
               onClick={() => saveBrand()}
               disabled={saving}
-              className="px-4 py-2 border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="px-4 py-2 border border-accent-soft text-graphite rounded-lg hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               Save Draft
             </button>
@@ -656,7 +656,7 @@ export default function BrandAdminEditor() {
               <button
                 onClick={() => saveBrand(false)}
                 disabled={saving}
-                className="flex items-center gap-2 px-4 py-2 bg-pro-charcoal text-white rounded-lg hover:bg-pro-charcoal disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
               >
                 Unpublish
               </button>
@@ -664,7 +664,7 @@ export default function BrandAdminEditor() {
               <button
                 onClick={() => saveBrand(true)}
                 disabled={saving || !publishReady}
-                className="px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:bg-pro-stone disabled:cursor-not-allowed transition-colors font-medium"
+                className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:bg-accent-soft disabled:cursor-not-allowed transition-colors font-medium"
                 title={!publishReady ? `Complete before publish: ${missingPublishItems.join(', ')}` : undefined}
               >
                 Publish
@@ -673,14 +673,14 @@ export default function BrandAdminEditor() {
           </div>
         </div>
         {(!publishReady || publishStats.loading) && (
-          <div className="px-6 pb-3 text-xs text-pro-warm-gray">
+          <div className="px-6 pb-3 text-xs text-graphite/60">
             {publishStats.loading
               ? 'Checking publish readiness...'
               : `To publish, complete: ${missingPublishItems.join(', ')}`}
           </div>
         )}
 
-        <div className="border-t border-pro-stone bg-white">
+        <div className="border-t border-accent-soft bg-white">
           <div className="px-6 flex gap-6 overflow-x-auto">
             {[
               { key: 'overview' as TabKey, label: 'Overview' },
@@ -696,8 +696,8 @@ export default function BrandAdminEditor() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
                   activeTab === tab.key
-                    ? 'border-pro-navy text-pro-navy'
-                    : 'border-transparent text-pro-warm-gray hover:text-pro-charcoal hover:border-pro-stone'
+                    ? 'border-graphite text-graphite'
+                    : 'border-transparent text-graphite/60 hover:text-graphite hover:border-accent-soft'
                 }`}
               >
                 {tab.label}
@@ -748,9 +748,9 @@ export default function BrandAdminEditor() {
             loading={pageModulesLoading}
           />
         ) : (
-          <div className="bg-white rounded-lg border border-pro-stone p-12 text-center">
-            <h3 className="text-lg font-semibold text-pro-charcoal mb-2">{activeTab}</h3>
-            <p className="text-pro-warm-gray">Coming in next session</p>
+          <div className="bg-white rounded-lg border border-accent-soft p-12 text-center">
+            <h3 className="text-lg font-semibold text-graphite mb-2">{activeTab}</h3>
+            <p className="text-graphite/60">Coming in next session</p>
           </div>
         )}
       </div>
@@ -788,11 +788,11 @@ function OverviewTab({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2 space-y-8">
-        <section className="bg-white rounded-lg border border-pro-stone p-6">
-          <h2 className="text-lg font-semibold text-pro-charcoal mb-4">Basic Information</h2>
+        <section className="bg-white rounded-lg border border-accent-soft p-6">
+          <h2 className="text-lg font-semibold text-graphite mb-4">Basic Information</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Brand Name <span className="text-red-600">*</span>
               </label>
               <input
@@ -805,8 +805,8 @@ function OverviewTab({
                   }
                 }}
                 required
-                className={`w-full px-4 py-2 text-lg border rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy ${
-                  validationErrors.name ? 'border-red-500' : 'border-pro-stone'
+                className={`w-full px-4 py-2 text-lg border rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite ${
+                  validationErrors.name ? 'border-red-500' : 'border-accent-soft'
                 }`}
                 placeholder="Enter brand name"
               />
@@ -816,7 +816,7 @@ function OverviewTab({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Slug <span className="text-red-600">*</span>
               </label>
               <input
@@ -829,11 +829,11 @@ function OverviewTab({
                     setValidationErrors((prev) => ({ ...prev, slug: '' }));
                   }
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy font-mono text-sm ${
-                  validationErrors.slug ? 'border-red-500' : 'border-pro-stone'
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite font-mono text-sm ${
+                  validationErrors.slug ? 'border-red-500' : 'border-accent-soft'
                 }`}
               />
-              <p className="text-xs text-pro-warm-gray mt-1">
+              <p className="text-xs text-graphite/60 mt-1">
                 yoursite.com/brands/{brand.slug || 'brand-slug'}
               </p>
               {validationErrors.slug && (
@@ -842,7 +842,7 @@ function OverviewTab({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Short Description
               </label>
               <textarea
@@ -850,12 +850,12 @@ function OverviewTab({
                 onChange={(e) => updateBrandField('short_description', e.target.value)}
                 maxLength={shortDescLimit}
                 rows={2}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="Brief tagline or description"
               />
               <p
                 className={`text-xs mt-1 text-right ${
-                  shortDescCharCount > 180 ? 'text-red-600' : 'text-pro-warm-gray'
+                  shortDescCharCount > 180 ? 'text-red-600' : 'text-graphite/60'
                 }`}
               >
                 {shortDescCharCount}/{shortDescLimit}
@@ -863,32 +863,32 @@ function OverviewTab({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Long Description
               </label>
               <textarea
                 value={brand.long_description || ''}
                 onChange={(e) => updateBrandField('long_description', e.target.value)}
                 rows={6}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="Detailed brand story and information"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Category Tags
               </label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {brand.category_tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-pro-stone text-pro-navy rounded-full text-sm"
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-accent-soft text-graphite rounded-full text-sm"
                   >
                     {tag}
                     <button
                       onClick={() => removeTag(tag)}
-                      className="hover:text-pro-navy"
+                      className="hover:text-graphite"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -901,14 +901,14 @@ function OverviewTab({
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                  className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                   placeholder="Type a tag and press Enter"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Contact Email
               </label>
               <input
@@ -920,8 +920,8 @@ function OverviewTab({
                     setValidationErrors((prev) => ({ ...prev, contact_email: '' }));
                   }
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy ${
-                  validationErrors.contact_email ? 'border-red-500' : 'border-pro-stone'
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite ${
+                  validationErrors.contact_email ? 'border-red-500' : 'border-accent-soft'
                 }`}
                 placeholder="contact@brand.com"
               />
@@ -932,63 +932,63 @@ function OverviewTab({
           </div>
         </section>
 
-        <section className="bg-white rounded-lg border border-pro-stone p-6">
-          <h2 className="text-lg font-semibold text-pro-charcoal mb-4">Brand Identity</h2>
+        <section className="bg-white rounded-lg border border-accent-soft p-6">
+          <h2 className="text-lg font-semibold text-graphite mb-4">Brand Identity</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Logo URL
               </label>
               <input
                 type="url"
                 value={brand.logo_url || ''}
                 onChange={(e) => updateBrandField('logo_url', e.target.value)}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="https://..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Hero Image URL
               </label>
               <input
                 type="url"
                 value={brand.hero_image_url || ''}
                 onChange={(e) => updateBrandField('hero_image_url', e.target.value)}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="https://..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Hero Video URL
               </label>
               <input
                 type="url"
                 value={brand.hero_video_url || ''}
                 onChange={(e) => updateBrandField('hero_video_url', e.target.value)}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="YouTube or direct video URL"
               />
             </div>
           </div>
         </section>
 
-        <section className="bg-white rounded-lg border border-pro-stone p-6">
+        <section className="bg-white rounded-lg border border-accent-soft p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Palette className="w-5 h-5 text-pro-charcoal" />
-            <h2 className="text-lg font-semibold text-pro-charcoal">Brand Theme</h2>
+            <Palette className="w-5 h-5 text-graphite" />
+            <h2 className="text-lg font-semibold text-graphite">Brand Theme</h2>
           </div>
 
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-pro-charcoal mb-3">Color Palette</h3>
+            <h3 className="text-sm font-medium text-graphite mb-3">Color Palette</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {Object.entries(brand.theme?.colors || DEFAULT_THEME.colors).map(
                 ([key, value]) => (
                   <div key={key}>
-                    <label className="block text-xs font-medium text-pro-warm-gray mb-2 capitalize">
+                    <label className="block text-xs font-medium text-graphite/60 mb-2 capitalize">
                       {key}
                     </label>
                     <div className="relative">
@@ -1006,7 +1006,7 @@ function OverviewTab({
                       />
                       <label
                         htmlFor={`color-${key}`}
-                        className="block w-full h-10 rounded-lg border-2 border-pro-stone cursor-pointer hover:border-pro-navy transition-colors"
+                        className="block w-full h-10 rounded-lg border-2 border-accent-soft cursor-pointer hover:border-graphite transition-colors"
                         style={{ backgroundColor: value }}
                       />
                       <input
@@ -1018,7 +1018,7 @@ function OverviewTab({
                             e.target.value
                           )
                         }
-                        className="mt-1 w-full px-2 py-1 text-xs font-mono border border-pro-stone rounded focus:ring-1 focus:ring-pro-navy focus:border-pro-navy"
+                        className="mt-1 w-full px-2 py-1 text-xs font-mono border border-accent-soft rounded focus:ring-1 focus:ring-graphite focus:border-graphite"
                       />
                     </div>
                   </div>
@@ -1028,10 +1028,10 @@ function OverviewTab({
           </div>
 
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-pro-charcoal mb-3">Typography Mood</h3>
+            <h3 className="text-sm font-medium text-graphite mb-3">Typography Mood</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {[
-                { key: 'luxury' as const, name: 'Luxury', headlineClass: 'font-serif', bodyClass: 'font-light' },
+                { key: 'luxury' as const, name: 'Luxury', headlineClass: 'font-sans', bodyClass: 'font-light' },
                 { key: 'modern' as const, name: 'Modern', headlineClass: 'font-sans tracking-tight font-bold', bodyClass: 'font-normal' },
                 { key: 'clinical' as const, name: 'Clinical', headlineClass: 'font-sans font-semibold', bodyClass: 'text-sm leading-tight' },
               ].map((typo) => (
@@ -1041,20 +1041,20 @@ function OverviewTab({
                   onClick={() => updateThemeField('typography', typo.key)}
                   className={`p-4 border-2 rounded-lg text-left transition-all ${
                     brand.theme?.typography === typo.key
-                      ? 'border-pro-navy bg-pro-cream ring-2 ring-pro-navy'
-                      : 'border-pro-stone hover:border-pro-stone'
+                      ? 'border-graphite bg-accent-soft ring-2 ring-graphite'
+                      : 'border-accent-soft hover:border-accent-soft'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-sm text-pro-charcoal">{typo.name}</span>
+                    <span className="font-medium text-sm text-graphite">{typo.name}</span>
                     {brand.theme?.typography === typo.key && (
-                      <Check className="w-4 h-4 text-pro-navy" />
+                      <Check className="w-4 h-4 text-graphite" />
                     )}
                   </div>
-                  <div className={`${typo.headlineClass} text-pro-charcoal mb-1`}>
+                  <div className={`${typo.headlineClass} text-graphite mb-1`}>
                     Headline
                   </div>
-                  <div className={`${typo.bodyClass} text-pro-warm-gray text-sm`}>
+                  <div className={`${typo.bodyClass} text-graphite/60 text-sm`}>
                     Body text preview
                   </div>
                 </button>
@@ -1063,7 +1063,7 @@ function OverviewTab({
           </div>
 
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-pro-charcoal mb-3">Visual Density</h3>
+            <h3 className="text-sm font-medium text-graphite mb-3">Visual Density</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {[
                 { key: 'spacious' as const, name: 'Spacious', desc: 'Luxury feel, large images, generous whitespace' },
@@ -1076,24 +1076,24 @@ function OverviewTab({
                   onClick={() => updateThemeField('density', density.key)}
                   className={`p-4 border-2 rounded-lg text-left transition-all ${
                     brand.theme?.density === density.key
-                      ? 'border-pro-navy bg-pro-cream ring-2 ring-pro-navy'
-                      : 'border-pro-stone hover:border-pro-stone'
+                      ? 'border-graphite bg-accent-soft ring-2 ring-graphite'
+                      : 'border-accent-soft hover:border-accent-soft'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-sm text-pro-charcoal">{density.name}</span>
+                    <span className="font-medium text-sm text-graphite">{density.name}</span>
                     {brand.theme?.density === density.key && (
-                      <Check className="w-4 h-4 text-pro-navy" />
+                      <Check className="w-4 h-4 text-graphite" />
                     )}
                   </div>
-                  <p className="text-xs text-pro-warm-gray">{density.desc}</p>
+                  <p className="text-xs text-graphite/60">{density.desc}</p>
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-pro-charcoal mb-3">Hero Variant</h3>
+            <h3 className="text-sm font-medium text-graphite mb-3">Hero Variant</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {[
                 { key: 'full_bleed' as const, name: 'Full Bleed', icon: '▭' },
@@ -1108,14 +1108,14 @@ function OverviewTab({
                   onClick={() => updateThemeField('hero_variant', hero.key)}
                   className={`p-3 border-2 rounded-lg text-center transition-all ${
                     brand.theme?.hero_variant === hero.key
-                      ? 'border-pro-navy bg-pro-cream ring-2 ring-pro-navy'
-                      : 'border-pro-stone hover:border-pro-stone'
+                      ? 'border-graphite bg-accent-soft ring-2 ring-graphite'
+                      : 'border-accent-soft hover:border-accent-soft'
                   }`}
                 >
                   <div className="text-2xl mb-1">{hero.icon}</div>
-                  <div className="text-xs font-medium text-pro-charcoal">{hero.name}</div>
+                  <div className="text-xs font-medium text-graphite">{hero.name}</div>
                   {brand.theme?.hero_variant === hero.key && (
-                    <Check className="w-3 h-3 text-pro-navy mx-auto mt-1" />
+                    <Check className="w-3 h-3 text-graphite mx-auto mt-1" />
                   )}
                 </button>
               ))}
@@ -1287,7 +1287,7 @@ function PageBuilderTab({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+        <Loader2 className="w-8 h-8 text-graphite animate-spin" />
       </div>
     );
   }
@@ -1295,8 +1295,8 @@ function PageBuilderTab({
   if (!brandId) {
     return (
       <div className="bg-white rounded-lg border border-amber-200 p-8">
-        <h3 className="text-lg font-semibold text-pro-charcoal mb-2">Save Brand First</h3>
-        <p className="text-pro-warm-gray">
+        <h3 className="text-lg font-semibold text-graphite mb-2">Save Brand First</h3>
+        <p className="text-graphite/60">
           Create the brand record first using <span className="font-medium">Save Draft</span>. Then you can build page sections here.
         </p>
       </div>
@@ -1306,28 +1306,28 @@ function PageBuilderTab({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-pro-charcoal">Page Builder</h2>
+        <h2 className="text-2xl font-bold text-graphite">Page Builder</h2>
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setShowModuleMenu(!showModuleMenu)}
-            className="flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
           >
             <Plus className="w-4 h-4" />
             Add Section
           </button>
 
           {showModuleMenu && (
-            <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-pro-stone py-2 z-10">
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-accent-soft py-2 z-10">
               {MODULE_TYPES.map((moduleType) => {
                 const Icon = moduleType.icon;
                 return (
                   <button
                     key={moduleType.type}
                     onClick={() => addModule(moduleType.type)}
-                    className="w-full px-4 py-2 flex items-center gap-3 hover:bg-pro-ivory transition-colors text-left"
+                    className="w-full px-4 py-2 flex items-center gap-3 hover:bg-background transition-colors text-left"
                   >
-                    <Icon className="w-4 h-4 text-pro-warm-gray" />
-                    <span className="text-sm font-medium text-pro-charcoal">{moduleType.label}</span>
+                    <Icon className="w-4 h-4 text-graphite/60" />
+                    <span className="text-sm font-medium text-graphite">{moduleType.label}</span>
                   </button>
                 );
               })}
@@ -1337,9 +1337,9 @@ function PageBuilderTab({
       </div>
 
       {modules.length === 0 ? (
-        <div className="bg-white rounded-lg border border-pro-stone p-16 text-center">
-          <Layout className="w-16 h-16 text-pro-stone mx-auto mb-4" />
-          <p className="text-pro-warm-gray">No sections yet. Click &apos;Add Section&apos; to start building your brand page.</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-16 text-center">
+          <Layout className="w-16 h-16 text-accent-soft mx-auto mb-4" />
+          <p className="text-graphite/60">No sections yet. Click &apos;Add Section&apos; to start building your brand page.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -1397,26 +1397,26 @@ function ModuleCard({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+    <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
       <div className="p-4 flex items-center gap-3">
         <div className="flex flex-col gap-1">
           <button
             onClick={() => onMove(index, 'up')}
             disabled={isFirst}
-            className="p-1 hover:bg-pro-stone rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 hover:bg-accent-soft rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronUp className="w-4 h-4 text-pro-warm-gray" />
+            <ChevronUp className="w-4 h-4 text-graphite/60" />
           </button>
           <button
             onClick={() => onMove(index, 'down')}
             disabled={isLast}
-            className="p-1 hover:bg-pro-stone rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 hover:bg-accent-soft rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronDown className="w-4 h-4 text-pro-warm-gray" />
+            <ChevronDown className="w-4 h-4 text-graphite/60" />
           </button>
         </div>
 
-        <Icon className="w-5 h-5 text-pro-warm-gray flex-shrink-0" />
+        <Icon className="w-5 h-5 text-graphite/60 flex-shrink-0" />
 
         {editingTitle ? (
           <input
@@ -1426,18 +1426,18 @@ function ModuleCard({
             onBlur={saveTitle}
             onKeyDown={(e) => e.key === 'Enter' && saveTitle()}
             autoFocus
-            className="flex-1 px-2 py-1 border border-pro-navy rounded focus:outline-none focus:ring-2 focus:ring-pro-navy"
+            className="flex-1 px-2 py-1 border border-graphite rounded focus:outline-none focus:ring-2 focus:ring-graphite"
           />
         ) : (
           <button
             onClick={() => setEditingTitle(true)}
-            className="flex-1 text-left font-medium text-pro-charcoal hover:text-pro-navy transition-colors"
+            className="flex-1 text-left font-medium text-graphite hover:text-graphite transition-colors"
           >
             {module.title}
           </button>
         )}
 
-        <span className="px-2 py-1 text-xs bg-pro-stone text-pro-charcoal rounded capitalize">
+        <span className="px-2 py-1 text-xs bg-accent-soft text-graphite rounded capitalize">
           {module.layout_variant}
         </span>
 
@@ -1450,7 +1450,7 @@ function ModuleCard({
           />
           <div
             className={`w-10 h-6 rounded-full transition-colors ${
-              module.is_enabled ? 'bg-green-500' : 'bg-pro-stone'
+              module.is_enabled ? 'bg-green-500' : 'bg-accent-soft'
             }`}
           >
             <div
@@ -1463,10 +1463,10 @@ function ModuleCard({
 
         <button
           onClick={onToggleExpanded}
-          className="p-2 hover:bg-pro-stone rounded transition-colors"
+          className="p-2 hover:bg-accent-soft rounded transition-colors"
         >
           <ChevronRight
-            className={`w-5 h-5 text-pro-warm-gray transition-transform ${
+            className={`w-5 h-5 text-graphite/60 transition-transform ${
               isExpanded ? 'rotate-90' : ''
             }`}
           />
@@ -1476,12 +1476,12 @@ function ModuleCard({
           onClick={() => onDelete(module.id)}
           className="p-2 hover:bg-red-50 rounded transition-colors group"
         >
-          <Trash2 className="w-5 h-5 text-pro-warm-gray group-hover:text-red-600 transition-colors" />
+          <Trash2 className="w-5 h-5 text-graphite/60 group-hover:text-red-600 transition-colors" />
         </button>
       </div>
 
       {isExpanded && (
-        <div className="border-t border-pro-stone p-6 bg-pro-ivory">
+        <div className="border-t border-accent-soft p-6 bg-background">
           <ModuleEditor
             module={module}
             onUpdate={onUpdate}
@@ -1531,7 +1531,7 @@ function ModuleEditor({
     case 'cta':
       return <CTAModuleEditor config={config} updateConfig={updateConfig} />;
     default:
-      return <div className="text-pro-warm-gray">Unknown module type</div>;
+      return <div className="text-graphite/60">Unknown module type</div>;
   }
 }
 
@@ -1550,59 +1550,59 @@ function HeroModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Headline</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Headline</label>
         <input
           type="text"
           value={config.headline || ''}
           onChange={(e) => updateConfig({ headline: e.target.value })}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="Hero headline"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Subheadline</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Subheadline</label>
         <textarea
           value={config.subheadline || ''}
           onChange={(e) => updateConfig({ subheadline: e.target.value })}
           rows={2}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="Supporting text"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Background Image URL</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Background Image URL</label>
         <input
           type="url"
           value={config.background_image || ''}
           onChange={(e) => updateConfig({ background_image: e.target.value })}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="https://..."
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">CTA Button Label</label>
+          <label className="block text-sm font-medium text-graphite mb-2">CTA Button Label</label>
           <input
             type="text"
             value={config.cta_label || ''}
             onChange={(e) => updateConfig({ cta_label: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="Learn More"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">CTA Button Link</label>
+          <label className="block text-sm font-medium text-graphite mb-2">CTA Button Link</label>
           <input
             type="url"
             value={config.cta_url || ''}
             onChange={(e) => updateConfig({ cta_url: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="https://..."
           />
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -1610,8 +1610,8 @@ function HeroModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant.replace('_', ' ')}
@@ -1652,7 +1652,7 @@ function GalleryModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Image URLs</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Image URLs</label>
         <div className="space-y-2">
           {images.map((url: string, index: number) => (
             <div key={index} className="flex gap-2">
@@ -1664,7 +1664,7 @@ function GalleryModuleEditor({
                   newImages[index] = e.target.value;
                   updateConfig({ images: newImages });
                 }}
-                className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               />
               <button
                 onClick={() => removeImage(index)}
@@ -1680,12 +1680,12 @@ function GalleryModuleEditor({
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
-              className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="https://..."
             />
             <button
               onClick={addImage}
-              className="px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+              className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
             >
               Add
             </button>
@@ -1693,7 +1693,7 @@ function GalleryModuleEditor({
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -1701,8 +1701,8 @@ function GalleryModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant}
@@ -1759,27 +1759,27 @@ function FeaturedProtocolsModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Select Protocols</label>
-        <div className="space-y-2 max-h-64 overflow-y-auto border border-pro-stone rounded-lg p-3">
+        <label className="block text-sm font-medium text-graphite mb-2">Select Protocols</label>
+        <div className="space-y-2 max-h-64 overflow-y-auto border border-accent-soft rounded-lg p-3">
           {protocols.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray">No protocols available for this brand</p>
+            <p className="text-sm text-graphite/60">No protocols available for this brand</p>
           ) : (
             protocols.map((protocol) => (
-              <label key={protocol.id} className="flex items-center gap-2 cursor-pointer hover:bg-pro-ivory p-2 rounded">
+              <label key={protocol.id} className="flex items-center gap-2 cursor-pointer hover:bg-background p-2 rounded">
                 <input
                   type="checkbox"
                   checked={selectedIds.includes(protocol.id)}
                   onChange={() => toggleProtocol(protocol.id)}
-                  className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+                  className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
                 />
-                <span className="text-sm text-pro-charcoal">{protocol.protocol_name}</span>
+                <span className="text-sm text-graphite">{protocol.protocol_name}</span>
               </label>
             ))
           )}
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -1787,8 +1787,8 @@ function FeaturedProtocolsModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant}
@@ -1854,20 +1854,20 @@ function FeaturedProductsModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Pro Products</label>
-        <div className="space-y-2 max-h-48 overflow-y-auto border border-pro-stone rounded-lg p-3">
+        <label className="block text-sm font-medium text-graphite mb-2">Pro Products</label>
+        <div className="space-y-2 max-h-48 overflow-y-auto border border-accent-soft rounded-lg p-3">
           {proProducts.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray">No pro products available</p>
+            <p className="text-sm text-graphite/60">No pro products available</p>
           ) : (
             proProducts.map((product) => (
-              <label key={product.id} className="flex items-center gap-2 cursor-pointer hover:bg-pro-ivory p-2 rounded">
+              <label key={product.id} className="flex items-center gap-2 cursor-pointer hover:bg-background p-2 rounded">
                 <input
                   type="checkbox"
                   checked={selectedProIds.includes(product.id)}
                   onChange={() => toggleProProduct(product.id)}
-                  className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+                  className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
                 />
-                <span className="text-sm text-pro-charcoal">{product.product_name}</span>
+                <span className="text-sm text-graphite">{product.product_name}</span>
               </label>
             ))
           )}
@@ -1875,20 +1875,20 @@ function FeaturedProductsModuleEditor({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Retail Products</label>
-        <div className="space-y-2 max-h-48 overflow-y-auto border border-pro-stone rounded-lg p-3">
+        <label className="block text-sm font-medium text-graphite mb-2">Retail Products</label>
+        <div className="space-y-2 max-h-48 overflow-y-auto border border-accent-soft rounded-lg p-3">
           {retailProducts.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray">No retail products available</p>
+            <p className="text-sm text-graphite/60">No retail products available</p>
           ) : (
             retailProducts.map((product) => (
-              <label key={product.id} className="flex items-center gap-2 cursor-pointer hover:bg-pro-ivory p-2 rounded">
+              <label key={product.id} className="flex items-center gap-2 cursor-pointer hover:bg-background p-2 rounded">
                 <input
                   type="checkbox"
                   checked={selectedRetailIds.includes(product.id)}
                   onChange={() => toggleRetailProduct(product.id)}
-                  className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+                  className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
                 />
-                <span className="text-sm text-pro-charcoal">{product.product_name}</span>
+                <span className="text-sm text-graphite">{product.product_name}</span>
               </label>
             ))
           )}
@@ -1896,7 +1896,7 @@ function FeaturedProductsModuleEditor({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -1904,8 +1904,8 @@ function FeaturedProductsModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant}
@@ -1940,25 +1940,25 @@ function RichTextModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Content</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Content</label>
         <textarea
           value={content}
           onChange={(e) => updateConfig({ content: e.target.value })}
           rows={10}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy font-mono text-sm"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite font-mono text-sm"
           placeholder="Enter your content here. Use **bold** and *italic* for formatting."
         />
       </div>
       <button
         onClick={() => setShowPreview(!showPreview)}
-        className="px-4 py-2 border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors"
+        className="px-4 py-2 border border-accent-soft text-graphite rounded-lg hover:bg-background transition-colors"
       >
         {showPreview ? 'Hide Preview' : 'Show Preview'}
       </button>
       {showPreview && content && (
-        <div className="p-4 border border-pro-stone rounded-lg bg-white">
-          <h4 className="text-sm font-medium text-pro-charcoal mb-3">Preview</h4>
-          <div className="prose max-w-none text-pro-charcoal">
+        <div className="p-4 border border-accent-soft rounded-lg bg-white">
+          <h4 className="text-sm font-medium text-graphite mb-3">Preview</h4>
+          <div className="prose max-w-none text-graphite">
             {renderPreview(content)}
           </div>
         </div>
@@ -1992,7 +1992,7 @@ function DownloadsModuleEditor({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-pro-charcoal">Downloads</label>
+      <label className="block text-sm font-medium text-graphite">Downloads</label>
       {downloads.map((download: any, index: number) => (
         <div key={index} className="flex gap-2">
           <input
@@ -2000,14 +2000,14 @@ function DownloadsModuleEditor({
             value={download.title}
             onChange={(e) => updateDownload(index, 'title', e.target.value)}
             placeholder="Title"
-            className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
           <input
             type="url"
             value={download.url}
             onChange={(e) => updateDownload(index, 'url', e.target.value)}
             placeholder="https://..."
-            className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
           <button
             onClick={() => removeDownload(index)}
@@ -2019,7 +2019,7 @@ function DownloadsModuleEditor({
       ))}
       <button
         onClick={addDownload}
-        className="flex items-center gap-2 px-4 py-2 border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors"
+        className="flex items-center gap-2 px-4 py-2 border border-accent-soft text-graphite rounded-lg hover:bg-background transition-colors"
       >
         <Plus className="w-4 h-4" />
         Add Download
@@ -2059,15 +2059,15 @@ function ProofPressModuleEditor({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-pro-charcoal">Testimonials</label>
+      <label className="block text-sm font-medium text-graphite">Testimonials</label>
       {testimonials.map((testimonial: any, index: number) => (
-        <div key={index} className="p-4 border border-pro-stone rounded-lg space-y-3">
+        <div key={index} className="p-4 border border-accent-soft rounded-lg space-y-3">
           <textarea
             value={testimonial.quote}
             onChange={(e) => updateTestimonial(index, 'quote', e.target.value)}
             placeholder="Quote"
             rows={2}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
           <div className="flex gap-2">
             <input
@@ -2075,14 +2075,14 @@ function ProofPressModuleEditor({
               value={testimonial.author_name}
               onChange={(e) => updateTestimonial(index, 'author_name', e.target.value)}
               placeholder="Author Name"
-              className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
             <input
               type="text"
               value={testimonial.author_title}
               onChange={(e) => updateTestimonial(index, 'author_title', e.target.value)}
               placeholder="Author Title"
-              className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
             <button
               onClick={() => removeTestimonial(index)}
@@ -2095,13 +2095,13 @@ function ProofPressModuleEditor({
       ))}
       <button
         onClick={addTestimonial}
-        className="flex items-center gap-2 px-4 py-2 border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors"
+        className="flex items-center gap-2 px-4 py-2 border border-accent-soft text-graphite rounded-lg hover:bg-background transition-colors"
       >
         <Plus className="w-4 h-4" />
         Add Testimonial
       </button>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -2109,8 +2109,8 @@ function ProofPressModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant.replace(/_/g, ' ')}
@@ -2138,37 +2138,37 @@ function BrandStoryModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Origin Story</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Origin Story</label>
         <textarea
           value={config.origin_story || ''}
           onChange={(e) => updateConfig({ origin_story: e.target.value })}
           rows={4}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="Tell your brand's origin story..."
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Founder Quote</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Founder Quote</label>
         <input
           type="text"
           value={config.founder_quote || ''}
           onChange={(e) => updateConfig({ founder_quote: e.target.value })}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="A memorable quote from the founder"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Founder Name</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Founder Name</label>
         <input
           type="text"
           value={config.founder_name || ''}
           onChange={(e) => updateConfig({ founder_name: e.target.value })}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="Founder's name"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -2176,8 +2176,8 @@ function BrandStoryModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant}
@@ -2220,7 +2220,7 @@ function StatsBarModuleEditor({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-pro-charcoal">Stats</label>
+      <label className="block text-sm font-medium text-graphite">Stats</label>
       {stats.map((stat: any, index: number) => (
         <div key={index} className="flex gap-2">
           <input
@@ -2228,14 +2228,14 @@ function StatsBarModuleEditor({
             value={stat.label}
             onChange={(e) => updateStat(index, 'label', e.target.value)}
             placeholder="Label (e.g., Years in Business)"
-            className="flex-1 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="flex-1 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
           <input
             type="text"
             value={stat.value}
             onChange={(e) => updateStat(index, 'value', e.target.value)}
             placeholder="Value (e.g., 25+)"
-            className="w-32 px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-32 px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
           <button
             onClick={() => removeStat(index)}
@@ -2247,13 +2247,13 @@ function StatsBarModuleEditor({
       ))}
       <button
         onClick={addStat}
-        className="flex items-center gap-2 px-4 py-2 border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors"
+        className="flex items-center gap-2 px-4 py-2 border border-accent-soft text-graphite rounded-lg hover:bg-background transition-colors"
       >
         <Plus className="w-4 h-4" />
         Add Stat
       </button>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Layout Variant</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Layout Variant</label>
         <div className="flex gap-2">
           {variants.map((variant) => (
             <button
@@ -2261,8 +2261,8 @@ function StatsBarModuleEditor({
               onClick={() => updateLayoutVariant(variant)}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 layoutVariant === variant
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {variant}
@@ -2286,49 +2286,49 @@ function CTAModuleEditor({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Headline</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Headline</label>
         <input
           type="text"
           value={config.headline || ''}
           onChange={(e) => updateConfig({ headline: e.target.value })}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="Call to action headline"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Body Text</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Body Text</label>
         <textarea
           value={config.body || ''}
           onChange={(e) => updateConfig({ body: e.target.value })}
           rows={3}
-          className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+          className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           placeholder="Supporting text"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">Button Label</label>
+          <label className="block text-sm font-medium text-graphite mb-2">Button Label</label>
           <input
             type="text"
             value={config.button_label || ''}
             onChange={(e) => updateConfig({ button_label: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="Get Started"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">Button URL</label>
+          <label className="block text-sm font-medium text-graphite mb-2">Button URL</label>
           <input
             type="url"
             value={config.button_url || ''}
             onChange={(e) => updateConfig({ button_url: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="https://..."
           />
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Background Style</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Background Style</label>
         <div className="flex gap-2">
           {backgroundStyles.map((style) => (
             <button
@@ -2336,8 +2336,8 @@ function CTAModuleEditor({
               onClick={() => updateConfig({ background_style: style })}
               className={`px-3 py-2 text-sm rounded border capitalize ${
                 (config.background_style || 'solid_color') === style
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-charcoal border-pro-stone hover:border-pro-stone'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite border-accent-soft hover:border-accent-soft'
               }`}
             >
               {style.replace('_', ' ')}
@@ -2347,12 +2347,12 @@ function CTAModuleEditor({
       </div>
       {config.background_style === 'image' && (
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">Background Image URL</label>
+          <label className="block text-sm font-medium text-graphite mb-2">Background Image URL</label>
           <input
             type="url"
             value={config.background_image || ''}
             onChange={(e) => updateConfig({ background_image: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="https://..."
           />
         </div>
@@ -2541,33 +2541,33 @@ function MediaLibraryTab({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <div className="bg-white border border-pro-stone rounded-lg p-3">
-          <p className="text-xs text-pro-warm-gray">Total Assets</p>
-          <p className="text-xl font-semibold text-pro-charcoal">{assets.length}</p>
+        <div className="bg-white border border-accent-soft rounded-lg p-3">
+          <p className="text-xs text-graphite/60">Total Assets</p>
+          <p className="text-xl font-semibold text-graphite">{assets.length}</p>
         </div>
-        <div className="bg-white border border-pro-stone rounded-lg p-3">
-          <p className="text-xs text-pro-warm-gray">Featured</p>
-          <p className="text-xl font-semibold text-pro-charcoal">{featuredCount}</p>
+        <div className="bg-white border border-accent-soft rounded-lg p-3">
+          <p className="text-xs text-graphite/60">Featured</p>
+          <p className="text-xl font-semibold text-graphite">{featuredCount}</p>
         </div>
-        <div className="bg-white border border-pro-stone rounded-lg p-3">
-          <p className="text-xs text-pro-warm-gray">Images</p>
-          <p className="text-xl font-semibold text-pro-charcoal">{imageCount}</p>
+        <div className="bg-white border border-accent-soft rounded-lg p-3">
+          <p className="text-xs text-graphite/60">Images</p>
+          <p className="text-xl font-semibold text-graphite">{imageCount}</p>
         </div>
-        <div className="bg-white border border-pro-stone rounded-lg p-3">
-          <p className="text-xs text-pro-warm-gray">Videos</p>
-          <p className="text-xl font-semibold text-pro-charcoal">{videoCount}</p>
+        <div className="bg-white border border-accent-soft rounded-lg p-3">
+          <p className="text-xs text-graphite/60">Videos</p>
+          <p className="text-xl font-semibold text-graphite">{videoCount}</p>
         </div>
-        <div className="bg-white border border-pro-stone rounded-lg p-3">
-          <p className="text-xs text-pro-warm-gray">Documents</p>
-          <p className="text-xl font-semibold text-pro-charcoal">{documentCount}</p>
+        <div className="bg-white border border-accent-soft rounded-lg p-3">
+          <p className="text-xs text-graphite/60">Documents</p>
+          <p className="text-xl font-semibold text-graphite">{documentCount}</p>
         </div>
       </div>
 
       <div
         className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
           uploading
-            ? 'border-pro-navy bg-pro-cream'
-            : 'border-pro-stone hover:border-pro-stone hover:bg-pro-cream/50 cursor-pointer'
+            ? 'border-graphite bg-accent-soft'
+            : 'border-accent-soft hover:border-accent-soft hover:bg-accent-soft/50 cursor-pointer'
         }`}
         onDrop={handleFileDrop}
         onDragOver={(e) => e.preventDefault()}
@@ -2581,19 +2581,19 @@ function MediaLibraryTab({
           onChange={handleFileSelect}
           className="hidden"
         />
-        <Upload className="w-12 h-12 text-pro-warm-gray mx-auto mb-4" />
-        <p className="text-lg font-medium text-pro-charcoal mb-2">
+        <Upload className="w-12 h-12 text-graphite/60 mx-auto mb-4" />
+        <p className="text-lg font-medium text-graphite mb-2">
           {uploading ? 'Uploading...' : 'Drop files here or click to browse'}
         </p>
-        <p className="text-sm text-pro-warm-gray">
+        <p className="text-sm text-graphite/60">
           Images (JPG, PNG, WebP), Videos (MP4), Documents (PDF) — Max 10MB
         </p>
 
         {uploading && (
           <div className="mt-4 max-w-xs mx-auto">
-            <div className="h-2 bg-pro-stone rounded-full overflow-hidden">
+            <div className="h-2 bg-accent-soft rounded-full overflow-hidden">
               <div
-                className="h-full bg-pro-navy transition-all duration-300"
+                className="h-full bg-graphite transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
@@ -2620,34 +2620,34 @@ function MediaLibraryTab({
         )}
       </div>
 
-      <div className="bg-white border border-pro-stone rounded-lg p-4 space-y-4">
+      <div className="bg-white border border-accent-soft rounded-lg p-4 space-y-4">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search assets by name, tags, title, caption..."
-              className="w-full pl-9 pr-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy text-sm"
+              className="w-full pl-9 pr-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite text-sm"
             />
           </div>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as 'all' | 'image' | 'video' | 'document')}
-            className="px-3 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy text-sm"
+            className="px-3 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite text-sm"
           >
             <option value="all">All types</option>
             <option value="image">Images</option>
             <option value="video">Videos</option>
             <option value="document">Documents</option>
           </select>
-          <label className="inline-flex items-center gap-2 text-sm text-pro-charcoal px-3 py-2 border border-pro-stone rounded-lg">
+          <label className="inline-flex items-center gap-2 text-sm text-graphite px-3 py-2 border border-accent-soft rounded-lg">
             <input
               type="checkbox"
               checked={featuredOnly}
               onChange={(e) => setFeaturedOnly(e.target.checked)}
-              className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+              className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
             />
             Featured only
           </label>
@@ -2660,8 +2660,8 @@ function MediaLibraryTab({
             onClick={() => setCollectionFilter(collection)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors capitalize ${
               collectionFilter === collection
-                ? 'bg-pro-navy text-white'
-                : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                ? 'bg-graphite text-white'
+                : 'bg-accent-soft text-graphite hover:bg-accent-soft'
             }`}
           >
             {collection}
@@ -2672,12 +2672,12 @@ function MediaLibraryTab({
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+          <Loader2 className="w-8 h-8 text-graphite animate-spin" />
         </div>
       ) : filteredAssets.length === 0 ? (
         <div className="text-center py-16">
-          <ImageIcon className="w-16 h-16 text-pro-stone mx-auto mb-4" />
-          <p className="text-pro-warm-gray">No media uploaded yet. Drag files above to get started.</p>
+          <ImageIcon className="w-16 h-16 text-accent-soft mx-auto mb-4" />
+          <p className="text-graphite/60">No media uploaded yet. Drag files above to get started.</p>
         </div>
       ) : (
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -2728,7 +2728,7 @@ function AssetCard({
 
   return (
     <div
-      className="group relative rounded-lg overflow-hidden border border-pro-stone hover:shadow-md transition-all cursor-pointer aspect-square"
+      className="group relative rounded-lg overflow-hidden border border-accent-soft hover:shadow-md transition-all cursor-pointer aspect-square"
       onClick={() => onSelect(asset)}
     >
       {isImage ? (
@@ -2738,15 +2738,15 @@ function AssetCard({
           className="w-full h-full object-cover"
         />
       ) : isPDF ? (
-        <div className="w-full h-full bg-pro-stone flex items-center justify-center">
-          <FileText className="w-12 h-12 text-pro-warm-gray" />
+        <div className="w-full h-full bg-accent-soft flex items-center justify-center">
+          <FileText className="w-12 h-12 text-graphite/60" />
         </div>
       ) : isVideo ? (
-        <div className="w-full h-full bg-pro-stone flex items-center justify-center">
-          <Film className="w-12 h-12 text-pro-warm-gray" />
+        <div className="w-full h-full bg-accent-soft flex items-center justify-center">
+          <Film className="w-12 h-12 text-graphite/60" />
         </div>
       ) : (
-        <div className="w-full h-full bg-pro-stone" />
+        <div className="w-full h-full bg-accent-soft" />
       )}
 
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 translate-y-full group-hover:translate-y-0 transition-transform">
@@ -2765,7 +2765,7 @@ function AssetCard({
       >
         <Star
           className={`w-4 h-4 ${
-            asset.is_featured ? 'fill-yellow-400 text-yellow-400' : 'text-pro-warm-gray'
+            asset.is_featured ? 'fill-yellow-400 text-yellow-400' : 'text-graphite/60'
           }`}
         />
       </button>
@@ -2875,14 +2875,14 @@ function AssetDetailModal({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-6 border-b border-pro-stone">
-          <h2 className="text-xl font-semibold text-pro-charcoal">Asset Details</h2>
-          <button onClick={onClose} className="p-2 hover:bg-pro-stone rounded-lg transition-colors">
-            <X className="w-5 h-5 text-pro-warm-gray" />
+        <div className="flex items-center justify-between p-6 border-b border-accent-soft">
+          <h2 className="text-xl font-semibold text-graphite">Asset Details</h2>
+          <button onClick={onClose} className="p-2 hover:bg-accent-soft rounded-lg transition-colors">
+            <X className="w-5 h-5 text-graphite/60" />
           </button>
         </div>
 
-        <div className="p-6 border-b border-pro-stone bg-pro-ivory">
+        <div className="p-6 border-b border-accent-soft bg-background">
           {isImage ? (
             <img
               src={asset.file_url}
@@ -2892,19 +2892,19 @@ function AssetDetailModal({
           ) : (
             <div className="text-center py-8">
               {asset.file_type.startsWith('video/') ? (
-                <Film className="w-16 h-16 text-pro-warm-gray mx-auto mb-4" />
+                <Film className="w-16 h-16 text-graphite/60 mx-auto mb-4" />
               ) : (
-                <FileText className="w-16 h-16 text-pro-warm-gray mx-auto mb-4" />
+                <FileText className="w-16 h-16 text-graphite/60 mx-auto mb-4" />
               )}
-              <p className="font-medium text-pro-charcoal mb-1">{asset.file_name}</p>
-              <p className="text-sm text-pro-warm-gray mb-4">
+              <p className="font-medium text-graphite mb-1">{asset.file_name}</p>
+              <p className="text-sm text-graphite/60 mb-4">
                 {asset.file_type} • {formatFileSize(asset.file_size)}
               </p>
               <a
                 href={asset.file_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Download
@@ -2919,14 +2919,14 @@ function AssetDetailModal({
               href={asset.file_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 text-sm border border-pro-stone rounded-lg hover:bg-pro-ivory transition-colors"
+              className="px-3 py-2 text-sm border border-accent-soft rounded-lg hover:bg-background transition-colors"
             >
               Open File
             </a>
             <button
               type="button"
               onClick={handleCopyUrl}
-              className="px-3 py-2 text-sm border border-pro-stone rounded-lg hover:bg-pro-ivory transition-colors"
+              className="px-3 py-2 text-sm border border-accent-soft rounded-lg hover:bg-background transition-colors"
             >
               Copy URL
             </button>
@@ -2935,47 +2935,47 @@ function AssetDetailModal({
 
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Title</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Title</label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="Asset title"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               Alt Text
-              <span className="text-xs text-pro-warm-gray ml-2">Describe the image for accessibility</span>
+              <span className="text-xs text-graphite/60 ml-2">Describe the image for accessibility</span>
             </label>
             <input
               type="text"
               value={formData.alt_text}
               onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="Descriptive text for screen readers"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Caption</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Caption</label>
             <textarea
               value={formData.caption}
               onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
               rows={2}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="Image caption"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Collection</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Collection</label>
             <select
               value={formData.collection}
               onChange={(e) => setFormData({ ...formData, collection: e.target.value })}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             >
               <option value="general">General</option>
               <option value="hero">Hero</option>
@@ -2987,15 +2987,15 @@ function AssetDetailModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Tags</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Tags</label>
             <div className="flex flex-wrap gap-2 mb-2">
               {formData.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-pro-stone text-pro-navy rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-accent-soft text-graphite rounded-full text-sm"
                 >
                   {tag}
-                  <button onClick={() => removeTag(tag)} className="hover:text-pro-navy">
+                  <button onClick={() => removeTag(tag)} className="hover:text-graphite">
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -3006,7 +3006,7 @@ function AssetDetailModal({
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="Type a tag and press Enter"
             />
           </div>
@@ -3017,14 +3017,14 @@ function AssetDetailModal({
                 type="checkbox"
                 checked={formData.is_featured}
                 onChange={(e) => setFormData({ ...formData, is_featured: e.target.checked })}
-                className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+                className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
               />
-              <span className="text-sm font-medium text-pro-charcoal">Featured</span>
+              <span className="text-sm font-medium text-graphite">Featured</span>
             </label>
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-6 border-t border-pro-stone bg-pro-ivory">
+        <div className="flex items-center justify-between p-6 border-t border-accent-soft bg-background">
           <button
             onClick={handleDelete}
             disabled={deleting}
@@ -3035,7 +3035,7 @@ function AssetDetailModal({
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="px-6 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -3055,7 +3055,7 @@ function ThemePreview({ theme, brandName }: { theme: BrandTheme; brandName: stri
   }[density];
 
   const typographyHeadingClass = {
-    luxury: 'font-serif font-light',
+    luxury: 'font-sans font-light',
     modern: 'font-sans font-bold tracking-tight',
     clinical: 'font-sans font-semibold',
   }[typography];
@@ -3067,8 +3067,8 @@ function ThemePreview({ theme, brandName }: { theme: BrandTheme; brandName: stri
   }[typography];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-pro-stone">
-      <div className="bg-pro-charcoal px-4 py-2 text-white text-xs font-medium">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-accent-soft">
+      <div className="bg-graphite px-4 py-2 text-white text-xs font-medium">
         Live Preview
       </div>
 
@@ -3290,7 +3290,7 @@ function EducationTab({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+        <Loader2 className="w-8 h-8 text-graphite animate-spin" />
       </div>
     );
   }
@@ -3298,10 +3298,10 @@ function EducationTab({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-pro-charcoal">Education</h2>
+        <h2 className="text-2xl font-bold text-graphite">Education</h2>
         <button
           onClick={addModule}
-          className="flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
         >
           <Plus className="w-4 h-4" />
           Add Training Module
@@ -3309,9 +3309,9 @@ function EducationTab({
       </div>
 
       {modules.length === 0 ? (
-        <div className="bg-white rounded-lg border border-pro-stone p-16 text-center">
-          <GraduationCap className="w-16 h-16 text-pro-stone mx-auto mb-4" />
-          <p className="text-pro-warm-gray">No training modules yet. Add educational content for spa partners.</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-16 text-center">
+          <GraduationCap className="w-16 h-16 text-accent-soft mx-auto mb-4" />
+          <p className="text-graphite/60">No training modules yet. Add educational content for spa partners.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -3358,7 +3358,7 @@ function TrainingModuleCard({
 }) {
   const formatColors = {
     pdf: 'bg-red-100 text-red-800',
-    video: 'bg-pro-stone text-pro-navy',
+    video: 'bg-accent-soft text-graphite',
     link: 'bg-green-100 text-green-800',
     slide_deck: 'bg-purple-100 text-purple-800',
   };
@@ -3370,32 +3370,32 @@ function TrainingModuleCard({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+    <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
       <div className="p-4 flex items-center gap-3">
         <div className="flex flex-col gap-1">
           <button
             onClick={() => onMove(index, 'up')}
             disabled={isFirst}
-            className="p-1 hover:bg-pro-stone rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 hover:bg-accent-soft rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronUp className="w-4 h-4 text-pro-warm-gray" />
+            <ChevronUp className="w-4 h-4 text-graphite/60" />
           </button>
           <button
             onClick={() => onMove(index, 'down')}
             disabled={isLast}
-            className="p-1 hover:bg-pro-stone rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 hover:bg-accent-soft rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronDown className="w-4 h-4 text-pro-warm-gray" />
+            <ChevronDown className="w-4 h-4 text-graphite/60" />
           </button>
         </div>
 
         <div className="flex-1 flex items-center gap-3">
-          <span className="font-medium text-pro-charcoal">{module.title}</span>
+          <span className="font-medium text-graphite">{module.title}</span>
           <span className={`px-2 py-1 text-xs rounded capitalize ${formatColors[module.format]}`}>
             {module.format.replace('_', ' ')}
           </span>
           {module.duration && (
-            <span className="text-sm text-pro-warm-gray">{module.duration}</span>
+            <span className="text-sm text-graphite/60">{module.duration}</span>
           )}
           <span className={`px-2 py-1 text-xs rounded capitalize ${levelColors[module.level]}`}>
             {module.level}
@@ -3411,7 +3411,7 @@ function TrainingModuleCard({
           />
           <div
             className={`w-10 h-6 rounded-full transition-colors ${
-              module.is_published ? 'bg-green-500' : 'bg-pro-stone'
+              module.is_published ? 'bg-green-500' : 'bg-accent-soft'
             }`}
           >
             <div
@@ -3424,10 +3424,10 @@ function TrainingModuleCard({
 
         <button
           onClick={onToggleExpanded}
-          className="p-2 hover:bg-pro-stone rounded transition-colors"
+          className="p-2 hover:bg-accent-soft rounded transition-colors"
         >
           <ChevronRight
-            className={`w-5 h-5 text-pro-warm-gray transition-transform ${
+            className={`w-5 h-5 text-graphite/60 transition-transform ${
               isExpanded ? 'rotate-90' : ''
             }`}
           />
@@ -3437,40 +3437,40 @@ function TrainingModuleCard({
           onClick={() => onDelete(module.id)}
           className="p-2 hover:bg-red-50 rounded transition-colors group"
         >
-          <Trash2 className="w-5 h-5 text-pro-warm-gray group-hover:text-red-600 transition-colors" />
+          <Trash2 className="w-5 h-5 text-graphite/60 group-hover:text-red-600 transition-colors" />
         </button>
       </div>
 
       {isExpanded && (
-        <div className="border-t border-pro-stone p-6 bg-pro-ivory space-y-4">
+        <div className="border-t border-accent-soft p-6 bg-background space-y-4">
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Title *</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Title *</label>
             <input
               type="text"
               value={module.title}
               onChange={(e) => onUpdate(module.id, { title: e.target.value })}
               required
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Description</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Description</label>
             <textarea
               value={module.description || ''}
               onChange={(e) => onUpdate(module.id, { description: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">Format *</label>
+              <label className="block text-sm font-medium text-graphite mb-2">Format *</label>
               <select
                 value={module.format}
                 onChange={(e) => onUpdate(module.id, { format: e.target.value as TrainingModule['format'] })}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               >
                 <option value="pdf">PDF</option>
                 <option value="video">Video</option>
@@ -3480,22 +3480,22 @@ function TrainingModuleCard({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">Duration</label>
+              <label className="block text-sm font-medium text-graphite mb-2">Duration</label>
               <input
                 type="text"
                 value={module.duration || ''}
                 onChange={(e) => onUpdate(module.id, { duration: e.target.value })}
                 placeholder="e.g., 15 min"
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">Level *</label>
+              <label className="block text-sm font-medium text-graphite mb-2">Level *</label>
               <select
                 value={module.level}
                 onChange={(e) => onUpdate(module.id, { level: e.target.value as TrainingModule['level'] })}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               >
                 <option value="beginner">Beginner</option>
                 <option value="intermediate">Intermediate</option>
@@ -3505,13 +3505,13 @@ function TrainingModuleCard({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Resource URL</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Resource URL</label>
             <input
               type="url"
               value={module.resource_url || ''}
               onChange={(e) => onUpdate(module.id, { resource_url: e.target.value })}
               placeholder="https://..."
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
         </div>
@@ -3644,7 +3644,7 @@ function CommercialTab({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+        <Loader2 className="w-8 h-8 text-graphite animate-spin" />
       </div>
     );
   }
@@ -3652,10 +3652,10 @@ function CommercialTab({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-pro-charcoal">Commercial</h2>
+        <h2 className="text-2xl font-bold text-graphite">Commercial</h2>
         <button
           onClick={addAsset}
-          className="flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
         >
           <Plus className="w-4 h-4" />
           Add Commercial Asset
@@ -3663,9 +3663,9 @@ function CommercialTab({
       </div>
 
       {assets.length === 0 ? (
-        <div className="bg-white rounded-lg border border-pro-stone p-16 text-center">
-          <Briefcase className="w-16 h-16 text-pro-stone mx-auto mb-4" />
-          <p className="text-pro-warm-gray">No commercial assets yet. Add sell sheets, price lists, and partnership terms.</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-16 text-center">
+          <Briefcase className="w-16 h-16 text-accent-soft mx-auto mb-4" />
+          <p className="text-graphite/60">No commercial assets yet. Add sell sheets, price lists, and partnership terms.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -3711,35 +3711,35 @@ function CommercialAssetCard({
   onMove: (index: number, direction: 'up' | 'down') => void;
 }) {
   const typeColors = {
-    sell_sheet: 'bg-pro-stone text-pro-navy',
+    sell_sheet: 'bg-accent-soft text-graphite',
     price_list: 'bg-green-100 text-green-800',
     margin_guide: 'bg-purple-100 text-purple-800',
-    terms: 'bg-pro-stone text-pro-charcoal',
+    terms: 'bg-accent-soft text-graphite',
     moq_info: 'bg-amber-100 text-amber-800',
   };
 
   return (
-    <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+    <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
       <div className="p-4 flex items-center gap-3">
         <div className="flex flex-col gap-1">
           <button
             onClick={() => onMove(index, 'up')}
             disabled={isFirst}
-            className="p-1 hover:bg-pro-stone rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 hover:bg-accent-soft rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronUp className="w-4 h-4 text-pro-warm-gray" />
+            <ChevronUp className="w-4 h-4 text-graphite/60" />
           </button>
           <button
             onClick={() => onMove(index, 'down')}
             disabled={isLast}
-            className="p-1 hover:bg-pro-stone rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 hover:bg-accent-soft rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <ChevronDown className="w-4 h-4 text-pro-warm-gray" />
+            <ChevronDown className="w-4 h-4 text-graphite/60" />
           </button>
         </div>
 
         <div className="flex-1 flex items-center gap-3">
-          <span className="font-medium text-pro-charcoal">{asset.title}</span>
+          <span className="font-medium text-graphite">{asset.title}</span>
           <span className={`px-2 py-1 text-xs rounded capitalize ${typeColors[asset.asset_type]}`}>
             {asset.asset_type.replace('_', ' ')}
           </span>
@@ -3752,10 +3752,10 @@ function CommercialAssetCard({
 
         <button
           onClick={onToggleExpanded}
-          className="p-2 hover:bg-pro-stone rounded transition-colors"
+          className="p-2 hover:bg-accent-soft rounded transition-colors"
         >
           <ChevronRight
-            className={`w-5 h-5 text-pro-warm-gray transition-transform ${
+            className={`w-5 h-5 text-graphite/60 transition-transform ${
               isExpanded ? 'rotate-90' : ''
             }`}
           />
@@ -3765,29 +3765,29 @@ function CommercialAssetCard({
           onClick={() => onDelete(asset.id)}
           className="p-2 hover:bg-red-50 rounded transition-colors group"
         >
-          <Trash2 className="w-5 h-5 text-pro-warm-gray group-hover:text-red-600 transition-colors" />
+          <Trash2 className="w-5 h-5 text-graphite/60 group-hover:text-red-600 transition-colors" />
         </button>
       </div>
 
       {isExpanded && (
-        <div className="border-t border-pro-stone p-6 bg-pro-ivory space-y-4">
+        <div className="border-t border-accent-soft p-6 bg-background space-y-4">
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Title *</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Title *</label>
             <input
               type="text"
               value={asset.title}
               onChange={(e) => onUpdate(asset.id, { title: e.target.value })}
               required
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Asset Type *</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Asset Type *</label>
             <select
               value={asset.asset_type}
               onChange={(e) => onUpdate(asset.id, { asset_type: e.target.value as CommercialAsset['asset_type'] })}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             >
               <option value="sell_sheet">Sell Sheet</option>
               <option value="price_list">Price List</option>
@@ -3798,23 +3798,23 @@ function CommercialAssetCard({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Resource URL</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Resource URL</label>
             <input
               type="url"
               value={asset.resource_url || ''}
               onChange={(e) => onUpdate(asset.id, { resource_url: e.target.value })}
               placeholder="https://..."
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Notes</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Notes</label>
             <textarea
               value={asset.notes || ''}
               onChange={(e) => onUpdate(asset.id, { notes: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
 
@@ -3824,11 +3824,11 @@ function CommercialAssetCard({
                 type="checkbox"
                 checked={asset.is_internal_only}
                 onChange={(e) => onUpdate(asset.id, { is_internal_only: e.target.checked })}
-                className="mt-1 w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+                className="mt-1 w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
               />
               <div>
-                <span className="block text-sm font-medium text-pro-charcoal">Internal Only</span>
-                <span className="block text-xs text-pro-warm-gray mt-1">
+                <span className="block text-sm font-medium text-graphite">Internal Only</span>
+                <span className="block text-xs text-graphite/60 mt-1">
                   Internal assets are only visible to platform admins, not to businesses or brand partners
                 </span>
               </div>
@@ -3955,7 +3955,7 @@ function ShopSettingsTab({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+        <Loader2 className="w-8 h-8 text-graphite animate-spin" />
       </div>
     );
   }
@@ -3963,11 +3963,11 @@ function ShopSettingsTab({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-pro-charcoal">Shop Settings</h2>
+        <h2 className="text-2xl font-bold text-graphite">Shop Settings</h2>
         <button
           onClick={saveSettings}
           disabled={saving || schemaMissing}
-          className="px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:bg-pro-stone disabled:cursor-not-allowed transition-colors font-medium"
+          className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:bg-accent-soft disabled:cursor-not-allowed transition-colors font-medium"
         >
           {saving ? 'Saving...' : 'Save Settings'}
         </button>
@@ -3982,39 +3982,39 @@ function ShopSettingsTab({
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6 space-y-6">
+      <div className="bg-white rounded-lg border border-accent-soft p-6 space-y-6">
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">Brand Rep Email</label>
+          <label className="block text-sm font-medium text-graphite mb-2">Brand Rep Email</label>
           <input
             type="email"
             value={settings.rep_email || ''}
             onChange={(e) => setSettings({ ...settings, rep_email: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="rep@brand.com"
             disabled={schemaMissing}
           />
-          <p className="text-xs text-pro-warm-gray mt-1">Used for order handoff and admin communication.</p>
+          <p className="text-xs text-graphite/60 mt-1">Used for order handoff and admin communication.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <label className="flex items-center justify-between p-4 border border-pro-stone rounded-lg">
-            <span className="text-sm font-medium text-pro-charcoal">Allow Retail Orders</span>
+          <label className="flex items-center justify-between p-4 border border-accent-soft rounded-lg">
+            <span className="text-sm font-medium text-graphite">Allow Retail Orders</span>
             <input
               type="checkbox"
               checked={settings.allow_retail_orders}
               onChange={(e) => setSettings({ ...settings, allow_retail_orders: e.target.checked })}
-              className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+              className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
               disabled={schemaMissing}
             />
           </label>
 
-          <label className="flex items-center justify-between p-4 border border-pro-stone rounded-lg">
-            <span className="text-sm font-medium text-pro-charcoal">Allow PRO Orders</span>
+          <label className="flex items-center justify-between p-4 border border-accent-soft rounded-lg">
+            <span className="text-sm font-medium text-graphite">Allow PRO Orders</span>
             <input
               type="checkbox"
               checked={settings.allow_pro_orders}
               onChange={(e) => setSettings({ ...settings, allow_pro_orders: e.target.checked })}
-              className="w-4 h-4 text-pro-navy border-pro-stone rounded focus:ring-pro-navy"
+              className="w-4 h-4 text-graphite border-accent-soft rounded focus:ring-graphite"
               disabled={schemaMissing}
             />
           </label>
@@ -4022,26 +4022,26 @@ function ShopSettingsTab({
 
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Minimum Order Amount ($)</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Minimum Order Amount ($)</label>
             <input
               type="number"
               min="0"
               step="0.01"
               value={settings.min_order_amount ?? ''}
               onChange={(e) => setSettings({ ...settings, min_order_amount: e.target.value === '' ? null : Number(e.target.value) })}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="0.00"
               disabled={schemaMissing}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Lead Time (days)</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Lead Time (days)</label>
             <input
               type="number"
               min="0"
               value={settings.lead_time_days ?? ''}
               onChange={(e) => setSettings({ ...settings, lead_time_days: e.target.value === '' ? null : Number(e.target.value) })}
-              className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               placeholder="7"
               disabled={schemaMissing}
             />
@@ -4049,12 +4049,12 @@ function ShopSettingsTab({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal mb-2">Ordering Notes</label>
+          <label className="block text-sm font-medium text-graphite mb-2">Ordering Notes</label>
           <textarea
             rows={4}
             value={settings.ordering_notes || ''}
             onChange={(e) => setSettings({ ...settings, ordering_notes: e.target.value })}
-            className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             placeholder="Special ordering instructions, cutoff times, or terms"
             disabled={schemaMissing}
           />
@@ -4084,15 +4084,15 @@ function PreviewTab({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-white rounded-lg border border-pro-stone p-4">
-        <h2 className="text-2xl font-bold text-pro-charcoal">Preview</h2>
+      <div className="flex items-center justify-between bg-white rounded-lg border border-accent-soft p-4">
+        <h2 className="text-2xl font-bold text-graphite">Preview</h2>
         <div className="flex gap-2">
           <button
             onClick={() => setDeviceMode('desktop')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
               deviceMode === 'desktop'
-                ? 'bg-pro-navy text-white'
-                : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                ? 'bg-graphite text-white'
+                : 'bg-accent-soft text-graphite hover:bg-accent-soft'
             }`}
           >
             <Monitor className="w-4 h-4" />
@@ -4102,8 +4102,8 @@ function PreviewTab({
             onClick={() => setDeviceMode('tablet')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
               deviceMode === 'tablet'
-                ? 'bg-pro-navy text-white'
-                : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                ? 'bg-graphite text-white'
+                : 'bg-accent-soft text-graphite hover:bg-accent-soft'
             }`}
           >
             <Tablet className="w-4 h-4" />
@@ -4113,8 +4113,8 @@ function PreviewTab({
             onClick={() => setDeviceMode('mobile')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
               deviceMode === 'mobile'
-                ? 'bg-pro-navy text-white'
-                : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                ? 'bg-graphite text-white'
+                : 'bg-accent-soft text-graphite hover:bg-accent-soft'
             }`}
           >
             <Smartphone className="w-4 h-4" />
@@ -4125,10 +4125,10 @@ function PreviewTab({
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+          <Loader2 className="w-8 h-8 text-graphite animate-spin" />
         </div>
       ) : (
-        <div className="bg-pro-stone p-6 rounded-lg border border-pro-stone">
+        <div className="bg-accent-soft p-6 rounded-lg border border-accent-soft">
           <div className={`${containerClass} transition-all duration-300`}>
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <BrandPageRenderer

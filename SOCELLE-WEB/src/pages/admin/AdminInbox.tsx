@@ -78,8 +78,8 @@ export default function AdminInbox() {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      draft: 'bg-pro-stone text-pro-charcoal',
-      submitted: 'bg-pro-stone text-pro-charcoal',
+      draft: 'bg-accent-soft text-graphite',
+      submitted: 'bg-accent-soft text-graphite',
       under_review: 'bg-orange-100 text-orange-700',
       approved: 'bg-green-100 text-green-700',
       completed: 'bg-green-100 text-green-700'
@@ -97,8 +97,8 @@ export default function AdminInbox() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-pro-warm-gray">Loading submissions...</p>
+          <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-graphite/60">Loading submissions...</p>
         </div>
       </div>
     );
@@ -122,10 +122,10 @@ export default function AdminInbox() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Inbox className="w-8 h-8 text-pro-charcoal" />
+          <Inbox className="w-8 h-8 text-graphite" />
           <div>
-            <h1 className="text-2xl font-semibold text-pro-charcoal">Submission Inbox</h1>
-            <p className="text-sm text-pro-warm-gray">Review and manage spa implementation plans</p>
+            <h1 className="text-2xl font-semibold text-graphite">Submission Inbox</h1>
+            <p className="text-sm text-graphite/60">Review and manage spa implementation plans</p>
           </div>
         </div>
         <button
@@ -155,15 +155,15 @@ export default function AdminInbox() {
             )
           }
           disabled={filteredSubmissions.length === 0}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-pro-stone text-pro-charcoal rounded-lg text-sm font-medium hover:bg-pro-ivory disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-accent-soft text-graphite rounded-lg text-sm font-medium hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <Download className="w-4 h-4" />
           Export CSV ({filteredSubmissions.length})
         </button>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone">
-        <div className="grid grid-cols-5 divide-x divide-pro-stone">
+      <div className="bg-white rounded-lg border border-accent-soft">
+        <div className="grid grid-cols-5 divide-x divide-accent-soft">
           {[
             { key: 'all', label: 'All' },
             { key: 'submitted', label: 'New' },
@@ -176,8 +176,8 @@ export default function AdminInbox() {
               onClick={() => setFilter(status.key)}
               className={`px-4 py-3 text-center transition-colors ${
                 filter === status.key
-                  ? 'bg-pro-cream text-pro-charcoal'
-                  : 'text-pro-warm-gray hover:bg-pro-ivory'
+                  ? 'bg-accent-soft text-graphite'
+                  : 'text-graphite/60 hover:bg-background'
               }`}
             >
               <div className="text-2xl font-bold">{statusCounts[status.key as keyof typeof statusCounts]}</div>
@@ -187,37 +187,37 @@ export default function AdminInbox() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone">
-        <div className="p-4 border-b border-pro-stone">
+      <div className="bg-white rounded-lg border border-accent-soft">
+        <div className="p-4 border-b border-accent-soft">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-graphite/60" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by spa name..."
-              className="w-full pl-10 pr-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full pl-10 pr-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
         </div>
 
-        <div className="divide-y divide-pro-stone">
+        <div className="divide-y divide-accent-soft">
           {filteredSubmissions.length === 0 ? (
             <div className="p-12 text-center">
-              <Inbox className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-              <p className="text-pro-warm-gray">No submissions found</p>
+              <Inbox className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+              <p className="text-graphite/60">No submissions found</p>
             </div>
           ) : (
             filteredSubmissions.map((submission) => (
               <Link
                 key={submission.id}
                 to={`/admin/submissions/${submission.id}`}
-                className="block p-4 hover:bg-pro-ivory transition-colors"
+                className="block p-4 hover:bg-background transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-pro-charcoal">{submission.spa_name || 'Unnamed Business'}</h3>
+                      <h3 className="font-semibold text-graphite">{submission.spa_name || 'Unnamed Business'}</h3>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(submission.submission_status)} flex items-center gap-1`}>
                         {getStatusIcon(submission.submission_status)}
                         {submission.submission_status.replace('_', ' ')}
@@ -226,11 +226,11 @@ export default function AdminInbox() {
                         <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded">NEW</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-pro-warm-gray">
+                    <div className="flex items-center gap-4 text-sm text-graphite/60">
                       <span className="capitalize">{submission.spa_type}</span>
                       <span>Created {new Date(submission.created_at).toLocaleDateString()}</span>
                       {submission.last_viewed_at && (
-                        <span className="flex items-center gap-1 text-pro-warm-gray">
+                        <span className="flex items-center gap-1 text-graphite/60">
                           <Eye className="w-3 h-3" />
                           Viewed {new Date(submission.last_viewed_at).toLocaleDateString()}
                         </span>

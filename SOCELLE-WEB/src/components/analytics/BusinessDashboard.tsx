@@ -10,7 +10,7 @@ const log = createScopedLogger('BusinessDashboard');
 const PRIORITY_COLORS: Record<string, string> = {
   high:   'bg-red-50 text-red-700 border-red-200',
   medium: 'bg-amber-50 text-amber-700 border-amber-200',
-  low:    'bg-pro-cream text-pro-warm-gray border-pro-stone',
+  low:    'bg-accent-soft text-graphite/60 border-accent-soft',
 };
 
 interface BusinessDashboardProps {
@@ -45,7 +45,7 @@ export default function BusinessDashboard({ businessId }: BusinessDashboardProps
   }
 
   if (!data) return (
-    <div className="text-center py-10 text-pro-warm-gray font-sans text-sm">
+    <div className="text-center py-10 text-graphite/60 font-sans text-sm">
       Analytics data not available yet.
     </div>
   );
@@ -59,25 +59,25 @@ export default function BusinessDashboard({ businessId }: BusinessDashboardProps
       {/* ── Menu coverage ─────────────────────────────────────── */}
       <div className="card p-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-sans font-semibold text-pro-charcoal text-sm">
+          <h3 className="font-sans font-semibold text-graphite text-sm">
             Service Menu Coverage
           </h3>
-          <span className="font-sans text-xs text-pro-warm-gray">
+          <span className="font-sans text-xs text-graphite/60">
             {menuCoverage.matched} of {menuCoverage.total} services matched
           </span>
         </div>
-        <div className="relative h-4 bg-pro-stone rounded-full overflow-hidden mb-2">
+        <div className="relative h-4 bg-accent-soft rounded-full overflow-hidden mb-2">
           <div
-            className="absolute inset-y-0 left-0 bg-pro-navy rounded-full transition-all duration-700"
+            className="absolute inset-y-0 left-0 bg-graphite rounded-full transition-all duration-700"
             style={{ width: `${menuCoverage.percentage}%` }}
           />
         </div>
         <div className="flex items-center justify-between">
-          <span className="font-serif text-2xl text-pro-navy">{menuCoverage.percentage}%</span>
+          <span className="font-sans text-2xl text-graphite">{menuCoverage.percentage}%</span>
           {menuCoverage.percentage < 100 && (
             <Link
               to="/portal/plans/new"
-              className="text-xs font-medium font-sans text-pro-gold hover:text-pro-gold-light transition-colors flex items-center gap-1"
+              className="text-xs font-medium font-sans text-accent hover:text-accent-light transition-colors flex items-center gap-1"
             >
               Upload menu to improve <ArrowRight className="w-3 h-3" />
             </Link>
@@ -88,28 +88,28 @@ export default function BusinessDashboard({ businessId }: BusinessDashboardProps
       <div className="grid md:grid-cols-2 gap-6">
         {/* ── Gap analysis ──────────────────────────────────── */}
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-pro-stone flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-pro-warm-gray" />
-            <h3 className="font-sans font-semibold text-pro-charcoal text-sm">
+          <div className="px-5 py-4 border-b border-accent-soft flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-graphite/60" />
+            <h3 className="font-sans font-semibold text-graphite text-sm">
               Gap Analysis
             </h3>
           </div>
           {gaps.length === 0 ? (
-            <div className="px-5 py-6 text-center text-pro-warm-gray font-sans text-sm">
+            <div className="px-5 py-6 text-center text-graphite/60 font-sans text-sm">
               No gaps found — great coverage!
             </div>
           ) : (
-            <div className="divide-y divide-pro-stone">
+            <div className="divide-y divide-accent-soft">
               {gaps.slice(0, 5).map((gap, i) => (
                 <div key={i} className="px-5 py-3">
                   <div className="flex items-start gap-2 mb-1">
                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border font-sans flex-shrink-0 mt-0.5 ${PRIORITY_COLORS[gap.priority] ?? PRIORITY_COLORS.low}`}>
                       {gap.priority}
                     </span>
-                    <p className="font-sans text-sm text-pro-charcoal leading-snug">{gap.description}</p>
+                    <p className="font-sans text-sm text-graphite leading-snug">{gap.description}</p>
                   </div>
                   {gap.revenue_estimate != null && (
-                    <p className="font-sans text-xs text-pro-warm-gray ml-9">
+                    <p className="font-sans text-xs text-graphite/60 ml-9">
                       Est. opportunity: {formatCurrency(gap.revenue_estimate)}/yr
                     </p>
                   )}
@@ -122,8 +122,8 @@ export default function BusinessDashboard({ businessId }: BusinessDashboardProps
         {/* ── Retail revenue ────────────────────────────────── */}
         <div className="card p-5">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-4 h-4 text-pro-warm-gray" />
-            <h3 className="font-sans font-semibold text-pro-charcoal text-sm">
+            <TrendingUp className="w-4 h-4 text-graphite/60" />
+            <h3 className="font-sans font-semibold text-graphite text-sm">
               Retail Revenue — Last 30 Days
             </h3>
           </div>
@@ -139,12 +139,12 @@ export default function BusinessDashboard({ businessId }: BusinessDashboardProps
             <Link
               key={action}
               to={hrefs[i] ?? '/portal'}
-              className="card p-4 text-center hover:bg-pro-cream transition-colors group"
+              className="card p-4 text-center hover:bg-accent-soft transition-colors group"
             >
-              <p className="font-sans text-sm font-medium text-pro-charcoal group-hover:text-pro-navy transition-colors">
+              <p className="font-sans text-sm font-medium text-graphite group-hover:text-graphite transition-colors">
                 {action}
               </p>
-              <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-pro-navy transition-colors mx-auto mt-1" />
+              <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-graphite transition-colors mx-auto mt-1" />
             </Link>
           );
         })}

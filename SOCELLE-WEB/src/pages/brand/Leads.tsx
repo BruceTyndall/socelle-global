@@ -80,8 +80,8 @@ export default function BrandLeads() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-pro-warm-gray">Loading leads...</p>
+          <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-graphite/60">Loading leads...</p>
         </div>
       </div>
     );
@@ -104,83 +104,83 @@ export default function BrandLeads() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-pro-charcoal mb-2">Business Leads</h1>
-        <p className="text-pro-warm-gray">
+        <h1 className="text-2xl font-bold text-graphite mb-2">Business Leads</h1>
+        <p className="text-graphite/60">
           Businesses that have shown interest in your brand
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6">
+      <div className="bg-white rounded-lg border border-accent-soft p-6">
         <div className="flex items-center gap-3 mb-2">
-          <Users className="w-6 h-6 text-pro-navy" />
-          <span className="text-sm text-pro-warm-gray">Total Leads</span>
+          <Users className="w-6 h-6 text-graphite" />
+          <span className="text-sm text-graphite/60">Total Leads</span>
         </div>
-        <div className="text-4xl font-bold text-pro-charcoal">{leads.length}</div>
-        <p className="text-sm text-pro-warm-gray mt-2">
+        <div className="text-4xl font-bold text-graphite">{leads.length}</div>
+        <p className="text-sm text-graphite/60 mt-2">
           Unique businesses that have created plans with your brand
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         {leads.length === 0 ? (
           <div className="text-center py-12">
-            <Users className="w-16 h-16 mx-auto mb-4 text-pro-stone" />
-            <p className="text-pro-warm-gray mb-2">No leads yet</p>
-            <p className="text-sm text-pro-warm-gray">
+            <Users className="w-16 h-16 mx-auto mb-4 text-accent-soft" />
+            <p className="text-graphite/60 mb-2">No leads yet</p>
+            <p className="text-sm text-graphite/60">
               Leads will appear here when businesses analyze their fit with your brand
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-pro-stone">
+          <div className="divide-y divide-accent-soft">
             {leads.map((lead) => (
-              <div key={lead.id} className="p-6 hover:bg-pro-ivory transition-colors">
+              <div key={lead.id} className="p-6 hover:bg-background transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-pro-stone rounded-full flex items-center justify-center">
-                        <Building className="w-5 h-5 text-pro-navy" />
+                      <div className="w-10 h-10 bg-accent-soft rounded-full flex items-center justify-center">
+                        <Building className="w-5 h-5 text-graphite" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-pro-charcoal">{lead.business_name}</h3>
+                        <h3 className="text-lg font-semibold text-graphite">{lead.business_name}</h3>
                         {lead.latest_fit_score !== null && (
-                          <div className="text-sm text-pro-warm-gray">
-                            Latest fit score: <span className="font-semibold text-pro-navy">{lead.latest_fit_score}%</span>
+                          <div className="text-sm text-graphite/60">
+                            Latest fit score: <span className="font-semibold text-graphite">{lead.latest_fit_score}%</span>
                           </div>
                         )}
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4 ml-13">
-                      <div className="flex items-center gap-2 text-sm text-pro-warm-gray">
-                        <Mail className="w-4 h-4 text-pro-warm-gray" />
-                        <a href={`mailto:${lead.contact_email}`} className="hover:text-pro-navy">
+                      <div className="flex items-center gap-2 text-sm text-graphite/60">
+                        <Mail className="w-4 h-4 text-graphite/60" />
+                        <a href={`mailto:${lead.contact_email}`} className="hover:text-graphite">
                           {lead.contact_email}
                         </a>
                       </div>
                       {lead.phone && (
-                        <div className="flex items-center gap-2 text-sm text-pro-warm-gray">
-                          <Phone className="w-4 h-4 text-pro-warm-gray" />
-                          <a href={`tel:${lead.phone}`} className="hover:text-pro-navy">
+                        <div className="flex items-center gap-2 text-sm text-graphite/60">
+                          <Phone className="w-4 h-4 text-graphite/60" />
+                          <a href={`tel:${lead.phone}`} className="hover:text-graphite">
                             {lead.phone}
                           </a>
                         </div>
                       )}
-                      <div className="flex items-center gap-2 text-sm text-pro-warm-gray">
-                        <Calendar className="w-4 h-4 text-pro-warm-gray" />
+                      <div className="flex items-center gap-2 text-sm text-graphite/60">
+                        <Calendar className="w-4 h-4 text-graphite/60" />
                         First contact: {new Date(lead.created_at).toLocaleDateString()}
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-pro-warm-gray">
-                        <Building className="w-4 h-4 text-pro-warm-gray" />
+                      <div className="flex items-center gap-2 text-sm text-graphite/60">
+                        <Building className="w-4 h-4 text-graphite/60" />
                         {lead.plans_count} plan{lead.plans_count !== 1 ? 's' : ''} created
                       </div>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <button className="px-4 py-2 bg-pro-navy text-white text-sm rounded-lg hover:bg-pro-charcoal transition-colors">
+                    <button className="px-4 py-2 bg-graphite text-white text-sm rounded-lg hover:bg-graphite transition-colors">
                       Contact
                     </button>
-                    <button className="px-4 py-2 border border-pro-stone text-pro-charcoal text-sm rounded-lg hover:bg-pro-ivory transition-colors">
+                    <button className="px-4 py-2 border border-accent-soft text-graphite text-sm rounded-lg hover:bg-background transition-colors">
                       View Plans
                     </button>
                   </div>

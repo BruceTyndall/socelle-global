@@ -32,7 +32,7 @@ const TYPE_COLORS: Record<NotificationType, string> = {
   campaign_launch: 'text-purple-600 bg-purple-50',
   education_new: 'text-green-600 bg-green-50',
   enrichment_update: 'text-cyan-600 bg-cyan-50',
-  system: 'text-pro-warm-gray bg-pro-cream',
+  system: 'text-graphite/60 bg-accent-soft',
 };
 
 function timeAgo(dateStr: string): string {
@@ -109,7 +109,7 @@ export default function NotificationCenter({
       <button
         ref={buttonRef}
         onClick={() => setOpen((prev) => !prev)}
-        className="relative p-2 rounded-lg text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-cream transition-colors"
+        className="relative p-2 rounded-lg text-graphite/60 hover:text-graphite hover:bg-accent-soft transition-colors"
         aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
       >
         <Bell className="w-5 h-5" />
@@ -124,15 +124,15 @@ export default function NotificationCenter({
       {open && (
         <div
           ref={panelRef}
-          className="absolute right-0 top-full mt-2 w-[380px] max-h-[500px] bg-white rounded-xl shadow-xl border border-pro-stone flex flex-col z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+          className="absolute right-0 top-full mt-2 w-[380px] max-h-[500px] bg-white rounded-xl shadow-xl border border-accent-soft flex flex-col z-50 animate-in fade-in slide-in-from-top-2 duration-200"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-pro-stone flex-shrink-0">
-            <h3 className="font-sans font-semibold text-sm text-pro-charcoal">Notifications</h3>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-accent-soft flex-shrink-0">
+            <h3 className="font-sans font-semibold text-sm text-graphite">Notifications</h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="flex items-center gap-1.5 text-xs font-medium text-pro-navy hover:text-pro-gold transition-colors font-sans"
+                className="flex items-center gap-1.5 text-xs font-medium text-graphite hover:text-accent transition-colors font-sans"
               >
                 <Check className="w-3.5 h-3.5" />
                 Mark all read
@@ -141,11 +141,11 @@ export default function NotificationCenter({
           </div>
 
           {/* Notification list */}
-          <div className="flex-1 overflow-y-auto divide-y divide-pro-stone/50">
+          <div className="flex-1 overflow-y-auto divide-y divide-accent-soft/50">
             {notifications.length === 0 ? (
               <div className="px-4 py-10 text-center">
-                <Bell className="w-8 h-8 text-pro-stone mx-auto mb-2" />
-                <p className="text-sm text-pro-warm-gray font-sans">No notifications yet</p>
+                <Bell className="w-8 h-8 text-accent-soft mx-auto mb-2" />
+                <p className="text-sm text-graphite/60 font-sans">No notifications yet</p>
               </div>
             ) : (
               notifications.map((notif) => {
@@ -155,21 +155,21 @@ export default function NotificationCenter({
                   <button
                     key={notif.id}
                     onClick={() => handleNotificationClick(notif)}
-                    className={`w-full text-left px-4 py-3 hover:bg-pro-cream/50 transition-colors flex gap-3 ${
-                      !notif.read ? 'border-l-[3px] border-l-pro-gold bg-pro-ivory/30' : 'border-l-[3px] border-l-transparent'
+                    className={`w-full text-left px-4 py-3 hover:bg-accent-soft/50 transition-colors flex gap-3 ${
+                      !notif.read ? 'border-l-[3px] border-l-accent bg-background/30' : 'border-l-[3px] border-l-transparent'
                     }`}
                   >
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${colorClasses}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-sans leading-snug ${!notif.read ? 'font-semibold text-pro-charcoal' : 'font-medium text-pro-warm-gray'}`}>
+                      <p className={`text-sm font-sans leading-snug ${!notif.read ? 'font-semibold text-graphite' : 'font-medium text-graphite/60'}`}>
                         {notif.title}
                       </p>
-                      <p className="text-xs text-pro-warm-gray font-sans mt-0.5 line-clamp-2">
+                      <p className="text-xs text-graphite/60 font-sans mt-0.5 line-clamp-2">
                         {notif.body}
                       </p>
-                      <p className="text-[10px] text-pro-warm-gray/70 font-sans mt-1">
+                      <p className="text-[10px] text-graphite/60/70 font-sans mt-1">
                         {timeAgo(notif.sentAt)}
                       </p>
                     </div>
@@ -180,13 +180,13 @@ export default function NotificationCenter({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between px-4 py-2.5 border-t border-pro-stone flex-shrink-0 bg-pro-ivory/30">
+          <div className="flex items-center justify-between px-4 py-2.5 border-t border-accent-soft flex-shrink-0 bg-background/30">
             <button
               onClick={() => {
                 navigate(preferencesUrl);
                 setOpen(false);
               }}
-              className="text-xs font-medium text-pro-warm-gray hover:text-pro-charcoal transition-colors font-sans"
+              className="text-xs font-medium text-graphite/60 hover:text-graphite transition-colors font-sans"
             >
               View all
             </button>
@@ -195,7 +195,7 @@ export default function NotificationCenter({
                 navigate(preferencesUrl);
                 setOpen(false);
               }}
-              className="flex items-center gap-1 text-xs font-medium text-pro-warm-gray hover:text-pro-charcoal transition-colors font-sans"
+              className="flex items-center gap-1 text-xs font-medium text-graphite/60 hover:text-graphite transition-colors font-sans"
             >
               <Settings className="w-3.5 h-3.5" />
               Preferences

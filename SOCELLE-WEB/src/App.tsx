@@ -7,7 +7,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { PrelaunchGuard } from './components/PrelaunchGuard';
 import { ConfigCheck } from './components/ConfigCheck';
 import { StagingBanner } from './components/StagingBanner';
-import { SentryUserContext } from './components/SentryUserContext';
 import { ModuleAccessProvider } from './modules/_core/context/ModuleAccessContext';
 import ModuleRoute from './modules/_core/components/ModuleRoute';
 
@@ -16,6 +15,9 @@ import AdminLayout from './layouts/AdminLayout';
 import BrandLayout from './layouts/BrandLayout';
 import MarketingLayout from './layouts/MarketingLayout';
 import { PageRenderer } from './components/cms/PageRenderer';
+
+// ── Dev Tools
+const DevMasterIndex = lazy(() => import('./pages/dev/MasterIndex'));
 
 // ── Pre-launch quiz (primary / route during pre-launch phase — W14-01)
 const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
@@ -379,7 +381,6 @@ function App() {
       <ToastProvider>
         <ConfigCheck>
           <AuthProvider>
-            <SentryUserContext />
             <ModuleAccessProvider>
             <BrowserRouter>
               <Suspense fallback={Fallback}>
@@ -1021,6 +1022,9 @@ function App() {
                     <Route path="calendar" element={<MktgCalendar />} />
                   </Route>
 
+                  {/* ── Dev Tools ──────────────────────────────────── */}
+                  <Route path="/dev-index" element={<DevMasterIndex />} />
+
                   {/* ── Admin ─────────────────────────────────────── */}
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/admin/debug-auth" element={<AdminAuthDebug />} />
@@ -1054,16 +1058,16 @@ function App() {
                     <Route path="products" element={
                       <div className="space-y-6">
                         <div>
-                          <h2 className="text-2xl font-serif text-pro-navy mb-2">Products</h2>
-                          <p className="text-pro-warm-gray font-sans">Manage PRO and Retail products</p>
+                          <h2 className="text-2xl font-sans text-graphite mb-2">Products</h2>
+                          <p className="text-graphite/60 font-sans">Manage PRO and Retail products</p>
                         </div>
                         <div className="grid md:grid-cols-2 gap-6">
                           <div>
-                            <h3 className="text-lg font-semibold text-pro-charcoal font-sans mb-4">PRO Products</h3>
+                            <h3 className="text-lg font-semibold text-graphite font-sans mb-4">PRO Products</h3>
                             <ProProductsView />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-pro-charcoal font-sans mb-4">Retail Products</h3>
+                            <h3 className="text-lg font-semibold text-graphite font-sans mb-4">Retail Products</h3>
                             <RetailProductsView />
                           </div>
                         </div>

@@ -63,27 +63,27 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-pro-ivory flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Link
           to="/"
-          className="flex items-center gap-2 text-pro-warm-gray hover:text-pro-charcoal mb-6 transition-colors"
+          className="flex items-center gap-2 text-graphite/60 hover:text-graphite mb-6 transition-colors"
         >
           <Home className="w-4 h-4" />
           <span className="text-sm">Back to Home</span>
         </Link>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 border border-pro-stone">
+        <div className="bg-white rounded-lg shadow-sm p-8 border border-accent-soft">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-12 h-12 bg-pro-stone rounded-lg flex items-center justify-center">
-              <LogIn className="w-6 h-6 text-pro-navy" />
+            <div className="w-12 h-12 bg-accent-soft rounded-lg flex items-center justify-center">
+              <LogIn className="w-6 h-6 text-graphite" />
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-center text-pro-charcoal mb-2">
+          <h1 className="text-2xl font-bold text-center text-graphite mb-2">
             Welcome Back
           </h1>
-          <p className="text-center text-pro-warm-gray mb-6">
+          <p className="text-center text-graphite/60 mb-6">
             Log in to access your plans and dashboard
           </p>
 
@@ -96,7 +96,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-graphite mb-2">
                 Email Address
               </label>
               <input
@@ -105,13 +105,13 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="you@business.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-graphite mb-2">
                 Password
               </label>
               <input
@@ -120,7 +120,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="••••••••"
               />
             </div>
@@ -128,7 +128,7 @@ export default function Login() {
             <div className="flex items-center justify-end">
               <Link
                 to="/forgot-password"
-                className="text-sm text-pro-navy hover:text-pro-charcoal font-medium"
+                className="text-sm text-graphite hover:text-graphite font-medium"
               >
                 Forgot Password?
               </Link>
@@ -137,16 +137,16 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-pro-navy text-white font-medium rounded-lg hover:bg-pro-charcoal disabled:bg-pro-warm-gray disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-graphite text-white font-medium rounded-lg hover:bg-graphite disabled:bg-graphite/60 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Logging in...' : 'Log In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-pro-warm-gray">
+            <p className="text-sm text-graphite/60">
               Don't have an account?{' '}
-              <Link to="/portal/signup" className="text-pro-navy hover:text-pro-charcoal font-medium">
+              <Link to="/portal/signup" className="text-graphite hover:text-graphite font-medium">
                 Sign up
               </Link>
             </p>

@@ -97,18 +97,18 @@ export default function BrandOnboarding() {
                 step > s.id
                   ? 'bg-green-500 text-white'
                   : step === s.id
-                  ? 'bg-pro-navy text-white'
-                  : 'bg-pro-stone text-pro-warm-gray'
+                  ? 'bg-graphite text-white'
+                  : 'bg-accent-soft text-graphite/60'
               }`}>
                 {step > s.id ? <CheckCircle className="w-4 h-4" /> : s.id}
               </div>
               <span className={`text-xs font-sans font-medium truncate hidden sm:block ${
-                step === s.id ? 'text-pro-navy' : 'text-pro-warm-gray'
+                step === s.id ? 'text-graphite' : 'text-graphite/60'
               }`}>
                 {s.label}
               </span>
             </div>
-            {i < STEPS.length - 1 && <div className="flex-1 h-px bg-pro-stone mx-1" />}
+            {i < STEPS.length - 1 && <div className="flex-1 h-px bg-accent-soft mx-1" />}
           </div>
         ))}
       </div>
@@ -123,17 +123,17 @@ export default function BrandOnboarding() {
       {step === 1 && (
         <div className="space-y-6">
           <div>
-            <h1 className="text-2xl font-serif text-pro-navy mb-1">
-              Set up your brand profile<span className="text-pro-gold">.</span>
+            <h1 className="text-2xl font-sans text-graphite mb-1">
+              Set up your brand profile<span className="text-accent">.</span>
             </h1>
-            <p className="text-sm text-pro-warm-gray font-sans">
+            <p className="text-sm text-graphite/60 font-sans">
               This is what resellers see when they discover your brand on Socelle.
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-5">
+          <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                 Brand Tagline
               </label>
               <input
@@ -142,13 +142,13 @@ export default function BrandOnboarding() {
                 onChange={e => setTagline(e.target.value)}
                 placeholder="e.g. Clinical skincare rooted in botanical science"
                 maxLength={120}
-                className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
               />
-              <p className="mt-1 text-xs text-pro-warm-gray font-sans">{tagline.length}/120</p>
+              <p className="mt-1 text-xs text-graphite/60 font-sans">{tagline.length}/120</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                 Brand Story / About
               </label>
               <textarea
@@ -157,23 +157,23 @@ export default function BrandOnboarding() {
                 placeholder="Tell resellers what makes your brand unique — your founding story, ingredients philosophy, key product lines…"
                 rows={5}
                 maxLength={1200}
-                className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors resize-none"
+                className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors resize-none"
               />
-              <p className="mt-1 text-xs text-pro-warm-gray font-sans">{description.length}/1200</p>
+              <p className="mt-1 text-xs text-graphite/60 font-sans">{description.length}/1200</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
-                Instagram Handle <span className="text-pro-warm-gray font-normal">(optional)</span>
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
+                Instagram Handle <span className="text-graphite/60 font-normal">(optional)</span>
               </label>
               <div className="flex items-center gap-0">
-                <span className="px-3 py-2.5 bg-pro-stone rounded-l-lg border border-r-0 border-pro-stone text-pro-warm-gray text-sm font-sans">@</span>
+                <span className="px-3 py-2.5 bg-accent-soft rounded-l-lg border border-r-0 border-accent-soft text-graphite/60 text-sm font-sans">@</span>
                 <input
                   type="text"
                   value={instagramHandle}
                   onChange={e => setInstagramHandle(e.target.value.replace('@', ''))}
                   placeholder="yourbrand"
-                  className="flex-1 px-4 py-2.5 rounded-r-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="flex-1 px-4 py-2.5 rounded-r-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                 />
               </div>
             </div>
@@ -183,14 +183,14 @@ export default function BrandOnboarding() {
             <button
               onClick={handleSaveProfile}
               disabled={saving}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-pro-navy text-white rounded-lg font-medium font-sans text-sm hover:bg-pro-charcoal transition-colors disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg font-medium font-sans text-sm hover:bg-graphite transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving…' : 'Save & Continue'}
               {!saving && <ArrowRight className="w-4 h-4" />}
             </button>
             <button
               onClick={() => { setStep(2); window.scrollTo(0, 0); }}
-              className="px-4 py-3 rounded-lg border border-pro-stone text-pro-warm-gray font-sans text-sm hover:bg-pro-cream transition-colors"
+              className="px-4 py-3 rounded-lg border border-accent-soft text-graphite/60 font-sans text-sm hover:bg-accent-soft transition-colors"
             >
               Skip
             </button>
@@ -204,56 +204,56 @@ export default function BrandOnboarding() {
           <div>
             <button
               onClick={() => { setStep(1); setError(null); }}
-              className="flex items-center gap-1.5 text-sm text-pro-warm-gray hover:text-pro-charcoal font-sans mb-4 transition-colors"
+              className="flex items-center gap-1.5 text-sm text-graphite/60 hover:text-graphite font-sans mb-4 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back
             </button>
-            <h1 className="text-2xl font-serif text-pro-navy mb-1">
-              Configure your shop<span className="text-pro-gold">.</span>
+            <h1 className="text-2xl font-sans text-graphite mb-1">
+              Configure your shop<span className="text-accent">.</span>
             </h1>
-            <p className="text-sm text-pro-warm-gray font-sans">
+            <p className="text-sm text-graphite/60 font-sans">
               Let resellers know your ordering requirements and policies upfront.
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-5">
+          <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
-                Minimum Order <span className="text-pro-warm-gray font-normal">(optional)</span>
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
+                Minimum Order <span className="text-graphite/60 font-normal">(optional)</span>
               </label>
               <input
                 type="text"
                 value={minOrderNote}
                 onChange={e => setMinOrderNote(e.target.value)}
                 placeholder="e.g. $150 minimum first order"
-                className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
-                Return Policy <span className="text-pro-warm-gray font-normal">(optional)</span>
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
+                Return Policy <span className="text-graphite/60 font-normal">(optional)</span>
               </label>
               <textarea
                 value={returnPolicy}
                 onChange={e => setReturnPolicy(e.target.value)}
                 placeholder="e.g. Returns accepted within 30 days for unopened items in original packaging."
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors resize-none"
+                className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors resize-none"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
-                Shipping Notes <span className="text-pro-warm-gray font-normal">(optional)</span>
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
+                Shipping Notes <span className="text-graphite/60 font-normal">(optional)</span>
               </label>
               <textarea
                 value={shippingNote}
                 onChange={e => setShippingNote(e.target.value)}
                 placeholder="e.g. Orders ship within 3–5 business days. Free shipping on orders over $300."
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors resize-none"
+                className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors resize-none"
               />
             </div>
           </div>
@@ -262,14 +262,14 @@ export default function BrandOnboarding() {
             <button
               onClick={handleSaveShop}
               disabled={saving}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-pro-navy text-white rounded-lg font-medium font-sans text-sm hover:bg-pro-charcoal transition-colors disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg font-medium font-sans text-sm hover:bg-graphite transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving…' : 'Save & Continue'}
               {!saving && <ArrowRight className="w-4 h-4" />}
             </button>
             <button
               onClick={() => { setStep(3); window.scrollTo(0, 0); }}
-              className="px-4 py-3 rounded-lg border border-pro-stone text-pro-warm-gray font-sans text-sm hover:bg-pro-cream transition-colors"
+              className="px-4 py-3 rounded-lg border border-accent-soft text-graphite/60 font-sans text-sm hover:bg-accent-soft transition-colors"
             >
               Skip
             </button>
@@ -285,16 +285,16 @@ export default function BrandOnboarding() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-serif text-pro-navy mb-2">
-              You're all set<span className="text-pro-gold">.</span>
+            <h1 className="text-2xl font-sans text-graphite mb-2">
+              You're all set<span className="text-accent">.</span>
             </h1>
-            <p className="text-sm text-pro-warm-gray font-sans">
+            <p className="text-sm text-graphite/60 font-sans">
               Your brand profile is live. Complete these steps to start receiving orders from resellers.
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-pro-stone p-6 text-left space-y-3">
-            <h2 className="text-sm font-semibold text-pro-charcoal font-sans uppercase tracking-wide mb-4">Next steps</h2>
+          <div className="bg-white rounded-xl border border-accent-soft p-6 text-left space-y-3">
+            <h2 className="text-sm font-semibold text-graphite font-sans uppercase tracking-wide mb-4">Next steps</h2>
             {[
               {
                 icon: Package,
@@ -321,18 +321,18 @@ export default function BrandOnboarding() {
               <Link
                 key={to}
                 to={to}
-                className="flex items-center justify-between p-4 rounded-lg border border-pro-stone hover:border-pro-charcoal/30 hover:bg-pro-cream/50 transition-all group"
+                className="flex items-center justify-between p-4 rounded-lg border border-accent-soft hover:border-graphite/30 hover:bg-accent-soft/50 transition-all group"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-pro-navy" />
+                  <div className="w-8 h-8 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4 h-4 text-graphite" />
                   </div>
                   <div>
-                    <p className="font-medium text-pro-charcoal font-sans text-sm">{label}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans mt-0.5">{sub}</p>
+                    <p className="font-medium text-graphite font-sans text-sm">{label}</p>
+                    <p className="text-xs text-graphite/60 font-sans mt-0.5">{sub}</p>
                   </div>
                 </div>
-                <span className="text-xs font-medium text-pro-gold group-hover:text-pro-navy font-sans transition-colors flex-shrink-0 ml-3">
+                <span className="text-xs font-medium text-accent group-hover:text-graphite font-sans transition-colors flex-shrink-0 ml-3">
                   {cta} →
                 </span>
               </Link>
@@ -341,7 +341,7 @@ export default function BrandOnboarding() {
 
           <Link
             to="/brand/dashboard"
-            className="block w-full px-6 py-3 bg-pro-navy text-white rounded-lg font-medium font-sans text-sm hover:bg-pro-charcoal transition-colors"
+            className="block w-full px-6 py-3 bg-graphite text-white rounded-lg font-medium font-sans text-sm hover:bg-graphite transition-colors"
           >
             Go to Dashboard
           </Link>

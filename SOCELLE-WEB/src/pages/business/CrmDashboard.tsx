@@ -12,7 +12,7 @@ import { useOverdueTasks } from '../../lib/useCrmTasks';
 
 // ── CRM Dashboard — "Today View" (V2-HUBS-06) ─────────────────────────
 // Data source: crm_contacts, crm_tasks, appointments, market_signals (LIVE)
-// TanStack Query v5. Pearl Mineral V2. No font-serif.
+// TanStack Query v5. Pearl Mineral V2. No font-sans.
 
 /* ── Skeleton helpers ──────────────────────────────────────────────────── */
 

@@ -9,13 +9,13 @@ interface SkeletonProps {
 
 export function Skeleton({ className = '' }: SkeletonProps) {
   return (
-    <div className={`animate-pulse bg-pro-stone rounded ${className}`} aria-hidden="true" />
+    <div className={`animate-pulse bg-accent-soft rounded ${className}`} aria-hidden="true" />
   );
 }
 
 export function StatCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg border border-pro-stone p-6" aria-hidden="true">
+    <div className="bg-white rounded-lg border border-accent-soft p-6" aria-hidden="true">
       <div className="flex items-start justify-between mb-4">
         <Skeleton className="w-12 h-12 rounded-lg" />
       </div>
@@ -39,7 +39,7 @@ export function TableRowSkeleton({ cols = 5 }: { cols?: number }) {
 
 export function CardSkeleton() {
   return (
-    <div className="bg-white rounded-lg border border-pro-stone p-5 flex flex-col gap-3" aria-hidden="true">
+    <div className="bg-white rounded-lg border border-accent-soft p-5 flex flex-col gap-3" aria-hidden="true">
       <div className="flex items-start justify-between">
         <Skeleton className="w-8 h-8 rounded" />
         <Skeleton className="w-16 h-5 rounded" />
@@ -53,7 +53,7 @@ export function CardSkeleton() {
 
 export function BrandCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-pro-stone overflow-hidden" aria-hidden="true">
+    <div className="bg-white rounded-xl border border-accent-soft overflow-hidden" aria-hidden="true">
       <Skeleton className="h-36 w-full rounded-none" />
       <div className="p-4 space-y-2">
         <Skeleton className="h-5 w-3/4" />
@@ -67,7 +67,7 @@ export function BrandCardSkeleton() {
 
 export function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg border border-pro-stone overflow-hidden" aria-hidden="true">
+    <div className="bg-white rounded-lg border border-accent-soft overflow-hidden" aria-hidden="true">
       <Skeleton className="aspect-square w-full rounded-none" />
       <div className="p-4 space-y-2">
         <Skeleton className="h-3 w-1/3" />

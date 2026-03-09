@@ -34,33 +34,33 @@ export default function NotificationPreferences() {
       <div className="max-w-2xl">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-pro-navy/10 flex items-center justify-center">
-            <Bell className="w-5 h-5 text-pro-navy" />
+          <div className="w-10 h-10 rounded-xl bg-graphite/10 flex items-center justify-center">
+            <Bell className="w-5 h-5 text-graphite" />
           </div>
           <div>
-            <h1 className="font-serif text-2xl text-pro-navy">Notification Settings</h1>
-            <p className="text-sm text-pro-warm-gray font-sans mt-0.5">
+            <h1 className="font-sans text-2xl text-graphite">Notification Settings</h1>
+            <p className="text-sm text-graphite/60 font-sans mt-0.5">
               Control which notifications you receive and how often
             </p>
           </div>
         </div>
 
         {/* In-app notification toggles */}
-        <div className="bg-white rounded-xl border border-pro-stone shadow-sm mb-6">
-          <div className="px-6 py-4 border-b border-pro-stone">
-            <h2 className="font-sans font-semibold text-pro-charcoal text-sm">In-App Notifications</h2>
+        <div className="bg-white rounded-xl border border-accent-soft shadow-sm mb-6">
+          <div className="px-6 py-4 border-b border-accent-soft">
+            <h2 className="font-sans font-semibold text-graphite text-sm">In-App Notifications</h2>
           </div>
-          <div className="divide-y divide-pro-stone/50">
+          <div className="divide-y divide-accent-soft/50">
             {TOGGLE_ITEMS.map((item) => (
               <div key={item.key} className="flex items-center justify-between px-6 py-4">
                 <div>
-                  <p className="font-sans font-medium text-sm text-pro-charcoal">{item.label}</p>
-                  <p className="font-sans text-xs text-pro-warm-gray mt-0.5">{item.desc}</p>
+                  <p className="font-sans font-medium text-sm text-graphite">{item.label}</p>
+                  <p className="font-sans text-xs text-graphite/60 mt-0.5">{item.desc}</p>
                 </div>
                 <button
                   onClick={() => updatePreferences({ [item.key]: !preferences[item.key] })}
                   className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
-                    preferences[item.key] ? 'bg-pro-navy' : 'bg-pro-stone'
+                    preferences[item.key] ? 'bg-graphite' : 'bg-accent-soft'
                   }`}
                   role="switch"
                   aria-checked={preferences[item.key]}
@@ -78,24 +78,24 @@ export default function NotificationPreferences() {
         </div>
 
         {/* Email frequency */}
-        <div className="bg-white rounded-xl border border-pro-stone shadow-sm mb-6">
-          <div className="px-6 py-4 border-b border-pro-stone">
+        <div className="bg-white rounded-xl border border-accent-soft shadow-sm mb-6">
+          <div className="px-6 py-4 border-b border-accent-soft">
             <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-pro-warm-gray" />
-              <h2 className="font-sans font-semibold text-pro-charcoal text-sm">Email Digest Frequency</h2>
+              <Mail className="w-4 h-4 text-graphite/60" />
+              <h2 className="font-sans font-semibold text-graphite text-sm">Email Digest Frequency</h2>
             </div>
           </div>
           <div className="px-6 py-4">
             <select
               value={preferences.email_frequency}
               onChange={(e) => updatePreferences({ email_frequency: e.target.value as EmailFrequency })}
-              className="w-full max-w-xs px-3 py-2 border border-pro-stone rounded-lg text-sm font-sans text-pro-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy"
+              className="w-full max-w-xs px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite"
             >
               {FREQUENCY_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
-            <p className="text-xs text-pro-warm-gray font-sans mt-2">
+            <p className="text-xs text-graphite/60 font-sans mt-2">
               Choose how often you receive email digests of your notifications.
             </p>
           </div>

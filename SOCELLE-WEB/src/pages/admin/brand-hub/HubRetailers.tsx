@@ -70,9 +70,9 @@ export default function HubRetailers() {
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-3 gap-4">
-          {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-pro-stone animate-pulse" />)}
+          {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-accent-soft animate-pulse" />)}
         </div>
-        <div className="h-48 bg-white rounded-xl border border-pro-stone animate-pulse" />
+        <div className="h-48 bg-white rounded-xl border border-accent-soft animate-pulse" />
       </div>
     );
   }
@@ -87,15 +87,15 @@ export default function HubRetailers() {
         <StatCard label="Total Revenue"   value={`$${(totalSpend / 1000).toFixed(1)}k`} />
       </div>
 
-      <div className="bg-white rounded-xl border border-pro-stone divide-y divide-pro-stone/50">
+      <div className="bg-white rounded-xl border border-accent-soft divide-y divide-accent-soft/50">
         {retailers.length === 0 ? (
           <EmptyState icon={Users} title="No retailers yet" description="Retailers who have placed orders for this brand will appear here." />
         ) : retailers.map(r => (
-          <div key={r.business_id} className="flex items-center gap-4 p-4 hover:bg-pro-ivory/50 transition-colors">
+          <div key={r.business_id} className="flex items-center gap-4 p-4 hover:bg-background/50 transition-colors">
             <Avatar name={r.name} size="md" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="font-medium text-pro-charcoal font-sans">{r.name}</p>
+                <p className="font-medium text-graphite font-sans">{r.name}</p>
                 {r.verification_status === 'verified' ? (
                   <Badge variant="green" dot>Verified</Badge>
                 ) : r.verification_status === 'pending_verification' ? (
@@ -104,7 +104,7 @@ export default function HubRetailers() {
                   <Badge variant="gray" dot>Unverified</Badge>
                 )}
               </div>
-              <div className="flex items-center gap-3 text-xs text-pro-warm-gray font-sans mt-0.5">
+              <div className="flex items-center gap-3 text-xs text-graphite/60 font-sans mt-0.5">
                 {r.type && <span>{r.type}</span>}
                 {(r.city || r.state) && (
                   <span className="flex items-center gap-1">
@@ -120,10 +120,10 @@ export default function HubRetailers() {
               </div>
             </div>
             <div className="text-right">
-              <p className="font-semibold text-pro-charcoal font-sans text-sm">
+              <p className="font-semibold text-graphite font-sans text-sm">
                 ${r.total_spend.toLocaleString()}
               </p>
-              <p className="text-xs text-pro-warm-gray font-sans">
+              <p className="text-xs text-graphite/60 font-sans">
                 {r.order_count} {r.order_count === 1 ? 'order' : 'orders'}
               </p>
             </div>

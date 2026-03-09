@@ -19,8 +19,8 @@ export function StatCard({
   delta,
   deltaLabel,
   icon: Icon,
-  iconColor = 'text-pro-navy',
-  iconBg = 'bg-pro-cream',
+  iconColor = 'text-graphite',
+  iconBg = 'bg-accent-soft',
   prefix,
   suffix,
   className = '',
@@ -31,7 +31,7 @@ export function StatCard({
   return (
     <div className={`bg-white rounded-xl border border-brand-border p-5 shadow-card transition-shadow duration-200 hover:shadow-card-hover ${className}`}>
       <div className="flex items-start justify-between mb-4">
-        <p className="text-label uppercase tracking-widest text-pro-warm-gray font-sans">{label}</p>
+        <p className="text-label uppercase tracking-widest text-graphite/60 font-sans">{label}</p>
         {Icon && (
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${iconBg}`}>
             <Icon className={`w-4 h-4 ${iconColor}`} />
@@ -39,18 +39,18 @@ export function StatCard({
         )}
       </div>
       <div className="flex items-end justify-between gap-2">
-        <p className="font-sans font-bold text-metric-md text-pro-charcoal leading-none tracking-tight">
+        <p className="font-sans font-bold text-metric-md text-graphite leading-none tracking-tight">
           {prefix}<span>{value}</span>{suffix}
         </p>
         {delta !== undefined && (
           <div className={`flex items-center gap-1 text-xs font-medium font-sans mb-0.5 ${
-            isPositive ? 'text-emerald-600' : isNegative ? 'text-red-500' : 'text-pro-warm-gray'
+            isPositive ? 'text-emerald-600' : isNegative ? 'text-red-500' : 'text-graphite/60'
           }`}>
             {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> :
              isNegative ? <TrendingDown className="w-3.5 h-3.5" /> :
              <Minus className="w-3.5 h-3.5" />}
             <span>{isPositive ? '+' : ''}{delta}%</span>
-            {deltaLabel && <span className="text-pro-warm-gray font-normal">{deltaLabel}</span>}
+            {deltaLabel && <span className="text-graphite/60 font-normal">{deltaLabel}</span>}
           </div>
         )}
       </div>

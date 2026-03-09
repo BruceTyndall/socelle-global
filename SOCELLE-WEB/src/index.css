@@ -48,8 +48,8 @@
   /* Fonts — General Sans locked primary (CANONICAL_DOCTRINE §4) */
   --font-sans:            'General Sans', system-ui, -apple-system, sans-serif;
   --font-mono:            'JetBrains Mono', ui-monospace, monospace;
-  /* --font-serif kept for portal backward compat only — BANNED on public pages */
-  --font-serif:           'General Sans', Georgia, sans-serif;
+  /* --font-sans kept for portal backward compat only — BANNED on public pages */
+  --font-sans:           'General Sans', Georgia, sans-serif;
 
   /* Motion */
   --transition-smooth:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -387,9 +387,9 @@
   /* ── Legacy Buttons (portals — backward compat) ── */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
-           bg-pro-charcoal text-white font-sans font-medium text-sm
+           bg-graphite text-white font-sans font-medium text-sm
            px-6 py-3 rounded-lg
-           hover:bg-pro-navy-dark
+           hover:bg-graphite/90
            active:scale-[0.98]
            transition-all duration-150;
   }
@@ -400,9 +400,9 @@
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           border border-brand-border text-pro-charcoal font-sans font-medium text-sm
+           border border-brand-border text-graphite font-sans font-medium text-sm
            px-6 py-3 rounded-lg bg-white
-           hover:border-pro-charcoal hover:bg-brand-surface-alt
+           hover:border-graphite hover:bg-brand-surface-alt
            active:scale-[0.98]
            transition-all duration-150;
   }
@@ -413,18 +413,18 @@
 
   .btn-gold {
     @apply inline-flex items-center justify-center gap-2
-           bg-pro-gold text-pro-charcoal font-sans font-semibold text-sm
+           bg-accent text-graphite font-sans font-semibold text-sm
            px-6 py-3 rounded-lg
-           hover:bg-pro-gold-light
+           hover:bg-accent-hover
            active:scale-[0.98]
            transition-all duration-150;
   }
 
   .btn-accent {
     @apply inline-flex items-center justify-center gap-2
-           bg-pro-navy text-white font-sans font-semibold text-sm
+           bg-graphite text-white font-sans font-semibold text-sm
            px-6 py-3 rounded-lg
-           hover:bg-pro-navy-dark
+           hover:bg-graphite/90
            active:scale-[0.98]
            transition-all duration-150
            shadow-navy;
@@ -462,9 +462,9 @@
   /* ── Form inputs ── */
   .input {
     @apply w-full px-4 py-2.5 rounded-md border border-brand-border
-           bg-white text-pro-charcoal placeholder-pro-light-gray
+           bg-white text-graphite placeholder-accent-soft
            font-sans text-sm
-           focus:border-pro-navy focus:ring-1 focus:ring-pro-navy/10
+           focus:border-graphite focus:ring-1 focus:ring-graphite/10
            transition-colors duration-150;
   }
 
@@ -488,11 +488,11 @@
   }
 
   .badge-navy {
-    @apply badge bg-pro-navy text-white;
+    @apply badge bg-graphite text-white;
   }
 
   .badge-gold {
-    @apply badge bg-pro-gold-pale text-pro-navy;
+    @apply badge bg-accent-soft text-graphite;
   }
 
   .badge-green {
@@ -500,11 +500,11 @@
   }
 
   .badge-new {
-    @apply badge bg-pro-charcoal text-white;
+    @apply badge bg-graphite text-white;
   }
 
   .badge-bestseller {
-    @apply badge bg-pro-gold text-white;
+    @apply badge bg-accent text-white;
   }
 
   /* ── Labels ── */
@@ -514,7 +514,7 @@
     letter-spacing: 0.06em;
     font-weight: 600;
     text-transform: uppercase;
-    @apply text-pro-warm-gray;
+    @apply text-graphite/60;
   }
 
   /* ── Mineral Eyebrow ── */
@@ -537,32 +537,32 @@
   }
 
   .divider-gold {
-    @apply border-b border-pro-gold/20;
+    @apply border-b border-accent/20;
   }
 
   /* ── Typography utilities ── */
   .text-display {
-    @apply font-serif text-display-md text-pro-charcoal;
+    @apply font-sans text-display-md text-graphite;
   }
 
   .text-headline {
-    @apply font-serif text-3xl text-pro-charcoal;
+    @apply font-sans text-3xl text-graphite;
   }
 
   .text-subhead {
-    @apply font-sans text-base text-pro-warm-gray font-normal leading-relaxed;
+    @apply font-sans text-base text-graphite/60 font-normal leading-relaxed;
   }
 
   .text-metric {
-    @apply font-sans text-metric-lg text-pro-charcoal;
+    @apply font-sans text-metric-lg text-graphite;
   }
 
   .text-metric-accent {
-    @apply font-sans text-metric-xl text-pro-navy;
+    @apply font-sans text-metric-xl text-graphite;
   }
 
   .skeleton {
-    @apply bg-pro-cream rounded animate-pulse;
+    @apply bg-accent-soft rounded animate-pulse;
   }
 
   .product-card {
@@ -570,7 +570,7 @@
   }
 
   .product-card-image {
-    @apply relative overflow-hidden bg-pro-cream aspect-square;
+    @apply relative overflow-hidden bg-accent-soft aspect-square;
   }
 
   .product-card-image img {

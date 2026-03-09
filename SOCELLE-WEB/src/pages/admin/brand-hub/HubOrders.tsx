@@ -61,9 +61,9 @@ export default function HubOrders() {
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-pro-stone animate-pulse" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-accent-soft animate-pulse" />)}
         </div>
-        <div className="h-48 bg-white rounded-xl border border-pro-stone animate-pulse" />
+        <div className="h-48 bg-white rounded-xl border border-accent-soft animate-pulse" />
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function HubOrders() {
         <StatCard label="Avg Order"    value={avgOrder > 0 ? `$${avgOrder.toLocaleString()}` : '—'} />
       </div>
 
-      <div className="bg-white rounded-xl border border-pro-stone">
+      <div className="bg-white rounded-xl border border-accent-soft">
         {orders.length === 0 ? (
           <EmptyState icon={ShoppingBag} title="No orders yet" description="Orders placed by retailers for this brand will appear here." />
         ) : (
@@ -104,13 +104,13 @@ export default function HubOrders() {
                     <Td>
                       <Link
                         to={`/admin/orders/${o.id}`}
-                        className="font-mono text-xs text-pro-navy hover:underline"
+                        className="font-mono text-xs text-graphite hover:underline"
                       >
                         {o.id.slice(0, 8).toUpperCase()}
                       </Link>
                     </Td>
                     <Td className="font-medium">{o.business_name}</Td>
-                    <Td className="text-pro-warm-gray">
+                    <Td className="text-graphite/60">
                       {new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </Td>
                     <Td>{o.item_count}</Td>

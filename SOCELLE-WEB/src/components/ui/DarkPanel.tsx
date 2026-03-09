@@ -8,13 +8,13 @@ interface DarkPanelProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantClasses: Record<DarkPanelVariant, string> = {
-  default:  'bg-pro-charcoal rounded-2xl p-6',
+  default:  'bg-graphite rounded-2xl p-6',
   elevated: 'bg-intel-dark border border-intel-border rounded-2xl p-6 shadow-signal',
 };
 
 /**
  * Dark-background container for intelligence sections.
- * Uses the warm pro-charcoal by default or the deeper intel-dark
+ * Uses the warm graphite by default or the deeper intel-dark
  * with signal shadow for elevated data panels.
  */
 export function DarkPanel({

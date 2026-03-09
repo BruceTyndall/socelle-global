@@ -48,8 +48,8 @@ const OPERATOR_STATUS_STYLES: Record<OperatorData['status'], { bg: string; text:
 };
 
 const TIER_STYLES: Record<string, string> = {
-  Pro:        'bg-pro-stone/30 text-pro-charcoal',
-  Premium:    'bg-pro-gold/10 text-pro-gold border border-pro-gold/30',
+  Pro:        'bg-accent-soft/30 text-graphite',
+  Premium:    'bg-accent/10 text-accent border border-accent/30',
   Enterprise: 'bg-purple-50 text-purple-700 border border-purple-200',
 };
 
@@ -57,7 +57,7 @@ const POSITION_STYLES: Record<CategoryPosition['competitivePosition'], { bg: str
   leader:    { bg: 'bg-emerald-50 text-emerald-700', border: 'border-emerald-200' },
   contender: { bg: 'bg-blue-50 text-blue-700',       border: 'border-blue-200' },
   emerging:  { bg: 'bg-amber-50 text-amber-700',     border: 'border-amber-200' },
-  niche:     { bg: 'bg-pro-cream text-pro-charcoal',  border: 'border-pro-stone' },
+  niche:     { bg: 'bg-accent-soft text-graphite',  border: 'border-accent-soft' },
 };
 
 function deriveOperatorEnrichment(operator: OperatorData): OperatorEnrichment {
@@ -148,19 +148,19 @@ export default function BrandIntelligenceHub() {
         {/* Header */}
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <Brain className="w-6 h-6 text-pro-gold" />
-            <h1 className="font-heading text-2xl font-bold text-pro-charcoal">Brand Intelligence</h1>
+            <Brain className="w-6 h-6 text-accent" />
+            <h1 className="font-heading text-2xl font-bold text-graphite">Brand Intelligence</h1>
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">
               {signalsIsLive ? 'Live Signals + Demo Metrics' : 'Preview'}
             </span>
           </div>
-          <p className="text-sm text-pro-warm-gray font-sans">
+          <p className="text-sm text-graphite/60 font-sans">
             Market position, operator insights, and category intelligence for your brand.
           </p>
         </div>
 
         {/* Position Summary Banner */}
-        <div className="bg-pro-charcoal rounded-xl p-5 text-white">
+        <div className="bg-graphite rounded-xl p-5 text-white">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <SummaryCell
               label="Category Rank"
@@ -178,7 +178,7 @@ export default function BrandIntelligenceHub() {
               sub={
                 <div className="w-full bg-white/20 rounded-full h-1.5 mt-1">
                   <div
-                    className="bg-pro-gold rounded-full h-1.5"
+                    className="bg-accent rounded-full h-1.5"
                     style={{ width: `${metrics.momentumScore}%` }}
                   />
                 </div>
@@ -210,11 +210,11 @@ export default function BrandIntelligenceHub() {
             {/* KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {metrics.kpiCards.map((kpi) => (
-                <div key={kpi.label} className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
-                  <p className="text-[10px] font-sans font-semibold text-pro-warm-gray uppercase tracking-widest mb-3">
+                <div key={kpi.label} className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
+                  <p className="text-[10px] font-sans font-semibold text-graphite/60 uppercase tracking-widest mb-3">
                     {kpi.label}
                   </p>
-                  <p className="text-2xl font-heading font-bold text-pro-charcoal">{kpi.value}</p>
+                  <p className="text-2xl font-heading font-bold text-graphite">{kpi.value}</p>
                   {kpi.delta !== undefined && (
                     <div className={`flex items-center gap-1 mt-1.5 text-xs font-medium font-sans ${
                       kpi.delta >= 0 ? 'text-emerald-600' : 'text-red-500'
@@ -222,7 +222,7 @@ export default function BrandIntelligenceHub() {
                       {kpi.delta >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                       <span>{kpi.delta > 0 ? '+' : ''}{kpi.delta}%</span>
                       {kpi.deltaLabel && (
-                        <span className="text-pro-warm-gray font-normal ml-0.5">{kpi.deltaLabel}</span>
+                        <span className="text-graphite/60 font-normal ml-0.5">{kpi.deltaLabel}</span>
                       )}
                     </div>
                   )}
@@ -231,17 +231,17 @@ export default function BrandIntelligenceHub() {
             </div>
 
             {/* Momentum Gauge */}
-            <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
+            <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-pro-gold" />
-                  <h3 className="font-sans font-semibold text-sm text-pro-charcoal">Brand Momentum Score</h3>
+                  <Zap className="w-4 h-4 text-accent" />
+                  <h3 className="font-sans font-semibold text-sm text-graphite">Brand Momentum Score</h3>
                 </div>
-                <span className="text-2xl font-heading font-bold text-pro-charcoal">
-                  {metrics.momentumScore}<span className="text-sm text-pro-warm-gray font-sans font-normal"> / 100</span>
+                <span className="text-2xl font-heading font-bold text-graphite">
+                  {metrics.momentumScore}<span className="text-sm text-graphite/60 font-sans font-normal"> / 100</span>
                 </span>
               </div>
-              <div className="w-full bg-pro-stone/30 rounded-full h-3">
+              <div className="w-full bg-accent-soft/30 rounded-full h-3">
                 <div
                   className={`rounded-full h-3 transition-all ${
                     metrics.momentumScore >= 70 ? 'bg-emerald-500' :
@@ -250,7 +250,7 @@ export default function BrandIntelligenceHub() {
                   style={{ width: `${metrics.momentumScore}%` }}
                 />
               </div>
-              <div className="flex justify-between mt-2 text-[10px] text-pro-warm-gray font-sans">
+              <div className="flex justify-between mt-2 text-[10px] text-graphite/60 font-sans">
                 <span>Low</span>
                 <span>Moderate</span>
                 <span>Strong</span>
@@ -258,38 +258,38 @@ export default function BrandIntelligenceHub() {
             </div>
 
             {/* SKU Performance Table */}
-            <div className="bg-white rounded-xl border border-pro-stone shadow-sm overflow-hidden">
-              <div className="p-5 border-b border-pro-stone">
+            <div className="bg-white rounded-xl border border-accent-soft shadow-sm overflow-hidden">
+              <div className="p-5 border-b border-accent-soft">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-pro-navy" />
-                  <h3 className="font-sans font-semibold text-sm text-pro-charcoal">SKU Performance</h3>
+                  <BarChart3 className="w-4 h-4 text-graphite" />
+                  <h3 className="font-sans font-semibold text-sm text-graphite">SKU Performance</h3>
                 </div>
-                <p className="text-xs text-pro-warm-gray font-sans mt-0.5">Last 90 days</p>
+                <p className="text-xs text-graphite/60 font-sans mt-0.5">Last 90 days</p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone bg-pro-ivory/50">
-                      <th className="text-left px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Product</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Units (90d)</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Reorder Rate</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Revenue</th>
-                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Status</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Trend</th>
+                    <tr className="border-b border-accent-soft bg-background/50">
+                      <th className="text-left px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Product</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Units (90d)</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Reorder Rate</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Revenue</th>
+                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Status</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Trend</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {metrics.skuPerformance.map((sku) => {
                       const style = VELOCITY_STYLES[sku.velocity];
                       return (
-                        <tr key={sku.id} className="hover:bg-pro-cream/30 transition-colors">
+                        <tr key={sku.id} className="hover:bg-accent-soft/30 transition-colors">
                           <td className="px-5 py-3">
-                            <p className="font-medium text-pro-charcoal">{sku.name}</p>
-                            <p className="text-xs text-pro-warm-gray">{sku.category}</p>
+                            <p className="font-medium text-graphite">{sku.name}</p>
+                            <p className="text-xs text-graphite/60">{sku.category}</p>
                           </td>
-                          <td className="px-5 py-3 text-right text-pro-charcoal">{sku.unitsLast90d}</td>
-                          <td className="px-5 py-3 text-right text-pro-charcoal">{sku.reorderRate}%</td>
-                          <td className="px-5 py-3 text-right font-medium text-pro-charcoal">
+                          <td className="px-5 py-3 text-right text-graphite">{sku.unitsLast90d}</td>
+                          <td className="px-5 py-3 text-right text-graphite">{sku.reorderRate}%</td>
+                          <td className="px-5 py-3 text-right font-medium text-graphite">
                             ${sku.revenueLast90d.toLocaleString()}
                           </td>
                           <td className="px-5 py-3 text-center">
@@ -320,9 +320,9 @@ export default function BrandIntelligenceHub() {
             {/* Top Signals for this brand — LIVE via useIntelligence() when market_signals populated */}
             {signalsLoading ? (
               <div className="animate-pulse space-y-3">
-                <div className="h-5 bg-pro-cream rounded w-64" />
+                <div className="h-5 bg-accent-soft rounded w-64" />
                 <div className="grid gap-3 md:grid-cols-2">
-                  {[1, 2].map((i) => <div key={i} className="h-28 bg-pro-cream rounded-lg" />)}
+                  {[1, 2].map((i) => <div key={i} className="h-28 bg-accent-soft rounded-lg" />)}
                 </div>
               </div>
             ) : topSignals.length > 0 ? (
@@ -335,24 +335,24 @@ export default function BrandIntelligenceHub() {
                     </p>
                   </div>
                 )}
-                <h3 className="font-sans font-semibold text-sm text-pro-charcoal flex items-center gap-2">
-                  <Brain className="w-4 h-4 text-pro-gold" />
+                <h3 className="font-sans font-semibold text-sm text-graphite flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-accent" />
                   Market Signals Relevant to Your Brand
                 </h3>
                 <div className="grid gap-3 md:grid-cols-2">
                   {topSignals.slice(0, 4).map((signal) => (
                     <div
                       key={signal.id}
-                      className="bg-white rounded-lg border border-pro-stone p-4 hover:shadow-md transition-shadow"
+                      className="bg-white rounded-lg border border-accent-soft p-4 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h4 className="font-sans font-medium text-sm text-pro-charcoal leading-tight">{signal.title}</h4>
+                        <h4 className="font-sans font-medium text-sm text-graphite leading-tight">{signal.title}</h4>
                         <div className={`flex items-center gap-1 flex-shrink-0 text-xs font-medium font-sans px-2 py-0.5 rounded-full ${
                           signal.direction === 'up'
                             ? 'bg-emerald-50 text-emerald-700'
                             : signal.direction === 'down'
                             ? 'bg-red-50 text-red-700'
-                            : 'bg-pro-cream text-pro-warm-gray'
+                            : 'bg-accent-soft text-graphite/60'
                         }`}>
                           {signal.direction === 'up' ? (
                             <TrendingUp className="w-3 h-3" />
@@ -362,7 +362,7 @@ export default function BrandIntelligenceHub() {
                           {signal.magnitude > 0 ? `${signal.direction === 'down' ? '-' : '+'}${signal.magnitude}%` : 'Stable'}
                         </div>
                       </div>
-                      <p className="text-xs text-pro-warm-gray font-sans line-clamp-2">{signal.description}</p>
+                      <p className="text-xs text-graphite/60 font-sans line-clamp-2">{signal.description}</p>
                     </div>
                   ))}
                 </div>
@@ -387,26 +387,26 @@ export default function BrandIntelligenceHub() {
             </div>
 
             {/* Operator Table */}
-            <div className="bg-white rounded-xl border border-pro-stone shadow-sm overflow-hidden">
-              <div className="p-5 border-b border-pro-stone">
-                <h3 className="font-sans font-semibold text-sm text-pro-charcoal">Operator Network</h3>
-                <p className="text-xs text-pro-warm-gray font-sans mt-0.5">Sorted by revenue contribution</p>
+            <div className="bg-white rounded-xl border border-accent-soft shadow-sm overflow-hidden">
+              <div className="p-5 border-b border-accent-soft">
+                <h3 className="font-sans font-semibold text-sm text-graphite">Operator Network</h3>
+                <p className="text-xs text-graphite/60 font-sans mt-0.5">Sorted by revenue contribution</p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone bg-pro-ivory/50">
-                      <th className="text-left px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Operator</th>
-                      <th className="text-left px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Region</th>
-                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Tier</th>
-                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Enrichment</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Last Order</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Orders (90d)</th>
-                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Status</th>
-                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-pro-warm-gray uppercase tracking-wider">Revenue (90d)</th>
+                    <tr className="border-b border-accent-soft bg-background/50">
+                      <th className="text-left px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Operator</th>
+                      <th className="text-left px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Region</th>
+                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Tier</th>
+                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Enrichment</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Last Order</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Orders (90d)</th>
+                      <th className="text-center px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Status</th>
+                      <th className="text-right px-5 py-3 text-[10px] font-semibold text-graphite/60 uppercase tracking-wider">Revenue (90d)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {resellers.operators
                       .sort((a, b) => b.revenueLast90d - a.revenueLast90d)
                       .map((op) => {
@@ -417,12 +417,12 @@ export default function BrandIntelligenceHub() {
                         );
                         const opEnrichment = deriveOperatorEnrichment(op);
                         return (
-                          <tr key={op.id} className="hover:bg-pro-cream/30 transition-colors">
+                          <tr key={op.id} className="hover:bg-accent-soft/30 transition-colors">
                             <td className="px-5 py-3">
-                              <p className="font-medium text-pro-charcoal">{op.name}</p>
-                              <p className="text-xs text-pro-warm-gray">{op.productsCarried} products carried</p>
+                              <p className="font-medium text-graphite">{op.name}</p>
+                              <p className="text-xs text-graphite/60">{op.productsCarried} products carried</p>
                             </td>
-                            <td className="px-5 py-3 text-pro-warm-gray">{op.region}</td>
+                            <td className="px-5 py-3 text-graphite/60">{op.region}</td>
                             <td className="px-5 py-3 text-center">
                               <span className={`inline-flex text-[10px] px-2 py-0.5 rounded-full font-semibold ${tierStyle}`}>
                                 {op.tier}
@@ -431,16 +431,16 @@ export default function BrandIntelligenceHub() {
                             <td className="px-5 py-3">
                               <OperatorEnrichmentBadges enrichment={opEnrichment} />
                             </td>
-                            <td className="px-5 py-3 text-right text-pro-warm-gray">
+                            <td className="px-5 py-3 text-right text-graphite/60">
                               {lastOrderDays}d ago
                             </td>
-                            <td className="px-5 py-3 text-right text-pro-charcoal">{op.ordersLast90d}</td>
+                            <td className="px-5 py-3 text-right text-graphite">{op.ordersLast90d}</td>
                             <td className="px-5 py-3 text-center">
                               <span className={`inline-flex text-[10px] px-2 py-0.5 rounded-full font-semibold ${statusStyle.bg} ${statusStyle.text}`}>
                                 {statusStyle.label}
                               </span>
                             </td>
-                            <td className="px-5 py-3 text-right font-medium text-pro-charcoal">
+                            <td className="px-5 py-3 text-right font-medium text-graphite">
                               ${op.revenueLast90d.toLocaleString()}
                             </td>
                           </tr>
@@ -454,19 +454,19 @@ export default function BrandIntelligenceHub() {
             {/* Growth Opportunities */}
             {resellers.growthOpportunities.length > 0 && (
               <div className="space-y-3">
-                <h3 className="font-sans font-semibold text-sm text-pro-charcoal flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-pro-gold" />
+                <h3 className="font-sans font-semibold text-sm text-graphite flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-accent" />
                   Growth Opportunities
                 </h3>
                 <div className="grid gap-4 md:grid-cols-3">
                   {resellers.growthOpportunities.map((opp) => (
-                    <div key={opp.segment} className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
+                    <div key={opp.segment} className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-sans font-semibold text-sm text-pro-charcoal">{opp.segment}</h4>
-                        <span className="text-xs font-medium text-pro-gold font-sans">{opp.potentialRevenue}</span>
+                        <h4 className="font-sans font-semibold text-sm text-graphite">{opp.segment}</h4>
+                        <span className="text-xs font-medium text-accent font-sans">{opp.potentialRevenue}</span>
                       </div>
-                      <p className="text-xs text-pro-warm-gray font-sans line-clamp-3 mb-3">{opp.description}</p>
-                      <p className="text-xs text-pro-warm-gray font-sans">
+                      <p className="text-xs text-graphite/60 font-sans line-clamp-3 mb-3">{opp.description}</p>
+                      <p className="text-xs text-graphite/60 font-sans">
                         {opp.operatorCount} operators identified
                       </p>
                     </div>
@@ -477,28 +477,28 @@ export default function BrandIntelligenceHub() {
 
             {/* Geographic + Tier Distribution */}
             <div className="grid lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
+              <div className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                  <MapPin className="w-4 h-4 text-pro-navy" />
-                  <h3 className="font-sans font-semibold text-sm text-pro-charcoal">Geographic Distribution</h3>
+                  <MapPin className="w-4 h-4 text-graphite" />
+                  <h3 className="font-sans font-semibold text-sm text-graphite">Geographic Distribution</h3>
                 </div>
                 <div className="space-y-3">
                   {resellers.geographicDistribution.map((region) => (
                     <div key={region.region}>
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-sans text-pro-charcoal">{region.region}</p>
-                        <p className="text-xs text-pro-warm-gray font-sans">{region.count} ({region.percentage}%)</p>
+                        <p className="text-sm font-sans text-graphite">{region.region}</p>
+                        <p className="text-xs text-graphite/60 font-sans">{region.count} ({region.percentage}%)</p>
                       </div>
-                      <div className="w-full bg-pro-stone/30 rounded-full h-1.5">
-                        <div className="bg-pro-navy rounded-full h-1.5" style={{ width: `${region.percentage}%` }} />
+                      <div className="w-full bg-accent-soft/30 rounded-full h-1.5">
+                        <div className="bg-graphite rounded-full h-1.5" style={{ width: `${region.percentage}%` }} />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
-                <h3 className="font-sans font-semibold text-sm text-pro-charcoal mb-4">Tier Distribution</h3>
+              <div className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
+                <h3 className="font-sans font-semibold text-sm text-graphite mb-4">Tier Distribution</h3>
                 <div className="flex gap-4">
                   {resellers.tierDistribution.map((tier) => {
                     const style = TIER_STYLES[tier.tier] || TIER_STYLES.Pro;
@@ -506,7 +506,7 @@ export default function BrandIntelligenceHub() {
                       <div key={tier.tier} className={`flex-1 rounded-xl p-4 text-center ${style}`}>
                         <p className="text-3xl font-heading font-bold">{tier.count}</p>
                         <p className="text-xs font-sans font-semibold uppercase tracking-wider mt-1">{tier.tier}</p>
-                        <p className="text-[10px] font-sans text-pro-warm-gray mt-0.5">{tier.percentage}%</p>
+                        <p className="text-[10px] font-sans text-graphite/60 mt-0.5">{tier.percentage}%</p>
                       </div>
                     );
                   })}
@@ -521,18 +521,18 @@ export default function BrandIntelligenceHub() {
             {marketPositionLocked && (
               <div className="relative">
                 <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-xl flex flex-col items-center justify-center gap-3 min-h-[200px]">
-                  <div className="bg-pro-navy/10 rounded-full p-3">
-                    <Lock className="w-6 h-6 text-pro-navy" />
+                  <div className="bg-graphite/10 rounded-full p-3">
+                    <Lock className="w-6 h-6 text-graphite" />
                   </div>
-                  <p className="text-sm font-semibold text-pro-charcoal">
+                  <p className="text-sm font-semibold text-graphite">
                     Enterprise Intelligence Feature
                   </p>
-                  <p className="text-xs text-pro-warm-gray max-w-sm text-center">
+                  <p className="text-xs text-graphite/60 max-w-sm text-center">
                     Market Position analysis, competitive benchmarks, and category rankings are available on the Enterprise plan.
                   </p>
                   <Link
                     to="/brand/intelligence-pricing"
-                    className="mt-1 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-pro-navy text-white text-sm font-medium hover:bg-pro-navy/90 transition-colors"
+                    className="mt-1 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-graphite text-white text-sm font-medium hover:bg-graphite/90 transition-colors"
                   >
                     <Zap className="w-4 h-4" />
                     Upgrade to Enterprise
@@ -541,59 +541,59 @@ export default function BrandIntelligenceHub() {
               </div>
             )}
             {/* Overall Position Summary */}
-            <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
+            <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
-                <Brain className="w-5 h-5 text-pro-gold" />
-                <h3 className="font-heading text-lg font-semibold text-pro-charcoal">Overall Market Position</h3>
+                <Brain className="w-5 h-5 text-accent" />
+                <h3 className="font-heading text-lg font-semibold text-graphite">Overall Market Position</h3>
               </div>
-              <p className="text-sm text-pro-warm-gray font-sans">{categoryData.overallMarketPosition}</p>
-              <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-pro-stone">
+              <p className="text-sm text-graphite/60 font-sans">{categoryData.overallMarketPosition}</p>
+              <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-accent-soft">
                 <div>
-                  <p className="text-xs text-pro-warm-gray font-sans uppercase tracking-wider mb-1">Primary Category</p>
-                  <p className="font-sans font-medium text-pro-charcoal">{position.categoryName}</p>
+                  <p className="text-xs text-graphite/60 font-sans uppercase tracking-wider mb-1">Primary Category</p>
+                  <p className="font-sans font-medium text-graphite">{position.categoryName}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-pro-warm-gray font-sans uppercase tracking-wider mb-1">Momentum Score</p>
-                  <p className="font-sans font-medium text-pro-charcoal">{metrics.momentumScore} / 100</p>
+                  <p className="text-xs text-graphite/60 font-sans uppercase tracking-wider mb-1">Momentum Score</p>
+                  <p className="font-sans font-medium text-graphite">{metrics.momentumScore} / 100</p>
                 </div>
                 <div>
-                  <p className="text-xs text-pro-warm-gray font-sans uppercase tracking-wider mb-1">Total Categories</p>
-                  <p className="font-sans font-medium text-pro-charcoal">{categoryData.categories.length}</p>
+                  <p className="text-xs text-graphite/60 font-sans uppercase tracking-wider mb-1">Total Categories</p>
+                  <p className="font-sans font-medium text-graphite">{categoryData.categories.length}</p>
                 </div>
               </div>
             </div>
 
             {/* Category Ranking Cards */}
             <div className="space-y-3">
-              <h3 className="font-sans font-semibold text-sm text-pro-charcoal">Category Rankings</h3>
+              <h3 className="font-sans font-semibold text-sm text-graphite">Category Rankings</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 {categoryData.categories.map((cat) => {
                   const posStyle = POSITION_STYLES[cat.competitivePosition];
                   return (
-                    <div key={cat.categoryName} className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
+                    <div key={cat.categoryName} className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h4 className="font-heading text-lg font-semibold text-pro-charcoal">{cat.categoryName}</h4>
+                          <h4 className="font-heading text-lg font-semibold text-graphite">{cat.categoryName}</h4>
                           <span className={`inline-flex text-[10px] px-2 py-0.5 rounded-full font-semibold capitalize mt-1 border ${posStyle.bg} ${posStyle.border}`}>
                             {cat.competitivePosition}
                           </span>
                         </div>
                         <div className="text-right">
-                          <p className="text-3xl font-heading font-bold text-pro-navy">#{cat.rank}</p>
-                          <p className="text-xs text-pro-warm-gray font-sans">of {cat.totalBrands} brands</p>
+                          <p className="text-3xl font-heading font-bold text-graphite">#{cat.rank}</p>
+                          <p className="text-xs text-graphite/60 font-sans">of {cat.totalBrands} brands</p>
                         </div>
                       </div>
 
                       {/* Adoption bar */}
                       <div className="mb-3">
                         <div className="flex items-center justify-between text-xs font-sans mb-1">
-                          <span className="text-pro-charcoal font-medium">Your adoption: {cat.adoptionRate}%</span>
-                          <span className="text-pro-warm-gray">Category avg: {cat.categoryAvg}%</span>
+                          <span className="text-graphite font-medium">Your adoption: {cat.adoptionRate}%</span>
+                          <span className="text-graphite/60">Category avg: {cat.categoryAvg}%</span>
                         </div>
-                        <div className="relative w-full bg-pro-stone/30 rounded-full h-2">
+                        <div className="relative w-full bg-accent-soft/30 rounded-full h-2">
                           {/* Category avg marker */}
                           <div
-                            className="absolute top-0 h-2 w-0.5 bg-pro-warm-gray rounded-full z-10"
+                            className="absolute top-0 h-2 w-0.5 bg-graphite/60 rounded-full z-10"
                             style={{ left: `${cat.categoryAvg}%` }}
                           />
                           <div
@@ -606,15 +606,15 @@ export default function BrandIntelligenceHub() {
                       </div>
 
                       {/* Treatment Trend Impact */}
-                      <div className="bg-pro-ivory rounded-lg p-3 mt-3">
-                        <p className="text-[10px] font-semibold text-pro-warm-gray font-sans uppercase tracking-wider mb-1">
+                      <div className="bg-background rounded-lg p-3 mt-3">
+                        <p className="text-[10px] font-semibold text-graphite/60 font-sans uppercase tracking-wider mb-1">
                           Treatment Trend Impact
                         </p>
-                        <p className="text-xs text-pro-charcoal font-sans">{cat.treatmentTrendImpact}</p>
+                        <p className="text-xs text-graphite font-sans">{cat.treatmentTrendImpact}</p>
                       </div>
 
                       {/* Competitive Context */}
-                      <p className="text-xs text-pro-warm-gray font-sans italic mt-3">{cat.competitiveContext}</p>
+                      <p className="text-xs text-graphite/60 font-sans italic mt-3">{cat.competitiveContext}</p>
                     </div>
                   );
                 })}
@@ -622,10 +622,10 @@ export default function BrandIntelligenceHub() {
             </div>
 
             {/* Revenue Trend */}
-            <div className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
+            <div className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="w-4 h-4 text-pro-navy" />
-                <h3 className="font-sans font-semibold text-sm text-pro-charcoal">12-Month Revenue Trend</h3>
+                <BarChart3 className="w-4 h-4 text-graphite" />
+                <h3 className="font-sans font-semibold text-sm text-graphite">12-Month Revenue Trend</h3>
               </div>
               <div className="h-32 flex items-end gap-1">
                 {metrics.revenueTrend.map((val, i) => {
@@ -637,12 +637,12 @@ export default function BrandIntelligenceHub() {
                     <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
                       <div
                         className={`w-full rounded-t-sm transition-all ${
-                          isLast ? 'bg-pro-navy' : 'bg-pro-stone group-hover:bg-pro-navy/40'
+                          isLast ? 'bg-graphite' : 'bg-accent-soft group-hover:bg-graphite/40'
                         }`}
                         style={{ height: `${Math.max(pct, 3)}%` }}
                         title={`$${val.toLocaleString()}`}
                       />
-                      <span className="text-[8px] text-pro-warm-gray font-sans">{months[i]}</span>
+                      <span className="text-[8px] text-graphite/60 font-sans">{months[i]}</span>
                     </div>
                   );
                 })}
@@ -662,9 +662,9 @@ function OperatorEnrichmentBadges({ enrichment }: { enrichment: OperatorEnrichme
     <div className="flex items-center gap-2 justify-center">
       {/* Google Rating Mini-Badge */}
       {enrichment.google_rating !== null && (
-        <div className="flex items-center gap-0.5 bg-pro-cream px-1.5 py-0.5 rounded-full" title={`Google: ${enrichment.google_rating} (${enrichment.google_review_count} reviews)`}>
-          <Star className="w-3 h-3 text-pro-gold fill-pro-gold" />
-          <span className="text-[10px] font-sans font-semibold text-pro-charcoal">
+        <div className="flex items-center gap-0.5 bg-accent-soft px-1.5 py-0.5 rounded-full" title={`Google: ${enrichment.google_rating} (${enrichment.google_review_count} reviews)`}>
+          <Star className="w-3 h-3 text-accent fill-accent" />
+          <span className="text-[10px] font-sans font-semibold text-graphite">
             {enrichment.google_rating.toFixed(1)}
           </span>
         </div>
@@ -675,7 +675,7 @@ function OperatorEnrichmentBadges({ enrichment }: { enrichment: OperatorEnrichme
         className="flex items-center gap-1"
         title={`Digital presence: ${enrichment.digital_presence_score}/100`}
       >
-        <div className="w-8 bg-pro-stone/30 rounded-full h-1.5">
+        <div className="w-8 bg-accent-soft/30 rounded-full h-1.5">
           <div
             className={`rounded-full h-1.5 ${
               enrichment.digital_presence_score >= 70
@@ -687,7 +687,7 @@ function OperatorEnrichmentBadges({ enrichment }: { enrichment: OperatorEnrichme
             style={{ width: `${enrichment.digital_presence_score}%` }}
           />
         </div>
-        <span className="text-[9px] font-sans text-pro-warm-gray">
+        <span className="text-[9px] font-sans text-graphite/60">
           {enrichment.digital_presence_score}
         </span>
       </div>
@@ -699,7 +699,7 @@ function OperatorEnrichmentBadges({ enrichment }: { enrichment: OperatorEnrichme
         </span>
       ) : (
         <span title="Socially inactive">
-          <WifiOff className="w-3 h-3 text-pro-stone" />
+          <WifiOff className="w-3 h-3 text-accent-soft" />
         </span>
       )}
     </div>
@@ -736,7 +736,7 @@ function SummaryStatCard({
   icon: Icon,
   label,
   value,
-  valueColor = 'text-pro-charcoal',
+  valueColor = 'text-graphite',
 }: {
   icon: typeof Users;
   label: string;
@@ -744,10 +744,10 @@ function SummaryStatCard({
   valueColor?: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
+    <div className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-pro-warm-gray" />
-        <p className="text-[10px] font-sans font-semibold text-pro-warm-gray uppercase tracking-widest">{label}</p>
+        <Icon className="w-4 h-4 text-graphite/60" />
+        <p className="text-[10px] font-sans font-semibold text-graphite/60 uppercase tracking-widest">{label}</p>
       </div>
       <p className={`text-2xl font-heading font-bold ${valueColor}`}>{value}</p>
     </div>

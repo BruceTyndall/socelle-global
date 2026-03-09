@@ -66,7 +66,7 @@ function createLogMethod(level: LogLevel) {
         break;
       case 'error':
         console.error(formatted);
-        // Future: send to error reporting service (Sentry, LogRocket, etc.)
+        // Future: send to error reporting service
         break;
     }
   };

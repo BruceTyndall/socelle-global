@@ -120,8 +120,8 @@ export default function EventsHub() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-serif text-pro-navy">
-              Events Hub<span className="text-pro-gold">.</span>
+            <h1 className="text-3xl font-sans text-graphite">
+              Events Hub<span className="text-accent">.</span>
             </h1>
             {!isLive && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -130,7 +130,7 @@ export default function EventsHub() {
               </span>
             )}
           </div>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Industry events and conference management
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function EventsHub() {
           type="button"
           onClick={loadData}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -146,7 +146,7 @@ export default function EventsHub() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-accent-soft/40 rounded-xl p-1 w-fit">
         {(['all', 'active', 'draft', 'cancelled'] as const).map((f) => (
           <button
             key={f}
@@ -154,8 +154,8 @@ export default function EventsHub() {
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
               filter === f
-                ? 'bg-white text-pro-navy shadow-sm'
-                : 'text-pro-warm-gray hover:text-pro-charcoal'
+                ? 'bg-white text-graphite shadow-sm'
+                : 'text-graphite/60 hover:text-graphite'
             }`}
           >
             {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -167,10 +167,10 @@ export default function EventsHub() {
       {loading ? (
         <LoadingSkeleton />
       ) : !isLive ? (
-        <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-          <Calendar className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-          <h3 className="text-lg font-serif text-pro-navy mb-2">Events Hub</h3>
-          <p className="text-pro-warm-gray font-sans text-sm max-w-md mx-auto">
+        <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+          <Calendar className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+          <h3 className="text-lg font-sans text-graphite mb-2">Events Hub</h3>
+          <p className="text-graphite/60 font-sans text-sm max-w-md mx-auto">
             Events table not available in this environment. Connect Supabase to activate live events data.
           </p>
           <span className="inline-flex items-center gap-1 mt-4 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -179,25 +179,25 @@ export default function EventsHub() {
           </span>
         </div>
       ) : rows.length === 0 ? (
-        <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-          <Calendar className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-          <p className="text-pro-warm-gray font-sans text-sm">
+        <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+          <Calendar className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+          <p className="text-graphite/60 font-sans text-sm">
             {filter === 'all' ? 'No events found.' : `No ${filter} events.`}
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {rows.map((evt) => (
-            <div key={evt.id} className="bg-white border border-pro-stone rounded-xl overflow-hidden">
-              {evt.featured && <div className="h-1 bg-pro-gold" />}
+            <div key={evt.id} className="bg-white border border-accent-soft rounded-xl overflow-hidden">
+              {evt.featured && <div className="h-1 bg-accent" />}
               <div className="p-5">
                 <div className="flex items-start gap-4">
                   {/* Date block */}
-                  <div className="w-14 h-14 rounded-lg bg-pro-cream flex flex-col items-center justify-center flex-shrink-0">
-                    <span className="text-xs text-pro-warm-gray font-sans leading-none">
+                  <div className="w-14 h-14 rounded-lg bg-accent-soft flex flex-col items-center justify-center flex-shrink-0">
+                    <span className="text-xs text-graphite/60 font-sans leading-none">
                       {new Date(evt.date).toLocaleDateString('en-US', { month: 'short' })}
                     </span>
-                    <span className="text-xl font-serif text-pro-navy leading-tight">
+                    <span className="text-xl font-sans text-graphite leading-tight">
                       {new Date(evt.date).getDate()}
                     </span>
                   </div>
@@ -205,18 +205,18 @@ export default function EventsHub() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <h3 className="text-sm font-medium text-pro-navy font-sans">{evt.name}</h3>
+                      <h3 className="text-sm font-medium text-graphite font-sans">{evt.name}</h3>
                       {evt.featured && (
-                        <Star className="w-3.5 h-3.5 text-pro-gold fill-pro-gold" />
+                        <Star className="w-3.5 h-3.5 text-accent fill-accent" />
                       )}
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${TYPE_COLORS[evt.type] || 'bg-pro-stone text-pro-charcoal'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${TYPE_COLORS[evt.type] || 'bg-accent-soft text-graphite'}`}>
                         {evt.type}
                       </span>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_COLORS[evt.status] || 'bg-pro-stone text-pro-charcoal'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_COLORS[evt.status] || 'bg-accent-soft text-graphite'}`}>
                         {evt.status}
                       </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-pro-warm-gray font-sans">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-graphite/60 font-sans">
                       <span className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         {evt.location}
@@ -235,7 +235,7 @@ export default function EventsHub() {
                         href={evt.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 hover:text-pro-navy transition-colors"
+                        className="flex items-center gap-1 hover:text-graphite transition-colors"
                       >
                         <Globe className="w-3 h-3" />
                         Website
@@ -257,12 +257,12 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-3">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="bg-white border border-pro-stone rounded-xl p-5 animate-pulse">
+        <div key={i} className="bg-white border border-accent-soft rounded-xl p-5 animate-pulse">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-lg bg-pro-stone flex-shrink-0" />
+            <div className="w-14 h-14 rounded-lg bg-accent-soft flex-shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-pro-stone rounded w-1/3" />
-              <div className="h-3 bg-pro-stone rounded w-2/3" />
+              <div className="h-4 bg-accent-soft rounded w-1/3" />
+              <div className="h-3 bg-accent-soft rounded w-2/3" />
             </div>
           </div>
         </div>

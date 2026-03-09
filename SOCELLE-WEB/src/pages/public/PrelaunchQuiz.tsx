@@ -9,7 +9,7 @@
 
    SEO: Full Helmet + JSON-LD. Landing state is fully indexable.
    Authority: build_tracker.md (W14-01), SOCELLE_CANONICAL_DOCTRINE.md
-   Pearl Mineral V2 only — no pro-* tokens, no font-serif.
+   Pearl Mineral V2 only — no pro-* tokens, no font-sans.
    ═══════════════════════════════════════════════════════════════ */
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';

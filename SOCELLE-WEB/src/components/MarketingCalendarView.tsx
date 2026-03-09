@@ -74,14 +74,14 @@ export default function MarketingCalendarView() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pro-navy"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-graphite"></div>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="bg-gradient-to-r from-pro-navy to-pro-charcoal rounded-xl p-8 mb-8 text-white">
+      <div className="bg-gradient-to-r from-graphite to-graphite rounded-xl p-8 mb-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-8 h-8" />
           <h1 className="text-3xl font-bold">2026 Marketing Calendar</h1>
@@ -103,19 +103,19 @@ export default function MarketingCalendarView() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-pro-stone p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-accent-soft p-6 mb-6">
         <div className="flex items-center justify-between">
           <button
             onClick={() => setSelectedQuarter(Math.max(1, selectedQuarter - 1))}
             disabled={selectedQuarter === 1}
-            className="p-2 rounded-lg hover:bg-pro-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg hover:bg-accent-soft disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-pro-charcoal">{getQuarterName(selectedQuarter)}</h2>
-            <p className="text-pro-warm-gray mt-1">
+            <h2 className="text-2xl font-bold text-graphite">{getQuarterName(selectedQuarter)}</h2>
+            <p className="text-graphite/60 mt-1">
               {quarterMonths.length > 0 && `${quarterMonths[0].month_name} - ${quarterMonths[quarterMonths.length - 1]?.month_name} 2026`}
             </p>
           </div>
@@ -123,7 +123,7 @@ export default function MarketingCalendarView() {
           <button
             onClick={() => setSelectedQuarter(Math.min(4, selectedQuarter + 1))}
             disabled={selectedQuarter === 4}
-            className="p-2 rounded-lg hover:bg-pro-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg hover:bg-accent-soft disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -136,14 +136,14 @@ export default function MarketingCalendarView() {
             key={month.id}
             className={`bg-white rounded-xl shadow-sm border-2 transition-all hover:shadow-lg ${
               month.month === currentMonth
-                ? 'border-pro-navy ring-2 ring-pro-stone'
-                : 'border-pro-stone hover:border-pro-stone'
+                ? 'border-graphite ring-2 ring-accent-soft'
+                : 'border-accent-soft hover:border-accent-soft'
             }`}
           >
             <div className={`p-6 rounded-t-xl ${
               month.month === currentMonth
-                ? 'bg-gradient-to-r from-pro-navy to-pro-charcoal text-white'
-                : 'bg-pro-ivory text-pro-charcoal'
+                ? 'bg-gradient-to-r from-graphite to-graphite text-white'
+                : 'bg-background text-graphite'
             }`}>
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xl font-bold">{month.month_name}</h3>
@@ -154,7 +154,7 @@ export default function MarketingCalendarView() {
                 )}
               </div>
               <p className={`text-sm font-medium ${
-                month.month === currentMonth ? 'text-white' : 'text-pro-warm-gray'
+                month.month === currentMonth ? 'text-white' : 'text-graphite/60'
               }`}>
                 {month.theme}
               </p>
@@ -164,9 +164,9 @@ export default function MarketingCalendarView() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-4 h-4 text-amber-500" />
-                  <h4 className="font-semibold text-pro-charcoal text-sm">Focus</h4>
+                  <h4 className="font-semibold text-graphite text-sm">Focus</h4>
                 </div>
-                <p className="text-pro-warm-gray text-sm leading-relaxed pl-6">
+                <p className="text-graphite/60 text-sm leading-relaxed pl-6">
                   {month.focus_moment}
                 </p>
               </div>
@@ -175,7 +175,7 @@ export default function MarketingCalendarView() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <Package className="w-4 h-4 text-rose-500" />
-                    <h4 className="font-semibold text-pro-charcoal text-sm">New Launches</h4>
+                    <h4 className="font-semibold text-graphite text-sm">New Launches</h4>
                   </div>
                   <ul className="space-y-1 pl-6">
                     {month.new_launches.map((launch, idx) => (
@@ -191,12 +191,12 @@ export default function MarketingCalendarView() {
               {month.featured_protocols.length > 0 && (
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <FileText className="w-4 h-4 text-pro-navy" />
-                    <h4 className="font-semibold text-pro-charcoal text-sm">Featured Protocols</h4>
+                    <FileText className="w-4 h-4 text-graphite" />
+                    <h4 className="font-semibold text-graphite text-sm">Featured Protocols</h4>
                   </div>
                   <ul className="space-y-1 pl-6">
                     {month.featured_protocols.map((protocol, idx) => (
-                      <li key={idx} className="text-sm text-pro-charcoal flex items-start gap-2">
+                      <li key={idx} className="text-sm text-graphite flex items-start gap-2">
                         <span className="text-teal-400 mt-0.5">•</span>
                         <span>{protocol}</span>
                       </li>
@@ -208,13 +208,13 @@ export default function MarketingCalendarView() {
               {month.featured_products.length > 0 && (
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <Package className="w-4 h-4 text-pro-navy" />
-                    <h4 className="font-semibold text-pro-charcoal text-sm">Featured Products</h4>
+                    <Package className="w-4 h-4 text-graphite" />
+                    <h4 className="font-semibold text-graphite text-sm">Featured Products</h4>
                   </div>
                   <ul className="space-y-1 pl-6">
                     {month.featured_products.map((product, idx) => (
-                      <li key={idx} className="text-sm text-pro-charcoal flex items-start gap-2">
-                        <span className="text-pro-gold mt-0.5">•</span>
+                      <li key={idx} className="text-sm text-graphite flex items-start gap-2">
+                        <span className="text-accent mt-0.5">•</span>
                         <span>{product}</span>
                       </li>
                     ))}
@@ -223,13 +223,13 @@ export default function MarketingCalendarView() {
               )}
 
               {month.webinar_title && (
-                <div className="pt-4 border-t border-pro-stone">
+                <div className="pt-4 border-t border-accent-soft">
                   <div className="flex items-start gap-2">
-                    <Video className="w-4 h-4 text-pro-navy mt-0.5 flex-shrink-0" />
+                    <Video className="w-4 h-4 text-graphite mt-0.5 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold text-pro-charcoal text-sm mb-1">Webinar</h4>
-                      <p className="text-sm text-pro-charcoal mb-1">{month.webinar_title}</p>
-                      <p className="text-xs text-pro-navy font-medium">{month.webinar_date}</p>
+                      <h4 className="font-semibold text-graphite text-sm mb-1">Webinar</h4>
+                      <p className="text-sm text-graphite mb-1">{month.webinar_title}</p>
+                      <p className="text-xs text-graphite font-medium">{month.webinar_date}</p>
                     </div>
                   </div>
                 </div>

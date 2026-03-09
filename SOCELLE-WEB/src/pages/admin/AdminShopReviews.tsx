@@ -35,13 +35,13 @@ export default function AdminShopReviews() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-sans font-semibold text-pro-charcoal">Review Moderation</h1>
+        <h1 className="text-2xl font-sans font-semibold text-graphite">Review Moderation</h1>
         <div className="flex gap-2">
           {(['all', 'pending', 'approved'] as const).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 text-sm font-sans font-semibold rounded-lg transition-colors ${filter === f ? 'bg-pro-navy text-white' : 'bg-pro-cream text-pro-warm-gray hover:text-pro-charcoal'}`}
+              className={`px-3 py-1.5 text-sm font-sans font-semibold rounded-lg transition-colors ${filter === f ? 'bg-graphite text-white' : 'bg-accent-soft text-graphite/60 hover:text-graphite'}`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
             </button>
@@ -49,10 +49,10 @@ export default function AdminShopReviews() {
         </div>
       </div>
 
-      {loading && <p className="text-center text-pro-warm-gray py-8">Loading...</p>}
+      {loading && <p className="text-center text-graphite/60 py-8">Loading...</p>}
 
       {!loading && reviews.length === 0 && (
-        <div className="text-center py-16 text-pro-warm-gray">
+        <div className="text-center py-16 text-graphite/60">
           <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-30" />
           <p className="text-lg font-sans">No reviews found</p>
         </div>
@@ -60,13 +60,13 @@ export default function AdminShopReviews() {
 
       <div className="space-y-4">
         {reviews.map(review => (
-          <div key={review.id} className="bg-white rounded-xl border border-pro-stone p-5">
+          <div key={review.id} className="bg-white rounded-xl border border-accent-soft p-5">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="flex gap-0.5">
                     {[1, 2, 3, 4, 5].map(s => (
-                      <Star key={s} className={`w-4 h-4 ${s <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-pro-stone'}`} />
+                      <Star key={s} className={`w-4 h-4 ${s <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-accent-soft'}`} />
                     ))}
                   </div>
                   <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${review.is_approved ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'}`}>
@@ -76,9 +76,9 @@ export default function AdminShopReviews() {
                     <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">Verified</span>
                   )}
                 </div>
-                {review.title && <p className="text-sm font-sans font-semibold text-pro-charcoal mb-1">{review.title}</p>}
-                {review.body && <p className="text-sm font-sans text-pro-warm-gray">{review.body}</p>}
-                <div className="flex items-center gap-4 mt-2 text-xs font-sans text-pro-warm-gray/60">
+                {review.title && <p className="text-sm font-sans font-semibold text-graphite mb-1">{review.title}</p>}
+                {review.body && <p className="text-sm font-sans text-graphite/60">{review.body}</p>}
+                <div className="flex items-center gap-4 mt-2 text-xs font-sans text-graphite/60/60">
                   <span>Product: <span className="font-mono">{review.product_id.slice(0, 8)}...</span></span>
                   <span>{new Date(review.created_at).toLocaleDateString()}</span>
                 </div>

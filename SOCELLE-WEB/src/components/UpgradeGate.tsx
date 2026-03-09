@@ -82,7 +82,7 @@ export default function UpgradeGate({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-pro-warm-gray" />
+        <Loader2 className="w-6 h-6 animate-spin text-graphite/60" />
       </div>
     );
   }
@@ -118,23 +118,23 @@ export default function UpgradeGate({
       <div className={`${showPreview ? 'absolute inset-0 flex items-center justify-center' : ''}`}>
         <div className="bg-white rounded-xl shadow-elevated border border-brand-border p-8 md:p-10 max-w-md mx-auto">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 bg-pro-charcoal rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-graphite rounded-lg flex items-center justify-center flex-shrink-0">
               <Lock className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-sans font-semibold text-pro-charcoal text-base leading-tight">
+              <h3 className="font-sans font-semibold text-graphite text-base leading-tight">
                 {featureInfo.title}
               </h3>
               {message && (
-                <p className="text-pro-warm-gray text-xs mt-0.5">{message}</p>
+                <p className="text-graphite/60 text-xs mt-0.5">{message}</p>
               )}
             </div>
           </div>
 
           <div className="space-y-2.5 mb-7">
             {featureInfo.bullets.map((bullet, i) => (
-              <div key={i} className="flex items-start gap-2.5 text-sm font-sans text-pro-charcoal">
-                <div className="w-1 h-1 rounded-full bg-pro-gold mt-2 flex-shrink-0" />
+              <div key={i} className="flex items-start gap-2.5 text-sm font-sans text-graphite">
+                <div className="w-1 h-1 rounded-full bg-accent mt-2 flex-shrink-0" />
                 {bullet}
               </div>
             ))}
@@ -144,7 +144,7 @@ export default function UpgradeGate({
             <button
               onClick={handleUpgrade}
               disabled={checkoutLoading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-pro-charcoal text-white rounded-lg font-sans font-medium text-sm hover:bg-pro-navy-dark transition-colors duration-150 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg font-sans font-medium text-sm hover:bg-graphite-dark transition-colors duration-150 disabled:opacity-50"
             >
               {checkoutLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -156,7 +156,7 @@ export default function UpgradeGate({
               )}
             </button>
 
-            <p className="text-xs font-sans text-pro-warm-gray text-center">
+            <p className="text-xs font-sans text-graphite/60 text-center">
               Cancel anytime. 7-day money-back guarantee.
             </p>
           </div>

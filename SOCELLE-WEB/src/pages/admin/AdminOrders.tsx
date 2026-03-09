@@ -151,13 +151,13 @@ export default function AdminOrders() {
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       submitted: 'bg-yellow-100 text-yellow-700',
-      reviewing: 'bg-pro-stone text-pro-charcoal',
+      reviewing: 'bg-accent-soft text-graphite',
       sent_to_brand: 'bg-purple-100 text-purple-700',
       confirmed: 'bg-green-100 text-green-700',
-      fulfilled: 'bg-pro-stone text-pro-charcoal',
+      fulfilled: 'bg-accent-soft text-graphite',
       cancelled: 'bg-red-100 text-red-700',
     };
-    return colors[status] || 'bg-pro-stone text-pro-charcoal';
+    return colors[status] || 'bg-accent-soft text-graphite';
   };
 
   if (error) {
@@ -179,7 +179,7 @@ export default function AdminOrders() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-pro-charcoal">Order Management</h1>
+        <h1 className="text-3xl font-bold text-graphite">Order Management</h1>
         <button
           onClick={() =>
             exportToCSV(
@@ -207,7 +207,7 @@ export default function AdminOrders() {
             )
           }
           disabled={filteredOrders.length === 0}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-pro-stone text-pro-charcoal rounded-lg text-sm font-medium hover:bg-pro-ivory disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-accent-soft text-graphite rounded-lg text-sm font-medium hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <Download className="w-4 h-4" />
           Export CSV ({filteredOrders.length})
@@ -215,40 +215,40 @@ export default function AdminOrders() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
-          <p className="text-sm text-pro-warm-gray mb-1">Total Orders</p>
-          <p className="text-3xl font-bold text-pro-charcoal">{stats.total}</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
+          <p className="text-sm text-graphite/60 mb-1">Total Orders</p>
+          <p className="text-3xl font-bold text-graphite">{stats.total}</p>
         </div>
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
-          <p className="text-sm text-pro-warm-gray mb-1">Pending Review</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
+          <p className="text-sm text-graphite/60 mb-1">Pending Review</p>
           <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
         </div>
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
-          <p className="text-sm text-pro-warm-gray mb-1">Sent to Brands</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
+          <p className="text-sm text-graphite/60 mb-1">Sent to Brands</p>
           <p className="text-3xl font-bold text-purple-600">{stats.sent}</p>
         </div>
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
-          <p className="text-sm text-pro-warm-gray mb-1">Revenue Earned</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
+          <p className="text-sm text-graphite/60 mb-1">Revenue Earned</p>
           <p className="text-3xl font-bold text-green-600">${stats.revenue.toFixed(2)}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
+      <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-graphite/60" />
             <input
               type="text"
               placeholder="Search orders..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full pl-10 pr-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           >
             <option value="all">All Statuses</option>
             <option value="submitted">Submitted</option>
@@ -261,7 +261,7 @@ export default function AdminOrders() {
           <select
             value={brandFilter}
             onChange={(e) => setBrandFilter(e.target.value)}
-            className="px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
           >
             <option value="all">All Brands</option>
             {brands.map((brand) => (
@@ -276,80 +276,80 @@ export default function AdminOrders() {
         )}
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-pro-ivory border-b border-pro-stone">
+            <thead className="bg-background border-b border-accent-soft">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Order #
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Business
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Brand
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Items
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Subtotal
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Commission
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pro-stone">
+            <tbody className="divide-y divide-accent-soft">
               {loading ? (
                 <>
                   {[...Array(5)].map((_, i) => (
                     <tr key={i}>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-24"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-20"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-32"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-28"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-12"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-20"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-20"></div></td>
-                      <td className="px-6 py-4"><div className="h-6 bg-pro-stone rounded-full animate-pulse w-24"></div></td>
-                      <td className="px-6 py-4"><div className="h-4 bg-pro-stone rounded animate-pulse w-16"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-24"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-20"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-32"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-28"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-12"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-20"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-20"></div></td>
+                      <td className="px-6 py-4"><div className="h-6 bg-accent-soft rounded-full animate-pulse w-24"></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-accent-soft rounded animate-pulse w-16"></div></td>
                     </tr>
                   ))}
                 </>
               ) : (
                 <>
                   {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-pro-ivory">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-pro-charcoal">
+                  <tr key={order.id} className="hover:bg-background">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-graphite">
                       {order.order_number}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-warm-gray">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite/60">
                       {new Date(order.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-charcoal">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite">
                       {order.business_name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-charcoal">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite">
                       {order.brand_name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-warm-gray">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite/60">
                       {order.items_count}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-charcoal">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite">
                       ${order.subtotal.toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-charcoal">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite">
                       ${order.commission_total?.toFixed(2) || '0.00'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -364,7 +364,7 @@ export default function AdminOrders() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Link
                         to={`/admin/orders/${order.id}`}
-                        className="inline-flex items-center gap-1 text-pro-navy hover:text-pro-charcoal font-medium"
+                        className="inline-flex items-center gap-1 text-graphite hover:text-graphite font-medium"
                       >
                         <Eye className="w-4 h-4" />
                         View
@@ -378,7 +378,7 @@ export default function AdminOrders() {
           </table>
         </div>
         {!loading && filteredOrders.length === 0 && (
-          <div className="text-center py-12 text-pro-warm-gray">No orders found</div>
+          <div className="text-center py-12 text-graphite/60">No orders found</div>
         )}
       </div>
     </div>

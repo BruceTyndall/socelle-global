@@ -8,9 +8,9 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: 'bg-pro-stone text-pro-charcoal',
-  navy: 'bg-pro-navy text-white',
-  gold: 'bg-pro-gold-pale text-pro-navy',
+  default: 'bg-accent-soft text-graphite',
+  navy: 'bg-graphite text-white',
+  gold: 'bg-accent-pale text-graphite',
   green: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
   red: 'bg-red-50 text-red-700 border border-red-200',
   amber: 'bg-amber-50 text-amber-700 border border-amber-200',
@@ -18,9 +18,9 @@ const variantClasses: Record<BadgeVariant, string> = {
 };
 
 const dotClasses: Record<BadgeVariant, string> = {
-  default: 'bg-pro-charcoal',
+  default: 'bg-graphite',
   navy: 'bg-white',
-  gold: 'bg-pro-gold',
+  gold: 'bg-accent',
   green: 'bg-emerald-500',
   red: 'bg-red-500',
   amber: 'bg-amber-500',

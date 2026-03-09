@@ -97,8 +97,8 @@ export default function EducationFilter({
                 onClick={() => onCategoryChange(key)}
                 className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-sans font-medium transition-all duration-150 whitespace-nowrap min-h-touch ${
                   isActive
-                    ? 'bg-pro-navy text-white shadow-navy'
-                    : 'bg-pro-cream text-pro-warm-gray hover:bg-pro-stone/60 hover:text-pro-charcoal'
+                    ? 'bg-graphite text-white shadow-navy'
+                    : 'bg-accent-soft text-graphite/60 hover:bg-accent-soft/60 hover:text-graphite'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -122,8 +122,8 @@ export default function EducationFilter({
                   onClick={() => onContentTypeChange(key)}
                   className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-all duration-150 whitespace-nowrap min-h-touch ${
                     isActive
-                      ? 'bg-pro-charcoal text-white'
-                      : 'bg-pro-ivory text-pro-warm-gray hover:bg-pro-cream hover:text-pro-charcoal'
+                      ? 'bg-graphite text-white'
+                      : 'bg-background text-graphite/60 hover:bg-accent-soft hover:text-graphite'
                   }`}
                 >
                   <Icon className="w-3 h-3" />
@@ -135,13 +135,13 @@ export default function EducationFilter({
         </div>
 
         {/* Spacer on desktop */}
-        <div className="hidden sm:block w-px h-6 bg-pro-stone/60" />
+        <div className="hidden sm:block w-px h-6 bg-accent-soft/60" />
 
         {/* Difficulty selector */}
         <select
           value={difficultyFilter}
           onChange={(e) => onDifficultyChange(e.target.value as DifficultyFilter)}
-          className="min-h-touch px-3 py-1.5 rounded-lg border border-pro-stone/60 bg-white text-xs font-sans font-medium text-pro-charcoal focus:outline-none focus:ring-1 focus:ring-pro-navy/30"
+          className="min-h-touch px-3 py-1.5 rounded-lg border border-accent-soft/60 bg-white text-xs font-sans font-medium text-graphite focus:outline-none focus:ring-1 focus:ring-graphite/30"
         >
           <option value="all">All Levels</option>
           <option value="beginner">Beginner</option>
@@ -154,8 +154,8 @@ export default function EducationFilter({
           onClick={() => onCeOnlyChange(!ceOnlyFilter)}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-all duration-150 min-h-touch ${
             ceOnlyFilter
-              ? 'bg-pro-gold text-pro-charcoal'
-              : 'bg-pro-ivory text-pro-warm-gray hover:bg-pro-cream hover:text-pro-charcoal border border-pro-stone/40'
+              ? 'bg-accent text-graphite'
+              : 'bg-background text-graphite/60 hover:bg-accent-soft hover:text-graphite border border-accent-soft/40'
           }`}
         >
           <GraduationCap className="w-3.5 h-3.5" />
@@ -166,7 +166,7 @@ export default function EducationFilter({
         <select
           value={sortKey}
           onChange={(e) => onSortChange(e.target.value as SortKey)}
-          className="min-h-touch px-3 py-1.5 rounded-lg border border-pro-stone/60 bg-white text-xs font-sans font-medium text-pro-charcoal focus:outline-none focus:ring-1 focus:ring-pro-navy/30 ml-auto"
+          className="min-h-touch px-3 py-1.5 rounded-lg border border-accent-soft/60 bg-white text-xs font-sans font-medium text-graphite focus:outline-none focus:ring-1 focus:ring-graphite/30 ml-auto"
         >
           <option value="newest">Sort: Newest</option>
           <option value="ce_credits">Sort: CE Credits</option>

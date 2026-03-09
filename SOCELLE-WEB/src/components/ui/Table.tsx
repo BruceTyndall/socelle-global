@@ -12,7 +12,7 @@ export function Table({ className = '', children, ...props }: HTMLAttributes<HTM
 
 export function TableHead({ className = '', children, ...props }: HTMLAttributes<HTMLTableSectionElement>) {
   return (
-    <thead className={`border-b border-pro-stone ${className}`} {...props}>
+    <thead className={`border-b border-accent-soft ${className}`} {...props}>
       {children}
     </thead>
   );
@@ -20,7 +20,7 @@ export function TableHead({ className = '', children, ...props }: HTMLAttributes
 
 export function TableBody({ className = '', children, ...props }: HTMLAttributes<HTMLTableSectionElement>) {
   return (
-    <tbody className={`divide-y divide-pro-stone/60 ${className}`} {...props}>
+    <tbody className={`divide-y divide-accent-soft/60 ${className}`} {...props}>
       {children}
     </tbody>
   );
@@ -28,14 +28,14 @@ export function TableBody({ className = '', children, ...props }: HTMLAttributes
 
 export function TableRow({ className = '', ...props }: HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr className={`hover:bg-pro-ivory/50 transition-colors ${className}`} {...props} />
+    <tr className={`hover:bg-background/50 transition-colors ${className}`} {...props} />
   );
 }
 
 export function Th({ className = '', children, ...props }: ThHTMLAttributes<HTMLTableCellElement>) {
   return (
     <th
-      className={`px-4 py-3 text-left text-xs font-semibold text-pro-warm-gray uppercase tracking-wider ${className}`}
+      className={`px-4 py-3 text-left text-xs font-semibold text-graphite/60 uppercase tracking-wider ${className}`}
       {...props}
     >
       {children}
@@ -45,7 +45,7 @@ export function Th({ className = '', children, ...props }: ThHTMLAttributes<HTML
 
 export function Td({ className = '', children, ...props }: TdHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <td className={`px-4 py-3.5 text-pro-charcoal ${className}`} {...props}>
+    <td className={`px-4 py-3.5 text-graphite ${className}`} {...props}>
       {children}
     </td>
   );

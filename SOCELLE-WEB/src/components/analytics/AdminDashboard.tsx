@@ -25,10 +25,10 @@ function HealthCard({
   return (
     <div className="card p-5">
       <div className="flex items-start justify-between mb-3">
-        <p className="font-sans text-xs font-medium text-pro-warm-gray uppercase tracking-wide">{label}</p>
-        <span className="text-pro-warm-gray">{icon}</span>
+        <p className="font-sans text-xs font-medium text-graphite/60 uppercase tracking-wide">{label}</p>
+        <span className="text-graphite/60">{icon}</span>
       </div>
-      <p className="font-serif text-2xl text-pro-navy">{display}</p>
+      <p className="font-sans text-2xl text-graphite">{display}</p>
     </div>
   );
 }
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
   }
 
   if (!data) return (
-    <div className="text-center py-10 text-pro-warm-gray font-sans text-sm">
+    <div className="text-center py-10 text-graphite/60 font-sans text-sm">
       Admin analytics not available.
     </div>
   );
@@ -84,7 +84,7 @@ export default function AdminDashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         {/* ── DAU/MAU trend ──────────────────────────────────── */}
         <div className="card p-5">
-          <h3 className="font-sans font-semibold text-pro-charcoal text-sm mb-4">
+          <h3 className="font-sans font-semibold text-graphite text-sm mb-4">
             DAU — Last 30 Days
           </h3>
           <SparklineChart data={dauMauTrend} color="var(--color-accent)" height={130} />
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
 
         {/* ── New registrations ──────────────────────────────── */}
         <div className="card p-5">
-          <h3 className="font-sans font-semibold text-pro-charcoal text-sm mb-4">
+          <h3 className="font-sans font-semibold text-graphite text-sm mb-4">
             New Registrations — By Week
           </h3>
           <SparklineChart data={registrationsByWeek} color="var(--color-warn)" height={130} />
@@ -102,20 +102,20 @@ export default function AdminDashboard() {
       {/* ── Recent audit log ────────────────────────────────────── */}
       {recentAuditLog.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-pro-stone flex items-center gap-2">
-            <Clock className="w-4 h-4 text-pro-warm-gray" />
-            <h3 className="font-sans font-semibold text-pro-charcoal text-sm">Recent Audit Log</h3>
+          <div className="px-5 py-4 border-b border-accent-soft flex items-center gap-2">
+            <Clock className="w-4 h-4 text-graphite/60" />
+            <h3 className="font-sans font-semibold text-graphite text-sm">Recent Audit Log</h3>
           </div>
-          <div className="divide-y divide-pro-stone">
+          <div className="divide-y divide-accent-soft">
             {recentAuditLog.slice(0, 10).map((entry, i) => (
               <div key={i} className="px-5 py-3 flex items-center justify-between">
                 <div>
-                  <p className="font-sans text-sm text-pro-charcoal">{entry.action}</p>
-                  <p className="font-sans text-xs text-pro-warm-gray">
+                  <p className="font-sans text-sm text-graphite">{entry.action}</p>
+                  <p className="font-sans text-xs text-graphite/60">
                     {entry.actor.slice(0, 8)}…
                   </p>
                 </div>
-                <p className="font-sans text-xs text-pro-warm-gray">
+                <p className="font-sans text-xs text-graphite/60">
                   {new Date(entry.created_at).toLocaleString()}
                 </p>
               </div>

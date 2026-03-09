@@ -201,28 +201,28 @@ export default function BulkProtocolImport() {
       <div>
         <Link
           to="/admin/brands"
-          className="inline-flex items-center gap-2 text-sm text-pro-warm-gray hover:text-pro-charcoal mb-3"
+          className="inline-flex items-center gap-2 text-sm text-graphite/60 hover:text-graphite mb-3"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Brands
         </Link>
-        <h1 className="text-2xl font-bold text-pro-charcoal">Bulk Protocol Import</h1>
-        <p className="text-pro-warm-gray mt-1 text-sm">
+        <h1 className="text-2xl font-bold text-graphite">Bulk Protocol Import</h1>
+        <p className="text-graphite/60 mt-1 text-sm">
           Import multiple protocols at once via CSV. Download the template to get started.
         </p>
       </div>
 
       {/* Template download */}
-      <div className="flex items-center justify-between bg-pro-cream border border-pro-stone rounded-lg p-4">
+      <div className="flex items-center justify-between bg-accent-soft border border-accent-soft rounded-lg p-4">
         <div>
-          <p className="text-sm font-medium text-pro-navy">CSV Template</p>
-          <p className="text-xs text-pro-charcoal mt-0.5">
+          <p className="text-sm font-medium text-graphite">CSV Template</p>
+          <p className="text-xs text-graphite mt-0.5">
             Columns: protocol_name, category, duration_minutes, description, target_concerns (comma-separated), allowed_products (comma-separated), completion_status
           </p>
         </div>
         <button
           onClick={downloadTemplate}
-          className="flex items-center gap-2 px-3 py-2 bg-white border border-pro-stone text-pro-charcoal rounded-lg text-sm font-medium hover:bg-pro-cream transition-colors flex-shrink-0 ml-4"
+          className="flex items-center gap-2 px-3 py-2 bg-white border border-accent-soft text-graphite rounded-lg text-sm font-medium hover:bg-accent-soft transition-colors flex-shrink-0 ml-4"
         >
           <Download className="w-4 h-4" />
           Download Template
@@ -231,12 +231,12 @@ export default function BulkProtocolImport() {
 
       {/* Brand selector */}
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-1">Target Brand</label>
+        <label className="block text-sm font-medium text-graphite mb-1">Target Brand</label>
         <select
           value={selectedBrandId}
           onFocus={loadBrands}
           onChange={e => setSelectedBrandId(e.target.value)}
-          className="w-full max-w-sm px-3 py-2 border border-pro-stone rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy bg-white"
+          className="w-full max-w-sm px-3 py-2 border border-accent-soft rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-graphite bg-white"
         >
           <option value="">Select a brand...</option>
           {brands.map(b => (
@@ -247,7 +247,7 @@ export default function BulkProtocolImport() {
 
       {/* Import mode */}
       <div>
-        <label className="block text-sm font-medium text-pro-charcoal mb-2">Import Mode</label>
+        <label className="block text-sm font-medium text-graphite mb-2">Import Mode</label>
         <div className="flex gap-4">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -255,9 +255,9 @@ export default function BulkProtocolImport() {
               value="upsert"
               checked={mode === 'upsert'}
               onChange={() => setMode('upsert')}
-              className="text-pro-navy"
+              className="text-graphite"
             />
-            <span className="text-sm text-pro-charcoal">Upsert (insert or update existing)</span>
+            <span className="text-sm text-graphite">Upsert (insert or update existing)</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -265,9 +265,9 @@ export default function BulkProtocolImport() {
               value="insert_new"
               checked={mode === 'insert_new'}
               onChange={() => setMode('insert_new')}
-              className="text-pro-navy"
+              className="text-graphite"
             />
-            <span className="text-sm text-pro-charcoal">Insert new only (skip duplicates)</span>
+            <span className="text-sm text-graphite">Insert new only (skip duplicates)</span>
           </label>
         </div>
       </div>
@@ -276,26 +276,26 @@ export default function BulkProtocolImport() {
       <div
         onDragOver={e => e.preventDefault()}
         onDrop={handleDrop}
-        className="border-2 border-dashed border-pro-stone rounded-lg p-8 text-center hover:border-pro-stone transition-colors"
+        className="border-2 border-dashed border-accent-soft rounded-lg p-8 text-center hover:border-accent-soft transition-colors"
       >
         {fileName ? (
           <div className="flex items-center justify-center gap-3">
             <CheckCircle className="w-5 h-5 text-green-600" />
-            <span className="text-sm font-medium text-pro-charcoal">{fileName}</span>
+            <span className="text-sm font-medium text-graphite">{fileName}</span>
             <button
               onClick={() => { setFileName(''); setPreview([]); setResults([]); }}
-              className="text-pro-warm-gray hover:text-pro-warm-gray"
+              className="text-graphite/60 hover:text-graphite/60"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         ) : (
           <>
-            <Upload className="w-10 h-10 text-pro-warm-gray mx-auto mb-3" />
-            <p className="text-sm text-pro-warm-gray mb-2">Drag and drop a CSV file, or</p>
+            <Upload className="w-10 h-10 text-graphite/60 mx-auto mb-3" />
+            <p className="text-sm text-graphite/60 mb-2">Drag and drop a CSV file, or</p>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-pro-navy text-white text-sm font-medium rounded-lg hover:bg-pro-charcoal transition-colors"
+              className="px-4 py-2 bg-graphite text-white text-sm font-medium rounded-lg hover:bg-graphite transition-colors"
             >
               Browse Files
             </button>
@@ -315,15 +315,15 @@ export default function BulkProtocolImport() {
 
       {/* Preview table */}
       {preview.length > 0 && (
-        <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
-          <div className="px-5 py-3 border-b border-pro-stone flex items-center justify-between">
-            <p className="text-sm font-medium text-pro-charcoal">
+        <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
+          <div className="px-5 py-3 border-b border-accent-soft flex items-center justify-between">
+            <p className="text-sm font-medium text-graphite">
               Preview — {preview.length} protocol{preview.length !== 1 ? 's' : ''} found
             </p>
             <button
               onClick={handleImport}
               disabled={!selectedBrandId || importing}
-              className="flex items-center gap-2 px-4 py-2 bg-pro-navy text-white text-sm font-medium rounded-lg hover:bg-pro-charcoal disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-graphite text-white text-sm font-medium rounded-lg hover:bg-graphite disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
               {importing ? 'Importing...' : `Import ${preview.length} Protocols`}
@@ -331,41 +331,41 @@ export default function BulkProtocolImport() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-pro-ivory border-b border-pro-stone">
+              <thead className="bg-background border-b border-accent-soft">
                 <tr>
                   {['Protocol Name', 'Category', 'Duration', 'Completion Status', 'Concerns', 'Products'].map(h => (
-                    <th key={h} className="px-4 py-2 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                    <th key={h} className="px-4 py-2 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-pro-stone">
+              <tbody className="divide-y divide-accent-soft">
                 {preview.slice(0, 20).map((row, i) => (
-                  <tr key={i} className="hover:bg-pro-ivory">
-                    <td className="px-4 py-2 font-medium text-pro-charcoal">{row.protocol_name}</td>
-                    <td className="px-4 py-2 text-pro-warm-gray">{row.category || '—'}</td>
-                    <td className="px-4 py-2 text-pro-warm-gray">{row.duration_minutes ? `${row.duration_minutes}m` : '—'}</td>
+                  <tr key={i} className="hover:bg-background">
+                    <td className="px-4 py-2 font-medium text-graphite">{row.protocol_name}</td>
+                    <td className="px-4 py-2 text-graphite/60">{row.category || '—'}</td>
+                    <td className="px-4 py-2 text-graphite/60">{row.duration_minutes ? `${row.duration_minutes}m` : '—'}</td>
                     <td className="px-4 py-2">
                       <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
                         row.completion_status === 'fully_complete' ? 'bg-green-100 text-green-700' :
-                        row.completion_status === 'steps_complete' ? 'bg-pro-stone text-pro-charcoal' :
-                        'bg-pro-stone text-pro-warm-gray'
+                        row.completion_status === 'steps_complete' ? 'bg-accent-soft text-graphite' :
+                        'bg-accent-soft text-graphite/60'
                       }`}>
                         {row.completion_status || 'name_only'}
                       </span>
                     </td>
-                    <td className="px-4 py-2 text-pro-warm-gray max-w-[160px] truncate">
+                    <td className="px-4 py-2 text-graphite/60 max-w-[160px] truncate">
                       {row.target_concerns?.join(', ') || '—'}
                     </td>
-                    <td className="px-4 py-2 text-pro-warm-gray max-w-[160px] truncate">
+                    <td className="px-4 py-2 text-graphite/60 max-w-[160px] truncate">
                       {row.allowed_products?.join(', ') || '—'}
                     </td>
                   </tr>
                 ))}
                 {preview.length > 20 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-2 text-sm text-pro-warm-gray text-center">
+                    <td colSpan={6} className="px-4 py-2 text-sm text-graphite/60 text-center">
                       + {preview.length - 20} more rows
                     </td>
                   </tr>
@@ -378,8 +378,8 @@ export default function BulkProtocolImport() {
 
       {/* Results */}
       {results.length > 0 && (
-        <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
-          <div className="px-5 py-4 border-b border-pro-stone flex items-center gap-6">
+        <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
+          <div className="px-5 py-4 border-b border-accent-soft flex items-center gap-6">
             <div className="flex items-center gap-2 text-green-700">
               <CheckCircle className="w-4 h-4" />
               <span className="text-sm font-medium">{inserted} imported</span>
@@ -396,7 +396,7 @@ export default function BulkProtocolImport() {
               </div>
             )}
           </div>
-          <div className="max-h-64 overflow-y-auto divide-y divide-pro-stone">
+          <div className="max-h-64 overflow-y-auto divide-y divide-accent-soft">
             {results.filter(r => r.status !== 'inserted').map((result, i) => (
               <div key={i} className="px-5 py-2.5 flex items-center gap-3">
                 {result.status === 'error' ? (
@@ -404,9 +404,9 @@ export default function BulkProtocolImport() {
                 ) : (
                   <span className="w-4 h-4 text-yellow-500 text-xs font-bold flex-shrink-0">~</span>
                 )}
-                <span className="text-sm font-medium text-pro-charcoal">Row {result.row}: {result.protocol_name}</span>
+                <span className="text-sm font-medium text-graphite">Row {result.row}: {result.protocol_name}</span>
                 {result.message && (
-                  <span className="text-xs text-pro-warm-gray ml-auto">{result.message}</span>
+                  <span className="text-xs text-graphite/60 ml-auto">{result.message}</span>
                 )}
               </div>
             ))}

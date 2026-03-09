@@ -66,32 +66,32 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-pro-ivory">
-        <div className="bg-gradient-to-r from-pro-navy to-pro-charcoal py-12">
+      <div className="min-h-screen bg-background">
+        <div className="bg-gradient-to-r from-graphite to-graphite py-12">
           <div className="max-w-5xl mx-auto px-6">
-            <Skeleton className="h-4 w-40 mb-2 bg-pro-charcoal" />
-            <Skeleton className="h-10 w-72 mb-3 bg-pro-charcoal" />
-            <Skeleton className="h-5 w-56 bg-pro-charcoal" />
+            <Skeleton className="h-4 w-40 mb-2 bg-graphite" />
+            <Skeleton className="h-10 w-72 mb-3 bg-graphite" />
+            <Skeleton className="h-5 w-56 bg-graphite" />
           </div>
         </div>
         <div className="max-w-5xl mx-auto px-6 py-12 space-y-8">
           <div className="grid grid-cols-3 gap-6">
             {[0, 1, 2].map(i => (
-              <div key={i} className="bg-white rounded-lg border border-pro-stone p-6">
+              <div key={i} className="bg-white rounded-lg border border-accent-soft p-6">
                 <Skeleton className="h-4 w-32 mb-2" />
                 <Skeleton className="h-8 w-16 mb-2" />
                 <Skeleton className="h-4 w-24" />
               </div>
             ))}
           </div>
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <Skeleton className="h-6 w-40 mb-4" />
             <Skeleton className="h-4 w-full mb-2" />
             <Skeleton className="h-4 w-3/4 mb-2" />
             <Skeleton className="h-4 w-5/6" />
           </div>
           {[0, 1, 2].map(i => (
-            <div key={i} className="bg-white rounded-lg border border-pro-stone p-5">
+            <div key={i} className="bg-white rounded-lg border border-accent-soft p-5">
               <Skeleton className="h-5 w-48 mb-2" />
               <Skeleton className="h-4 w-32 mb-3" />
               <Skeleton className="h-4 w-full mb-1" />
@@ -105,11 +105,11 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
   if (!plan) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-pro-ivory">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-pro-warm-gray mx-auto mb-3" />
-          <p className="text-pro-charcoal font-medium">Plan not found</p>
-          <p className="text-sm text-pro-warm-gray mt-1">This plan may have been deleted or you don't have access.</p>
+          <AlertCircle className="w-12 h-12 text-graphite/60 mx-auto mb-3" />
+          <p className="text-graphite font-medium">Plan not found</p>
+          <p className="text-sm text-graphite/60 mt-1">This plan may have been deleted or you don't have access.</p>
         </div>
       </div>
     );
@@ -124,14 +124,14 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
   const assumptions = plan.data_assumptions_section || {};
 
   return (
-    <div className="min-h-screen bg-pro-ivory">
-      <div className="bg-gradient-to-r from-pro-navy to-pro-charcoal text-white py-12">
+    <div className="min-h-screen bg-background">
+      <div className="bg-gradient-to-r from-graphite to-graphite text-white py-12">
         <div className="max-w-5xl mx-auto px-6">
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-sm font-medium text-pro-stone mb-2">Implementation Plan</div>
+              <div className="text-sm font-medium text-accent-soft mb-2">Implementation Plan</div>
               <h1 className="text-4xl font-bold mb-3">{plan.spa_leads?.spa_name}</h1>
-              <p className="text-pro-stone text-lg">
+              <p className="text-accent-soft text-lg">
                 {plan.spa_leads?.location} • {plan.spa_leads?.spa_type?.charAt(0).toUpperCase() + plan.spa_leads?.spa_type?.slice(1)}
               </p>
             </div>
@@ -140,7 +140,7 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
                 <div className="flex gap-3">
                   <button
                     onClick={handleShare}
-                    className="px-4 py-2 bg-white text-pro-charcoal rounded-lg hover:bg-pro-stone flex items-center gap-2 font-medium print:hidden"
+                    className="px-4 py-2 bg-white text-graphite rounded-lg hover:bg-accent-soft flex items-center gap-2 font-medium print:hidden"
                   >
                     <Share2 className="w-4 h-4" />
                     Share
@@ -148,7 +148,7 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
                   <button
                     onClick={handleExportPdf}
                     disabled={exportingPdf}
-                    className="px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal flex items-center gap-2 font-medium disabled:opacity-70 print:hidden"
+                    className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite flex items-center gap-2 font-medium disabled:opacity-70 print:hidden"
                   >
                     {exportingPdf ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -172,38 +172,38 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-12">
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6">Executive Summary</h2>
+          <h2 className="text-2xl font-bold text-graphite mb-6">Executive Summary</h2>
 
           <div className="grid grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-lg border border-pro-stone p-6">
-              <div className="text-sm text-pro-warm-gray mb-2">Total Services</div>
-              <div className="text-3xl font-bold text-pro-charcoal">{summary.current_state?.total_services || 0}</div>
+            <div className="bg-white rounded-lg border border-accent-soft p-6">
+              <div className="text-sm text-graphite/60 mb-2">Total Services</div>
+              <div className="text-3xl font-bold text-graphite">{summary.current_state?.total_services || 0}</div>
               <div className="text-xs text-green-600 mt-2 flex items-center gap-1">
                 <CheckCircle className="w-4 h-4" />
                 {summary.current_state?.confirmed_protocols || 0} validated
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-pro-stone p-6">
-              <div className="text-sm text-pro-warm-gray mb-2">Growth Opportunities</div>
-              <div className="text-3xl font-bold text-pro-charcoal">{summary.growth_opportunity?.recommended_additions || 0}</div>
-              <div className="text-xs text-pro-warm-gray mt-2">Strategic additions</div>
+            <div className="bg-white rounded-lg border border-accent-soft p-6">
+              <div className="text-sm text-graphite/60 mb-2">Growth Opportunities</div>
+              <div className="text-3xl font-bold text-graphite">{summary.growth_opportunity?.recommended_additions || 0}</div>
+              <div className="text-xs text-graphite/60 mt-2">Strategic additions</div>
             </div>
 
-            <div className="bg-white rounded-lg border border-pro-stone p-6">
-              <div className="text-sm text-pro-warm-gray mb-2">Revenue Potential</div>
+            <div className="bg-white rounded-lg border border-accent-soft p-6">
+              <div className="text-sm text-graphite/60 mb-2">Revenue Potential</div>
               <div className="text-3xl font-bold text-green-700">
                 {summary.growth_opportunity?.growth_potential_percent || 0}%
               </div>
-              <div className="text-xs text-pro-warm-gray mt-2">Estimated growth</div>
+              <div className="text-xs text-graphite/60 mt-2">Estimated growth</div>
             </div>
           </div>
 
-          <div className="bg-pro-cream border border-pro-stone rounded-lg p-6">
-            <h3 className="font-semibold text-pro-navy mb-3">Key Highlights</h3>
+          <div className="bg-accent-soft border border-accent-soft rounded-lg p-6">
+            <h3 className="font-semibold text-graphite mb-3">Key Highlights</h3>
             <ul className="space-y-2">
               {summary.key_highlights?.map((highlight: string, idx: number) => (
-                <li key={idx} className="flex items-start gap-2 text-pro-navy">
+                <li key={idx} className="flex items-start gap-2 text-graphite">
                   <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>{highlight}</span>
                 </li>
@@ -213,46 +213,46 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6">Menu Validation</h2>
+          <h2 className="text-2xl font-bold text-graphite mb-6">Menu Validation</h2>
 
-          <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
             <div className="flex items-center gap-6 mb-6">
               <div>
-                <div className="text-sm text-pro-warm-gray">High Confidence</div>
+                <div className="text-sm text-graphite/60">High Confidence</div>
                 <div className="text-2xl font-bold text-green-700">
                   {validation.confidence_breakdown?.high || 0}
                 </div>
               </div>
               <div>
-                <div className="text-sm text-pro-warm-gray">Medium Confidence</div>
+                <div className="text-sm text-graphite/60">Medium Confidence</div>
                 <div className="text-2xl font-bold text-amber-700">
                   {validation.confidence_breakdown?.medium || 0}
                 </div>
               </div>
               <div>
-                <div className="text-sm text-pro-warm-gray">Needs Review</div>
-                <div className="text-2xl font-bold text-pro-charcoal">
+                <div className="text-sm text-graphite/60">Needs Review</div>
+                <div className="text-2xl font-bold text-graphite">
                   {validation.confidence_breakdown?.low || 0}
                 </div>
               </div>
             </div>
-            <p className="text-sm text-pro-charcoal">{validation.validation_summary}</p>
+            <p className="text-sm text-graphite">{validation.validation_summary}</p>
           </div>
 
           {validation.services_by_confidence?.High && (
             <div className="space-y-3">
-              <h3 className="font-semibold text-pro-charcoal">Validated Services</h3>
+              <h3 className="font-semibold text-graphite">Validated Services</h3>
               {validation.services_by_confidence.High.slice(0, 5).map((service: any, idx: number) => (
-                <div key={idx} className="bg-white border border-pro-stone rounded-lg p-4">
+                <div key={idx} className="bg-white border border-accent-soft rounded-lg p-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium text-pro-charcoal">{service.service_name}</div>
-                      <div className="text-sm text-pro-warm-gray mt-1">
+                      <div className="font-medium text-graphite">{service.service_name}</div>
+                      <div className="text-sm text-graphite/60 mt-1">
                         Protocol: {service.protocol_name}
                       </div>
                     </div>
                     {service.price && (
-                      <div className="text-sm font-medium text-pro-charcoal">${service.price}</div>
+                      <div className="text-sm font-medium text-graphite">${service.price}</div>
                     )}
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-graphite mb-6 flex items-center gap-2">
             <TrendingUp className="w-7 h-7 text-green-600" />
             Growth Opportunities
           </h2>
@@ -279,23 +279,23 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
           <div className="space-y-4">
             {opportunities.recommended_services?.map((service: any, idx: number) => (
-              <div key={idx} className="bg-white border border-pro-stone rounded-lg p-5">
+              <div key={idx} className="bg-white border border-accent-soft rounded-lg p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <div className="font-semibold text-pro-charcoal text-lg">{service.protocol_name}</div>
-                    <div className="text-sm text-pro-warm-gray">{service.category}</div>
+                    <div className="font-semibold text-graphite text-lg">{service.protocol_name}</div>
+                    <div className="text-sm text-graphite/60">{service.category}</div>
                   </div>
                   {service.priority && (
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                       service.priority === 'High' ? 'bg-red-100 text-red-700' :
                       service.priority === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                      'bg-pro-stone text-pro-charcoal'
+                      'bg-accent-soft text-graphite'
                     }`}>
                       {service.priority} Priority
                     </span>
                   )}
                 </div>
-                <p className="text-pro-charcoal mb-3">{service.why_recommend}</p>
+                <p className="text-graphite mb-3">{service.why_recommend}</p>
                 {service.estimated_revenue && (
                   <div className="text-green-700 font-medium">
                     Estimated Revenue: ${Math.round(service.estimated_revenue).toLocaleString()}/month
@@ -307,23 +307,23 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6 flex items-center gap-2">
-            <Calendar className="w-7 h-7 text-pro-navy" />
+          <h2 className="text-2xl font-bold text-graphite mb-6 flex items-center gap-2">
+            <Calendar className="w-7 h-7 text-graphite" />
             90-Day Implementation Roadmap
           </h2>
 
-          <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
             <div className="grid grid-cols-3 gap-6">
               <div>
-                <div className="text-sm text-pro-warm-gray">Total Phases</div>
-                <div className="text-2xl font-bold text-pro-charcoal">{roadmap.total_phases || 0}</div>
+                <div className="text-sm text-graphite/60">Total Phases</div>
+                <div className="text-2xl font-bold text-graphite">{roadmap.total_phases || 0}</div>
               </div>
               <div>
-                <div className="text-sm text-pro-warm-gray">Training Hours</div>
-                <div className="text-2xl font-bold text-pro-charcoal">{roadmap.total_training_hours || 0}h</div>
+                <div className="text-sm text-graphite/60">Training Hours</div>
+                <div className="text-2xl font-bold text-graphite">{roadmap.total_training_hours || 0}h</div>
               </div>
               <div>
-                <div className="text-sm text-pro-warm-gray">Risk Level</div>
+                <div className="text-sm text-graphite/60">Risk Level</div>
                 <div className={`text-2xl font-bold ${
                   (roadmap.avg_risk_score || 0) <= 30 ? 'text-green-700' :
                   (roadmap.avg_risk_score || 0) <= 60 ? 'text-amber-700' :
@@ -337,10 +337,10 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
           {roadmap.phases?.map((phase: any, idx: number) => (
             <div key={idx} className="mb-8">
-              <div className="bg-pro-stone rounded-t-lg px-6 py-4 border border-pro-stone">
+              <div className="bg-accent-soft rounded-t-lg px-6 py-4 border border-accent-soft">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-pro-charcoal text-lg">{phase.phase_name}</h3>
-                  <div className="flex items-center gap-4 text-sm text-pro-warm-gray">
+                  <h3 className="font-bold text-graphite text-lg">{phase.phase_name}</h3>
+                  <div className="flex items-center gap-4 text-sm text-graphite/60">
                     <span className="flex items-center gap-1">
                       <GraduationCap className="w-4 h-4" />
                       {phase.total_training_hours}h
@@ -355,85 +355,85 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
                   </div>
                 </div>
               </div>
-              <div className="bg-white border border-pro-stone border-t-0 rounded-b-lg divide-y divide-pro-stone">
+              <div className="bg-white border border-accent-soft border-t-0 rounded-b-lg divide-y divide-accent-soft">
                 {phase.services?.map((service: any, sIdx: number) => (
                   <div key={sIdx} className="p-4">
-                    <div className="font-medium text-pro-charcoal">{service.name}</div>
-                    <div className="text-sm text-pro-warm-gray mt-1">{service.protocol}</div>
-                    <div className="text-xs text-pro-warm-gray mt-2 italic">{service.rationale}</div>
+                    <div className="font-medium text-graphite">{service.name}</div>
+                    <div className="text-sm text-graphite/60 mt-1">{service.protocol}</div>
+                    <div className="text-xs text-graphite/60 mt-2 italic">{service.rationale}</div>
                   </div>
                 ))}
               </div>
             </div>
           ))}
 
-          <div className="bg-pro-cream border border-pro-stone rounded-lg p-5">
-            <h4 className="font-semibold text-pro-navy mb-2">Risk Management Approach</h4>
-            <p className="text-pro-navy text-sm">{roadmap.risk_management_approach}</p>
+          <div className="bg-accent-soft border border-accent-soft rounded-lg p-5">
+            <h4 className="font-semibold text-graphite mb-2">Risk Management Approach</h4>
+            <p className="text-graphite text-sm">{roadmap.risk_management_approach}</p>
           </div>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6 flex items-center gap-2">
-            <Package className="w-7 h-7 text-pro-navy" />
+          <h2 className="text-2xl font-bold text-graphite mb-6 flex items-center gap-2">
+            <Package className="w-7 h-7 text-graphite" />
             Opening Order & Onboarding
           </h2>
 
           {opening.seasonal_launch && (
-            <div className="bg-pro-cream border border-pro-stone rounded-lg p-5 mb-6">
+            <div className="bg-accent-soft border border-accent-soft rounded-lg p-5 mb-6">
               <h4 className="font-semibold text-teal-900 mb-2">Recommended Launch Window</h4>
               <div className="text-teal-800">{opening.seasonal_launch.recommended_window}</div>
               {opening.seasonal_launch.rationale && (
-                <div className="text-sm text-pro-navy mt-2">{opening.seasonal_launch.rationale}</div>
+                <div className="text-sm text-graphite mt-2">{opening.seasonal_launch.rationale}</div>
               )}
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-6 mb-6">
-            <div className="bg-white rounded-lg border border-pro-stone p-5">
-              <h4 className="font-semibold text-pro-charcoal mb-3">Backbar Products</h4>
-              <div className="text-3xl font-bold text-pro-charcoal mb-2">
+            <div className="bg-white rounded-lg border border-accent-soft p-5">
+              <h4 className="font-semibold text-graphite mb-3">Backbar Products</h4>
+              <div className="text-3xl font-bold text-graphite mb-2">
                 {opening.backbar_products?.length || 0}
               </div>
-              <div className="text-sm text-pro-warm-gray">SKUs required</div>
+              <div className="text-sm text-graphite/60">SKUs required</div>
             </div>
 
-            <div className="bg-white rounded-lg border border-pro-stone p-5">
-              <h4 className="font-semibold text-pro-charcoal mb-3">Retail Assortment</h4>
-              <div className="text-3xl font-bold text-pro-charcoal mb-2">
+            <div className="bg-white rounded-lg border border-accent-soft p-5">
+              <h4 className="font-semibold text-graphite mb-3">Retail Assortment</h4>
+              <div className="text-3xl font-bold text-graphite mb-2">
                 {opening.retail_products?.length || 0}
               </div>
-              <div className="text-sm text-pro-warm-gray">Recommended SKUs</div>
+              <div className="text-sm text-graphite/60">Recommended SKUs</div>
             </div>
           </div>
 
           {opening.checklists && (
             <div className="grid grid-cols-3 gap-4">
               {opening.checklists.setup && (
-                <div className="bg-white rounded-lg border border-pro-stone p-4">
-                  <h4 className="font-semibold text-pro-charcoal mb-2 text-sm">Setup Checklist</h4>
-                  <div className="text-2xl font-bold text-pro-charcoal">
+                <div className="bg-white rounded-lg border border-accent-soft p-4">
+                  <h4 className="font-semibold text-graphite mb-2 text-sm">Setup Checklist</h4>
+                  <div className="text-2xl font-bold text-graphite">
                     {opening.checklists.setup.reduce((sum: number, section: any) => sum + section.items.length, 0)}
                   </div>
-                  <div className="text-xs text-pro-warm-gray">items</div>
+                  <div className="text-xs text-graphite/60">items</div>
                 </div>
               )}
               {opening.checklists.training && (
-                <div className="bg-white rounded-lg border border-pro-stone p-4">
-                  <h4 className="font-semibold text-pro-charcoal mb-2 text-sm">Training Checklist</h4>
-                  <div className="text-2xl font-bold text-pro-charcoal">
+                <div className="bg-white rounded-lg border border-accent-soft p-4">
+                  <h4 className="font-semibold text-graphite mb-2 text-sm">Training Checklist</h4>
+                  <div className="text-2xl font-bold text-graphite">
                     {opening.checklists.training.reduce((sum: number, section: any) => sum + section.items.length, 0)}
                   </div>
-                  <div className="text-xs text-pro-warm-gray">items</div>
+                  <div className="text-xs text-graphite/60">items</div>
                 </div>
               )}
               {opening.checklists.launch && (
-                <div className="bg-white rounded-lg border border-pro-stone p-4">
-                  <h4 className="font-semibold text-pro-charcoal mb-2 text-sm">Launch Checklist</h4>
-                  <div className="text-2xl font-bold text-pro-charcoal">
+                <div className="bg-white rounded-lg border border-accent-soft p-4">
+                  <h4 className="font-semibold text-graphite mb-2 text-sm">Launch Checklist</h4>
+                  <div className="text-2xl font-bold text-graphite">
                     {opening.checklists.launch.reduce((sum: number, section: any) => sum + section.items.length, 0)}
                   </div>
-                  <div className="text-xs text-pro-warm-gray">items</div>
+                  <div className="text-xs text-graphite/60">items</div>
                 </div>
               )}
             </div>
@@ -441,24 +441,24 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6 flex items-center gap-2">
-            <Award className="w-7 h-7 text-pro-charcoal" />
+          <h2 className="text-2xl font-bold text-graphite mb-6 flex items-center gap-2">
+            <Award className="w-7 h-7 text-graphite" />
             {brand.headline || 'Why Partner with Naturopathica'}
           </h2>
 
           {brand.introduction && (
-            <div className="bg-pro-ivory border border-pro-stone rounded-lg p-6 mb-6">
-              <p className="text-pro-charcoal">{brand.introduction}</p>
+            <div className="bg-background border border-accent-soft rounded-lg p-6 mb-6">
+              <p className="text-graphite">{brand.introduction}</p>
             </div>
           )}
 
           <div className="space-y-4">
             {brand.talking_points?.map((point: any, idx: number) => (
-              <div key={idx} className="bg-white border border-pro-stone rounded-lg p-5">
-                <h4 className="font-semibold text-pro-charcoal mb-3">{point.headline}</h4>
+              <div key={idx} className="bg-white border border-accent-soft rounded-lg p-5">
+                <h4 className="font-semibold text-graphite mb-3">{point.headline}</h4>
                 <ul className="space-y-2">
                   {point.supporting_points?.map((subpoint: string, sIdx: number) => (
-                    <li key={sIdx} className="flex items-start gap-2 text-pro-charcoal">
+                    <li key={sIdx} className="flex items-start gap-2 text-graphite">
                       <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-1" />
                       <span className="text-sm">{subpoint}</span>
                     </li>
@@ -470,18 +470,18 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-pro-charcoal mb-6 flex items-center gap-2">
-            <AlertCircle className="w-7 h-7 text-pro-warm-gray" />
+          <h2 className="text-2xl font-bold text-graphite mb-6 flex items-center gap-2">
+            <AlertCircle className="w-7 h-7 text-graphite/60" />
             Data & Assumptions
           </h2>
 
-          <div className="bg-pro-ivory border border-pro-stone rounded-lg p-6">
+          <div className="bg-background border border-accent-soft rounded-lg p-6">
             <div className="mb-4">
-              <div className="text-sm text-pro-warm-gray mb-2">Confidence Level</div>
+              <div className="text-sm text-graphite/60 mb-2">Confidence Level</div>
               <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
                 assumptions.confidence_level === 'High' ? 'bg-green-100 text-green-700' :
                 assumptions.confidence_level === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                'bg-pro-stone text-pro-charcoal'
+                'bg-accent-soft text-graphite'
               }`}>
                 {assumptions.confidence_level || 'Unknown'}
               </div>
@@ -489,8 +489,8 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
             {assumptions.data_sources && (
               <div className="mb-4">
-                <div className="text-sm font-medium text-pro-charcoal mb-2">Data Sources</div>
-                <ul className="text-sm text-pro-charcoal space-y-1">
+                <div className="text-sm font-medium text-graphite mb-2">Data Sources</div>
+                <ul className="text-sm text-graphite space-y-1">
                   {assumptions.data_sources.map((source: string, idx: number) => (
                     <li key={idx}>• {source}</li>
                   ))}
@@ -500,8 +500,8 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
 
             {assumptions.estimation_approach && (
               <div className="mb-4">
-                <div className="text-sm font-medium text-pro-charcoal mb-2">Estimation Approach</div>
-                <p className="text-sm text-pro-charcoal">{assumptions.estimation_approach}</p>
+                <div className="text-sm font-medium text-graphite mb-2">Estimation Approach</div>
+                <p className="text-sm text-graphite">{assumptions.estimation_approach}</p>
               </div>
             )}
 
@@ -517,14 +517,14 @@ export default function PlanOutputView({ planId, readOnly = false }: PlanOutputV
         </section>
       </div>
 
-      <div className="bg-pro-navy text-white py-12">
+      <div className="bg-graphite text-white py-12">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h3 className="text-2xl font-bold mb-4">Ready to Get Started?</h3>
-          <p className="text-pro-stone mb-6">
+          <p className="text-accent-soft mb-6">
             Let's discuss how Naturopathica can help elevate your spa's service offerings.
           </p>
           {!readOnly && (
-            <button className="px-8 py-3 bg-white text-pro-charcoal rounded-lg hover:bg-pro-stone font-medium">
+            <button className="px-8 py-3 bg-white text-graphite rounded-lg hover:bg-accent-soft font-medium">
               Schedule a Consultation
             </button>
           )}

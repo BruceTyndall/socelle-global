@@ -147,7 +147,7 @@ export function PaywallGate({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-6 h-6 border-2 border-pro-gold border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -243,18 +243,18 @@ function UpgradeCard({ reason, gapCount, gMax, onUpgrade }: UpgradeCardProps) {
     <div className="flex flex-col items-center justify-center py-16 px-8 text-center max-w-md mx-auto">
       <div className="text-5xl mb-4">{content.icon}</div>
 
-      <h3 className="text-xl font-semibold text-pro-charcoal mb-3">
+      <h3 className="text-xl font-semibold text-graphite mb-3">
         {content.headline}
       </h3>
 
-      <p className="text-pro-warm-gray text-sm leading-relaxed mb-6">
+      <p className="text-graphite/60 text-sm leading-relaxed mb-6">
         {content.sub}
       </p>
 
       {reason === 'limit_reached' && gMax !== undefined && (
-        <div className="w-full bg-pro-warm-gray/20 rounded-full h-2 mb-6">
+        <div className="w-full bg-graphite/60/20 rounded-full h-2 mb-6">
           <div
-            className="bg-pro-gold h-2 rounded-full transition-all"
+            className="bg-accent h-2 rounded-full transition-all"
             style={{ width: `${Math.min(100, ((gapCount ?? 0) / gMax) * 100)}%` }}
           />
         </div>
@@ -269,7 +269,7 @@ function UpgradeCard({ reason, gapCount, gMax, onUpgrade }: UpgradeCardProps) {
         {loading ? 'Redirecting…' : content.cta}
       </Button>
 
-      <p className="text-xs text-pro-warm-gray/70 mt-3">
+      <p className="text-xs text-graphite/60/70 mt-3">
         Cancel anytime. No commitment.
       </p>
     </div>

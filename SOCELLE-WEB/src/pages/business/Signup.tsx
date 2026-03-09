@@ -67,27 +67,27 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-pro-ivory flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Link
           to="/"
-          className="flex items-center gap-2 text-pro-warm-gray hover:text-pro-charcoal mb-6 transition-colors"
+          className="flex items-center gap-2 text-graphite/60 hover:text-graphite mb-6 transition-colors"
         >
           <Home className="w-4 h-4" />
           <span className="text-sm">Back to Home</span>
         </Link>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 border border-pro-stone">
+        <div className="bg-white rounded-lg shadow-sm p-8 border border-accent-soft">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-12 h-12 bg-pro-stone rounded-lg flex items-center justify-center">
-              <UserPlus className="w-6 h-6 text-pro-navy" />
+            <div className="w-12 h-12 bg-accent-soft rounded-lg flex items-center justify-center">
+              <UserPlus className="w-6 h-6 text-graphite" />
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-center text-pro-charcoal mb-2">
+          <h1 className="text-2xl font-bold text-center text-graphite mb-2">
             Create Your Account
           </h1>
-          <p className="text-center text-pro-warm-gray mb-6">
+          <p className="text-center text-graphite/60 mb-6">
             Start exploring professional brands today
           </p>
 
@@ -100,7 +100,7 @@ export default function Signup() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="businessName" className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label htmlFor="businessName" className="block text-sm font-medium text-graphite mb-2">
                 Business Name
               </label>
               <input
@@ -109,20 +109,20 @@ export default function Signup() {
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="Your Business Name"
               />
             </div>
 
             <div>
-              <label htmlFor="businessType" className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label htmlFor="businessType" className="block text-sm font-medium text-graphite mb-2">
                 Business Type
               </label>
               <select
                 id="businessType"
                 value={businessType}
                 onChange={(e) => setBusinessType(e.target.value)}
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
               >
                 <option value="spa">Spa</option>
                 <option value="salon">Salon</option>
@@ -133,7 +133,7 @@ export default function Signup() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-graphite mb-2">
                 Email Address
               </label>
               <input
@@ -142,13 +142,13 @@ export default function Signup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="you@business.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-graphite mb-2">
                 Password
               </label>
               <input
@@ -157,7 +157,7 @@ export default function Signup() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                className="w-full px-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                 placeholder="••••••••"
               />
               {/* Password strength indicator */}
@@ -168,15 +168,15 @@ export default function Signup() {
                 const hasSpecial = /[^A-Za-z0-9]/.test(password);
                 const score = (len >= 8 ? 1 : 0) + (len >= 12 ? 1 : 0) + (hasUpper ? 1 : 0) + (hasNumber ? 1 : 0) + (hasSpecial ? 1 : 0);
                 const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
-                const colors = ['', 'bg-red-500', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500', 'bg-pro-navy'];
-                const textColors = ['', 'text-red-600', 'text-orange-600', 'text-yellow-600', 'text-green-600', 'text-pro-navy'];
+                const colors = ['', 'bg-red-500', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500', 'bg-graphite'];
+                const textColors = ['', 'text-red-600', 'text-orange-600', 'text-yellow-600', 'text-green-600', 'text-graphite'];
                 return (
                   <div className="mt-2">
                     <div className="flex gap-1 mb-1">
                       {[1, 2, 3, 4, 5].map(i => (
                         <div
                           key={i}
-                          className={`h-1 flex-1 rounded-full transition-colors ${i <= score ? colors[score] : 'bg-pro-stone'}`}
+                          className={`h-1 flex-1 rounded-full transition-colors ${i <= score ? colors[score] : 'bg-accent-soft'}`}
                         />
                       ))}
                     </div>
@@ -192,16 +192,16 @@ export default function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-pro-navy text-white font-medium rounded-lg hover:bg-pro-charcoal disabled:bg-pro-warm-gray disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-graphite text-white font-medium rounded-lg hover:bg-graphite disabled:bg-graphite/60 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-pro-warm-gray">
+            <p className="text-sm text-graphite/60">
               Already have an account?{' '}
-              <Link to="/portal/login" className="text-pro-navy hover:text-pro-charcoal font-medium">
+              <Link to="/portal/login" className="text-graphite hover:text-graphite font-medium">
                 Log in
               </Link>
             </p>

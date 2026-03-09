@@ -92,31 +92,31 @@ export default function BusinessRulesView() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <Settings className="w-8 h-8 text-pro-charcoal" />
+          <Settings className="w-8 h-8 text-graphite" />
           <div>
-            <h2 className="text-2xl font-semibold text-pro-charcoal">Business Rules</h2>
-            <p className="text-sm text-pro-warm-gray">Configure benchmarks and revenue model assumptions</p>
+            <h2 className="text-2xl font-semibold text-graphite">Business Rules</h2>
+            <p className="text-sm text-graphite/60">Configure benchmarks and revenue model assumptions</p>
           </div>
         </div>
 
-        <div className="bg-pro-cream border border-pro-stone rounded-lg p-4 flex gap-3">
-          <AlertCircle className="w-5 h-5 text-pro-charcoal flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-pro-navy">
+        <div className="bg-accent-soft border border-accent-soft rounded-lg p-4 flex gap-3">
+          <AlertCircle className="w-5 h-5 text-graphite flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-graphite">
             <strong>Governance Model:</strong> All intelligence engine recommendations are based on these configurable rules.
             Changes here immediately affect gap analysis and revenue estimations. No hardcoded assumptions.
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone">
-        <div className="border-b border-pro-stone">
+      <div className="bg-white rounded-lg border border-accent-soft">
+        <div className="border-b border-accent-soft">
           <div className="flex">
             <button
               onClick={() => setActiveTab('benchmarks')}
               className={`flex-1 px-6 py-3 font-medium transition-colors ${
                 activeTab === 'benchmarks'
-                  ? 'border-b-2 border-pro-navy text-pro-navy'
-                  : 'text-pro-warm-gray hover:text-pro-charcoal'
+                  ? 'border-b-2 border-graphite text-graphite'
+                  : 'text-graphite/60 hover:text-graphite'
               }`}
             >
               Service Category Benchmarks
@@ -125,8 +125,8 @@ export default function BusinessRulesView() {
               onClick={() => setActiveTab('revenue')}
               className={`flex-1 px-6 py-3 font-medium transition-colors ${
                 activeTab === 'revenue'
-                  ? 'border-b-2 border-pro-navy text-pro-navy'
-                  : 'text-pro-warm-gray hover:text-pro-charcoal'
+                  ? 'border-b-2 border-graphite text-graphite'
+                  : 'text-graphite/60 hover:text-graphite'
               }`}
             >
               Revenue Model Defaults
@@ -138,18 +138,18 @@ export default function BusinessRulesView() {
           {activeTab === 'benchmarks' ? (
             <div className="space-y-6">
               {Object.entries(groupedBenchmarks).map(([spaType, benchmarkList]) => (
-                <div key={spaType} className="border border-pro-stone rounded-lg overflow-hidden">
-                  <div className="bg-pro-ivory px-4 py-3 border-b border-pro-stone">
-                    <h3 className="font-semibold text-pro-charcoal capitalize">
+                <div key={spaType} className="border border-accent-soft rounded-lg overflow-hidden">
+                  <div className="bg-background px-4 py-3 border-b border-accent-soft">
+                    <h3 className="font-semibold text-graphite capitalize">
                       {spaType.replace('medspa', 'Med Spa')}
                     </h3>
                   </div>
-                  <div className="divide-y divide-pro-stone">
+                  <div className="divide-y divide-accent-soft">
                     {benchmarkList.map((benchmark) => (
                       <div key={benchmark.id} className="p-4">
                         <div className="grid grid-cols-12 gap-4 items-start">
                           <div className="col-span-2">
-                            <div className="font-medium text-pro-charcoal">{benchmark.category}</div>
+                            <div className="font-medium text-graphite">{benchmark.category}</div>
                           </div>
                           <div className="col-span-1">
                             <input
@@ -160,9 +160,9 @@ export default function BusinessRulesView() {
                                 setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
                               }}
                               onBlur={() => updateBenchmark(benchmark)}
-                              className="w-full px-2 py-1 border border-pro-stone rounded text-sm"
+                              className="w-full px-2 py-1 border border-accent-soft rounded text-sm"
                             />
-                            <div className="text-xs text-pro-warm-gray mt-1">Min Count</div>
+                            <div className="text-xs text-graphite/60 mt-1">Min Count</div>
                           </div>
                           <div className="col-span-2">
                             <select
@@ -172,13 +172,13 @@ export default function BusinessRulesView() {
                                 setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
                                 updateBenchmark(updated);
                               }}
-                              className="w-full px-2 py-1 border border-pro-stone rounded text-sm"
+                              className="w-full px-2 py-1 border border-accent-soft rounded text-sm"
                             >
                               <option value="High">High</option>
                               <option value="Medium">Medium</option>
                               <option value="Low">Low</option>
                             </select>
-                            <div className="text-xs text-pro-warm-gray mt-1">Priority</div>
+                            <div className="text-xs text-graphite/60 mt-1">Priority</div>
                           </div>
                           <div className="col-span-5">
                             <input
@@ -189,10 +189,10 @@ export default function BusinessRulesView() {
                                 setBenchmarks(benchmarks.map(b => b.id === benchmark.id ? updated : b));
                               }}
                               onBlur={() => updateBenchmark(benchmark)}
-                              className="w-full px-2 py-1 border border-pro-stone rounded text-sm"
+                              className="w-full px-2 py-1 border border-accent-soft rounded text-sm"
                               placeholder="Rationale..."
                             />
-                            <div className="text-xs text-pro-warm-gray mt-1">Notes</div>
+                            <div className="text-xs text-graphite/60 mt-1">Notes</div>
                           </div>
                           <div className="col-span-2 flex items-center justify-end">
                             <label className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export default function BusinessRulesView() {
                                 }}
                                 className="rounded"
                               />
-                              <span className="text-sm text-pro-charcoal">Active</span>
+                              <span className="text-sm text-graphite">Active</span>
                             </label>
                           </div>
                         </div>
@@ -219,9 +219,9 @@ export default function BusinessRulesView() {
           ) : (
             <div className="space-y-4">
               {revenueDefaults.map((defaults) => (
-                <div key={defaults.id} className="border border-pro-stone rounded-lg p-4">
+                <div key={defaults.id} className="border border-accent-soft rounded-lg p-4">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-pro-charcoal capitalize">
+                    <h3 className="font-semibold text-graphite capitalize">
                       {defaults.spa_type.replace('medspa', 'Med Spa')}
                     </h3>
                     <label className="flex items-center gap-2">
@@ -235,13 +235,13 @@ export default function BusinessRulesView() {
                         }}
                         className="rounded"
                       />
-                      <span className="text-sm text-pro-charcoal">Active</span>
+                      <span className="text-sm text-graphite">Active</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium text-pro-charcoal mb-1">
+                      <label className="block text-sm font-medium text-graphite mb-1">
                         Utilization/Month
                       </label>
                       <input
@@ -252,14 +252,14 @@ export default function BusinessRulesView() {
                           setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
                         }}
                         onBlur={() => updateRevenueDefaults(defaults)}
-                        className="w-full px-3 py-2 border border-pro-stone rounded"
+                        className="w-full px-3 py-2 border border-accent-soft rounded"
                         placeholder="e.g., 40"
                       />
-                      <p className="text-xs text-pro-warm-gray mt-1">Expected bookings per month</p>
+                      <p className="text-xs text-graphite/60 mt-1">Expected bookings per month</p>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-pro-charcoal mb-1">
+                      <label className="block text-sm font-medium text-graphite mb-1">
                         Attach Rate (%)
                       </label>
                       <input
@@ -271,14 +271,14 @@ export default function BusinessRulesView() {
                           setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
                         }}
                         onBlur={() => updateRevenueDefaults(defaults)}
-                        className="w-full px-3 py-2 border border-pro-stone rounded"
+                        className="w-full px-3 py-2 border border-accent-soft rounded"
                         placeholder="e.g., 35.00"
                       />
-                      <p className="text-xs text-pro-warm-gray mt-1">% with enhancement add-ons</p>
+                      <p className="text-xs text-graphite/60 mt-1">% with enhancement add-ons</p>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-pro-charcoal mb-1">
+                      <label className="block text-sm font-medium text-graphite mb-1">
                         Retail Conversion (%)
                       </label>
                       <input
@@ -290,15 +290,15 @@ export default function BusinessRulesView() {
                           setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
                         }}
                         onBlur={() => updateRevenueDefaults(defaults)}
-                        className="w-full px-3 py-2 border border-pro-stone rounded"
+                        className="w-full px-3 py-2 border border-accent-soft rounded"
                         placeholder="e.g., 25.00"
                       />
-                      <p className="text-xs text-pro-warm-gray mt-1">% who purchase retail</p>
+                      <p className="text-xs text-graphite/60 mt-1">% who purchase retail</p>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-pro-charcoal mb-1">
+                    <label className="block text-sm font-medium text-graphite mb-1">
                       Assumptions & Notes
                     </label>
                     <textarea
@@ -308,7 +308,7 @@ export default function BusinessRulesView() {
                         setRevenueDefaults(revenueDefaults.map(r => r.id === defaults.id ? updated : r));
                       }}
                       onBlur={() => updateRevenueDefaults(defaults)}
-                      className="w-full px-3 py-2 border border-pro-stone rounded text-sm"
+                      className="w-full px-3 py-2 border border-accent-soft rounded text-sm"
                       rows={2}
                       placeholder="Document assumptions and data sources..."
                     />
@@ -327,7 +327,7 @@ export default function BusinessRulesView() {
           )}
 
           {saving && (
-            <div className="fixed bottom-4 right-4 bg-pro-navy text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+            <div className="fixed bottom-4 right-4 bg-graphite text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
               <Save className="w-4 h-4 animate-pulse" />
               Saving...
             </div>

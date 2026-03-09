@@ -167,7 +167,7 @@ export default function PlanResults() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-pro-navy animate-spin" />
+        <Loader2 className="w-8 h-8 text-graphite animate-spin" />
       </div>
     );
   }
@@ -176,11 +176,11 @@ export default function PlanResults() {
     return (
       <div className="text-center py-12">
         <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-        <h2 className="text-2xl font-sans font-semibold text-pro-charcoal mb-2">Error Loading Report</h2>
-        <p className="text-pro-warm-gray font-sans mb-4">{error || 'Report not found'}</p>
+        <h2 className="text-2xl font-sans font-semibold text-graphite mb-2">Error Loading Report</h2>
+        <p className="text-graphite/60 font-sans mb-4">{error || 'Report not found'}</p>
         <Link
           to="/portal/plans"
-          className="inline-flex items-center gap-2 text-pro-warm-gray hover:text-pro-charcoal font-medium font-sans transition-colors"
+          className="inline-flex items-center gap-2 text-graphite/60 hover:text-graphite font-medium font-sans transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Reports
@@ -199,13 +199,13 @@ export default function PlanResults() {
           <div>
             <Link
               to="/portal/plans"
-              className="inline-flex items-center gap-2 text-sm text-pro-warm-gray hover:text-pro-charcoal font-medium font-sans transition-colors mb-2"
+              className="inline-flex items-center gap-2 text-sm text-graphite/60 hover:text-graphite font-medium font-sans transition-colors mb-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Reports
             </Link>
-            <h1 className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight">{plan.name}</h1>
-            <p className="text-sm text-pro-warm-gray font-sans mt-1">
+            <h1 className="text-2xl font-sans font-semibold text-graphite tracking-tight">{plan.name}</h1>
+            <p className="text-sm text-graphite/60 font-sans mt-1">
               {plan.brands?.name} · {new Date(plan.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           </div>
@@ -216,10 +216,10 @@ export default function PlanResults() {
               plan.status === 'ready'
                 ? 'bg-green-100 text-green-800'
                 : plan.status === 'processing'
-                ? 'bg-pro-stone text-pro-navy'
+                ? 'bg-accent-soft text-graphite'
                 : plan.status === 'error'
                 ? 'bg-red-100 text-red-800'
-                : 'bg-pro-stone text-pro-charcoal'
+                : 'bg-accent-soft text-graphite'
             }`}
           >
             {plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}
@@ -229,7 +229,7 @@ export default function PlanResults() {
             <button
               onClick={handleReanalyze}
               disabled={reanalyzing}
-              className="flex items-center gap-2 px-4 py-2 border border-pro-stone rounded-lg text-pro-charcoal hover:bg-pro-ivory disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-accent-soft rounded-lg text-graphite hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <RefreshCw className={`w-4 h-4 ${reanalyzing ? 'animate-spin' : ''}`} />
               {reanalyzing ? 'Reanalyzing...' : 'Reanalyze'}
@@ -240,9 +240,9 @@ export default function PlanResults() {
 
       {plan.status === 'processing' && (
         <div className="flex flex-col items-center justify-center py-20 space-y-4">
-          <Loader2 className="w-10 h-10 text-pro-navy animate-spin" />
-          <p className="text-lg font-sans font-medium text-pro-charcoal">Analyzing your menu…</p>
-          <p className="text-sm font-sans text-pro-warm-gray">This usually takes 20–40 seconds. Hang tight.</p>
+          <Loader2 className="w-10 h-10 text-graphite animate-spin" />
+          <p className="text-lg font-sans font-medium text-graphite">Analyzing your menu…</p>
+          <p className="text-sm font-sans text-graphite/60">This usually takes 20–40 seconds. Hang tight.</p>
         </div>
       )}
 
@@ -283,7 +283,7 @@ export default function PlanResults() {
             </div>
           )}
 
-          <div className="border-b border-pro-stone">
+          <div className="border-b border-accent-soft">
             <nav className="flex space-x-1">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -293,8 +293,8 @@ export default function PlanResults() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
                       activeTab === tab.id
-                        ? 'border-pro-navy text-pro-navy'
-                        : 'border-transparent text-pro-warm-gray hover:text-pro-charcoal hover:border-pro-stone'
+                        ? 'border-graphite text-graphite'
+                        : 'border-transparent text-graphite/60 hover:text-graphite hover:border-accent-soft'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -305,7 +305,7 @@ export default function PlanResults() {
             </nav>
           </div>
 
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             {/* Overview tab is FREE — this is the wow moment (gap score + service count) */}
             {activeTab === 'overview' && <OverviewTab data={outputs.overview} brand={plan?.brands} />}
 
@@ -351,7 +351,7 @@ function IntelligenceContextSection({ brandName }: { brandName?: string }) {
 
   const trendBadge: Record<string, { label: string; cls: string }> = {
     rising: { label: 'Rising', cls: 'bg-emerald-500/10 text-emerald-600' },
-    stable: { label: 'Stable', cls: 'bg-pro-stone text-pro-warm-gray' },
+    stable: { label: 'Stable', cls: 'bg-accent-soft text-graphite/60' },
     declining: { label: 'Declining', cls: 'bg-red-50 text-red-600' },
   };
 
@@ -364,16 +364,16 @@ function IntelligenceContextSection({ brandName }: { brandName?: string }) {
           <Brain className="w-4 h-4 text-intel-accent" />
         </div>
         <div>
-          <h3 className="font-sans font-semibold text-pro-charcoal text-base">Intelligence Context</h3>
-          <p className="text-xs text-pro-warm-gray font-sans">Platform intelligence for this brand match</p>
+          <h3 className="font-sans font-semibold text-graphite text-base">Intelligence Context</h3>
+          <p className="text-xs text-graphite/60 font-sans">Platform intelligence for this brand match</p>
         </div>
       </div>
 
-      <div className="bg-pro-charcoal rounded-xl p-6">
+      <div className="bg-graphite rounded-xl p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h4 className="font-sans font-semibold text-white text-sm">{context.brandName}</h4>
-            <p className="text-xs text-pro-stone/70 font-sans mt-0.5">
+            <p className="text-xs text-accent-soft/70 font-sans mt-0.5">
               {context.peerAdoptionCount.toLocaleString()} professional accounts on Socelle
             </p>
           </div>
@@ -381,7 +381,7 @@ function IntelligenceContextSection({ brandName }: { brandName?: string }) {
             {badge.label}
           </span>
         </div>
-        <p className="text-sm text-pro-stone/90 font-sans leading-relaxed">{context.signalSummary}</p>
+        <p className="text-sm text-accent-soft/90 font-sans leading-relaxed">{context.signalSummary}</p>
       </div>
     </section>
   );
@@ -401,18 +401,18 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
     <div className="space-y-8">
       {/* ── Section 1: Hero Revenue Gap ── */}
       {estimatedMonthlyGap > 0 && (
-        <div className="relative overflow-hidden rounded-xl bg-pro-charcoal p-8 md:p-10">
+        <div className="relative overflow-hidden rounded-xl bg-graphite p-8 md:p-10">
           {/* Subtle texture */}
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
           <div className="relative">
-            <p className="text-label text-pro-stone mb-3 tracking-widest">Estimated monthly revenue gap</p>
+            <p className="text-label text-accent-soft mb-3 tracking-widest">Estimated monthly revenue gap</p>
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-sm font-sans text-pro-stone/60">~$</span>
+              <span className="text-sm font-sans text-accent-soft/60">~$</span>
               <span className="text-metric-xl font-sans text-white tracking-tight">{estimatedMonthlyGap.toLocaleString()}</span>
-              <span className="text-base font-sans text-pro-stone/60 ml-1">/month</span>
+              <span className="text-base font-sans text-accent-soft/60 ml-1">/month</span>
             </div>
             <div className="h-px bg-white/10 mb-4" />
-            <p className="text-sm font-sans text-pro-stone/80 max-w-lg leading-relaxed">
+            <p className="text-sm font-sans text-accent-soft/80 max-w-lg leading-relaxed">
               {data.gapOpportunities} unmatched protocol {data.gapOpportunities === 1 ? 'opportunity' : 'opportunities'} detected across your service menu.
               Each represents recoverable revenue through optimized brand-protocol alignment.
             </p>
@@ -420,12 +420,12 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
               <div className="mt-5 flex items-center gap-3">
                 <Link
                   to={`/portal/brands/${brand.slug}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-pro-charcoal text-sm font-medium font-sans rounded-lg hover:bg-pro-ivory transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-graphite text-sm font-medium font-sans rounded-lg hover:bg-background transition-colors"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Shop {brand.name}
                 </Link>
-                <span className="text-xs font-sans text-pro-stone/60">
+                <span className="text-xs font-sans text-accent-soft/60">
                   Browse protocols &amp; products to close this gap
                 </span>
               </div>
@@ -437,16 +437,16 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
       {/* ── Section 2: Three metrics — structured grid ── */}
       <div className="grid md:grid-cols-3 gap-px bg-brand-border rounded-xl overflow-hidden border border-brand-border">
         <div className="bg-white p-6">
-          <p className="text-label text-pro-warm-gray mb-2 tracking-widest">Services analyzed</p>
-          <p className="text-metric-lg font-sans text-pro-charcoal">{data.totalServices}</p>
+          <p className="text-label text-graphite/60 mb-2 tracking-widest">Services analyzed</p>
+          <p className="text-metric-lg font-sans text-graphite">{data.totalServices}</p>
         </div>
         <div className="bg-white p-6">
-          <p className="text-label text-pro-warm-gray mb-2 tracking-widest">Protocol match rate</p>
-          <p className="text-metric-lg font-sans text-pro-charcoal">{matchRate}<span className="text-lg text-pro-warm-gray">%</span></p>
+          <p className="text-label text-graphite/60 mb-2 tracking-widest">Protocol match rate</p>
+          <p className="text-metric-lg font-sans text-graphite">{matchRate}<span className="text-lg text-graphite/60">%</span></p>
         </div>
         <div className="bg-white p-6">
-          <p className="text-label text-pro-warm-gray mb-2 tracking-widest">Revenue gaps</p>
-          <p className="text-metric-lg font-sans text-pro-navy">{data.gapOpportunities}</p>
+          <p className="text-label text-graphite/60 mb-2 tracking-widest">Revenue gaps</p>
+          <p className="text-metric-lg font-sans text-graphite">{data.gapOpportunities}</p>
         </div>
       </div>
 
@@ -454,21 +454,21 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
       <div className="panel p-6">
         <div className="flex items-baseline justify-between mb-4">
           <div>
-            <p className="text-label text-pro-warm-gray mb-1 tracking-widest">Brand fit score</p>
-            <p className="text-sm font-sans text-pro-warm-gray">
+            <p className="text-label text-graphite/60 mb-1 tracking-widest">Brand fit score</p>
+            <p className="text-sm font-sans text-graphite/60">
               {data.brandFitScore >= 70 ? 'Strong alignment' : data.brandFitScore >= 40 ? 'Moderate alignment' : 'Significant opportunities'} with selected brand protocols
             </p>
           </div>
-          <span className="text-metric-md font-sans text-pro-charcoal">{data.brandFitScore}%</span>
+          <span className="text-metric-md font-sans text-graphite">{data.brandFitScore}%</span>
         </div>
-        <div className="w-full bg-pro-cream rounded-sm h-2">
+        <div className="w-full bg-accent-soft rounded-sm h-2">
           <div
             className={`h-2 rounded-sm transition-all duration-700 ease-out ${
               data.brandFitScore >= 70
                 ? 'bg-emerald-600'
                 : data.brandFitScore >= 40
-                ? 'bg-pro-gold'
-                : 'bg-pro-navy'
+                ? 'bg-accent'
+                : 'bg-graphite'
             }`}
             style={{ width: `${data.brandFitScore}%` }}
           />
@@ -478,19 +478,19 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
       {/* ── Section 4: Service breakdown ── */}
       <div>
         <div className="flex items-baseline justify-between mb-4">
-          <h3 className="font-sans font-semibold text-pro-charcoal text-base">Menu Analysis</h3>
-          <span className="text-sm font-sans text-pro-warm-gray">{data.totalServices} services detected</span>
+          <h3 className="font-sans font-semibold text-graphite text-base">Menu Analysis</h3>
+          <span className="text-sm font-sans text-graphite/60">{data.totalServices} services detected</span>
         </div>
         <div className="divide-y divide-brand-border rounded-xl border border-brand-border overflow-hidden">
           {data.services.map((service: any, idx: number) => (
             <div key={idx} className="flex items-center justify-between px-5 py-3.5 bg-white hover:bg-brand-surface-alt transition-colors duration-100">
               <div className="flex-1 min-w-0">
-                <p className="font-sans font-medium text-sm text-pro-charcoal truncate">{service.name}</p>
+                <p className="font-sans font-medium text-sm text-graphite truncate">{service.name}</p>
               </div>
-              <div className="flex items-center gap-4 text-xs font-sans text-pro-warm-gray ml-4 flex-shrink-0">
+              <div className="flex items-center gap-4 text-xs font-sans text-graphite/60 ml-4 flex-shrink-0">
                 {service.category && <span className="hidden sm:inline">{service.category}</span>}
                 {service.duration && <span>{service.duration}m</span>}
-                {service.price && <span className="font-medium text-pro-charcoal">${service.price}</span>}
+                {service.price && <span className="font-medium text-graphite">${service.price}</span>}
               </div>
             </div>
           ))}
@@ -504,42 +504,42 @@ function ProtocolMatchesTab({ data }: { data: any }) {
   if (!data || data.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-pro-warm-gray">No protocol matches found</p>
+        <p className="text-graphite/60">No protocol matches found</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-pro-charcoal mb-4">
+      <h2 className="text-2xl font-bold text-graphite mb-4">
         Protocol Matches ({data.length})
       </h2>
       {data.map((match: any, idx: number) => (
-        <div key={idx} className="p-4 bg-pro-ivory rounded-lg border border-pro-stone">
+        <div key={idx} className="p-4 bg-background rounded-lg border border-accent-soft">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
-              <p className="font-medium text-pro-charcoal">{match.service.name}</p>
-              <p className="text-sm text-pro-warm-gray mt-1">
-                Matched to: <span className="font-medium text-pro-navy">{match.protocol.name}</span>
+              <p className="font-medium text-graphite">{match.service.name}</p>
+              <p className="text-sm text-graphite/60 mt-1">
+                Matched to: <span className="font-medium text-graphite">{match.protocol.name}</span>
               </p>
             </div>
             <div className="text-right">
               <div className="text-lg font-bold text-green-600">{match.matchScore}%</div>
-              <div className="text-xs text-pro-warm-gray">Match Score</div>
+              <div className="text-xs text-graphite/60">Match Score</div>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
             {match.matchReasons.map((reason: string, ridx: number) => (
               <span
                 key={ridx}
-                className="px-2 py-1 bg-pro-stone text-pro-navy text-xs rounded-full"
+                className="px-2 py-1 bg-accent-soft text-graphite text-xs rounded-full"
               >
                 {reason}
               </span>
             ))}
           </div>
           {match.protocol.description && (
-            <p className="text-sm text-pro-warm-gray mt-3 pt-3 border-t border-pro-stone">
+            <p className="text-sm text-graphite/60 mt-3 pt-3 border-t border-accent-soft">
               {match.protocol.description}
             </p>
           )}
@@ -553,41 +553,41 @@ function GapsTab({ data }: { data: any }) {
   if (!data || data.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-pro-warm-gray">No gaps identified</p>
+        <p className="text-graphite/60">No gaps identified</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-pro-charcoal mb-4">
+      <h2 className="text-2xl font-bold text-graphite mb-4">
         Gap Opportunities ({data.length})
       </h2>
-      <p className="text-pro-warm-gray mb-4">
+      <p className="text-graphite/60 mb-4">
         These protocols are not currently offered in your menu but could be valuable additions.
       </p>
       {data.map((gap: any, idx: number) => (
         <div key={idx} className="p-4 bg-orange-50 rounded-lg border border-orange-200">
           <div className="flex items-start justify-between mb-2">
             <div className="flex-1">
-              <p className="font-medium text-pro-charcoal">{gap.protocol.name}</p>
-              <p className="text-sm text-pro-warm-gray mt-1">{gap.reason}</p>
+              <p className="font-medium text-graphite">{gap.protocol.name}</p>
+              <p className="text-sm text-graphite/60 mt-1">{gap.reason}</p>
             </div>
             {gap.estimatedRevenue && (
               <div className="text-right">
                 <div className="text-lg font-bold text-orange-600">
                   ${gap.estimatedRevenue}
                 </div>
-                <div className="text-xs text-pro-warm-gray">Est. Price</div>
+                <div className="text-xs text-graphite/60">Est. Price</div>
               </div>
             )}
           </div>
-          <div className="flex items-center gap-4 text-sm text-pro-warm-gray mt-3 pt-3 border-t border-orange-200">
+          <div className="flex items-center gap-4 text-sm text-graphite/60 mt-3 pt-3 border-t border-orange-200">
             <span>Category: {gap.protocol.category}</span>
             <span>Duration: {gap.protocol.duration} min</span>
           </div>
           {gap.protocol.description && (
-            <p className="text-sm text-pro-warm-gray mt-2">{gap.protocol.description}</p>
+            <p className="text-sm text-graphite/60 mt-2">{gap.protocol.description}</p>
           )}
         </div>
       ))}
@@ -599,36 +599,36 @@ function RetailAttachTab({ data }: { data: any }) {
   if (!data || data.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-pro-warm-gray">No retail recommendations available</p>
+        <p className="text-graphite/60">No retail recommendations available</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-pro-charcoal mb-4">
+      <h2 className="text-2xl font-bold text-graphite mb-4">
         Retail Attach Recommendations
       </h2>
-      <p className="text-pro-warm-gray mb-4">
+      <p className="text-graphite/60 mb-4">
         Recommended products to retail with each service for enhanced results and revenue.
       </p>
       {data.map((attach: any, idx: number) => (
-        <div key={idx} className="p-4 bg-pro-ivory rounded-lg border border-pro-stone">
-          <p className="font-medium text-pro-charcoal mb-3">{attach.service.name}</p>
+        <div key={idx} className="p-4 bg-background rounded-lg border border-accent-soft">
+          <p className="font-medium text-graphite mb-3">{attach.service.name}</p>
           <div className="space-y-2">
             {attach.products.map((product: any, pidx: number) => (
               <div
                 key={pidx}
-                className="flex items-center justify-between p-3 bg-white rounded border border-pro-stone"
+                className="flex items-center justify-between p-3 bg-white rounded border border-accent-soft"
               >
                 <div>
-                  <p className="font-medium text-pro-charcoal">{product.name}</p>
-                  <p className="text-sm text-pro-warm-gray">
+                  <p className="font-medium text-graphite">{product.name}</p>
+                  <p className="text-sm text-graphite/60">
                     {product.category}
                     {product.size && ` • ${product.size}`}
                   </p>
                 </div>
-                <Package className="w-5 h-5 text-pro-warm-gray" />
+                <Package className="w-5 h-5 text-graphite/60" />
               </div>
             ))}
           </div>
@@ -646,7 +646,7 @@ function ActivationAssetsTab({ data }: { data: any }) {
   if (categories.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-pro-warm-gray">No activation assets available</p>
+        <p className="text-graphite/60">No activation assets available</p>
       </div>
     );
   }
@@ -654,26 +654,26 @@ function ActivationAssetsTab({ data }: { data: any }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-pro-charcoal mb-2">Activation Kit</h2>
-        <p className="text-pro-warm-gray">
+        <h2 className="text-2xl font-bold text-graphite mb-2">Activation Kit</h2>
+        <p className="text-graphite/60">
           Marketing and training materials to support your brand implementation.
         </p>
       </div>
 
       {categories.map((category) => (
         <div key={category}>
-          <h3 className="text-lg font-bold text-pro-charcoal mb-3">{category}</h3>
+          <h3 className="text-lg font-bold text-graphite mb-3">{category}</h3>
           <div className="space-y-2">
             {data[category].map((asset: any) => (
               <div
                 key={asset.id}
-                className="flex items-center justify-between p-3 bg-pro-ivory rounded-lg border border-pro-stone"
+                className="flex items-center justify-between p-3 bg-background rounded-lg border border-accent-soft"
               >
                 <div className="flex items-center gap-3">
-                  <BookOpen className="w-5 h-5 text-pro-navy" />
+                  <BookOpen className="w-5 h-5 text-graphite" />
                   <div>
-                    <p className="font-medium text-pro-charcoal">{asset.asset_name}</p>
-                    <p className="text-sm text-pro-warm-gray">{asset.asset_type}</p>
+                    <p className="font-medium text-graphite">{asset.asset_name}</p>
+                    <p className="text-sm text-graphite/60">{asset.asset_type}</p>
                   </div>
                 </div>
                 {asset.asset_url && (
@@ -681,7 +681,7 @@ function ActivationAssetsTab({ data }: { data: any }) {
                     href={asset.asset_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-pro-navy hover:text-pro-charcoal text-sm font-medium"
+                    className="text-graphite hover:text-graphite text-sm font-medium"
                   >
                     Download
                   </a>
@@ -698,8 +698,8 @@ function ActivationAssetsTab({ data }: { data: any }) {
 function EmptyState() {
   return (
     <div className="text-center py-12">
-      <AlertCircle className="w-12 h-12 text-pro-warm-gray mx-auto mb-3" />
-      <p className="text-pro-warm-gray">No data available for this section</p>
+      <AlertCircle className="w-12 h-12 text-graphite/60 mx-auto mb-3" />
+      <p className="text-graphite/60">No data available for this section</p>
     </div>
   );
 }

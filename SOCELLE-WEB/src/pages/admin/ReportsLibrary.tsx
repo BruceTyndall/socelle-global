@@ -76,23 +76,23 @@ export default function ReportsLibrary() {
       <div className="space-y-6">
         {/* Toast */}
         {toast && (
-          <div className="fixed bottom-6 right-6 z-50 bg-pro-navy text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
+          <div className="fixed bottom-6 right-6 z-50 bg-graphite text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
             {toast}
           </div>
         )}
 
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-heading text-pro-charcoal">
+          <h1 className="text-2xl font-heading text-graphite">
             Reports &amp; Intelligence Library
           </h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-1">
+          <p className="text-sm text-graphite/60 font-sans mt-1">
             Browse, export, and manage marketplace intelligence reports and campaign snapshots
           </p>
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-white rounded-xl border border-pro-stone p-4">
+        <div className="bg-white rounded-xl border border-accent-soft p-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-3">
             {/* Search */}
             <div className="w-full lg:w-72">
@@ -106,15 +106,15 @@ export default function ReportsLibrary() {
 
             {/* Type Filter */}
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs font-semibold text-pro-warm-gray font-sans mr-1">Type:</span>
+              <span className="text-xs font-semibold text-graphite/60 font-sans mr-1">Type:</span>
               {(['all', 'report', 'campaign', 'snapshot', 'analysis'] as TypeFilter[]).map(t => (
                 <button
                   key={t}
                   onClick={() => setTypeFilter(t)}
                   className={`px-3 py-1.5 text-xs font-medium font-sans rounded-full border transition-colors capitalize ${
                     typeFilter === t
-                      ? 'bg-pro-navy text-white border-pro-navy'
-                      : 'bg-white text-pro-warm-gray border-pro-stone hover:border-pro-navy hover:text-pro-navy'
+                      ? 'bg-graphite text-white border-graphite'
+                      : 'bg-white text-graphite/60 border-accent-soft hover:border-graphite hover:text-graphite'
                   }`}
                 >
                   {t === 'all' ? 'All Types' : t}
@@ -124,15 +124,15 @@ export default function ReportsLibrary() {
 
             {/* Status Filter */}
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs font-semibold text-pro-warm-gray font-sans mr-1">Status:</span>
+              <span className="text-xs font-semibold text-graphite/60 font-sans mr-1">Status:</span>
               {(['all', 'published', 'draft', 'archived'] as StatusFilter[]).map(s => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`px-3 py-1.5 text-xs font-medium font-sans rounded-full border transition-colors capitalize ${
                     statusFilter === s
-                      ? 'bg-pro-navy text-white border-pro-navy'
-                      : 'bg-white text-pro-warm-gray border-pro-stone hover:border-pro-navy hover:text-pro-navy'
+                      ? 'bg-graphite text-white border-graphite'
+                      : 'bg-white text-graphite/60 border-accent-soft hover:border-graphite hover:text-graphite'
                   }`}
                 >
                   {s === 'all' ? 'All' : s}
@@ -143,18 +143,18 @@ export default function ReportsLibrary() {
         </div>
 
         {/* Results Count */}
-        <p className="text-sm text-pro-warm-gray font-sans">
+        <p className="text-sm text-graphite/60 font-sans">
           Showing {filtered.length} of {allReports.length} reports
         </p>
 
         {/* Report Cards Grid */}
         {filtered.length === 0 ? (
-          <div className="bg-white rounded-xl border border-pro-stone flex flex-col items-center justify-center py-20 text-center">
-            <FileText className="w-12 h-12 text-pro-stone mb-4" />
-            <p className="text-sm font-sans text-pro-warm-gray">No reports match your current filters.</p>
+          <div className="bg-white rounded-xl border border-accent-soft flex flex-col items-center justify-center py-20 text-center">
+            <FileText className="w-12 h-12 text-accent-soft mb-4" />
+            <p className="text-sm font-sans text-graphite/60">No reports match your current filters.</p>
             <button
               onClick={() => { setSearch(''); setTypeFilter('all'); setStatusFilter('all'); }}
-              className="text-sm text-pro-navy font-sans font-medium mt-2 hover:underline"
+              className="text-sm text-graphite font-sans font-medium mt-2 hover:underline"
             >
               Clear all filters
             </button>
@@ -166,13 +166,13 @@ export default function ReportsLibrary() {
               return (
                 <div
                   key={report.id}
-                  className="bg-white rounded-xl border border-pro-stone overflow-hidden hover:shadow-card transition-shadow"
+                  className="bg-white rounded-xl border border-accent-soft overflow-hidden hover:shadow-card transition-shadow"
                 >
                   {/* Card Header */}
                   <div className="p-5 pb-3">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-pro-navy" />
+                      <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-graphite" />
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Badge variant={TYPE_BADGE_VARIANTS[report.type] || 'default'}>
@@ -183,10 +183,10 @@ export default function ReportsLibrary() {
                         </Badge>
                       </div>
                     </div>
-                    <h3 className="font-medium text-pro-charcoal font-sans text-sm leading-snug mb-1">
+                    <h3 className="font-medium text-graphite font-sans text-sm leading-snug mb-1">
                       {report.title}
                     </h3>
-                    <div className="flex items-center gap-2 text-xs text-pro-warm-gray font-sans">
+                    <div className="flex items-center gap-2 text-xs text-graphite/60 font-sans">
                       <Calendar className="w-3 h-3" />
                       <span>
                         {new Date(report.createdAt).toLocaleDateString('en-US', {
@@ -197,7 +197,7 @@ export default function ReportsLibrary() {
                       </span>
                       {report.brand && (
                         <>
-                          <span className="text-pro-stone">&middot;</span>
+                          <span className="text-accent-soft">&middot;</span>
                           <span>{report.brand}</span>
                         </>
                       )}
@@ -205,19 +205,19 @@ export default function ReportsLibrary() {
                   </div>
 
                   {/* Metrics Preview */}
-                  <div className="px-5 py-3 bg-pro-ivory/50 border-t border-pro-stone/50">
+                  <div className="px-5 py-3 bg-background/50 border-t border-accent-soft/50">
                     <div className="flex items-center justify-between gap-2">
                       {report.metrics.map((m, idx) => (
                         <div key={idx} className="text-center flex-1">
-                          <p className="text-[10px] text-pro-warm-gray font-sans uppercase tracking-wider">{m.label}</p>
-                          <p className="text-sm font-bold text-pro-charcoal font-sans">{m.value}</p>
+                          <p className="text-[10px] text-graphite/60 font-sans uppercase tracking-wider">{m.label}</p>
+                          <p className="text-sm font-bold text-graphite font-sans">{m.value}</p>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="px-5 py-3 border-t border-pro-stone/50 flex items-center justify-end gap-2">
+                  <div className="px-5 py-3 border-t border-accent-soft/50 flex items-center justify-end gap-2">
                     <Button
                       variant="ghost"
                       size="sm"

@@ -128,16 +128,16 @@ export default function BrandApply() {
   };
 
   return (
-    <div className="min-h-screen bg-pro-ivory">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-pro-stone bg-white">
+      <header className="border-b border-accent-soft bg-white">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="font-serif text-xl text-pro-navy">
-            socelle<span className="text-pro-gold">.</span>
+          <Link to="/" className="font-sans text-xl text-graphite">
+            socelle<span className="text-accent">.</span>
           </Link>
-          <p className="text-sm text-pro-warm-gray font-sans">
+          <p className="text-sm text-graphite/60 font-sans">
             Already a partner?{' '}
-            <Link to="/brand/login" className="text-pro-navy font-medium hover:text-pro-gold transition-colors">
+            <Link to="/brand/login" className="text-graphite font-medium hover:text-accent transition-colors">
               Sign in
             </Link>
           </p>
@@ -147,15 +147,15 @@ export default function BrandApply() {
       <main className="max-w-xl mx-auto px-6 py-12">
         {/* Step indicator */}
         <div className="flex items-center gap-3 mb-8">
-          <div className={`flex items-center gap-2 text-sm font-medium font-sans ${step === 1 ? 'text-pro-navy' : 'text-pro-warm-gray'}`}>
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 1 ? 'bg-pro-navy text-white' : 'bg-green-500 text-white'}`}>
+          <div className={`flex items-center gap-2 text-sm font-medium font-sans ${step === 1 ? 'text-graphite' : 'text-graphite/60'}`}>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 1 ? 'bg-graphite text-white' : 'bg-green-500 text-white'}`}>
               {step > 1 ? <CheckCircle className="w-4 h-4" /> : '1'}
             </div>
             Brand Info
           </div>
-          <div className="flex-1 h-px bg-pro-stone" />
-          <div className={`flex items-center gap-2 text-sm font-medium font-sans ${step === 2 ? 'text-pro-navy' : 'text-pro-warm-gray'}`}>
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 2 ? 'bg-pro-navy text-white' : 'bg-pro-stone text-pro-warm-gray'}`}>
+          <div className="flex-1 h-px bg-accent-soft" />
+          <div className={`flex items-center gap-2 text-sm font-medium font-sans ${step === 2 ? 'text-graphite' : 'text-graphite/60'}`}>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 2 ? 'bg-graphite text-white' : 'bg-accent-soft text-graphite/60'}`}>
               2
             </div>
             Your Account
@@ -166,17 +166,17 @@ export default function BrandApply() {
         {step === 1 && (
           <form onSubmit={handleStep1} className="space-y-6">
             <div>
-              <h1 className="text-3xl font-serif text-pro-navy mb-2">
-                Apply to join Socelle<span className="text-pro-gold">.</span>
+              <h1 className="text-3xl font-sans text-graphite mb-2">
+                Apply to join Socelle<span className="text-accent">.</span>
               </h1>
-              <p className="text-pro-warm-gray font-sans text-sm">
+              <p className="text-graphite/60 font-sans text-sm">
                 Tell us about your brand. Our team reviews every application within 2 business days.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-5">
+            <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Brand Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -185,12 +185,12 @@ export default function BrandApply() {
                   onChange={e => setBrandName(e.target.value)}
                   placeholder="e.g. Naturopathica"
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Website URL <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -199,19 +199,19 @@ export default function BrandApply() {
                   onChange={e => setWebsiteUrl(e.target.value)}
                   placeholder="https://yourbrand.com"
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Product Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                 >
                   <option value="">Select a category</option>
                   {PRODUCT_CATEGORIES.map(cat => (
@@ -221,7 +221,7 @@ export default function BrandApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Estimated SKU Count <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -232,8 +232,8 @@ export default function BrandApply() {
                       onClick={() => setSkuRange(range)}
                       className={`px-4 py-2.5 rounded-lg border text-sm font-medium font-sans transition-colors ${
                         skuRange === range
-                          ? 'border-pro-navy bg-pro-navy text-white'
-                          : 'border-pro-stone bg-pro-ivory text-pro-charcoal hover:border-pro-charcoal/40'
+                          ? 'border-graphite bg-graphite text-white'
+                          : 'border-accent-soft bg-background text-graphite hover:border-graphite/40'
                       }`}
                     >
                       {range}
@@ -243,14 +243,14 @@ export default function BrandApply() {
               </div>
             </div>
 
-            <div className="bg-pro-cream rounded-xl border border-pro-stone p-4 text-sm text-pro-warm-gray font-sans">
-              <strong className="text-pro-charcoal">Requirements:</strong> Active business entity, professional beauty products, minimum 5 SKUs, product liability insurance.
+            <div className="bg-accent-soft rounded-xl border border-accent-soft p-4 text-sm text-graphite/60 font-sans">
+              <strong className="text-graphite">Requirements:</strong> Active business entity, professional beauty products, minimum 5 SKUs, product liability insurance.
             </div>
 
             <button
               type="submit"
               disabled={!step1Valid}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-pro-navy text-white rounded-lg font-medium font-sans text-sm hover:bg-pro-charcoal transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg font-medium font-sans text-sm hover:bg-graphite transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Continue
               <ArrowRight className="w-4 h-4" />
@@ -265,16 +265,16 @@ export default function BrandApply() {
               <button
                 type="button"
                 onClick={() => { setStep(1); setError(null); }}
-                className="flex items-center gap-1.5 text-sm text-pro-warm-gray hover:text-pro-charcoal font-sans mb-4 transition-colors"
+                className="flex items-center gap-1.5 text-sm text-graphite/60 hover:text-graphite font-sans mb-4 transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Back
               </button>
-              <h1 className="text-3xl font-serif text-pro-navy mb-2">
-                Create your account<span className="text-pro-gold">.</span>
+              <h1 className="text-3xl font-sans text-graphite mb-2">
+                Create your account<span className="text-accent">.</span>
               </h1>
-              <p className="text-pro-warm-gray font-sans text-sm">
-                You'll use this to manage <strong className="text-pro-charcoal">{brandName}</strong> on Socelle after approval.
+              <p className="text-graphite/60 font-sans text-sm">
+                You'll use this to manage <strong className="text-graphite">{brandName}</strong> on Socelle after approval.
               </p>
             </div>
 
@@ -284,10 +284,10 @@ export default function BrandApply() {
               </div>
             )}
 
-            <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-5">
+            <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                  <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                     First Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -296,11 +296,11 @@ export default function BrandApply() {
                     onChange={e => setFirstName(e.target.value)}
                     placeholder="Jane"
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                    className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                  <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                     Last Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -309,13 +309,13 @@ export default function BrandApply() {
                     onChange={e => setLastName(e.target.value)}
                     placeholder="Smith"
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                    className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Work Email <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -324,12 +324,12 @@ export default function BrandApply() {
                   onChange={e => setEmail(e.target.value)}
                   placeholder="jane@yourbrand.com"
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Password <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -339,12 +339,12 @@ export default function BrandApply() {
                   placeholder="Minimum 8 characters"
                   required
                   minLength={8}
-                  className="w-full px-4 py-2.5 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="w-full px-4 py-2.5 rounded-lg border border-accent-soft bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Confirm Password <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -353,10 +353,10 @@ export default function BrandApply() {
                   onChange={e => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter your password"
                   required
-                  className={`w-full px-4 py-2.5 rounded-lg border bg-pro-ivory text-pro-charcoal font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy/20 transition-colors ${
+                  className={`w-full px-4 py-2.5 rounded-lg border bg-background text-graphite font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite/20 transition-colors ${
                     confirmPassword && confirmPassword !== password
                       ? 'border-red-300 focus:border-red-400'
-                      : 'border-pro-stone focus:border-pro-navy'
+                      : 'border-accent-soft focus:border-graphite'
                   }`}
                 />
                 {confirmPassword && confirmPassword !== password && (
@@ -369,15 +369,15 @@ export default function BrandApply() {
                   type="checkbox"
                   checked={agreedToTerms}
                   onChange={e => setAgreedToTerms(e.target.checked)}
-                  className="mt-0.5 rounded border-pro-stone accent-pro-navy"
+                  className="mt-0.5 rounded border-accent-soft accent-graphite"
                 />
-                <span className="text-sm text-pro-warm-gray font-sans">
+                <span className="text-sm text-graphite/60 font-sans">
                   I agree to Socelle's{' '}
-                  <Link to="/terms" className="text-pro-navy hover:text-pro-gold underline underline-offset-2">
+                  <Link to="/terms" className="text-graphite hover:text-accent underline underline-offset-2">
                     Terms of Service
                   </Link>{' '}
                   and{' '}
-                  <Link to="/privacy" className="text-pro-navy hover:text-pro-gold underline underline-offset-2">
+                  <Link to="/privacy" className="text-graphite hover:text-accent underline underline-offset-2">
                     Privacy Policy
                   </Link>
                 </span>
@@ -387,7 +387,7 @@ export default function BrandApply() {
             <button
               type="submit"
               disabled={!step2Valid || loading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-pro-navy text-white rounded-lg font-medium font-sans text-sm hover:bg-pro-charcoal transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg font-medium font-sans text-sm hover:bg-graphite transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -405,7 +405,7 @@ export default function BrandApply() {
               )}
             </button>
 
-            <p className="text-center text-xs text-pro-warm-gray font-sans">
+            <p className="text-center text-xs text-graphite/60 font-sans">
               By submitting, you understand your application will be reviewed by our team before access is granted.
             </p>
           </form>

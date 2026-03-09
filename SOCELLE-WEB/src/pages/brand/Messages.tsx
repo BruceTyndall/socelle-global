@@ -59,31 +59,31 @@ function ConvItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-4 py-4 border-b border-pro-stone transition-colors ${
-        isActive ? 'bg-pro-cream' : 'hover:bg-pro-cream/50'
+      className={`w-full text-left px-4 py-4 border-b border-accent-soft transition-colors ${
+        isActive ? 'bg-accent-soft' : 'hover:bg-accent-soft/50'
       }`}
     >
       <div className="flex items-start justify-between gap-2 mb-1">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-pro-stone flex items-center justify-center flex-shrink-0">
-            <Building2 className="w-4 h-4 text-pro-charcoal" />
+          <div className="w-8 h-8 rounded-full bg-accent-soft flex items-center justify-center flex-shrink-0">
+            <Building2 className="w-4 h-4 text-graphite" />
           </div>
-          <span className="font-medium text-pro-charcoal font-sans text-sm truncate">
+          <span className="font-medium text-graphite font-sans text-sm truncate">
             {conv.type === 'order_linked' && conv.subject ? conv.subject : conv.peer_name}
           </span>
         </div>
-        <span className="text-xs text-pro-warm-gray font-sans flex-shrink-0">
+        <span className="text-xs text-graphite/60 font-sans flex-shrink-0">
           {formatTime(conv.last_message_at)}
         </span>
       </div>
       {conv.type === 'order_linked' && conv.peer_name && (
-        <p className="text-xs text-pro-warm-gray font-sans truncate pl-10">{conv.peer_name}</p>
+        <p className="text-xs text-graphite/60 font-sans truncate pl-10">{conv.peer_name}</p>
       )}
       {conv.peer_type && conv.type !== 'order_linked' && (
-        <p className="text-xs text-pro-warm-gray font-sans truncate pl-10">{conv.peer_type}</p>
+        <p className="text-xs text-graphite/60 font-sans truncate pl-10">{conv.peer_type}</p>
       )}
       {conv.last_message_preview && (
-        <p className="text-xs text-pro-warm-gray font-sans truncate pl-10 mt-0.5">
+        <p className="text-xs text-graphite/60 font-sans truncate pl-10 mt-0.5">
           {conv.last_message_preview}
         </p>
       )}
@@ -96,11 +96,11 @@ function MsgBubble({ msg, isOwn }: { msg: Message; isOwn: boolean }) {
     <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mb-2`}>
       <div className={`max-w-[72%] px-4 py-2.5 rounded-2xl text-sm font-sans leading-relaxed ${
         isOwn
-          ? 'bg-pro-navy text-white rounded-br-sm'
-          : 'bg-white border border-pro-stone text-pro-charcoal rounded-bl-sm'
+          ? 'bg-graphite text-white rounded-br-sm'
+          : 'bg-white border border-accent-soft text-graphite rounded-bl-sm'
       }`}>
         {msg.body}
-        <div className={`text-xs mt-1 ${isOwn ? 'text-white/60' : 'text-pro-warm-gray'}`}>
+        <div className={`text-xs mt-1 ${isOwn ? 'text-white/60' : 'text-graphite/60'}`}>
           {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
@@ -111,11 +111,11 @@ function MsgBubble({ msg, isOwn }: { msg: Message; isOwn: boolean }) {
 function EmptyInbox() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-      <div className="w-16 h-16 rounded-full bg-pro-cream flex items-center justify-center mb-4">
-        <MessageSquare className="w-8 h-8 text-pro-stone" />
+      <div className="w-16 h-16 rounded-full bg-accent-soft flex items-center justify-center mb-4">
+        <MessageSquare className="w-8 h-8 text-accent-soft" />
       </div>
-      <h3 className="text-lg font-serif text-pro-navy mb-2">No messages yet</h3>
-      <p className="text-sm text-pro-warm-gray font-sans max-w-xs">
+      <h3 className="text-lg font-sans text-graphite mb-2">No messages yet</h3>
+      <p className="text-sm text-graphite/60 font-sans max-w-xs">
         When resellers message your brand, conversations will appear here.
       </p>
     </div>
@@ -125,13 +125,13 @@ function EmptyInbox() {
 function SelectConv() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-      <div className="w-16 h-16 rounded-full bg-pro-cream flex items-center justify-center mb-4">
-        <MessageSquare className="w-8 h-8 text-pro-stone" />
+      <div className="w-16 h-16 rounded-full bg-accent-soft flex items-center justify-center mb-4">
+        <MessageSquare className="w-8 h-8 text-accent-soft" />
       </div>
-      <h3 className="text-base font-sans font-medium text-pro-charcoal mb-1">
+      <h3 className="text-base font-sans font-medium text-graphite mb-1">
         Select a conversation
       </h3>
-      <p className="text-sm text-pro-warm-gray font-sans">
+      <p className="text-sm text-graphite/60 font-sans">
         Choose a conversation from the list to view messages.
       </p>
     </div>
@@ -348,7 +348,7 @@ export default function BrandMessages() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans text-sm">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans text-sm">No brand associated with your account.</p>
       </div>
     );
   }
@@ -356,17 +356,17 @@ export default function BrandMessages() {
   const grouped = groupByDate(messages);
 
   return (
-    <div className="flex h-[calc(100vh-11rem)] bg-white rounded-xl border border-pro-stone overflow-hidden">
+    <div className="flex h-[calc(100vh-11rem)] bg-white rounded-xl border border-accent-soft overflow-hidden">
 
       {/* ── Conversation list ─────────────────────────────────────────────── */}
       <div
-        className={`w-full md:w-80 flex-shrink-0 border-r border-pro-stone flex flex-col ${
+        className={`w-full md:w-80 flex-shrink-0 border-r border-accent-soft flex flex-col ${
           showThread ? 'hidden md:flex' : 'flex'
         }`}
       >
-        <div className="px-4 py-4 border-b border-pro-stone">
-          <h2 className="font-serif text-pro-navy text-lg">Messages</h2>
-          <p className="text-xs text-pro-warm-gray font-sans mt-0.5">Retailer conversations</p>
+        <div className="px-4 py-4 border-b border-accent-soft">
+          <h2 className="font-sans text-graphite text-lg">Messages</h2>
+          <p className="text-xs text-graphite/60 font-sans mt-0.5">Retailer conversations</p>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -375,10 +375,10 @@ export default function BrandMessages() {
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="space-y-2 animate-pulse">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-pro-stone" />
+                    <div className="w-8 h-8 rounded-full bg-accent-soft" />
                     <div className="flex-1 space-y-1.5">
-                      <div className="h-3 bg-pro-stone rounded w-3/4" />
-                      <div className="h-2.5 bg-pro-stone rounded w-1/2" />
+                      <div className="h-3 bg-accent-soft rounded w-3/4" />
+                      <div className="h-2.5 bg-accent-soft rounded w-1/2" />
                     </div>
                   </div>
                 </div>
@@ -408,32 +408,32 @@ export default function BrandMessages() {
         {activeConv ? (
           <>
             {/* Header */}
-            <div className="px-6 py-4 border-b border-pro-stone flex items-center gap-3">
+            <div className="px-6 py-4 border-b border-accent-soft flex items-center gap-3">
               <button
                 onClick={() => setShowThread(false)}
-                className="md:hidden p-1.5 rounded-lg hover:bg-pro-cream transition-colors"
+                className="md:hidden p-1.5 rounded-lg hover:bg-accent-soft transition-colors"
                 aria-label="Back to inbox"
               >
-                <ArrowLeft className="w-4 h-4 text-pro-charcoal" />
+                <ArrowLeft className="w-4 h-4 text-graphite" />
               </button>
-              <div className="w-8 h-8 rounded-full bg-pro-stone flex items-center justify-center flex-shrink-0">
-                <Building2 className="w-4 h-4 text-pro-charcoal" />
+              <div className="w-8 h-8 rounded-full bg-accent-soft flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-4 h-4 text-graphite" />
               </div>
               <div className="min-w-0">
-                <p className="font-medium text-pro-charcoal font-sans text-sm truncate">
+                <p className="font-medium text-graphite font-sans text-sm truncate">
                   {activeConv.peer_name}
                 </p>
                 {activeConv.peer_type && (
-                  <p className="text-xs text-pro-warm-gray font-sans">{activeConv.peer_type}</p>
+                  <p className="text-xs text-graphite/60 font-sans">{activeConv.peer_type}</p>
                 )}
               </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 bg-pro-ivory/40">
+            <div className="flex-1 overflow-y-auto px-6 py-4 bg-background/40">
               {loadingThread ? (
                 <div className="flex items-center justify-center h-full">
-                  <div className="flex items-center gap-2 text-pro-warm-gray font-sans text-sm">
+                  <div className="flex items-center gap-2 text-graphite/60 font-sans text-sm">
                     <Clock className="w-4 h-4 animate-spin" />
                     Loading messages…
                   </div>
@@ -441,17 +441,17 @@ export default function BrandMessages() {
               ) : messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-center">
                   <div>
-                    <MessageSquare className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                    <p className="text-sm text-pro-warm-gray font-sans">No messages yet. Say hello!</p>
+                    <MessageSquare className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                    <p className="text-sm text-graphite/60 font-sans">No messages yet. Say hello!</p>
                   </div>
                 </div>
               ) : (
                 grouped.map(({ date, messages: group }) => (
                   <div key={date}>
                     <div className="flex items-center gap-3 my-4">
-                      <div className="flex-1 h-px bg-pro-stone" />
-                      <span className="text-xs text-pro-warm-gray font-sans font-medium px-2">{date}</span>
-                      <div className="flex-1 h-px bg-pro-stone" />
+                      <div className="flex-1 h-px bg-accent-soft" />
+                      <span className="text-xs text-graphite/60 font-sans font-medium px-2">{date}</span>
+                      <div className="flex-1 h-px bg-accent-soft" />
                     </div>
                     {group.map(msg => (
                       <MsgBubble key={msg.id} msg={msg} isOwn={msg.sender_id === user?.id} />
@@ -463,7 +463,7 @@ export default function BrandMessages() {
             </div>
 
             {/* Composer */}
-            <div className="px-4 py-3 border-t border-pro-stone bg-white">
+            <div className="px-4 py-3 border-t border-accent-soft bg-white">
               <div className="flex items-end gap-3">
                 <textarea
                   ref={inputRef}
@@ -472,7 +472,7 @@ export default function BrandMessages() {
                   onKeyDown={handleKeyDown}
                   rows={1}
                   placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
-                  className="flex-1 resize-none px-4 py-2.5 border border-pro-stone rounded-xl text-sm font-sans text-pro-charcoal placeholder:text-pro-warm-gray focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                  className="flex-1 resize-none px-4 py-2.5 border border-accent-soft rounded-xl text-sm font-sans text-graphite placeholder:text-graphite/60 focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                   style={{ minHeight: '40px', maxHeight: '120px' }}
                   onInput={e => {
                     const el = e.currentTarget;
@@ -483,13 +483,13 @@ export default function BrandMessages() {
                 <button
                   onClick={handleSend}
                   disabled={!newMsg.trim() || sending}
-                  className="flex-shrink-0 w-10 h-10 rounded-xl bg-pro-navy hover:bg-pro-charcoal disabled:bg-pro-stone disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                  className="flex-shrink-0 w-10 h-10 rounded-xl bg-graphite hover:bg-graphite disabled:bg-accent-soft disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                   aria-label="Send"
                 >
                   <Send className="w-4 h-4 text-white" />
                 </button>
               </div>
-              <p className="text-xs text-pro-warm-gray font-sans mt-1.5 pl-1">
+              <p className="text-xs text-graphite/60 font-sans mt-1.5 pl-1">
                 Enter to send · Shift+Enter for new line
               </p>
             </div>

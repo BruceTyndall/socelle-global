@@ -10,7 +10,7 @@ import {
 import type { EducationContent, ContentType, ContentCategory } from '../../lib/education/types';
 
 // ── Gradient map per category (thumbnail placeholder) ───────────────
-// Pearl Mineral V2 tokens only — no pro-*, no font-serif
+// Pearl Mineral V2 tokens only — no pro-*, no font-sans
 
 const CATEGORY_GRADIENT: Record<ContentCategory, string> = {
   treatment_protocols: 'from-accent/80 to-accent/40',

@@ -30,14 +30,14 @@ export function Modal({ open, onClose, title, size = 'md', children }: ModalProp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-pro-charcoal/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-graphite/30 backdrop-blur-sm" onClick={onClose} />
       <div className={`relative w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-modal overflow-hidden animate-fade-in`}>
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-pro-stone">
-            <h2 className="font-sans font-semibold text-pro-charcoal text-lg">{title}</h2>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-accent-soft">
+            <h2 className="font-sans font-semibold text-graphite text-lg">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-stone transition-colors"
+              className="p-1.5 rounded-lg text-graphite/60 hover:text-graphite hover:bg-accent-soft transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -57,7 +57,7 @@ export function ModalBody({ className = '', children, ...props }: HTMLAttributes
 
 export function ModalFooter({ className = '', children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`flex items-center justify-end gap-3 px-6 py-4 border-t border-pro-stone bg-pro-ivory/50 ${className}`} {...props}>
+    <div className={`flex items-center justify-end gap-3 px-6 py-4 border-t border-accent-soft bg-background/50 ${className}`} {...props}>
       {children}
     </div>
   );

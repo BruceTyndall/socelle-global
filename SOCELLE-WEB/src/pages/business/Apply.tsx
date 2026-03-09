@@ -47,7 +47,7 @@ interface FormData {
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="block text-sm font-medium font-sans text-pro-charcoal mb-1.5">
+    <label className="block text-sm font-medium font-sans text-graphite mb-1.5">
       {children}
       {required && <span className="text-red-500 ml-0.5">*</span>}
     </label>
@@ -69,12 +69,12 @@ function Select({
         value={value}
         onChange={e => onChange(e.target.value)}
         disabled={disabled}
-        className="w-full appearance-none px-4 py-2.5 border border-pro-stone rounded-lg text-sm font-sans text-pro-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors disabled:opacity-50"
+        className="w-full appearance-none px-4 py-2.5 border border-accent-soft rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors disabled:opacity-50"
       >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray pointer-events-none" />
+      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60 pointer-events-none" />
     </div>
   );
 }
@@ -152,8 +152,8 @@ export default function ResellerApply() {
         <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
-        <h1 className="text-2xl font-serif text-pro-navy mb-3">Application Received</h1>
-        <p className="text-sm text-pro-warm-gray font-sans mb-8 max-w-sm mx-auto">
+        <h1 className="text-2xl font-sans text-graphite mb-3">Application Received</h1>
+        <p className="text-sm text-graphite/60 font-sans mb-8 max-w-sm mx-auto">
           Your application has been submitted for review. You&apos;ll receive an update from our team
           within 1–2 business days. In the meantime, you can browse brands.
         </p>
@@ -171,19 +171,19 @@ export default function ResellerApply() {
     <div className="max-w-2xl mx-auto py-10 px-4">
       {/* Header */}
       <div className="mb-8">
-        <p className="text-xs font-semibold font-sans uppercase tracking-wider text-pro-gold mb-2">
+        <p className="text-xs font-semibold font-sans uppercase tracking-wider text-accent mb-2">
           Retailer Verification
         </p>
-        <h1 className="text-3xl font-serif text-pro-navy mb-3">Apply for a Wholesale Account</h1>
-        <p className="text-sm text-pro-warm-gray font-sans leading-relaxed max-w-lg">
+        <h1 className="text-3xl font-sans text-graphite mb-3">Apply for a Wholesale Account</h1>
+        <p className="text-sm text-graphite/60 font-sans leading-relaxed max-w-lg">
           To access wholesale pricing and place orders, we verify that you operate a licensed
           professional beauty business. This typically takes 1–2 business days.
         </p>
       </div>
 
       {/* What to expect */}
-      <div className="bg-pro-ivory border border-pro-stone rounded-xl p-5 mb-8">
-        <h2 className="text-sm font-semibold font-sans text-pro-charcoal mb-3">What happens next</h2>
+      <div className="bg-background border border-accent-soft rounded-xl p-5 mb-8">
+        <h2 className="text-sm font-semibold font-sans text-graphite mb-3">What happens next</h2>
         <ol className="space-y-2">
           {[
             'You submit this form with your business details.',
@@ -192,10 +192,10 @@ export default function ResellerApply() {
             'Start ordering wholesale from any brand on SOCELLE.',
           ].map((step, i) => (
             <li key={i} className="flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-pro-navy text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="w-5 h-5 rounded-full bg-graphite text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                 {i + 1}
               </span>
-              <span className="text-sm font-sans text-pro-charcoal">{step}</span>
+              <span className="text-sm font-sans text-graphite">{step}</span>
             </li>
           ))}
         </ol>
@@ -204,8 +204,8 @@ export default function ResellerApply() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Business Info */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-5">
-          <h2 className="text-base font-semibold font-sans text-pro-charcoal">Business Information</h2>
+        <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-5">
+          <h2 className="text-base font-semibold font-sans text-graphite">Business Information</h2>
 
           <div>
             <FieldLabel required>Business Name</FieldLabel>
@@ -271,10 +271,10 @@ export default function ResellerApply() {
         </div>
 
         {/* License */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-5">
+        <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-5">
           <div>
-            <h2 className="text-base font-semibold font-sans text-pro-charcoal">License Information</h2>
-            <p className="text-xs text-pro-warm-gray font-sans mt-1">
+            <h2 className="text-base font-semibold font-sans text-graphite">License Information</h2>
+            <p className="text-xs text-graphite/60 font-sans mt-1">
               We verify cosmetology, esthetics, or business licenses to confirm professional status. 
               If you don&apos;t have a license number handy, our team will reach out during review.
             </p>
@@ -308,16 +308,16 @@ export default function ResellerApply() {
             type="checkbox"
             checked={form.agreed}
             onChange={e => set('agreed')(e.target.checked)}
-            className="w-4 h-4 mt-0.5 accent-pro-navy rounded"
+            className="w-4 h-4 mt-0.5 accent-graphite rounded"
           />
-          <label htmlFor="agree" className="text-sm font-sans text-pro-charcoal leading-relaxed">
+          <label htmlFor="agree" className="text-sm font-sans text-graphite leading-relaxed">
             I confirm that I operate a licensed professional beauty business and agree to
             SOCELLE&apos;s{' '}
-            <a href="/terms" target="_blank" className="text-pro-navy underline hover:text-pro-gold transition-colors">
+            <a href="/terms" target="_blank" className="text-graphite underline hover:text-accent transition-colors">
               Terms of Service
             </a>{' '}
             and{' '}
-            <a href="/privacy" target="_blank" className="text-pro-navy underline hover:text-pro-gold transition-colors">
+            <a href="/privacy" target="_blank" className="text-graphite underline hover:text-accent transition-colors">
               Privacy Policy
             </a>
             .

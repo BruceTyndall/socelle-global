@@ -235,8 +235,8 @@ export default function ProtocolsView() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-pro-warm-gray">Loading protocols...</p>
+            <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-graphite/60">Loading protocols...</p>
           </div>
         </div>
       </div>
@@ -275,7 +275,7 @@ export default function ProtocolsView() {
       )}
 
       {currentMonthData && (
-        <div className="bg-gradient-to-r from-pro-navy to-pro-charcoal rounded-lg p-4 mb-6 text-white">
+        <div className="bg-gradient-to-r from-graphite to-graphite rounded-lg p-4 mb-6 text-white">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="w-5 h-5" />
             <h3 className="font-bold text-lg">{currentMonthData.month_name} Featured</h3>
@@ -290,9 +290,9 @@ export default function ProtocolsView() {
       )}
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg border border-pro-stone p-4">
-          <div className="text-2xl font-bold text-pro-charcoal">{completionStats.total}</div>
-          <div className="text-sm text-pro-warm-gray">Total Protocols</div>
+        <div className="bg-white rounded-lg border border-accent-soft p-4">
+          <div className="text-2xl font-bold text-graphite">{completionStats.total}</div>
+          <div className="text-sm text-graphite/60">Total Protocols</div>
         </div>
         <div className="bg-red-50 rounded-lg border border-red-200 p-4">
           <div className="text-2xl font-bold text-red-900">{completionStats.incomplete}</div>
@@ -309,18 +309,18 @@ export default function ProtocolsView() {
       </div>
 
       {completionStats.total > 0 && (
-        <div className="bg-pro-cream border border-pro-stone rounded-lg p-4 mb-6">
+        <div className="bg-accent-soft border border-accent-soft rounded-lg p-4 mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-pro-navy">Completion Progress</span>
-            <span className="text-sm font-bold text-pro-navy">{completionStats.percentComplete}%</span>
+            <span className="text-sm font-medium text-graphite">Completion Progress</span>
+            <span className="text-sm font-bold text-graphite">{completionStats.percentComplete}%</span>
           </div>
-          <div className="w-full bg-pro-stone rounded-full h-2">
+          <div className="w-full bg-accent-soft rounded-full h-2">
             <div
-              className="bg-pro-navy h-2 rounded-full transition-all"
+              className="bg-graphite h-2 rounded-full transition-all"
               style={{ width: `${completionStats.percentComplete}%` }}
             />
           </div>
-          <p className="text-xs text-pro-charcoal mt-2">
+          <p className="text-xs text-graphite mt-2">
             {completionStats.incomplete > 0
               ? `${completionStats.incomplete} protocol(s) need completion to unlock Phase 3`
               : 'All protocols complete! Phase 3 ready to unlock.'}
@@ -330,21 +330,21 @@ export default function ProtocolsView() {
 
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-semibold text-pro-charcoal">Canonical Protocols</h2>
-          <p className="text-sm text-pro-warm-gray mt-1">Official Naturopathica treatment protocols with exact names</p>
+          <h2 className="text-2xl font-semibold text-graphite">Canonical Protocols</h2>
+          <p className="text-sm text-graphite/60 mt-1">Official Naturopathica treatment protocols with exact names</p>
         </div>
         {!isAdding && !editingId && (
           <div className="flex items-center gap-3">
             <Link
               to="/admin/protocols/import"
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-accent-soft text-graphite rounded-lg hover:bg-background transition-colors text-sm font-medium"
             >
               <Upload className="w-4 h-4" />
               Bulk Import
             </Link>
             <button
               onClick={() => setIsAdding(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Add Protocol</span>
@@ -355,11 +355,11 @@ export default function ProtocolsView() {
 
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-pro-charcoal">Brand:</label>
+          <label className="text-sm font-medium text-graphite">Brand:</label>
           <select
             value={filterBrand}
             onChange={(e) => setFilterBrand(e.target.value)}
-            className="px-3 py-1.5 border border-pro-stone rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy"
+            className="px-3 py-1.5 border border-accent-soft rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-graphite"
           >
             <option value="all">All Brands</option>
             {brands.map(brand => (
@@ -373,8 +373,8 @@ export default function ProtocolsView() {
             onClick={() => setFilterStatus('all')}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               filterStatus === 'all'
-                ? 'bg-pro-navy text-white'
-                : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                ? 'bg-graphite text-white'
+                : 'bg-accent-soft text-graphite hover:bg-accent-soft'
             }`}
           >
             All ({completionStats.total})
@@ -413,13 +413,13 @@ export default function ProtocolsView() {
       </div>
 
       {(isAdding || editingId) && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-          <h3 className="text-lg font-medium text-pro-charcoal mb-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+          <h3 className="text-lg font-medium text-graphite mb-4">
             {editingId ? 'Edit Protocol' : 'New Protocol'}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Protocol Name (Exact)
               </label>
               <input
@@ -427,69 +427,69 @@ export default function ProtocolsView() {
                 required
                 value={formData.protocol_name}
                 onChange={(e) => setFormData({ ...formData, protocol_name: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Category</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Category</label>
               <input
                 type="text"
                 required
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="e.g., FACIALS"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Typical Duration</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Typical Duration</label>
               <input
                 type="text"
                 value={formData.typical_duration}
                 onChange={(e) => setFormData({ ...formData, typical_duration: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="e.g., 60 min"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Target Concerns (comma-separated)
               </label>
               <input
                 type="text"
                 value={formData.target_concerns}
                 onChange={(e) => setFormData({ ...formData, target_concerns: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="aging, dehydration, sensitivity"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Allowed Products (comma-separated)
               </label>
               <input
                 type="text"
                 value={formData.allowed_products}
                 onChange={(e) => setFormData({ ...formData, allowed_products: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Contraindications (comma-separated)
               </label>
               <input
                 type="text"
                 value={formData.contraindications}
                 onChange={(e) => setFormData({ ...formData, contraindications: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               />
             </div>
           </div>
           <div className="flex space-x-3 mt-4">
             <button
               type="submit"
-              className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal"
+              className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite"
             >
               <Save className="w-4 h-4" />
               <span>{editingId ? 'Update' : 'Save'}</span>
@@ -497,7 +497,7 @@ export default function ProtocolsView() {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center space-x-2 px-4 py-2 border border-pro-stone rounded-lg hover:bg-pro-ivory"
+              className="flex items-center space-x-2 px-4 py-2 border border-accent-soft rounded-lg hover:bg-background"
             >
               <X className="w-4 h-4" />
               <span>Cancel</span>
@@ -506,55 +506,55 @@ export default function ProtocolsView() {
         </form>
       )}
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-pro-ivory border-b border-pro-stone">
+            <thead className="bg-background border-b border-accent-soft">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Protocol Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Category</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Target Concerns</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Duration</th>
-                <th className="px-4 py-3 text-right text-sm font-medium text-pro-charcoal">Actions</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Protocol Name</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Category</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Target Concerns</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Duration</th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-graphite">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pro-stone">
+            <tbody className="divide-y divide-accent-soft">
               {filteredProtocols.map((protocol) => {
                 const isFeatured = isFeaturedProtocol(protocol.protocol_name);
                 return (
-                  <tr key={protocol.id} className={`hover:bg-pro-ivory ${isFeatured ? 'bg-pro-cream/50' : ''}`}>
-                    <td className="px-4 py-3 text-sm font-medium text-pro-charcoal">
+                  <tr key={protocol.id} className={`hover:bg-background ${isFeatured ? 'bg-accent-soft/50' : ''}`}>
+                    <td className="px-4 py-3 text-sm font-medium text-graphite">
                       <div className="flex items-center gap-2">
                         {protocol.protocol_name}
                         {isFeatured && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-pro-gold text-pro-navy">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-graphite">
                             <Sparkles className="w-3 h-3" />
                             Featured
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-pro-warm-gray">{protocol.category}</td>
+                    <td className="px-4 py-3 text-sm text-graphite/60">{protocol.category}</td>
                     <td className="px-4 py-3">
                       {getCompletionStatusBadge(protocol.completion_status || 'incomplete')}
                     </td>
-                    <td className="px-4 py-3 text-sm text-pro-warm-gray">
+                    <td className="px-4 py-3 text-sm text-graphite/60">
                       {protocol.target_concerns.join(', ') || '—'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-pro-warm-gray">{protocol.typical_duration || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-graphite/60">{protocol.typical_duration || '—'}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end space-x-2">
                         <button
                           onClick={() => setCompletionEditorId(protocol.id)}
-                          className="p-1 text-pro-navy hover:text-pro-charcoal"
+                          className="p-1 text-graphite hover:text-graphite"
                           title="Complete Protocol"
                         >
                           <FileEdit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleEdit(protocol)}
-                          className="p-1 text-pro-warm-gray hover:text-pro-charcoal"
+                          className="p-1 text-graphite/60 hover:text-graphite"
                           title="Edit Metadata"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -575,7 +575,7 @@ export default function ProtocolsView() {
           </table>
         </div>
         {filteredProtocols.length === 0 && (
-          <div className="text-center py-12 text-pro-warm-gray">
+          <div className="text-center py-12 text-graphite/60">
             {filterStatus === 'all'
               ? 'No protocols yet. Add your first protocol to get started.'
               : `No protocols with status: ${filterStatus.replace('_', ' ')}`}

@@ -26,10 +26,10 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
 
   if (loading && !timedOut) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-pro-stone">
+      <div className="min-h-screen flex items-center justify-center bg-accent-soft">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-pro-warm-gray">Loading...</p>
+          <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-graphite/60">Loading...</p>
         </div>
       </div>
     );
@@ -46,14 +46,14 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
 
   if (profileError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-pro-stone p-4">
+      <div className="min-h-screen flex items-center justify-center bg-accent-soft p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
           <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-pro-charcoal mb-2">Profile Error</h2>
-          <p className="text-pro-warm-gray mb-6">{profileError}</p>
+          <h2 className="text-xl font-bold text-graphite mb-2">Profile Error</h2>
+          <p className="text-graphite/60 mb-6">{profileError}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+            className="px-6 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
           >
             Reload Page
           </button>
@@ -64,16 +64,16 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
 
   if (!effectiveRole) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-pro-stone p-4">
+      <div className="min-h-screen flex items-center justify-center bg-accent-soft p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
           <AlertCircle className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-pro-charcoal mb-2">Role Missing</h2>
-          <p className="text-pro-warm-gray mb-6">
+          <h2 className="text-xl font-bold text-graphite mb-2">Role Missing</h2>
+          <p className="text-graphite/60 mb-6">
             Your account is authenticated, but no role is available. Ask an admin to verify your `user_profiles` record.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+            className="px-6 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
           >
             Retry
           </button>
@@ -84,11 +84,11 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
 
   if (requireAdmin && effectiveRole !== 'admin' && effectiveRole !== 'platform_admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-pro-stone p-4">
+      <div className="min-h-screen flex items-center justify-center bg-accent-soft p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
           <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-pro-charcoal mb-2">Access Denied</h2>
-          <p className="text-pro-warm-gray mb-6">
+          <h2 className="text-xl font-bold text-graphite mb-2">Access Denied</h2>
+          <p className="text-graphite/60 mb-6">
             You don't have admin privileges to access this area.
           </p>
         </div>
@@ -101,11 +101,11 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
 
     if (!effectiveRole || !allowedRoles.includes(effectiveRole)) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-pro-stone p-4">
+        <div className="min-h-screen flex items-center justify-center bg-accent-soft p-4">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
             <AlertCircle className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-pro-charcoal mb-2">Access Restricted</h2>
-            <p className="text-pro-warm-gray mb-6">
+            <h2 className="text-xl font-bold text-graphite mb-2">Access Restricted</h2>
+            <p className="text-graphite/60 mb-6">
               Your account doesn't have access to this area.
             </p>
           </div>

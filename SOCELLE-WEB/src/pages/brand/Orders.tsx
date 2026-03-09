@@ -114,7 +114,7 @@ export default function BrandOrders() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans">No brand associated with your account.</p>
       </div>
     );
   }
@@ -124,8 +124,8 @@ export default function BrandOrders() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl text-pro-navy">Orders</h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-0.5">Manage retailer purchase orders</p>
+          <h1 className="font-sans text-2xl text-graphite">Orders</h1>
+          <p className="text-sm text-graphite/60 font-sans mt-0.5">Manage retailer purchase orders</p>
         </div>
         <Button variant="outline" size="sm" iconLeft={<Download className="w-4 h-4" />}>
           Export
@@ -155,8 +155,8 @@ export default function BrandOrders() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-pro-stone">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border-b border-pro-stone">
+      <div className="bg-white rounded-xl border border-accent-soft">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border-b border-accent-soft">
           <div className="w-full sm:w-72">
             <Input
               placeholder="Search orders or businesses…"
@@ -172,8 +172,8 @@ export default function BrandOrders() {
                 onClick={() => setStatusFilter(s)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium font-sans capitalize transition-colors ${
                   statusFilter === s
-                    ? 'bg-pro-navy text-white'
-                    : 'bg-pro-stone/50 text-pro-warm-gray hover:text-pro-charcoal'
+                    ? 'bg-graphite text-white'
+                    : 'bg-accent-soft/50 text-graphite/60 hover:text-graphite'
                 }`}
               >
                 {s === 'sent_to_brand' ? 'Sent' : s}
@@ -183,12 +183,12 @@ export default function BrandOrders() {
         </div>
 
         {loading ? (
-          <div className="divide-y divide-pro-stone/50">
+          <div className="divide-y divide-accent-soft/50">
             {[0, 1, 2, 3].map(i => (
               <div key={i} className="flex items-center gap-4 p-4 animate-pulse">
-                <div className="w-24 h-4 bg-pro-stone/50 rounded" />
-                <div className="flex-1 h-4 bg-pro-stone/50 rounded" />
-                <div className="w-16 h-4 bg-pro-stone/50 rounded" />
+                <div className="w-24 h-4 bg-accent-soft/50 rounded" />
+                <div className="flex-1 h-4 bg-accent-soft/50 rounded" />
+                <div className="w-16 h-4 bg-accent-soft/50 rounded" />
               </div>
             ))}
           </div>
@@ -220,25 +220,25 @@ export default function BrandOrders() {
                 const badge = STATUS_BADGE[order.status] ?? { variant: 'gray' as const, label: order.status };
                 return (
                   <TableRow key={order.id}>
-                    <Td className="font-mono text-xs text-pro-warm-gray">{order.order_number}</Td>
+                    <Td className="font-mono text-xs text-graphite/60">{order.order_number}</Td>
                     <Td>
                       <div>
-                        <p className="font-medium text-pro-charcoal">
+                        <p className="font-medium text-graphite">
                           {order.businesses?.name ?? 'Unknown Retailer'}
                         </p>
-                        <p className="text-xs text-pro-warm-gray">{order.businesses?.type ?? '—'}</p>
+                        <p className="text-xs text-graphite/60">{order.businesses?.type ?? '—'}</p>
                       </div>
                     </Td>
-                    <Td className="text-pro-warm-gray text-sm">{formatDate(order.created_at)}</Td>
-                    <Td className="text-pro-charcoal">
+                    <Td className="text-graphite/60 text-sm">{formatDate(order.created_at)}</Td>
+                    <Td className="text-graphite">
                       {order.item_count > 0 ? `${order.item_count} items` : '—'}
                     </Td>
-                    <Td className="font-semibold text-pro-charcoal">${order.subtotal.toLocaleString()}</Td>
+                    <Td className="font-semibold text-graphite">${order.subtotal.toLocaleString()}</Td>
                     <Td><Badge variant={badge.variant} dot>{badge.label}</Badge></Td>
                     <Td>
                       <Link
                         to={`/brand/orders/${order.id}`}
-                        className="inline-flex p-1.5 rounded-lg text-pro-warm-gray hover:text-pro-navy hover:bg-pro-cream transition-colors"
+                        className="inline-flex p-1.5 rounded-lg text-graphite/60 hover:text-graphite hover:bg-accent-soft transition-colors"
                       >
                         <Eye className="w-4 h-4" />
                       </Link>

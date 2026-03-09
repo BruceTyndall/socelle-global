@@ -27,7 +27,7 @@ export function Tabs({ defaultTab, onChange, className = '', children, ...props 
 
 export function TabList({ className = '', children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`flex gap-1 border-b border-pro-stone ${className}`} {...props}>
+    <div className={`flex gap-1 border-b border-accent-soft ${className}`} {...props}>
       {children}
     </div>
   );
@@ -45,8 +45,8 @@ export function Tab({ id, className = '', children, ...props }: TabProps) {
       onClick={() => setActive(id)}
       className={`px-4 py-2.5 text-sm font-medium font-sans border-b-2 transition-colors -mb-px ${
         isActive
-          ? 'border-pro-navy text-pro-navy'
-          : 'border-transparent text-pro-warm-gray hover:text-pro-charcoal hover:border-pro-stone'
+          ? 'border-graphite text-graphite'
+          : 'border-transparent text-graphite/60 hover:text-graphite hover:border-accent-soft'
       } ${className}`}
       {...props}
     >

@@ -61,21 +61,21 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-pro-stone p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-accent-soft p-6">
         <h2 className="text-xl font-semibold mb-4">Phase 2: Canonical Protocol Ingestion</h2>
 
         {stage === 'ready' && (
           <div className="space-y-4">
-            <div className="bg-pro-cream border border-pro-stone rounded-lg p-4">
-              <h3 className="font-semibold text-pro-navy mb-2">Pre-Flight Validation Required</h3>
-              <p className="text-sm text-pro-navy">
+            <div className="bg-accent-soft border border-accent-soft rounded-lg p-4">
+              <h3 className="font-semibold text-graphite mb-2">Pre-Flight Validation Required</h3>
+              <p className="text-sm text-graphite">
                 Before ingestion, all 14 primary protocol PDFs must pass readability checks.
               </p>
             </div>
 
             <button
               onClick={handlePreFlight}
-              className="px-4 py-2 bg-pro-navy hover:bg-pro-charcoal text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-graphite hover:bg-graphite text-white rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <FileCheck className="w-4 h-4" />
               Run Pre-Flight Validation
@@ -85,8 +85,8 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
 
         {stage === 'preflight' && (
           <div className="flex items-center gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-pro-navy" />
-            <span className="text-pro-charcoal">Running pre-flight validation on 14 files...</span>
+            <Loader2 className="w-5 h-5 animate-spin text-graphite" />
+            <span className="text-graphite">Running pre-flight validation on 14 files...</span>
           </div>
         )}
 
@@ -118,14 +118,14 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
 
             {!preFlightResults.passed && (
               <div className="space-y-2">
-                <h4 className="font-medium text-pro-charcoal">Failed Files:</h4>
+                <h4 className="font-medium text-graphite">Failed Files:</h4>
                 {preFlightResults.results
                   .filter((r: any) => !r.readable)
                   .map((result: any) => (
                     <div key={result.fileName} className="flex items-start gap-2 p-2 bg-red-50 rounded">
                       <XCircle className="w-4 h-4 text-red-600 mt-0.5" />
                       <div>
-                        <div className="text-sm font-medium text-pro-charcoal">{result.fileName}</div>
+                        <div className="text-sm font-medium text-graphite">{result.fileName}</div>
                         <div className="text-xs text-red-600">{result.error}</div>
                       </div>
                     </div>
@@ -147,8 +147,8 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
 
         {stage === 'ingesting' && (
           <div className="flex items-center gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-pro-navy" />
-            <span className="text-pro-charcoal">Ingesting Phase 2 protocols...</span>
+            <Loader2 className="w-5 h-5 animate-spin text-graphite" />
+            <span className="text-graphite">Ingesting Phase 2 protocols...</span>
           </div>
         )}
 
@@ -167,15 +167,15 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
 
       {stage === 'complete' && ingestionResults && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-pro-stone p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-accent-soft p-6">
             <h2 className="text-xl font-semibold mb-4">Ingestion Summary</h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-pro-cream rounded-lg p-4">
-                <div className="text-2xl font-bold text-pro-navy">
+              <div className="bg-accent-soft rounded-lg p-4">
+                <div className="text-2xl font-bold text-graphite">
                   {ingestionResults.summary.totalProtocols}
                 </div>
-                <div className="text-sm text-pro-charcoal">Protocols Ingested</div>
+                <div className="text-sm text-graphite">Protocols Ingested</div>
               </div>
 
               <div className="bg-yellow-50 rounded-lg p-4">
@@ -201,12 +201,12 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-pro-charcoal">Protocol Details</h3>
+              <h3 className="font-semibold text-graphite">Protocol Details</h3>
               {ingestionResults.results.map((result) => (
                 <div
                   key={result.sourceFile}
                   className={`border rounded-lg p-4 ${
-                    result.success ? 'border-pro-stone' : 'border-red-300 bg-red-50'
+                    result.success ? 'border-accent-soft' : 'border-red-300 bg-red-50'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -217,8 +217,8 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
                         <XCircle className="w-4 h-4 text-red-600" />
                       )}
                       <div>
-                        <div className="font-medium text-pro-charcoal">{result.protocolName}</div>
-                        <div className="text-xs text-pro-warm-gray">{result.sourceFile}</div>
+                        <div className="font-medium text-graphite">{result.protocolName}</div>
+                        <div className="text-xs text-graphite/60">{result.sourceFile}</div>
                       </div>
                     </div>
                     <span className={`text-xs px-2 py-1 rounded ${
@@ -232,15 +232,15 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
 
                   <div className="grid grid-cols-3 gap-2 text-sm mb-2">
                     <div>
-                      <span className="text-pro-warm-gray">Steps:</span>
+                      <span className="text-graphite/60">Steps:</span>
                       <span className="ml-1 font-medium">{result.stepsCreated}</span>
                     </div>
                     <div>
-                      <span className="text-pro-warm-gray">Products:</span>
+                      <span className="text-graphite/60">Products:</span>
                       <span className="ml-1 font-medium">{result.stepProductLinksCreated}</span>
                     </div>
                     <div>
-                      <span className="text-pro-warm-gray">Unresolved:</span>
+                      <span className="text-graphite/60">Unresolved:</span>
                       <span className="ml-1 font-medium">{result.unresolvedProducts.length}</span>
                     </div>
                   </div>
@@ -265,8 +265,8 @@ export default function Phase2IngestionPanel({ onComplete }: Phase2IngestionPane
                   {result.warnings.length > 0 && (
                     <div className="space-y-1">
                       {result.warnings.map((warning, idx) => (
-                        <div key={idx} className="text-xs text-pro-warm-gray flex items-start gap-1">
-                          <span className="text-pro-warm-gray">•</span>
+                        <div key={idx} className="text-xs text-graphite/60 flex items-start gap-1">
+                          <span className="text-graphite/60">•</span>
                           <span>{warning}</span>
                         </div>
                       ))}

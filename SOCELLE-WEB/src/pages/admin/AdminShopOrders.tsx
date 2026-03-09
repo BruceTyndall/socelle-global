@@ -64,27 +64,27 @@ export default function AdminShopOrders() {
 
   return (
     <div>
-      <h1 className="text-2xl font-sans font-semibold text-pro-charcoal mb-6">Shop Orders</h1>
+      <h1 className="text-2xl font-sans font-semibold text-graphite mb-6">Shop Orders</h1>
 
       {/* Detail Modal */}
       {detail && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 bg-pro-charcoal/40">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 bg-graphite/40">
           <div className="bg-white rounded-xl shadow-modal w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-sans font-semibold text-pro-charcoal">Order #{detail.order.order_number}</h2>
-              <button onClick={() => setDetail(null)}><X className="w-5 h-5 text-pro-warm-gray" /></button>
+              <h2 className="text-lg font-sans font-semibold text-graphite">Order #{detail.order.order_number}</h2>
+              <button onClick={() => setDetail(null)}><X className="w-5 h-5 text-graphite/60" /></button>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-6 text-sm font-sans">
-              <div><span className="text-pro-warm-gray">Date:</span> <span className="text-pro-charcoal">{new Date(detail.order.created_at).toLocaleDateString()}</span></div>
-              <div><span className="text-pro-warm-gray">Total:</span> <span className="font-semibold text-pro-charcoal">{formatCents(detail.order.total_cents)}</span></div>
-              <div><span className="text-pro-warm-gray">User ID:</span> <span className="text-pro-charcoal font-mono text-xs">{detail.order.user_id}</span></div>
+              <div><span className="text-graphite/60">Date:</span> <span className="text-graphite">{new Date(detail.order.created_at).toLocaleDateString()}</span></div>
+              <div><span className="text-graphite/60">Total:</span> <span className="font-semibold text-graphite">{formatCents(detail.order.total_cents)}</span></div>
+              <div><span className="text-graphite/60">User ID:</span> <span className="text-graphite font-mono text-xs">{detail.order.user_id}</span></div>
               <div>
-                <span className="text-pro-warm-gray">Status: </span>
+                <span className="text-graphite/60">Status: </span>
                 <select
                   value={detail.order.status}
                   onChange={e => updateStatus(detail.order.id, e.target.value)}
-                  className="ml-1 text-sm border border-pro-stone rounded px-2 py-1"
+                  className="ml-1 text-sm border border-accent-soft rounded px-2 py-1"
                 >
                   {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -93,34 +93,34 @@ export default function AdminShopOrders() {
 
             {detail.order.shipping_address && (
               <div className="mb-6">
-                <p className="text-xs font-semibold text-pro-warm-gray uppercase mb-2">Shipping Address</p>
+                <p className="text-xs font-semibold text-graphite/60 uppercase mb-2">Shipping Address</p>
                 {(() => {
                   const a = detail.order.shipping_address as Record<string, string>;
-                  return <p className="text-sm font-sans text-pro-charcoal">{a.name}, {a.line1}, {a.city} {a.state} {a.zip}</p>;
+                  return <p className="text-sm font-sans text-graphite">{a.name}, {a.line1}, {a.city} {a.state} {a.zip}</p>;
                 })()}
               </div>
             )}
 
-            <p className="text-xs font-semibold text-pro-warm-gray uppercase mb-2">Items</p>
-            <div className="border border-pro-stone rounded-lg overflow-hidden">
+            <p className="text-xs font-semibold text-graphite/60 uppercase mb-2">Items</p>
+            <div className="border border-accent-soft rounded-lg overflow-hidden">
               <table className="w-full text-sm font-sans">
-                <thead className="bg-pro-cream">
+                <thead className="bg-accent-soft">
                   <tr>
-                    <th className="text-left px-3 py-2 text-xs uppercase text-pro-warm-gray">Item</th>
-                    <th className="text-left px-3 py-2 text-xs uppercase text-pro-warm-gray">Qty</th>
-                    <th className="text-left px-3 py-2 text-xs uppercase text-pro-warm-gray">Unit</th>
-                    <th className="text-left px-3 py-2 text-xs uppercase text-pro-warm-gray">Total</th>
+                    <th className="text-left px-3 py-2 text-xs uppercase text-graphite/60">Item</th>
+                    <th className="text-left px-3 py-2 text-xs uppercase text-graphite/60">Qty</th>
+                    <th className="text-left px-3 py-2 text-xs uppercase text-graphite/60">Unit</th>
+                    <th className="text-left px-3 py-2 text-xs uppercase text-graphite/60">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {detail.items.map(item => {
                     const snapshot = item.product_snapshot as Record<string, unknown> | null;
                     return (
-                      <tr key={item.id} className="border-t border-pro-stone/30">
-                        <td className="px-3 py-2 text-pro-charcoal">{(snapshot?.name as string) ?? 'Product'}</td>
-                        <td className="px-3 py-2 text-pro-charcoal">{item.quantity}</td>
-                        <td className="px-3 py-2 text-pro-charcoal">{formatCents(item.unit_price_cents)}</td>
-                        <td className="px-3 py-2 font-semibold text-pro-charcoal">{formatCents(item.total_price_cents)}</td>
+                      <tr key={item.id} className="border-t border-accent-soft/30">
+                        <td className="px-3 py-2 text-graphite">{(snapshot?.name as string) ?? 'Product'}</td>
+                        <td className="px-3 py-2 text-graphite">{item.quantity}</td>
+                        <td className="px-3 py-2 text-graphite">{formatCents(item.unit_price_cents)}</td>
+                        <td className="px-3 py-2 font-semibold text-graphite">{formatCents(item.total_price_cents)}</td>
                       </tr>
                     );
                   })}
@@ -129,43 +129,43 @@ export default function AdminShopOrders() {
             </div>
 
             <div className="mt-6 space-y-1 text-sm font-sans text-right">
-              <p className="text-pro-warm-gray">Subtotal: {formatCents(detail.order.subtotal_cents)}</p>
-              <p className="text-pro-warm-gray">Shipping: {formatCents(detail.order.shipping_cents)}</p>
-              <p className="text-pro-warm-gray">Tax: {formatCents(detail.order.tax_cents)}</p>
-              <p className="font-bold text-pro-charcoal text-base">Total: {formatCents(detail.order.total_cents)}</p>
+              <p className="text-graphite/60">Subtotal: {formatCents(detail.order.subtotal_cents)}</p>
+              <p className="text-graphite/60">Shipping: {formatCents(detail.order.shipping_cents)}</p>
+              <p className="text-graphite/60">Tax: {formatCents(detail.order.tax_cents)}</p>
+              <p className="font-bold text-graphite text-base">Total: {formatCents(detail.order.total_cents)}</p>
             </div>
           </div>
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
         <table className="w-full text-sm font-sans">
-          <thead className="bg-pro-cream border-b border-pro-stone">
+          <thead className="bg-accent-soft border-b border-accent-soft">
             <tr>
-              <th className="text-left px-4 py-3 font-semibold text-pro-warm-gray text-xs uppercase">Order</th>
-              <th className="text-left px-4 py-3 font-semibold text-pro-warm-gray text-xs uppercase">Date</th>
-              <th className="text-left px-4 py-3 font-semibold text-pro-warm-gray text-xs uppercase">Status</th>
-              <th className="text-left px-4 py-3 font-semibold text-pro-warm-gray text-xs uppercase">Total</th>
+              <th className="text-left px-4 py-3 font-semibold text-graphite/60 text-xs uppercase">Order</th>
+              <th className="text-left px-4 py-3 font-semibold text-graphite/60 text-xs uppercase">Date</th>
+              <th className="text-left px-4 py-3 font-semibold text-graphite/60 text-xs uppercase">Status</th>
+              <th className="text-left px-4 py-3 font-semibold text-graphite/60 text-xs uppercase">Total</th>
               <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {loading && <tr><td colSpan={5} className="px-4 py-8 text-center text-pro-warm-gray">Loading...</td></tr>}
+            {loading && <tr><td colSpan={5} className="px-4 py-8 text-center text-graphite/60">Loading...</td></tr>}
             {!loading && orders.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-pro-warm-gray">
+              <tr><td colSpan={5} className="px-4 py-8 text-center text-graphite/60">
                 <Package className="w-8 h-8 mx-auto mb-2 opacity-30" />No orders yet
               </td></tr>
             )}
             {orders.map(o => (
-              <tr key={o.id} className="border-b border-pro-stone/50 hover:bg-pro-cream/50">
-                <td className="px-4 py-3 font-mono font-semibold text-pro-charcoal">#{o.order_number}</td>
-                <td className="px-4 py-3 text-pro-warm-gray">{new Date(o.created_at).toLocaleDateString()}</td>
+              <tr key={o.id} className="border-b border-accent-soft/50 hover:bg-accent-soft/50">
+                <td className="px-4 py-3 font-mono font-semibold text-graphite">#{o.order_number}</td>
+                <td className="px-4 py-3 text-graphite/60">{new Date(o.created_at).toLocaleDateString()}</td>
                 <td className="px-4 py-3">
                   <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${STATUS_COLORS[o.status] ?? ''}`}>{o.status}</span>
                 </td>
-                <td className="px-4 py-3 font-semibold text-pro-charcoal">{formatCents(o.total_cents)}</td>
+                <td className="px-4 py-3 font-semibold text-graphite">{formatCents(o.total_cents)}</td>
                 <td className="px-4 py-3 text-right">
-                  <button onClick={() => openDetail(o)} className="text-pro-warm-gray hover:text-pro-charcoal"><Eye className="w-4 h-4" /></button>
+                  <button onClick={() => openDetail(o)} className="text-graphite/60 hover:text-graphite"><Eye className="w-4 h-4" /></button>
                 </td>
               </tr>
             ))}

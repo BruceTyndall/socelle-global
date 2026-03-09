@@ -455,8 +455,8 @@ export default function AdminFeedsHub() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-serif text-pro-navy">
-              Feeds Hub<span className="text-pro-gold">.</span>
+            <h1 className="text-3xl font-sans text-graphite">
+              Feeds Hub<span className="text-accent">.</span>
             </h1>
             {!isLive && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -465,7 +465,7 @@ export default function AdminFeedsHub() {
               </span>
             )}
           </div>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Manage data sources, test feeds, and monitor ingestion health
           </p>
         </div>
@@ -474,7 +474,7 @@ export default function AdminFeedsHub() {
             type="button"
             onClick={handleRunOrchestrator}
             disabled={orchestratorRunning || !isLive}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-pro-navy text-white hover:bg-pro-navy/90 disabled:opacity-60 font-sans text-sm transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-graphite text-white hover:bg-graphite/90 disabled:opacity-60 font-sans text-sm transition-colors"
           >
             <Play className={`w-4 h-4 ${orchestratorRunning ? 'animate-pulse' : ''}`} />
             Run All
@@ -483,7 +483,7 @@ export default function AdminFeedsHub() {
             type="button"
             onClick={() => { setShowAddForm(true); setError(null); }}
             disabled={!isLive}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-navy text-pro-navy hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-graphite text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add Feed
@@ -492,7 +492,7 @@ export default function AdminFeedsHub() {
             type="button"
             onClick={loadData}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -519,7 +519,7 @@ export default function AdminFeedsHub() {
             orchestratorResult.includes('error') || orchestratorResult.includes('Error')
               ? 'text-red-800' : 'text-green-800'
           }`}>{orchestratorResult}</p>
-          <button type="button" onClick={() => setOrchestratorResult(null)} className="text-pro-warm-gray hover:text-pro-charcoal">
+          <button type="button" onClick={() => setOrchestratorResult(null)} className="text-graphite/60 hover:text-graphite">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -527,19 +527,19 @@ export default function AdminFeedsHub() {
 
       {/* Summary strip */}
       {isLive && !loading && (
-        <div className="bg-pro-cream/60 border border-pro-stone rounded-xl px-5 py-4 flex items-center gap-6 flex-wrap">
+        <div className="bg-accent-soft/60 border border-accent-soft rounded-xl px-5 py-4 flex items-center gap-6 flex-wrap">
           <div className="flex items-center gap-2">
-            <Rss className="w-4 h-4 text-pro-navy flex-shrink-0" />
-            <p className="text-sm text-pro-charcoal font-sans font-medium">
+            <Rss className="w-4 h-4 text-graphite flex-shrink-0" />
+            <p className="text-sm text-graphite font-sans font-medium">
               {enabledCount}/{rows.length} enabled
             </p>
           </div>
-          <div className="w-px h-4 bg-pro-stone" />
-          <p className="text-sm text-pro-charcoal font-sans">
+          <div className="w-px h-4 bg-accent-soft" />
+          <p className="text-sm text-graphite font-sans">
             {totalSignals.toLocaleString()} signals
           </p>
-          <div className="w-px h-4 bg-pro-stone" />
-          <p className={`text-sm font-sans ${errorCount > 0 ? 'text-red-600 font-medium' : 'text-pro-charcoal'}`}>
+          <div className="w-px h-4 bg-accent-soft" />
+          <p className={`text-sm font-sans ${errorCount > 0 ? 'text-red-600 font-medium' : 'text-graphite'}`}>
             {errorCount} error{errorCount !== 1 ? 's' : ''}
           </p>
         </div>
@@ -549,19 +549,19 @@ export default function AdminFeedsHub() {
       {isLive && (
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search feeds..."
-              className="w-full pl-9 pr-3 py-2 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+              className="w-full pl-9 pr-3 py-2 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
             />
           </div>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+            className="border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
@@ -572,7 +572,7 @@ export default function AdminFeedsHub() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+            className="border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
           >
             {feedTypes.map((t) => (
               <option key={t} value={t}>
@@ -584,7 +584,7 @@ export default function AdminFeedsHub() {
           {/* Bulk actions */}
           {selectedIds.size > 0 && (
             <div className="flex items-center gap-2 ml-auto">
-              <span className="text-xs text-pro-warm-gray font-sans">{selectedIds.size} selected</span>
+              <span className="text-xs text-graphite/60 font-sans">{selectedIds.size} selected</span>
               <button
                 type="button"
                 onClick={() => handleBulkAction('enable')}
@@ -597,14 +597,14 @@ export default function AdminFeedsHub() {
                 type="button"
                 onClick={() => handleBulkAction('disable')}
                 disabled={!!bulkAction}
-                className="px-3 py-1.5 rounded-lg bg-pro-stone text-pro-charcoal text-xs font-sans hover:bg-pro-stone/80 disabled:opacity-60 transition-colors"
+                className="px-3 py-1.5 rounded-lg bg-accent-soft text-graphite text-xs font-sans hover:bg-accent-soft/80 disabled:opacity-60 transition-colors"
               >
                 {bulkAction === 'disable' ? 'Disabling...' : 'Disable'}
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedIds(new Set())}
-                className="text-xs text-pro-warm-gray hover:text-pro-charcoal font-sans"
+                className="text-xs text-graphite/60 hover:text-graphite font-sans"
               >
                 Clear
               </button>
@@ -615,30 +615,30 @@ export default function AdminFeedsHub() {
 
       {/* Add Feed modal/form */}
       {showAddForm && (
-        <div className="bg-white border border-pro-stone rounded-xl p-6 space-y-4">
+        <div className="bg-white border border-accent-soft rounded-xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-serif text-pro-navy">Add New Feed</h3>
-            <button type="button" onClick={() => setShowAddForm(false)} className="text-pro-warm-gray hover:text-pro-charcoal">
+            <h3 className="text-lg font-sans text-graphite">Add New Feed</h3>
+            <button type="button" onClick={() => setShowAddForm(false)} className="text-graphite/60 hover:text-graphite">
               <X className="w-5 h-5" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Name *</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Name *</label>
               <input
                 type="text"
                 value={newFeed.name}
                 onChange={(e) => setNewFeed({ ...newFeed, name: e.target.value })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
                 placeholder="e.g., Cosmetics Design RSS"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Feed Type *</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Feed Type *</label>
               <select
                 value={newFeed.feed_type}
                 onChange={(e) => setNewFeed({ ...newFeed, feed_type: e.target.value })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
               >
                 {FEED_TYPES.map((t) => (
                   <option key={t} value={t}>{t.toUpperCase()}</option>
@@ -646,11 +646,11 @@ export default function AdminFeedsHub() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Category *</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Category *</label>
               <select
                 value={newFeed.category}
                 onChange={(e) => setNewFeed({ ...newFeed, category: e.target.value })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
               >
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{formatCat(c)}</option>
@@ -658,41 +658,41 @@ export default function AdminFeedsHub() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Endpoint URL *</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Endpoint URL *</label>
               <input
                 type="url"
                 value={newFeed.endpoint_url}
                 onChange={(e) => setNewFeed({ ...newFeed, endpoint_url: e.target.value })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
                 placeholder="https://..."
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">API Key Env Var</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">API Key Env Var</label>
               <input
                 type="text"
                 value={newFeed.api_key_env_var}
                 onChange={(e) => setNewFeed({ ...newFeed, api_key_env_var: e.target.value })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
                 placeholder="e.g., COSDESIGN_API_KEY"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Poll Interval (min)</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Poll Interval (min)</label>
               <input
                 type="number"
                 min={1}
                 value={newFeed.poll_interval_minutes}
                 onChange={(e) => setNewFeed({ ...newFeed, poll_interval_minutes: parseInt(e.target.value) || 60 })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Provenance Tier</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Provenance Tier</label>
               <select
                 value={newFeed.provenance_tier}
                 onChange={(e) => setNewFeed({ ...newFeed, provenance_tier: parseInt(e.target.value) })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
               >
                 <option value={1}>Tier 1 — Direct/Owned</option>
                 <option value={2}>Tier 2 — Public/Structured</option>
@@ -700,12 +700,12 @@ export default function AdminFeedsHub() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-pro-charcoal font-sans mb-1">Attribution Label</label>
+              <label className="block text-xs font-medium text-graphite font-sans mb-1">Attribution Label</label>
               <input
                 type="text"
                 value={newFeed.attribution_label}
                 onChange={(e) => setNewFeed({ ...newFeed, attribution_label: e.target.value })}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20"
                 placeholder="e.g., Cosmetics Design"
               />
             </div>
@@ -714,7 +714,7 @@ export default function AdminFeedsHub() {
             <button
               type="button"
               onClick={() => setShowAddForm(false)}
-              className="px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream font-sans text-sm transition-colors"
+              className="px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
             >
               Cancel
             </button>
@@ -722,7 +722,7 @@ export default function AdminFeedsHub() {
               type="button"
               onClick={handleAddFeed}
               disabled={saving || !newFeed.name.trim() || !newFeed.endpoint_url.trim()}
-              className="px-4 py-2 rounded-lg bg-pro-navy text-white hover:bg-pro-navy/90 disabled:opacity-60 font-sans text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-graphite text-white hover:bg-graphite/90 disabled:opacity-60 font-sans text-sm transition-colors"
             >
               {saving ? 'Saving...' : 'Add Feed'}
             </button>
@@ -745,32 +745,32 @@ export default function AdminFeedsHub() {
             : categoryFilter === 'all' ? 'No feeds configured yet.' : `No feeds in category "${formatCat(categoryFilter)}".`
         } />
       ) : (
-        <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+        <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm font-sans">
               <thead>
-                <tr className="border-b border-pro-stone bg-pro-cream/50">
+                <tr className="border-b border-accent-soft bg-accent-soft/50">
                   <th className="px-3 py-3 w-8">
-                    <button type="button" onClick={toggleSelectAll} className="text-pro-warm-gray hover:text-pro-navy">
+                    <button type="button" onClick={toggleSelectAll} className="text-graphite/60 hover:text-graphite">
                       {selectedIds.size === filteredRows.length && filteredRows.length > 0
                         ? <CheckSquare className="w-4 h-4" />
                         : <Square className="w-4 h-4" />
                       }
                     </button>
                   </th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal w-6" />
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Name</th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Type</th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Category</th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Signal Type</th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Tier</th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Enabled</th>
-                  <th className="text-left px-3 py-3 font-medium text-pro-charcoal">Last Run</th>
-                  <th className="text-right px-3 py-3 font-medium text-pro-charcoal">Signals</th>
-                  <th className="text-right px-3 py-3 font-medium text-pro-charcoal">Actions</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite w-6" />
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Name</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Type</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Category</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Signal Type</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Tier</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Enabled</th>
+                  <th className="text-left px-3 py-3 font-medium text-graphite">Last Run</th>
+                  <th className="text-right px-3 py-3 font-medium text-graphite">Signals</th>
+                  <th className="text-right px-3 py-3 font-medium text-graphite">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-pro-stone/50">
+              <tbody className="divide-y divide-accent-soft/50">
                 {filteredRows.map((feed) => {
                   const freshness = getFreshnessStatus(feed.last_fetched_at, feed.last_error);
                   const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
@@ -805,8 +805,8 @@ export default function AdminFeedsHub() {
               </tbody>
             </table>
           </div>
-          <div className="border-t border-pro-stone bg-pro-cream/30 px-4 py-2">
-            <p className="text-xs text-pro-warm-gray font-sans">
+          <div className="border-t border-accent-soft bg-accent-soft/30 px-4 py-2">
+            <p className="text-xs text-graphite/60 font-sans">
               Showing {filteredRows.length} of {rows.length} feeds
             </p>
           </div>
@@ -848,22 +848,22 @@ function FeedRow({
 }: FeedRowProps) {
   return (
     <>
-      <tr className={`hover:bg-pro-cream/30 transition-colors ${isSelected ? 'bg-pro-cream/40' : ''}`}>
+      <tr className={`hover:bg-accent-soft/30 transition-colors ${isSelected ? 'bg-accent-soft/40' : ''}`}>
         {/* Checkbox */}
         <td className="px-3 py-3">
-          <button type="button" onClick={onSelect} className="text-pro-warm-gray hover:text-pro-navy">
+          <button type="button" onClick={onSelect} className="text-graphite/60 hover:text-graphite">
             {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
           </button>
         </td>
         {/* Expand + status */}
         <td className="px-3 py-3">
-          <button type="button" onClick={onExpand} className="flex items-center gap-1 text-pro-warm-gray hover:text-pro-navy">
+          <button type="button" onClick={onExpand} className="flex items-center gap-1 text-graphite/60 hover:text-graphite">
             {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
             <Circle className={`w-2.5 h-2.5 fill-current ${STATUS_DOT_COLORS[freshness]}`} />
           </button>
         </td>
         {/* Name */}
-        <td className="px-3 py-3 text-pro-navy font-medium max-w-[200px] truncate" title={feed.name}>
+        <td className="px-3 py-3 text-graphite font-medium max-w-[200px] truncate" title={feed.name}>
           {feed.name}
           {feed.api_key_env_var && (
             <span className="ml-1.5 text-[10px] text-amber-600 font-normal">KEY</span>
@@ -871,16 +871,16 @@ function FeedRow({
         </td>
         {/* Type */}
         <td className="px-3 py-3">
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pro-stone text-pro-charcoal">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent-soft text-graphite">
             {feed.feed_type}
           </span>
         </td>
         {/* Category */}
-        <td className="px-3 py-3 text-pro-charcoal text-xs">
+        <td className="px-3 py-3 text-graphite text-xs">
           {formatCat(feed.category)}
         </td>
         {/* Signal Type */}
-        <td className="px-3 py-3 text-xs text-pro-warm-gray">
+        <td className="px-3 py-3 text-xs text-graphite/60">
           {signalType.replace(/_/g, ' ')}
         </td>
         {/* Tier */}
@@ -898,7 +898,7 @@ function FeedRow({
             onClick={onToggle}
             disabled={isToggling}
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${
-              feed.is_enabled ? 'bg-green-500' : 'bg-pro-stone'
+              feed.is_enabled ? 'bg-green-500' : 'bg-accent-soft'
             } ${isToggling ? 'opacity-60' : ''}`}
             aria-label={feed.is_enabled ? 'Disable feed' : 'Enable feed'}
           >
@@ -910,7 +910,7 @@ function FeedRow({
           </button>
         </td>
         {/* Last Fetched */}
-        <td className="px-3 py-3 text-pro-warm-gray text-xs">
+        <td className="px-3 py-3 text-graphite/60 text-xs">
           {formatRelativeTime(feed.last_fetched_at)}
           {feed.last_error && (
             <span className="block text-[10px] text-red-500 truncate max-w-[120px]" title={feed.last_error}>
@@ -919,7 +919,7 @@ function FeedRow({
           )}
         </td>
         {/* Signal count */}
-        <td className="px-3 py-3 text-right text-pro-charcoal tabular-nums">
+        <td className="px-3 py-3 text-right text-graphite tabular-nums">
           {(feed.signal_count || 0).toLocaleString()}
         </td>
         {/* Actions */}
@@ -929,7 +929,7 @@ function FeedRow({
               type="button"
               onClick={onTest}
               disabled={isTesting}
-              className="p-1 text-pro-warm-gray hover:text-pro-navy transition-colors disabled:opacity-60"
+              className="p-1 text-graphite/60 hover:text-graphite transition-colors disabled:opacity-60"
               title="Test this feed"
             >
               <Zap className={`w-4 h-4 ${isTesting ? 'animate-pulse text-amber-500' : ''}`} />
@@ -947,7 +947,7 @@ function FeedRow({
                 <button
                   type="button"
                   onClick={onCancelDelete}
-                  className="px-2 py-1 text-xs border border-pro-stone text-pro-charcoal rounded hover:bg-pro-cream transition-colors"
+                  className="px-2 py-1 text-xs border border-accent-soft text-graphite rounded hover:bg-accent-soft transition-colors"
                 >
                   No
                 </button>
@@ -956,7 +956,7 @@ function FeedRow({
               <button
                 type="button"
                 onClick={onConfirmDelete}
-                className="p-1 text-pro-warm-gray hover:text-red-600 transition-colors"
+                className="p-1 text-graphite/60 hover:text-red-600 transition-colors"
                 title="Delete feed"
               >
                 <Trash2 className="w-4 h-4" />
@@ -968,19 +968,19 @@ function FeedRow({
       {/* Expanded: Run History */}
       {isExpanded && (
         <tr>
-          <td colSpan={11} className="bg-pro-cream/20 px-6 py-4">
+          <td colSpan={11} className="bg-accent-soft/20 px-6 py-4">
             <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-pro-charcoal font-sans uppercase tracking-wider">
+              <h4 className="text-xs font-semibold text-graphite font-sans uppercase tracking-wider">
                 Recent Runs
               </h4>
               {loadingLogs ? (
-                <p className="text-xs text-pro-warm-gray font-sans">Loading...</p>
+                <p className="text-xs text-graphite/60 font-sans">Loading...</p>
               ) : runLogs.length === 0 ? (
-                <p className="text-xs text-pro-warm-gray font-sans">No runs recorded yet.</p>
+                <p className="text-xs text-graphite/60 font-sans">No runs recorded yet.</p>
               ) : (
                 <table className="w-full text-xs font-sans">
                   <thead>
-                    <tr className="text-left text-pro-warm-gray">
+                    <tr className="text-left text-graphite/60">
                       <th className="pr-4 py-1 font-medium">Started</th>
                       <th className="pr-4 py-1 font-medium">Status</th>
                       <th className="pr-4 py-1 font-medium">Items</th>
@@ -989,10 +989,10 @@ function FeedRow({
                       <th className="py-1 font-medium">Error</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/30">
+                  <tbody className="divide-y divide-accent-soft/30">
                     {runLogs.map((log) => (
                       <tr key={log.id}>
-                        <td className="pr-4 py-1.5 text-pro-charcoal">
+                        <td className="pr-4 py-1.5 text-graphite">
                           {formatRelativeTime(log.started_at)}
                         </td>
                         <td className="pr-4 py-1.5">
@@ -1000,14 +1000,14 @@ function FeedRow({
                             log.status === 'success' ? 'bg-green-100 text-green-700' :
                             log.status === 'error' ? 'bg-red-100 text-red-700' :
                             log.status === 'running' ? 'bg-blue-100 text-blue-700' :
-                            'bg-pro-stone text-pro-charcoal'
+                            'bg-accent-soft text-graphite'
                           }`}>
                             {log.status}
                           </span>
                         </td>
-                        <td className="pr-4 py-1.5 text-pro-charcoal tabular-nums">{log.items_fetched}</td>
-                        <td className="pr-4 py-1.5 text-pro-charcoal tabular-nums">{log.signals_created}</td>
-                        <td className="pr-4 py-1.5 text-pro-charcoal tabular-nums">
+                        <td className="pr-4 py-1.5 text-graphite tabular-nums">{log.items_fetched}</td>
+                        <td className="pr-4 py-1.5 text-graphite tabular-nums">{log.signals_created}</td>
+                        <td className="pr-4 py-1.5 text-graphite tabular-nums">
                           {log.duration_ms != null ? `${log.duration_ms}ms` : '—'}
                         </td>
                         <td className="py-1.5 text-red-500 truncate max-w-[200px]" title={log.error_message ?? ''}>
@@ -1019,7 +1019,7 @@ function FeedRow({
                 </table>
               )}
               {feed.endpoint_url && (
-                <p className="text-[10px] text-pro-warm-gray mt-2 truncate" title={feed.endpoint_url}>
+                <p className="text-[10px] text-graphite/60 mt-2 truncate" title={feed.endpoint_url}>
                   URL: {feed.endpoint_url}
                 </p>
               )}
@@ -1035,16 +1035,16 @@ function FeedRow({
 
 function LoadingSkeleton() {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-5 space-y-3">
+    <div className="bg-white border border-accent-soft rounded-xl p-5 space-y-3">
       {[...Array(5)].map((_, i) => (
         <div key={i} className="flex items-center gap-4 animate-pulse">
-          <div className="w-3 h-3 rounded-full bg-pro-stone flex-shrink-0" />
+          <div className="w-3 h-3 rounded-full bg-accent-soft flex-shrink-0" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 bg-pro-stone rounded w-1/3" />
-            <div className="h-3 bg-pro-stone rounded w-1/2" />
+            <div className="h-4 bg-accent-soft rounded w-1/3" />
+            <div className="h-3 bg-accent-soft rounded w-1/2" />
           </div>
-          <div className="w-9 h-5 bg-pro-stone rounded-full" />
-          <div className="w-16 h-5 bg-pro-stone rounded-full" />
+          <div className="w-9 h-5 bg-accent-soft rounded-full" />
+          <div className="w-16 h-5 bg-accent-soft rounded-full" />
         </div>
       ))}
     </div>
@@ -1053,19 +1053,19 @@ function LoadingSkeleton() {
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-      <Rss className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-      <p className="text-pro-warm-gray font-sans text-sm">{label}</p>
+    <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+      <Rss className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+      <p className="text-graphite/60 font-sans text-sm">{label}</p>
     </div>
   );
 }
 
 function ComingSoonCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-      <Rss className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-      <h3 className="text-lg font-serif text-pro-navy mb-2">{title}</h3>
-      <p className="text-pro-warm-gray font-sans text-sm max-w-md mx-auto">{description}</p>
+    <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+      <Rss className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+      <h3 className="text-lg font-sans text-graphite mb-2">{title}</h3>
+      <p className="text-graphite/60 font-sans text-sm max-w-md mx-auto">{description}</p>
       <span className="inline-flex items-center gap-1 mt-4 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
         <AlertCircle className="w-3 h-3" />
         DEMO

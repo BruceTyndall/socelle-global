@@ -108,15 +108,15 @@ function MetricRow({
     (higherIsBetter ? b > a : b < a);
 
   return (
-    <div className="grid grid-cols-3 items-center gap-4 py-3 border-b border-pro-stone last:border-0">
-      <div className="text-sm text-pro-warm-gray font-medium text-center">{label}</div>
+    <div className="grid grid-cols-3 items-center gap-4 py-3 border-b border-accent-soft last:border-0">
+      <div className="text-sm text-graphite/60 font-medium text-center">{label}</div>
       <div
         className={`text-center text-lg font-bold rounded-lg py-1 ${
           aWins
             ? 'text-green-700 bg-green-50'
             : bWins
-            ? 'text-pro-warm-gray bg-pro-ivory'
-            : 'text-pro-charcoal'
+            ? 'text-graphite/60 bg-background'
+            : 'text-graphite'
         }`}
       >
         {fmt(a)}
@@ -126,8 +126,8 @@ function MetricRow({
           bWins
             ? 'text-green-700 bg-green-50'
             : aWins
-            ? 'text-pro-warm-gray bg-pro-ivory'
-            : 'text-pro-charcoal'
+            ? 'text-graphite/60 bg-background'
+            : 'text-graphite'
         }`}
       >
         {fmt(b)}
@@ -186,16 +186,16 @@ export default function PlanComparison() {
           <div>
             <Link
               to="/portal/plans"
-              className="inline-flex items-center gap-2 text-sm text-pro-warm-gray hover:text-pro-charcoal mb-3"
+              className="inline-flex items-center gap-2 text-sm text-graphite/60 hover:text-graphite mb-3"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Plans
             </Link>
-            <h1 className="text-2xl font-bold text-pro-charcoal flex items-center gap-2">
-              <GitCompare className="w-6 h-6 text-pro-navy" />
+            <h1 className="text-2xl font-bold text-graphite flex items-center gap-2">
+              <GitCompare className="w-6 h-6 text-graphite" />
               Compare Plans
             </h1>
-            <p className="text-pro-warm-gray mt-1 text-sm">
+            <p className="text-graphite/60 mt-1 text-sm">
               Select two plans to compare their results side by side
             </p>
           </div>
@@ -207,12 +207,12 @@ export default function PlanComparison() {
             <Skeleton className="h-14 w-full" />
           </div>
         ) : allPlans.length < 2 ? (
-          <div className="text-center py-16 bg-white rounded-lg border border-pro-stone">
-            <GitCompare className="w-12 h-12 text-pro-stone mx-auto mb-3" />
-            <p className="text-pro-warm-gray font-medium">You need at least 2 plans to compare</p>
+          <div className="text-center py-16 bg-white rounded-lg border border-accent-soft">
+            <GitCompare className="w-12 h-12 text-accent-soft mx-auto mb-3" />
+            <p className="text-graphite/60 font-medium">You need at least 2 plans to compare</p>
             <Link
               to="/portal/plans/new"
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg text-sm font-medium hover:bg-pro-charcoal transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg text-sm font-medium hover:bg-graphite transition-colors"
             >
               Create a Plan
             </Link>
@@ -230,7 +230,7 @@ export default function PlanComparison() {
                 color="blue"
               />
               <div className="flex items-center justify-center">
-                <span className="text-2xl font-bold text-pro-stone">vs</span>
+                <span className="text-2xl font-bold text-accent-soft">vs</span>
               </div>
               <PlanSelector
                 label="Plan B"
@@ -244,17 +244,17 @@ export default function PlanComparison() {
 
             {/* Comparison table */}
             {planAId && planBId && (
-              <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+              <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
                 {/* Header */}
-                <div className="grid grid-cols-3 gap-4 bg-pro-ivory border-b border-pro-stone px-6 py-4">
-                  <div className="text-sm font-medium text-pro-warm-gray text-center">Metric</div>
+                <div className="grid grid-cols-3 gap-4 bg-background border-b border-accent-soft px-6 py-4">
+                  <div className="text-sm font-medium text-graphite/60 text-center">Metric</div>
                   <div className="text-center">
-                    <p className="font-semibold text-pro-charcoal truncate">{planA?.name || 'Plan A'}</p>
-                    <p className="text-xs text-pro-warm-gray">{planA?.brands?.name}</p>
+                    <p className="font-semibold text-graphite truncate">{planA?.name || 'Plan A'}</p>
+                    <p className="text-xs text-graphite/60">{planA?.brands?.name}</p>
                   </div>
                   <div className="text-center">
                     <p className="font-semibold text-purple-700 truncate">{planB?.name || 'Plan B'}</p>
-                    <p className="text-xs text-pro-warm-gray">{planB?.brands?.name}</p>
+                    <p className="text-xs text-graphite/60">{planB?.brands?.name}</p>
                   </div>
                 </div>
 
@@ -308,12 +308,12 @@ export default function PlanComparison() {
 
                 {/* Footer links */}
                 {!comparing && outputA && outputB && (
-                  <div className="grid grid-cols-3 gap-4 border-t border-pro-stone px-6 py-4 bg-pro-ivory">
+                  <div className="grid grid-cols-3 gap-4 border-t border-accent-soft px-6 py-4 bg-background">
                     <div />
                     <div className="text-center">
                       <Link
                         to={`/portal/plans/${planAId}`}
-                        className="text-sm text-pro-navy hover:text-pro-charcoal font-medium hover:underline flex items-center justify-center gap-1"
+                        className="text-sm text-graphite hover:text-graphite font-medium hover:underline flex items-center justify-center gap-1"
                       >
                         <TrendingUp className="w-3.5 h-3.5" />
                         View Full Plan
@@ -322,7 +322,7 @@ export default function PlanComparison() {
                     <div className="text-center">
                       <Link
                         to={`/portal/plans/${planBId}`}
-                        className="text-sm text-purple-600 hover:text-pro-navy font-medium hover:underline flex items-center justify-center gap-1"
+                        className="text-sm text-purple-600 hover:text-graphite font-medium hover:underline flex items-center justify-center gap-1"
                       >
                         <TrendingUp className="w-3.5 h-3.5" />
                         View Full Plan
@@ -334,9 +334,9 @@ export default function PlanComparison() {
             )}
 
             {!planAId || !planBId ? (
-              <div className="text-center py-10 bg-white rounded-lg border border-dashed border-pro-stone">
-                <DollarSign className="w-10 h-10 text-pro-stone mx-auto mb-2" />
-                <p className="text-pro-warm-gray text-sm">Select two plans above to see the comparison</p>
+              <div className="text-center py-10 bg-white rounded-lg border border-dashed border-accent-soft">
+                <DollarSign className="w-10 h-10 text-accent-soft mx-auto mb-2" />
+                <p className="text-graphite/60 text-sm">Select two plans above to see the comparison</p>
               </div>
             ) : null}
           </>
@@ -361,8 +361,8 @@ function PlanSelector({
   onChange: (id: string) => void;
   color: 'blue' | 'purple';
 }) {
-  const colorClass = color === 'blue' ? 'border-pro-stone focus:ring-pro-navy' : 'border-purple-300 focus:ring-pro-navy';
-  const labelColor = color === 'blue' ? 'text-pro-charcoal' : 'text-purple-700';
+  const colorClass = color === 'blue' ? 'border-accent-soft focus:ring-graphite' : 'border-purple-300 focus:ring-graphite';
+  const labelColor = color === 'blue' ? 'text-graphite' : 'text-purple-700';
 
   return (
     <div>
@@ -384,7 +384,7 @@ function PlanSelector({
               </option>
             ))}
         </select>
-        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray pointer-events-none" />
+        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60 pointer-events-none" />
       </div>
     </div>
   );

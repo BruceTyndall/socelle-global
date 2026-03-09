@@ -127,8 +127,8 @@ export default function BrandAutomations() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="font-serif text-2xl text-pro-navy">Automation Rules</h1>
-            <p className="text-sm text-pro-warm-gray font-sans mt-0.5">
+            <h1 className="font-sans text-2xl text-graphite">Automation Rules</h1>
+            <p className="text-sm text-graphite/60 font-sans mt-0.5">
               Configure triggered workflows that engage your operator network automatically
             </p>
           </div>
@@ -143,9 +143,9 @@ export default function BrandAutomations() {
         </div>
 
         {/* Info Banner */}
-        <div className="flex items-start gap-3 px-4 py-3 bg-pro-cream rounded-xl border border-pro-stone">
-          <Info className="w-4 h-4 text-pro-navy flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-pro-charcoal font-sans">
+        <div className="flex items-start gap-3 px-4 py-3 bg-accent-soft rounded-xl border border-accent-soft">
+          <Info className="w-4 h-4 text-graphite flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-graphite font-sans">
             Email sending is being configured. Rules will activate when email infrastructure is connected.
             Toggle rules on or off now to prepare your automation workflows.
           </p>
@@ -155,14 +155,14 @@ export default function BrandAutomations() {
         <div className="space-y-3">
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-pro-warm-gray font-sans text-sm">Loading automation rules...</p>
+              <p className="text-graphite/60 font-sans text-sm">Loading automation rules...</p>
             </div>
           ) : automations.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-14 h-14 bg-pro-cream rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-7 h-7 text-pro-warm-gray" />
+              <div className="w-14 h-14 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Zap className="w-7 h-7 text-graphite/60" />
               </div>
-              <p className="text-pro-warm-gray font-sans text-sm mb-4">
+              <p className="text-graphite/60 font-sans text-sm mb-4">
                 No automation rules configured yet.
               </p>
               <Button variant="outline" size="sm" onClick={openCreate}>
@@ -176,21 +176,21 @@ export default function BrandAutomations() {
               return (
                 <Card key={rule.id} padding="none">
                   <div className="flex items-start gap-4 p-5">
-                    <div className="w-10 h-10 rounded-xl bg-pro-ivory flex items-center justify-center flex-shrink-0">
-                      <TypeIcon className="w-5 h-5 text-pro-navy" />
+                    <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center flex-shrink-0">
+                      <TypeIcon className="w-5 h-5 text-graphite" />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-sans font-semibold text-pro-charcoal text-sm">
+                        <h3 className="font-sans font-semibold text-graphite text-sm">
                           {rule.name}
                         </h3>
                         <Badge variant={typeCfg.variant}>{typeCfg.label}</Badge>
                       </div>
-                      <p className="text-xs text-pro-warm-gray font-sans mb-3">
+                      <p className="text-xs text-graphite/60 font-sans mb-3">
                         {rule.description}
                       </p>
-                      <div className="flex items-center gap-4 text-[11px] text-pro-warm-gray font-sans">
+                      <div className="flex items-center gap-4 text-[11px] text-graphite/60 font-sans">
                         <span className="flex items-center gap-1">
                           <Hash className="w-3 h-3" />
                           {rule.triggerCount.toLocaleString()} triggers
@@ -213,8 +213,8 @@ export default function BrandAutomations() {
                       <button
                         onClick={() => void handleToggle(rule.id, rule.enabled)}
                         disabled={busyAction === rule.id}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 ${
-                          rule.enabled ? 'bg-pro-navy' : 'bg-pro-stone'
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-graphite/20 ${
+                          rule.enabled ? 'bg-graphite' : 'bg-accent-soft'
                         }`}
                         role="switch"
                         aria-checked={rule.enabled}
@@ -228,7 +228,7 @@ export default function BrandAutomations() {
 
                       <button
                         onClick={() => setConfirmDeleteId(rule.id)}
-                        className="p-1.5 rounded-lg text-pro-warm-gray hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1.5 rounded-lg text-graphite/60 hover:text-red-600 hover:bg-red-50 transition-colors"
                         title="Delete rule"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -258,7 +258,7 @@ export default function BrandAutomations() {
           />
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+            <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
               Automation Type
             </label>
             <div className="space-y-2">
@@ -270,8 +270,8 @@ export default function BrandAutomations() {
                       key={type}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-colors ${
                         form.type === type
-                          ? 'border-pro-navy bg-pro-navy/5'
-                          : 'border-pro-stone hover:border-pro-navy/30'
+                          ? 'border-graphite bg-graphite/5'
+                          : 'border-accent-soft hover:border-graphite/30'
                       }`}
                     >
                       <input
@@ -282,8 +282,8 @@ export default function BrandAutomations() {
                         onChange={() => setForm((f) => ({ ...f, type }))}
                         className="sr-only"
                       />
-                      <Icon className={`w-4 h-4 ${form.type === type ? 'text-pro-navy' : 'text-pro-warm-gray'}`} />
-                      <span className={`text-sm font-sans ${form.type === type ? 'text-pro-navy font-medium' : 'text-pro-warm-gray'}`}>
+                      <Icon className={`w-4 h-4 ${form.type === type ? 'text-graphite' : 'text-graphite/60'}`} />
+                      <span className={`text-sm font-sans ${form.type === type ? 'text-graphite font-medium' : 'text-graphite/60'}`}>
                         {cfg.label}
                       </span>
                     </label>
@@ -305,11 +305,11 @@ export default function BrandAutomations() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+            <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
               Description
             </label>
             <textarea
-              className="w-full px-4 py-2.5 rounded-xl border border-pro-stone bg-white font-sans text-sm text-pro-charcoal placeholder:text-pro-warm-gray/60 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pro-navy/15 focus:border-pro-navy resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-accent-soft bg-white font-sans text-sm text-graphite placeholder:text-graphite/60/60 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-graphite/15 focus:border-graphite resize-none"
               rows={3}
               placeholder="Describe what this automation does..."
               value={form.description}
@@ -320,8 +320,8 @@ export default function BrandAutomations() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setForm((f) => ({ ...f, enabled: !f.enabled }))}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 ${
-                form.enabled ? 'bg-pro-navy' : 'bg-pro-stone'
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-graphite/20 ${
+                form.enabled ? 'bg-graphite' : 'bg-accent-soft'
               }`}
               role="switch"
               aria-checked={form.enabled}
@@ -333,7 +333,7 @@ export default function BrandAutomations() {
                 }`}
               />
             </button>
-            <span className="text-sm font-sans text-pro-charcoal">
+            <span className="text-sm font-sans text-graphite">
               {form.enabled ? 'Enabled' : 'Disabled'} on creation
             </span>
           </div>
@@ -357,7 +357,7 @@ export default function BrandAutomations() {
         size="sm"
       >
         <ModalBody>
-          <p className="text-sm text-pro-warm-gray font-sans">
+          <p className="text-sm text-graphite/60 font-sans">
             Are you sure you want to delete this automation rule? This action cannot be undone.
           </p>
         </ModalBody>

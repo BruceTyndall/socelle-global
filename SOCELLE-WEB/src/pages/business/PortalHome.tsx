@@ -110,29 +110,29 @@ export default function PortalHome() {
       <BusinessNav />
 
       {/* Hero — for unauthenticated visitors */}
-      <div className="bg-white border-b border-pro-stone">
+      <div className="bg-white border-b border-accent-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <div className="max-w-2xl">
-            <p className="text-xs font-sans font-semibold text-pro-warm-gray uppercase tracking-widest mb-4">
+            <p className="text-xs font-sans font-semibold text-graphite/60 uppercase tracking-widest mb-4">
               Professional brand intelligence
             </p>
-            <h1 className="text-3xl md:text-4xl font-serif text-pro-charcoal tracking-tight mb-4">
-              Find brands built for your treatment room<span className="text-pro-gold">.</span>
+            <h1 className="text-3xl md:text-4xl font-sans text-graphite tracking-tight mb-4">
+              Find brands built for your treatment room<span className="text-accent">.</span>
             </h1>
-            <p className="text-pro-warm-gray font-sans text-base mb-8 max-w-lg">
+            <p className="text-graphite/60 font-sans text-base mb-8 max-w-lg">
               Upload your service menu and instantly see which professional brands fit your protocols, products, and revenue goals.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
               <Link
                 to="/portal/signup"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-pro-charcoal hover:bg-pro-charcoal/90 text-white text-sm font-medium font-sans rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-graphite hover:bg-graphite/90 text-white text-sm font-medium font-sans rounded-lg transition-colors"
               >
                 <Upload className="w-4 h-4" />
                 Upload your menu — free
               </Link>
               <Link
                 to="/portal/login"
-                className="inline-flex items-center gap-1.5 text-sm font-medium font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-medium font-sans text-graphite/60 hover:text-graphite transition-colors"
               >
                 Sign in
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -147,17 +147,17 @@ export default function PortalHome() {
         {/* Search */}
         <div className="flex items-center gap-3">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
             <input
               type="text"
               placeholder="Search brands…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-charcoal/20 focus:border-pro-charcoal font-sans text-sm text-pro-charcoal placeholder:text-pro-warm-gray bg-white"
+              className="w-full pl-10 pr-4 py-2.5 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite/20 focus:border-graphite font-sans text-sm text-graphite placeholder:text-graphite/60 bg-white"
             />
           </div>
           {brands.length > 0 && (
-            <p className="text-sm text-pro-warm-gray font-sans hidden sm:block">
+            <p className="text-sm text-graphite/60 font-sans hidden sm:block">
               {filteredBrands.length} brand{filteredBrands.length !== 1 ? 's' : ''}
             </p>
           )}
@@ -181,14 +181,14 @@ export default function PortalHome() {
             {[0, 1, 2, 3, 4, 5].map(i => <BrandCardSkeleton key={i} />)}
           </div>
         ) : filteredBrands.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-pro-stone">
-            <p className="text-pro-warm-gray font-sans text-sm">
+          <div className="text-center py-16 bg-white rounded-xl border border-accent-soft">
+            <p className="text-graphite/60 font-sans text-sm">
               {searchQuery ? `No brands match "${searchQuery}"` : 'No brands available yet.'}
             </p>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="mt-3 text-sm text-pro-charcoal font-medium font-sans hover:underline"
+                className="mt-3 text-sm text-graphite font-medium font-sans hover:underline"
               >
                 Clear search
               </button>
@@ -220,7 +220,7 @@ export default function PortalHome() {
         )}
 
         {/* ── WO-11: Intelligence Preview ─────────────────────────── */}
-        <section className="rounded-xl border border-pro-stone bg-pro-charcoal overflow-hidden">
+        <section className="rounded-xl border border-accent-soft bg-graphite overflow-hidden">
           <div className="px-6 py-5 border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-intel-accent/10 flex items-center justify-center">
@@ -228,7 +228,7 @@ export default function PortalHome() {
               </div>
               <div>
                 <h2 className="font-heading text-lg font-bold text-white">See what&apos;s trending in treatment rooms near you</h2>
-                <p className="text-xs text-pro-stone/70 font-sans">Live intelligence signals from the Socelle platform</p>
+                <p className="text-xs text-accent-soft/70 font-sans">Live intelligence signals from the Socelle platform</p>
               </div>
             </div>
           </div>
@@ -238,16 +238,16 @@ export default function PortalHome() {
               return (
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
-                    <TrendingUp className="w-4 h-4 text-pro-gold" />
-                    <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-pro-gold">Growth Opportunity</span>
+                    <TrendingUp className="w-4 h-4 text-accent" />
+                    <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-accent">Growth Opportunity</span>
                   </div>
                   <h3 className="font-sans font-semibold text-white text-sm mb-2">{growth.title}</h3>
-                  <p className="text-xs text-pro-stone/80 font-sans leading-relaxed line-clamp-3">{growth.description}</p>
+                  <p className="text-xs text-accent-soft/80 font-sans leading-relaxed line-clamp-3">{growth.description}</p>
                   <div className="mt-4 flex items-center gap-3">
-                    <span className="text-xs font-sans font-medium text-pro-gold bg-pro-gold/10 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-sans font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">
                       {growth.peerAdoptionPct}% peer adoption
                     </span>
-                    <span className="text-xs font-sans text-pro-stone/60">{growth.estimatedRevenueLift}</span>
+                    <span className="text-xs font-sans text-accent-soft/60">{growth.estimatedRevenueLift}</span>
                   </div>
                 </div>
               );
@@ -261,22 +261,22 @@ export default function PortalHome() {
                     <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-intel-accent">Demand Signal</span>
                   </div>
                   <h3 className="font-sans font-semibold text-white text-sm mb-2">{demand.title}</h3>
-                  <p className="text-xs text-pro-stone/80 font-sans leading-relaxed line-clamp-3">{demand.description}</p>
+                  <p className="text-xs text-accent-soft/80 font-sans leading-relaxed line-clamp-3">{demand.description}</p>
                   <div className="mt-4 flex items-center gap-3">
                     <span className="text-xs font-sans font-medium text-intel-accent bg-intel-accent/10 px-2.5 py-1 rounded-full">
                       +{demand.magnitude}% this quarter
                     </span>
-                    <span className="text-xs font-sans text-pro-stone/60">{demand.region}</span>
+                    <span className="text-xs font-sans text-accent-soft/60">{demand.region}</span>
                   </div>
                 </div>
               );
             })()}
           </div>
           <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between">
-            <p className="text-xs text-pro-stone/60 font-sans">Sign up to unlock personalized intelligence for your business</p>
+            <p className="text-xs text-accent-soft/60 font-sans">Sign up to unlock personalized intelligence for your business</p>
             <Link
               to="/portal/signup"
-              className="inline-flex items-center gap-1.5 text-sm font-medium font-sans text-pro-gold hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium font-sans text-accent hover:text-white transition-colors"
             >
               Get started free
               <ArrowRight className="w-3.5 h-3.5" />
@@ -286,14 +286,14 @@ export default function PortalHome() {
 
         {/* Bottom sign-up nudge */}
         {!loading && filteredBrands.length > 0 && (
-          <div className="flex items-center justify-between gap-6 bg-white rounded-xl border border-pro-stone px-6 py-5">
+          <div className="flex items-center justify-between gap-6 bg-white rounded-xl border border-accent-soft px-6 py-5">
             <div>
-              <p className="text-sm font-semibold text-pro-charcoal font-sans">See which brands fit your menu</p>
-              <p className="text-xs text-pro-warm-gray font-sans mt-0.5">Upload your service menu for an instant brand match analysis.</p>
+              <p className="text-sm font-semibold text-graphite font-sans">See which brands fit your menu</p>
+              <p className="text-xs text-graphite/60 font-sans mt-0.5">Upload your service menu for an instant brand match analysis.</p>
             </div>
             <Link
               to="/portal/signup"
-              className="flex-shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-pro-charcoal hover:bg-pro-charcoal/90 text-white text-sm font-medium font-sans rounded-lg transition-colors"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-graphite hover:bg-graphite/90 text-white text-sm font-medium font-sans rounded-lg transition-colors"
             >
               Get started free
               <ArrowRight className="w-3.5 h-3.5" />

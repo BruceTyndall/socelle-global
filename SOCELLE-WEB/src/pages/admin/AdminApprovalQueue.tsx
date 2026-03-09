@@ -63,7 +63,7 @@ function BusinessTypeBadge({ type }: { type: string | null }) {
   if (!type) return null;
   const label = type === 'medspa' ? 'MedSpa' : type.charAt(0).toUpperCase() + type.slice(1);
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pro-stone text-pro-charcoal font-sans">
+    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent-soft text-graphite font-sans">
       {label}
     </span>
   );
@@ -73,7 +73,7 @@ function ServiceTierBadge({ tier }: { tier: string }) {
   const isPremier = tier === 'premier';
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-sans ${
-      isPremier ? 'bg-pro-gold/20 text-pro-gold' : 'bg-pro-stone text-pro-charcoal'
+      isPremier ? 'bg-accent/20 text-accent' : 'bg-accent-soft text-graphite'
     }`}>
       {isPremier ? 'Premier' : 'Standard'}
     </span>
@@ -234,10 +234,10 @@ export default function AdminApprovalQueue() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-serif text-pro-navy">
-            Approval Queue<span className="text-pro-gold">.</span>
+          <h1 className="text-3xl font-sans text-graphite">
+            Approval Queue<span className="text-accent">.</span>
           </h1>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Review and approve brand and business verification requests
           </p>
         </div>
@@ -245,7 +245,7 @@ export default function AdminApprovalQueue() {
           type="button"
           onClick={loadQueue}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -272,7 +272,7 @@ export default function AdminApprovalQueue() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-accent-soft/40 rounded-xl p-1 w-fit">
         <TabButton
           active={tab === 'brands'}
           icon={Building2}
@@ -293,16 +293,16 @@ export default function AdminApprovalQueue() {
       {loading ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white border border-pro-stone rounded-xl p-5 animate-pulse">
+            <div key={i} className="bg-white border border-accent-soft rounded-xl p-5 animate-pulse">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-pro-stone flex-shrink-0" />
+                <div className="w-12 h-12 rounded-lg bg-accent-soft flex-shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-5 bg-pro-stone rounded w-1/3" />
-                  <div className="h-4 bg-pro-stone rounded w-1/2" />
+                  <div className="h-5 bg-accent-soft rounded w-1/3" />
+                  <div className="h-4 bg-accent-soft rounded w-1/2" />
                 </div>
                 <div className="flex gap-2">
-                  <div className="w-24 h-9 bg-pro-stone rounded-lg" />
-                  <div className="w-24 h-9 bg-pro-stone rounded-lg" />
+                  <div className="w-24 h-9 bg-accent-soft rounded-lg" />
+                  <div className="w-24 h-9 bg-accent-soft rounded-lg" />
                 </div>
               </div>
             </div>
@@ -348,15 +348,15 @@ function TabButton({
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
         active
-          ? 'bg-white text-pro-navy shadow-sm'
-          : 'text-pro-warm-gray hover:text-pro-charcoal'
+          ? 'bg-white text-graphite shadow-sm'
+          : 'text-graphite/60 hover:text-graphite'
       }`}
     >
       <Icon className="w-4 h-4" />
       {label}
       {count > 0 && (
         <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
-          active ? 'bg-pro-navy text-white' : 'bg-amber-200 text-amber-800'
+          active ? 'bg-graphite text-white' : 'bg-amber-200 text-amber-800'
         }`}>
           {count}
         </span>
@@ -387,17 +387,17 @@ function BrandsQueue({
   return (
     <div className="space-y-4">
       {brands.map(brand => (
-        <div key={brand.id} className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+        <div key={brand.id} className="bg-white border border-accent-soft rounded-xl overflow-hidden">
           {/* Accent bar */}
-          <div className="h-1 bg-pro-navy" />
+          <div className="h-1 bg-graphite" />
           <div className="p-5">
             <div className="flex items-start gap-4">
               {/* Avatar */}
-              <div className="w-12 h-12 rounded-lg bg-pro-navy flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-lg bg-graphite flex items-center justify-center flex-shrink-0">
                 {brand.logo_url ? (
                   <img src={brand.logo_url} alt={brand.name} className="w-full h-full object-cover rounded-lg" />
                 ) : (
-                  <span className="text-white font-serif text-xl font-bold">
+                  <span className="text-white font-sans text-xl font-bold">
                     {brand.name.charAt(0)}
                   </span>
                 )}
@@ -406,18 +406,18 @@ function BrandsQueue({
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="text-lg font-serif text-pro-navy leading-tight">{brand.name}</h3>
+                  <h3 className="text-lg font-sans text-graphite leading-tight">{brand.name}</h3>
                   <ServiceTierBadge tier={brand.service_tier} />
                 </div>
-                <p className="text-xs text-pro-warm-gray font-sans mb-2">/{brand.slug}</p>
+                <p className="text-xs text-graphite/60 font-sans mb-2">/{brand.slug}</p>
 
                 {(brand.short_description || brand.description) && (
-                  <p className="text-sm text-pro-charcoal font-sans line-clamp-2 mb-3">
+                  <p className="text-sm text-graphite font-sans line-clamp-2 mb-3">
                     {brand.short_description || brand.description}
                   </p>
                 )}
 
-                <div className="flex flex-wrap gap-4 text-xs text-pro-warm-gray font-sans">
+                <div className="flex flex-wrap gap-4 text-xs text-graphite/60 font-sans">
                   {brand.contact_email && (
                     <span className="flex items-center gap-1.5">
                       <Mail className="w-3.5 h-3.5" />
@@ -429,7 +429,7 @@ function BrandsQueue({
                       href={brand.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 hover:text-pro-navy transition-colors"
+                      className="flex items-center gap-1.5 hover:text-graphite transition-colors"
                     >
                       <Globe className="w-3.5 h-3.5" />
                       {brand.website_url.replace(/^https?:\/\//, '')}
@@ -449,7 +449,7 @@ function BrandsQueue({
                   type="button"
                   onClick={() => onReject(brand)}
                   disabled={actioningId === brand.id}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-pro-stone text-pro-warm-gray hover:text-red-600 hover:border-red-300 hover:bg-red-50 disabled:opacity-50 font-sans text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-accent-soft text-graphite/60 hover:text-red-600 hover:border-red-300 hover:bg-red-50 disabled:opacity-50 font-sans text-sm font-medium transition-colors"
                 >
                   <XCircle className="w-4 h-4" />
                   Reject
@@ -458,7 +458,7 @@ function BrandsQueue({
                   type="button"
                   onClick={() => onApprove(brand)}
                   disabled={actioningId === brand.id}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-pro-navy text-white hover:bg-pro-charcoal disabled:opacity-50 font-sans text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-graphite text-white hover:bg-graphite disabled:opacity-50 font-sans text-sm font-medium transition-colors"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Approve
@@ -492,13 +492,13 @@ function BusinessesQueue({
   return (
     <div className="space-y-4">
       {businesses.map(biz => (
-        <div key={biz.id} className="bg-white border border-pro-stone rounded-xl overflow-hidden">
-          <div className="h-1 bg-pro-charcoal" />
+        <div key={biz.id} className="bg-white border border-accent-soft rounded-xl overflow-hidden">
+          <div className="h-1 bg-graphite" />
           <div className="p-5">
             <div className="flex items-start gap-4">
               {/* Avatar */}
-              <div className="w-12 h-12 rounded-lg bg-pro-charcoal flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-serif text-xl font-bold">
+              <div className="w-12 h-12 rounded-lg bg-graphite flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-sans text-xl font-bold">
                   {biz.name.charAt(0)}
                 </span>
               </div>
@@ -506,28 +506,28 @@ function BusinessesQueue({
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="text-lg font-serif text-pro-navy leading-tight">{biz.name}</h3>
+                  <h3 className="text-lg font-sans text-graphite leading-tight">{biz.name}</h3>
                   <BusinessTypeBadge type={biz.business_type} />
                 </div>
                 {(biz.city || biz.state) && (
-                  <p className="text-xs text-pro-warm-gray font-sans mb-2">
+                  <p className="text-xs text-graphite/60 font-sans mb-2">
                     {[biz.city, biz.state].filter(Boolean).join(', ')}
                   </p>
                 )}
 
                 {biz.description && (
-                  <p className="text-sm text-pro-charcoal font-sans line-clamp-2 mb-3">
+                  <p className="text-sm text-graphite font-sans line-clamp-2 mb-3">
                     {biz.description}
                   </p>
                 )}
 
-                <div className="flex flex-wrap gap-4 text-xs text-pro-warm-gray font-sans">
+                <div className="flex flex-wrap gap-4 text-xs text-graphite/60 font-sans">
                   {biz.website_url && (
                     <a
                       href={biz.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 hover:text-pro-navy transition-colors"
+                      className="flex items-center gap-1.5 hover:text-graphite transition-colors"
                     >
                       <Globe className="w-3.5 h-3.5" />
                       {biz.website_url.replace(/^https?:\/\//, '')}
@@ -547,7 +547,7 @@ function BusinessesQueue({
                   type="button"
                   onClick={() => onReject(biz)}
                   disabled={actioningId === biz.id}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-pro-stone text-pro-warm-gray hover:text-red-600 hover:border-red-300 hover:bg-red-50 disabled:opacity-50 font-sans text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-accent-soft text-graphite/60 hover:text-red-600 hover:border-red-300 hover:bg-red-50 disabled:opacity-50 font-sans text-sm font-medium transition-colors"
                 >
                   <XCircle className="w-4 h-4" />
                   Reject
@@ -556,7 +556,7 @@ function BusinessesQueue({
                   type="button"
                   onClick={() => onApprove(biz)}
                   disabled={actioningId === biz.id}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-pro-navy text-white hover:bg-pro-charcoal disabled:opacity-50 font-sans text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-graphite text-white hover:bg-graphite disabled:opacity-50 font-sans text-sm font-medium transition-colors"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Approve
@@ -574,9 +574,9 @@ function BusinessesQueue({
 
 function EmptyQueue({ label }: { label: string }) {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
+    <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
       <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-      <p className="text-pro-warm-gray font-sans text-sm">{label}</p>
+      <p className="text-graphite/60 font-sans text-sm">{label}</p>
     </div>
   );
 }

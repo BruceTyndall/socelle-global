@@ -39,15 +39,15 @@ export default function LocationSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg border border-pro-stone bg-white hover:bg-pro-cream transition-colors text-sm font-sans"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg border border-accent-soft bg-white hover:bg-accent-soft transition-colors text-sm font-sans"
       >
-        <MapPin className="w-4 h-4 text-pro-gold" />
-        <span className="text-pro-charcoal font-medium max-w-[180px] truncate">{displayName}</span>
-        <ChevronDown className={`w-4 h-4 text-pro-warm-gray transition-transform ${open ? 'rotate-180' : ''}`} />
+        <MapPin className="w-4 h-4 text-accent" />
+        <span className="text-graphite font-medium max-w-[180px] truncate">{displayName}</span>
+        <ChevronDown className={`w-4 h-4 text-graphite/60 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-lg border border-pro-stone z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-lg border border-accent-soft z-50 overflow-hidden">
           {/* All Locations option */}
           <button
             onClick={() => {
@@ -56,19 +56,19 @@ export default function LocationSwitcher() {
             }}
             className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
               selectedLocationId === 'all'
-                ? 'bg-pro-cream text-pro-navy font-medium'
-                : 'text-pro-charcoal hover:bg-pro-ivory'
+                ? 'bg-accent-soft text-graphite font-medium'
+                : 'text-graphite hover:bg-background'
             }`}
           >
-            <Building2 className="w-4 h-4 text-pro-gold flex-shrink-0" />
+            <Building2 className="w-4 h-4 text-accent flex-shrink-0" />
             <div className="flex-1 text-left">
               <div className="font-medium">All Locations</div>
-              <div className="text-xs text-pro-warm-gray">{currentLocations.length} locations</div>
+              <div className="text-xs text-graphite/60">{currentLocations.length} locations</div>
             </div>
-            {selectedLocationId === 'all' && <Check className="w-4 h-4 text-pro-gold flex-shrink-0" />}
+            {selectedLocationId === 'all' && <Check className="w-4 h-4 text-accent flex-shrink-0" />}
           </button>
 
-          <div className="border-t border-pro-stone" />
+          <div className="border-t border-accent-soft" />
 
           {/* Individual locations */}
           {currentLocations.map((loc) => {
@@ -82,23 +82,23 @@ export default function LocationSwitcher() {
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
                   isSelected
-                    ? 'bg-pro-cream text-pro-navy font-medium'
-                    : 'text-pro-charcoal hover:bg-pro-ivory'
+                    ? 'bg-accent-soft text-graphite font-medium'
+                    : 'text-graphite hover:bg-background'
                 }`}
               >
-                <MapPin className={`w-4 h-4 flex-shrink-0 ${isSelected ? 'text-pro-gold' : 'text-pro-warm-gray'}`} />
+                <MapPin className={`w-4 h-4 flex-shrink-0 ${isSelected ? 'text-accent' : 'text-graphite/60'}`} />
                 <div className="flex-1 text-left">
                   <div className="font-medium">{loc.locationName}</div>
-                  <div className="text-xs text-pro-warm-gray">
+                  <div className="text-xs text-graphite/60">
                     {loc.city}, {loc.state} &middot; {BUSINESS_TYPE_LABELS[loc.businessType] ?? loc.businessType}
                   </div>
                 </div>
                 {loc.isPrimary && (
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-pro-gold bg-pro-gold/10 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded">
                     Primary
                   </span>
                 )}
-                {isSelected && <Check className="w-4 h-4 text-pro-gold flex-shrink-0" />}
+                {isSelected && <Check className="w-4 h-4 text-accent flex-shrink-0" />}
               </button>
             );
           })}

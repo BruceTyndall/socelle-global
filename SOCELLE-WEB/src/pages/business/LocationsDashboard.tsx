@@ -33,19 +33,19 @@ const BUSINESS_TYPE_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, string> = {
   active: 'bg-green-50 text-green-700',
   onboarding: 'bg-amber-50 text-amber-700',
-  paused: 'bg-pro-cream text-pro-warm-gray',
+  paused: 'bg-accent-soft text-graphite/60',
 };
 
 const IMPACT_STYLES: Record<string, { bg: string; text: string; label: string }> = {
   high: { bg: 'bg-red-50', text: 'text-red-700', label: 'High Impact' },
   medium: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Medium Impact' },
-  low: { bg: 'bg-pro-cream', text: 'text-pro-warm-gray', label: 'Low Impact' },
+  low: { bg: 'bg-accent-soft', text: 'text-graphite/60', label: 'Low Impact' },
 };
 
 function InsightIcon({ type }: { type: CrossLocationInsight['type'] }) {
   switch (type) {
     case 'product_gap':
-      return <Package className="w-5 h-5 text-pro-gold" />;
+      return <Package className="w-5 h-5 text-accent" />;
     case 'performance_delta':
       return <AlertTriangle className="w-5 h-5 text-amber-500" />;
     case 'opportunity':
@@ -81,11 +81,11 @@ export default function LocationsDashboard() {
         {/* ── Header ────────────────────────────────────────────────── */}
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <Building2 className="w-6 h-6 text-pro-gold" />
-            <h1 className="text-2xl font-serif text-pro-navy">All Locations</h1>
+            <Building2 className="w-6 h-6 text-accent" />
+            <h1 className="text-2xl font-sans text-graphite">All Locations</h1>
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
           </div>
-          <p className="text-pro-warm-gray font-sans">
+          <p className="text-graphite/60 font-sans">
             Cross-location performance overview and intelligence for your {summaries.length}-location portfolio.
           </p>
         </div>
@@ -96,25 +96,25 @@ export default function LocationsDashboard() {
             label="Total Revenue"
             value={`$${(totalRevenue / 1000).toFixed(1)}K`}
             sub="This month"
-            icon={<DollarSign className="w-5 h-5 text-pro-gold" />}
+            icon={<DollarSign className="w-5 h-5 text-accent" />}
           />
           <KPICard
             label="Locations"
             value={String(summaries.length)}
             sub={`${summaries.filter((s) => s.status === 'active').length} active`}
-            icon={<MapPin className="w-5 h-5 text-pro-gold" />}
+            icon={<MapPin className="w-5 h-5 text-accent" />}
           />
           <KPICard
             label="Avg Benchmark"
             value={String(avgBenchmark)}
             sub={`of 100 · ${avgGrowth > 0 ? '+' : ''}${avgGrowth}% avg growth`}
-            icon={<BarChart3 className="w-5 h-5 text-pro-gold" />}
+            icon={<BarChart3 className="w-5 h-5 text-accent" />}
           />
           <KPICard
             label="Total SKUs"
             value={String(totalSkus)}
             sub="Across all locations"
-            icon={<Package className="w-5 h-5 text-pro-gold" />}
+            icon={<Package className="w-5 h-5 text-accent" />}
           />
         </div>
 
@@ -131,14 +131,14 @@ export default function LocationsDashboard() {
         </div>
 
         {/* ── Location Comparison Table ────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
-          <div className="px-6 py-4 border-b border-pro-stone">
-            <h2 className="font-serif text-lg text-pro-navy">Location Comparison</h2>
+        <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+          <div className="px-6 py-4 border-b border-accent-soft">
+            <h2 className="font-sans text-lg text-graphite">Location Comparison</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm font-sans">
               <thead>
-                <tr className="bg-pro-ivory text-left text-pro-warm-gray text-xs uppercase tracking-wider">
+                <tr className="bg-background text-left text-graphite/60 text-xs uppercase tracking-wider">
                   <th className="px-6 py-3 font-semibold">Location</th>
                   <th className="px-4 py-3 font-semibold">City</th>
                   <th className="px-4 py-3 font-semibold">Type</th>
@@ -149,27 +149,27 @@ export default function LocationsDashboard() {
                   <th className="px-4 py-3 font-semibold">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-pro-stone/50">
+              <tbody className="divide-y divide-accent-soft/50">
                 {summaries.map((s) => (
-                  <tr key={s.location.id} className="hover:bg-pro-ivory/50 transition-colors">
+                  <tr key={s.location.id} className="hover:bg-background/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-pro-gold flex-shrink-0" />
-                        <span className="font-medium text-pro-charcoal">{s.location.locationName}</span>
+                        <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                        <span className="font-medium text-graphite">{s.location.locationName}</span>
                         {s.location.isPrimary && (
-                          <span className="text-[10px] font-semibold uppercase tracking-wider text-pro-gold bg-pro-gold/10 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded">
                             Primary
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-4 text-pro-warm-gray">
+                    <td className="px-4 py-4 text-graphite/60">
                       {s.location.city}, {s.location.state}
                     </td>
-                    <td className="px-4 py-4 text-pro-warm-gray">
+                    <td className="px-4 py-4 text-graphite/60">
                       {BUSINESS_TYPE_LABELS[s.location.businessType] ?? s.location.businessType}
                     </td>
-                    <td className="px-4 py-4 text-right font-medium text-pro-charcoal">
+                    <td className="px-4 py-4 text-right font-medium text-graphite">
                       ${s.revenue.toLocaleString()}
                     </td>
                     <td className="px-4 py-4 text-right">
@@ -178,8 +178,8 @@ export default function LocationsDashboard() {
                         {s.growth >= 0 ? '+' : ''}{s.growth}%
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-right text-pro-charcoal">{s.skuCount}</td>
-                    <td className="px-4 py-4 text-right font-medium text-pro-charcoal">{s.benchmarkScore}</td>
+                    <td className="px-4 py-4 text-right text-graphite">{s.skuCount}</td>
+                    <td className="px-4 py-4 text-right font-medium text-graphite">{s.benchmarkScore}</td>
                     <td className="px-4 py-4">
                       <span className={`inline-block text-xs font-semibold px-2 py-1 rounded-full capitalize ${STATUS_STYLES[s.status] ?? ''}`}>
                         {s.status}
@@ -193,15 +193,15 @@ export default function LocationsDashboard() {
         </div>
 
         {/* ── Benchmark Score Comparison (CSS bar chart) ───────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6">
-          <h2 className="font-serif text-lg text-pro-navy mb-6">Benchmark Score by Location</h2>
+        <div className="bg-white rounded-xl border border-accent-soft p-6">
+          <h2 className="font-sans text-lg text-graphite mb-6">Benchmark Score by Location</h2>
           <div className="space-y-4">
             {sorted.map((s) => (
               <div key={s.location.id} className="flex items-center gap-4">
-                <div className="w-48 text-sm font-sans text-pro-charcoal truncate">
+                <div className="w-48 text-sm font-sans text-graphite truncate">
                   {s.location.locationName}
                 </div>
-                <div className="flex-1 h-7 bg-pro-ivory rounded-full overflow-hidden relative">
+                <div className="flex-1 h-7 bg-background rounded-full overflow-hidden relative">
                   <div
                     className="h-full rounded-full transition-all duration-700"
                     style={{
@@ -213,33 +213,33 @@ export default function LocationsDashboard() {
                           : 'linear-gradient(90deg, #e8c4a0 0%, #d4a87a 100%)',
                     }}
                   />
-                  <span className="absolute inset-y-0 right-3 flex items-center text-xs font-semibold text-pro-charcoal">
+                  <span className="absolute inset-y-0 right-3 flex items-center text-xs font-semibold text-graphite">
                     {s.benchmarkScore}/100
                   </span>
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-xs text-pro-warm-gray mt-4 font-sans">
+          <p className="text-xs text-graphite/60 mt-4 font-sans">
             Peer benchmark average for your region: 66/100
           </p>
         </div>
 
         {/* ── Revenue by Location (CSS bar chart) ──────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6">
-          <h2 className="font-serif text-lg text-pro-navy mb-6">Monthly Revenue by Location</h2>
+        <div className="bg-white rounded-xl border border-accent-soft p-6">
+          <h2 className="font-sans text-lg text-graphite mb-6">Monthly Revenue by Location</h2>
           <div className="space-y-4">
             {[...summaries].sort((a, b) => b.revenue - a.revenue).map((s) => (
               <div key={s.location.id} className="flex items-center gap-4">
-                <div className="w-48 text-sm font-sans text-pro-charcoal truncate">
+                <div className="w-48 text-sm font-sans text-graphite truncate">
                   {s.location.locationName}
                 </div>
-                <div className="flex-1 h-7 bg-pro-ivory rounded-full overflow-hidden relative">
+                <div className="flex-1 h-7 bg-background rounded-full overflow-hidden relative">
                   <div
-                    className="h-full bg-pro-navy/80 rounded-full transition-all duration-700"
+                    className="h-full bg-graphite/80 rounded-full transition-all duration-700"
                     style={{ width: `${(s.revenue / maxRevenue) * 100}%` }}
                   />
-                  <span className="absolute inset-y-0 right-3 flex items-center text-xs font-semibold text-pro-charcoal">
+                  <span className="absolute inset-y-0 right-3 flex items-center text-xs font-semibold text-graphite">
                     ${(s.revenue / 1000).toFixed(1)}K
                   </span>
                 </div>
@@ -249,12 +249,12 @@ export default function LocationsDashboard() {
         </div>
 
         {/* ── Cross-Location Insights ──────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
-          <div className="px-6 py-4 border-b border-pro-stone flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-pro-gold" />
-            <h2 className="font-serif text-lg text-pro-navy">Cross-Location Intelligence</h2>
+        <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+          <div className="px-6 py-4 border-b border-accent-soft flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-accent" />
+            <h2 className="font-sans text-lg text-graphite">Cross-Location Intelligence</h2>
           </div>
-          <div className="divide-y divide-pro-stone/50">
+          <div className="divide-y divide-accent-soft/50">
             {insights.map((insight, i) => {
               const impact = IMPACT_STYLES[insight.impact];
               return (
@@ -264,12 +264,12 @@ export default function LocationsDashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-semibold text-pro-charcoal font-sans">{insight.title}</h3>
+                      <h3 className="text-sm font-semibold text-graphite font-sans">{insight.title}</h3>
                       <span className={`text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded ${impact.bg} ${impact.text}`}>
                         {impact.label}
                       </span>
                     </div>
-                    <p className="text-sm text-pro-warm-gray font-sans leading-relaxed">{insight.description}</p>
+                    <p className="text-sm text-graphite/60 font-sans leading-relaxed">{insight.description}</p>
                   </div>
                 </div>
               );
@@ -285,13 +285,13 @@ export default function LocationsDashboard() {
 
 function KPICard({ label, value, sub, icon }: { label: string; value: string; sub: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-pro-stone p-5">
+    <div className="bg-white rounded-xl border border-accent-soft p-5">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-pro-warm-gray font-sans">{label}</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-graphite/60 font-sans">{label}</span>
         {icon}
       </div>
-      <div className="text-2xl font-serif text-pro-charcoal">{value}</div>
-      <div className="text-xs text-pro-warm-gray font-sans mt-1">{sub}</div>
+      <div className="text-2xl font-sans text-graphite">{value}</div>
+      <div className="text-xs text-graphite/60 font-sans mt-1">{sub}</div>
     </div>
   );
 }
@@ -310,18 +310,18 @@ function HighlightCard({ type, summary }: { type: 'best' | 'worst'; summary: Loc
           {isBest ? 'Top Performer' : 'Needs Attention'}
         </span>
       </div>
-      <h3 className="font-serif text-lg text-pro-charcoal mb-1">{summary.location.locationName}</h3>
-      <p className="text-sm text-pro-warm-gray font-sans">
+      <h3 className="font-sans text-lg text-graphite mb-1">{summary.location.locationName}</h3>
+      <p className="text-sm text-graphite/60 font-sans">
         {summary.location.city}, {summary.location.state} &middot;{' '}
         {BUSINESS_TYPE_LABELS[summary.location.businessType] ?? summary.location.businessType}
       </p>
       <div className="flex items-center gap-4 mt-3 text-sm font-sans">
-        <span className="text-pro-charcoal font-medium">Score: {summary.benchmarkScore}/100</span>
+        <span className="text-graphite font-medium">Score: {summary.benchmarkScore}/100</span>
         <span className={`flex items-center gap-1 font-medium ${summary.growth >= 0 ? 'text-green-600' : 'text-red-500'}`}>
           {summary.growth >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
           {summary.growth >= 0 ? '+' : ''}{summary.growth}%
         </span>
-        <span className="text-pro-warm-gray">${summary.revenue.toLocaleString()}/mo</span>
+        <span className="text-graphite/60">${summary.revenue.toLocaleString()}/mo</span>
       </div>
     </div>
   );

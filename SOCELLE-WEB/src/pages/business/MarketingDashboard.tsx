@@ -23,14 +23,14 @@ import type { MarketingCampaign, CampaignStatusType } from '../../lib/useCampaig
 
 function statusBadge(status: CampaignStatusType) {
   const map: Record<CampaignStatusType, { bg: string; label: string }> = {
-    draft:     { bg: 'bg-pro-stone/30 text-pro-charcoal', label: 'Draft' },
+    draft:     { bg: 'bg-accent-soft/30 text-graphite', label: 'Draft' },
     scheduled: { bg: 'bg-blue-50 text-blue-700', label: 'Scheduled' },
     active:    { bg: 'bg-green-50 text-green-700', label: 'Active' },
     paused:    { bg: 'bg-amber-50 text-amber-700', label: 'Paused' },
-    completed: { bg: 'bg-pro-cream text-pro-warm-gray', label: 'Completed' },
-    archived:  { bg: 'bg-pro-stone/20 text-pro-warm-gray', label: 'Archived' },
+    completed: { bg: 'bg-accent-soft text-graphite/60', label: 'Completed' },
+    archived:  { bg: 'bg-accent-soft/20 text-graphite/60', label: 'Archived' },
   };
-  const s = map[status] ?? { bg: 'bg-pro-stone/20 text-pro-warm-gray', label: status };
+  const s = map[status] ?? { bg: 'bg-accent-soft/20 text-graphite/60', label: status };
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${s.bg}`}>
       {s.label}
@@ -47,7 +47,7 @@ function typeBadge(type: string) {
     social: 'Social',
   };
   return (
-    <span className="text-xs font-medium text-pro-warm-gray bg-pro-cream px-2 py-0.5 rounded">
+    <span className="text-xs font-medium text-graphite/60 bg-accent-soft px-2 py-0.5 rounded">
       {map[type] ?? type}
     </span>
   );
@@ -65,15 +65,15 @@ function MetricCard({
   suffix?: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
+    <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-10 h-10 rounded-lg bg-pro-cream flex items-center justify-center">
-          <Icon className="w-5 h-5 text-pro-navy" />
+        <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center">
+          <Icon className="w-5 h-5 text-graphite" />
         </div>
-        <span className="text-sm font-sans text-pro-warm-gray">{label}</span>
+        <span className="text-sm font-sans text-graphite/60">{label}</span>
       </div>
-      <p className="text-3xl font-serif font-bold text-pro-charcoal">
-        {value}{suffix && <span className="text-lg text-pro-warm-gray ml-0.5">{suffix}</span>}
+      <p className="text-3xl font-sans font-bold text-graphite">
+        {value}{suffix && <span className="text-lg text-graphite/60 ml-0.5">{suffix}</span>}
       </p>
     </div>
   );
@@ -108,28 +108,28 @@ export default function MarketingDashboard() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="font-serif text-3xl text-pro-charcoal">Marketing</h1>
+              <h1 className="font-sans text-3xl text-graphite">Marketing</h1>
               {!isLive && (
                 <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">
                   DEMO
                 </span>
               )}
             </div>
-            <p className="text-sm text-pro-warm-gray font-sans mt-1">
+            <p className="text-sm text-graphite/60 font-sans mt-1">
               Manage opt-in campaigns for your consented contacts
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/portal/marketing/analytics"
-              className="inline-flex items-center gap-2 h-10 px-4 rounded-full border border-pro-stone text-sm font-sans font-medium text-pro-charcoal hover:bg-pro-cream transition-colors"
+              className="inline-flex items-center gap-2 h-10 px-4 rounded-full border border-accent-soft text-sm font-sans font-medium text-graphite hover:bg-accent-soft transition-colors"
             >
               <BarChart3 className="w-4 h-4" />
               Analytics
             </Link>
             <Link
               to="/portal/marketing/campaigns/new"
-              className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-pro-navy text-white text-sm font-sans font-medium hover:bg-pro-navy/90 transition-colors"
+              className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-graphite text-white text-sm font-sans font-medium hover:bg-graphite/90 transition-colors"
             >
               <Plus className="w-4 h-4" />
               New Campaign
@@ -148,11 +148,11 @@ export default function MarketingDashboard() {
             <Link
               key={nav.to}
               to={nav.to}
-              className="flex items-center gap-3 p-4 bg-white rounded-xl border border-pro-stone shadow-sm hover:shadow-md transition-shadow"
+              className="flex items-center gap-3 p-4 bg-white rounded-xl border border-accent-soft shadow-sm hover:shadow-md transition-shadow"
             >
-              <nav.icon className="w-5 h-5 text-pro-navy" />
-              <span className="text-sm font-sans font-medium text-pro-charcoal">{nav.label}</span>
-              <ArrowRight className="w-4 h-4 text-pro-warm-gray ml-auto" />
+              <nav.icon className="w-5 h-5 text-graphite" />
+              <span className="text-sm font-sans font-medium text-graphite">{nav.label}</span>
+              <ArrowRight className="w-4 h-4 text-graphite/60 ml-auto" />
             </Link>
           ))}
         </div>
@@ -170,9 +170,9 @@ export default function MarketingDashboard() {
         </div>
 
         {/* ── Campaign List ───────────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-pro-stone flex items-center justify-between flex-wrap gap-4">
-            <h2 className="font-serif text-xl text-pro-charcoal">Campaigns</h2>
+        <div className="bg-white rounded-xl border border-accent-soft shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-accent-soft flex items-center justify-between flex-wrap gap-4">
+            <h2 className="font-sans text-xl text-graphite">Campaigns</h2>
             <div className="flex items-center gap-2">
               {(['all', 'active', 'scheduled', 'draft', 'completed'] as const).map((s) => (
                 <button
@@ -180,8 +180,8 @@ export default function MarketingDashboard() {
                   onClick={() => setStatusFilter(s)}
                   className={`px-3 py-1.5 rounded-full text-xs font-sans font-medium transition-colors ${
                     statusFilter === s
-                      ? 'bg-pro-navy text-white'
-                      : 'bg-pro-cream text-pro-charcoal hover:bg-pro-stone/30'
+                      ? 'bg-graphite text-white'
+                      : 'bg-accent-soft text-graphite hover:bg-accent-soft/30'
                   }`}
                 >
                   {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -192,15 +192,15 @@ export default function MarketingDashboard() {
 
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 text-pro-warm-gray animate-spin" />
+              <Loader2 className="w-6 h-6 text-graphite/60 animate-spin" />
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-16 px-4">
-              <Mail className="w-10 h-10 text-pro-warm-gray/40 mx-auto mb-3" />
-              <p className="text-sm text-pro-warm-gray font-sans">No campaigns found</p>
+              <Mail className="w-10 h-10 text-graphite/60/40 mx-auto mb-3" />
+              <p className="text-sm text-graphite/60 font-sans">No campaigns found</p>
               <Link
                 to="/portal/marketing/campaigns/new"
-                className="inline-flex items-center gap-2 mt-4 text-sm font-sans font-medium text-pro-navy hover:text-pro-navy/80 transition-colors"
+                className="inline-flex items-center gap-2 mt-4 text-sm font-sans font-medium text-graphite hover:text-graphite/80 transition-colors"
               >
                 Create your first campaign <ArrowRight className="w-4 h-4" />
               </Link>
@@ -209,7 +209,7 @@ export default function MarketingDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm font-sans">
                 <thead>
-                  <tr className="bg-pro-cream/50 text-pro-warm-gray text-left">
+                  <tr className="bg-accent-soft/50 text-graphite/60 text-left">
                     <th className="px-6 py-3 font-medium">Campaign</th>
                     <th className="px-6 py-3 font-medium">Type</th>
                     <th className="px-6 py-3 font-medium">Status</th>
@@ -217,29 +217,29 @@ export default function MarketingDashboard() {
                     <th className="px-6 py-3 font-medium text-right" />
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-pro-stone/50">
+                <tbody className="divide-y divide-accent-soft/50">
                   {filtered.map((c) => (
-                    <tr key={c.id} className="hover:bg-pro-cream/30 transition-colors">
+                    <tr key={c.id} className="hover:bg-accent-soft/30 transition-colors">
                       <td className="px-6 py-4">
                         <Link
                           to={`/portal/marketing/campaigns/${c.id}`}
-                          className="font-medium text-pro-charcoal hover:text-pro-navy transition-colors"
+                          className="font-medium text-graphite hover:text-graphite transition-colors"
                         >
                           {c.name}
                         </Link>
                         {c.subject && (
-                          <p className="text-xs text-pro-warm-gray mt-0.5 truncate max-w-xs">{c.subject}</p>
+                          <p className="text-xs text-graphite/60 mt-0.5 truncate max-w-xs">{c.subject}</p>
                         )}
                       </td>
                       <td className="px-6 py-4">{typeBadge(c.type)}</td>
                       <td className="px-6 py-4">{statusBadge(c.status)}</td>
-                      <td className="px-6 py-4 text-right text-pro-warm-gray">
+                      <td className="px-6 py-4 text-right text-graphite/60">
                         {new Date(c.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Link
                           to={`/portal/marketing/campaigns/${c.id}`}
-                          className="text-xs font-medium text-pro-navy hover:text-pro-navy/80 transition-colors"
+                          className="text-xs font-medium text-graphite hover:text-graphite/80 transition-colors"
                         >
                           View
                         </Link>
@@ -254,24 +254,24 @@ export default function MarketingDashboard() {
 
         {/* ── Calendar Preview ────────────────────────────────── */}
         {upcoming.length > 0 && (
-          <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
+          <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-pro-navy" />
-              <h2 className="font-serif text-xl text-pro-charcoal">Upcoming Scheduled</h2>
+              <Calendar className="w-5 h-5 text-graphite" />
+              <h2 className="font-sans text-xl text-graphite">Upcoming Scheduled</h2>
             </div>
             <div className="space-y-3">
               {upcoming.map((c) => (
                 <Link
                   key={c.id}
                   to={`/portal/marketing/campaigns/${c.id}`}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-pro-cream/50 transition-colors"
+                  className="flex items-center justify-between p-3 rounded-lg hover:bg-accent-soft/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span className="text-sm font-sans font-medium text-pro-charcoal">{c.name}</span>
+                    <span className="text-sm font-sans font-medium text-graphite">{c.name}</span>
                     {typeBadge(c.type)}
                   </div>
-                  <span className="text-xs text-pro-warm-gray font-sans">
+                  <span className="text-xs text-graphite/60 font-sans">
                     {c.scheduled_at ? new Date(c.scheduled_at).toLocaleDateString() : ''}
                   </span>
                 </Link>

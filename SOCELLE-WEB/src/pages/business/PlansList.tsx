@@ -22,7 +22,7 @@ const STATUS_STYLE: Record<string, string> = {
   ready:      'bg-emerald-50 text-emerald-700',
   processing: 'bg-amber-50 text-amber-700',
   error:      'bg-red-50 text-red-700',
-  draft:      'bg-pro-stone/60 text-pro-charcoal',
+  draft:      'bg-accent-soft/60 text-graphite',
 };
 
 export default function PlansList() {
@@ -78,16 +78,16 @@ export default function PlansList() {
             </div>
             <Skeleton className="h-10 w-44 rounded-lg" />
           </div>
-          <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+          <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
             <table className="w-full">
-              <thead className="bg-pro-ivory border-b border-pro-stone">
+              <thead className="bg-background border-b border-accent-soft">
                 <tr>
                   {['Plan', 'Brand', 'Status', 'Updated', 'Actions'].map(h => (
-                    <th key={h} className="px-6 py-3 text-left text-xs font-medium font-sans text-pro-warm-gray uppercase tracking-wider">{h}</th>
+                    <th key={h} className="px-6 py-3 text-left text-xs font-medium font-sans text-graphite/60 uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-pro-stone">
+              <tbody className="divide-y divide-accent-soft">
                 {[0, 1, 2, 3, 4].map(i => <TableRowSkeleton key={i} cols={5} />)}
               </tbody>
             </table>
@@ -113,8 +113,8 @@ export default function PlansList() {
         {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight">Reports</h1>
-            <p className="text-sm text-pro-warm-gray font-sans mt-1">
+            <h1 className="text-2xl font-sans font-semibold text-graphite tracking-tight">Reports</h1>
+            <p className="text-sm text-graphite/60 font-sans mt-1">
               {plans.length > 0 ? `${plans.length} report${plans.length !== 1 ? 's' : ''} generated` : 'Upload your menu to generate your first report'}
             </p>
           </div>
@@ -122,7 +122,7 @@ export default function PlansList() {
             {plans.length >= 2 && (
               <Link
                 to="/portal/plans/compare"
-                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white text-pro-charcoal border border-pro-stone rounded-lg hover:bg-pro-ivory transition-colors text-sm font-medium font-sans"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white text-graphite border border-accent-soft rounded-lg hover:bg-background transition-colors text-sm font-medium font-sans"
               >
                 <GitCompare className="w-4 h-4" />
                 Compare
@@ -130,7 +130,7 @@ export default function PlansList() {
             )}
             <Link
               to="/portal/plans/new"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-pro-charcoal text-white rounded-lg hover:bg-pro-charcoal/90 transition-colors text-sm font-medium font-sans"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-graphite text-white rounded-lg hover:bg-graphite/90 transition-colors text-sm font-medium font-sans"
             >
               <Upload className="w-4 h-4" />
               Upload your menu
@@ -140,17 +140,17 @@ export default function PlansList() {
 
         {/* Empty state */}
         {plans.length === 0 ? (
-          <div className="bg-white rounded-xl border border-pro-stone p-12 text-center">
-            <div className="w-14 h-14 bg-pro-cream rounded-2xl flex items-center justify-center mx-auto mb-5">
-              <FileText className="w-7 h-7 text-pro-warm-gray" />
+          <div className="bg-white rounded-xl border border-accent-soft p-12 text-center">
+            <div className="w-14 h-14 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-5">
+              <FileText className="w-7 h-7 text-graphite/60" />
             </div>
-            <h2 className="font-sans font-semibold text-pro-charcoal mb-2">No reports yet</h2>
-            <p className="text-sm text-pro-warm-gray font-sans mb-6 max-w-sm mx-auto">
+            <h2 className="font-sans font-semibold text-graphite mb-2">No reports yet</h2>
+            <p className="text-sm text-graphite/60 font-sans mb-6 max-w-sm mx-auto">
               Upload your service menu to get a gap analysis and brand match report.
             </p>
             <Link
               to="/portal/plans/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-pro-charcoal text-white rounded-lg hover:bg-pro-charcoal/90 transition-colors text-sm font-medium font-sans"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg hover:bg-graphite/90 transition-colors text-sm font-medium font-sans"
             >
               <Upload className="w-4 h-4" />
               Upload your menu
@@ -161,19 +161,19 @@ export default function PlansList() {
             {/* Search + filter */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
                 <input
                   type="text"
                   placeholder="Search plans…"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-charcoal/20 focus:border-pro-charcoal"
+                  className="w-full pl-10 pr-4 py-2.5 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite"
                 />
               </div>
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
-                className="px-4 py-2.5 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-charcoal/20 bg-white text-pro-charcoal"
+                className="px-4 py-2.5 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20 bg-white text-graphite"
               >
                 <option value="all">All statuses</option>
                 <option value="ready">Ready</option>
@@ -184,50 +184,50 @@ export default function PlansList() {
             </div>
 
             {filtered.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-xl border border-pro-stone">
-                <p className="text-pro-warm-gray font-sans text-sm">No plans match your filters.</p>
+              <div className="text-center py-12 bg-white rounded-xl border border-accent-soft">
+                <p className="text-graphite/60 font-sans text-sm">No plans match your filters.</p>
                 <button
                   onClick={() => { setSearch(''); setStatusFilter('all'); }}
-                  className="mt-3 text-sm text-pro-charcoal font-medium font-sans hover:underline"
+                  className="mt-3 text-sm text-graphite font-medium font-sans hover:underline"
                 >
                   Clear filters
                 </button>
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
-                <div className="px-6 py-3 border-b border-pro-stone">
-                  <p className="text-xs text-pro-warm-gray font-sans">
+              <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+                <div className="px-6 py-3 border-b border-accent-soft">
+                  <p className="text-xs text-graphite/60 font-sans">
                     {filtered.length} of {plans.length} report{plans.length !== 1 ? 's' : ''}
                   </p>
                 </div>
                 <table className="w-full">
-                  <thead className="bg-pro-ivory border-b border-pro-stone">
+                  <thead className="bg-background border-b border-accent-soft">
                     <tr>
-                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-pro-warm-gray uppercase tracking-wider">Report</th>
-                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-pro-warm-gray uppercase tracking-wider">Brand</th>
-                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-pro-warm-gray uppercase tracking-wider">Status</th>
-                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-pro-warm-gray uppercase tracking-wider hidden sm:table-cell">Updated</th>
-                      <th className="text-right px-6 py-3 text-xs font-medium font-sans text-pro-warm-gray uppercase tracking-wider">Actions</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-graphite/60 uppercase tracking-wider">Report</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-graphite/60 uppercase tracking-wider">Brand</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-graphite/60 uppercase tracking-wider">Status</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium font-sans text-graphite/60 uppercase tracking-wider hidden sm:table-cell">Updated</th>
+                      <th className="text-right px-6 py-3 text-xs font-medium font-sans text-graphite/60 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {filtered.map((plan) => (
-                      <tr key={plan.id} className="hover:bg-pro-ivory/50 transition-colors">
+                      <tr key={plan.id} className="hover:bg-background/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-pro-cream rounded-lg flex items-center justify-center flex-shrink-0">
-                              <FileText className="w-4 h-4 text-pro-warm-gray" />
+                            <div className="w-9 h-9 bg-accent-soft rounded-lg flex items-center justify-center flex-shrink-0">
+                              <FileText className="w-4 h-4 text-graphite/60" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-pro-charcoal font-sans">{plan.name}</p>
-                              <p className="text-xs text-pro-warm-gray font-sans">
+                              <p className="text-sm font-medium text-graphite font-sans">{plan.name}</p>
+                              <p className="text-xs text-graphite/60 font-sans">
                                 {new Date(plan.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm text-pro-charcoal font-sans">{plan.brands?.name || '—'}</p>
+                          <p className="text-sm text-graphite font-sans">{plan.brands?.name || '—'}</p>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex px-2 py-1 text-xs font-medium font-sans rounded-md ${STATUS_STYLE[plan.status] || STATUS_STYLE.draft}`}>
@@ -235,7 +235,7 @@ export default function PlansList() {
                           </span>
                         </td>
                         <td className="px-6 py-4 hidden sm:table-cell">
-                          <p className="text-xs text-pro-warm-gray font-sans">
+                          <p className="text-xs text-graphite/60 font-sans">
                             {new Date(plan.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </p>
                         </td>
@@ -252,7 +252,7 @@ export default function PlansList() {
                                 </button>
                                 <button
                                   onClick={() => setConfirmDeleteId(null)}
-                                  className="text-pro-warm-gray hover:text-pro-charcoal transition-colors"
+                                  className="text-graphite/60 hover:text-graphite transition-colors"
                                   aria-label="Cancel"
                                 >
                                   <X className="w-3.5 h-3.5" />
@@ -262,7 +262,7 @@ export default function PlansList() {
                               <>
                                 <Link
                                   to={`/portal/plans/${plan.id}`}
-                                  className="p-2 text-pro-warm-gray hover:text-pro-navy hover:bg-pro-cream rounded-lg transition-colors"
+                                  className="p-2 text-graphite/60 hover:text-graphite hover:bg-accent-soft rounded-lg transition-colors"
                                   title="View results"
                                 >
                                   <Eye className="w-4 h-4" />
@@ -270,7 +270,7 @@ export default function PlansList() {
                                 <button
                                   onClick={() => setConfirmDeleteId(plan.id)}
                                   disabled={deletingId === plan.id}
-                                  className="p-2 text-pro-warm-gray hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                                  className="p-2 text-graphite/60 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                                   title="Delete plan"
                                 >
                                   {deletingId === plan.id

@@ -78,9 +78,9 @@ export default function BrandPlans() {
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      draft: 'bg-pro-stone text-pro-charcoal',
+      draft: 'bg-accent-soft text-graphite',
       completed: 'bg-green-100 text-green-700',
-      in_progress: 'bg-pro-stone text-pro-charcoal',
+      in_progress: 'bg-accent-soft text-graphite',
     };
     return styles[status] || styles.draft;
   };
@@ -89,8 +89,8 @@ export default function BrandPlans() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-pro-warm-gray">Loading plans...</p>
+          <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-graphite/60">Loading plans...</p>
         </div>
       </div>
     );
@@ -118,70 +118,70 @@ export default function BrandPlans() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-pro-charcoal mb-2">Brand Plans</h1>
-        <p className="text-pro-warm-gray">
+        <h1 className="text-2xl font-bold text-graphite mb-2">Brand Plans</h1>
+        <p className="text-graphite/60">
           View all businesses that have analyzed fit with your brand
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
           <div className="flex items-center gap-3 mb-2">
-            <FileText className="w-5 h-5 text-pro-navy" />
-            <span className="text-sm text-pro-warm-gray">Total Plans</span>
+            <FileText className="w-5 h-5 text-graphite" />
+            <span className="text-sm text-graphite/60">Total Plans</span>
           </div>
-          <div className="text-3xl font-bold text-pro-charcoal">{plans.length}</div>
+          <div className="text-3xl font-bold text-graphite">{plans.length}</div>
         </div>
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
           <div className="flex items-center gap-3 mb-2">
             <TrendingUp className="w-5 h-5 text-purple-600" />
-            <span className="text-sm text-pro-warm-gray">Avg Fit Score</span>
+            <span className="text-sm text-graphite/60">Avg Fit Score</span>
           </div>
-          <div className="text-3xl font-bold text-pro-charcoal">{Math.round(avgFitScore)}%</div>
+          <div className="text-3xl font-bold text-graphite">{Math.round(avgFitScore)}%</div>
         </div>
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
           <div className="flex items-center gap-3 mb-2">
             <DollarSign className="w-5 h-5 text-green-600" />
-            <span className="text-sm text-pro-warm-gray">Total Pipeline</span>
+            <span className="text-sm text-graphite/60">Total Pipeline</span>
           </div>
-          <div className="text-3xl font-bold text-pro-charcoal">${totalValue.toLocaleString()}</div>
+          <div className="text-3xl font-bold text-graphite">${totalValue.toLocaleString()}</div>
         </div>
       </div>
 
       {/* Search + filter bar */}
       {plans.length > 0 && (
-        <div className="flex flex-col sm:flex-row gap-3 bg-white border border-pro-stone rounded-lg p-4">
+        <div className="flex flex-col sm:flex-row gap-3 bg-white border border-accent-soft rounded-lg p-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
             <input
               type="text"
               placeholder="Search by business name..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-pro-stone rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy"
+              className="w-full pl-10 pr-4 py-2 border border-accent-soft rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-graphite"
             />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <label className="text-sm text-pro-warm-gray whitespace-nowrap">Min fit score:</label>
+            <label className="text-sm text-graphite/60 whitespace-nowrap">Min fit score:</label>
             <input
               type="number"
               min={0}
               max={100}
               value={minFit}
               onChange={e => setMinFit(Number(e.target.value))}
-              className="w-20 px-3 py-2 border border-pro-stone rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy"
+              className="w-20 px-3 py-2 border border-accent-soft rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-graphite"
             />
-            <span className="text-sm text-pro-warm-gray">%</span>
+            <span className="text-sm text-graphite/60">%</span>
           </div>
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         {plans.length === 0 ? (
           <div className="text-center py-12">
-            <FileText className="w-16 h-16 mx-auto mb-4 text-pro-stone" />
-            <p className="text-pro-warm-gray mb-2">No plans yet</p>
-            <p className="text-sm text-pro-warm-gray">
+            <FileText className="w-16 h-16 mx-auto mb-4 text-accent-soft" />
+            <p className="text-graphite/60 mb-2">No plans yet</p>
+            <p className="text-sm text-graphite/60">
               Plans will appear here when businesses analyze their fit with your brand
             </p>
           </div>
@@ -198,11 +198,11 @@ export default function BrandPlans() {
               if (filtered.length === 0) {
                 return (
                   <div className="py-12 text-center">
-                    <Search className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                    <p className="text-pro-warm-gray">No plans match your filters</p>
+                    <Search className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                    <p className="text-graphite/60">No plans match your filters</p>
                     <button
                       onClick={() => { setSearch(''); setMinFit(0); }}
-                      className="mt-2 text-sm text-pro-navy hover:underline"
+                      className="mt-2 text-sm text-graphite hover:underline"
                     >
                       Clear filters
                     </button>
@@ -212,52 +212,52 @@ export default function BrandPlans() {
 
               return (
             <table className="w-full">
-              <thead className="bg-pro-ivory border-b border-pro-stone">
+              <thead className="bg-background border-b border-accent-soft">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                     Business ({filtered.length})
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                     Fit Score
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                     Opening Order
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                     Created
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-pro-stone">
+              <tbody className="bg-white divide-y divide-accent-soft">
                 {filtered.map((plan) => (
-                  <tr key={plan.id} className="hover:bg-pro-ivory">
+                  <tr key={plan.id} className="hover:bg-background">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-pro-charcoal">{plan.business_name}</div>
+                      <div className="font-medium text-graphite">{plan.business_name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {plan.fit_score !== null ? (
                         <div className="flex items-center gap-2">
-                          <div className="text-lg font-bold text-pro-navy">{plan.fit_score}%</div>
-                          <div className="w-24 h-2 bg-pro-stone rounded-full overflow-hidden">
+                          <div className="text-lg font-bold text-graphite">{plan.fit_score}%</div>
+                          <div className="w-24 h-2 bg-accent-soft rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-pro-navy"
+                              className="h-full bg-graphite"
                               style={{ width: `${plan.fit_score}%` }}
                             />
                           </div>
                         </div>
                       ) : (
-                        <span className="text-pro-warm-gray">-</span>
+                        <span className="text-graphite/60">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-pro-charcoal font-medium">
+                      <span className="text-graphite font-medium">
                         ${plan.opening_order_value.toLocaleString()}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-pro-warm-gray">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite/60">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         {new Date(plan.created_at).toLocaleDateString()}

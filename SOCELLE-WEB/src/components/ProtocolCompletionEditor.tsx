@@ -336,7 +336,7 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-xl p-8">
-          <Loader2 className="w-8 h-8 animate-spin text-pro-navy" />
+          <Loader2 className="w-8 h-8 animate-spin text-graphite" />
         </div>
       </div>
     );
@@ -349,14 +349,14 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full my-8">
-        <div className="sticky top-0 bg-white border-b border-pro-stone px-6 py-4 flex items-center justify-between rounded-t-xl">
+        <div className="sticky top-0 bg-white border-b border-accent-soft px-6 py-4 flex items-center justify-between rounded-t-xl">
           <div>
-            <h2 className="text-2xl font-bold text-pro-charcoal">Complete Protocol</h2>
-            <p className="text-sm text-pro-warm-gray">{protocol.protocol_name}</p>
+            <h2 className="text-2xl font-bold text-graphite">Complete Protocol</h2>
+            <p className="text-sm text-graphite/60">{protocol.protocol_name}</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-pro-stone rounded-lg transition-colors"
+            className="p-2 hover:bg-accent-soft rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -377,15 +377,15 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
             </div>
           )}
 
-          <div className="bg-pro-ivory rounded-lg p-4">
-            <h3 className="font-semibold text-pro-charcoal mb-2">Protocol Metadata</h3>
+          <div className="bg-background rounded-lg p-4">
+            <h3 className="font-semibold text-graphite mb-2">Protocol Metadata</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-pro-warm-gray">Category:</span>
+                <span className="text-graphite/60">Category:</span>
                 <span className="ml-2 font-medium">{protocol.category}</span>
               </div>
               <div>
-                <span className="text-pro-warm-gray">Status:</span>
+                <span className="text-graphite/60">Status:</span>
                 <span className={`ml-2 px-2 py-0.5 rounded text-xs font-medium ${
                   protocol.completion_status === 'fully_complete' ? 'bg-green-100 text-green-700' :
                   protocol.completion_status === 'steps_complete' ? 'bg-yellow-100 text-yellow-700' :
@@ -395,7 +395,7 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
                 </span>
               </div>
               <div>
-                <span className="text-pro-warm-gray">Source File:</span>
+                <span className="text-graphite/60">Source File:</span>
                 <span className="ml-2 text-xs">{protocol.source_file || 'N/A'}</span>
               </div>
             </div>
@@ -403,53 +403,53 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Typical Duration
               </label>
               <input
                 type="text"
                 value={protocol.typical_duration || ''}
                 onChange={(e) => updateProtocolField('typical_duration', e.target.value)}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                 placeholder="e.g., 60 minutes"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Target Concerns (comma-separated)
               </label>
               <input
                 type="text"
                 value={protocol.target_concerns?.join(', ') || ''}
                 onChange={(e) => updateProtocolField('target_concerns', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                 placeholder="e.g., Acne, Inflammation, Sensitivity"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Contraindications (comma-separated)
               </label>
               <input
                 type="text"
                 value={protocol.contraindications?.join(', ') || ''}
                 onChange={(e) => updateProtocolField('contraindications', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                 placeholder="e.g., Pregnancy, Active infection, Recent laser"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Admin Notes
               </label>
               <textarea
                 value={protocol.manual_entry_notes || ''}
                 onChange={(e) => updateProtocolField('manual_entry_notes', e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                 placeholder="Notes about manual entry, sources, or clarifications..."
               />
             </div>
@@ -457,10 +457,10 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
 
           <div className="border-t pt-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-pro-charcoal">Protocol Steps</h3>
+              <h3 className="text-lg font-semibold text-graphite">Protocol Steps</h3>
               <button
                 onClick={addStep}
-                className="px-3 py-2 bg-pro-navy hover:bg-pro-charcoal text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                className="px-3 py-2 bg-graphite hover:bg-graphite text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Add Step
@@ -468,15 +468,15 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
             </div>
 
             {steps.length === 0 ? (
-              <div className="text-center py-8 bg-pro-ivory rounded-lg">
-                <p className="text-pro-warm-gray">No steps added yet. Click "Add Step" to begin.</p>
+              <div className="text-center py-8 bg-background rounded-lg">
+                <p className="text-graphite/60">No steps added yet. Click "Add Step" to begin.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {steps.map((step, stepIndex) => (
-                  <div key={stepIndex} className="border border-pro-stone rounded-lg p-4 space-y-4">
+                  <div key={stepIndex} className="border border-accent-soft rounded-lg p-4 space-y-4">
                     <div className="flex items-start justify-between">
-                      <h4 className="font-semibold text-pro-charcoal">Step {step.step_number}</h4>
+                      <h4 className="font-semibold text-graphite">Step {step.step_number}</h4>
                       <button
                         onClick={() => removeStep(stepIndex)}
                         className="p-1 hover:bg-red-50 text-red-600 rounded transition-colors"
@@ -487,63 +487,63 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-pro-charcoal mb-1">
+                        <label className="block text-xs font-medium text-graphite mb-1">
                           Step Title
                         </label>
                         <input
                           type="text"
                           value={step.step_title}
                           onChange={(e) => updateStep(stepIndex, 'step_title', e.target.value)}
-                          className="w-full px-3 py-2 text-sm border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                          className="w-full px-3 py-2 text-sm border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                           placeholder="e.g., Cleanse"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-pro-charcoal mb-1">
+                        <label className="block text-xs font-medium text-graphite mb-1">
                           Timing (minutes)
                         </label>
                         <input
                           type="number"
                           value={step.timing_minutes || ''}
                           onChange={(e) => updateStep(stepIndex, 'timing_minutes', e.target.value ? parseInt(e.target.value) : null)}
-                          className="w-full px-3 py-2 text-sm border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                          className="w-full px-3 py-2 text-sm border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                           placeholder="5"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-pro-charcoal mb-1">
+                      <label className="block text-xs font-medium text-graphite mb-1">
                         Instructions <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         value={step.step_instructions}
                         onChange={(e) => updateStep(stepIndex, 'step_instructions', e.target.value)}
                         rows={3}
-                        className="w-full px-3 py-2 text-sm border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                         placeholder="Detailed step instructions..."
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-pro-charcoal mb-1">
+                      <label className="block text-xs font-medium text-graphite mb-1">
                         Technique Notes
                       </label>
                       <textarea
                         value={step.technique_notes || ''}
                         onChange={(e) => updateStep(stepIndex, 'technique_notes', e.target.value)}
                         rows={2}
-                        className="w-full px-3 py-2 text-sm border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent"
                         placeholder="Special techniques, tips, or warnings..."
                       />
                     </div>
 
                     <div className="border-t pt-4">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="text-xs font-medium text-pro-charcoal">Products Used</label>
+                        <label className="text-xs font-medium text-graphite">Products Used</label>
                         <button
                           onClick={() => addProductToStep(stepIndex)}
-                          className="px-2 py-1 bg-pro-stone hover:bg-pro-stone text-pro-charcoal rounded text-xs font-medium flex items-center gap-1 transition-colors"
+                          className="px-2 py-1 bg-accent-soft hover:bg-accent-soft text-graphite rounded text-xs font-medium flex items-center gap-1 transition-colors"
                         >
                           <Plus className="w-3 h-3" />
                           Add Product
@@ -552,12 +552,12 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
 
                       <div className="space-y-2">
                         {step.products.map((product, productIndex) => (
-                          <div key={productIndex} className="flex items-start gap-2 bg-pro-ivory p-2 rounded">
+                          <div key={productIndex} className="flex items-start gap-2 bg-background p-2 rounded">
                             <div className="flex-1 grid grid-cols-2 gap-2">
                               <select
                                 value={product.product_id}
                                 onChange={(e) => updateStepProduct(stepIndex, productIndex, 'product_id', e.target.value)}
-                                className="px-2 py-1 text-xs border border-pro-stone rounded focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                                className="px-2 py-1 text-xs border border-accent-soft rounded focus:ring-2 focus:ring-graphite focus:border-transparent"
                               >
                                 <option value="">Select product...</option>
                                 {backbarProducts.map(p => (
@@ -572,14 +572,14 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
                                   type="text"
                                   value={product.usage_amount || ''}
                                   onChange={(e) => updateStepProduct(stepIndex, productIndex, 'usage_amount', e.target.value)}
-                                  className="flex-1 px-2 py-1 text-xs border border-pro-stone rounded focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                                  className="flex-1 px-2 py-1 text-xs border border-accent-soft rounded focus:ring-2 focus:ring-graphite focus:border-transparent"
                                   placeholder="Amount"
                                 />
                                 <input
                                   type="text"
                                   value={product.usage_unit || ''}
                                   onChange={(e) => updateStepProduct(stepIndex, productIndex, 'usage_unit', e.target.value)}
-                                  className="w-16 px-2 py-1 text-xs border border-pro-stone rounded focus:ring-2 focus:ring-pro-navy focus:border-transparent"
+                                  className="w-16 px-2 py-1 text-xs border border-accent-soft rounded focus:ring-2 focus:ring-graphite focus:border-transparent"
                                   placeholder="Unit"
                                 />
                               </div>
@@ -601,11 +601,11 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-pro-ivory border-t border-pro-stone px-6 py-4 flex items-center justify-between rounded-b-xl">
+        <div className="sticky bottom-0 bg-background border-t border-accent-soft px-6 py-4 flex items-center justify-between rounded-b-xl">
           <button
             onClick={onClose}
             disabled={saving}
-            className="px-4 py-2 text-pro-charcoal hover:bg-pro-stone rounded-lg font-medium transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-graphite hover:bg-accent-soft rounded-lg font-medium transition-colors flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Cancel
@@ -615,7 +615,7 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
             <button
               onClick={saveProtocol}
               disabled={saving}
-              className="px-4 py-2 bg-pro-navy hover:bg-pro-charcoal disabled:bg-pro-warm-gray text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-graphite hover:bg-graphite disabled:bg-graphite/60 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save Draft
@@ -624,7 +624,7 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
             <button
               onClick={() => markAsComplete('steps_complete')}
               disabled={saving}
-              className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-pro-warm-gray text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-graphite/60 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <CheckCircle className="w-4 h-4" />
               Mark Steps Complete
@@ -633,7 +633,7 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
             <button
               onClick={() => markAsComplete('fully_complete')}
               disabled={saving}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-pro-warm-gray text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-graphite/60 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <CheckCircle className="w-4 h-4" />
               Mark Fully Complete

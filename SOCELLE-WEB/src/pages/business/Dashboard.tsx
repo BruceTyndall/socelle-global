@@ -28,11 +28,11 @@ interface BusinessInfo {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  submitted:      'bg-pro-cream text-pro-charcoal',
-  reviewing:      'bg-pro-stone text-pro-charcoal',
+  submitted:      'bg-accent-soft text-graphite',
+  reviewing:      'bg-accent-soft text-graphite',
   sent_to_brand:  'bg-blue-50 text-blue-700',
   confirmed:      'bg-green-50 text-green-700',
-  fulfilled:      'bg-pro-ivory text-pro-navy',
+  fulfilled:      'bg-background text-graphite',
   cancelled:      'bg-red-50 text-red-700',
 };
 
@@ -40,15 +40,15 @@ const VERIFICATION_BADGE: Record<string, { label: string; icon: typeof CheckCirc
   verified:             { label: 'Verified Reseller',    icon: CheckCircle, cls: 'text-green-600 bg-green-50' },
   pending_verification: { label: 'Verification Pending', icon: Clock,       cls: 'text-amber-600 bg-amber-50' },
   pending_claim:        { label: 'Claim Pending',        icon: Clock,       cls: 'text-amber-600 bg-amber-50' },
-  unverified:           { label: 'Not Yet Verified',     icon: AlertCircle, cls: 'text-pro-warm-gray bg-pro-cream' },
+  unverified:           { label: 'Not Yet Verified',     icon: AlertCircle, cls: 'text-graphite/60 bg-accent-soft' },
   suspended:            { label: 'Account Suspended',    icon: AlertCircle, cls: 'text-red-600 bg-red-50' },
 };
 
 const INSIGHT_CONFIG: Record<OperatorInsight['category'], { icon: typeof TrendingUp; borderColor: string; iconColor: string; badgeColor: string }> = {
-  growth:    { icon: TrendingUp,    borderColor: 'border-l-pro-gold',      iconColor: 'text-pro-gold',    badgeColor: 'bg-pro-gold/10 text-pro-gold' },
+  growth:    { icon: TrendingUp,    borderColor: 'border-l-accent',      iconColor: 'text-accent',    badgeColor: 'bg-accent/10 text-accent' },
   trend:     { icon: BarChart3,     borderColor: 'border-l-intel-accent',  iconColor: 'text-intel-accent', badgeColor: 'bg-intel-accent/10 text-intel-accent' },
   risk:      { icon: AlertTriangle, borderColor: 'border-l-amber-500',    iconColor: 'text-amber-500',   badgeColor: 'bg-amber-500/10 text-amber-600' },
-  benchmark: { icon: BarChart3,     borderColor: 'border-l-pro-navy',     iconColor: 'text-pro-navy',    badgeColor: 'bg-pro-navy/10 text-pro-navy' },
+  benchmark: { icon: BarChart3,     borderColor: 'border-l-graphite',     iconColor: 'text-graphite',    badgeColor: 'bg-graphite/10 text-graphite' },
   education: { icon: Brain,         borderColor: 'border-l-emerald-500',  iconColor: 'text-emerald-500', badgeColor: 'bg-emerald-500/10 text-emerald-600' },
 };
 
@@ -131,22 +131,22 @@ export default function Dashboard() {
       label: 'Orders Placed',
       value: stats.ordersCount.toString(),
       icon: ShoppingBag,
-      iconBg: 'bg-pro-cream',
-      iconColor: 'text-pro-navy',
+      iconBg: 'bg-accent-soft',
+      iconColor: 'text-graphite',
     },
     {
       label: 'Total Spend',
       value: `$${stats.totalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
       icon: DollarSign,
-      iconBg: 'bg-pro-ivory',
-      iconColor: 'text-pro-charcoal',
+      iconBg: 'bg-background',
+      iconColor: 'text-graphite',
     },
     {
       label: 'Brands Ordered From',
       value: stats.activeBrandsCount.toString(),
       icon: Store,
-      iconBg: 'bg-pro-stone',
-      iconColor: 'text-pro-gold',
+      iconBg: 'bg-accent-soft',
+      iconColor: 'text-accent',
     },
   ];
 
@@ -160,10 +160,10 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight">
+          <h1 className="text-2xl font-sans font-semibold text-graphite tracking-tight">
             {businessInfo?.name || 'My Dashboard'}
           </h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-1">
+          <p className="text-sm text-graphite/60 font-sans mt-1">
             {hasOrders
               ? `${stats.ordersCount} order${stats.ordersCount !== 1 ? 's' : ''} · $${stats.totalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })} total spend`
               : 'Browse professional brands and start ordering wholesale'}
@@ -178,7 +178,7 @@ export default function Dashboard() {
       </div>
 
       {/* Metric strip */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-pro-stone rounded-xl overflow-hidden border border-pro-stone">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-accent-soft rounded-xl overflow-hidden border border-accent-soft">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -187,10 +187,10 @@ export default function Dashboard() {
                 <Icon className={`w-5 h-5 ${stat.iconColor}`} />
               </div>
               <div>
-                <p className="text-xs font-sans font-medium text-pro-warm-gray uppercase tracking-wider">
+                <p className="text-xs font-sans font-medium text-graphite/60 uppercase tracking-wider">
                   {stat.label}
                 </p>
-                <p className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight mt-0.5">
+                <p className="text-2xl font-sans font-semibold text-graphite tracking-tight mt-0.5">
                   {loading ? '—' : stat.value}
                 </p>
               </div>
@@ -234,25 +234,25 @@ export default function Dashboard() {
 
       {/* Browse brands CTA — when no orders yet */}
       {!loading && !hasOrders && (
-        <div className="relative overflow-hidden rounded-xl bg-pro-charcoal p-8 md:p-10">
+        <div className="relative overflow-hidden rounded-xl bg-graphite p-8 md:p-10">
           <div className="absolute inset-0 opacity-[0.03]" style={{
             backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
             backgroundSize: '24px 24px'
           }} />
           <div className="relative">
-            <p className="text-xs font-sans font-medium text-pro-stone uppercase tracking-widest mb-3">
+            <p className="text-xs font-sans font-medium text-accent-soft uppercase tracking-widest mb-3">
               Get started
             </p>
             <h2 className="text-xl font-sans font-semibold text-white mb-2">
               Discover professional brands
             </h2>
-            <p className="text-sm text-pro-stone font-sans mb-6 max-w-lg">
+            <p className="text-sm text-accent-soft font-sans mb-6 max-w-lg">
               Browse curated professional beauty brands and place your first wholesale order.
               No minimums to get started.
             </p>
             <Link
               to="/portal/brands"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-pro-charcoal rounded-lg hover:bg-pro-ivory transition-colors font-medium font-sans text-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-graphite rounded-lg hover:bg-background transition-colors font-medium font-sans text-sm"
             >
               <Sparkles className="w-4 h-4" />
               Browse Brands
@@ -263,37 +263,37 @@ export default function Dashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6">
+        <div className="bg-white rounded-xl border border-accent-soft p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-serif text-pro-navy">Recent Orders</h2>
+            <h2 className="text-lg font-sans text-graphite">Recent Orders</h2>
             <Link
               to="/portal/orders"
-              className="text-sm text-pro-gold hover:text-pro-navy font-medium font-sans flex items-center gap-1 transition-colors"
+              className="text-sm text-accent hover:text-graphite font-medium font-sans flex items-center gap-1 transition-colors"
             >
               View All
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           {!loading && recentOrders.length === 0 ? (
-            <div className="text-center py-8 text-pro-warm-gray font-sans">
-              <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-pro-stone" />
+            <div className="text-center py-8 text-graphite/60 font-sans">
+              <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-accent-soft" />
               <p className="text-sm">No orders yet</p>
             </div>
           ) : (
-            <div className="divide-y divide-pro-stone">
+            <div className="divide-y divide-accent-soft">
               {recentOrders.map((order) => (
                 <div key={order.id} className="flex items-center justify-between py-3">
                   <div>
-                    <p className="font-medium text-pro-charcoal font-sans text-sm">{order.brand_name}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans">
+                    <p className="font-medium text-graphite font-sans text-sm">{order.brand_name}</p>
+                    <p className="text-xs text-graphite/60 font-sans">
                       {order.order_number} · {new Date(order.created_at).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium font-sans capitalize ${STATUS_COLORS[order.status] || 'bg-pro-cream text-pro-charcoal'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium font-sans capitalize ${STATUS_COLORS[order.status] || 'bg-accent-soft text-graphite'}`}>
                       {order.status.replace(/_/g, ' ')}
                     </span>
-                    <span className="text-sm font-sans font-semibold text-pro-charcoal">
+                    <span className="text-sm font-sans font-semibold text-graphite">
                       ${order.subtotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
                   </div>
@@ -304,8 +304,8 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6">
-          <h2 className="text-lg font-serif text-pro-navy mb-4">Quick Actions</h2>
+        <div className="bg-white rounded-xl border border-accent-soft p-6">
+          <h2 className="text-lg font-sans text-graphite mb-4">Quick Actions</h2>
           <div className="space-y-3">
             {[
               { to: '/brands',          label: 'Browse Brands',    sub: 'Discover and shop professional brands' },
@@ -316,13 +316,13 @@ export default function Dashboard() {
               <Link
                 key={to}
                 to={to}
-                className="group flex items-center justify-between p-4 rounded-lg border border-pro-stone hover:border-pro-charcoal/30 hover:bg-pro-cream/50 transition-all"
+                className="group flex items-center justify-between p-4 rounded-lg border border-accent-soft hover:border-graphite/30 hover:bg-accent-soft/50 transition-all"
               >
                 <div>
-                  <p className="font-medium text-pro-charcoal font-sans text-sm">{label}</p>
-                  <p className="text-xs text-pro-warm-gray font-sans mt-0.5">{sub}</p>
+                  <p className="font-medium text-graphite font-sans text-sm">{label}</p>
+                  <p className="text-xs text-graphite/60 font-sans mt-0.5">{sub}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-pro-charcoal transition-colors" />
+                <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-graphite transition-colors" />
               </Link>
             ))}
           </div>
@@ -337,13 +337,13 @@ export default function Dashboard() {
               <Brain className="w-5 h-5 text-intel-accent" />
             </div>
             <div>
-              <h2 className="font-heading text-xl font-bold text-pro-charcoal">Your Intelligence Brief</h2>
-              <p className="text-xs text-pro-warm-gray font-sans">Personalized signals for your treatment room</p>
+              <h2 className="font-heading text-xl font-bold text-graphite">Your Intelligence Brief</h2>
+              <p className="text-xs text-graphite/60 font-sans">Personalized signals for your treatment room</p>
             </div>
           </div>
           <Link
             to="/portal/intelligence"
-            className="text-sm text-pro-navy hover:text-pro-gold transition-colors flex items-center gap-1 font-medium font-sans"
+            className="text-sm text-graphite hover:text-accent transition-colors flex items-center gap-1 font-medium font-sans"
           >
             View Full Intelligence
             <ArrowRight className="w-4 h-4" />
@@ -357,7 +357,7 @@ export default function Dashboard() {
             return (
               <div
                 key={insight.id}
-                className={`bg-pro-charcoal rounded-xl p-5 border-l-4 ${config.borderColor} flex flex-col justify-between min-h-[180px]`}
+                className={`bg-graphite rounded-xl p-5 border-l-4 ${config.borderColor} flex flex-col justify-between min-h-[180px]`}
               >
                 <div>
                   <div className="flex items-center gap-2 mb-3">
@@ -374,14 +374,14 @@ export default function Dashboard() {
                   <h3 className="font-sans font-semibold text-white text-sm leading-snug mb-2">
                     {insight.title}
                   </h3>
-                  <p className="text-xs text-pro-stone/80 font-sans leading-relaxed line-clamp-3">
+                  <p className="text-xs text-accent-soft/80 font-sans leading-relaxed line-clamp-3">
                     {insight.description}
                   </p>
                 </div>
                 {insight.actionLabel && insight.actionHref && (
                   <Link
                     to={insight.actionHref}
-                    className="mt-4 inline-flex items-center gap-1 text-xs font-medium font-sans text-pro-gold hover:text-white transition-colors"
+                    className="mt-4 inline-flex items-center gap-1 text-xs font-medium font-sans text-accent hover:text-white transition-colors"
                   >
                     {insight.actionLabel}
                     <ArrowRight className="w-3 h-3" />

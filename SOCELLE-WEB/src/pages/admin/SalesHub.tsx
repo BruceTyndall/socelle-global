@@ -138,8 +138,8 @@ export default function SalesHub() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-serif text-pro-navy">
-              Sales Hub<span className="text-pro-gold">.</span>
+            <h1 className="text-3xl font-sans text-graphite">
+              Sales Hub<span className="text-accent">.</span>
             </h1>
             {!isLive && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -148,7 +148,7 @@ export default function SalesHub() {
               </span>
             )}
           </div>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Orders, deals, pipeline configuration, and commission management
           </p>
         </div>
@@ -156,7 +156,7 @@ export default function SalesHub() {
           type="button"
           onClick={tab === 'orders' ? loadOrders : undefined}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           Refresh
@@ -164,7 +164,7 @@ export default function SalesHub() {
       </div>
 
       {/* Tab nav */}
-      <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit flex-wrap">
+      <div className="flex gap-1 bg-accent-soft/40 rounded-xl p-1 w-fit flex-wrap">
         {([
           { key: 'orders' as const, label: 'Orders', icon: ShoppingBag },
           { key: 'deals' as const, label: 'All Deals', icon: Target },
@@ -176,7 +176,7 @@ export default function SalesHub() {
             type="button"
             onClick={() => setTab(t.key)}
             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
-              tab === t.key ? 'bg-white text-pro-navy shadow-sm' : 'text-pro-warm-gray hover:text-pro-charcoal'
+              tab === t.key ? 'bg-white text-graphite shadow-sm' : 'text-graphite/60 hover:text-graphite'
             }`}
           >
             <t.icon className="w-4 h-4" />
@@ -196,14 +196,14 @@ export default function SalesHub() {
             </div>
           )}
 
-          <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit flex-wrap">
+          <div className="flex gap-1 bg-accent-soft/40 rounded-xl p-1 w-fit flex-wrap">
             {(['all', 'submitted', 'reviewing', 'confirmed', 'fulfilled', 'cancelled'] as const).map((f) => (
               <button
                 key={f}
                 type="button"
                 onClick={() => setOrderFilter(f)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
-                  orderFilter === f ? 'bg-white text-pro-navy shadow-sm' : 'text-pro-warm-gray hover:text-pro-charcoal'
+                  orderFilter === f ? 'bg-white text-graphite shadow-sm' : 'text-graphite/60 hover:text-graphite'
                 }`}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -218,35 +218,35 @@ export default function SalesHub() {
           ) : orders.length === 0 ? (
             <EmptyState label={orderFilter === 'all' ? 'No orders yet.' : `No ${orderFilter} orders.`} />
           ) : (
-            <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+            <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone bg-pro-cream/50">
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Order #</th>
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Status</th>
-                      <th className="text-right px-4 py-3 font-medium text-pro-charcoal">Subtotal</th>
-                      <th className="text-right px-4 py-3 font-medium text-pro-charcoal">Commission</th>
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Date</th>
+                    <tr className="border-b border-accent-soft bg-accent-soft/50">
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Order #</th>
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Status</th>
+                      <th className="text-right px-4 py-3 font-medium text-graphite">Subtotal</th>
+                      <th className="text-right px-4 py-3 font-medium text-graphite">Commission</th>
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Date</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {orders.map((row) => {
                       const StatusIcon = STATUS_ICONS[row.status] || Clock;
                       return (
-                        <tr key={row.id} className="hover:bg-pro-cream/30 transition-colors">
+                        <tr key={row.id} className="hover:bg-accent-soft/30 transition-colors">
                           <td className="px-4 py-3">
-                            <span className="text-pro-navy font-medium font-mono text-xs">{row.order_number}</span>
+                            <span className="text-graphite font-medium font-mono text-xs">{row.order_number}</span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[row.status] || 'bg-pro-stone text-pro-charcoal'}`}>
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[row.status] || 'bg-accent-soft text-graphite'}`}>
                               <StatusIcon className="w-3 h-3" />
                               {row.status.replace(/_/g, ' ')}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right text-pro-charcoal font-mono text-xs">{formatCurrency(row.subtotal)}</td>
-                          <td className="px-4 py-3 text-right text-pro-warm-gray font-mono text-xs">{formatCurrency(row.commission_total)}</td>
-                          <td className="px-4 py-3 text-pro-warm-gray text-xs">{formatDate(row.created_at)}</td>
+                          <td className="px-4 py-3 text-right text-graphite font-mono text-xs">{formatCurrency(row.subtotal)}</td>
+                          <td className="px-4 py-3 text-right text-graphite/60 font-mono text-xs">{formatCurrency(row.commission_total)}</td>
+                          <td className="px-4 py-3 text-graphite/60 text-xs">{formatDate(row.created_at)}</td>
                         </tr>
                       );
                     })}
@@ -275,28 +275,28 @@ export default function SalesHub() {
           ) : deals.length === 0 ? (
             <EmptyState label="No deals yet." />
           ) : (
-            <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+            <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone bg-pro-cream/50">
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Title</th>
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Contact</th>
-                      <th className="text-right px-4 py-3 font-medium text-pro-charcoal">Value</th>
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Status</th>
-                      <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Updated</th>
+                    <tr className="border-b border-accent-soft bg-accent-soft/50">
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Title</th>
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Contact</th>
+                      <th className="text-right px-4 py-3 font-medium text-graphite">Value</th>
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Status</th>
+                      <th className="text-left px-4 py-3 font-medium text-graphite">Updated</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {deals.map((d: Deal) => (
-                      <tr key={d.id} className="hover:bg-pro-cream/30 transition-colors">
-                        <td className="px-4 py-3 text-pro-navy font-medium">{d.title}</td>
-                        <td className="px-4 py-3 text-pro-warm-gray text-xs">{d.contact_name ?? '--'}</td>
-                        <td className="px-4 py-3 text-right text-pro-charcoal font-mono text-xs">{formatCurrency(d.value)}</td>
+                      <tr key={d.id} className="hover:bg-accent-soft/30 transition-colors">
+                        <td className="px-4 py-3 text-graphite font-medium">{d.title}</td>
+                        <td className="px-4 py-3 text-graphite/60 text-xs">{d.contact_name ?? '--'}</td>
+                        <td className="px-4 py-3 text-right text-graphite font-mono text-xs">{formatCurrency(d.value)}</td>
                         <td className="px-4 py-3">
                           <DealStatusBadge status={d.status} />
                         </td>
-                        <td className="px-4 py-3 text-pro-warm-gray text-xs">{formatDate(d.updated_at)}</td>
+                        <td className="px-4 py-3 text-graphite/60 text-xs">{formatDate(d.updated_at)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -319,20 +319,20 @@ export default function SalesHub() {
           ) : (
             <div className="space-y-6">
               {pipelines.map((p) => (
-                <div key={p.id} className="bg-white border border-pro-stone rounded-xl p-5 space-y-4">
+                <div key={p.id} className="bg-white border border-accent-soft rounded-xl p-5 space-y-4">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-serif text-pro-navy">{p.name}</h3>
+                    <h3 className="text-lg font-sans text-graphite">{p.name}</h3>
                     {p.is_default && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-pro-cream text-pro-navy">Default</span>
+                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-accent-soft text-graphite">Default</span>
                     )}
                   </div>
-                  {p.description && <p className="text-pro-warm-gray font-sans text-sm">{p.description}</p>}
+                  {p.description && <p className="text-graphite/60 font-sans text-sm">{p.description}</p>}
                   <div className="flex flex-wrap gap-2">
                     {p.stages.map((s, si) => (
-                      <div key={s.id} className="flex items-center gap-2 px-3 py-2 bg-pro-cream/50 rounded-lg">
-                        <span className="text-xs font-mono text-pro-warm-gray">{si + 1}</span>
+                      <div key={s.id} className="flex items-center gap-2 px-3 py-2 bg-accent-soft/50 rounded-lg">
+                        <span className="text-xs font-mono text-graphite/60">{si + 1}</span>
                         {s.color && <span className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />}
-                        <span className="text-sm font-sans text-pro-charcoal">{s.name}</span>
+                        <span className="text-sm font-sans text-graphite">{s.name}</span>
                         {s.is_won && <CheckCircle className="w-3 h-3 text-green-600" />}
                         {s.is_lost && <XCircle className="w-3 h-3 text-red-600" />}
                       </div>
@@ -356,23 +356,23 @@ export default function SalesHub() {
             <div className="space-y-6">
               {/* Rules */}
               <div>
-                <h3 className="text-lg font-serif text-pro-navy mb-3">Commission Rules</h3>
+                <h3 className="text-lg font-sans text-graphite mb-3">Commission Rules</h3>
                 {rules.length === 0 ? (
                   <EmptyState label="No commission rules configured." />
                 ) : (
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {rules.map((r) => (
-                      <div key={r.id} className="bg-white border border-pro-stone rounded-xl p-4">
+                      <div key={r.id} className="bg-white border border-accent-soft rounded-xl p-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-sans font-medium text-pro-navy">{r.name}</span>
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${r.is_active ? 'bg-green-100 text-green-800' : 'bg-pro-stone text-pro-warm-gray'}`}>
+                          <span className="text-sm font-sans font-medium text-graphite">{r.name}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${r.is_active ? 'bg-green-100 text-green-800' : 'bg-accent-soft text-graphite/60'}`}>
                             {r.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </div>
-                        <p className="text-lg font-serif text-pro-navy">
+                        <p className="text-lg font-sans text-graphite">
                           {r.rate_type === 'percentage' ? `${r.rate_value}%` : formatCurrency(r.rate_value)}
                         </p>
-                        <p className="text-xs font-sans text-pro-warm-gray mt-1">{r.applies_to ?? 'All deals'}</p>
+                        <p className="text-xs font-sans text-graphite/60 mt-1">{r.applies_to ?? 'All deals'}</p>
                       </div>
                     ))}
                   </div>
@@ -381,32 +381,32 @@ export default function SalesHub() {
 
               {/* Pending approvals */}
               <div>
-                <h3 className="text-lg font-serif text-pro-navy mb-3">
+                <h3 className="text-lg font-sans text-graphite mb-3">
                   Pending Payout Approvals ({pendingPayouts.length})
                 </h3>
                 {pendingPayouts.length === 0 ? (
                   <EmptyState label="No payouts pending approval." />
                 ) : (
-                  <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+                  <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm font-sans">
                         <thead>
-                          <tr className="border-b border-pro-stone bg-pro-cream/50">
-                            <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Deal</th>
-                            <th className="text-right px-4 py-3 font-medium text-pro-charcoal">Amount</th>
-                            <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Status</th>
-                            <th className="text-left px-4 py-3 font-medium text-pro-charcoal">Created</th>
+                          <tr className="border-b border-accent-soft bg-accent-soft/50">
+                            <th className="text-left px-4 py-3 font-medium text-graphite">Deal</th>
+                            <th className="text-right px-4 py-3 font-medium text-graphite">Amount</th>
+                            <th className="text-left px-4 py-3 font-medium text-graphite">Status</th>
+                            <th className="text-left px-4 py-3 font-medium text-graphite">Created</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-pro-stone/50">
+                        <tbody className="divide-y divide-accent-soft/50">
                           {pendingPayouts.map((p) => (
-                            <tr key={p.id} className="hover:bg-pro-cream/30 transition-colors">
-                              <td className="px-4 py-3 text-pro-navy font-mono text-xs">{p.deal_id.slice(0, 8)}...</td>
-                              <td className="px-4 py-3 text-right text-pro-charcoal font-mono text-xs">{formatCurrency(p.amount)}</td>
+                            <tr key={p.id} className="hover:bg-accent-soft/30 transition-colors">
+                              <td className="px-4 py-3 text-graphite font-mono text-xs">{p.deal_id.slice(0, 8)}...</td>
+                              <td className="px-4 py-3 text-right text-graphite font-mono text-xs">{formatCurrency(p.amount)}</td>
                               <td className="px-4 py-3">
                                 <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">{p.status}</span>
                               </td>
-                              <td className="px-4 py-3 text-pro-warm-gray text-xs">{formatDate(p.created_at)}</td>
+                              <td className="px-4 py-3 text-graphite/60 text-xs">{formatDate(p.created_at)}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -427,14 +427,14 @@ export default function SalesHub() {
 
 function MetricCard({ label, value, icon: Icon }: { label: string; value: string; icon: typeof ShoppingBag }) {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-4">
+    <div className="bg-white border border-accent-soft rounded-xl p-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-pro-warm-gray font-sans">{label}</p>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-pro-cream text-pro-navy">
+        <p className="text-sm font-medium text-graphite/60 font-sans">{label}</p>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent-soft text-graphite">
           <Icon className="w-4 h-4" />
         </div>
       </div>
-      <p className="mt-3 text-3xl font-serif text-pro-navy">{value}</p>
+      <p className="mt-3 text-3xl font-sans text-graphite">{value}</p>
     </div>
   );
 }
@@ -446,7 +446,7 @@ function DealStatusBadge({ status }: { status: string }) {
     lost: 'bg-red-100 text-red-800',
   };
   return (
-    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${colors[status] ?? 'bg-pro-stone text-pro-charcoal'}`}>
+    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${colors[status] ?? 'bg-accent-soft text-graphite'}`}>
       {status}
     </span>
   );
@@ -454,14 +454,14 @@ function DealStatusBadge({ status }: { status: string }) {
 
 function LoadingSkeleton() {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-5 space-y-3">
+    <div className="bg-white border border-accent-soft rounded-xl p-5 space-y-3">
       {[...Array(5)].map((_, i) => (
         <div key={i} className="flex items-center gap-4 animate-pulse">
-          <div className="w-20 h-4 bg-pro-stone rounded flex-shrink-0" />
-          <div className="w-16 h-5 bg-pro-stone rounded-full" />
+          <div className="w-20 h-4 bg-accent-soft rounded flex-shrink-0" />
+          <div className="w-16 h-5 bg-accent-soft rounded-full" />
           <div className="flex-1" />
-          <div className="w-16 h-4 bg-pro-stone rounded" />
-          <div className="w-20 h-4 bg-pro-stone rounded" />
+          <div className="w-16 h-4 bg-accent-soft rounded" />
+          <div className="w-20 h-4 bg-accent-soft rounded" />
         </div>
       ))}
     </div>
@@ -470,19 +470,19 @@ function LoadingSkeleton() {
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-      <ShoppingBag className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-      <p className="text-pro-warm-gray font-sans text-sm">{label}</p>
+    <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+      <ShoppingBag className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+      <p className="text-graphite/60 font-sans text-sm">{label}</p>
     </div>
   );
 }
 
 function PlaceholderCard({ title, message }: { title: string; message: string }) {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-      <ShoppingBag className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-      <h3 className="text-lg font-serif text-pro-navy mb-2">{title}</h3>
-      <p className="text-pro-warm-gray font-sans text-sm max-w-md mx-auto">{message}</p>
+    <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+      <ShoppingBag className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+      <h3 className="text-lg font-sans text-graphite mb-2">{title}</h3>
+      <p className="text-graphite/60 font-sans text-sm max-w-md mx-auto">{message}</p>
       <span className="inline-flex items-center gap-1 mt-4 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
         <AlertCircle className="w-3 h-3" />
         DEMO

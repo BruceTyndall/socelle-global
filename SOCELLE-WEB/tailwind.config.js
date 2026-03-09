@@ -15,6 +15,7 @@ export default {
         },
         // Text system
         graphite:      '#141418',   // primary text on light (Pearl Mineral V2 — #141418 locked)
+        background:    '#F6F3EF',   // page background (Pearl Mineral V2 — alias of mn.bg)
         // Accent system
         accent: {
           DEFAULT:     '#6E879B',   // mineral slate blue

@@ -57,8 +57,8 @@ export default function AdminLogin() {
       </div>
       <div className="bg-slate-800 rounded-xl shadow-2xl p-8 border border-slate-700 w-full max-w-md">
         <div className="flex items-center justify-center mb-6">
-          <div className="w-14 h-14 bg-pro-gold rounded-xl flex items-center justify-center">
-            <Shield className="w-7 h-7 text-pro-navy" />
+          <div className="w-14 h-14 bg-accent rounded-xl flex items-center justify-center">
+            <Shield className="w-7 h-7 text-graphite" />
           </div>
         </div>
 
@@ -87,7 +87,7 @@ export default function AdminLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-pro-gold focus:border-pro-gold"
+              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-accent focus:border-accent"
               placeholder="admin@socelle.com"
             />
           </div>
@@ -102,7 +102,7 @@ export default function AdminLogin() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-pro-gold focus:border-pro-gold"
+              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-accent focus:border-accent"
               placeholder="••••••••"
             />
           </div>
@@ -110,7 +110,7 @@ export default function AdminLogin() {
           <div className="flex items-center justify-end">
             <Link
               to="/forgot-password"
-              className="text-sm text-pro-gold hover:text-pro-gold-light font-medium"
+              className="text-sm text-accent hover:text-accent-light font-medium"
             >
               Forgot Password?
             </Link>
@@ -119,7 +119,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-pro-gold text-pro-navy font-semibold rounded-lg hover:bg-pro-gold-light disabled:bg-pro-stone disabled:cursor-not-allowed transition-colors"
+            className="w-full py-3 bg-accent text-graphite font-semibold rounded-lg hover:bg-accent-light disabled:bg-accent-soft disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Authenticating...' : 'Access Admin Portal'}
           </button>
@@ -131,7 +131,7 @@ export default function AdminLogin() {
           </p>
           <p className="text-xs text-slate-500 text-center">
             Don't have an admin account? First{' '}
-            <Link to="/portal/signup" className="text-pro-gold hover:text-pro-gold-light">
+            <Link to="/portal/signup" className="text-accent hover:text-accent-light">
               create a business account
             </Link>
             , then contact support to upgrade to admin.

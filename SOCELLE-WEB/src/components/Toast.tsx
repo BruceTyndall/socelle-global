@@ -73,10 +73,10 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
     },
     info: {
       icon: Info,
-      bg: 'bg-pro-cream',
-      border: 'border-pro-stone',
-      text: 'text-pro-navy',
-      iconColor: 'text-pro-navy',
+      bg: 'bg-accent-soft',
+      border: 'border-accent-soft',
+      text: 'text-graphite',
+      iconColor: 'text-graphite',
     },
   };
 

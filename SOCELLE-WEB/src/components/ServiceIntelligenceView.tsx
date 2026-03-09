@@ -229,7 +229,7 @@ export default function ServiceIntelligenceView() {
     const styles = {
       'Exact': 'bg-green-100 text-green-700 border-green-200',
       'Partial': 'bg-yellow-100 text-yellow-700 border-yellow-200',
-      'Candidate': 'bg-pro-stone text-pro-charcoal border-pro-stone',
+      'Candidate': 'bg-accent-soft text-graphite border-accent-soft',
       'No Match': 'bg-red-100 text-red-700 border-red-200'
     };
 
@@ -244,7 +244,7 @@ export default function ServiceIntelligenceView() {
     const styles = {
       'High': 'bg-red-100 text-red-700 border-red-200',
       'Medium': 'bg-yellow-100 text-yellow-700 border-yellow-200',
-      'Low': 'bg-pro-stone text-pro-charcoal border-pro-stone'
+      'Low': 'bg-accent-soft text-graphite border-accent-soft'
     };
 
     return (
@@ -283,10 +283,10 @@ export default function ServiceIntelligenceView() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <Brain className="w-8 h-8 text-pro-navy" />
+            <Brain className="w-8 h-8 text-graphite" />
             <div>
-              <h2 className="text-2xl font-semibold text-pro-charcoal">Service Intelligence Engine</h2>
-              <p className="text-sm text-pro-warm-gray">AI-powered service mapping and gap analysis</p>
+              <h2 className="text-2xl font-semibold text-graphite">Service Intelligence Engine</h2>
+              <p className="text-sm text-graphite/60">AI-powered service mapping and gap analysis</p>
             </div>
           </div>
 
@@ -294,7 +294,7 @@ export default function ServiceIntelligenceView() {
             <button
               onClick={runAnalysis}
               disabled={analyzing}
-              className="flex items-center gap-2 px-4 py-2 bg-pro-navy hover:bg-pro-charcoal disabled:bg-pro-warm-gray text-white rounded-lg font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-graphite hover:bg-graphite disabled:bg-graphite/60 text-white rounded-lg font-medium transition-colors"
             >
               {analyzing ? (
                 <>
@@ -318,13 +318,13 @@ export default function ServiceIntelligenceView() {
               onClick={() => setSelectedMenu(menu.id)}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedMenu === menu.id
-                  ? 'bg-pro-navy text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  ? 'bg-graphite text-white'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
             >
               {menu.spa_name}
               <span className={`ml-2 text-xs px-2 py-0.5 rounded ${
-                menu.spa_type === 'medspa' ? 'bg-pro-stone text-pro-navy' :
+                menu.spa_type === 'medspa' ? 'bg-accent-soft text-graphite' :
                 menu.spa_type === 'hybrid' ? 'bg-purple-200 text-purple-800' :
                 'bg-green-200 text-green-800'
               }`}>
@@ -338,9 +338,9 @@ export default function ServiceIntelligenceView() {
       {selectedMenu && currentMenu && (
         <>
           <div className="grid grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-lg border border-pro-stone p-4">
-              <div className="text-2xl font-bold text-pro-charcoal">{mappings.length}</div>
-              <div className="text-sm text-pro-warm-gray">Total Services</div>
+            <div className="bg-white rounded-lg border border-accent-soft p-4">
+              <div className="text-2xl font-bold text-graphite">{mappings.length}</div>
+              <div className="text-sm text-graphite/60">Total Services</div>
             </div>
             <div className="bg-green-50 rounded-lg border border-green-200 p-4">
               <div className="text-2xl font-bold text-green-900">{mappingStats.exact}</div>
@@ -350,21 +350,21 @@ export default function ServiceIntelligenceView() {
               <div className="text-2xl font-bold text-red-900">{gapStats.high}</div>
               <div className="text-sm text-red-700">High Priority Gaps</div>
             </div>
-            <div className="bg-pro-cream rounded-lg border border-pro-stone p-4">
-              <div className="text-2xl font-bold text-pro-navy">{mappingStats.avgConfidence}%</div>
-              <div className="text-sm text-pro-charcoal">Avg Confidence</div>
+            <div className="bg-accent-soft rounded-lg border border-accent-soft p-4">
+              <div className="text-2xl font-bold text-graphite">{mappingStats.avgConfidence}%</div>
+              <div className="text-sm text-graphite">Avg Confidence</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-pro-stone mb-6">
-            <div className="border-b border-pro-stone">
+          <div className="bg-white rounded-lg border border-accent-soft mb-6">
+            <div className="border-b border-accent-soft">
               <div className="flex">
                 <button
                   onClick={() => setActiveTab('mappings')}
                   className={`flex-1 px-6 py-3 font-medium transition-colors ${
                     activeTab === 'mappings'
-                      ? 'border-b-2 border-pro-navy text-pro-navy'
-                      : 'text-pro-warm-gray hover:text-pro-charcoal'
+                      ? 'border-b-2 border-graphite text-graphite'
+                      : 'text-graphite/60 hover:text-graphite'
                   }`}
                 >
                   Service Mappings ({mappings.length})
@@ -373,8 +373,8 @@ export default function ServiceIntelligenceView() {
                   onClick={() => setActiveTab('gaps')}
                   className={`flex-1 px-6 py-3 font-medium transition-colors ${
                     activeTab === 'gaps'
-                      ? 'border-b-2 border-pro-navy text-pro-navy'
-                      : 'text-pro-warm-gray hover:text-pro-charcoal'
+                      ? 'border-b-2 border-graphite text-graphite'
+                      : 'text-graphite/60 hover:text-graphite'
                   }`}
                 >
                   Gap Analysis ({gaps.length})
@@ -390,8 +390,8 @@ export default function ServiceIntelligenceView() {
                       onClick={() => setFilterMatchType('all')}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
                         filterMatchType === 'all'
-                          ? 'bg-pro-navy text-white'
-                          : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                          ? 'bg-graphite text-white'
+                          : 'bg-accent-soft text-graphite hover:bg-accent-soft'
                       }`}
                     >
                       All ({mappings.length})
@@ -434,16 +434,16 @@ export default function ServiceIntelligenceView() {
                         key={mapping.id}
                         className={`border rounded-lg p-4 ${
                           mapping.admin_reviewed
-                            ? 'border-pro-stone bg-pro-ivory'
-                            : 'border-pro-stone bg-pro-cream/30'
+                            ? 'border-accent-soft bg-background'
+                            : 'border-accent-soft bg-accent-soft/30'
                         }`}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <h4 className="font-semibold text-pro-charcoal">{mapping.service_name}</h4>
+                              <h4 className="font-semibold text-graphite">{mapping.service_name}</h4>
                               {getMatchTypeBadge(mapping.match_type)}
-                              <span className="text-sm font-medium text-pro-warm-gray">
+                              <span className="text-sm font-medium text-graphite/60">
                                 {mapping.confidence_score}% confidence
                               </span>
                               {mapping.is_seasonally_relevant && (
@@ -455,14 +455,14 @@ export default function ServiceIntelligenceView() {
                             </div>
 
                             {mapping.protocol_name && (
-                              <div className="flex items-center gap-2 mb-2 text-sm text-pro-charcoal">
+                              <div className="flex items-center gap-2 mb-2 text-sm text-graphite">
                                 <span className="font-medium">{mapping.service_name}</span>
-                                <ArrowRight className="w-4 h-4 text-pro-warm-gray" />
-                                <span className="font-medium text-pro-charcoal">{mapping.protocol_name}</span>
+                                <ArrowRight className="w-4 h-4 text-graphite/60" />
+                                <span className="font-medium text-graphite">{mapping.protocol_name}</span>
                               </div>
                             )}
 
-                            <p className="text-sm text-pro-warm-gray mb-2">{mapping.mapping_notes}</p>
+                            <p className="text-sm text-graphite/60 mb-2">{mapping.mapping_notes}</p>
 
                             {mapping.seasonal_rationale && (
                               <p className="text-xs text-purple-700 italic">{mapping.seasonal_rationale}</p>
@@ -513,7 +513,7 @@ export default function ServiceIntelligenceView() {
                       className={`border rounded-lg p-4 ${
                         gap.priority_level === 'High' ? 'border-red-200 bg-red-50/30' :
                         gap.priority_level === 'Medium' ? 'border-yellow-200 bg-yellow-50/30' :
-                        'border-pro-stone bg-pro-cream/30'
+                        'border-accent-soft bg-accent-soft/30'
                       }`}
                     >
                       <div className="flex items-start justify-between mb-3">
@@ -521,9 +521,9 @@ export default function ServiceIntelligenceView() {
                           <AlertTriangle className={`w-5 h-5 ${
                             gap.priority_level === 'High' ? 'text-red-600' :
                             gap.priority_level === 'Medium' ? 'text-yellow-600' :
-                            'text-pro-navy'
+                            'text-graphite'
                           }`} />
-                          <h4 className="font-semibold text-pro-charcoal">{gap.gap_description}</h4>
+                          <h4 className="font-semibold text-graphite">{gap.gap_description}</h4>
                           {getPriorityBadge(gap.priority_level)}
                           {gap.is_seasonal && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded bg-purple-100 text-purple-700">
@@ -535,32 +535,32 @@ export default function ServiceIntelligenceView() {
                       </div>
 
                       {gap.recommended_protocol_name && (
-                        <div className="mb-3 p-3 bg-white rounded border border-pro-stone">
+                        <div className="mb-3 p-3 bg-white rounded border border-accent-soft">
                           <div className="flex items-center gap-2 mb-1">
-                            <Target className="w-4 h-4 text-pro-navy" />
-                            <span className="text-sm font-medium text-pro-charcoal">Recommended Protocol:</span>
-                            <span className="text-sm font-semibold text-pro-charcoal">{gap.recommended_protocol_name}</span>
+                            <Target className="w-4 h-4 text-graphite" />
+                            <span className="text-sm font-medium text-graphite">Recommended Protocol:</span>
+                            <span className="text-sm font-semibold text-graphite">{gap.recommended_protocol_name}</span>
                           </div>
                         </div>
                       )}
 
-                      <p className="text-sm text-pro-charcoal mb-3">{gap.rationale}</p>
+                      <p className="text-sm text-graphite mb-3">{gap.rationale}</p>
 
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-4 h-4 text-green-600" />
-                          <span className="text-pro-warm-gray">Revenue: </span>
+                          <span className="text-graphite/60">Revenue: </span>
                           <span className="font-medium">{gap.estimated_revenue_impact}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4 text-pro-navy" />
-                          <span className="text-pro-warm-gray">Complexity: </span>
+                          <TrendingUp className="w-4 h-4 text-graphite" />
+                          <span className="text-graphite/60">Complexity: </span>
                           <span className="font-medium">{gap.implementation_complexity}</span>
                         </div>
                       </div>
 
                       {!gap.admin_reviewed && (
-                        <div className="flex gap-2 mt-4 pt-4 border-t border-pro-stone">
+                        <div className="flex gap-2 mt-4 pt-4 border-t border-accent-soft">
                           <button
                             onClick={() => updateGapStatus(gap.id, 'approved')}
                             className="flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-medium transition-colors"
@@ -570,7 +570,7 @@ export default function ServiceIntelligenceView() {
                           </button>
                           <button
                             onClick={() => updateGapStatus(gap.id, 'under_review')}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-pro-navy hover:bg-pro-charcoal text-white rounded text-sm font-medium transition-colors"
+                            className="flex items-center gap-2 px-3 py-1.5 bg-graphite hover:bg-graphite text-white rounded text-sm font-medium transition-colors"
                           >
                             <Edit3 className="w-4 h-4" />
                             Review Later
@@ -589,11 +589,11 @@ export default function ServiceIntelligenceView() {
                       )}
 
                       {gap.admin_reviewed && (
-                        <div className="mt-3 pt-3 border-t border-pro-stone">
+                        <div className="mt-3 pt-3 border-t border-accent-soft">
                           <span className={`text-xs font-medium ${
                             gap.status === 'approved' ? 'text-green-600' :
                             gap.status === 'rejected' ? 'text-red-600' :
-                            'text-pro-navy'
+                            'text-graphite'
                           }`}>
                             Status: {gap.status.toUpperCase()}
                           </span>
@@ -603,7 +603,7 @@ export default function ServiceIntelligenceView() {
                   ))}
 
                   {gaps.length === 0 && (
-                    <div className="text-center py-12 text-pro-warm-gray">
+                    <div className="text-center py-12 text-graphite/60">
                       <CheckCircle className="w-12 h-12 mx-auto mb-3 text-green-500" />
                       <p>No gaps identified. Your service menu is well-balanced!</p>
                     </div>

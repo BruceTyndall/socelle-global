@@ -101,8 +101,8 @@ export default function EditorialHub() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-serif text-pro-navy">
-              Editorial Hub<span className="text-pro-gold">.</span>
+            <h1 className="text-3xl font-sans text-graphite">
+              Editorial Hub<span className="text-accent">.</span>
             </h1>
             {!isLive && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -111,7 +111,7 @@ export default function EditorialHub() {
               </span>
             )}
           </div>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Industry news and RSS feed management
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function EditorialHub() {
           type="button"
           onClick={loadData}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -129,13 +129,13 @@ export default function EditorialHub() {
       {/* Summary */}
       {isLive && !loading && rows.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="bg-white border border-pro-stone rounded-xl p-4">
-            <p className="text-sm font-medium text-pro-warm-gray font-sans">Total Items</p>
-            <p className="mt-2 text-3xl font-serif text-pro-navy">{rows.length}</p>
+          <div className="bg-white border border-accent-soft rounded-xl p-4">
+            <p className="text-sm font-medium text-graphite/60 font-sans">Total Items</p>
+            <p className="mt-2 text-3xl font-sans text-graphite">{rows.length}</p>
           </div>
-          <div className="bg-white border border-pro-stone rounded-xl p-4">
-            <p className="text-sm font-medium text-pro-warm-gray font-sans">New / Unread</p>
-            <p className="mt-2 text-3xl font-serif text-pro-navy">{newCount}</p>
+          <div className="bg-white border border-accent-soft rounded-xl p-4">
+            <p className="text-sm font-medium text-graphite/60 font-sans">New / Unread</p>
+            <p className="mt-2 text-3xl font-sans text-graphite">{newCount}</p>
           </div>
         </div>
       )}
@@ -144,10 +144,10 @@ export default function EditorialHub() {
       {loading ? (
         <LoadingSkeleton />
       ) : !isLive ? (
-        <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-          <Newspaper className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-          <h3 className="text-lg font-serif text-pro-navy mb-2">Editorial Hub</h3>
-          <p className="text-pro-warm-gray font-sans text-sm max-w-md mx-auto">
+        <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+          <Newspaper className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+          <h3 className="text-lg font-sans text-graphite mb-2">Editorial Hub</h3>
+          <p className="text-graphite/60 font-sans text-sm max-w-md mx-auto">
             RSS items table not available in this environment. Connect Supabase and run the ingest-rss function to activate.
           </p>
           <span className="inline-flex items-center gap-1 mt-4 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -156,16 +156,16 @@ export default function EditorialHub() {
           </span>
         </div>
       ) : rows.length === 0 ? (
-        <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-          <Newspaper className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-          <p className="text-pro-warm-gray font-sans text-sm">No RSS items ingested yet. Run the ingest-rss Edge Function to populate.</p>
+        <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+          <Newspaper className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+          <p className="text-graphite/60 font-sans text-sm">No RSS items ingested yet. Run the ingest-rss Edge Function to populate.</p>
         </div>
       ) : (
         <div className="space-y-3">
           {rows.map((item) => {
             const conf = confidenceBadge(item.confidence_score);
             return (
-              <div key={item.id} className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+              <div key={item.id} className="bg-white border border-accent-soft rounded-xl overflow-hidden">
                 <div className="p-5">
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
@@ -179,15 +179,15 @@ export default function EditorialHub() {
                           {conf.label} confidence
                         </span>
                       </div>
-                      <h3 className="text-sm font-medium text-pro-navy font-sans leading-snug mb-1">
+                      <h3 className="text-sm font-medium text-graphite font-sans leading-snug mb-1">
                         {item.title}
                       </h3>
                       {item.description && (
-                        <p className="text-xs text-pro-warm-gray font-sans line-clamp-2 mb-2">
+                        <p className="text-xs text-graphite/60 font-sans line-clamp-2 mb-2">
                           {item.description}
                         </p>
                       )}
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-pro-warm-gray font-sans">
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-graphite/60 font-sans">
                         {item.author && <span>By {item.author}</span>}
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
@@ -204,7 +204,7 @@ export default function EditorialHub() {
                             href={item.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 hover:text-pro-navy transition-colors"
+                            className="flex items-center gap-1 hover:text-graphite transition-colors"
                           >
                             <ExternalLink className="w-3 h-3" />
                             Source
@@ -227,11 +227,11 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-3">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="bg-white border border-pro-stone rounded-xl p-5 animate-pulse">
+        <div key={i} className="bg-white border border-accent-soft rounded-xl p-5 animate-pulse">
           <div className="space-y-2">
-            <div className="h-4 bg-pro-stone rounded w-2/3" />
-            <div className="h-3 bg-pro-stone rounded w-full" />
-            <div className="h-3 bg-pro-stone rounded w-1/3" />
+            <div className="h-4 bg-accent-soft rounded w-2/3" />
+            <div className="h-3 bg-accent-soft rounded w-full" />
+            <div className="h-3 bg-accent-soft rounded w-1/3" />
           </div>
         </div>
       ))}

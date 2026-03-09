@@ -157,8 +157,8 @@ export default function AdminIngredientCollections() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-sans font-semibold text-pro-charcoal">Ingredient Collections</h1>
-          <p className="text-pro-warm-gray font-sans text-sm mt-0.5">
+          <h1 className="text-2xl font-sans font-semibold text-graphite">Ingredient Collections</h1>
+          <p className="text-graphite/60 font-sans text-sm mt-0.5">
             {collections.length} collections
             {isLive ? (
               <span className="ml-2 text-[10px] font-semibold bg-signal-up/10 text-signal-up px-2 py-0.5 rounded-pill">LIVE</span>
@@ -169,49 +169,49 @@ export default function AdminIngredientCollections() {
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-pro-navy text-white text-sm font-sans font-medium rounded-lg hover:bg-pro-navy-dark transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-graphite text-white text-sm font-sans font-medium rounded-lg hover:bg-graphite-dark transition-colors"
         >
           <Plus className="w-4 h-4" />
           New Collection
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm font-sans">
             <thead>
-              <tr className="bg-pro-cream/50 border-b border-pro-stone">
-                <th className="text-left py-3 px-4 text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Name</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Type</th>
-                <th className="text-center py-3 px-4 text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Items</th>
-                <th className="text-center py-3 px-4 text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Featured</th>
-                <th className="text-right py-3 px-4 text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Actions</th>
+              <tr className="bg-accent-soft/50 border-b border-accent-soft">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-graphite/60 uppercase tracking-wider">Name</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-graphite/60 uppercase tracking-wider">Type</th>
+                <th className="text-center py-3 px-4 text-xs font-semibold text-graphite/60 uppercase tracking-wider">Items</th>
+                <th className="text-center py-3 px-4 text-xs font-semibold text-graphite/60 uppercase tracking-wider">Featured</th>
+                <th className="text-right py-3 px-4 text-xs font-semibold text-graphite/60 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 Array.from({ length: 4 }).map((_, i) => (
-                  <tr key={i} className="border-b border-pro-stone/50">
-                    <td className="py-3 px-4"><div className="h-4 w-32 bg-pro-cream rounded animate-pulse" /></td>
-                    <td className="py-3 px-4"><div className="h-4 w-20 bg-pro-cream rounded animate-pulse" /></td>
-                    <td className="py-3 px-4"><div className="h-4 w-8 bg-pro-cream rounded animate-pulse mx-auto" /></td>
-                    <td className="py-3 px-4"><div className="h-4 w-8 bg-pro-cream rounded animate-pulse mx-auto" /></td>
+                  <tr key={i} className="border-b border-accent-soft/50">
+                    <td className="py-3 px-4"><div className="h-4 w-32 bg-accent-soft rounded animate-pulse" /></td>
+                    <td className="py-3 px-4"><div className="h-4 w-20 bg-accent-soft rounded animate-pulse" /></td>
+                    <td className="py-3 px-4"><div className="h-4 w-8 bg-accent-soft rounded animate-pulse mx-auto" /></td>
+                    <td className="py-3 px-4"><div className="h-4 w-8 bg-accent-soft rounded animate-pulse mx-auto" /></td>
                     <td className="py-3 px-4" />
                   </tr>
                 ))
               ) : collections.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-pro-warm-gray">
+                  <td colSpan={5} className="py-12 text-center text-graphite/60">
                     <Layers className="w-8 h-8 mx-auto mb-2 opacity-40" />
                     <p>No collections created yet</p>
                   </td>
                 </tr>
               ) : (
                 collections.map((col) => (
-                  <tr key={col.id} className="border-b border-pro-stone/50 hover:bg-pro-cream/30 transition-colors">
+                  <tr key={col.id} className="border-b border-accent-soft/50 hover:bg-accent-soft/30 transition-colors">
                     <td className="py-3 px-4">
-                      <p className="font-medium text-pro-charcoal">{col.name}</p>
-                      <p className="text-xs text-pro-warm-gray/60">{col.slug}</p>
+                      <p className="font-medium text-graphite">{col.name}</p>
+                      <p className="text-xs text-graphite/60/60">{col.slug}</p>
                     </td>
                     <td className="py-3 px-4">
                       {col.collection_type ? (
@@ -220,18 +220,18 @@ export default function AdminIngredientCollections() {
                         </span>
                       ) : '—'}
                     </td>
-                    <td className="py-3 px-4 text-center text-pro-warm-gray">{col.item_count}</td>
+                    <td className="py-3 px-4 text-center text-graphite/60">{col.item_count}</td>
                     <td className="py-3 px-4 text-center">
                       <button onClick={() => toggleFeatured(col.id, col.is_featured)}>
-                        <Star className={`w-4 h-4 mx-auto ${col.is_featured ? 'text-signal-warn fill-signal-warn' : 'text-pro-warm-gray/30'}`} />
+                        <Star className={`w-4 h-4 mx-auto ${col.is_featured ? 'text-signal-warn fill-signal-warn' : 'text-graphite/60/30'}`} />
                       </button>
                     </td>
                     <td className="py-3 px-4 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openEdit(col)} className="p-1.5 rounded-lg hover:bg-pro-cream text-pro-warm-gray hover:text-pro-charcoal" title="Edit">
+                        <button onClick={() => openEdit(col)} className="p-1.5 rounded-lg hover:bg-accent-soft text-graphite/60 hover:text-graphite" title="Edit">
                           <Pencil className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(col.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-pro-warm-gray hover:text-red-600" title="Delete">
+                        <button onClick={() => handleDelete(col.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-graphite/60 hover:text-red-600" title="Delete">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -246,28 +246,28 @@ export default function AdminIngredientCollections() {
 
       {/* Create/Edit Modal */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-pro-charcoal/40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-graphite/40">
           <div className="bg-white rounded-2xl shadow-modal w-full max-w-lg m-4">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-pro-stone">
-              <h2 className="font-sans font-semibold text-lg text-pro-charcoal">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-accent-soft">
+              <h2 className="font-sans font-semibold text-lg text-graphite">
                 {editId ? 'Edit Collection' : 'New Collection'}
               </h2>
-              <button onClick={() => setShowForm(false)} className="p-1.5 rounded-lg hover:bg-pro-cream text-pro-warm-gray">
+              <button onClick={() => setShowForm(false)} className="p-1.5 rounded-lg hover:bg-accent-soft text-graphite/60">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="px-6 py-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-pro-warm-gray mb-1">Name *</label>
-                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20" />
+                <label className="block text-xs font-semibold text-graphite/60 mb-1">Name *</label>
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-pro-warm-gray mb-1">Slug *</label>
-                <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20" placeholder="actives" />
+                <label className="block text-xs font-semibold text-graphite/60 mb-1">Slug *</label>
+                <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20" placeholder="actives" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-pro-warm-gray mb-1">Type</label>
-                <select value={form.collection_type} onChange={(e) => setForm({ ...form, collection_type: e.target.value })} className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20">
+                <label className="block text-xs font-semibold text-graphite/60 mb-1">Type</label>
+                <select value={form.collection_type} onChange={(e) => setForm({ ...form, collection_type: e.target.value })} className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20">
                   <option value="">—</option>
                   {COLLECTION_TYPES.map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -275,20 +275,20 @@ export default function AdminIngredientCollections() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-pro-warm-gray mb-1">Description</label>
-                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-pro-navy/20" />
+                <label className="block text-xs font-semibold text-graphite/60 mb-1">Description</label>
+                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-graphite/20" />
               </div>
-              <label className="inline-flex items-center gap-2 text-sm font-sans text-pro-charcoal">
-                <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="rounded border-pro-stone" />
+              <label className="inline-flex items-center gap-2 text-sm font-sans text-graphite">
+                <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="rounded border-accent-soft" />
                 Featured collection
               </label>
             </div>
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-pro-stone">
-              <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-sans text-pro-warm-gray hover:text-pro-charcoal">Cancel</button>
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-accent-soft">
+              <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-sans text-graphite/60 hover:text-graphite">Cancel</button>
               <button
                 onClick={handleSave}
                 disabled={saving || !form.name.trim() || !form.slug.trim()}
-                className="px-4 py-2 bg-pro-navy text-white text-sm font-sans font-medium rounded-lg hover:bg-pro-navy-dark transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-graphite text-white text-sm font-sans font-medium rounded-lg hover:bg-graphite-dark transition-colors disabled:opacity-50"
               >
                 {saving ? 'Saving...' : editId ? 'Update' : 'Create'}
               </button>

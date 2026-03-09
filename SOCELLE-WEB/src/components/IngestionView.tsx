@@ -200,13 +200,13 @@ export default function IngestionView() {
       case 'Failed':
         return <XCircle className="w-4 h-4 text-red-600" />;
       case 'Pending':
-        return <Clock className="w-4 h-4 text-pro-navy" />;
+        return <Clock className="w-4 h-4 text-graphite" />;
       case 'Approved':
-        return <CheckCircle className="w-4 h-4 text-pro-navy" />;
+        return <CheckCircle className="w-4 h-4 text-graphite" />;
       case 'Secondary':
-        return <AlertCircle className="w-4 h-4 text-pro-warm-gray" />;
+        return <AlertCircle className="w-4 h-4 text-graphite/60" />;
       case 'Ignored':
-        return <XCircle className="w-4 h-4 text-pro-warm-gray" />;
+        return <XCircle className="w-4 h-4 text-graphite/60" />;
       case 'Unknown':
         return <AlertCircle className="w-4 h-4 text-yellow-600" />;
     }
@@ -219,13 +219,13 @@ export default function IngestionView() {
       case 'Failed':
         return 'bg-red-50 text-red-700 border-red-200';
       case 'Pending':
-        return 'bg-pro-cream text-pro-charcoal border-pro-stone';
+        return 'bg-accent-soft text-graphite border-accent-soft';
       case 'Approved':
-        return 'bg-pro-cream text-pro-charcoal border-pro-stone';
+        return 'bg-accent-soft text-graphite border-accent-soft';
       case 'Secondary':
-        return 'bg-pro-ivory text-pro-warm-gray border-pro-stone';
+        return 'bg-background text-graphite/60 border-accent-soft';
       case 'Ignored':
-        return 'bg-pro-ivory text-pro-warm-gray border-pro-stone';
+        return 'bg-background text-graphite/60 border-accent-soft';
       case 'Unknown':
         return 'bg-yellow-50 text-yellow-700 border-yellow-200';
     }
@@ -238,18 +238,18 @@ export default function IngestionView() {
       case 'Failed':
         return <XCircle className="w-5 h-5 text-red-600" />;
       case 'In Progress':
-        return <Loader2 className="w-5 h-5 text-pro-navy animate-spin" />;
+        return <Loader2 className="w-5 h-5 text-graphite animate-spin" />;
       case 'Ready':
-        return <Play className="w-5 h-5 text-pro-navy" />;
+        return <Play className="w-5 h-5 text-graphite" />;
       case 'Locked':
-        return <Lock className="w-5 h-5 text-pro-warm-gray" />;
+        return <Lock className="w-5 h-5 text-graphite/60" />;
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-pro-navy" />
+        <Loader2 className="w-8 h-8 animate-spin text-graphite" />
       </div>
     );
   }
@@ -257,29 +257,29 @@ export default function IngestionView() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-pro-charcoal">Document Ingestion Control Panel</h1>
-        <p className="mt-2 text-pro-warm-gray">
+        <h1 className="text-3xl font-bold text-graphite">Document Ingestion Control Panel</h1>
+        <p className="mt-2 text-graphite/60">
           Manage PDF ingestion with full control over phasing, validation, and data integrity
         </p>
       </div>
 
       {batchProgress && (
-        <div className="p-4 rounded-lg border bg-pro-cream border-pro-stone">
+        <div className="p-4 rounded-lg border bg-accent-soft border-accent-soft">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-pro-navy">
+            <span className="text-sm font-medium text-graphite">
               Processing {batchProgress.current} of {batchProgress.total}
             </span>
-            <span className="text-xs text-pro-charcoal">
+            <span className="text-xs text-graphite">
               {Math.round((batchProgress.current / batchProgress.total) * 100)}%
             </span>
           </div>
-          <div className="w-full bg-pro-stone rounded-full h-2 mb-2">
+          <div className="w-full bg-accent-soft rounded-full h-2 mb-2">
             <div
-              className="bg-pro-navy h-2 rounded-full transition-all"
+              className="bg-graphite h-2 rounded-full transition-all"
               style={{ width: `${(batchProgress.current / batchProgress.total) * 100}%` }}
             />
           </div>
-          <div className="text-xs text-pro-charcoal truncate">
+          <div className="text-xs text-graphite truncate">
             Current: {batchProgress.fileName}
           </div>
         </div>
@@ -289,7 +289,7 @@ export default function IngestionView() {
         <div className={`p-4 rounded-lg border ${
           message.type === 'success' ? 'bg-green-50 border-green-200 text-green-800' :
           message.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' :
-          'bg-pro-cream border-pro-stone text-pro-navy'
+          'bg-accent-soft border-accent-soft text-graphite'
         }`}>
           {message.text}
         </div>
@@ -299,7 +299,7 @@ export default function IngestionView() {
         <Phase2IngestionPanel onComplete={handlePhase2Complete} />
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-pro-stone p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-accent-soft p-6">
         <h2 className="text-xl font-semibold mb-4">Ingestion Phases</h2>
         <div className="space-y-3">
           {phases.map(phase => {
@@ -310,45 +310,45 @@ export default function IngestionView() {
             return (
               <div
                 key={phase.phase}
-                className="border border-pro-stone rounded-lg p-4 hover:border-pro-stone transition-colors"
+                className="border border-accent-soft rounded-lg p-4 hover:border-accent-soft transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       {getPhaseStatusIcon(phase.status)}
                       <div>
-                        <h3 className="font-semibold text-pro-charcoal">
+                        <h3 className="font-semibold text-graphite">
                           Phase {phase.phase}: {phase.name}
                         </h3>
-                        <p className="text-sm text-pro-warm-gray">{phase.description}</p>
+                        <p className="text-sm text-graphite/60">{phase.description}</p>
                       </div>
                     </div>
 
                     <div className="mt-3 space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-pro-warm-gray">Progress</span>
-                        <span className="font-medium text-pro-charcoal">
+                        <span className="text-graphite/60">Progress</span>
+                        <span className="font-medium text-graphite">
                           {completedCount} / {filesInPhase.length} files
                         </span>
                       </div>
-                      <div className="w-full bg-pro-stone rounded-full h-2">
+                      <div className="w-full bg-accent-soft rounded-full h-2">
                         <div
-                          className="bg-pro-navy h-2 rounded-full transition-all"
+                          className="bg-graphite h-2 rounded-full transition-all"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-pro-warm-gray">
+                      <div className="flex items-center gap-2 text-xs text-graphite/60">
                         <span>Target tables:</span>
                         {phase.targetTables.map(table => (
-                          <span key={table} className="px-2 py-1 bg-pro-stone rounded">
+                          <span key={table} className="px-2 py-1 bg-accent-soft rounded">
                             {table}
                           </span>
                         ))}
                       </div>
 
                       {phase.dependencies.length > 0 && (
-                        <div className="text-xs text-pro-warm-gray">
+                        <div className="text-xs text-graphite/60">
                           Dependencies: Phase {phase.dependencies.join(', Phase ')}
                         </div>
                       )}
@@ -358,7 +358,7 @@ export default function IngestionView() {
                   <div className="flex flex-col gap-2 ml-4">
                     <button
                       onClick={() => setSelectedPhase(selectedPhase === phase.phase ? null : phase.phase)}
-                      className="px-3 py-1.5 text-sm bg-pro-stone hover:bg-pro-stone text-pro-charcoal rounded transition-colors"
+                      className="px-3 py-1.5 text-sm bg-accent-soft hover:bg-accent-soft text-graphite rounded transition-colors"
                     >
                       {selectedPhase === phase.phase ? 'Show All' : 'Filter Files'}
                     </button>
@@ -387,7 +387,7 @@ export default function IngestionView() {
                       <button
                         onClick={() => handleIngestPhase(phase.phase)}
                         disabled={processingPhase === phase.phase || batchProcessing}
-                        className="px-3 py-1.5 text-sm bg-pro-navy hover:bg-pro-charcoal text-white rounded transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                        className="px-3 py-1.5 text-sm bg-graphite hover:bg-graphite text-white rounded transition-colors disabled:opacity-50 flex items-center gap-1.5"
                       >
                         {processingPhase === phase.phase ? (
                           <>
@@ -419,18 +419,18 @@ export default function IngestionView() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-pro-stone">
-        <div className="p-6 border-b border-pro-stone">
+      <div className="bg-white rounded-xl shadow-sm border border-accent-soft">
+        <div className="p-6 border-b border-accent-soft">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">
               File Dashboard
               {selectedPhase !== null && (
-                <span className="ml-2 text-sm font-normal text-pro-warm-gray">
+                <span className="ml-2 text-sm font-normal text-graphite/60">
                   (Showing Phase {selectedPhase} only)
                 </span>
               )}
             </h2>
-            <div className="flex items-center gap-2 text-sm text-pro-warm-gray">
+            <div className="flex items-center gap-2 text-sm text-graphite/60">
               <span>{filteredFiles.length} files</span>
             </div>
           </div>
@@ -438,46 +438,46 @@ export default function IngestionView() {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-pro-ivory border-b border-pro-stone">
+            <thead className="bg-background border-b border-accent-soft">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   File Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Phase
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Confidence
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-pro-warm-gray uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-graphite/60 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-pro-stone">
+            <tbody className="bg-white divide-y divide-accent-soft">
               {filteredFiles.map(file => (
-                <tr key={file.fileName} className="hover:bg-pro-ivory">
+                <tr key={file.fileName} className="hover:bg-background">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-pro-warm-gray" />
-                      <span className="text-sm text-pro-charcoal font-medium truncate max-w-md">
+                      <FileText className="w-4 h-4 text-graphite/60" />
+                      <span className="text-sm text-graphite font-medium truncate max-w-md">
                         {file.fileName}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-pro-warm-gray">
+                    <span className="text-sm text-graphite/60">
                       Phase {file.phase}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-pro-warm-gray">
+                    <span className="text-sm text-graphite/60">
                       {file.ingestionType}
                     </span>
                   </td>
@@ -489,18 +489,18 @@ export default function IngestionView() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-16 bg-pro-stone rounded-full h-1.5">
+                      <div className="w-16 bg-accent-soft rounded-full h-1.5">
                         <div
                           className={`h-1.5 rounded-full ${
                             file.confidence >= 90 ? 'bg-green-600' :
-                            file.confidence >= 70 ? 'bg-pro-navy' :
+                            file.confidence >= 70 ? 'bg-graphite' :
                             file.confidence >= 50 ? 'bg-yellow-600' :
                             'bg-red-600'
                           }`}
                           style={{ width: `${file.confidence}%` }}
                         />
                       </div>
-                      <span className="text-xs text-pro-warm-gray">{file.confidence}%</span>
+                      <span className="text-xs text-graphite/60">{file.confidence}%</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -508,29 +508,29 @@ export default function IngestionView() {
                       <button
                         onClick={() => handleReadabilityCheck(file.fileName)}
                         disabled={processingFile === file.fileName}
-                        className="p-1.5 hover:bg-pro-stone rounded transition-colors disabled:opacity-50"
+                        className="p-1.5 hover:bg-accent-soft rounded transition-colors disabled:opacity-50"
                         title="Readability Check"
                       >
                         {processingFile === file.fileName ? (
-                          <Loader2 className="w-4 h-4 animate-spin text-pro-warm-gray" />
+                          <Loader2 className="w-4 h-4 animate-spin text-graphite/60" />
                         ) : (
-                          <FileSearch className="w-4 h-4 text-pro-warm-gray" />
+                          <FileSearch className="w-4 h-4 text-graphite/60" />
                         )}
                       </button>
                       <a
                         href={`/public/${file.fileName}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 hover:bg-pro-stone rounded transition-colors"
+                        className="p-1.5 hover:bg-accent-soft rounded transition-colors"
                         title="View PDF"
                       >
-                        <Eye className="w-4 h-4 text-pro-warm-gray" />
+                        <Eye className="w-4 h-4 text-graphite/60" />
                       </a>
 
                       {file.status === 'Pending' && file.isPrimary && (
                         <button
                           onClick={() => handleUpdateStatus(file.fileName, 'Approved')}
-                          className="px-2 py-1 text-xs bg-pro-stone hover:bg-pro-charcoal text-pro-charcoal rounded transition-colors"
+                          className="px-2 py-1 text-xs bg-accent-soft hover:bg-graphite text-graphite rounded transition-colors"
                         >
                           Approve
                         </button>
@@ -539,7 +539,7 @@ export default function IngestionView() {
                       {file.status !== 'Ingested' && file.status !== 'Ignored' && (
                         <button
                           onClick={() => handleUpdateStatus(file.fileName, 'Ignored')}
-                          className="px-2 py-1 text-xs bg-pro-stone hover:bg-pro-stone text-pro-charcoal rounded transition-colors"
+                          className="px-2 py-1 text-xs bg-accent-soft hover:bg-accent-soft text-graphite rounded transition-colors"
                         >
                           Ignore
                         </button>
@@ -553,9 +553,9 @@ export default function IngestionView() {
         </div>
       </div>
 
-      <div className="bg-pro-cream border border-pro-stone rounded-lg p-4">
-        <h3 className="font-semibold text-pro-navy mb-2">Safety Rules Enforced</h3>
-        <ul className="text-sm text-pro-navy space-y-1">
+      <div className="bg-accent-soft border border-accent-soft rounded-lg p-4">
+        <h3 className="font-semibold text-graphite mb-2">Safety Rules Enforced</h3>
+        <ul className="text-sm text-graphite space-y-1">
           <li>• No fuzzy matching - protocol names must come from document headers</li>
           <li>• Product names must match existing database records exactly</li>
           <li>• Mixing rules and costs are never inferred or estimated</li>

@@ -32,13 +32,13 @@ function MetricCard({
   sub?: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-pro-stone p-5 shadow-sm">
+    <div className="bg-white rounded-xl border border-accent-soft p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-pro-warm-gray" />
-        <span className="text-xs font-sans text-pro-warm-gray uppercase tracking-wider">{label}</span>
+        <Icon className="w-4 h-4 text-graphite/60" />
+        <span className="text-xs font-sans text-graphite/60 uppercase tracking-wider">{label}</span>
       </div>
-      <p className="text-2xl font-serif font-bold text-pro-charcoal">{value}</p>
-      {sub && <p className="text-xs text-pro-warm-gray font-sans mt-1">{sub}</p>}
+      <p className="text-2xl font-sans font-bold text-graphite">{value}</p>
+      {sub && <p className="text-xs text-graphite/60 font-sans mt-1">{sub}</p>}
     </div>
   );
 }
@@ -48,10 +48,10 @@ function SimpleBar({ label, value, max, color }: { label: string; value: number;
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs font-sans">
-        <span className="text-pro-charcoal font-medium">{label}</span>
-        <span className="text-pro-warm-gray">{value.toLocaleString()}</span>
+        <span className="text-graphite font-medium">{label}</span>
+        <span className="text-graphite/60">{value.toLocaleString()}</span>
       </div>
-      <div className="w-full h-2.5 bg-pro-cream rounded-full overflow-hidden">
+      <div className="w-full h-2.5 bg-accent-soft rounded-full overflow-hidden">
         <div className={`h-full rounded-full transition-all duration-700 ${color}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -135,28 +135,28 @@ export default function MarketingAnalytics() {
         <div>
           <Link
             to="/portal/marketing"
-            className="inline-flex items-center gap-1.5 text-sm font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm font-sans text-graphite/60 hover:text-graphite transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Marketing
           </Link>
 
           <div className="flex items-center gap-3">
-            <h1 className="font-serif text-3xl text-pro-charcoal">Marketing Analytics</h1>
+            <h1 className="font-sans text-3xl text-graphite">Marketing Analytics</h1>
             {!isLive && (
               <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">
                 DEMO
               </span>
             )}
           </div>
-          <p className="text-sm text-pro-warm-gray font-sans mt-1">
+          <p className="text-sm text-graphite/60 font-sans mt-1">
             Campaign performance and audience engagement metrics
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-6 h-6 text-pro-warm-gray animate-spin" />
+            <Loader2 className="w-6 h-6 text-graphite/60 animate-spin" />
           </div>
         ) : (
           <>
@@ -186,9 +186,9 @@ export default function MarketingAnalytics() {
             </div>
 
             {/* ── Performance Over Time ────────────────────────── */}
-            <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
-              <h2 className="font-serif text-xl text-pro-charcoal mb-1">Performance Over Time</h2>
-              <p className="text-xs text-pro-warm-gray font-sans mb-4">Open rate and click rate trends</p>
+            <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
+              <h2 className="font-sans text-xl text-graphite mb-1">Performance Over Time</h2>
+              <p className="text-xs text-graphite/60 font-sans mb-4">Open rate and click rate trends</p>
 
               {sparkline ? (
                 <>
@@ -197,12 +197,12 @@ export default function MarketingAnalytics() {
                     className="w-full h-40"
                     preserveAspectRatio="none"
                   >
-                    <path d={sparkline.openPath} fill="none" stroke="currentColor" strokeWidth="2" className="text-pro-navy" />
+                    <path d={sparkline.openPath} fill="none" stroke="currentColor" strokeWidth="2" className="text-graphite" />
                     <path d={sparkline.clickPath} fill="none" stroke="currentColor" strokeWidth="2" className="text-intel-accent" strokeDasharray="4 2" />
                   </svg>
-                  <div className="flex items-center gap-6 mt-3 text-xs font-sans text-pro-warm-gray">
+                  <div className="flex items-center gap-6 mt-3 text-xs font-sans text-graphite/60">
                     <span className="flex items-center gap-1.5">
-                      <span className="w-4 h-0.5 bg-pro-navy rounded" /> Open Rate
+                      <span className="w-4 h-0.5 bg-graphite rounded" /> Open Rate
                     </span>
                     <span className="flex items-center gap-1.5">
                       <span className="w-4 h-0.5 bg-intel-accent rounded border-dashed" /> Click Rate
@@ -210,8 +210,8 @@ export default function MarketingAnalytics() {
                   </div>
                 </>
               ) : (
-                <div className="flex items-center justify-center h-40 bg-pro-cream/50 rounded-lg border border-dashed border-pro-stone">
-                  <p className="text-sm text-pro-warm-gray font-sans">
+                <div className="flex items-center justify-center h-40 bg-accent-soft/50 rounded-lg border border-dashed border-accent-soft">
+                  <p className="text-sm text-graphite/60 font-sans">
                     Performance data will appear once campaigns have metrics
                   </p>
                 </div>
@@ -221,10 +221,10 @@ export default function MarketingAnalytics() {
             {/* ── Two Column: Type Breakdown + Funnel ──────────── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Campaign Type Breakdown */}
-              <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
-                <h2 className="font-serif text-xl text-pro-charcoal mb-4">Campaigns by Type</h2>
+              <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
+                <h2 className="font-sans text-xl text-graphite mb-4">Campaigns by Type</h2>
                 {typeBreakdown.length === 0 ? (
-                  <p className="text-sm text-pro-warm-gray font-sans">No campaigns yet</p>
+                  <p className="text-sm text-graphite/60 font-sans">No campaigns yet</p>
                 ) : (
                   <div className="space-y-4">
                     {typeBreakdown.map((t) => (
@@ -233,7 +233,7 @@ export default function MarketingAnalytics() {
                         label={t.type.charAt(0).toUpperCase() + t.type.slice(1)}
                         value={t.count}
                         max={maxTypeCount}
-                        color="bg-pro-navy"
+                        color="bg-graphite"
                       />
                     ))}
                   </div>
@@ -241,21 +241,21 @@ export default function MarketingAnalytics() {
               </div>
 
               {/* Conversion Funnel */}
-              <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm">
-                <h2 className="font-serif text-xl text-pro-charcoal mb-4">Conversion Funnel</h2>
+              <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm">
+                <h2 className="font-sans text-xl text-graphite mb-4">Conversion Funnel</h2>
                 {funnel ? (
                   <div className="space-y-4">
                     {funnel.map((step, idx) => (
                       <div key={step.label}>
                         <div className="flex items-center justify-between text-xs font-sans mb-1">
-                          <span className="text-pro-charcoal font-medium">{step.label}</span>
-                          <span className="text-pro-warm-gray">
+                          <span className="text-graphite font-medium">{step.label}</span>
+                          <span className="text-graphite/60">
                             {step.value.toLocaleString()} ({step.pct.toFixed(1)}%)
                           </span>
                         </div>
-                        <div className="w-full h-8 bg-pro-cream rounded-lg overflow-hidden flex items-center">
+                        <div className="w-full h-8 bg-accent-soft rounded-lg overflow-hidden flex items-center">
                           <div
-                            className="h-full bg-pro-navy/80 rounded-lg transition-all duration-700 flex items-center justify-center"
+                            className="h-full bg-graphite/80 rounded-lg transition-all duration-700 flex items-center justify-center"
                             style={{ width: `${Math.max(step.pct, 2)}%` }}
                           >
                             {step.pct > 15 && (
@@ -269,8 +269,8 @@ export default function MarketingAnalytics() {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-40 bg-pro-cream/50 rounded-lg border border-dashed border-pro-stone">
-                    <p className="text-sm text-pro-warm-gray font-sans">
+                  <div className="flex items-center justify-center h-40 bg-accent-soft/50 rounded-lg border border-dashed border-accent-soft">
+                    <p className="text-sm text-graphite/60 font-sans">
                       Funnel data will appear once campaigns have metrics
                     </p>
                   </div>
@@ -279,37 +279,37 @@ export default function MarketingAnalytics() {
             </div>
 
             {/* ── Top Performing Content ───────────────────────── */}
-            <div className="bg-white rounded-xl border border-pro-stone shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-pro-stone">
-                <h2 className="font-serif text-xl text-pro-charcoal">Top Performing Campaigns</h2>
+            <div className="bg-white rounded-xl border border-accent-soft shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-accent-soft">
+                <h2 className="font-sans text-xl text-graphite">Top Performing Campaigns</h2>
               </div>
               {topCampaigns.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-sm text-pro-warm-gray font-sans">No completed campaigns yet</p>
+                  <p className="text-sm text-graphite/60 font-sans">No completed campaigns yet</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm font-sans">
                     <thead>
-                      <tr className="bg-pro-cream/50 text-pro-warm-gray text-left">
+                      <tr className="bg-accent-soft/50 text-graphite/60 text-left">
                         <th className="px-6 py-3 font-medium">Campaign</th>
                         <th className="px-6 py-3 font-medium">Type</th>
                         <th className="px-6 py-3 font-medium">Status</th>
                         <th className="px-6 py-3 font-medium text-right" />
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-pro-stone/50">
+                    <tbody className="divide-y divide-accent-soft/50">
                       {topCampaigns.map((c) => (
-                        <tr key={c.id} className="hover:bg-pro-cream/30 transition-colors">
-                          <td className="px-6 py-4 font-medium text-pro-charcoal">{c.name}</td>
+                        <tr key={c.id} className="hover:bg-accent-soft/30 transition-colors">
+                          <td className="px-6 py-4 font-medium text-graphite">{c.name}</td>
                           <td className="px-6 py-4">
-                            <span className="text-xs font-medium text-pro-warm-gray bg-pro-cream px-2 py-0.5 rounded">
+                            <span className="text-xs font-medium text-graphite/60 bg-accent-soft px-2 py-0.5 rounded">
                               {c.type.toUpperCase()}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              c.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-pro-cream text-pro-warm-gray'
+                              c.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-accent-soft text-graphite/60'
                             }`}>
                               {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
                             </span>
@@ -317,7 +317,7 @@ export default function MarketingAnalytics() {
                           <td className="px-6 py-4 text-right">
                             <Link
                               to={`/portal/marketing/campaigns/${c.id}`}
-                              className="inline-flex items-center gap-1 text-xs font-medium text-pro-navy hover:text-pro-navy/80 transition-colors"
+                              className="inline-flex items-center gap-1 text-xs font-medium text-graphite hover:text-graphite/80 transition-colors"
                             >
                               View <ArrowRight className="w-3 h-3" />
                             </Link>

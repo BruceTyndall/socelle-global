@@ -118,8 +118,8 @@ export default function AdminShopHub() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-sans font-semibold text-pro-charcoal">Shop Management</h1>
-            <p className="text-sm font-sans text-pro-warm-gray mt-1">
+            <h1 className="text-2xl font-sans font-semibold text-graphite">Shop Management</h1>
+            <p className="text-sm font-sans text-graphite/60 mt-1">
               Products, categories, orders, inventory, discounts, and reviews.
             </p>
           </div>
@@ -133,14 +133,14 @@ export default function AdminShopHub() {
             { label: 'Orders', value: adminOrders.length, icon: ShoppingBag },
             { label: 'Low Stock', value: lowStockProducts.length, icon: BarChart3 },
           ].map(s => (
-            <div key={s.label} className="bg-white rounded-xl p-4 border border-pro-border">
+            <div key={s.label} className="bg-white rounded-xl p-4 border border-accent-soft">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-pro-cream rounded-lg flex items-center justify-center">
-                  <s.icon className="w-4 h-4 text-pro-navy" />
+                <div className="w-9 h-9 bg-accent-soft rounded-lg flex items-center justify-center">
+                  <s.icon className="w-4 h-4 text-graphite" />
                 </div>
                 <div>
-                  <p className="text-xs font-sans text-pro-warm-gray">{s.label}</p>
-                  <p className="text-lg font-sans font-semibold text-pro-charcoal">{s.value}</p>
+                  <p className="text-xs font-sans text-graphite/60">{s.label}</p>
+                  <p className="text-lg font-sans font-semibold text-graphite">{s.value}</p>
                 </div>
               </div>
             </div>
@@ -148,14 +148,14 @@ export default function AdminShopHub() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-pro-cream/50 rounded-lg p-1 overflow-x-auto">
+        <div className="flex gap-1 bg-accent-soft/50 rounded-lg p-1 overflow-x-auto">
           {TABS.map(t => {
             const Icon = t.icon;
             return (
               <button
                 key={t.key}
                 onClick={() => setActiveTab(t.key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-sans font-medium transition-colors whitespace-nowrap ${activeTab === t.key ? 'bg-white text-pro-charcoal shadow-sm' : 'text-pro-warm-gray hover:text-pro-charcoal'}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-sans font-medium transition-colors whitespace-nowrap ${activeTab === t.key ? 'bg-white text-graphite shadow-sm' : 'text-graphite/60 hover:text-graphite'}`}
               >
                 <Icon className="w-4 h-4" />
                 {t.label}
@@ -167,43 +167,43 @@ export default function AdminShopHub() {
         {/* Search */}
         {(activeTab === 'products' || activeTab === 'inventory') && (
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
             <input
               type="text"
               placeholder="Search products..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-pro-border rounded-lg text-sm font-sans text-pro-charcoal placeholder:text-pro-warm-gray/60 focus:outline-none focus:ring-2 focus:ring-pro-navy/20"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-accent-soft rounded-lg text-sm font-sans text-graphite placeholder:text-graphite/60/60 focus:outline-none focus:ring-2 focus:ring-graphite/20"
             />
           </div>
         )}
 
         {/* Products Tab */}
         {activeTab === 'products' && (
-          <div className="bg-white rounded-xl border border-pro-border overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-pro-border">
-              <p className="text-sm font-sans font-semibold text-pro-charcoal">{productsTotal} Products</p>
+          <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
+              <p className="text-sm font-sans font-semibold text-graphite">{productsTotal} Products</p>
               <button
                 onClick={() => refetchProducts()}
-                className="flex items-center gap-1.5 text-xs font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors"
+                className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>
             {productsLoading ? (
-              <div className="p-6 text-center text-sm font-sans text-pro-warm-gray">Loading...</div>
+              <div className="p-6 text-center text-sm font-sans text-graphite/60">Loading...</div>
             ) : (
-              <div className="divide-y divide-pro-border">
+              <div className="divide-y divide-accent-soft">
                 {products.map((p: Product) => {
                   const images = (p.images as string[]) ?? [];
                   return (
-                    <div key={p.id} className="flex items-center gap-4 px-5 py-3 hover:bg-pro-cream/30 transition-colors">
-                      <div className="w-12 h-12 bg-pro-cream rounded-lg overflow-hidden flex-shrink-0">
+                    <div key={p.id} className="flex items-center gap-4 px-5 py-3 hover:bg-accent-soft/30 transition-colors">
+                      <div className="w-12 h-12 bg-accent-soft rounded-lg overflow-hidden flex-shrink-0">
                         {images[0] && <img src={images[0]} alt="" className="w-full h-full object-cover" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-sans font-semibold text-pro-charcoal truncate">{p.name}</p>
-                        <p className="text-xs font-sans text-pro-warm-gray">{formatCents(p.price_cents)} | Stock: {p.stock_quantity ?? 0}</p>
+                        <p className="text-sm font-sans font-semibold text-graphite truncate">{p.name}</p>
+                        <p className="text-xs font-sans text-graphite/60">{formatCents(p.price_cents)} | Stock: {p.stock_quantity ?? 0}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full ${p.is_active ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-down/10 text-signal-down'}`}>
@@ -211,7 +211,7 @@ export default function AdminShopHub() {
                         </span>
                         <button
                           onClick={() => handleToggleProduct(p.id, p.is_active)}
-                          className="p-1.5 text-pro-warm-gray hover:text-pro-charcoal transition-colors"
+                          className="p-1.5 text-graphite/60 hover:text-graphite transition-colors"
                           title={p.is_active ? 'Deactivate' : 'Activate'}
                         >
                           {p.is_active ? <Eye className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
@@ -227,24 +227,24 @@ export default function AdminShopHub() {
 
         {/* Categories Tab */}
         {activeTab === 'categories' && (
-          <div className="bg-white rounded-xl border border-pro-border overflow-hidden">
-            <div className="px-5 py-3 border-b border-pro-border">
-              <p className="text-sm font-sans font-semibold text-pro-charcoal">{categories.length} Categories</p>
+          <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+            <div className="px-5 py-3 border-b border-accent-soft">
+              <p className="text-sm font-sans font-semibold text-graphite">{categories.length} Categories</p>
             </div>
             {catsLoading ? (
-              <div className="p-6 text-center text-sm font-sans text-pro-warm-gray">Loading...</div>
+              <div className="p-6 text-center text-sm font-sans text-graphite/60">Loading...</div>
             ) : categories.length === 0 ? (
               <div className="p-8 text-center">
-                <Layers className="w-10 h-10 text-pro-warm-gray/30 mx-auto mb-3" />
-                <p className="text-sm font-sans text-pro-warm-gray">No categories yet.</p>
+                <Layers className="w-10 h-10 text-graphite/60/30 mx-auto mb-3" />
+                <p className="text-sm font-sans text-graphite/60">No categories yet.</p>
               </div>
             ) : (
-              <div className="divide-y divide-pro-border">
+              <div className="divide-y divide-accent-soft">
                 {categories.map(cat => (
                   <div key={cat.id} className="flex items-center justify-between px-5 py-3">
                     <div>
-                      <p className="text-sm font-sans font-semibold text-pro-charcoal">{cat.name}</p>
-                      <p className="text-xs font-sans text-pro-warm-gray">/{cat.slug}</p>
+                      <p className="text-sm font-sans font-semibold text-graphite">{cat.name}</p>
+                      <p className="text-xs font-sans text-graphite/60">/{cat.slug}</p>
                     </div>
                     <span className={`text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full ${cat.is_active ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-down/10 text-signal-down'}`}>
                       {cat.is_active ? 'Active' : 'Inactive'}
@@ -258,32 +258,32 @@ export default function AdminShopHub() {
 
         {/* Orders Tab */}
         {activeTab === 'orders' && (
-          <div className="bg-white rounded-xl border border-pro-border overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-pro-border">
-              <p className="text-sm font-sans font-semibold text-pro-charcoal">{adminOrders.length} Orders</p>
-              <button onClick={refetchOrders} className="flex items-center gap-1.5 text-xs font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors">
+          <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
+              <p className="text-sm font-sans font-semibold text-graphite">{adminOrders.length} Orders</p>
+              <button onClick={refetchOrders} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>
             {ordersLoading ? (
-              <div className="p-6 text-center text-sm font-sans text-pro-warm-gray">Loading...</div>
+              <div className="p-6 text-center text-sm font-sans text-graphite/60">Loading...</div>
             ) : adminOrders.length === 0 ? (
               <div className="p-8 text-center">
-                <ShoppingBag className="w-10 h-10 text-pro-warm-gray/30 mx-auto mb-3" />
-                <p className="text-sm font-sans text-pro-warm-gray">No orders yet.</p>
+                <ShoppingBag className="w-10 h-10 text-graphite/60/30 mx-auto mb-3" />
+                <p className="text-sm font-sans text-graphite/60">No orders yet.</p>
               </div>
             ) : (
-              <div className="divide-y divide-pro-border">
+              <div className="divide-y divide-accent-soft">
                 {adminOrders.map(o => (
                   <div key={String(o.id)} className="flex items-center justify-between px-5 py-3">
                     <div>
-                      <p className="text-sm font-sans font-semibold text-pro-charcoal font-mono">#{String(o.id).slice(0, 8)}</p>
-                      <p className="text-xs font-sans text-pro-warm-gray">
+                      <p className="text-sm font-sans font-semibold text-graphite font-mono">#{String(o.id).slice(0, 8)}</p>
+                      <p className="text-xs font-sans text-graphite/60">
                         {o.created_at ? new Date(String(o.created_at)).toLocaleDateString() : ''}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-sans font-semibold text-pro-charcoal">
+                      <span className="text-sm font-sans font-semibold text-graphite">
                         {typeof o.total_cents === 'number' ? formatCents(o.total_cents) : '$0.00'}
                       </span>
                       <span className="text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full bg-accent/10 text-accent uppercase">
@@ -306,32 +306,32 @@ export default function AdminShopHub() {
                 <div className="space-y-2">
                   {lowStockProducts.map(p => (
                     <div key={p.id} className="flex items-center justify-between text-sm font-sans">
-                      <span className="text-pro-charcoal">{p.name}</span>
+                      <span className="text-graphite">{p.name}</span>
                       <span className="font-semibold text-signal-warn">{p.stock_quantity ?? 0} units</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            <div className="bg-white rounded-xl border border-pro-border overflow-hidden">
-              <div className="px-5 py-3 border-b border-pro-border">
-                <p className="text-sm font-sans font-semibold text-pro-charcoal">Inventory Overview</p>
+            <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+              <div className="px-5 py-3 border-b border-accent-soft">
+                <p className="text-sm font-sans font-semibold text-graphite">Inventory Overview</p>
               </div>
               {productsLoading ? (
-                <div className="p-6 text-center text-sm font-sans text-pro-warm-gray">Loading...</div>
+                <div className="p-6 text-center text-sm font-sans text-graphite/60">Loading...</div>
               ) : (
-                <div className="divide-y divide-pro-border">
+                <div className="divide-y divide-accent-soft">
                   {products.map(p => (
                     <div key={p.id} className="flex items-center justify-between px-5 py-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-sans text-pro-charcoal truncate">{p.name}</p>
-                        <p className="text-xs font-sans text-pro-warm-gray">{p.sku || 'No SKU'}</p>
+                        <p className="text-sm font-sans text-graphite truncate">{p.name}</p>
+                        <p className="text-xs font-sans text-graphite/60">{p.sku || 'No SKU'}</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className={`text-sm font-sans font-semibold ${(p.stock_quantity ?? 0) < 10 ? 'text-signal-warn' : 'text-signal-up'}`}>
                           {p.stock_quantity ?? 0}
                         </div>
-                        <span className="text-xs font-sans text-pro-warm-gray">units</span>
+                        <span className="text-xs font-sans text-graphite/60">units</span>
                       </div>
                     </div>
                   ))}
@@ -343,27 +343,27 @@ export default function AdminShopHub() {
 
         {/* Discounts Tab */}
         {activeTab === 'discounts' && (
-          <div className="bg-white rounded-xl border border-pro-border overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-pro-border">
-              <p className="text-sm font-sans font-semibold text-pro-charcoal">Discount Codes</p>
-              <button onClick={refetchDiscounts} className="flex items-center gap-1.5 text-xs font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors">
+          <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
+              <p className="text-sm font-sans font-semibold text-graphite">Discount Codes</p>
+              <button onClick={refetchDiscounts} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>
             {discountsLoading ? (
-              <div className="p-6 text-center text-sm font-sans text-pro-warm-gray">Loading...</div>
+              <div className="p-6 text-center text-sm font-sans text-graphite/60">Loading...</div>
             ) : discounts.length === 0 ? (
               <div className="p-8 text-center">
-                <Tag className="w-10 h-10 text-pro-warm-gray/30 mx-auto mb-3" />
-                <p className="text-sm font-sans text-pro-warm-gray">No discount codes yet.</p>
+                <Tag className="w-10 h-10 text-graphite/60/30 mx-auto mb-3" />
+                <p className="text-sm font-sans text-graphite/60">No discount codes yet.</p>
               </div>
             ) : (
-              <div className="divide-y divide-pro-border">
+              <div className="divide-y divide-accent-soft">
                 {discounts.map(d => (
                   <div key={String(d.id)} className="flex items-center justify-between px-5 py-3">
                     <div>
-                      <p className="text-sm font-sans font-semibold text-pro-charcoal font-mono">{String(d.code)}</p>
-                      <p className="text-xs font-sans text-pro-warm-gray">
+                      <p className="text-sm font-sans font-semibold text-graphite font-mono">{String(d.code)}</p>
+                      <p className="text-xs font-sans text-graphite/60">
                         {d.discount_type === 'percentage' ? `${d.discount_value}% off` : `${typeof d.discount_value === 'number' ? formatCents(d.discount_value) : '$0'} off`}
                         {d.max_uses ? ` | Max uses: ${d.max_uses}` : ''}
                       </p>
@@ -380,29 +380,29 @@ export default function AdminShopHub() {
 
         {/* Reviews Tab */}
         {activeTab === 'reviews' && (
-          <div className="bg-white rounded-xl border border-pro-border overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-pro-border">
-              <p className="text-sm font-sans font-semibold text-pro-charcoal">Reviews Moderation</p>
-              <button onClick={refetchReviews} className="flex items-center gap-1.5 text-xs font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors">
+          <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-accent-soft">
+              <p className="text-sm font-sans font-semibold text-graphite">Reviews Moderation</p>
+              <button onClick={refetchReviews} className="flex items-center gap-1.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
             </div>
             {reviewsLoading ? (
-              <div className="p-6 text-center text-sm font-sans text-pro-warm-gray">Loading...</div>
+              <div className="p-6 text-center text-sm font-sans text-graphite/60">Loading...</div>
             ) : adminReviews.length === 0 ? (
               <div className="p-8 text-center">
-                <Star className="w-10 h-10 text-pro-warm-gray/30 mx-auto mb-3" />
-                <p className="text-sm font-sans text-pro-warm-gray">No reviews to moderate.</p>
+                <Star className="w-10 h-10 text-graphite/60/30 mx-auto mb-3" />
+                <p className="text-sm font-sans text-graphite/60">No reviews to moderate.</p>
               </div>
             ) : (
-              <div className="divide-y divide-pro-border">
+              <div className="divide-y divide-accent-soft">
                 {adminReviews.map(r => (
                   <div key={String(r.id)} className="px-5 py-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className="flex gap-0.5">
                           {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`w-3.5 h-3.5 ${i < (typeof r.rating === 'number' ? r.rating : 0) ? 'text-signal-warn fill-signal-warn' : 'text-pro-warm-gray/20'}`} />
+                            <Star key={i} className={`w-3.5 h-3.5 ${i < (typeof r.rating === 'number' ? r.rating : 0) ? 'text-signal-warn fill-signal-warn' : 'text-graphite/60/20'}`} />
                           ))}
                         </div>
                         <span className={`text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full ${r.is_approved ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-warn/10 text-signal-warn'}`}>
@@ -428,9 +428,9 @@ export default function AdminShopHub() {
                         </div>
                       )}
                     </div>
-                    {Boolean(r.title) && <p className="text-sm font-sans font-semibold text-pro-charcoal">{String(r.title)}</p>}
-                    {Boolean(r.body) && <p className="text-sm font-sans text-pro-warm-gray mt-1">{String(r.body)}</p>}
-                    <p className="text-xs font-sans text-pro-warm-gray/60 mt-2">
+                    {Boolean(r.title) && <p className="text-sm font-sans font-semibold text-graphite">{String(r.title)}</p>}
+                    {Boolean(r.body) && <p className="text-sm font-sans text-graphite/60 mt-1">{String(r.body)}</p>}
+                    <p className="text-xs font-sans text-graphite/60/60 mt-2">
                       {r.created_at ? new Date(String(r.created_at)).toLocaleDateString() : ''}
                     </p>
                   </div>

@@ -42,8 +42,8 @@ export default function ProductCard({
         {imageUrl ? (
           <img src={imageUrl} alt={name} loading="lazy" />
         ) : (
-          <div className="w-full h-full bg-pro-cream flex items-center justify-center">
-            <span className="text-pro-light-gray font-serif text-4xl select-none">
+          <div className="w-full h-full bg-accent-soft flex items-center justify-center">
+            <span className="text-accent-soft font-sans text-4xl select-none">
               {name.charAt(0).toUpperCase()}
             </span>
           </div>
@@ -73,7 +73,7 @@ export default function ProductCard({
             aria-label={`Add ${name} to cart`}
             className="
               absolute bottom-0 inset-x-0
-              bg-pro-navy/90 text-white text-xs font-medium font-sans
+              bg-graphite/90 text-white text-xs font-medium font-sans
               py-2 flex items-center justify-center gap-1.5
               opacity-0 group-hover:opacity-100
               translate-y-full group-hover:translate-y-0
@@ -89,12 +89,12 @@ export default function ProductCard({
       {/* Body */}
       <div className="product-card-body">
         {brandName && (
-          <p className="text-xs font-sans font-medium text-pro-warm-gray uppercase tracking-wide mb-1 truncate">
+          <p className="text-xs font-sans font-medium text-graphite/60 uppercase tracking-wide mb-1 truncate">
             {brandName}
           </p>
         )}
 
-        <h3 className="text-sm font-sans font-medium text-pro-charcoal line-clamp-2 leading-snug mb-2">
+        <h3 className="text-sm font-sans font-medium text-graphite line-clamp-2 leading-snug mb-2">
           {name}
         </h3>
 
@@ -106,29 +106,29 @@ export default function ProductCard({
                 key={s}
                 className={`w-3 h-3 ${
                   s <= Math.round(rating)
-                    ? 'text-pro-gold fill-pro-gold'
-                    : 'text-pro-stone fill-pro-stone'
+                    ? 'text-accent fill-accent'
+                    : 'text-accent-soft fill-accent-soft'
                 }`}
               />
             ))}
-            <span className="text-xs text-pro-warm-gray ml-1">({reviewCount})</span>
+            <span className="text-xs text-graphite/60 ml-1">({reviewCount})</span>
           </div>
         )}
 
         {/* Gated price */}
         {user ? (
           price != null ? (
-            <p className="text-sm font-semibold text-pro-navy font-sans">
+            <p className="text-sm font-semibold text-graphite font-sans">
               {formatCurrency(price)}
             </p>
           ) : (
-            <p className="text-xs text-pro-warm-gray font-sans">Price on request</p>
+            <p className="text-xs text-graphite/60 font-sans">Price on request</p>
           )
         ) : (
           <Link
             to="/portal/login"
             onClick={(e) => e.stopPropagation()}
-            className="text-xs font-medium font-sans text-pro-gold hover:text-pro-gold-light transition-colors"
+            className="text-xs font-medium font-sans text-accent hover:text-accent-light transition-colors"
           >
             Unlock price →
           </Link>

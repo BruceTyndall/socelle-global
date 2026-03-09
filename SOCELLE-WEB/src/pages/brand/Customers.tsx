@@ -130,7 +130,7 @@ export default function BrandCustomers() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans">No brand associated with your account.</p>
       </div>
     );
   }
@@ -139,8 +139,8 @@ export default function BrandCustomers() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl text-pro-navy">Retailers</h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-0.5">Businesses exploring or ordering your brand</p>
+          <h1 className="font-sans text-2xl text-graphite">Retailers</h1>
+          <p className="text-sm text-graphite/60 font-sans mt-0.5">Businesses exploring or ordering your brand</p>
         </div>
       </div>
 
@@ -162,8 +162,8 @@ export default function BrandCustomers() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-pro-stone">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border-b border-pro-stone">
+      <div className="bg-white rounded-xl border border-accent-soft">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border-b border-accent-soft">
           <div className="w-full sm:w-72">
             <Input
               placeholder="Search retailers or location…"
@@ -178,7 +178,7 @@ export default function BrandCustomers() {
                 key={s}
                 onClick={() => setStatusFilter(s)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium font-sans capitalize transition-colors ${
-                  statusFilter === s ? 'bg-pro-navy text-white' : 'bg-pro-stone/50 text-pro-warm-gray hover:text-pro-charcoal'
+                  statusFilter === s ? 'bg-graphite text-white' : 'bg-accent-soft/50 text-graphite/60 hover:text-graphite'
                 }`}
               >
                 {s}
@@ -188,13 +188,13 @@ export default function BrandCustomers() {
         </div>
 
         {loading ? (
-          <div className="divide-y divide-pro-stone/50">
+          <div className="divide-y divide-accent-soft/50">
             {[0, 1, 2, 3].map(i => (
               <div key={i} className="flex items-center gap-4 p-4 animate-pulse">
-                <div className="w-10 h-10 rounded-full bg-pro-stone/30" />
+                <div className="w-10 h-10 rounded-full bg-accent-soft/30" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-pro-stone/30 rounded w-48" />
-                  <div className="h-3 bg-pro-stone/30 rounded w-32" />
+                  <div className="h-4 bg-accent-soft/30 rounded w-48" />
+                  <div className="h-3 bg-accent-soft/30 rounded w-32" />
                 </div>
               </div>
             ))}
@@ -210,47 +210,47 @@ export default function BrandCustomers() {
             }
           />
         ) : (
-          <div className="divide-y divide-pro-stone/50">
+          <div className="divide-y divide-accent-soft/50">
             {filtered.map(r => {
               const statusKey = getRetailerStatus(r);
               const { variant, label } = STATUS_BADGE[statusKey];
               return (
-                <div key={r.id} className="flex items-center gap-4 p-4 hover:bg-pro-ivory/50 transition-colors group cursor-pointer">
+                <div key={r.id} className="flex items-center gap-4 p-4 hover:bg-background/50 transition-colors group cursor-pointer">
                   <Avatar name={r.name} size="md" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <p className="font-medium text-pro-charcoal font-sans">{r.name}</p>
+                      <p className="font-medium text-graphite font-sans">{r.name}</p>
                       <Badge variant={variant} dot>{label}</Badge>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
-                      {r.type && <span className="text-xs text-pro-warm-gray font-sans">{r.type}</span>}
+                      {r.type && <span className="text-xs text-graphite/60 font-sans">{r.type}</span>}
                       {r.location && (
-                        <span className="flex items-center gap-1 text-xs text-pro-warm-gray font-sans">
+                        <span className="flex items-center gap-1 text-xs text-graphite/60 font-sans">
                           <MapPin className="w-3 h-3" />{r.location}
                         </span>
                       )}
-                      <span className="text-xs text-pro-warm-gray font-sans">
+                      <span className="text-xs text-graphite/60 font-sans">
                         Since {formatDate(r.firstSeen)}
                       </span>
                     </div>
                   </div>
                   <div className="hidden sm:flex items-center gap-6 text-right text-sm">
                     <div>
-                      <p className="text-xs text-pro-warm-gray font-sans">Plans</p>
-                      <p className="font-semibold text-pro-charcoal font-sans">{r.planCount}</p>
+                      <p className="text-xs text-graphite/60 font-sans">Plans</p>
+                      <p className="font-semibold text-graphite font-sans">{r.planCount}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-pro-warm-gray font-sans">Orders</p>
-                      <p className="font-semibold text-pro-charcoal font-sans">{r.orderCount}</p>
+                      <p className="text-xs text-graphite/60 font-sans">Orders</p>
+                      <p className="font-semibold text-graphite font-sans">{r.orderCount}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-pro-warm-gray font-sans">Revenue</p>
-                      <p className="font-semibold text-pro-charcoal font-sans">
+                      <p className="text-xs text-graphite/60 font-sans">Revenue</p>
+                      <p className="font-semibold text-graphite font-sans">
                         {r.totalSpend > 0 ? `$${r.totalSpend.toLocaleString()}` : '—'}
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-pro-stone group-hover:text-pro-warm-gray transition-colors flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-accent-soft group-hover:text-graphite/60 transition-colors flex-shrink-0" />
                 </div>
               );
             })}

@@ -73,8 +73,8 @@ export default function CrmTasks() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-pro-charcoal">Tasks</h1>
-          <p className="text-sm text-pro-warm-gray mt-1">
+          <h1 className="text-2xl font-semibold text-graphite">Tasks</h1>
+          <p className="text-sm text-graphite/60 mt-1">
             {tasks.filter(t => t.status !== 'completed').length} open
             {overdueCount > 0 && <span className="text-signal-down ml-1">({overdueCount} overdue)</span>}
           </p>
@@ -83,7 +83,7 @@ export default function CrmTasks() {
           {!isLive && !loading && (
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
           )}
-          <button onClick={handleExport} className="h-9 px-3 text-xs font-medium text-pro-warm-gray border border-pro-stone/30 rounded-full hover:border-accent/30 transition-colors">
+          <button onClick={handleExport} className="h-9 px-3 text-xs font-medium text-graphite/60 border border-accent-soft/30 rounded-full hover:border-accent/30 transition-colors">
             Export CSV
           </button>
           <button onClick={() => setShowAdd(s => !s)} className="inline-flex items-center gap-2 h-9 px-4 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 transition-colors">
@@ -98,7 +98,7 @@ export default function CrmTasks() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${filter === f ? 'bg-accent text-white border-accent' : 'border-pro-stone/30 text-pro-warm-gray hover:border-accent/30'}`}
+            className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${filter === f ? 'bg-accent text-white border-accent' : 'border-accent-soft/30 text-graphite/60 hover:border-accent/30'}`}
           >
             {f === 'all' ? 'All' : f === 'open' ? 'Open' : f === 'completed' ? 'Completed' : 'Overdue'}
           </button>
@@ -107,37 +107,37 @@ export default function CrmTasks() {
 
       {/* Add Task Form */}
       {showAdd && (
-        <div className="bg-white rounded-xl border border-pro-stone/30 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-accent-soft/30 p-5 space-y-3">
           <input
             type="text"
             value={newTask.title}
             onChange={e => setNewTask(p => ({ ...p, title: e.target.value }))}
             placeholder="Task title *"
-            className="w-full h-10 px-3 border border-pro-stone/30 rounded-lg text-sm text-pro-charcoal placeholder:text-pro-warm-gray focus:outline-none focus:border-accent/50"
+            className="w-full h-10 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50"
           />
           <textarea
             value={newTask.description}
             onChange={e => setNewTask(p => ({ ...p, description: e.target.value }))}
             placeholder="Description (optional)"
             rows={2}
-            className="w-full px-3 py-2 border border-pro-stone/30 rounded-lg text-sm text-pro-charcoal placeholder:text-pro-warm-gray focus:outline-none focus:border-accent/50 resize-none"
+            className="w-full px-3 py-2 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50 resize-none"
           />
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="block text-xs text-pro-warm-gray mb-1">Due Date</label>
+              <label className="block text-xs text-graphite/60 mb-1">Due Date</label>
               <input
                 type="date"
                 value={newTask.due_date}
                 onChange={e => setNewTask(p => ({ ...p, due_date: e.target.value }))}
-                className="w-full h-9 px-3 border border-pro-stone/30 rounded-lg text-sm text-pro-charcoal focus:outline-none focus:border-accent/50"
+                className="w-full h-9 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite focus:outline-none focus:border-accent/50"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-xs text-pro-warm-gray mb-1">Priority</label>
+              <label className="block text-xs text-graphite/60 mb-1">Priority</label>
               <select
                 value={newTask.priority}
                 onChange={e => setNewTask(p => ({ ...p, priority: e.target.value }))}
-                className="w-full h-9 px-3 border border-pro-stone/30 rounded-lg text-sm text-pro-charcoal focus:outline-none focus:border-accent/50 bg-white"
+                className="w-full h-9 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite focus:outline-none focus:border-accent/50 bg-white"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -145,18 +145,18 @@ export default function CrmTasks() {
               </select>
             </div>
             <div className="flex-1">
-              <label className="block text-xs text-pro-warm-gray mb-1">Assignee</label>
+              <label className="block text-xs text-graphite/60 mb-1">Assignee</label>
               <input
                 type="text"
                 value={newTask.assignee_name}
                 onChange={e => setNewTask(p => ({ ...p, assignee_name: e.target.value }))}
                 placeholder="Name"
-                className="w-full h-9 px-3 border border-pro-stone/30 rounded-lg text-sm text-pro-charcoal placeholder:text-pro-warm-gray focus:outline-none focus:border-accent/50"
+                className="w-full h-9 px-3 border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50"
               />
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowAdd(false)} className="h-8 px-4 text-xs text-pro-warm-gray hover:text-pro-charcoal">Cancel</button>
+            <button onClick={() => setShowAdd(false)} className="h-8 px-4 text-xs text-graphite/60 hover:text-graphite">Cancel</button>
             <button onClick={handleCreate} disabled={saving || !newTask.title.trim()} className="h-8 px-4 bg-mn-dark text-white text-xs font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50">
               {saving ? 'Creating...' : 'Create Task'}
             </button>
@@ -168,18 +168,18 @@ export default function CrmTasks() {
       {loading ? (
         <div className="space-y-2">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-white rounded-xl border border-pro-stone/30 p-4 animate-pulse">
+            <div key={i} className="bg-white rounded-xl border border-accent-soft/30 p-4 animate-pulse">
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-pro-stone/20" />
-                <div className="flex-1"><div className="h-4 bg-pro-stone/20 rounded w-48" /></div>
+                <div className="w-5 h-5 rounded-full bg-accent-soft/20" />
+                <div className="flex-1"><div className="h-4 bg-accent-soft/20 rounded w-48" /></div>
               </div>
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border border-pro-stone/30 p-8 text-center">
-          <CheckCircle className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-          <p className="text-sm text-pro-warm-gray">
+        <div className="bg-white rounded-xl border border-accent-soft/30 p-8 text-center">
+          <CheckCircle className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+          <p className="text-sm text-graphite/60">
             {filter === 'all' ? 'No tasks yet' : `No ${filter} tasks`}
           </p>
         </div>
@@ -189,7 +189,7 @@ export default function CrmTasks() {
             const isOverdue = task.status !== 'completed' && task.due_date && new Date(task.due_date) < now;
             const priorityStyle = PRIORITY_STYLES[task.priority] ?? PRIORITY_STYLES.medium;
             return (
-              <div key={task.id} className={`bg-white rounded-xl border p-4 transition-colors ${isOverdue ? 'border-signal-down/30' : 'border-pro-stone/30'}`}>
+              <div key={task.id} className={`bg-white rounded-xl border p-4 transition-colors ${isOverdue ? 'border-signal-down/30' : 'border-accent-soft/30'}`}>
                 <div className="flex items-start gap-3">
                   <button
                     onClick={() => completeTask(task.id)}
@@ -199,12 +199,12 @@ export default function CrmTasks() {
                     {task.status === 'completed' ? (
                       <CheckCircle className="w-5 h-5 text-signal-up" />
                     ) : (
-                      <Circle className="w-5 h-5 text-pro-warm-gray hover:text-accent transition-colors" />
+                      <Circle className="w-5 h-5 text-graphite/60 hover:text-accent transition-colors" />
                     )}
                   </button>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className={`text-sm font-medium ${task.status === 'completed' ? 'text-pro-warm-gray line-through' : 'text-pro-charcoal'}`}>
+                      <p className={`text-sm font-medium ${task.status === 'completed' ? 'text-graphite/60 line-through' : 'text-graphite'}`}>
                         {task.title}
                       </p>
                       <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${priorityStyle.bg}`}>
@@ -212,9 +212,9 @@ export default function CrmTasks() {
                       </span>
                     </div>
                     {task.description && (
-                      <p className="text-xs text-pro-warm-gray mt-1 line-clamp-2">{task.description}</p>
+                      <p className="text-xs text-graphite/60 mt-1 line-clamp-2">{task.description}</p>
                     )}
-                    <div className="flex items-center gap-3 mt-2 text-xs text-pro-warm-gray">
+                    <div className="flex items-center gap-3 mt-2 text-xs text-graphite/60">
                       {task.due_date && (
                         <span className={`inline-flex items-center gap-1 ${isOverdue ? 'text-signal-down font-medium' : ''}`}>
                           {isOverdue ? <AlertTriangle className="w-3 h-3" /> : <Calendar className="w-3 h-3" />}
@@ -231,7 +231,7 @@ export default function CrmTasks() {
                   </div>
                   <button
                     onClick={() => deleteTask(task.id)}
-                    className="text-pro-warm-gray hover:text-signal-down transition-colors flex-shrink-0"
+                    className="text-graphite/60 hover:text-signal-down transition-colors flex-shrink-0"
                     title="Delete task"
                   >
                     <Trash2 className="w-4 h-4" />

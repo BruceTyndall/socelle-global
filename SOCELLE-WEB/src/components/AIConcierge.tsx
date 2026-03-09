@@ -103,12 +103,12 @@ const MODES: Array<{
 function TypingIndicator() {
   return (
     <div className="flex justify-start">
-      <div className="bg-white border border-pro-stone rounded-2xl rounded-bl-sm px-4 py-3">
+      <div className="bg-white border border-accent-soft rounded-2xl rounded-bl-sm px-4 py-3">
         <div className="flex items-center gap-1">
           {[0, 150, 300].map((delay) => (
             <span
               key={delay}
-              className="w-1.5 h-1.5 bg-pro-gold rounded-full animate-bounce"
+              className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce"
               style={{ animationDelay: `${delay}ms` }}
             />
           ))}
@@ -122,10 +122,10 @@ function TypingIndicator() {
 
 function ConfidenceBadge({ level }: { level: string }) {
   const config: Record<string, { Icon: typeof CheckCircle; className: string; label: string }> = {
-    High:    { Icon: CheckCircle, className: 'text-pro-navy bg-pro-cream border-pro-stone', label: 'High' },
-    Medium:  { Icon: Info,        className: 'text-pro-navy bg-pro-gold-pale border-pro-gold/30', label: 'Medium' },
+    High:    { Icon: CheckCircle, className: 'text-graphite bg-accent-soft border-accent-soft', label: 'High' },
+    Medium:  { Icon: Info,        className: 'text-graphite bg-accent-pale border-accent/30', label: 'Medium' },
     Low:     { Icon: AlertCircle, className: 'text-amber-700 bg-amber-50 border-amber-200',       label: 'Low' },
-    Unknown: { Icon: AlertCircle, className: 'text-pro-warm-gray bg-pro-cream border-pro-stone',  label: 'Unknown' },
+    Unknown: { Icon: AlertCircle, className: 'text-graphite/60 bg-accent-soft border-accent-soft',  label: 'Unknown' },
   };
   const c = config[level] ?? config.Unknown;
   return (
@@ -232,15 +232,15 @@ export default function AIConcierge({
         onClick={() => setIsOpen(true)}
         aria-label={`Open ${brandConfig.displayName}`}
         className="
-          fixed bottom-6 right-6 w-14 h-14 bg-pro-navy text-white rounded-full
-          shadow-navy hover:bg-pro-navy-dark
+          fixed bottom-6 right-6 w-14 h-14 bg-graphite text-white rounded-full
+          shadow-navy hover:bg-graphite-dark
           transition-all duration-200 flex items-center justify-center z-50
           hover:scale-110 active:scale-95
         "
       >
         <MessageCircle className="w-6 h-6" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-pro-gold rounded-full text-[10px] font-bold flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent rounded-full text-[10px] font-bold flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -254,14 +254,14 @@ export default function AIConcierge({
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsMinimized(false)}
-          className="bg-white border border-pro-stone rounded-xl shadow-dropdown px-4 py-2.5 flex items-center gap-2.5 hover:shadow-modal transition-shadow"
+          className="bg-white border border-accent-soft rounded-xl shadow-dropdown px-4 py-2.5 flex items-center gap-2.5 hover:shadow-modal transition-shadow"
         >
-          <MessageCircle className="w-4 h-4 text-pro-navy" />
-          <span className="text-sm font-medium font-sans text-pro-charcoal">
+          <MessageCircle className="w-4 h-4 text-graphite" />
+          <span className="text-sm font-medium font-sans text-graphite">
             {brandConfig.displayName}
           </span>
           {messages.length > 0 && (
-            <span className="bg-pro-navy text-white text-[10px] px-1.5 py-0.5 rounded-full font-sans font-medium">
+            <span className="bg-graphite text-white text-[10px] px-1.5 py-0.5 rounded-full font-sans font-medium">
               {messages.length}
             </span>
           )}
@@ -272,10 +272,10 @@ export default function AIConcierge({
 
   // ── Full panel ─────────────────────────────────────────────────
   return (
-    <div className="fixed bottom-6 right-6 w-[380px] h-[600px] bg-white rounded-2xl shadow-modal border border-pro-stone flex flex-col z-50 overflow-hidden">
+    <div className="fixed bottom-6 right-6 w-[380px] h-[600px] bg-white rounded-2xl shadow-modal border border-accent-soft flex flex-col z-50 overflow-hidden">
 
       {/* ── Header ──────────────────────────────────────────────── */}
-      <div className="bg-pro-navy px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <div className="bg-graphite px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
             <MessageCircle className="w-4 h-4 text-white" />
@@ -308,9 +308,9 @@ export default function AIConcierge({
       </div>
 
       {/* ── Provider toggle (Claude vs Gemini) ─────────────────────── */}
-      <div className="flex items-center justify-center gap-1 px-3 py-2 bg-pro-cream border-b border-pro-stone flex-shrink-0">
-        <span className="text-[10px] font-sans text-pro-warm-gray mr-1">AI:</span>
-        <div className="flex rounded-lg bg-white border border-pro-stone p-0.5 shadow-sm">
+      <div className="flex items-center justify-center gap-1 px-3 py-2 bg-accent-soft border-b border-accent-soft flex-shrink-0">
+        <span className="text-[10px] font-sans text-graphite/60 mr-1">AI:</span>
+        <div className="flex rounded-lg bg-white border border-accent-soft p-0.5 shadow-sm">
           {(['claude', 'gemini'] as const).map((p) => (
             <button
               key={p}
@@ -319,8 +319,8 @@ export default function AIConcierge({
               className={`
                 px-3 py-1 text-[11px] font-sans font-medium rounded-md transition-colors
                 ${provider === p
-                  ? 'bg-pro-navy text-white'
-                  : 'text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-ivory'}
+                  ? 'bg-graphite text-white'
+                  : 'text-graphite/60 hover:text-graphite hover:bg-background'}
               `}
             >
               {p === 'claude' ? 'Claude' : 'Gemini'}
@@ -330,7 +330,7 @@ export default function AIConcierge({
       </div>
 
       {/* ── Mode tabs ────────────────────────────────────────────── */}
-      <div className="flex items-center gap-px bg-pro-cream border-b border-pro-stone px-2 pt-2 flex-shrink-0">
+      <div className="flex items-center gap-px bg-accent-soft border-b border-accent-soft px-2 pt-2 flex-shrink-0">
         {MODES.map((mode) => {
           const Icon = mode.icon;
           const active = mode.key === activeMode;
@@ -343,8 +343,8 @@ export default function AIConcierge({
                 flex flex-col items-center gap-0.5 px-2.5 py-2 rounded-t-lg text-[10px] font-sans font-medium
                 transition-all duration-150 border-b-2
                 ${active
-                  ? 'bg-white text-pro-navy border-pro-navy'
-                  : 'bg-transparent text-pro-warm-gray border-transparent hover:text-pro-navy hover:bg-white/60'
+                  ? 'bg-white text-graphite border-graphite'
+                  : 'bg-transparent text-graphite/60 border-transparent hover:text-graphite hover:bg-white/60'
                 }
               `}
             >
@@ -356,25 +356,25 @@ export default function AIConcierge({
       </div>
 
       {/* ── Messages ─────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-pro-ivory">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-background">
 
         {/* Empty state: suggested prompts */}
         {messages.length === 0 && (
           <div className="space-y-3">
-            <div className="bg-white rounded-xl p-3.5 border border-pro-stone">
-              <p className="text-xs font-sans text-pro-warm-gray leading-relaxed">
+            <div className="bg-white rounded-xl p-3.5 border border-accent-soft">
+              <p className="text-xs font-sans text-graphite/60 leading-relaxed">
                 {brandConfig.description}
               </p>
             </div>
-            <p className="text-[11px] font-sans text-pro-warm-gray px-1">Try asking:</p>
+            <p className="text-[11px] font-sans text-graphite/60 px-1">Try asking:</p>
             {currentMode.suggestions.map((q) => (
               <button
                 key={q}
                 onClick={() => handleSendMessage(q)}
                 className="
-                  w-full bg-white border border-pro-stone rounded-xl p-3 text-left
-                  text-xs font-sans text-pro-charcoal
-                  hover:border-pro-navy hover:bg-pro-cream
+                  w-full bg-white border border-accent-soft rounded-xl p-3 text-left
+                  text-xs font-sans text-graphite
+                  hover:border-graphite hover:bg-accent-soft
                   transition-all duration-150
                 "
               >
@@ -394,8 +394,8 @@ export default function AIConcierge({
               className={`
                 max-w-[88%] px-3.5 py-2.5 text-sm font-sans leading-relaxed
                 ${msg.type === 'user'
-                  ? 'bg-pro-navy text-white rounded-2xl rounded-br-sm'
-                  : 'bg-white border border-pro-stone rounded-2xl rounded-bl-sm text-pro-charcoal'
+                  ? 'bg-graphite text-white rounded-2xl rounded-br-sm'
+                  : 'bg-white border border-accent-soft rounded-2xl rounded-bl-sm text-graphite'
                 }
               `}
             >
@@ -403,18 +403,18 @@ export default function AIConcierge({
                 <p>{msg.content}</p>
               ) : (
                 <div className="space-y-2.5">
-                  <p className="text-sm text-pro-charcoal leading-relaxed whitespace-pre-wrap">
+                  <p className="text-sm text-graphite leading-relaxed whitespace-pre-wrap">
                     {msg.response?.directAnswer ?? msg.content}
                   </p>
 
                   {msg.response?.contextualExplanation && (
-                    <p className="text-[11px] text-pro-warm-gray leading-relaxed">
+                    <p className="text-[11px] text-graphite/60 leading-relaxed">
                       {msg.response.contextualExplanation}
                     </p>
                   )}
 
                   {msg.response && (
-                    <div className="border-t border-pro-stone pt-2 space-y-1.5">
+                    <div className="border-t border-accent-soft pt-2 space-y-1.5">
                       <div className="flex items-center gap-2">
                         <ConfidenceBadge level={msg.response.confidenceLevel} />
                       </div>
@@ -422,7 +422,7 @@ export default function AIConcierge({
                       {msg.response.followUpQuestion && (
                         <button
                           onClick={() => handleSendMessage(msg.response!.followUpQuestion)}
-                          className="text-[11px] text-pro-gold hover:text-pro-gold-light font-medium transition-colors"
+                          className="text-[11px] text-accent hover:text-accent-light font-medium transition-colors"
                         >
                           → {msg.response.followUpQuestion}
                         </button>
@@ -446,7 +446,7 @@ export default function AIConcierge({
       </div>
 
       {/* ── Input ────────────────────────────────────────────────── */}
-      <div className="p-3 border-t border-pro-stone bg-white flex-shrink-0">
+      <div className="p-3 border-t border-accent-soft bg-white flex-shrink-0">
         <form
           onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
           className="flex gap-2"
@@ -459,9 +459,9 @@ export default function AIConcierge({
             placeholder={currentMode.placeholder}
             disabled={isLoading}
             className="
-              flex-1 px-3 py-2.5 border border-pro-stone rounded-xl text-sm font-sans
-              text-pro-charcoal placeholder-pro-light-gray bg-pro-ivory
-              focus:border-pro-navy focus:ring-2 focus:ring-pro-navy/10 outline-none
+              flex-1 px-3 py-2.5 border border-accent-soft rounded-xl text-sm font-sans
+              text-graphite placeholder-accent-soft bg-background
+              focus:border-graphite focus:ring-2 focus:ring-graphite/10 outline-none
               disabled:opacity-50 transition-colors
             "
           />
@@ -470,15 +470,15 @@ export default function AIConcierge({
             disabled={!inputValue.trim() || isLoading}
             aria-label="Send"
             className="
-              w-10 h-10 bg-pro-navy text-white rounded-xl flex items-center justify-center
-              hover:bg-pro-navy-dark disabled:bg-pro-stone disabled:cursor-not-allowed
+              w-10 h-10 bg-graphite text-white rounded-xl flex items-center justify-center
+              hover:bg-graphite-dark disabled:bg-accent-soft disabled:cursor-not-allowed
               transition-colors flex-shrink-0
             "
           >
             <Send className="w-4 h-4" />
           </button>
         </form>
-        <p className="text-[10px] font-sans text-pro-light-gray text-center mt-2 leading-tight">
+        <p className="text-[10px] font-sans text-accent-soft text-center mt-2 leading-tight">
           {brandConfig.disclaimer}
         </p>
       </div>

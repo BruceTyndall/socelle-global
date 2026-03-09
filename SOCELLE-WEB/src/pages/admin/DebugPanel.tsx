@@ -160,15 +160,15 @@ export default function DebugPanel() {
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <Bug className="w-8 h-8 text-pro-navy" />
-          <h1 className="text-3xl font-bold text-pro-charcoal">Debug Panel</h1>
+          <Bug className="w-8 h-8 text-graphite" />
+          <h1 className="text-3xl font-bold text-graphite">Debug Panel</h1>
         </div>
-        <p className="text-pro-warm-gray">System diagnostics and authentication state</p>
+        <p className="text-graphite/60">System diagnostics and authentication state</p>
       </div>
 
       <button
         onClick={copyDebugInfo}
-        className="mb-6 flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+        className="mb-6 flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
       >
         {copied ? (
           <>
@@ -185,10 +185,10 @@ export default function DebugPanel() {
 
       <div className="space-y-6">
         {/* Supabase Config */}
-        <div className="bg-white rounded-lg shadow-sm border border-pro-stone p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-accent-soft p-6">
           <div className="flex items-center gap-3 mb-4">
-            <Database className="w-6 h-6 text-pro-navy" />
-            <h2 className="text-xl font-bold text-pro-charcoal">Supabase Configuration</h2>
+            <Database className="w-6 h-6 text-graphite" />
+            <h2 className="text-xl font-bold text-graphite">Supabase Configuration</h2>
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -197,11 +197,11 @@ export default function DebugPanel() {
               ) : (
                 <AlertCircle className="w-5 h-5 text-red-600" />
               )}
-              <span className="font-medium text-pro-charcoal">
+              <span className="font-medium text-graphite">
                 {isSupabaseConfigured ? 'Configured' : 'Not Configured'}
               </span>
             </div>
-            <div className="ml-7 space-y-1 text-sm text-pro-warm-gray">
+            <div className="ml-7 space-y-1 text-sm text-graphite/60">
               <div>VITE_SUPABASE_URL: {import.meta.env.VITE_SUPABASE_URL ? '✓ Set' : '✗ Missing'}</div>
               <div>VITE_SUPABASE_ANON_KEY: {import.meta.env.VITE_SUPABASE_ANON_KEY ? '✓ Set' : '✗ Missing'}</div>
             </div>
@@ -209,95 +209,95 @@ export default function DebugPanel() {
         </div>
 
         {/* Auth State */}
-        <div className="bg-white rounded-lg shadow-sm border border-pro-stone p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-accent-soft p-6">
           <div className="flex items-center gap-3 mb-4">
             <User className="w-6 h-6 text-green-600" />
-            <h2 className="text-xl font-bold text-pro-charcoal">Authentication State</h2>
+            <h2 className="text-xl font-bold text-graphite">Authentication State</h2>
           </div>
           {authLoading ? (
-            <p className="text-pro-warm-gray">Loading auth state...</p>
+            <p className="text-graphite/60">Loading auth state...</p>
           ) : user ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="font-medium text-pro-charcoal">Authenticated</span>
+                <span className="font-medium text-graphite">Authenticated</span>
               </div>
               <div className="ml-7 space-y-2 text-sm">
                 <div>
-                  <span className="font-medium text-pro-charcoal">User ID:</span>{' '}
-                  <code className="text-pro-warm-gray bg-pro-stone px-2 py-1 rounded">{user.id}</code>
+                  <span className="font-medium text-graphite">User ID:</span>{' '}
+                  <code className="text-graphite/60 bg-accent-soft px-2 py-1 rounded">{user.id}</code>
                 </div>
                 <div>
-                  <span className="font-medium text-pro-charcoal">Email:</span>{' '}
-                  <span className="text-pro-warm-gray">{user.email}</span>
+                  <span className="font-medium text-graphite">Email:</span>{' '}
+                  <span className="text-graphite/60">{user.email}</span>
                 </div>
                 <div>
-                  <span className="font-medium text-pro-charcoal">Session:</span>{' '}
-                  <span className="text-pro-warm-gray">{session ? '✓ Active' : '✗ None'}</span>
+                  <span className="font-medium text-graphite">Session:</span>{' '}
+                  <span className="text-graphite/60">{session ? '✓ Active' : '✗ None'}</span>
                 </div>
               </div>
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="text-pro-warm-gray">Not authenticated</span>
+              <span className="text-graphite/60">Not authenticated</span>
             </div>
           )}
         </div>
 
         {/* Profile State */}
-        <div className="bg-white rounded-lg shadow-sm border border-pro-stone p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-accent-soft p-6">
           <div className="flex items-center gap-3 mb-4">
             <Shield className="w-6 h-6 text-purple-600" />
-            <h2 className="text-xl font-bold text-pro-charcoal">User Profile</h2>
+            <h2 className="text-xl font-bold text-graphite">User Profile</h2>
           </div>
           {authLoading ? (
-            <p className="text-pro-warm-gray">Loading profile...</p>
+            <p className="text-graphite/60">Loading profile...</p>
           ) : profile ? (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="font-medium text-pro-charcoal">Profile Loaded</span>
+                <span className="font-medium text-graphite">Profile Loaded</span>
               </div>
               <div className="ml-7 space-y-2 text-sm">
                 <div>
-                  <span className="font-medium text-pro-charcoal">Role:</span>{' '}
-                  <code className="text-pro-warm-gray bg-pro-stone px-2 py-1 rounded">{profile.role}</code>
+                  <span className="font-medium text-graphite">Role:</span>{' '}
+                  <code className="text-graphite/60 bg-accent-soft px-2 py-1 rounded">{profile.role}</code>
                 </div>
                 <div>
-                  <span className="font-medium text-pro-charcoal">Brand ID:</span>{' '}
-                  <span className="text-pro-warm-gray">{profile.brand_id || 'None'}</span>
+                  <span className="font-medium text-graphite">Brand ID:</span>{' '}
+                  <span className="text-graphite/60">{profile.brand_id || 'None'}</span>
                 </div>
                 <div>
-                  <span className="font-medium text-pro-charcoal">Business ID:</span>{' '}
-                  <span className="text-pro-warm-gray">{profile.business_id || 'None'}</span>
+                  <span className="font-medium text-graphite">Business ID:</span>{' '}
+                  <span className="text-graphite/60">{profile.business_id || 'None'}</span>
                 </div>
               </div>
             </div>
           ) : user ? (
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="text-pro-warm-gray">Profile not loaded (user authenticated but profile missing)</span>
+              <span className="text-graphite/60">Profile not loaded (user authenticated but profile missing)</span>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-pro-warm-gray" />
-              <span className="text-pro-warm-gray">No profile (not authenticated)</span>
+              <AlertCircle className="w-5 h-5 text-graphite/60" />
+              <span className="text-graphite/60">No profile (not authenticated)</span>
             </div>
           )}
         </div>
 
         {/* Database Query Tests */}
-        <div className="bg-white rounded-lg shadow-sm border border-pro-stone p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-accent-soft p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <Database className="w-6 h-6 text-orange-600" />
-              <h2 className="text-xl font-bold text-pro-charcoal">Database Query Tests</h2>
+              <h2 className="text-xl font-bold text-graphite">Database Query Tests</h2>
             </div>
             <button
               onClick={runDatabaseTests}
               disabled={testing}
-              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-pro-stone transition-colors text-sm"
+              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-accent-soft transition-colors text-sm"
             >
               {testing ? 'Testing...' : 'Re-run Tests'}
             </button>
@@ -305,8 +305,8 @@ export default function DebugPanel() {
 
           <div className="space-y-4">
             {/* Brands Test */}
-            <div className="border border-pro-stone rounded-lg p-4">
-              <h3 className="font-semibold text-pro-charcoal mb-2">Brands Table</h3>
+            <div className="border border-accent-soft rounded-lg p-4">
+              <h3 className="font-semibold text-graphite mb-2">Brands Table</h3>
               {brandsResult ? (
                 <div>
                   {brandsResult.success ? (
@@ -315,12 +315,12 @@ export default function DebugPanel() {
                         <CheckCircle className="w-5 h-5 text-green-600" />
                         <span className="text-green-700 font-medium">Query successful</span>
                       </div>
-                      <div className="text-sm text-pro-warm-gray space-y-1">
+                      <div className="text-sm text-graphite/60 space-y-1">
                         <div>Count: {brandsResult.data.count}</div>
                         {brandsResult.data.sample && brandsResult.data.sample.length > 0 && (
                           <div className="mt-2">
-                            <div className="font-medium text-pro-charcoal mb-1">Sample records:</div>
-                            <div className="bg-pro-ivory rounded p-2 space-y-1">
+                            <div className="font-medium text-graphite mb-1">Sample records:</div>
+                            <div className="bg-background rounded p-2 space-y-1">
                               {brandsResult.data.sample.map((brand: any) => (
                                 <div key={brand.id} className="text-xs">
                                   {brand.name} ({brand.slug}) - {brand.status}
@@ -352,13 +352,13 @@ export default function DebugPanel() {
                   )}
                 </div>
               ) : (
-                <p className="text-pro-warm-gray text-sm">Not tested yet</p>
+                <p className="text-graphite/60 text-sm">Not tested yet</p>
               )}
             </div>
 
             {/* Protocols Test */}
-            <div className="border border-pro-stone rounded-lg p-4">
-              <h3 className="font-semibold text-pro-charcoal mb-2">Canonical Protocols Table</h3>
+            <div className="border border-accent-soft rounded-lg p-4">
+              <h3 className="font-semibold text-graphite mb-2">Canonical Protocols Table</h3>
               {protocolsResult ? (
                 <div>
                   {protocolsResult.success ? (
@@ -367,7 +367,7 @@ export default function DebugPanel() {
                         <CheckCircle className="w-5 h-5 text-green-600" />
                         <span className="text-green-700 font-medium">Query successful</span>
                       </div>
-                      <div className="text-sm text-pro-warm-gray">
+                      <div className="text-sm text-graphite/60">
                         Count: {protocolsResult.data.count}
                       </div>
                     </div>
@@ -392,13 +392,13 @@ export default function DebugPanel() {
                   )}
                 </div>
               ) : (
-                <p className="text-pro-warm-gray text-sm">Not tested yet</p>
+                <p className="text-graphite/60 text-sm">Not tested yet</p>
               )}
             </div>
 
             {/* Products Test */}
-            <div className="border border-pro-stone rounded-lg p-4">
-              <h3 className="font-semibold text-pro-charcoal mb-2">PRO Products Table</h3>
+            <div className="border border-accent-soft rounded-lg p-4">
+              <h3 className="font-semibold text-graphite mb-2">PRO Products Table</h3>
               {productsResult ? (
                 <div>
                   {productsResult.success ? (
@@ -407,7 +407,7 @@ export default function DebugPanel() {
                         <CheckCircle className="w-5 h-5 text-green-600" />
                         <span className="text-green-700 font-medium">Query successful</span>
                       </div>
-                      <div className="text-sm text-pro-warm-gray">
+                      <div className="text-sm text-graphite/60">
                         Count: {productsResult.data.count}
                       </div>
                     </div>
@@ -432,7 +432,7 @@ export default function DebugPanel() {
                   )}
                 </div>
               ) : (
-                <p className="text-pro-warm-gray text-sm">Not tested yet</p>
+                <p className="text-graphite/60 text-sm">Not tested yet</p>
               )}
             </div>
           </div>

@@ -86,7 +86,7 @@ export default function SparklineChart({ data, color = DEFAULT_SPARKLINE_COLOR, 
 
   return (
     <div>
-      {label && <p className="font-sans text-xs font-medium text-pro-warm-gray mb-2">{label}</p>}
+      {label && <p className="font-sans text-xs font-medium text-graphite/60 mb-2">{label}</p>}
       <svg
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         className="w-full"

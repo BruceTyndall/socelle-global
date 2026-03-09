@@ -94,7 +94,7 @@ export default function BrandPipeline() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans text-sm">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans text-sm">No brand associated with your account.</p>
       </div>
     );
   }
@@ -102,20 +102,20 @@ export default function BrandPipeline() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl text-pro-navy">Pipeline</h1>
-        <p className="text-sm text-pro-warm-gray font-sans mt-1">
+        <h1 className="font-sans text-2xl text-graphite">Pipeline</h1>
+        <p className="text-sm text-graphite/60 font-sans mt-1">
           Unverified businesses that could become retailers. Flag as Potential Fit to track interest.
         </p>
       </div>
 
       {loading ? (
-        <div className="bg-white rounded-xl border border-pro-stone divide-y divide-pro-stone/50">
+        <div className="bg-white rounded-xl border border-accent-soft divide-y divide-accent-soft/50">
           {[1, 2, 3, 4, 5].map(i => (
             <div key={i} className="p-4 flex items-center gap-4 animate-pulse">
-              <div className="w-10 h-10 rounded-full bg-pro-stone/30" />
+              <div className="w-10 h-10 rounded-full bg-accent-soft/30" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 bg-pro-stone/30 rounded w-48" />
-                <div className="h-3 bg-pro-stone/30 rounded w-32" />
+                <div className="h-4 bg-accent-soft/30 rounded w-48" />
+                <div className="h-3 bg-accent-soft/30 rounded w-32" />
               </div>
             </div>
           ))}
@@ -127,27 +127,27 @@ export default function BrandPipeline() {
           description="When the platform seeds business listings (e.g. from Google Places or admin), they will appear here. You can then flag potential fits for outreach."
         />
       ) : (
-        <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+        <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm font-sans">
-              <thead className="border-b border-pro-stone bg-pro-ivory/50">
+              <thead className="border-b border-accent-soft bg-background/50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Business</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Location</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">Action</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-graphite/60 uppercase tracking-wider">Business</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-graphite/60 uppercase tracking-wider">Location</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-graphite/60 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-graphite/60 uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-pro-stone/50">
+              <tbody className="divide-y divide-accent-soft/50">
                 {businesses.map(b => (
-                  <tr key={b.id} className="hover:bg-pro-ivory/30 transition-colors">
+                  <tr key={b.id} className="hover:bg-background/30 transition-colors">
                     <td className="px-4 py-3.5">
                       <div>
-                        <p className="font-medium text-pro-charcoal">{b.name}</p>
-                        {b.type && <p className="text-xs text-pro-warm-gray">{b.type}</p>}
+                        <p className="font-medium text-graphite">{b.name}</p>
+                        {b.type && <p className="text-xs text-graphite/60">{b.type}</p>}
                       </div>
                     </td>
-                    <td className="px-4 py-3.5 text-pro-warm-gray">
+                    <td className="px-4 py-3.5 text-graphite/60">
                       {(b.city || b.state) ? (
                         <span className="inline-flex items-center gap-1">
                           <MapPin className="w-3.5 h-3.5" />

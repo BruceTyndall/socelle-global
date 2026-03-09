@@ -343,10 +343,10 @@ export default function BrandDetail() {
         <BusinessNav />
         <div className="section-container py-16">
           <div className="max-w-md mx-auto text-center">
-            <p className="text-pro-charcoal font-medium mb-2">{error || 'Brand not found'}</p>
+            <p className="text-graphite font-medium mb-2">{error || 'Brand not found'}</p>
             <Link
               to="/portal"
-              className="inline-flex items-center gap-2 text-pro-gold hover:text-pro-gold-light font-medium font-sans text-sm transition-colors"
+              className="inline-flex items-center gap-2 text-accent hover:text-accent-light font-medium font-sans text-sm transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Brands
@@ -382,7 +382,7 @@ export default function BrandDetail() {
       <BusinessNav />
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <div className="relative w-full h-64 sm:h-80 bg-pro-navy overflow-hidden">
+      <div className="relative w-full h-64 sm:h-80 bg-graphite overflow-hidden">
         {brand.hero_image_url ? (
           <img
             src={brand.hero_image_url}
@@ -390,7 +390,7 @@ export default function BrandDetail() {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-pro-navy via-pro-navy-dark to-pro-navy" />
+          <div className="w-full h-full bg-gradient-to-br from-graphite via-graphite-dark to-graphite" />
         )}
         {/* Dark gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/70" />
@@ -419,7 +419,7 @@ export default function BrandDetail() {
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h1 className="font-serif text-2xl sm:text-3xl text-white leading-tight">
+              <h1 className="font-sans text-2xl sm:text-3xl text-white leading-tight">
                 {brand.name}
               </h1>
               <span className="badge badge-gold inline-flex items-center gap-1 text-xs">
@@ -447,12 +447,12 @@ export default function BrandDetail() {
 
       {/* ── Unlock pricing bar (guests only) ──────────────────────── */}
       {!user && (
-        <div className="bg-pro-navy-dark text-white py-3 px-4 text-center font-sans text-sm">
-          <Lock className="w-4 h-4 inline-block mr-1.5 text-pro-gold" />
+        <div className="bg-graphite-dark text-white py-3 px-4 text-center font-sans text-sm">
+          <Lock className="w-4 h-4 inline-block mr-1.5 text-accent" />
           <span className="text-white/80">Unlock wholesale pricing and ordering — </span>
           <Link
             to="/portal/login"
-            className="text-pro-gold font-semibold hover:text-pro-gold-light transition-colors underline underline-offset-2"
+            className="text-accent font-semibold hover:text-accent-light transition-colors underline underline-offset-2"
           >
             Sign in free
           </Link>
@@ -465,8 +465,8 @@ export default function BrandDetail() {
         {/* About section */}
         {longDesc && (
           <div className="mb-8 max-w-3xl">
-            <h2 className="font-serif text-xl text-pro-navy mb-3">About {brand.name}</h2>
-            <p className="font-sans text-pro-warm-gray text-sm leading-relaxed">
+            <h2 className="font-sans text-xl text-graphite mb-3">About {brand.name}</h2>
+            <p className="font-sans text-graphite/60 text-sm leading-relaxed">
               {showReadMore && !aboutExpanded
                 ? longDesc.slice(0, ABOUT_CLAMP) + '…'
                 : longDesc}
@@ -474,7 +474,7 @@ export default function BrandDetail() {
             {showReadMore && (
               <button
                 onClick={() => setAboutExpanded((x) => !x)}
-                className="mt-2 inline-flex items-center gap-1 text-xs font-medium font-sans text-pro-navy hover:text-pro-gold transition-colors"
+                className="mt-2 inline-flex items-center gap-1 text-xs font-medium font-sans text-graphite hover:text-accent transition-colors"
               >
                 {aboutExpanded ? (
                   <>Show less <ChevronUp className="w-3 h-3" /></>
@@ -526,8 +526,8 @@ export default function BrandDetail() {
                 className={`
                   flex-shrink-0 px-4 py-2 rounded-full text-sm font-sans font-medium border transition-all duration-150
                   ${activeTab === tab.key
-                    ? 'bg-pro-navy text-white border-pro-navy'
-                    : 'bg-white text-pro-warm-gray border-pro-stone hover:border-pro-navy hover:text-pro-navy'
+                    ? 'bg-graphite text-white border-graphite'
+                    : 'bg-white text-graphite/60 border-accent-soft hover:border-graphite hover:text-graphite'
                   }
                 `}
               >
@@ -538,9 +538,9 @@ export default function BrandDetail() {
 
           {/* Product grid */}
           {filteredProducts.length === 0 ? (
-            <div className="text-center py-16 border border-dashed border-pro-stone rounded-xl">
-              <ShoppingBag className="w-12 h-12 text-pro-stone mx-auto mb-3" />
-              <p className="font-sans text-pro-warm-gray">No products in this category</p>
+            <div className="text-center py-16 border border-dashed border-accent-soft rounded-xl">
+              <ShoppingBag className="w-12 h-12 text-accent-soft mx-auto mb-3" />
+              <p className="font-sans text-graphite/60">No products in this category</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -571,8 +571,8 @@ export default function BrandDetail() {
         </div>
 
         {/* ── CTA Banner ────────────────────────────────────────── */}
-        <div className="mt-16 bg-pro-navy rounded-2xl p-8 sm:p-10 text-center">
-          <h2 className="font-serif text-2xl sm:text-3xl text-white mb-3">
+        <div className="mt-16 bg-graphite rounded-2xl p-8 sm:p-10 text-center">
+          <h2 className="font-sans text-2xl sm:text-3xl text-white mb-3">
             See how {brand.name} fits your service menu
           </h2>
           <p className="font-sans text-white/70 mb-6 max-w-2xl mx-auto text-sm leading-relaxed">
@@ -589,8 +589,8 @@ export default function BrandDetail() {
         </div>
 
         {/* ── Full Shop (BrandShop component) ──────────────────── */}
-        <div className="mt-16 border-t border-pro-stone pt-12">
-          <h2 className="font-serif text-2xl text-pro-navy mb-6">
+        <div className="mt-16 border-t border-accent-soft pt-12">
+          <h2 className="font-sans text-2xl text-graphite mb-6">
             Shop {brand.name}
           </h2>
           <BrandShop
@@ -604,23 +604,23 @@ export default function BrandDetail() {
 
         {/* Protocols panel (condensed) */}
         {protocols.length > 0 && (
-          <div className="mt-12 border-t border-pro-stone pt-10">
-            <h2 className="font-serif text-xl text-pro-navy mb-4">
+          <div className="mt-12 border-t border-accent-soft pt-10">
+            <h2 className="font-sans text-xl text-graphite mb-4">
               {protocols.length} Supported Protocols
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {protocols.map((p) => (
                 <div
                   key={p.id}
-                  className="flex items-start gap-3 p-4 bg-pro-cream rounded-lg border border-pro-stone"
+                  className="flex items-start gap-3 p-4 bg-accent-soft rounded-lg border border-accent-soft"
                 >
-                  <div className="w-1 h-full bg-pro-gold rounded-full flex-shrink-0 self-stretch" />
+                  <div className="w-1 h-full bg-accent rounded-full flex-shrink-0 self-stretch" />
                   <div className="min-w-0">
-                    <p className="font-sans font-medium text-pro-charcoal text-sm leading-snug">
+                    <p className="font-sans font-medium text-graphite text-sm leading-snug">
                       {p.protocol_name}
                     </p>
                     {p.duration_minutes && (
-                      <p className="text-xs text-pro-warm-gray mt-0.5">{p.duration_minutes} min</p>
+                      <p className="text-xs text-graphite/60 mt-0.5">{p.duration_minutes} min</p>
                     )}
                   </div>
                 </div>
@@ -631,16 +631,16 @@ export default function BrandDetail() {
 
         {/* Marketing events (condensed) */}
         {marketingItems.length > 0 && (
-          <div className="mt-12 border-t border-pro-stone pt-10 mb-16">
-            <h2 className="font-serif text-xl text-pro-navy mb-4">Upcoming Events &amp; Education</h2>
+          <div className="mt-12 border-t border-accent-soft pt-10 mb-16">
+            <h2 className="font-sans text-xl text-graphite mb-4">Upcoming Events &amp; Education</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {marketingItems.slice(0, 6).map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 bg-pro-cream rounded-lg border border-pro-stone"
+                  className="p-4 bg-accent-soft rounded-lg border border-accent-soft"
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <p className="font-sans font-medium text-pro-charcoal text-sm leading-snug">
+                    <p className="font-sans font-medium text-graphite text-sm leading-snug">
                       {item.event_name}
                     </p>
                     {item.event_type && (
@@ -648,7 +648,7 @@ export default function BrandDetail() {
                     )}
                   </div>
                   {item.start_date && (
-                    <p className="text-xs text-pro-warm-gray font-sans">
+                    <p className="text-xs text-graphite/60 font-sans">
                       {new Date(item.start_date).toLocaleDateString('en-US', {
                         year: 'numeric', month: 'short', day: 'numeric',
                       })}
@@ -662,14 +662,14 @@ export default function BrandDetail() {
 
         {/* ── Intelligence for This Brand ──────────────────────────── */}
         {slug && (
-          <div className="mt-12 border-t border-pro-stone pt-10 mb-16">
-            <div className="bg-pro-charcoal text-white rounded-xl p-6">
+          <div className="mt-12 border-t border-accent-soft pt-10 mb-16">
+            <div className="bg-graphite text-white rounded-xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                  <BarChart3 className="w-5 h-5 text-pro-gold" />
+                  <BarChart3 className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h2 className="font-serif text-xl text-white m-0">Intelligence for This Brand</h2>
+                  <h2 className="font-sans text-xl text-white m-0">Intelligence for This Brand</h2>
                   <p className="text-xs text-white/50 font-sans mt-0.5">Powered by Socelle Market Intelligence</p>
                 </div>
               </div>
@@ -678,7 +678,7 @@ export default function BrandDetail() {
                 {/* Peer comparison */}
                 <div className="bg-white/5 border border-white/10 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Users className="w-4 h-4 text-pro-gold" />
+                    <Users className="w-4 h-4 text-accent" />
                     <span className="text-xs font-sans font-semibold text-white/70 uppercase tracking-wide">Peer Comparison</span>
                   </div>
                   <p className="text-sm font-sans text-white leading-relaxed">
@@ -692,10 +692,10 @@ export default function BrandDetail() {
                 {/* Reorder frequency */}
                 <div className="bg-white/5 border border-white/10 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <RefreshCw className="w-4 h-4 text-pro-gold" />
+                    <RefreshCw className="w-4 h-4 text-accent" />
                     <span className="text-xs font-sans font-semibold text-white/70 uppercase tracking-wide">Reorder Cadence</span>
                   </div>
-                  <p className="text-2xl font-serif text-white mb-1">
+                  <p className="text-2xl font-sans text-white mb-1">
                     {getBrandReorderFrequency(slug).frequencyLabel}
                   </p>
                   <p className="text-xs font-sans text-white/50 leading-relaxed">
@@ -709,7 +709,7 @@ export default function BrandDetail() {
                 {/* Trending + Adoption */}
                 <div className="bg-white/5 border border-white/10 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-4 h-4 text-pro-gold" />
+                    <TrendingUp className="w-4 h-4 text-accent" />
                     <span className="text-xs font-sans font-semibold text-white/70 uppercase tracking-wide">Market Momentum</span>
                   </div>
                   {isBrandTrending(slug) ? (
@@ -743,7 +743,7 @@ export default function BrandDetail() {
                         key={i}
                         className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/8 text-white/80 text-xs font-sans rounded-full border border-white/10"
                       >
-                        <Star className="w-3 h-3 text-pro-gold" />
+                        <Star className="w-3 h-3 text-accent" />
                         {name}
                       </span>
                     ))}
@@ -759,7 +759,7 @@ export default function BrandDetail() {
       {itemCount > 0 && (
         <button
           onClick={() => setCartOpen(true)}
-          className="fixed bottom-6 right-6 bg-pro-navy text-white rounded-full px-5 py-3 shadow-navy hover:bg-pro-navy-dark transition-colors flex items-center gap-2 z-40"
+          className="fixed bottom-6 right-6 bg-graphite text-white rounded-full px-5 py-3 shadow-navy hover:bg-graphite-dark transition-colors flex items-center gap-2 z-40"
         >
           <ShoppingBag className="w-5 h-5" />
           <span className="font-sans font-semibold text-sm">{itemCount}</span>
@@ -790,14 +790,14 @@ export default function BrandDetail() {
           />
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-modal max-w-md w-full p-8 text-center animate-fade-in">
-              <div className="w-16 h-16 bg-pro-gold-pale rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-9 h-9 text-pro-gold" />
+              <div className="w-16 h-16 bg-accent-pale rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-9 h-9 text-accent" />
               </div>
-              <h2 className="font-serif text-2xl text-pro-navy mb-2">Order Submitted!</h2>
-              <p className="font-sans text-pro-warm-gray text-sm mb-1">
+              <h2 className="font-sans text-2xl text-graphite mb-2">Order Submitted!</h2>
+              <p className="font-sans text-graphite/60 text-sm mb-1">
                 Order #{successOrderNumber}
               </p>
-              <p className="font-sans text-pro-warm-gray text-sm mb-6">
+              <p className="font-sans text-graphite/60 text-sm mb-6">
                 Our team will review and confirm your order shortly.
               </p>
               <button

@@ -126,8 +126,8 @@ export function getBrandConciergeConfig(brandSlug?: string): BrandConciergeConfi
     description: 'I\'m your AI assistant. I can explain products, protocols, budgets, and implementation—all based on verified brand data.',
     disclaimer: 'Responses based on verified brand data only',
     accentColor: '#3b82f6',
-    gradientFrom: 'from-pro-navy',
-    gradientTo: 'to-pro-charcoal',
+    gradientFrom: 'from-graphite',
+    gradientTo: 'to-graphite',
   };
 }
 

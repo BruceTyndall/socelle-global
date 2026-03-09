@@ -40,7 +40,7 @@ export default function SignalFilter({ active, onChange }: SignalFilterProps) {
               onClick={() => onChange(key)}
               className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-sans font-medium transition-all duration-150 whitespace-nowrap min-h-touch ${
                 isActive
-                  ? 'bg-pro-navy text-white shadow-navy'
+                  ? 'bg-graphite text-white shadow-navy'
                   : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
               }`}
             >

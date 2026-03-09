@@ -59,7 +59,7 @@ export default function HubProtocols() {
     <div className="space-y-4">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-pro-navy text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
+        <div className="fixed bottom-6 right-6 z-50 bg-graphite text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
           {toast}
         </div>
       )}
@@ -73,7 +73,7 @@ export default function HubProtocols() {
 
       {/* Action Bar */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-pro-warm-gray font-sans">
+        <p className="text-sm text-graphite/60 font-sans">
           {protocols.length} treatment protocol{protocols.length !== 1 ? 's' : ''} linked to this brand
         </p>
         <Button
@@ -92,7 +92,7 @@ export default function HubProtocols() {
           return (
             <div
               key={protocol.id}
-              className="bg-white rounded-xl border border-pro-stone overflow-hidden transition-shadow hover:shadow-card"
+              className="bg-white rounded-xl border border-accent-soft overflow-hidden transition-shadow hover:shadow-card"
             >
               {/* Header */}
               <button
@@ -100,12 +100,12 @@ export default function HubProtocols() {
                 className="w-full flex items-center justify-between p-4 text-left"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="w-5 h-5 text-pro-navy" />
+                  <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="w-5 h-5 text-graphite" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-pro-charcoal font-sans text-sm">{protocol.name}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans mt-0.5 truncate max-w-md">
+                    <p className="font-medium text-graphite font-sans text-sm">{protocol.name}</p>
+                    <p className="text-xs text-graphite/60 font-sans mt-0.5 truncate max-w-md">
                       {protocol.products.length} product{protocol.products.length !== 1 ? 's' : ''} &middot; {protocol.skinConcerns.length} concern{protocol.skinConcerns.length !== 1 ? 's' : ''}
                     </p>
                   </div>
@@ -120,24 +120,24 @@ export default function HubProtocols() {
                     )}
                   </div>
                   {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-pro-warm-gray flex-shrink-0" />
+                    <ChevronUp className="w-4 h-4 text-graphite/60 flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-pro-warm-gray flex-shrink-0" />
+                    <ChevronDown className="w-4 h-4 text-graphite/60 flex-shrink-0" />
                   )}
                 </div>
               </button>
 
               {/* Expanded Content */}
               {isExpanded && (
-                <div className="border-t border-pro-stone px-4 pb-4">
+                <div className="border-t border-accent-soft px-4 pb-4">
                   {/* Description */}
-                  <p className="text-sm text-pro-warm-gray font-sans py-3">
+                  <p className="text-sm text-graphite/60 font-sans py-3">
                     {protocol.description}
                   </p>
 
                   {/* Skin Concerns */}
                   <div className="mb-4">
-                    <p className="text-xs font-semibold text-pro-charcoal font-sans uppercase tracking-wider mb-2">
+                    <p className="text-xs font-semibold text-graphite font-sans uppercase tracking-wider mb-2">
                       Skin Concerns
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -148,21 +148,21 @@ export default function HubProtocols() {
                   </div>
 
                   {/* Product Steps */}
-                  <p className="text-xs font-semibold text-pro-charcoal font-sans uppercase tracking-wider mb-2">
+                  <p className="text-xs font-semibold text-graphite font-sans uppercase tracking-wider mb-2">
                     Protocol Steps
                   </p>
                   <div className="space-y-0">
                     {protocol.products.map((product) => (
                       <div
                         key={product.step}
-                        className="flex items-start gap-3 py-2.5 border-b border-pro-stone/30 last:border-0"
+                        className="flex items-start gap-3 py-2.5 border-b border-accent-soft/30 last:border-0"
                       >
-                        <div className="w-7 h-7 rounded-full bg-pro-navy text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div className="w-7 h-7 rounded-full bg-graphite text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                           {product.step}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-pro-charcoal font-sans text-sm">{product.name}</p>
-                          <p className="text-xs text-pro-warm-gray font-sans mt-0.5">{product.usage}</p>
+                          <p className="font-medium text-graphite font-sans text-sm">{product.name}</p>
+                          <p className="text-xs text-graphite/60 font-sans mt-0.5">{product.usage}</p>
                         </div>
                       </div>
                     ))}
@@ -183,9 +183,9 @@ export default function HubProtocols() {
           {allConcerns.map(c => {
             const count = protocols.filter(p => p.skinConcerns.includes(c)).length;
             return (
-              <div key={c} className="flex items-center gap-1.5 px-3 py-1.5 bg-pro-cream rounded-full">
-                <span className="text-xs font-medium text-pro-charcoal font-sans">{c}</span>
-                <span className="text-[10px] font-bold text-pro-warm-gray font-sans bg-pro-stone rounded-full w-5 h-5 flex items-center justify-center">
+              <div key={c} className="flex items-center gap-1.5 px-3 py-1.5 bg-accent-soft rounded-full">
+                <span className="text-xs font-medium text-graphite font-sans">{c}</span>
+                <span className="text-[10px] font-bold text-graphite/60 font-sans bg-accent-soft rounded-full w-5 h-5 flex items-center justify-center">
                   {count}
                 </span>
               </div>
@@ -205,11 +205,11 @@ export default function HubProtocols() {
               onChange={e => setFormName(e.target.value)}
             />
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                 Description
               </label>
               <textarea
-                className="w-full px-4 py-2.5 rounded-xl border border-pro-stone bg-white font-sans text-sm text-pro-charcoal placeholder:text-pro-warm-gray/60 focus:outline-none focus:ring-2 focus:ring-pro-navy/15 focus:border-pro-navy resize-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-accent-soft bg-white font-sans text-sm text-graphite placeholder:text-graphite/60/60 focus:outline-none focus:ring-2 focus:ring-graphite/15 focus:border-graphite resize-none"
                 rows={3}
                 placeholder="Describe the treatment protocol, target outcomes, and ideal client profile..."
                 value={formDescription}

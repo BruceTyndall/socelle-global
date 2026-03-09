@@ -15,8 +15,8 @@ function Toggle({ on, onToggle, disabled }: { on: boolean; onToggle: () => void;
     <button
       onClick={onToggle}
       disabled={disabled}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-pro-navy/30 disabled:opacity-50 ${
-        on ? 'bg-pro-navy' : 'bg-pro-stone'
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-graphite/30 disabled:opacity-50 ${
+        on ? 'bg-graphite' : 'bg-accent-soft'
       }`}
       role="switch"
       aria-checked={on}
@@ -98,14 +98,14 @@ export default function HubSettings() {
   if (loading) {
     return (
       <div className="space-y-4 max-w-2xl">
-        <div className="h-40 bg-white rounded-xl border border-pro-stone animate-pulse" />
-        <div className="h-24 bg-white rounded-xl border border-pro-stone animate-pulse" />
+        <div className="h-40 bg-white rounded-xl border border-accent-soft animate-pulse" />
+        <div className="h-24 bg-white rounded-xl border border-accent-soft animate-pulse" />
       </div>
     );
   }
 
   if (!settings) {
-    return <p className="text-sm text-pro-warm-gray font-sans">Brand not found.</p>;
+    return <p className="text-sm text-graphite/60 font-sans">Brand not found.</p>;
   }
 
   const isArchived = settings.status === 'archived';
@@ -114,7 +114,7 @@ export default function HubSettings() {
     <div className="space-y-4 max-w-2xl">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-pro-navy text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
+        <div className="fixed bottom-6 right-6 z-50 bg-graphite text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
           {toast}
         </div>
       )}
@@ -122,16 +122,16 @@ export default function HubSettings() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-pro-warm-gray" />
+            <Shield className="w-4 h-4 text-graphite/60" />
             <CardTitle>Brand Settings</CardTitle>
           </div>
         </CardHeader>
 
         <div className="space-y-0">
-          <div className="flex items-center justify-between py-4 border-b border-pro-stone">
+          <div className="flex items-center justify-between py-4 border-b border-accent-soft">
             <div>
-              <p className="font-medium text-pro-charcoal font-sans text-sm">Public Storefront</p>
-              <p className="text-xs text-pro-warm-gray font-sans mt-0.5">
+              <p className="font-medium text-graphite font-sans text-sm">Public Storefront</p>
+              <p className="text-xs text-graphite/60 font-sans mt-0.5">
                 Show this brand on the public marketplace
               </p>
             </div>
@@ -144,8 +144,8 @@ export default function HubSettings() {
 
           <div className="flex items-center justify-between py-4">
             <div>
-              <p className="font-medium text-pro-charcoal font-sans text-sm">Status</p>
-              <p className="text-xs text-pro-warm-gray font-sans mt-0.5 capitalize">
+              <p className="font-medium text-graphite font-sans text-sm">Status</p>
+              <p className="text-xs text-graphite/60 font-sans mt-0.5 capitalize">
                 Current: <span className="font-medium">{settings.status}</span>
                 {settings.service_tier && ` · Tier: ${settings.service_tier}`}
               </p>
@@ -169,8 +169,8 @@ export default function HubSettings() {
           </CardHeader>
           <div className="flex items-center justify-between py-2">
             <div>
-              <p className="font-medium text-pro-charcoal font-sans text-sm">Archive Brand</p>
-              <p className="text-xs text-pro-warm-gray font-sans mt-0.5">
+              <p className="font-medium text-graphite font-sans text-sm">Archive Brand</p>
+              <p className="text-xs text-graphite/60 font-sans mt-0.5">
                 Removes from marketplace but preserves all data and history
               </p>
             </div>

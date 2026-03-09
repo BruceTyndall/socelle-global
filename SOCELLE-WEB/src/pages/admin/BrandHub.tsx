@@ -68,8 +68,8 @@ export default function BrandHub() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 w-48 bg-pro-stone rounded animate-pulse" />
-        <div className="h-32 bg-white rounded-xl border border-pro-stone animate-pulse" />
+        <div className="h-8 w-48 bg-accent-soft rounded animate-pulse" />
+        <div className="h-32 bg-white rounded-xl border border-accent-soft animate-pulse" />
       </div>
     );
   }
@@ -77,12 +77,12 @@ export default function BrandHub() {
   return (
     <div className="space-y-5">
       {/* Brand header */}
-      <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
         <div className="h-1.5" style={{ backgroundColor: accentColor }} />
         <div className="flex items-center gap-4 px-5 py-4">
           <button
             onClick={() => navigate('/admin/brands')}
-            className="p-1.5 rounded-lg text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-cream transition-colors"
+            className="p-1.5 rounded-lg text-graphite/60 hover:text-graphite hover:bg-accent-soft transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -94,7 +94,7 @@ export default function BrandHub() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="font-serif text-xl text-pro-navy truncate">
+              <h1 className="font-sans text-xl text-graphite truncate">
                 {brand?.name ?? 'Brand'}
               </h1>
               <Badge variant={isPublished ? 'green' : 'amber'} dot>
@@ -102,12 +102,12 @@ export default function BrandHub() {
               </Badge>
             </div>
             {brand && (
-              <p className="text-xs text-pro-warm-gray font-sans">/{brand.slug}</p>
+              <p className="text-xs text-graphite/60 font-sans">/{brand.slug}</p>
             )}
           </div>
           <Link
             to={`/brands`}
-            className="hidden sm:flex items-center gap-1.5 text-xs text-pro-warm-gray hover:text-pro-navy font-sans transition-colors"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-graphite/60 hover:text-graphite font-sans transition-colors"
           >
             View public page
             <ExternalLink className="w-3.5 h-3.5" />
@@ -115,7 +115,7 @@ export default function BrandHub() {
         </div>
 
         {/* Sub-nav tabs */}
-        <div className="flex items-center gap-0 border-t border-pro-stone overflow-x-auto px-4">
+        <div className="flex items-center gap-0 border-t border-accent-soft overflow-x-auto px-4">
           {HUB_TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = location.pathname.endsWith(`/${tab.path}`);
@@ -125,8 +125,8 @@ export default function BrandHub() {
                 to={`/admin/brands/${id}/${tab.path}`}
                 className={`flex items-center gap-2 px-3 py-3 text-sm font-medium font-sans whitespace-nowrap border-b-2 transition-colors -mb-px ${
                   isActive
-                    ? 'border-pro-navy text-pro-navy'
-                    : 'border-transparent text-pro-warm-gray hover:text-pro-charcoal'
+                    ? 'border-graphite text-graphite'
+                    : 'border-transparent text-graphite/60 hover:text-graphite'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />

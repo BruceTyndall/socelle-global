@@ -24,14 +24,14 @@ function actionIcon(type: ChatAction['type']) {
 function TypingIndicator() {
   return (
     <div className="flex items-start gap-2.5 max-w-[85%]">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pro-navy to-pro-gold flex items-center justify-center flex-shrink-0">
+      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-graphite to-accent flex items-center justify-center flex-shrink-0">
         <Brain className="w-3.5 h-3.5 text-white" />
       </div>
-      <div className="bg-white border border-pro-stone rounded-2xl rounded-tl-sm px-4 py-3">
+      <div className="bg-white border border-accent-soft rounded-2xl rounded-tl-sm px-4 py-3">
         <div className="flex items-center gap-1">
-          <span className="w-2 h-2 bg-pro-warm-gray/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="w-2 h-2 bg-pro-warm-gray/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="w-2 h-2 bg-pro-warm-gray/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="w-2 h-2 bg-graphite/60/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <span className="w-2 h-2 bg-graphite/60/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <span className="w-2 h-2 bg-graphite/60/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3 bg-gradient-to-r from-pro-gold to-yellow-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group sm:bottom-6 sm:right-6"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3 bg-gradient-to-r from-accent to-yellow-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group sm:bottom-6 sm:right-6"
         aria-label="Open Socelle Intelligence Advisor"
       >
         <Brain className="w-5 h-5 group-hover:animate-pulse" />
@@ -99,7 +99,7 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
   /* ── Expanded: Chat panel ───────────────────────────────── */
   return (
     <div
-      className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[400px] flex flex-col bg-white sm:rounded-2xl shadow-2xl border border-pro-stone/50 overflow-hidden"
+      className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[400px] flex flex-col bg-white sm:rounded-2xl shadow-2xl border border-accent-soft/50 overflow-hidden"
       style={{ height: '100dvh', maxHeight: '100dvh' }}
     >
       {/* Use CSS class for sm breakpoint height */}
@@ -110,10 +110,10 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
       `}</style>
       <div className="chat-panel-container flex flex-col" style={{ height: '100dvh', maxHeight: '100dvh' }}>
         {/* ── Header ──────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-pro-navy to-[#6B4F52] text-white flex-shrink-0">
+        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-graphite to-[#6B4F52] text-white flex-shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center">
-              <Brain className="w-4 h-4 text-pro-gold" />
+              <Brain className="w-4 h-4 text-accent" />
             </div>
             <div>
               <p className="font-sans font-semibold text-sm leading-tight">Socelle Intelligence Advisor</p>
@@ -149,17 +149,17 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
         </div>
 
         {/* ── Messages ────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-pro-ivory/50 min-h-0">
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-background/50 min-h-0">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.role === 'assistant' ? (
                 <div className="flex items-start gap-2.5 max-w-[85%]">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pro-navy to-pro-gold flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-graphite to-accent flex items-center justify-center flex-shrink-0 mt-0.5">
                     <Brain className="w-3.5 h-3.5 text-white" />
                   </div>
                   <div className="space-y-2">
-                    <div className="bg-white border border-pro-stone/60 rounded-2xl rounded-tl-sm px-4 py-3">
-                      <p className="text-sm text-pro-charcoal font-sans leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    <div className="bg-white border border-accent-soft/60 rounded-2xl rounded-tl-sm px-4 py-3">
+                      <p className="text-sm text-graphite font-sans leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                     </div>
 
                     {/* Action cards */}
@@ -169,7 +169,7 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
                           <button
                             key={i}
                             onClick={() => handleActionClick(action)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-pro-stone/60 rounded-full text-xs font-medium text-pro-navy hover:bg-pro-cream hover:border-pro-gold/40 transition-colors font-sans"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-accent-soft/60 rounded-full text-xs font-medium text-graphite hover:bg-accent-soft hover:border-accent/40 transition-colors font-sans"
                           >
                             {actionIcon(action.type)}
                             {action.label}
@@ -185,7 +185,7 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
                         className={`p-1 rounded transition-colors ${
                           msg.feedback === 'helpful'
                             ? 'text-green-600 bg-green-50'
-                            : 'text-pro-warm-gray/40 hover:text-green-600 hover:bg-green-50'
+                            : 'text-graphite/60/40 hover:text-green-600 hover:bg-green-50'
                         }`}
                         title="Helpful"
                         aria-label="Mark as helpful"
@@ -197,7 +197,7 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
                         className={`p-1 rounded transition-colors ${
                           msg.feedback === 'not_helpful'
                             ? 'text-red-500 bg-red-50'
-                            : 'text-pro-warm-gray/40 hover:text-red-500 hover:bg-red-50'
+                            : 'text-graphite/60/40 hover:text-red-500 hover:bg-red-50'
                         }`}
                         title="Not helpful"
                         aria-label="Mark as not helpful"
@@ -209,8 +209,8 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
                 </div>
               ) : (
                 <div className="max-w-[80%]">
-                  <div className="bg-pro-cream rounded-2xl rounded-tr-sm px-4 py-3">
-                    <p className="text-sm text-pro-charcoal font-sans leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                  <div className="bg-accent-soft rounded-2xl rounded-tr-sm px-4 py-3">
+                    <p className="text-sm text-graphite font-sans leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                   </div>
                 </div>
               )}
@@ -222,7 +222,7 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
         </div>
 
         {/* ── Input ───────────────────────────────────────── */}
-        <div className="border-t border-pro-stone bg-white px-4 py-3 flex-shrink-0">
+        <div className="border-t border-accent-soft bg-white px-4 py-3 flex-shrink-0">
           <div className="flex items-end gap-2">
             <textarea
               ref={inputRef}
@@ -231,19 +231,19 @@ export default function ChatPanel({ userRole, userName }: ChatPanelProps) {
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything..."
               rows={1}
-              className="flex-1 resize-none rounded-xl border border-pro-stone px-4 py-2.5 text-sm text-pro-charcoal placeholder:text-pro-warm-gray/50 focus:outline-none focus:border-pro-gold focus:ring-1 focus:ring-pro-gold/30 font-sans transition-colors"
+              className="flex-1 resize-none rounded-xl border border-accent-soft px-4 py-2.5 text-sm text-graphite placeholder:text-graphite/60/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 font-sans transition-colors"
               style={{ maxHeight: '80px' }}
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
-              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-pro-gold text-white hover:bg-pro-gold/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-accent text-white hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               aria-label="Send message"
             >
               <Send className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-[10px] text-pro-warm-gray/40 text-center mt-2 font-sans">
+          <p className="text-[10px] text-graphite/60/40 text-center mt-2 font-sans">
             Socelle AI provides intelligence-driven recommendations. Always verify clinical guidance.
           </p>
         </div>

@@ -53,21 +53,21 @@ const TIER_ICONS: Record<BrandTier, typeof Star> = {
 const TIER_COLORS: Record<BrandTier, { card: string; badge: string; button: string; border: string }> = {
   basic: {
     card: 'bg-white',
-    badge: 'bg-pro-stone/20 text-pro-warm-gray',
-    button: 'bg-pro-stone/30 text-pro-charcoal hover:bg-pro-stone/50',
-    border: 'border-pro-stone',
+    badge: 'bg-accent-soft/20 text-graphite/60',
+    button: 'bg-accent-soft/30 text-graphite hover:bg-accent-soft/50',
+    border: 'border-accent-soft',
   },
   professional: {
-    card: 'bg-white ring-2 ring-pro-gold/40',
-    badge: 'bg-pro-gold/10 text-pro-gold',
-    button: 'bg-pro-gold text-white hover:bg-pro-gold/90',
-    border: 'border-pro-gold',
+    card: 'bg-white ring-2 ring-accent/40',
+    badge: 'bg-accent/10 text-accent',
+    button: 'bg-accent text-white hover:bg-accent/90',
+    border: 'border-accent',
   },
   enterprise: {
-    card: 'bg-white ring-2 ring-pro-navy/30',
-    badge: 'bg-pro-navy/10 text-pro-navy',
-    button: 'bg-pro-navy text-white hover:bg-pro-navy/90',
-    border: 'border-pro-navy',
+    card: 'bg-white ring-2 ring-graphite/30',
+    badge: 'bg-graphite/10 text-graphite',
+    button: 'bg-graphite text-white hover:bg-graphite/90',
+    border: 'border-graphite',
   },
 };
 
@@ -101,10 +101,10 @@ export default function IntelligencePricing() {
       <div className="max-w-6xl mx-auto space-y-12">
         {/* ── Header ──────────────────────────────────────────── */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold font-playfair text-pro-charcoal">
+          <h1 className="text-3xl font-bold font-playfair text-graphite">
             Intelligence Plans
           </h1>
-          <p className="mt-2 text-pro-warm-gray max-w-2xl mx-auto">
+          <p className="mt-2 text-graphite/60 max-w-2xl mx-auto">
             Choose the intelligence tier that matches your brand&apos;s growth stage.
             Upgrade or downgrade anytime — no long-term commitment.
           </p>
@@ -126,7 +126,7 @@ export default function IntelligencePricing() {
                 {/* Popular badge */}
                 {plan.highlight && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-pro-gold text-white text-xs font-semibold px-3 py-1 rounded-full">
+                    <span className="bg-accent text-white text-xs font-semibold px-3 py-1 rounded-full">
                       {plan.highlight}
                     </span>
                   </div>
@@ -142,35 +142,35 @@ export default function IntelligencePricing() {
                 )}
 
                 <div className="flex items-center gap-2 mb-4">
-                  <Icon className={`w-5 h-5 ${plan.tier === 'professional' ? 'text-pro-gold' : plan.tier === 'enterprise' ? 'text-pro-navy' : 'text-pro-warm-gray'}`} />
-                  <h2 className="text-xl font-semibold text-pro-charcoal">{plan.name}</h2>
+                  <Icon className={`w-5 h-5 ${plan.tier === 'professional' ? 'text-accent' : plan.tier === 'enterprise' ? 'text-graphite' : 'text-graphite/60'}`} />
+                  <h2 className="text-xl font-semibold text-graphite">{plan.name}</h2>
                 </div>
 
                 <div className="mb-4">
                   {plan.monthlyPrice === 0 ? (
-                    <div className="text-3xl font-bold text-pro-charcoal">Free</div>
+                    <div className="text-3xl font-bold text-graphite">Free</div>
                   ) : (
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-pro-charcoal">
+                      <span className="text-3xl font-bold text-graphite">
                         ${plan.monthlyPrice}
                       </span>
-                      <span className="text-pro-warm-gray text-sm">/month</span>
+                      <span className="text-graphite/60 text-sm">/month</span>
                     </div>
                   )}
                 </div>
 
-                <p className="text-sm text-pro-warm-gray mb-6 flex-grow">{plan.description}</p>
+                <p className="text-sm text-graphite/60 mb-6 flex-grow">{plan.description}</p>
 
                 {/* Feature summary */}
                 <ul className="space-y-2 mb-6">
                   {tierFeatures.slice(0, 6).map((f) => (
                     <li key={f.key} className="flex items-start gap-2 text-sm">
                       <Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-pro-charcoal">{f.name}</span>
+                      <span className="text-graphite">{f.name}</span>
                     </li>
                   ))}
                   {tierFeatures.length > 6 && (
-                    <li className="text-sm text-pro-warm-gray pl-6">
+                    <li className="text-sm text-graphite/60 pl-6">
                       +{tierFeatures.length - 6} more features
                     </li>
                   )}
@@ -182,7 +182,7 @@ export default function IntelligencePricing() {
                   disabled={isCurrentPlan}
                   className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-colors ${
                     isCurrentPlan
-                      ? 'bg-pro-stone/20 text-pro-warm-gray cursor-not-allowed'
+                      ? 'bg-accent-soft/20 text-graphite/60 cursor-not-allowed'
                       : colors.button
                   }`}
                 >
@@ -198,20 +198,20 @@ export default function IntelligencePricing() {
 
         {/* ── Feature Comparison Table ────────────────────────── */}
         <div>
-          <h2 className="text-2xl font-bold font-playfair text-pro-charcoal text-center mb-8">
+          <h2 className="text-2xl font-bold font-playfair text-graphite text-center mb-8">
             Full Feature Comparison
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b-2 border-pro-stone">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-pro-charcoal w-1/3">
+                <tr className="border-b-2 border-accent-soft">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-graphite w-1/3">
                     Feature
                   </th>
                   {pricing.map((p) => (
                     <th
                       key={p.tier}
-                      className="py-3 px-4 text-center text-sm font-semibold text-pro-charcoal"
+                      className="py-3 px-4 text-center text-sm font-semibold text-graphite"
                     >
                       {p.name}
                       {p.tier === currentTier && (
@@ -226,26 +226,26 @@ export default function IntelligencePricing() {
                   const catFeatures = features.filter((f) => f.category === cat);
                   return (
                     <tbody key={cat}>
-                      <tr className="bg-pro-ivory/50">
+                      <tr className="bg-background/50">
                         <td
                           colSpan={4}
-                          className="py-2 px-4 text-xs font-semibold uppercase tracking-wider text-pro-warm-gray"
+                          className="py-2 px-4 text-xs font-semibold uppercase tracking-wider text-graphite/60"
                         >
                           {CATEGORY_LABELS[cat]}
                         </td>
                       </tr>
                       {catFeatures.map((f) => (
-                        <tr key={f.key} className="border-b border-pro-stone/30 hover:bg-pro-ivory/30">
+                        <tr key={f.key} className="border-b border-accent-soft/30 hover:bg-background/30">
                           <td className="py-3 px-4">
-                            <div className="text-sm font-medium text-pro-charcoal">{f.name}</div>
-                            <div className="text-xs text-pro-warm-gray">{f.description}</div>
+                            <div className="text-sm font-medium text-graphite">{f.name}</div>
+                            <div className="text-xs text-graphite/60">{f.description}</div>
                           </td>
                           {(['basic', 'professional', 'enterprise'] as BrandTier[]).map((tier) => (
                             <td key={tier} className="py-3 px-4 text-center">
                               {f.includedIn[tier] ? (
                                 <Check className="w-5 h-5 text-emerald-500 mx-auto" />
                               ) : (
-                                <X className="w-5 h-5 text-pro-stone mx-auto" />
+                                <X className="w-5 h-5 text-accent-soft mx-auto" />
                               )}
                             </td>
                           ))}
@@ -261,25 +261,25 @@ export default function IntelligencePricing() {
 
         {/* ── FAQ Section ─────────────────────────────────────── */}
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold font-playfair text-pro-charcoal text-center mb-8">
+          <h2 className="text-2xl font-bold font-playfair text-graphite text-center mb-8">
             Frequently Asked Questions
           </h2>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
-              <div key={i} className="border border-pro-stone/30 rounded-lg overflow-hidden">
+              <div key={i} className="border border-accent-soft/30 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between py-4 px-5 text-left hover:bg-pro-ivory/50 transition-colors"
+                  className="w-full flex items-center justify-between py-4 px-5 text-left hover:bg-background/50 transition-colors"
                 >
-                  <span className="text-sm font-medium text-pro-charcoal">{faq.q}</span>
+                  <span className="text-sm font-medium text-graphite">{faq.q}</span>
                   {openFaq === i ? (
-                    <ChevronUp className="w-4 h-4 text-pro-warm-gray flex-shrink-0" />
+                    <ChevronUp className="w-4 h-4 text-graphite/60 flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-pro-warm-gray flex-shrink-0" />
+                    <ChevronDown className="w-4 h-4 text-graphite/60 flex-shrink-0" />
                   )}
                 </button>
                 {openFaq === i && (
-                  <div className="px-5 pb-4 text-sm text-pro-warm-gray">{faq.a}</div>
+                  <div className="px-5 pb-4 text-sm text-graphite/60">{faq.a}</div>
                 )}
               </div>
             ))}

@@ -10,9 +10,9 @@ const TYPE_COLORS: Record<string, string> = {
   spa: 'bg-blue-50 text-blue-700',
   medspa: 'bg-green-50 text-green-700',
   clinic: 'bg-teal-50 text-teal-700',
-  supplier: 'bg-pro-gold/10 text-pro-gold',
+  supplier: 'bg-accent/10 text-accent',
   distributor: 'bg-accent/10 text-accent',
-  other: 'bg-pro-stone/20 text-pro-warm-gray',
+  other: 'bg-accent-soft/20 text-graphite/60',
 };
 
 export default function CompanyList() {
@@ -34,8 +34,8 @@ export default function CompanyList() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-pro-charcoal">Companies</h1>
-          <p className="text-sm text-pro-warm-gray mt-1">{companies.length} companies</p>
+          <h1 className="text-2xl font-semibold text-graphite">Companies</h1>
+          <p className="text-sm text-graphite/60 mt-1">{companies.length} companies</p>
         </div>
         <div className="flex items-center gap-2">
           {!isLive && !loading && (
@@ -55,7 +55,7 @@ export default function CompanyList() {
               employee_count: c.employee_count ?? '',
               created_at: c.created_at,
             })), 'crm_companies')}
-            className="h-9 px-3 text-xs font-medium text-pro-warm-gray border border-pro-stone/30 rounded-full hover:border-accent/30 transition-colors inline-flex items-center gap-1"
+            className="h-9 px-3 text-xs font-medium text-graphite/60 border border-accent-soft/30 rounded-full hover:border-accent/30 transition-colors inline-flex items-center gap-1"
           >
             <Download className="w-3.5 h-3.5" /> CSV
           </button>
@@ -67,43 +67,43 @@ export default function CompanyList() {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pro-warm-gray" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/60" />
         <input
           type="text"
           placeholder="Search companies..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full h-10 pl-9 pr-4 bg-white border border-pro-stone/30 rounded-lg text-sm text-pro-charcoal placeholder:text-pro-warm-gray focus:outline-none focus:border-accent/50"
+          className="w-full h-10 pl-9 pr-4 bg-white border border-accent-soft/30 rounded-lg text-sm text-graphite placeholder:text-graphite/60 focus:outline-none focus:border-accent/50"
         />
       </div>
 
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white rounded-xl border border-pro-stone/30 p-4 animate-pulse">
-              <div className="h-4 bg-pro-stone/20 rounded w-40 mb-2" />
-              <div className="h-3 bg-pro-stone/20 rounded w-60" />
+            <div key={i} className="bg-white rounded-xl border border-accent-soft/30 p-4 animate-pulse">
+              <div className="h-4 bg-accent-soft/20 rounded w-40 mb-2" />
+              <div className="h-3 bg-accent-soft/20 rounded w-60" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border border-pro-stone/30 p-8 text-center">
-          <Building2 className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-          <p className="text-sm text-pro-warm-gray">No companies found</p>
+        <div className="bg-white rounded-xl border border-accent-soft/30 p-8 text-center">
+          <Building2 className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+          <p className="text-sm text-graphite/60">No companies found</p>
         </div>
       ) : (
         <div className="space-y-2">
           {filtered.map(company => (
-            <Link key={company.id} to={`/portal/crm/companies/${company.id}`} className="block bg-white rounded-xl border border-pro-stone/30 p-4 hover:border-accent/30 transition-colors">
+            <Link key={company.id} to={`/portal/crm/companies/${company.id}`} className="block bg-white rounded-xl border border-accent-soft/30 p-4 hover:border-accent/30 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-pro-charcoal">{company.name}</p>
+                    <p className="text-sm font-medium text-graphite">{company.name}</p>
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${TYPE_COLORS[company.type] ?? TYPE_COLORS.other}`}>
                       {company.type}
                     </span>
                   </div>
-                  <p className="text-xs text-pro-warm-gray mt-0.5">
+                  <p className="text-xs text-graphite/60 mt-0.5">
                     {[company.industry, company.city, company.state].filter(Boolean).join(' · ') || 'No details'}
                   </p>
                 </div>

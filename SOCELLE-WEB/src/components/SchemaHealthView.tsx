@@ -98,7 +98,7 @@ export default function SchemaHealthView() {
       case 'FAIL':
         return 'bg-red-50 border-red-200 text-red-800';
       default:
-        return 'bg-pro-ivory border-pro-stone text-pro-charcoal';
+        return 'bg-background border-accent-soft text-graphite';
     }
   };
 
@@ -111,8 +111,8 @@ export default function SchemaHealthView() {
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-pro-navy border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-pro-warm-gray">Running schema health check...</p>
+            <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-graphite/60">Running schema health check...</p>
           </div>
         </div>
       </div>
@@ -123,16 +123,16 @@ export default function SchemaHealthView() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Shield className="w-8 h-8 text-pro-charcoal" />
+          <Shield className="w-8 h-8 text-graphite" />
           <div>
-            <h2 className="text-2xl font-semibold text-pro-charcoal">Schema Health Check</h2>
-            <p className="text-sm text-pro-warm-gray">Verify database structure and detect schema drift</p>
+            <h2 className="text-2xl font-semibold text-graphite">Schema Health Check</h2>
+            <p className="text-sm text-graphite/60">Verify database structure and detect schema drift</p>
           </div>
         </div>
 
         <button
           onClick={performHealthCheck}
-          className="px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal flex items-center gap-2"
+          className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite flex items-center gap-2"
         >
           <RefreshCw className="w-5 h-5" />
           Re-check
@@ -146,7 +146,7 @@ export default function SchemaHealthView() {
             summary.overallStatus === 'WARN' ? 'bg-amber-50 border-amber-200' :
             'bg-red-50 border-red-200'
           }`}>
-            <div className="text-sm font-medium text-pro-charcoal mb-1">Overall Status</div>
+            <div className="text-sm font-medium text-graphite mb-1">Overall Status</div>
             <div className={`text-2xl font-bold ${
               summary.overallStatus === 'PASS' ? 'text-green-700' :
               summary.overallStatus === 'WARN' ? 'text-amber-700' :
@@ -157,54 +157,54 @@ export default function SchemaHealthView() {
           </div>
 
           <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-            <div className="text-sm font-medium text-pro-charcoal mb-1">Passed</div>
+            <div className="text-sm font-medium text-graphite mb-1">Passed</div>
             <div className="text-2xl font-bold text-green-700">{summary.passCount}</div>
           </div>
 
           <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4">
-            <div className="text-sm font-medium text-pro-charcoal mb-1">Warnings</div>
+            <div className="text-sm font-medium text-graphite mb-1">Warnings</div>
             <div className="text-2xl font-bold text-amber-700">{summary.warningCount}</div>
           </div>
 
           <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
-            <div className="text-sm font-medium text-pro-charcoal mb-1">Failures</div>
+            <div className="text-sm font-medium text-graphite mb-1">Failures</div>
             <div className="text-2xl font-bold text-red-700">{summary.failureCount}</div>
           </div>
         </div>
       )}
 
       {lastChecked && (
-        <div className="text-sm text-pro-warm-gray mb-4">
+        <div className="text-sm text-graphite/60 mb-4">
           Last checked: {lastChecked.toLocaleString()}
         </div>
       )}
 
       {protocolStatus && (
-        <div className="bg-white rounded-xl shadow-sm border border-pro-stone p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-accent-soft p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <FileText className="w-6 h-6 text-pro-charcoal" />
+            <FileText className="w-6 h-6 text-graphite" />
             <div>
-              <h3 className="text-lg font-semibold text-pro-charcoal">Protocol Completion Status</h3>
-              <p className="text-sm text-pro-warm-gray">Track protocol step and product completion</p>
+              <h3 className="text-lg font-semibold text-graphite">Protocol Completion Status</h3>
+              <p className="text-sm text-graphite/60">Track protocol step and product completion</p>
             </div>
           </div>
 
           <div className="grid grid-cols-4 gap-4 mb-6">
-            <div className="bg-pro-cream border border-pro-stone rounded-lg p-4">
-              <div className="text-sm font-medium text-pro-charcoal mb-1">Total Protocols</div>
-              <div className="text-2xl font-bold text-pro-charcoal">{protocolStatus.totalProtocols}</div>
+            <div className="bg-accent-soft border border-accent-soft rounded-lg p-4">
+              <div className="text-sm font-medium text-graphite mb-1">Total Protocols</div>
+              <div className="text-2xl font-bold text-graphite">{protocolStatus.totalProtocols}</div>
             </div>
 
             <div className={`border rounded-lg p-4 ${
-              protocolStatus.withSteps > 0 ? 'bg-green-50 border-green-200' : 'bg-pro-ivory border-pro-stone'
+              protocolStatus.withSteps > 0 ? 'bg-green-50 border-green-200' : 'bg-background border-accent-soft'
             }`}>
-              <div className="text-sm font-medium text-pro-charcoal mb-1">With Steps</div>
+              <div className="text-sm font-medium text-graphite mb-1">With Steps</div>
               <div className={`text-2xl font-bold ${
-                protocolStatus.withSteps > 0 ? 'text-green-700' : 'text-pro-charcoal'
+                protocolStatus.withSteps > 0 ? 'text-green-700' : 'text-graphite'
               }`}>
                 {protocolStatus.withSteps}
               </div>
-              <div className="text-xs text-pro-warm-gray mt-1">
+              <div className="text-xs text-graphite/60 mt-1">
                 {protocolStatus.totalProtocols > 0
                   ? Math.round((protocolStatus.withSteps / protocolStatus.totalProtocols) * 100)
                   : 0}% complete
@@ -212,15 +212,15 @@ export default function SchemaHealthView() {
             </div>
 
             <div className={`border rounded-lg p-4 ${
-              protocolStatus.withProducts > 0 ? 'bg-green-50 border-green-200' : 'bg-pro-ivory border-pro-stone'
+              protocolStatus.withProducts > 0 ? 'bg-green-50 border-green-200' : 'bg-background border-accent-soft'
             }`}>
-              <div className="text-sm font-medium text-pro-charcoal mb-1">With Products</div>
+              <div className="text-sm font-medium text-graphite mb-1">With Products</div>
               <div className={`text-2xl font-bold ${
-                protocolStatus.withProducts > 0 ? 'text-green-700' : 'text-pro-charcoal'
+                protocolStatus.withProducts > 0 ? 'text-green-700' : 'text-graphite'
               }`}>
                 {protocolStatus.withProducts}
               </div>
-              <div className="text-xs text-pro-warm-gray mt-1">
+              <div className="text-xs text-graphite/60 mt-1">
                 {protocolStatus.totalProtocols > 0
                   ? Math.round((protocolStatus.withProducts / protocolStatus.totalProtocols) * 100)
                   : 0}% complete
@@ -230,7 +230,7 @@ export default function SchemaHealthView() {
             <div className={`border rounded-lg p-4 ${
               protocolStatus.incompleteProtocols.length > 0 ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'
             }`}>
-              <div className="text-sm font-medium text-pro-charcoal mb-1">Incomplete</div>
+              <div className="text-sm font-medium text-graphite mb-1">Incomplete</div>
               <div className={`text-2xl font-bold ${
                 protocolStatus.incompleteProtocols.length > 0 ? 'text-amber-700' : 'text-green-700'
               }`}>
@@ -240,8 +240,8 @@ export default function SchemaHealthView() {
           </div>
 
           {protocolStatus.incompleteProtocols.length > 0 && (
-            <div className="border-t border-pro-stone pt-4">
-              <h4 className="font-semibold text-pro-charcoal mb-3">
+            <div className="border-t border-accent-soft pt-4">
+              <h4 className="font-semibold text-graphite mb-3">
                 Protocols Without Steps ({protocolStatus.incompleteProtocols.length})
               </h4>
               <div className="max-h-64 overflow-y-auto space-y-2">
@@ -251,15 +251,15 @@ export default function SchemaHealthView() {
                     className="flex items-center justify-between p-2 bg-amber-50 border border-amber-200 rounded text-sm"
                   >
                     <div>
-                      <span className="font-medium text-pro-charcoal">{protocol.protocol_name}</span>
-                      <span className="ml-2 text-xs text-pro-warm-gray">({protocol.category})</span>
+                      <span className="font-medium text-graphite">{protocol.protocol_name}</span>
+                      <span className="ml-2 text-xs text-graphite/60">({protocol.category})</span>
                     </div>
                     <span className="text-xs text-amber-600 font-medium">Needs completion</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-3 text-sm text-pro-warm-gray">
-                Use <span className="font-mono bg-pro-stone px-2 py-0.5 rounded">/admin/protocols</span> to complete these protocols
+              <div className="mt-3 text-sm text-graphite/60">
+                Use <span className="font-mono bg-accent-soft px-2 py-0.5 rounded">/admin/protocols</span> to complete these protocols
               </div>
             </div>
           )}

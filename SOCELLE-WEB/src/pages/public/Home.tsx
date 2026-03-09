@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    Home.tsx — WO-OVERHAUL-03 Phase 3: Site Rebuild
    Cinematic landing page with real brand media + live data hooks.
-   Pearl Mineral V2 tokens only — no pro-*, no font-serif, no hardcoded hex.
+   Pearl Mineral V2 tokens only — no pro-*, no font-sans, no hardcoded hex.
 
    Data surfaces:
    - KPI Strip: LIVE when usePlatformStats/useDataFeedStats connect, DEMO otherwise

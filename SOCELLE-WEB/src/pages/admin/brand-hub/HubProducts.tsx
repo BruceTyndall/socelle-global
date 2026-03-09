@@ -52,9 +52,9 @@ export default function HubProducts() {
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-3 gap-4">
-          {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-pro-stone animate-pulse" />)}
+          {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-accent-soft animate-pulse" />)}
         </div>
-        <div className="h-64 bg-white rounded-xl border border-pro-stone animate-pulse" />
+        <div className="h-64 bg-white rounded-xl border border-accent-soft animate-pulse" />
       </div>
     );
   }
@@ -70,42 +70,42 @@ export default function HubProducts() {
         <StatCard label="Out of Stock"   value={outOfStock} />
       </div>
 
-      <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
         {products.length === 0 ? (
           <EmptyState icon={Package} title="No products" description="Products added by this brand will appear here." />
         ) : (
           <table className="w-full text-sm font-sans">
-            <thead className="border-b border-pro-stone">
+            <thead className="border-b border-accent-soft">
               <tr>
                 {['Product', 'SKU', 'Type', 'MSRP', 'Wholesale', 'Stock', 'Status'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-pro-warm-gray uppercase tracking-wider">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-graphite/60 uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-pro-stone/60">
+            <tbody className="divide-y divide-accent-soft/60">
               {products.map(p => (
-                <tr key={`${p.productType}-${p.id}`} className="hover:bg-pro-ivory/50 transition-colors">
+                <tr key={`${p.productType}-${p.id}`} className="hover:bg-background/50 transition-colors">
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                        <Package className="w-4 h-4 text-pro-warm-gray" />
+                      <div className="w-8 h-8 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                        <Package className="w-4 h-4 text-graphite/60" />
                       </div>
-                      <span className="font-medium text-pro-charcoal">{p.name}</span>
+                      <span className="font-medium text-graphite">{p.name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3.5 font-mono text-xs text-pro-warm-gray">{p.sku ?? '—'}</td>
+                  <td className="px-4 py-3.5 font-mono text-xs text-graphite/60">{p.sku ?? '—'}</td>
                   <td className="px-4 py-3.5">
                     <Badge variant={p.productType === 'PRO' ? 'navy' : 'gold'}>{p.productType}</Badge>
                   </td>
-                  <td className="px-4 py-3.5 text-pro-charcoal">
+                  <td className="px-4 py-3.5 text-graphite">
                     {p.msrp_price != null ? `$${p.msrp_price}` : '—'}
                   </td>
-                  <td className="px-4 py-3.5 text-pro-charcoal">
+                  <td className="px-4 py-3.5 text-graphite">
                     {p.wholesale_price != null ? `$${p.wholesale_price}` : '—'}
                   </td>
                   <td className="px-4 py-3.5">
                     {p.stock_quantity != null ? (
-                      <span className={`font-semibold ${p.stock_quantity === 0 ? 'text-red-500' : 'text-pro-charcoal'}`}>
+                      <span className={`font-semibold ${p.stock_quantity === 0 ? 'text-red-500' : 'text-graphite'}`}>
                         {p.stock_quantity}
                       </span>
                     ) : '—'}

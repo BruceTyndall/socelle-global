@@ -21,21 +21,21 @@ function formatValue(value: number, format: MetricCardProps['format']): string {
 
 export default function MetricCard({ label, kpi, format = 'number', icon }: MetricCardProps) {
   const TrendIcon = kpi.direction === 'up' ? TrendingUp : kpi.direction === 'down' ? TrendingDown : Minus;
-  const trendColor = kpi.direction === 'up' ? 'text-pro-navy' : kpi.direction === 'down' ? 'text-red-500' : 'text-pro-warm-gray';
-  const trendBg = kpi.direction === 'up' ? 'bg-pro-cream' : kpi.direction === 'down' ? 'bg-red-50' : 'bg-pro-cream';
+  const trendColor = kpi.direction === 'up' ? 'text-graphite' : kpi.direction === 'down' ? 'text-red-500' : 'text-graphite/60';
+  const trendBg = kpi.direction === 'up' ? 'bg-accent-soft' : kpi.direction === 'down' ? 'bg-red-50' : 'bg-accent-soft';
 
   return (
     <div className="card p-5">
       <div className="flex items-start justify-between mb-3">
-        <p className="font-sans text-xs font-medium text-pro-warm-gray uppercase tracking-wide">
+        <p className="font-sans text-xs font-medium text-graphite/60 uppercase tracking-wide">
           {label}
         </p>
         {icon && (
-          <span className="text-pro-warm-gray">{icon}</span>
+          <span className="text-graphite/60">{icon}</span>
         )}
       </div>
 
-      <p className="font-serif text-2xl text-pro-navy mb-2">
+      <p className="font-sans text-2xl text-graphite mb-2">
         {formatValue(kpi.value, format)}
       </p>
 

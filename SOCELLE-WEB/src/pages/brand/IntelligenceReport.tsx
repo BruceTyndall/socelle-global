@@ -35,7 +35,7 @@ const SECTION_COLORS: Record<string, string> = {
   'reseller-health': 'bg-emerald-50 text-emerald-700 border-emerald-200',
   'category-trends': 'bg-purple-50 text-purple-700 border-purple-200',
   'competitive-landscape': 'bg-amber-50 text-amber-700 border-amber-200',
-  recommendations: 'bg-pro-gold/10 text-pro-gold border-pro-gold/30',
+  recommendations: 'bg-accent/10 text-accent border-accent/30',
 };
 
 interface MarketSignalRow {
@@ -68,7 +68,7 @@ interface ReportJobRow {
 function TrendIcon({ trend }: { trend?: 'up' | 'down' | 'flat' }) {
   if (trend === 'up') return <TrendingUp className="w-4 h-4 text-emerald-600" />;
   if (trend === 'down') return <TrendingDown className="w-4 h-4 text-red-500" />;
-  return <Minus className="w-4 h-4 text-pro-warm-gray" />;
+  return <Minus className="w-4 h-4 text-graphite/60" />;
 }
 
 function formatReportDate(dateStr: string): string {
@@ -269,10 +269,10 @@ function buildReports(signals: MarketSignalRow[], brandId: string, brandName: st
 
 function SectionCard({ section }: { section: ReportSection }) {
   const Icon = SECTION_ICONS[section.id] || FileText;
-  const colorClass = SECTION_COLORS[section.id] || 'bg-pro-ivory text-pro-charcoal border-pro-stone';
+  const colorClass = SECTION_COLORS[section.id] || 'bg-background text-graphite border-accent-soft';
 
   return (
-    <div className="bg-white border border-pro-stone/30 rounded-xl overflow-hidden">
+    <div className="bg-white border border-accent-soft/30 rounded-xl overflow-hidden">
       <div className={`flex items-center gap-3 px-6 py-4 border-b ${colorClass} border`}>
         <Icon className="w-5 h-5 flex-shrink-0" />
         <h3 className="font-semibold">{section.title}</h3>
@@ -286,11 +286,11 @@ function SectionCard({ section }: { section: ReportSection }) {
       </div>
 
       <div className="px-6 py-5 space-y-4">
-        <p className="text-sm text-pro-charcoal leading-relaxed">{section.summary}</p>
+        <p className="text-sm text-graphite leading-relaxed">{section.summary}</p>
         <ul className="space-y-2">
           {section.details.map((detail, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-pro-warm-gray">
-              <ChevronRight className="w-4 h-4 text-pro-gold mt-0.5 flex-shrink-0" />
+            <li key={i} className="flex items-start gap-2 text-sm text-graphite/60">
+              <ChevronRight className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
               <span>{detail}</span>
             </li>
           ))}
@@ -455,9 +455,9 @@ export default function IntelligenceReport() {
   if (loading) {
     return (
       <div className="text-center py-20">
-        <Clock className="w-12 h-12 text-pro-stone mx-auto mb-4 animate-pulse" />
-        <h2 className="text-xl font-semibold text-pro-charcoal">Loading Report...</h2>
-        <p className="text-pro-warm-gray mt-2">Compiling live market signals for your brand.</p>
+        <Clock className="w-12 h-12 text-accent-soft mx-auto mb-4 animate-pulse" />
+        <h2 className="text-xl font-semibold text-graphite">Loading Report...</h2>
+        <p className="text-graphite/60 mt-2">Compiling live market signals for your brand.</p>
       </div>
     );
   }
@@ -466,8 +466,8 @@ export default function IntelligenceReport() {
     return (
       <div className="text-center py-20">
         <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-pro-charcoal">Unable to Load Report</h2>
-        <p className="text-pro-warm-gray mt-2">{error}</p>
+        <h2 className="text-xl font-semibold text-graphite">Unable to Load Report</h2>
+        <p className="text-graphite/60 mt-2">{error}</p>
       </div>
     );
   }
@@ -475,9 +475,9 @@ export default function IntelligenceReport() {
   if (!report) {
     return (
       <div className="text-center py-20">
-        <FileText className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-pro-charcoal">No Live Reports Available</h2>
-        <p className="text-pro-warm-gray mt-2">
+        <FileText className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-graphite">No Live Reports Available</h2>
+        <p className="text-graphite/60 mt-2">
           Reports publish when active market signals are available for your brand.
         </p>
       </div>
@@ -491,16 +491,16 @@ export default function IntelligenceReport() {
       </Helmet>
 
       <div className="max-w-5xl mx-auto space-y-8">
-        <div className="bg-white border border-pro-stone/30 rounded-xl p-6">
+        <div className="bg-white border border-accent-soft/30 rounded-xl p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-sm text-pro-warm-gray mb-1">
+              <div className="flex items-center gap-2 text-sm text-graphite/60 mb-1">
                 <Calendar className="w-4 h-4" />
                 <span>{formatReportDate(report.reportDate)}</span>
               </div>
-              <h1 className="text-2xl font-bold font-playfair text-pro-charcoal">{report.title}</h1>
-              <p className="text-sm text-pro-warm-gray mt-1">
-                Prepared for <span className="font-medium text-pro-charcoal">{brandName}</span>
+              <h1 className="text-2xl font-bold font-playfair text-graphite">{report.title}</h1>
+              <p className="text-sm text-graphite/60 mt-1">
+                Prepared for <span className="font-medium text-graphite">{brandName}</span>
                 {' | '}Generated {formatGeneratedDate(report.generatedAt)}
               </p>
             </div>
@@ -508,7 +508,7 @@ export default function IntelligenceReport() {
               <button
                 onClick={() => void queueReport('pdf')}
                 disabled={queueingFormat !== null}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone/50 text-sm font-medium text-pro-charcoal hover:bg-pro-ivory transition-colors disabled:opacity-60"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft/50 text-sm font-medium text-graphite hover:bg-background transition-colors disabled:opacity-60"
               >
                 <Download className="w-4 h-4" />
                 {queueingFormat === 'pdf' ? 'Queueing...' : 'Queue PDF'}
@@ -516,7 +516,7 @@ export default function IntelligenceReport() {
               <button
                 onClick={() => void queueReport('email')}
                 disabled={queueingFormat !== null}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pro-navy text-white text-sm font-medium hover:bg-pro-navy/90 transition-colors disabled:opacity-60"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-graphite text-white text-sm font-medium hover:bg-graphite/90 transition-colors disabled:opacity-60"
               >
                 <Mail className="w-4 h-4" />
                 {queueingFormat === 'email' ? 'Queueing...' : 'Queue Email'}
@@ -526,9 +526,9 @@ export default function IntelligenceReport() {
         </div>
 
         {actionMessage && (
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-pro-ivory rounded-lg border border-pro-stone/40">
-            <CheckCircle2 className="w-4 h-4 text-pro-navy flex-shrink-0" />
-            <p className="text-xs font-sans text-pro-charcoal">{actionMessage}</p>
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-background rounded-lg border border-accent-soft/40">
+            <CheckCircle2 className="w-4 h-4 text-graphite flex-shrink-0" />
+            <p className="text-xs font-sans text-graphite">{actionMessage}</p>
           </div>
         )}
 
@@ -538,10 +538,10 @@ export default function IntelligenceReport() {
           ))}
         </div>
 
-        <div className="bg-white border border-pro-stone/30 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-pro-charcoal mb-4">Delivery Queue</h2>
+        <div className="bg-white border border-accent-soft/30 rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-graphite mb-4">Delivery Queue</h2>
           {jobs.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray">
+            <p className="text-sm text-graphite/60">
               No report jobs queued yet. Use Queue PDF or Queue Email to create a tracked delivery request.
             </p>
           ) : (
@@ -549,18 +549,18 @@ export default function IntelligenceReport() {
               {jobs.map((job) => (
                 <div
                   key={job.id}
-                  className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 rounded-lg border border-pro-stone/40 px-4 py-3"
+                  className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 rounded-lg border border-accent-soft/40 px-4 py-3"
                 >
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-pro-charcoal">
+                    <p className="text-sm font-medium text-graphite">
                       {formatReportDate(job.report_month)} {job.output_format.toUpperCase()} request
                     </p>
-                    <p className="text-xs text-pro-warm-gray">
+                    <p className="text-xs text-graphite/60">
                       Created {formatGeneratedDate(job.created_at)}
                       {job.delivery_email ? ` | ${job.delivery_email}` : ''}
                     </p>
                     {job.status_message && (
-                      <p className="text-xs text-pro-warm-gray">{job.status_message}</p>
+                      <p className="text-xs text-graphite/60">{job.status_message}</p>
                     )}
                   </div>
 
@@ -571,7 +571,7 @@ export default function IntelligenceReport() {
                     {job.artifact_url && (
                       <a
                         href={job.artifact_url}
-                        className="text-xs font-semibold text-pro-navy hover:text-pro-charcoal"
+                        className="text-xs font-semibold text-graphite hover:text-graphite"
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -585,8 +585,8 @@ export default function IntelligenceReport() {
           )}
         </div>
 
-        <div className="bg-white border border-pro-stone/30 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-pro-charcoal mb-4">Previous Reports</h2>
+        <div className="bg-white border border-accent-soft/30 rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-graphite mb-4">Previous Reports</h2>
           <div className="space-y-2">
             {reports.map((item) => (
               <button
@@ -594,8 +594,8 @@ export default function IntelligenceReport() {
                 onClick={() => setSelectedReportId(item.id)}
                 className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-colors ${
                   item.id === selectedReportId
-                    ? 'bg-pro-navy/5 border border-pro-navy/20 text-pro-charcoal font-medium'
-                    : 'hover:bg-pro-ivory/50 text-pro-warm-gray'
+                    ? 'bg-graphite/5 border border-graphite/20 text-graphite font-medium'
+                    : 'hover:bg-background/50 text-graphite/60'
                 }`}
               >
                 <div className="flex items-center gap-3">

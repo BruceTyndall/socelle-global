@@ -218,7 +218,7 @@ function CreateIntegrationModal({
               <select
                 value={form.category}
                 onChange={(e) => update('category', e.target.value as ApiCategory)}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans bg-white text-graphite"
               >
                 {CATEGORIES.map((category) => (
                   <option key={category} value={category}>
@@ -229,7 +229,7 @@ function CreateIntegrationModal({
               <select
                 value={form.environment}
                 onChange={(e) => update('environment', e.target.value as ApiEnvironment)}
-                className="w-full border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal"
+                className="w-full border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans bg-white text-graphite"
               >
                 <option value="development">development</option>
                 <option value="staging">staging</option>
@@ -427,11 +427,11 @@ export default function ApiDashboard() {
       <div className="space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-serif font-bold text-pro-charcoal flex items-center gap-2">
-              <Code className="w-6 h-6 text-pro-navy" />
+            <h1 className="text-2xl font-sans font-bold text-graphite flex items-center gap-2">
+              <Code className="w-6 h-6 text-graphite" />
               API Control Center
             </h1>
-            <p className="text-sm text-pro-warm-gray font-sans mt-1">
+            <p className="text-sm text-graphite/60 font-sans mt-1">
               Live registry-backed key management, health checks, and revoke controls.
             </p>
           </div>
@@ -476,7 +476,7 @@ export default function ApiDashboard() {
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value as 'all' | ApiCategory)}
-                  className="border border-pro-stone rounded-lg px-3 py-2 text-sm font-sans bg-white text-pro-charcoal"
+                  className="border border-accent-soft rounded-lg px-3 py-2 text-sm font-sans bg-white text-graphite"
                 >
                   <option value="all">All categories</option>
                   {CATEGORIES.map((category) => (
@@ -510,8 +510,8 @@ export default function ApiDashboard() {
                       <TableRow key={row.id}>
                         <Td>
                           <div>
-                            <p className="font-semibold text-pro-charcoal font-sans text-sm">{row.name}</p>
-                            <p className="text-xs text-pro-warm-gray font-sans">{row.provider}</p>
+                            <p className="font-semibold text-graphite font-sans text-sm">{row.name}</p>
+                            <p className="text-xs text-graphite/60 font-sans">{row.provider}</p>
                           </div>
                         </Td>
                         <Td>
@@ -519,12 +519,12 @@ export default function ApiDashboard() {
                         </Td>
                         <Td>
                           <div className="flex items-center gap-2">
-                            <code className="text-xs font-mono text-pro-warm-gray">
+                            <code className="text-xs font-mono text-graphite/60">
                               {maskVaultRef(row.api_key_vault_ref, show)}
                             </code>
                             <button
                               onClick={() => toggleReveal(row.id)}
-                              className="p-1 rounded text-pro-warm-gray hover:text-pro-charcoal transition-colors"
+                              className="p-1 rounded text-graphite/60 hover:text-graphite transition-colors"
                               title={show ? 'Hide key reference' : 'Reveal key reference'}
                             >
                               {show ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -543,9 +543,9 @@ export default function ApiDashboard() {
                         </Td>
                         <Td>
                           <div>
-                            <p className="text-xs text-pro-warm-gray">{formatDateTime(row.last_tested_at)}</p>
+                            <p className="text-xs text-graphite/60">{formatDateTime(row.last_tested_at)}</p>
                             {row.last_test_latency_ms !== null && (
-                              <p className="text-[11px] text-pro-warm-gray">{row.last_test_latency_ms}ms</p>
+                              <p className="text-[11px] text-graphite/60">{row.last_test_latency_ms}ms</p>
                             )}
                           </div>
                         </Td>
@@ -593,8 +593,8 @@ export default function ApiDashboard() {
 
             {!loading && filtered.length === 0 && (
               <div className="text-center py-10">
-                <X className="w-8 h-8 text-pro-stone mx-auto mb-2" />
-                <p className="text-sm text-pro-warm-gray">No integrations matched your filters.</p>
+                <X className="w-8 h-8 text-accent-soft mx-auto mb-2" />
+                <p className="text-sm text-graphite/60">No integrations matched your filters.</p>
               </div>
             )}
           </div>

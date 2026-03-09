@@ -144,7 +144,7 @@ export default function BrandStorefront() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans">No brand associated with your account.</p>
       </div>
     );
   }
@@ -153,15 +153,15 @@ export default function BrandStorefront() {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="flex items-center justify-between">
-          <div className="h-8 bg-pro-stone/30 rounded w-40" />
-          <div className="h-9 bg-pro-stone/30 rounded w-32" />
+          <div className="h-8 bg-accent-soft/30 rounded w-40" />
+          <div className="h-9 bg-accent-soft/30 rounded w-32" />
         </div>
-        <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
-          <div className="h-48 bg-pro-stone/20" />
+        <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+          <div className="h-48 bg-accent-soft/20" />
           <div className="p-6 space-y-4">
-            <div className="h-4 bg-pro-stone/30 rounded w-3/4" />
-            <div className="h-4 bg-pro-stone/30 rounded w-1/2" />
-            <div className="h-4 bg-pro-stone/30 rounded w-2/3" />
+            <div className="h-4 bg-accent-soft/30 rounded w-3/4" />
+            <div className="h-4 bg-accent-soft/30 rounded w-1/2" />
+            <div className="h-4 bg-accent-soft/30 rounded w-2/3" />
           </div>
         </div>
       </div>
@@ -172,8 +172,8 @@ export default function BrandStorefront() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="font-serif text-2xl text-pro-navy">Storefront</h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-0.5">Your public brand page seen by retailers</p>
+          <h1 className="font-sans text-2xl text-graphite">Storefront</h1>
+          <p className="text-sm text-graphite/60 font-sans mt-0.5">Your public brand page seen by retailers</p>
         </div>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -191,8 +191,8 @@ export default function BrandStorefront() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl text-pro-navy">Storefront</h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-0.5">Your public brand page seen by retailers</p>
+          <h1 className="font-sans text-2xl text-graphite">Storefront</h1>
+          <p className="text-sm text-graphite/60 font-sans mt-0.5">Your public brand page seen by retailers</p>
         </div>
         <div className="flex items-center gap-2">
           {saved && (
@@ -213,9 +213,9 @@ export default function BrandStorefront() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
         {/* Hero banner */}
-        <div className="h-48 bg-gradient-to-r from-pro-navy via-pro-charcoal to-pro-navy flex items-end p-8 relative overflow-hidden">
+        <div className="h-48 bg-gradient-to-r from-graphite via-graphite to-graphite flex items-end p-8 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="absolute w-32 h-32 border border-white rounded-full"
@@ -226,12 +226,12 @@ export default function BrandStorefront() {
             <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mb-3 shadow-lg">
               {brand?.logo_url
                 ? <img src={brand.logo_url} alt={brand?.name} className="w-12 h-12 object-contain" />
-                : <Store className="w-8 h-8 text-pro-navy" />
+                : <Store className="w-8 h-8 text-graphite" />
               }
             </div>
-            <h2 className="font-serif text-3xl text-white">{brand?.name}</h2>
+            <h2 className="font-sans text-3xl text-white">{brand?.name}</h2>
             {brand?.short_description && (
-              <p className="text-pro-gold font-sans text-sm mt-1">{brand.short_description}</p>
+              <p className="text-accent font-sans text-sm mt-1">{brand.short_description}</p>
             )}
           </div>
           {editing && (
@@ -242,37 +242,37 @@ export default function BrandStorefront() {
         </div>
 
         {/* Stats bar */}
-        <div className="flex items-center divide-x divide-pro-stone border-b border-pro-stone">
+        <div className="flex items-center divide-x divide-accent-soft border-b border-accent-soft">
           {[
             { icon: Package, label: `${stats.productCount} Products`, sub: 'PRO + Retail' },
             { icon: Users, label: `${stats.retailerCount} Retailers`, sub: 'Active partners' },
             { icon: Globe, label: 'Website', sub: brand?.website_url ? brand.website_url.replace(/^https?:\/\//, '') : 'Not set' },
           ].map((stat) => (
             <div key={stat.label} className="flex-1 flex items-center gap-3 px-5 py-4">
-              <stat.icon className="w-5 h-5 text-pro-warm-gray flex-shrink-0" />
+              <stat.icon className="w-5 h-5 text-graphite/60 flex-shrink-0" />
               <div className="min-w-0">
-                <p className="font-semibold text-pro-charcoal font-sans text-sm">{stat.label}</p>
-                <p className="text-xs text-pro-warm-gray font-sans truncate">{stat.sub}</p>
+                <p className="font-semibold text-graphite font-sans text-sm">{stat.label}</p>
+                <p className="text-xs text-graphite/60 font-sans truncate">{stat.sub}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-pro-stone">
+        <div className="grid lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-accent-soft">
           {/* About */}
           <div className="lg:col-span-2 p-6 space-y-5">
             <div>
-              <h3 className="font-sans font-semibold text-pro-charcoal mb-2">About</h3>
+              <h3 className="font-sans font-semibold text-graphite mb-2">About</h3>
               {editing ? (
                 <textarea
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   rows={4}
                   placeholder="Describe your brand for retailers…"
-                  className="w-full px-4 py-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal focus:outline-none focus:ring-2 focus:ring-pro-navy/20 resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite focus:outline-none focus:ring-2 focus:ring-graphite/20 resize-none"
                 />
               ) : (
-                <p className="text-sm text-pro-warm-gray font-sans leading-relaxed">
+                <p className="text-sm text-graphite/60 font-sans leading-relaxed">
                   {description || 'No description yet. Click Edit Storefront to add one.'}
                 </p>
               )}
@@ -280,18 +280,18 @@ export default function BrandStorefront() {
 
             {products.length > 0 && (
               <div>
-                <h3 className="font-sans font-semibold text-pro-charcoal mb-2">Featured Products</h3>
+                <h3 className="font-sans font-semibold text-graphite mb-2">Featured Products</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {products.map(p => (
-                    <div key={p.id} className="rounded-lg border border-pro-stone p-3 hover:border-pro-navy/30 transition-colors">
-                      <div className="aspect-square rounded-lg bg-pro-cream mb-2 flex items-center justify-center">
-                        <Package className="w-6 h-6 text-pro-stone" />
+                    <div key={p.id} className="rounded-lg border border-accent-soft p-3 hover:border-graphite/30 transition-colors">
+                      <div className="aspect-square rounded-lg bg-accent-soft mb-2 flex items-center justify-center">
+                        <Package className="w-6 h-6 text-accent-soft" />
                       </div>
-                      <p className="font-medium text-pro-charcoal text-xs font-sans leading-snug mb-1">{p.name}</p>
+                      <p className="font-medium text-graphite text-xs font-sans leading-snug mb-1">{p.name}</p>
                       <div className="flex items-center justify-between">
                         <Badge variant={p.type === 'PRO' ? 'navy' : 'gold'}>{p.type}</Badge>
                         {p.msrp != null && (
-                          <span className="text-xs text-pro-warm-gray font-sans">${p.msrp}</span>
+                          <span className="text-xs text-graphite/60 font-sans">${p.msrp}</span>
                         )}
                       </div>
                       {p.bestseller && (
@@ -307,7 +307,7 @@ export default function BrandStorefront() {
 
             {(brand?.category_tags?.length ?? 0) > 0 && (
               <div>
-                <h3 className="font-sans font-semibold text-pro-charcoal mb-2">Categories</h3>
+                <h3 className="font-sans font-semibold text-graphite mb-2">Categories</h3>
                 <div className="flex flex-wrap gap-2">
                   {brand!.category_tags.map(c => (
                     <Badge key={c} variant="default">{c}</Badge>
@@ -320,24 +320,24 @@ export default function BrandStorefront() {
           {/* Sidebar */}
           <div className="p-6 space-y-5">
             <div>
-              <h3 className="font-sans font-semibold text-pro-charcoal mb-3">Brand details</h3>
+              <h3 className="font-sans font-semibold text-graphite mb-3">Brand details</h3>
               <div className="space-y-2 text-sm font-sans">
                 <div className="flex justify-between">
-                  <span className="text-pro-warm-gray">Products</span>
-                  <span className="font-medium text-pro-charcoal">{stats.productCount}</span>
+                  <span className="text-graphite/60">Products</span>
+                  <span className="font-medium text-graphite">{stats.productCount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-pro-warm-gray">Retailers</span>
-                  <span className="font-medium text-pro-charcoal">{stats.retailerCount}</span>
+                  <span className="text-graphite/60">Retailers</span>
+                  <span className="font-medium text-graphite">{stats.retailerCount}</span>
                 </div>
                 {brand?.website_url && (
                   <div className="flex justify-between gap-2">
-                    <span className="text-pro-warm-gray flex-shrink-0">Website</span>
+                    <span className="text-graphite/60 flex-shrink-0">Website</span>
                     <a
                       href={brand.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-pro-navy hover:underline truncate text-right text-xs"
+                      className="text-graphite hover:underline truncate text-right text-xs"
                     >
                       {brand.website_url.replace(/^https?:\/\//, '')}
                     </a>
@@ -346,7 +346,7 @@ export default function BrandStorefront() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-pro-stone">
+            <div className="pt-4 border-t border-accent-soft">
               <Button className="w-full" size="sm">Request to Carry</Button>
             </div>
           </div>

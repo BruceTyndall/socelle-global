@@ -68,8 +68,8 @@ export default function AppointmentCalendar() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-pro-charcoal">Calendar</h1>
-          <p className="text-sm text-pro-warm-gray mt-1">
+          <h1 className="text-2xl font-semibold text-graphite">Calendar</h1>
+          <p className="text-sm text-graphite/60 mt-1">
             {view === 'month' ? date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) : date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
@@ -77,24 +77,24 @@ export default function AppointmentCalendar() {
           {!isLive && !loading && (
             <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
           )}
-          <div className="flex bg-pro-ivory rounded-lg border border-pro-stone/20 overflow-hidden">
-            <button onClick={() => setView('month')} className={`px-3 py-1.5 text-xs font-medium ${view === 'month' ? 'bg-accent text-white' : 'text-pro-warm-gray hover:text-pro-charcoal'}`}>Month</button>
-            <button onClick={() => setView('day')} className={`px-3 py-1.5 text-xs font-medium ${view === 'day' ? 'bg-accent text-white' : 'text-pro-warm-gray hover:text-pro-charcoal'}`}>Day</button>
+          <div className="flex bg-background rounded-lg border border-accent-soft/20 overflow-hidden">
+            <button onClick={() => setView('month')} className={`px-3 py-1.5 text-xs font-medium ${view === 'month' ? 'bg-accent text-white' : 'text-graphite/60 hover:text-graphite'}`}>Month</button>
+            <button onClick={() => setView('day')} className={`px-3 py-1.5 text-xs font-medium ${view === 'day' ? 'bg-accent text-white' : 'text-graphite/60 hover:text-graphite'}`}>Day</button>
           </div>
         </div>
       </div>
 
       {view === 'month' ? (
-        <div className="bg-white rounded-xl border border-pro-stone/30 p-5">
+        <div className="bg-white rounded-xl border border-accent-soft/30 p-5">
           <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth} className="w-8 h-8 rounded-full border border-pro-stone/30 flex items-center justify-center hover:border-accent/30"><ChevronLeft className="w-4 h-4 text-pro-warm-gray" /></button>
-            <h2 className="text-sm font-semibold text-pro-charcoal">{date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</h2>
-            <button onClick={nextMonth} className="w-8 h-8 rounded-full border border-pro-stone/30 flex items-center justify-center hover:border-accent/30"><ChevronRight className="w-4 h-4 text-pro-warm-gray" /></button>
+            <button onClick={prevMonth} className="w-8 h-8 rounded-full border border-accent-soft/30 flex items-center justify-center hover:border-accent/30"><ChevronLeft className="w-4 h-4 text-graphite/60" /></button>
+            <h2 className="text-sm font-semibold text-graphite">{date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</h2>
+            <button onClick={nextMonth} className="w-8 h-8 rounded-full border border-accent-soft/30 flex items-center justify-center hover:border-accent/30"><ChevronRight className="w-4 h-4 text-graphite/60" /></button>
           </div>
 
-          <div className="grid grid-cols-7 gap-px bg-pro-stone/10">
+          <div className="grid grid-cols-7 gap-px bg-accent-soft/10">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-              <div key={d} className="text-center text-[10px] font-medium text-pro-warm-gray uppercase tracking-wider py-2 bg-white">{d}</div>
+              <div key={d} className="text-center text-[10px] font-medium text-graphite/60 uppercase tracking-wider py-2 bg-white">{d}</div>
             ))}
             {Array.from({ length: firstDay }).map((_, i) => <div key={`e-${i}`} className="bg-white min-h-[80px]" />)}
             {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
@@ -107,13 +107,13 @@ export default function AppointmentCalendar() {
                   onClick={() => { setDate(new Date(year, month, day)); setView('day'); }}
                   className={`bg-white min-h-[80px] p-1 text-left hover:bg-accent/5 transition-colors ${isToday ? 'ring-1 ring-accent/30' : ''}`}
                 >
-                  <span className={`text-xs font-medium ${isToday ? 'text-accent' : 'text-pro-charcoal'}`}>{day}</span>
+                  <span className={`text-xs font-medium ${isToday ? 'text-accent' : 'text-graphite'}`}>{day}</span>
                   {dayApptList.length > 0 && (
                     <div className="mt-1 space-y-0.5">
                       {dayApptList.slice(0, 3).map(a => (
                         <div key={a.id} className="flex items-center gap-1">
-                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${STATUS_DOT[a.status] ?? 'bg-pro-stone'}`} />
-                          <span className="text-[9px] text-pro-warm-gray truncate">{a.client_first_name}</span>
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${STATUS_DOT[a.status] ?? 'bg-accent-soft'}`} />
+                          <span className="text-[9px] text-graphite/60 truncate">{a.client_first_name}</span>
                         </div>
                       ))}
                       {dayApptList.length > 3 && <span className="text-[9px] text-accent">+{dayApptList.length - 3} more</span>}
@@ -125,31 +125,31 @@ export default function AppointmentCalendar() {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-pro-stone/30 p-5">
+        <div className="bg-white rounded-xl border border-accent-soft/30 p-5">
           <div className="flex items-center justify-between mb-4">
-            <button onClick={prevDay} className="w-8 h-8 rounded-full border border-pro-stone/30 flex items-center justify-center hover:border-accent/30"><ChevronLeft className="w-4 h-4 text-pro-warm-gray" /></button>
-            <h2 className="text-sm font-semibold text-pro-charcoal">{date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
-            <button onClick={nextDay} className="w-8 h-8 rounded-full border border-pro-stone/30 flex items-center justify-center hover:border-accent/30"><ChevronRight className="w-4 h-4 text-pro-warm-gray" /></button>
+            <button onClick={prevDay} className="w-8 h-8 rounded-full border border-accent-soft/30 flex items-center justify-center hover:border-accent/30"><ChevronLeft className="w-4 h-4 text-graphite/60" /></button>
+            <h2 className="text-sm font-semibold text-graphite">{date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
+            <button onClick={nextDay} className="w-8 h-8 rounded-full border border-accent-soft/30 flex items-center justify-center hover:border-accent/30"><ChevronRight className="w-4 h-4 text-graphite/60" /></button>
           </div>
 
           {loading ? (
-            <div className="animate-pulse space-y-2">{[1, 2, 3, 4].map(i => <div key={i} className="h-12 bg-pro-stone/10 rounded-lg" />)}</div>
+            <div className="animate-pulse space-y-2">{[1, 2, 3, 4].map(i => <div key={i} className="h-12 bg-accent-soft/10 rounded-lg" />)}</div>
           ) : (
             <div className="space-y-0">
               {HOURS.map(hour => {
                 const hourAppts = dayAppts.filter(a => new Date(a.start_time).getHours() === hour);
                 return (
-                  <div key={hour} className="flex border-t border-pro-stone/10 min-h-[48px]">
-                    <div className="w-16 py-2 text-xs text-pro-warm-gray text-right pr-3 flex-shrink-0">
+                  <div key={hour} className="flex border-t border-accent-soft/10 min-h-[48px]">
+                    <div className="w-16 py-2 text-xs text-graphite/60 text-right pr-3 flex-shrink-0">
                       {hour > 12 ? `${hour - 12} PM` : hour === 12 ? '12 PM' : `${hour} AM`}
                     </div>
                     <div className="flex-1 py-1 space-y-1">
                       {hourAppts.map(a => (
                         <Link key={a.id} to={`/portal/booking/appointments/${a.id}`} className="block p-2 rounded-lg bg-accent/5 border border-accent/20 hover:border-accent/40 transition-colors">
                           <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${STATUS_DOT[a.status] ?? 'bg-pro-stone'}`} />
-                            <span className="text-xs font-medium text-pro-charcoal">{a.client_first_name} {a.client_last_name}</span>
-                            <span className="text-[10px] text-pro-warm-gray">{a.service_name}</span>
+                            <span className={`w-2 h-2 rounded-full ${STATUS_DOT[a.status] ?? 'bg-accent-soft'}`} />
+                            <span className="text-xs font-medium text-graphite">{a.client_first_name} {a.client_last_name}</span>
+                            <span className="text-[10px] text-graphite/60">{a.service_name}</span>
                           </div>
                         </Link>
                       ))}
@@ -159,8 +159,8 @@ export default function AppointmentCalendar() {
               })}
               {dayAppts.length === 0 && (
                 <div className="py-8 text-center">
-                  <CalIcon className="w-8 h-8 text-pro-stone mx-auto mb-2" />
-                  <p className="text-sm text-pro-warm-gray">No appointments on this day</p>
+                  <CalIcon className="w-8 h-8 text-accent-soft mx-auto mb-2" />
+                  <p className="text-sm text-graphite/60">No appointments on this day</p>
                 </div>
               )}
             </div>

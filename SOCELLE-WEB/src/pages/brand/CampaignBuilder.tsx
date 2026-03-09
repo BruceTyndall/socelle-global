@@ -214,13 +214,13 @@ export default function CampaignBuilder() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/brand/campaigns')}
-            className="p-2 rounded-lg text-pro-warm-gray hover:text-pro-charcoal hover:bg-pro-cream transition-colors"
+            className="p-2 rounded-lg text-graphite/60 hover:text-graphite hover:bg-accent-soft transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-serif text-2xl text-pro-navy">Campaign Builder</h1>
-            <p className="text-sm text-pro-warm-gray font-sans mt-0.5">
+            <h1 className="font-sans text-2xl text-graphite">Campaign Builder</h1>
+            <p className="text-sm text-graphite/60 font-sans mt-0.5">
               Build and launch campaigns with intelligence-driven recommendations
             </p>
           </div>
@@ -236,15 +236,15 @@ export default function CampaignBuilder() {
                     step > s.id
                       ? 'bg-emerald-500 text-white'
                       : step === s.id
-                      ? 'bg-pro-navy text-white'
-                      : 'bg-pro-stone text-pro-warm-gray'
+                      ? 'bg-graphite text-white'
+                      : 'bg-accent-soft text-graphite/60'
                   }`}
                 >
                   {step > s.id ? <Check className="w-4 h-4" /> : s.id}
                 </div>
                 <span
                   className={`text-xs font-sans hidden sm:block ${
-                    step >= s.id ? 'text-pro-charcoal font-medium' : 'text-pro-warm-gray'
+                    step >= s.id ? 'text-graphite font-medium' : 'text-graphite/60'
                   }`}
                 >
                   {s.label}
@@ -253,7 +253,7 @@ export default function CampaignBuilder() {
               {i < STEPS.length - 1 && (
                 <div
                   className={`h-px flex-1 ${
-                    step > s.id ? 'bg-emerald-400' : 'bg-pro-stone'
+                    step > s.id ? 'bg-emerald-400' : 'bg-accent-soft'
                   }`}
                 />
               )}
@@ -264,7 +264,7 @@ export default function CampaignBuilder() {
         {/* Step Content */}
         {step === 1 && (
           <Card padding="lg">
-            <h2 className="font-sans font-semibold text-pro-charcoal text-lg mb-5">
+            <h2 className="font-sans font-semibold text-graphite text-lg mb-5">
               Campaign Setup
             </h2>
             <div className="space-y-5">
@@ -276,11 +276,11 @@ export default function CampaignBuilder() {
               />
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Description
                 </label>
                 <textarea
-                  className="w-full px-4 py-2.5 rounded-xl border border-pro-stone bg-white font-sans text-sm text-pro-charcoal placeholder:text-pro-warm-gray/60 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pro-navy/15 focus:border-pro-navy resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-accent-soft bg-white font-sans text-sm text-graphite placeholder:text-graphite/60/60 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-graphite/15 focus:border-graphite resize-none"
                   rows={3}
                   placeholder="What is this campaign about? What are your goals?"
                   value={description}
@@ -304,7 +304,7 @@ export default function CampaignBuilder() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-2">
+                <label className="block text-sm font-medium text-graphite font-sans mb-2">
                   Target Operator Segment
                 </label>
                 <div className="grid sm:grid-cols-2 gap-2">
@@ -318,16 +318,16 @@ export default function CampaignBuilder() {
                         onClick={() => toggleSelection(segments, seg.id, setSegments)}
                         className={`flex items-start gap-3 px-4 py-3 rounded-xl border text-left transition-colors ${
                           selected
-                            ? 'border-pro-navy bg-pro-navy/5'
-                            : 'border-pro-stone hover:border-pro-navy/30'
+                            ? 'border-graphite bg-graphite/5'
+                            : 'border-accent-soft hover:border-graphite/30'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 mt-0.5 ${selected ? 'text-pro-navy' : 'text-pro-warm-gray'}`} />
+                        <Icon className={`w-4 h-4 mt-0.5 ${selected ? 'text-graphite' : 'text-graphite/60'}`} />
                         <div>
-                          <p className={`text-sm font-sans ${selected ? 'text-pro-navy font-medium' : 'text-pro-charcoal'}`}>
+                          <p className={`text-sm font-sans ${selected ? 'text-graphite font-medium' : 'text-graphite'}`}>
                             {seg.label}
                           </p>
-                          <p className="text-[11px] text-pro-warm-gray font-sans">{seg.description}</p>
+                          <p className="text-[11px] text-graphite/60 font-sans">{seg.description}</p>
                         </div>
                       </button>
                     );
@@ -336,7 +336,7 @@ export default function CampaignBuilder() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-2">
+                <label className="block text-sm font-medium text-graphite font-sans mb-2">
                   Campaign Objectives
                 </label>
                 <div className="grid sm:grid-cols-2 gap-2">
@@ -350,12 +350,12 @@ export default function CampaignBuilder() {
                         onClick={() => toggleSelection(objectives, obj.id, setObjectives)}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-colors ${
                           selected
-                            ? 'border-pro-navy bg-pro-navy/5'
-                            : 'border-pro-stone hover:border-pro-navy/30'
+                            ? 'border-graphite bg-graphite/5'
+                            : 'border-accent-soft hover:border-graphite/30'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 ${selected ? 'text-pro-navy' : 'text-pro-warm-gray'}`} />
-                        <span className={`text-sm font-sans ${selected ? 'text-pro-navy font-medium' : 'text-pro-charcoal'}`}>
+                        <Icon className={`w-4 h-4 ${selected ? 'text-graphite' : 'text-graphite/60'}`} />
+                        <span className={`text-sm font-sans ${selected ? 'text-graphite font-medium' : 'text-graphite'}`}>
                           {obj.label}
                         </span>
                       </button>
@@ -369,17 +369,17 @@ export default function CampaignBuilder() {
 
         {step === 2 && (
           <div className="space-y-4">
-            <div className="flex items-start gap-3 px-4 py-3 bg-pro-cream rounded-xl border border-pro-stone">
-              <Sparkles className="w-4 h-4 text-pro-gold flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-pro-charcoal font-sans">
+            <div className="flex items-start gap-3 px-4 py-3 bg-accent-soft rounded-xl border border-accent-soft">
+              <Sparkles className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-graphite font-sans">
                 AI recommendations powered by Socelle Intelligence (configuring...). Edit any recommendation below to customize for your brand.
               </p>
             </div>
 
             {aiLoading ? (
               <Card padding="lg" className="text-center">
-                <Loader2 className="w-8 h-8 text-pro-navy animate-spin mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">
+                <Loader2 className="w-8 h-8 text-graphite animate-spin mx-auto mb-3" />
+                <p className="text-sm text-graphite/60 font-sans">
                   Generating channel recommendations...
                 </p>
               </Card>
@@ -389,15 +389,15 @@ export default function CampaignBuilder() {
                   const Icon = channel.icon;
                   return (
                     <Card key={channel.title} padding="none" className="overflow-hidden">
-                      <div className="flex items-center gap-2.5 px-5 py-3 bg-pro-ivory border-b border-pro-stone/50">
-                        <Icon className="w-4 h-4 text-pro-navy" />
-                        <h3 className="font-sans font-semibold text-pro-charcoal text-sm">
+                      <div className="flex items-center gap-2.5 px-5 py-3 bg-background border-b border-accent-soft/50">
+                        <Icon className="w-4 h-4 text-graphite" />
+                        <h3 className="font-sans font-semibold text-graphite text-sm">
                           {channel.title}
                         </h3>
                       </div>
                       <div className="p-4">
                         <textarea
-                          className="w-full px-3 py-2.5 rounded-lg border border-pro-stone/50 bg-white font-sans text-xs text-pro-charcoal leading-relaxed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pro-navy/15 focus:border-pro-navy resize-none"
+                          className="w-full px-3 py-2.5 rounded-lg border border-accent-soft/50 bg-white font-sans text-xs text-graphite leading-relaxed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-graphite/15 focus:border-graphite resize-none"
                           rows={6}
                           value={channel.content}
                           onChange={(e) => updateChannel(index, e.target.value)}
@@ -413,7 +413,7 @@ export default function CampaignBuilder() {
 
         {step === 3 && (
           <Card padding="lg">
-            <h2 className="font-sans font-semibold text-pro-charcoal text-lg mb-5">
+            <h2 className="font-sans font-semibold text-graphite text-lg mb-5">
               Campaign Timeline
             </h2>
 
@@ -421,53 +421,53 @@ export default function CampaignBuilder() {
               <div className="space-y-6">
                 {/* Horizontal timeline bar */}
                 <div className="relative">
-                  <div className="h-2 bg-pro-stone/30 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-pro-navy to-pro-gold rounded-full w-full" />
+                  <div className="h-2 bg-accent-soft/30 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-graphite to-accent rounded-full w-full" />
                   </div>
                   <div className="flex justify-between mt-2">
                     <div className="text-center">
-                      <div className="w-3 h-3 rounded-full bg-pro-navy mx-auto -mt-[18px] border-2 border-white" />
-                      <p className="text-[11px] font-sans text-pro-charcoal font-medium mt-2">
+                      <div className="w-3 h-3 rounded-full bg-graphite mx-auto -mt-[18px] border-2 border-white" />
+                      <p className="text-[11px] font-sans text-graphite font-medium mt-2">
                         {formatDate(startDate)}
                       </p>
-                      <p className="text-[10px] font-sans text-pro-warm-gray">Launch</p>
+                      <p className="text-[10px] font-sans text-graphite/60">Launch</p>
                     </div>
                     <div className="text-center">
-                      <div className="w-3 h-3 rounded-full bg-pro-gold mx-auto -mt-[18px] border-2 border-white" />
-                      <p className="text-[11px] font-sans text-pro-charcoal font-medium mt-2">
+                      <div className="w-3 h-3 rounded-full bg-accent mx-auto -mt-[18px] border-2 border-white" />
+                      <p className="text-[11px] font-sans text-graphite font-medium mt-2">
                         {getMidDate()}
                       </p>
-                      <p className="text-[10px] font-sans text-pro-warm-gray">Mid-Point Check-in</p>
+                      <p className="text-[10px] font-sans text-graphite/60">Mid-Point Check-in</p>
                     </div>
                     <div className="text-center">
                       <div className="w-3 h-3 rounded-full bg-emerald-500 mx-auto -mt-[18px] border-2 border-white" />
-                      <p className="text-[11px] font-sans text-pro-charcoal font-medium mt-2">
+                      <p className="text-[11px] font-sans text-graphite font-medium mt-2">
                         {formatDate(endDate)}
                       </p>
-                      <p className="text-[10px] font-sans text-pro-warm-gray">Close</p>
+                      <p className="text-[10px] font-sans text-graphite/60">Close</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Week-by-week activities */}
                 <div>
-                  <h3 className="text-sm font-sans font-semibold text-pro-charcoal mb-3">
+                  <h3 className="text-sm font-sans font-semibold text-graphite mb-3">
                     Weekly Activity Plan ({getDurationWeeks()} weeks)
                   </h3>
                   <div className="space-y-2">
                     {activities.map((activity, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 px-4 py-3 rounded-xl border border-pro-stone/50 bg-white"
+                        className="flex items-start gap-3 px-4 py-3 rounded-xl border border-accent-soft/50 bg-white"
                       >
-                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-pro-ivory flex-shrink-0 mt-0.5">
-                          <span className="text-[10px] font-sans font-semibold text-pro-navy">
+                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-background flex-shrink-0 mt-0.5">
+                          <span className="text-[10px] font-sans font-semibold text-graphite">
                             W{index + 1}
                           </span>
                         </div>
                         <input
                           type="text"
-                          className="flex-1 text-sm font-sans text-pro-charcoal bg-transparent focus:outline-none"
+                          className="flex-1 text-sm font-sans text-graphite bg-transparent focus:outline-none"
                           value={activity}
                           onChange={(e) =>
                             setActivities((prev) =>
@@ -479,7 +479,7 @@ export default function CampaignBuilder() {
                     ))}
                     <button
                       onClick={() => setActivities((prev) => [...prev, ''])}
-                      className="flex items-center gap-2 px-4 py-2.5 text-xs font-sans text-pro-warm-gray hover:text-pro-navy transition-colors"
+                      className="flex items-center gap-2 px-4 py-2.5 text-xs font-sans text-graphite/60 hover:text-graphite transition-colors"
                     >
                       + Add activity
                     </button>
@@ -488,8 +488,8 @@ export default function CampaignBuilder() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Calendar className="w-8 h-8 text-pro-warm-gray mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">
+                <Calendar className="w-8 h-8 text-graphite/60 mx-auto mb-3" />
+                <p className="text-sm text-graphite/60 font-sans">
                   Set start and end dates in Step 1 to generate the timeline.
                 </p>
                 <Button variant="ghost" size="sm" className="mt-3" onClick={() => setStep(1)}>
@@ -503,25 +503,25 @@ export default function CampaignBuilder() {
         {step === 4 && (
           <div className="space-y-4">
             <Card padding="lg">
-              <h2 className="font-sans font-semibold text-pro-charcoal text-lg mb-5">
+              <h2 className="font-sans font-semibold text-graphite text-lg mb-5">
                 Campaign Summary
               </h2>
 
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[11px] font-sans text-pro-warm-gray uppercase tracking-wider mb-1">
+                    <p className="text-[11px] font-sans text-graphite/60 uppercase tracking-wider mb-1">
                       Campaign Name
                     </p>
-                    <p className="text-sm font-sans text-pro-charcoal font-medium">
+                    <p className="text-sm font-sans text-graphite font-medium">
                       {name || 'Untitled Campaign'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[11px] font-sans text-pro-warm-gray uppercase tracking-wider mb-1">
+                    <p className="text-[11px] font-sans text-graphite/60 uppercase tracking-wider mb-1">
                       Date Range
                     </p>
-                    <p className="text-sm font-sans text-pro-charcoal">
+                    <p className="text-sm font-sans text-graphite">
                       {startDate && endDate
                         ? `${formatDate(startDate)} — ${formatDate(endDate)}`
                         : 'Not set'}
@@ -531,16 +531,16 @@ export default function CampaignBuilder() {
 
                 {description && (
                   <div>
-                    <p className="text-[11px] font-sans text-pro-warm-gray uppercase tracking-wider mb-1">
+                    <p className="text-[11px] font-sans text-graphite/60 uppercase tracking-wider mb-1">
                       Description
                     </p>
-                    <p className="text-sm font-sans text-pro-charcoal">{description}</p>
+                    <p className="text-sm font-sans text-graphite">{description}</p>
                   </div>
                 )}
 
                 {segments.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+                    <p className="text-[11px] font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
                       Target Segments
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -558,7 +558,7 @@ export default function CampaignBuilder() {
 
                 {objectives.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+                    <p className="text-[11px] font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
                       Objectives
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -575,7 +575,7 @@ export default function CampaignBuilder() {
                 )}
 
                 <div>
-                  <p className="text-[11px] font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+                  <p className="text-[11px] font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
                     Channel Recommendations
                   </p>
                   <div className="grid sm:grid-cols-2 gap-2">
@@ -584,12 +584,12 @@ export default function CampaignBuilder() {
                       return (
                         <div
                           key={ch.title}
-                          className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-pro-ivory border border-pro-stone/30"
+                          className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-background border border-accent-soft/30"
                         >
-                          <Icon className="w-3.5 h-3.5 text-pro-navy flex-shrink-0 mt-0.5" />
+                          <Icon className="w-3.5 h-3.5 text-graphite flex-shrink-0 mt-0.5" />
                           <div>
-                            <p className="text-xs font-sans text-pro-charcoal font-medium">{ch.title}</p>
-                            <p className="text-[11px] font-sans text-pro-warm-gray line-clamp-2">
+                            <p className="text-xs font-sans text-graphite font-medium">{ch.title}</p>
+                            <p className="text-[11px] font-sans text-graphite/60 line-clamp-2">
                               {ch.content}
                             </p>
                           </div>
@@ -604,7 +604,7 @@ export default function CampaignBuilder() {
             <Card padding="lg">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-pro-charcoal font-sans mb-2">
+                  <label className="block text-sm font-medium text-graphite font-sans mb-2">
                     Campaign Status
                   </label>
                   <div className="flex gap-2">
@@ -615,8 +615,8 @@ export default function CampaignBuilder() {
                         onClick={() => setStatus(s)}
                         className={`px-4 py-2 rounded-lg border text-sm font-sans capitalize transition-colors ${
                           status === s
-                            ? 'border-pro-navy bg-pro-navy text-white'
-                            : 'border-pro-stone text-pro-warm-gray hover:border-pro-navy/30'
+                            ? 'border-graphite bg-graphite text-white'
+                            : 'border-accent-soft text-graphite/60 hover:border-graphite/30'
                         }`}
                       >
                         {s}

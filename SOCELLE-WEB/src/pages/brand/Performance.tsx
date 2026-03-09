@@ -80,23 +80,23 @@ function PerformanceIntelligenceSection({ brandSlug }: { brandSlug: string }) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-pro-navy" />
+            <BarChart3 className="w-4 h-4 text-graphite" />
             <CardTitle>Product Velocity Rankings</CardTitle>
           </div>
-          <span className="text-xs text-pro-warm-gray font-sans">Based on reorder patterns (90 days)</span>
+          <span className="text-xs text-graphite/60 font-sans">Based on reorder patterns (90 days)</span>
         </CardHeader>
         <div className="space-y-3">
           {metrics.skuPerformance.slice(0, 6).map((sku, i) => (
             <div key={sku.id} className="flex items-center gap-3">
-              <span className="w-5 text-center text-xs font-bold text-pro-warm-gray font-sans">{i + 1}</span>
+              <span className="w-5 text-center text-xs font-bold text-graphite/60 font-sans">{i + 1}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-medium text-pro-charcoal text-sm font-sans truncate">{sku.name}</p>
+                  <p className="font-medium text-graphite text-sm font-sans truncate">{sku.name}</p>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium font-sans ${velocityColors[sku.velocity]}`}>
                     {velocityLabels[sku.velocity]}
                   </span>
                 </div>
-                <p className="text-xs text-pro-warm-gray font-sans">{sku.category} &middot; {sku.unitsLast90d} units &middot; {sku.reorderRate}% reorder rate</p>
+                <p className="text-xs text-graphite/60 font-sans">{sku.category} &middot; {sku.unitsLast90d} units &middot; {sku.reorderRate}% reorder rate</p>
               </div>
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 {sku.trend >= 0 ? (
@@ -119,7 +119,7 @@ function PerformanceIntelligenceSection({ brandSlug }: { brandSlug: string }) {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-pro-gold" />
+              <Brain className="w-4 h-4 text-accent" />
               <CardTitle>Category Position</CardTitle>
             </div>
           </CardHeader>
@@ -129,25 +129,25 @@ function PerformanceIntelligenceSection({ brandSlug }: { brandSlug: string }) {
                 leader: 'bg-emerald-50 text-emerald-700 border-emerald-200',
                 contender: 'bg-blue-50 text-blue-700 border-blue-200',
                 emerging: 'bg-amber-50 text-amber-700 border-amber-200',
-                niche: 'bg-pro-cream text-pro-charcoal border-pro-stone',
+                niche: 'bg-accent-soft text-graphite border-accent-soft',
               };
               return (
-                <div key={cat.categoryName} className="p-3 rounded-lg border border-pro-stone">
+                <div key={cat.categoryName} className="p-3 rounded-lg border border-accent-soft">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-medium text-pro-charcoal text-sm font-sans">{cat.categoryName}</p>
+                    <p className="font-medium text-graphite text-sm font-sans">{cat.categoryName}</p>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold font-sans border capitalize ${positionColors[cat.competitivePosition]}`}>
                       {cat.competitivePosition}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-pro-warm-gray font-sans mb-2">
+                  <div className="flex items-center gap-4 text-xs text-graphite/60 font-sans mb-2">
                     <span>Rank #{cat.rank} / {cat.totalBrands}</span>
                     <span>{cat.adoptionRate}% adoption (avg {cat.categoryAvg}%)</span>
                   </div>
-                  <p className="text-xs text-pro-warm-gray font-sans italic">{cat.treatmentTrendImpact}</p>
+                  <p className="text-xs text-graphite/60 font-sans italic">{cat.treatmentTrendImpact}</p>
                 </div>
               );
             })}
-            <p className="text-xs text-pro-warm-gray font-sans mt-2 px-1">{categoryData.overallMarketPosition}</p>
+            <p className="text-xs text-graphite/60 font-sans mt-2 px-1">{categoryData.overallMarketPosition}</p>
           </div>
         </Card>
 
@@ -155,22 +155,22 @@ function PerformanceIntelligenceSection({ brandSlug }: { brandSlug: string }) {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-pro-navy" />
+              <MapPin className="w-4 h-4 text-graphite" />
               <CardTitle>Regional Adoption</CardTitle>
             </div>
-            <span className="text-xs text-pro-warm-gray font-sans">Operator distribution</span>
+            <span className="text-xs text-graphite/60 font-sans">Operator distribution</span>
           </CardHeader>
           <div className="space-y-3">
             {resellerData.geographicDistribution.map((region) => (
               <div key={region.region} className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-medium text-pro-charcoal font-sans">{region.region}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans">{region.count} operators ({region.percentage}%)</p>
+                    <p className="text-sm font-medium text-graphite font-sans">{region.region}</p>
+                    <p className="text-xs text-graphite/60 font-sans">{region.count} operators ({region.percentage}%)</p>
                   </div>
-                  <div className="w-full bg-pro-stone/30 rounded-full h-1.5">
+                  <div className="w-full bg-accent-soft/30 rounded-full h-1.5">
                     <div
-                      className="bg-pro-navy rounded-full h-1.5 transition-all"
+                      className="bg-graphite rounded-full h-1.5 transition-all"
                       style={{ width: `${region.percentage}%` }}
                     />
                   </div>
@@ -179,13 +179,13 @@ function PerformanceIntelligenceSection({ brandSlug }: { brandSlug: string }) {
             ))}
 
             {/* Tier Distribution */}
-            <div className="pt-3 border-t border-pro-stone mt-3">
-              <p className="text-xs font-semibold text-pro-warm-gray font-sans uppercase tracking-wider mb-2">Operator Tier Mix</p>
+            <div className="pt-3 border-t border-accent-soft mt-3">
+              <p className="text-xs font-semibold text-graphite/60 font-sans uppercase tracking-wider mb-2">Operator Tier Mix</p>
               <div className="flex gap-3">
                 {resellerData.tierDistribution.map((tier) => {
                   const tierColors = {
-                    Pro: 'bg-pro-stone/30 text-pro-charcoal',
-                    Premium: 'bg-pro-gold/10 text-pro-gold',
+                    Pro: 'bg-accent-soft/30 text-graphite',
+                    Premium: 'bg-accent/10 text-accent',
                     Enterprise: 'bg-purple-50 text-purple-700',
                   };
                   return (
@@ -302,7 +302,7 @@ export default function BrandPerformance() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans">No brand associated with your account.</p>
       </div>
     );
   }
@@ -310,8 +310,8 @@ export default function BrandPerformance() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl text-pro-navy">Performance</h1>
-        <p className="text-sm text-pro-warm-gray font-sans mt-0.5">Analytics for the last 12 months</p>
+        <h1 className="font-sans text-2xl text-graphite">Performance</h1>
+        <p className="text-sm text-graphite/60 font-sans mt-0.5">Analytics for the last 12 months</p>
       </div>
 
       {error && (
@@ -363,10 +363,10 @@ export default function BrandPerformance() {
 
         {loading ? (
           <div className="h-48 flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-pro-stone border-t-pro-navy rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-accent-soft border-t-graphite rounded-full animate-spin" />
           </div>
         ) : totalOrders === 0 ? (
-          <div className="h-48 flex items-center justify-center text-pro-warm-gray font-sans text-sm">
+          <div className="h-48 flex items-center justify-center text-graphite/60 font-sans text-sm">
             Revenue will appear here once orders are placed.
           </div>
         ) : (
@@ -378,11 +378,11 @@ export default function BrandPerformance() {
                 return (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
                     <div
-                      className={`w-full rounded-t-sm transition-all ${isLast ? 'bg-pro-navy' : 'bg-pro-stone group-hover:bg-pro-navy/40'}`}
+                      className={`w-full rounded-t-sm transition-all ${isLast ? 'bg-graphite' : 'bg-accent-soft group-hover:bg-graphite/40'}`}
                       style={{ height: `${Math.max(pct, 2)}%` }}
                       title={`${bucket.month}: $${bucket.revenue.toLocaleString()}`}
                     />
-                    <span className="text-[10px] text-pro-warm-gray font-sans">{bucket.month}</span>
+                    <span className="text-[10px] text-graphite/60 font-sans">{bucket.month}</span>
                   </div>
                 );
               })}
@@ -396,35 +396,35 @@ export default function BrandPerformance() {
         <Card>
           <CardHeader>
             <CardTitle>Top Retailers</CardTitle>
-            <span className="text-xs text-pro-warm-gray font-sans">by revenue</span>
+            <span className="text-xs text-graphite/60 font-sans">by revenue</span>
           </CardHeader>
 
           {loading ? (
             <div className="space-y-3">
               {[0,1,2].map(i => (
                 <div key={i} className="flex items-center gap-3 animate-pulse">
-                  <div className="w-5 h-3 bg-pro-stone/30 rounded" />
-                  <div className="flex-1 h-4 bg-pro-stone/30 rounded" />
-                  <div className="w-16 h-4 bg-pro-stone/30 rounded" />
+                  <div className="w-5 h-3 bg-accent-soft/30 rounded" />
+                  <div className="flex-1 h-4 bg-accent-soft/30 rounded" />
+                  <div className="w-16 h-4 bg-accent-soft/30 rounded" />
                 </div>
               ))}
             </div>
           ) : topRetailers.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray font-sans py-4 text-center">
+            <p className="text-sm text-graphite/60 font-sans py-4 text-center">
               Retailer data will appear once orders are placed.
             </p>
           ) : (
             <div className="space-y-3">
               {topRetailers.map((r, i) => (
                 <div key={r.id} className="flex items-center gap-3">
-                  <span className="w-5 text-center text-xs font-bold text-pro-warm-gray font-sans">{i + 1}</span>
+                  <span className="w-5 text-center text-xs font-bold text-graphite/60 font-sans">{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-pro-charcoal text-sm font-sans truncate">{r.name}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans">
+                    <p className="font-medium text-graphite text-sm font-sans truncate">{r.name}</p>
+                    <p className="text-xs text-graphite/60 font-sans">
                       {[r.type, `${r.orders} order${r.orders !== 1 ? 's' : ''}`].filter(Boolean).join(' · ')}
                     </p>
                   </div>
-                  <p className="font-semibold text-pro-charcoal text-sm font-sans flex-shrink-0">
+                  <p className="font-semibold text-graphite text-sm font-sans flex-shrink-0">
                     ${r.revenue.toLocaleString()}
                   </p>
                 </div>
@@ -436,37 +436,37 @@ export default function BrandPerformance() {
         <Card>
           <CardHeader>
             <CardTitle>Top Products</CardTitle>
-            <span className="text-xs text-pro-warm-gray font-sans">by revenue</span>
+            <span className="text-xs text-graphite/60 font-sans">by revenue</span>
           </CardHeader>
 
           {loading ? (
             <div className="space-y-3">
               {[0,1,2].map(i => (
                 <div key={i} className="flex items-center gap-3 animate-pulse">
-                  <div className="w-5 h-3 bg-pro-stone/30 rounded" />
-                  <div className="flex-1 h-4 bg-pro-stone/30 rounded" />
-                  <div className="w-16 h-4 bg-pro-stone/30 rounded" />
+                  <div className="w-5 h-3 bg-accent-soft/30 rounded" />
+                  <div className="flex-1 h-4 bg-accent-soft/30 rounded" />
+                  <div className="w-16 h-4 bg-accent-soft/30 rounded" />
                 </div>
               ))}
             </div>
           ) : topProducts.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray font-sans py-4 text-center">
+            <p className="text-sm text-graphite/60 font-sans py-4 text-center">
               Product data will appear once orders are placed.
             </p>
           ) : (
             <div className="space-y-3">
               {topProducts.map((p, i) => (
                 <div key={p.id} className="flex items-center gap-3">
-                  <span className="w-5 text-center text-xs font-bold text-pro-warm-gray font-sans">{i + 1}</span>
+                  <span className="w-5 text-center text-xs font-bold text-graphite/60 font-sans">{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-pro-charcoal text-sm font-sans truncate">{p.name}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans">{p.units} units sold</p>
+                    <p className="font-medium text-graphite text-sm font-sans truncate">{p.name}</p>
+                    <p className="text-xs text-graphite/60 font-sans">{p.units} units sold</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <Sparkline
                       data={Array.from({ length: 6 }, () => Math.max(0, p.revenue / 6 + (Math.random() - 0.5) * p.revenue * 0.4))}
                     />
-                    <p className="font-semibold text-pro-charcoal text-sm font-sans flex-shrink-0">
+                    <p className="font-semibold text-graphite text-sm font-sans flex-shrink-0">
                       ${p.revenue.toLocaleString()}
                     </p>
                   </div>
@@ -480,8 +480,8 @@ export default function BrandPerformance() {
       {/* ── Intelligence Context — WO-12 ────────────────────── */}
       <div className="mt-8 space-y-6">
         <div className="flex items-center gap-3">
-          <Brain className="w-5 h-5 text-pro-gold" />
-          <h2 className="font-serif text-xl text-pro-navy">Intelligence Context</h2>
+          <Brain className="w-5 h-5 text-accent" />
+          <h2 className="font-sans text-xl text-graphite">Intelligence Context</h2>
         </div>
 
         <PerformanceIntelligenceSection brandSlug={brandId || 'default'} />

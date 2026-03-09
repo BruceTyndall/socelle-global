@@ -106,7 +106,7 @@ export default function BusinessLayout() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-pro-ivory">
+      <div className="min-h-screen bg-background">
         <MainNav />
         <Outlet />
       </div>
@@ -115,14 +115,14 @@ export default function BusinessLayout() {
 
   return (
     <LocationProvider>
-    <div className="min-h-screen bg-pro-ivory">
+    <div className="min-h-screen bg-background">
       <MainNav />
       <div className="flex">
-        <aside className="w-64 bg-white/95 backdrop-blur-sm border-r border-pro-stone flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
-          <div className="p-6 border-b border-pro-stone">
+        <aside className="w-64 bg-white/95 backdrop-blur-sm border-r border-accent-soft flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
+          <div className="p-6 border-b border-accent-soft">
             <Link to="/portal">
-              <h1 className="font-serif text-lg text-pro-navy">
-                socelle<span className="text-pro-gold">.</span>
+              <h1 className="font-sans text-lg text-graphite">
+                socelle<span className="text-accent">.</span>
               </h1>
             </Link>
           </div>
@@ -130,14 +130,14 @@ export default function BusinessLayout() {
           <nav className="flex-1 p-4 space-y-1">
             <Link
               to="/"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors text-pro-warm-gray hover:bg-pro-cream hover:text-pro-navy mb-2 font-sans min-h-touch"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors text-graphite/60 hover:bg-accent-soft hover:text-graphite mb-2 font-sans min-h-touch"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Home</span>
             </Link>
             {navSections.map((section) => (
               <div key={section.label}>
-                <p className="text-[10px] font-sans font-semibold text-pro-warm-gray/70 uppercase tracking-wider px-4 pt-4 pb-1">
+                <p className="text-[10px] font-sans font-semibold text-graphite/60/70 uppercase tracking-wider px-4 pt-4 pb-1">
                   {section.label}
                 </p>
                 {section.items.map((item) => {
@@ -151,8 +151,8 @@ export default function BusinessLayout() {
                       to={item.path}
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors font-sans min-h-touch ${
                         isActive
-                          ? 'bg-pro-cream text-pro-navy font-medium'
-                          : 'text-pro-warm-gray hover:bg-pro-cream hover:text-pro-navy'
+                          ? 'bg-accent-soft text-graphite font-medium'
+                          : 'text-graphite/60 hover:bg-accent-soft hover:text-graphite'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -164,21 +164,21 @@ export default function BusinessLayout() {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-pro-stone">
+          <div className="p-4 border-t border-accent-soft">
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-pro-charcoal hover:bg-pro-cream rounded-lg transition-colors font-sans"
+                className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-graphite hover:bg-accent-soft rounded-lg transition-colors font-sans"
               >
                 <span className="truncate">{profile?.spa_name || user.email}</span>
                 <ChevronDown className="w-4 h-4 flex-shrink-0" />
               </button>
 
               {userMenuOpen && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border border-pro-stone overflow-hidden">
+                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border border-accent-soft overflow-hidden">
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-pro-charcoal hover:bg-pro-cream transition-colors font-sans"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-graphite hover:bg-accent-soft transition-colors font-sans"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Sign Out</span>
@@ -190,16 +190,16 @@ export default function BusinessLayout() {
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0" style={{ height: 'calc(100vh - 4rem)' }}>
-          <header className="bg-white border-b border-pro-stone">
+          <header className="bg-white border-b border-accent-soft">
             <div className="px-8 py-5">
               <div className="flex items-center justify-between">
-                <h1 className="font-serif text-lg text-pro-navy">
+                <h1 className="font-sans text-lg text-graphite">
                   {profile?.spa_name || 'Business Portal'}
                 </h1>
                 <div className="flex items-center gap-3">
                   <LocationSwitcher />
                   <NotificationCenter preferencesUrl="/portal/notifications" />
-                  <div className="text-sm text-pro-warm-gray font-sans">
+                  <div className="text-sm text-graphite/60 font-sans">
                     Reseller Portal
                   </div>
                 </div>
@@ -215,9 +215,9 @@ export default function BusinessLayout() {
             </div>
           </main>
 
-          <footer className="border-t border-pro-stone bg-white">
+          <footer className="border-t border-accent-soft bg-white">
             <div className="px-8 py-4">
-              <p className="text-center text-sm text-pro-warm-gray font-sans">
+              <p className="text-center text-sm text-graphite/60 font-sans">
                 © 2026 Socelle. All rights reserved.
               </p>
             </div>

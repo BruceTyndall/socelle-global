@@ -105,13 +105,13 @@ export default function ProProductsView() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-semibold text-pro-charcoal">PRO Products</h2>
-          <p className="text-sm text-pro-warm-gray mt-1">Professional-use products for building custom treatments</p>
+          <h2 className="text-2xl font-semibold text-graphite">PRO Products</h2>
+          <p className="text-sm text-graphite/60 mt-1">Professional-use products for building custom treatments</p>
         </div>
         {!isAdding && !editingId && (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add Product</span>
@@ -120,13 +120,13 @@ export default function ProProductsView() {
       </div>
 
       {(isAdding || editingId) && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-          <h3 className="text-lg font-medium text-pro-charcoal mb-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+          <h3 className="text-lg font-medium text-graphite mb-4">
             {editingId ? 'Edit Product' : 'New Product'}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Product Name (Exact)
               </label>
               <input
@@ -134,40 +134,40 @@ export default function ProProductsView() {
                 required
                 value={formData.product_name}
                 onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Product Function / Outcomes
               </label>
               <textarea
                 required
                 value={formData.product_function}
                 onChange={(e) => setFormData({ ...formData, product_function: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 rows={2}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Key Ingredients (comma-separated)
               </label>
               <input
                 type="text"
                 value={formData.key_ingredients}
                 onChange={(e) => setFormData({ ...formData, key_ingredients: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 In-Service Usage Allowed
               </label>
               <select
                 value={formData.in_service_usage_allowed}
                 onChange={(e) => setFormData({ ...formData, in_service_usage_allowed: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               >
                 <option value="unknown">Unknown</option>
                 <option value="yes">Yes</option>
@@ -175,21 +175,21 @@ export default function ProProductsView() {
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">
+              <label className="block text-sm font-medium text-graphite mb-1">
                 Contraindications (comma-separated)
               </label>
               <input
                 type="text"
                 value={formData.contraindications}
                 onChange={(e) => setFormData({ ...formData, contraindications: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               />
             </div>
           </div>
           <div className="flex space-x-3 mt-4">
             <button
               type="submit"
-              className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal"
+              className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite"
             >
               <Save className="w-4 h-4" />
               <span>{editingId ? 'Update' : 'Save'}</span>
@@ -197,7 +197,7 @@ export default function ProProductsView() {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center space-x-2 px-4 py-2 border border-pro-stone rounded-lg hover:bg-pro-ivory"
+              className="flex items-center space-x-2 px-4 py-2 border border-accent-soft rounded-lg hover:bg-background"
             >
               <X className="w-4 h-4" />
               <span>Cancel</span>
@@ -206,28 +206,28 @@ export default function ProProductsView() {
         </form>
       )}
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-pro-ivory border-b border-pro-stone">
+            <thead className="bg-background border-b border-accent-soft">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Product Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Function</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">In-Service</th>
-                <th className="px-4 py-3 text-right text-sm font-medium text-pro-charcoal">Actions</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Product Name</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Function</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">In-Service</th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-graphite">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pro-stone">
+            <tbody className="divide-y divide-accent-soft">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-pro-ivory">
-                  <td className="px-4 py-3 text-sm font-medium text-pro-charcoal">{product.product_name}</td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray">{product.product_function}</td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray capitalize">{product.in_service_usage_allowed}</td>
+                <tr key={product.id} className="hover:bg-background">
+                  <td className="px-4 py-3 text-sm font-medium text-graphite">{product.product_name}</td>
+                  <td className="px-4 py-3 text-sm text-graphite/60">{product.product_function}</td>
+                  <td className="px-4 py-3 text-sm text-graphite/60 capitalize">{product.in_service_usage_allowed}</td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(product)}
-                        className="p-1 text-pro-warm-gray hover:text-pro-charcoal"
+                        className="p-1 text-graphite/60 hover:text-graphite"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -245,7 +245,7 @@ export default function ProProductsView() {
           </table>
         </div>
         {products.length === 0 && (
-          <div className="text-center py-12 text-pro-warm-gray">
+          <div className="text-center py-12 text-graphite/60">
             No PRO products yet. Add your first product to get started.
           </div>
         )}

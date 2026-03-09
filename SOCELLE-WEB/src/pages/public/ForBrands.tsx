@@ -2,7 +2,7 @@
    ForBrands.tsx — "For Brands" Landing Page
    WO-OVERHAUL-03 Phase 3 rebuild
    Data: usePlatformStats() live counts with explicit preview fallback
-   Pearl Mineral V2 tokens only — no pro-*, no font-serif
+   Pearl Mineral V2 tokens only — no pro-*, no font-sans
    Uses brand media from /images/brand/ and /videos/brand/
    ═══════════════════════════════════════════════════════════════ */
 import { Link } from 'react-router-dom';

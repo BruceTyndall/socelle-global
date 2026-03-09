@@ -1,45 +1,11 @@
-import * as Sentry from '@sentry/react';
-
-// Initialize Sentry before anything else
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN || '',
-  environment: import.meta.env.MODE,
-  enabled: !!import.meta.env.VITE_SENTRY_DSN,
-  tracesSampleRate: import.meta.env.PROD ? 0.2 : 1.0,
-  replaysSessionSampleRate: 0,
-  replaysOnErrorSampleRate: import.meta.env.PROD ? 1.0 : 0,
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-  // Scrub PII — never send user emails or names
-  beforeSend(event) {
-    if (event.user) {
-      delete event.user.email;
-      delete event.user.username;
-    }
-    return event;
-  },
-});
-
-// Global error handlers — wired to Sentry
+// Global error handlers
 window.onerror = (message, source, lineno, colno, error) => {
-  if (error instanceof Error) {
-    Sentry.captureException(error);
-  }
-  if (import.meta.env.DEV) {
-    console.error('[GlobalError]', { message, source, lineno, colno, error });
-  }
+  console.error('[GlobalError]', { message, source, lineno, colno, error });
   return false;
 };
 
 window.onunhandledrejection = (event) => {
-  if (event.reason instanceof Error) {
-    Sentry.captureException(event.reason);
-  }
-  if (import.meta.env.DEV) {
-    console.error('[UnhandledRejection]', event.reason);
-  }
+  console.error('[UnhandledRejection]', event.reason);
 };
 
 import { StrictMode } from 'react';

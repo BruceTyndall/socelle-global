@@ -3,7 +3,7 @@
    Data: LIVE from Supabase `brands` table via TanStack Query v5
    Competitive Intelligence: LIVE from `market_signals` brand mentions
    Intelligence overlays: DEMO (mock brandIntelligence layer)
-   Pearl Mineral V2 tokens only — no pro-*, no font-serif
+   Pearl Mineral V2 tokens only — no pro-*, no font-sans
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';

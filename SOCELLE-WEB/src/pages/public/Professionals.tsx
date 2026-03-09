@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════════
    Professionals.tsx — Professional Directory (V2-HUBS-04 Non-Shell)
    Data: LIVE from Supabase `user_profiles` table via TanStack Query v5
-   Pearl Mineral V2 tokens only — no pro-*, no font-serif
+   Pearl Mineral V2 tokens only — no pro-*, no font-sans
    3 states: skeleton shimmer, empty with CTA, error with retry
    ══════════════════════════════════════════════════════════════════ */
 import { useState, useMemo, useCallback } from 'react';

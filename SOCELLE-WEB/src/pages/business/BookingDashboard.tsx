@@ -34,8 +34,8 @@ export default function BookingDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-pro-charcoal">Booking Management</h1>
-          <p className="text-sm text-pro-warm-gray mt-1">Today: {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+          <h1 className="text-2xl font-semibold text-graphite">Booking Management</h1>
+          <p className="text-sm text-graphite/60 mt-1">Today: {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</p>
         </div>
         <div className="flex items-center gap-2">
           {!isLive && !loading && (
@@ -57,36 +57,36 @@ export default function BookingDashboard() {
         ].map(stat => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white rounded-xl border border-pro-stone/30 p-4">
+            <div key={stat.label} className="bg-white rounded-xl border border-accent-soft/30 p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-pro-warm-gray uppercase tracking-wider">{stat.label}</span>
+                <span className="text-xs font-medium text-graphite/60 uppercase tracking-wider">{stat.label}</span>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </div>
-              <p className="text-2xl font-semibold text-pro-charcoal">{loading ? '-' : stat.value}</p>
+              <p className="text-2xl font-semibold text-graphite">{loading ? '-' : stat.value}</p>
             </div>
           );
         })}
       </div>
 
       {/* Today's Appointments */}
-      <div className="bg-white rounded-xl border border-pro-stone/30 p-5">
-        <h2 className="text-sm font-semibold text-pro-charcoal uppercase tracking-wider mb-4">Today&apos;s Schedule</h2>
+      <div className="bg-white rounded-xl border border-accent-soft/30 p-5">
+        <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider mb-4">Today&apos;s Schedule</h2>
         {loading ? (
-          <div className="space-y-3 animate-pulse">{[1, 2, 3].map(i => <div key={i} className="h-14 bg-pro-stone/10 rounded-lg" />)}</div>
+          <div className="space-y-3 animate-pulse">{[1, 2, 3].map(i => <div key={i} className="h-14 bg-accent-soft/10 rounded-lg" />)}</div>
         ) : appointments.length === 0 ? (
-          <p className="text-sm text-pro-warm-gray py-4">No appointments scheduled for today</p>
+          <p className="text-sm text-graphite/60 py-4">No appointments scheduled for today</p>
         ) : (
           <div className="space-y-2">
             {appointments.map(appt => (
-              <Link key={appt.id} to={`/portal/booking/appointments/${appt.id}`} className="flex items-center gap-4 p-3 rounded-lg border border-pro-stone/20 hover:border-accent/30 transition-colors">
+              <Link key={appt.id} to={`/portal/booking/appointments/${appt.id}`} className="flex items-center gap-4 p-3 rounded-lg border border-accent-soft/20 hover:border-accent/30 transition-colors">
                 <div className="text-center min-w-[60px]">
-                  <p className="text-sm font-semibold text-pro-charcoal">{new Date(appt.start_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</p>
+                  <p className="text-sm font-semibold text-graphite">{new Date(appt.start_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</p>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-pro-charcoal">{appt.client_first_name} {appt.client_last_name}</p>
-                  <p className="text-xs text-pro-warm-gray">{appt.service_name ?? 'Service'}{appt.staff_first_name ? ` · ${appt.staff_first_name} ${appt.staff_last_name}` : ''}</p>
+                  <p className="text-sm font-medium text-graphite">{appt.client_first_name} {appt.client_last_name}</p>
+                  <p className="text-xs text-graphite/60">{appt.service_name ?? 'Service'}{appt.staff_first_name ? ` · ${appt.staff_first_name} ${appt.staff_last_name}` : ''}</p>
                 </div>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[appt.status] ?? 'bg-pro-stone/20 text-pro-warm-gray'}`}>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[appt.status] ?? 'bg-accent-soft/20 text-graphite/60'}`}>
                   {appt.status.replace('_', ' ')}
                 </span>
               </Link>
@@ -97,24 +97,24 @@ export default function BookingDashboard() {
 
       {/* Quick Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link to="/portal/booking/services" className="bg-white rounded-xl border border-pro-stone/30 p-5 hover:border-accent/30 transition-colors group">
+        <Link to="/portal/booking/services" className="bg-white rounded-xl border border-accent-soft/30 p-5 hover:border-accent/30 transition-colors group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"><Scissors className="w-5 h-5 text-accent" /></div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-pro-charcoal">Services</p>
-              <p className="text-xs text-pro-warm-gray">{services.length} services configured</p>
+              <p className="text-sm font-medium text-graphite">Services</p>
+              <p className="text-xs text-graphite/60">{services.length} services configured</p>
             </div>
-            <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-accent transition-colors" />
+            <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-accent transition-colors" />
           </div>
         </Link>
-        <Link to="/portal/booking/staff" className="bg-white rounded-xl border border-pro-stone/30 p-5 hover:border-accent/30 transition-colors group">
+        <Link to="/portal/booking/staff" className="bg-white rounded-xl border border-accent-soft/30 p-5 hover:border-accent/30 transition-colors group">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-pro-gold/10 flex items-center justify-center"><Users className="w-5 h-5 text-pro-gold" /></div>
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"><Users className="w-5 h-5 text-accent" /></div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-pro-charcoal">Staff</p>
-              <p className="text-xs text-pro-warm-gray">{staff.length} team members</p>
+              <p className="text-sm font-medium text-graphite">Staff</p>
+              <p className="text-xs text-graphite/60">{staff.length} team members</p>
             </div>
-            <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-accent transition-colors" />
+            <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-accent transition-colors" />
           </div>
         </Link>
       </div>

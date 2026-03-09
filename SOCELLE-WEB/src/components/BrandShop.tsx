@@ -120,14 +120,14 @@ export default function BrandShop({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-pro-warm-gray">Loading products...</div>
+        <div className="text-graphite/60">Loading products...</div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="sticky top-0 z-10 bg-white border-b border-pro-stone pb-4">
+      <div className="sticky top-0 z-10 bg-white border-b border-accent-soft pb-4">
         {canViewPro && (
           <div className="flex gap-2 mb-4">
             <button
@@ -135,7 +135,7 @@ export default function BrandShop({
               className={`px-6 py-2 rounded-lg font-medium transition-colors ${
                 activeTab === 'retail'
                   ? 'text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
               style={activeTab === 'retail' ? { backgroundColor: accentColor } : {}}
             >
@@ -146,7 +146,7 @@ export default function BrandShop({
               className={`px-6 py-2 rounded-lg font-medium transition-colors ${
                 activeTab === 'pro'
                   ? 'text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
               style={activeTab === 'pro' ? { backgroundColor: accentColor } : {}}
             >
@@ -156,9 +156,9 @@ export default function BrandShop({
         )}
 
         {!canViewPro && activeTab === 'pro' && (
-          <div className="bg-pro-cream border border-pro-stone rounded-lg p-4 mb-4 flex items-center gap-3">
-            <LogIn className="w-5 h-5 text-pro-navy" />
-            <p className="text-pro-charcoal">
+          <div className="bg-accent-soft border border-accent-soft rounded-lg p-4 mb-4 flex items-center gap-3">
+            <LogIn className="w-5 h-5 text-graphite" />
+            <p className="text-graphite">
               Log in to view and order professional products
             </p>
           </div>
@@ -166,13 +166,13 @@ export default function BrandShop({
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-graphite/60" />
             <input
               type="text"
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full pl-10 pr-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function BrandShop({
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 selectedCategory === cat
                   ? 'text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
               style={selectedCategory === cat ? { backgroundColor: accentColor } : {}}
             >
@@ -196,7 +196,7 @@ export default function BrandShop({
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-12 text-pro-warm-gray">
+        <div className="text-center py-12 text-graphite/60">
           No products found
         </div>
       ) : (
@@ -208,7 +208,7 @@ export default function BrandShop({
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-lg border border-pro-stone overflow-hidden hover:shadow-lg transition-shadow"
+                className="bg-white rounded-lg border border-accent-soft overflow-hidden hover:shadow-lg transition-shadow"
               >
                 <div
                   className="h-32 flex items-center justify-center text-white text-3xl font-bold"
@@ -217,21 +217,21 @@ export default function BrandShop({
                   {initial}
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-pro-charcoal mb-1 line-clamp-2">
+                  <h3 className="font-semibold text-graphite mb-1 line-clamp-2">
                     {product.product_name}
                   </h3>
                   {product.category && (
-                    <span className="inline-block px-2 py-0.5 bg-pro-stone text-pro-warm-gray text-xs rounded mb-2">
+                    <span className="inline-block px-2 py-0.5 bg-accent-soft text-graphite/60 text-xs rounded mb-2">
                       {product.category}
                     </span>
                   )}
                   <div className="mt-2 mb-3">
                     {price != null ? (
-                      <p className="text-lg font-bold text-pro-charcoal">
+                      <p className="text-lg font-bold text-graphite">
                         ${price.toFixed(2)}
                       </p>
                     ) : (
-                      <p className="text-sm text-pro-warm-gray">Contact for pricing</p>
+                      <p className="text-sm text-graphite/60">Contact for pricing</p>
                     )}
                   </div>
                   <button

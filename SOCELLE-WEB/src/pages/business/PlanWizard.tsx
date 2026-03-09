@@ -257,10 +257,10 @@ export default function PlanWizard() {
 
         {/* ── Header ── */}
         <div className="mb-8">
-          <h1 className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight mb-1">
+          <h1 className="text-2xl font-sans font-semibold text-graphite tracking-tight mb-1">
             Upload Menu &amp; See Brand Fit
           </h1>
-          <p className="text-sm text-pro-warm-gray font-sans">
+          <p className="text-sm text-graphite/60 font-sans">
             Upload your service menu and discover how professional brands fit your business
           </p>
         </div>
@@ -279,17 +279,17 @@ export default function PlanWizard() {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold font-sans transition-colors ${
                       done
-                        ? 'bg-pro-charcoal text-white'
+                        ? 'bg-graphite text-white'
                         : active
-                        ? 'bg-pro-charcoal text-white'
-                        : 'bg-pro-stone text-pro-warm-gray'
+                        ? 'bg-graphite text-white'
+                        : 'bg-accent-soft text-graphite/60'
                     }`}
                   >
                     {done ? <CheckCircle className="w-4 h-4" /> : n}
                   </div>
                   <span
                     className={`mt-1.5 text-[11px] font-sans whitespace-nowrap ${
-                      active ? 'text-pro-charcoal font-medium' : 'text-pro-warm-gray'
+                      active ? 'text-graphite font-medium' : 'text-graphite/60'
                     }`}
                   >
                     {s.label}
@@ -298,7 +298,7 @@ export default function PlanWizard() {
                 {idx < STEPS.length - 1 && (
                   <div
                     className={`flex-1 h-px mx-3 mb-5 transition-colors ${
-                      done ? 'bg-pro-charcoal' : 'bg-pro-stone'
+                      done ? 'bg-graphite' : 'bg-accent-soft'
                     }`}
                   />
                 )}
@@ -308,10 +308,10 @@ export default function PlanWizard() {
         </div>
 
         {/* ── Card ── */}
-        <div className="bg-white rounded-xl border border-pro-stone p-7 sm:p-9">
+        <div className="bg-white rounded-xl border border-accent-soft p-7 sm:p-9">
 
           {brandsLoading && step === 2 && (
-            <div className="mb-6 flex items-center gap-3 text-pro-warm-gray bg-pro-ivory border border-pro-stone rounded-lg px-4 py-3">
+            <div className="mb-6 flex items-center gap-3 text-graphite/60 bg-background border border-accent-soft rounded-lg px-4 py-3">
               <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
               <span className="text-sm font-medium">Loading available brands…</span>
             </div>
@@ -327,20 +327,20 @@ export default function PlanWizard() {
           {step === 1 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-pro-ivory rounded-lg flex items-center justify-center border border-pro-stone">
-                  <FileText className="w-5 h-5 text-pro-charcoal" />
+                <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center border border-accent-soft">
+                  <FileText className="w-5 h-5 text-graphite" />
                 </div>
                 <div>
-                  <h2 className="text-base font-sans font-semibold text-pro-charcoal">Your Service Menu</h2>
-                  <p className="text-xs text-pro-warm-gray mt-0.5">Upload a file or paste your menu text below</p>
+                  <h2 className="text-base font-sans font-semibold text-graphite">Your Service Menu</h2>
+                  <p className="text-xs text-graphite/60 mt-0.5">Upload a file or paste your menu text below</p>
                 </div>
               </div>
 
               {/* Drop zone */}
-              <label className="block border-2 border-dashed border-pro-stone rounded-xl p-8 text-center cursor-pointer hover:border-pro-charcoal/30 hover:bg-pro-ivory/50 transition-colors">
-                <Upload className="w-8 h-8 text-pro-warm-gray mx-auto mb-3" />
-                <p className="text-sm font-medium text-pro-charcoal mb-1">Upload PDF or DOCX</p>
-                <p className="text-xs text-pro-warm-gray">Drag and drop, or click to browse</p>
+              <label className="block border-2 border-dashed border-accent-soft rounded-xl p-8 text-center cursor-pointer hover:border-graphite/30 hover:bg-background/50 transition-colors">
+                <Upload className="w-8 h-8 text-graphite/60 mx-auto mb-3" />
+                <p className="text-sm font-medium text-graphite mb-1">Upload PDF or DOCX</p>
+                <p className="text-xs text-graphite/60">Drag and drop, or click to browse</p>
                 <input
                   type="file"
                   accept=".pdf,.docx"
@@ -350,14 +350,14 @@ export default function PlanWizard() {
               </label>
 
               {uploadedFile && (
-                <div className="flex items-center gap-3 p-3 bg-pro-ivory rounded-lg border border-pro-stone">
-                  <FileText className="w-5 h-5 text-pro-charcoal flex-shrink-0" />
+                <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-accent-soft">
+                  <FileText className="w-5 h-5 text-graphite flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-pro-charcoal truncate">{uploadedFile.name}</p>
-                    {extracting && <p className="text-xs text-pro-warm-gray mt-0.5">Extracting text…</p>}
+                    <p className="text-sm font-medium text-graphite truncate">{uploadedFile.name}</p>
+                    {extracting && <p className="text-xs text-graphite/60 mt-0.5">Extracting text…</p>}
                   </div>
                   {extracting
-                    ? <Loader2 className="w-4 h-4 text-pro-warm-gray animate-spin flex-shrink-0" />
+                    ? <Loader2 className="w-4 h-4 text-graphite/60 animate-spin flex-shrink-0" />
                     : <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
                   }
                 </div>
@@ -371,9 +371,9 @@ export default function PlanWizard() {
               )}
 
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-pro-stone" />
-                <span className="text-xs text-pro-warm-gray font-sans font-medium">or paste below</span>
-                <div className="flex-1 h-px bg-pro-stone" />
+                <div className="flex-1 h-px bg-accent-soft" />
+                <span className="text-xs text-graphite/60 font-sans font-medium">or paste below</span>
+                <div className="flex-1 h-px bg-accent-soft" />
               </div>
 
               <div>
@@ -381,10 +381,10 @@ export default function PlanWizard() {
                   value={menuText}
                   onChange={(e) => setMenuText(e.target.value)}
                   rows={11}
-                  className="w-full px-4 py-3 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-charcoal focus:border-pro-charcoal font-mono text-sm resize-none transition-shadow"
+                  className="w-full px-4 py-3 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite font-mono text-sm resize-none transition-shadow"
                   placeholder={"Paste your service menu here…\n\nExample:\nSignature Facial — 60 min — $120\nDeep Cleansing Facial — 75 min — $150\nBody Massage — 60 min — $100"}
                 />
-                <p className="text-xs text-pro-warm-gray mt-1.5">
+                <p className="text-xs text-graphite/60 mt-1.5">
                   {menuText.length > 0
                     ? `${serviceCount} line${serviceCount !== 1 ? 's' : ''} · ${menuText.length} characters`
                     : 'Paste your full menu including service names, durations, and prices for best results'}
@@ -397,12 +397,12 @@ export default function PlanWizard() {
           {step === 2 && (
             <div className="space-y-5">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-pro-ivory rounded-lg flex items-center justify-center border border-pro-stone">
-                  <Sparkles className="w-5 h-5 text-pro-charcoal" />
+                <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center border border-accent-soft">
+                  <Sparkles className="w-5 h-5 text-graphite" />
                 </div>
                 <div>
-                  <h2 className="text-base font-sans font-semibold text-pro-charcoal">Choose a Brand</h2>
-                  <p className="text-xs text-pro-warm-gray mt-0.5">Select the professional brand to analyze against</p>
+                  <h2 className="text-base font-sans font-semibold text-graphite">Choose a Brand</h2>
+                  <p className="text-xs text-graphite/60 mt-0.5">Select the professional brand to analyze against</p>
                 </div>
               </div>
 
@@ -412,8 +412,8 @@ export default function PlanWizard() {
                     key={brand.id}
                     className={`flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
                       selectedBrandId === brand.id
-                        ? 'border-pro-charcoal bg-pro-ivory'
-                        : 'border-pro-stone hover:border-pro-charcoal/30 hover:bg-pro-ivory/40'
+                        ? 'border-graphite bg-background'
+                        : 'border-accent-soft hover:border-graphite/30 hover:bg-background/40'
                     }`}
                   >
                     <input
@@ -422,23 +422,23 @@ export default function PlanWizard() {
                       value={brand.id}
                       checked={selectedBrandId === brand.id}
                       onChange={(e) => setSelectedBrandId(e.target.value)}
-                      className="mt-1 accent-pro-charcoal"
+                      className="mt-1 accent-graphite"
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-sm font-semibold text-pro-charcoal font-sans">{brand.name}</p>
+                        <p className="text-sm font-semibold text-graphite font-sans">{brand.name}</p>
                         {brand.is_featured && (
-                          <span className="inline-flex items-center px-2 py-0.5 bg-pro-gold/15 text-pro-gold text-[10px] font-semibold tracking-wider uppercase rounded-full border border-pro-gold/30">
+                          <span className="inline-flex items-center px-2 py-0.5 bg-accent/15 text-accent text-[10px] font-semibold tracking-wider uppercase rounded-full border border-accent/30">
                             Featured
                           </span>
                         )}
                       </div>
                       {brand.description && (
-                        <p className="text-xs text-pro-warm-gray mt-0.5 leading-relaxed">{brand.description}</p>
+                        <p className="text-xs text-graphite/60 mt-0.5 leading-relaxed">{brand.description}</p>
                       )}
                     </div>
                     {selectedBrandId === brand.id && (
-                      <CheckCircle className="w-4 h-4 text-pro-charcoal flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-4 h-4 text-graphite flex-shrink-0 mt-0.5" />
                     )}
                   </label>
                 ))}
@@ -450,41 +450,41 @@ export default function PlanWizard() {
           {step === 3 && (
             <div className="space-y-5">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-pro-ivory rounded-lg flex items-center justify-center border border-pro-stone">
-                  <Sparkles className="w-5 h-5 text-pro-charcoal" />
+                <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center border border-accent-soft">
+                  <Sparkles className="w-5 h-5 text-graphite" />
                 </div>
                 <div>
-                  <h2 className="text-base font-sans font-semibold text-pro-charcoal">Ready to Analyze</h2>
-                  <p className="text-xs text-pro-warm-gray mt-0.5">Review your selections and run the analysis</p>
+                  <h2 className="text-base font-sans font-semibold text-graphite">Ready to Analyze</h2>
+                  <p className="text-xs text-graphite/60 mt-0.5">Review your selections and run the analysis</p>
                 </div>
               </div>
 
-              <div className="divide-y divide-pro-stone border border-pro-stone rounded-xl overflow-hidden">
+              <div className="divide-y divide-accent-soft border border-accent-soft rounded-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 py-4 bg-white">
-                  <p className="text-xs font-medium text-pro-warm-gray uppercase tracking-wider">Business</p>
-                  <p className="text-sm font-semibold text-pro-charcoal font-sans">
+                  <p className="text-xs font-medium text-graphite/60 uppercase tracking-wider">Business</p>
+                  <p className="text-sm font-semibold text-graphite font-sans">
                     {profile?.spa_name || 'Your Business'}
                   </p>
                 </div>
                 <div className="flex items-center justify-between px-5 py-4 bg-white">
-                  <p className="text-xs font-medium text-pro-warm-gray uppercase tracking-wider">Brand</p>
-                  <p className="text-sm font-semibold text-pro-charcoal font-sans">{selectedBrand?.name}</p>
+                  <p className="text-xs font-medium text-graphite/60 uppercase tracking-wider">Brand</p>
+                  <p className="text-sm font-semibold text-graphite font-sans">{selectedBrand?.name}</p>
                 </div>
                 <div className="flex items-center justify-between px-5 py-4 bg-white">
-                  <p className="text-xs font-medium text-pro-warm-gray uppercase tracking-wider">Menu</p>
-                  <p className="text-sm text-pro-charcoal font-sans">
+                  <p className="text-xs font-medium text-graphite/60 uppercase tracking-wider">Menu</p>
+                  <p className="text-sm text-graphite font-sans">
                     {serviceCount} line{serviceCount !== 1 ? 's' : ''} · {menuText.length.toLocaleString()} chars
                   </p>
                 </div>
                 <div className="flex items-center justify-between px-5 py-4 bg-white">
-                  <p className="text-xs font-medium text-pro-warm-gray uppercase tracking-wider">Credits</p>
+                  <p className="text-xs font-medium text-graphite/60 uppercase tracking-wider">Credits</p>
                   <div className="flex items-center gap-2">
                     {creditLoading ? (
-                      <Loader2 className="w-3 h-3 animate-spin text-pro-warm-gray" />
+                      <Loader2 className="w-3 h-3 animate-spin text-graphite/60" />
                     ) : creditCheck ? (
                       <>
-                        <CreditCard className="w-3.5 h-3.5 text-pro-warm-gray" />
-                        <p className={`text-sm font-sans ${creditCheck.sufficient ? 'text-pro-charcoal' : 'text-red-600 font-medium'}`}>
+                        <CreditCard className="w-3.5 h-3.5 text-graphite/60" />
+                        <p className={`text-sm font-sans ${creditCheck.sufficient ? 'text-graphite' : 'text-red-600 font-medium'}`}>
                           {creditCheck.sufficient
                             ? `${ENGINE_CREDIT_COSTS.menuOrchestrator} credits will be used`
                             : `Insufficient credits (need ${creditCheck.requiredCredits}, have ${creditCheck.currentBalance})`
@@ -492,7 +492,7 @@ export default function PlanWizard() {
                         </p>
                       </>
                     ) : (
-                      <p className="text-sm text-pro-warm-gray font-sans">Checking...</p>
+                      <p className="text-sm text-graphite/60 font-sans">Checking...</p>
                     )}
                   </div>
                 </div>
@@ -517,21 +517,21 @@ export default function PlanWizard() {
               )}
 
               {/* AI disclosure */}
-              <div className="mt-3 flex items-center gap-2 text-xs text-pro-warm-gray">
+              <div className="mt-3 flex items-center gap-2 text-xs text-graphite/60">
                 <Shield className="w-3.5 h-3.5 flex-shrink-0" />
                 <span>Generated by AI — results are for business planning only, not medical advice.</span>
               </div>
 
               {processing ? (
-                <div className="rounded-xl border border-pro-stone bg-pro-ivory p-7">
+                <div className="rounded-xl border border-accent-soft bg-background p-7">
                   <div className="flex items-center gap-3 mb-5">
-                    <Loader2 className="w-5 h-5 text-pro-charcoal animate-spin flex-shrink-0" />
-                    <p className="text-sm font-semibold text-pro-charcoal font-sans">Analyzing your menu…</p>
+                    <Loader2 className="w-5 h-5 text-graphite animate-spin flex-shrink-0" />
+                    <p className="text-sm font-semibold text-graphite font-sans">Analyzing your menu…</p>
                   </div>
                   {analysisStep && (
-                    <p className="text-xs font-medium text-pro-charcoal mb-3 pl-8">{analysisStep}</p>
+                    <p className="text-xs font-medium text-graphite mb-3 pl-8">{analysisStep}</p>
                   )}
-                  <ul className="space-y-2 pl-8 text-sm text-pro-warm-gray list-none">
+                  <ul className="space-y-2 pl-8 text-sm text-graphite/60 list-none">
                     {[
                       'Checking safety guardrails',
                       'Parsing service offerings',
@@ -542,17 +542,17 @@ export default function PlanWizard() {
                       'Deducting credits',
                     ].map((s) => (
                       <li key={s} className="flex items-center gap-2">
-                        <div className="w-1 h-1 rounded-full bg-pro-warm-gray" />
+                        <div className="w-1 h-1 rounded-full bg-graphite/60" />
                         {s}
                       </li>
                     ))}
                   </ul>
-                  <p className="text-xs text-pro-warm-gray mt-5">This typically takes 10–30 seconds</p>
+                  <p className="text-xs text-graphite/60 mt-5">This typically takes 10–30 seconds</p>
                 </div>
               ) : (
-                <div className="rounded-xl border border-pro-stone bg-pro-ivory px-5 py-4">
-                  <p className="text-sm text-pro-warm-gray">
-                    Click <span className="font-medium text-pro-charcoal">Analyze Menu</span> to start.
+                <div className="rounded-xl border border-accent-soft bg-background px-5 py-4">
+                  <p className="text-sm text-graphite/60">
+                    Click <span className="font-medium text-graphite">Analyze Menu</span> to start.
                     Results include protocol matches, gap analysis, retail attach opportunities, and a phased rollout plan.
                   </p>
                 </div>
@@ -569,11 +569,11 @@ export default function PlanWizard() {
           )}
 
           {/* ── Navigation ── */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-pro-stone">
+          <div className="flex justify-between mt-8 pt-6 border-t border-accent-soft">
             <button
               onClick={handleBack}
               disabled={step === 1 || processing}
-              className="px-5 py-2 text-sm font-medium font-sans text-pro-warm-gray rounded-lg hover:bg-pro-stone/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-5 py-2 text-sm font-medium font-sans text-graphite/60 rounded-lg hover:bg-accent-soft/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Back
             </button>
@@ -582,7 +582,7 @@ export default function PlanWizard() {
               <button
                 onClick={handleNext}
                 disabled={brandsLoading || (step === 2 && brands.length === 0)}
-                className="flex items-center gap-2 px-6 py-2.5 bg-pro-charcoal text-white text-sm font-medium font-sans rounded-lg hover:bg-pro-charcoal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-2 px-6 py-2.5 bg-graphite text-white text-sm font-medium font-sans rounded-lg hover:bg-graphite/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Continue
                 <ChevronRight className="w-4 h-4" />
@@ -591,7 +591,7 @@ export default function PlanWizard() {
               <button
                 onClick={handleAnalyze}
                 disabled={processing}
-                className="flex items-center gap-2 px-6 py-2.5 bg-pro-charcoal text-white text-sm font-medium font-sans rounded-lg hover:bg-pro-charcoal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-2 px-6 py-2.5 bg-graphite text-white text-sm font-medium font-sans rounded-lg hover:bg-graphite/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {processing ? (
                   <>

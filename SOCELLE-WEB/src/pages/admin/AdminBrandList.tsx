@@ -132,8 +132,8 @@ export default function AdminBrandList() {
       {/* Top Bar */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-pro-charcoal">Brand Management</h1>
-          <p className="text-pro-warm-gray mt-1">Manage brand content and publishing</p>
+          <h1 className="text-3xl font-bold text-graphite">Brand Management</h1>
+          <p className="text-graphite/60 mt-1">Manage brand content and publishing</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -159,14 +159,14 @@ export default function AdminBrandList() {
               )
             }
             disabled={filteredBrands.length === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-ivory disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-accent-soft text-graphite rounded-lg hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
           >
             <Download className="w-4 h-4" />
             Export CSV
           </button>
           <Link
             to="/admin/brands/new"
-            className="flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
           >
             <Plus className="w-5 h-5" />
             Create Brand
@@ -175,16 +175,16 @@ export default function AdminBrandList() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg border border-pro-stone p-4">
+      <div className="bg-white rounded-lg border border-accent-soft p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pro-warm-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-graphite/60" />
             <input
               type="text"
               placeholder="Search by name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full pl-10 pr-4 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
           <div className="flex gap-2">
@@ -192,8 +192,8 @@ export default function AdminBrandList() {
               onClick={() => setActiveFilter('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeFilter === 'all'
-                  ? 'bg-pro-navy text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  ? 'bg-graphite text-white'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
             >
               All
@@ -202,8 +202,8 @@ export default function AdminBrandList() {
               onClick={() => setActiveFilter('active')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeFilter === 'active'
-                  ? 'bg-pro-navy text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  ? 'bg-graphite text-white'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
             >
               Published
@@ -212,8 +212,8 @@ export default function AdminBrandList() {
               onClick={() => setActiveFilter('inactive')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeFilter === 'inactive'
-                  ? 'bg-pro-navy text-white'
-                  : 'bg-pro-stone text-pro-charcoal hover:bg-pro-stone'
+                  ? 'bg-graphite text-white'
+                  : 'bg-accent-soft text-graphite hover:bg-accent-soft'
               }`}
             >
               Draft
@@ -226,26 +226,26 @@ export default function AdminBrandList() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="border border-pro-stone rounded-xl p-5 bg-white">
+            <div key={i} className="border border-accent-soft rounded-xl p-5 bg-white">
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 rounded-lg bg-pro-stone animate-pulse"></div>
+                <div className="w-12 h-12 rounded-lg bg-accent-soft animate-pulse"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-5 bg-pro-stone rounded animate-pulse w-3/4"></div>
-                  <div className="h-4 bg-pro-stone rounded animate-pulse w-1/2"></div>
+                  <div className="h-5 bg-accent-soft rounded animate-pulse w-3/4"></div>
+                  <div className="h-4 bg-accent-soft rounded animate-pulse w-1/2"></div>
                 </div>
               </div>
               <div className="space-y-2 mb-4">
-                <div className="h-3 bg-pro-stone rounded animate-pulse w-full"></div>
-                <div className="h-3 bg-pro-stone rounded animate-pulse w-5/6"></div>
+                <div className="h-3 bg-accent-soft rounded animate-pulse w-full"></div>
+                <div className="h-3 bg-accent-soft rounded animate-pulse w-5/6"></div>
               </div>
-              <div className="h-9 bg-pro-stone rounded animate-pulse"></div>
+              <div className="h-9 bg-accent-soft rounded animate-pulse"></div>
             </div>
           ))}
         </div>
       ) : filteredBrands.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 bg-white rounded-lg border border-pro-stone">
-          <Package className="w-16 h-16 text-pro-stone mb-4" />
-          <p className="text-pro-warm-gray mb-4">
+        <div className="flex flex-col items-center justify-center py-16 bg-white rounded-lg border border-accent-soft">
+          <Package className="w-16 h-16 text-accent-soft mb-4" />
+          <p className="text-graphite/60 mb-4">
             {searchTerm || activeFilter !== 'all'
               ? 'No brands match your filters.'
               : 'No brands yet. Create your first brand to get started.'}
@@ -253,7 +253,7 @@ export default function AdminBrandList() {
           {!searchTerm && activeFilter === 'all' && (
             <Link
               to="/admin/brands/new"
-              className="flex items-center gap-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors font-medium"
             >
               <Plus className="w-5 h-5" />
               Create Brand
@@ -265,7 +265,7 @@ export default function AdminBrandList() {
           {filteredBrands.map((brand) => (
             <div
               key={brand.id}
-              className="border border-pro-stone rounded-xl hover:shadow-md transition-shadow bg-white overflow-hidden"
+              className="border border-accent-soft rounded-xl hover:shadow-md transition-shadow bg-white overflow-hidden"
             >
               <div
                 className="h-1.5"
@@ -281,7 +281,7 @@ export default function AdminBrandList() {
                     {getInitial(brand.name)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold text-pro-charcoal truncate">
+                    <h3 className="text-lg font-semibold text-graphite truncate">
                       {brand.name}
                     </h3>
                     <div className="mt-1">
@@ -291,7 +291,7 @@ export default function AdminBrandList() {
                 </div>
 
                 {(brand.short_description || brand.description) && (
-                  <p className="text-pro-warm-gray text-sm mb-4 line-clamp-2 min-h-[40px]">
+                  <p className="text-graphite/60 text-sm mb-4 line-clamp-2 min-h-[40px]">
                     {brand.short_description || brand.description}
                   </p>
                 )}
@@ -301,13 +301,13 @@ export default function AdminBrandList() {
                     {brand.category_tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="px-2.5 py-1 bg-pro-stone text-pro-charcoal rounded-full text-xs font-medium"
+                        className="px-2.5 py-1 bg-accent-soft text-graphite rounded-full text-xs font-medium"
                       >
                         {tag}
                       </span>
                     ))}
                     {brand.category_tags.length > 3 && (
-                      <span className="px-2.5 py-1 bg-pro-stone text-pro-charcoal rounded-full text-xs font-medium">
+                      <span className="px-2.5 py-1 bg-accent-soft text-graphite rounded-full text-xs font-medium">
                         +{brand.category_tags.length - 3}
                       </span>
                     )}
@@ -316,11 +316,11 @@ export default function AdminBrandList() {
 
                 <Link
                   to={`/admin/brands/${brand.id}`}
-                  className="block w-full text-center px-4 py-2 bg-pro-stone text-pro-charcoal rounded-lg hover:bg-pro-stone transition-colors font-medium text-sm"
+                  className="block w-full text-center px-4 py-2 bg-accent-soft text-graphite rounded-lg hover:bg-accent-soft transition-colors font-medium text-sm"
                 >
                   Edit
                 </Link>
-                <p className="text-xs text-pro-warm-gray mt-3 truncate">/{brand.slug}</p>
+                <p className="text-xs text-graphite/60 mt-3 truncate">/{brand.slug}</p>
                 </div>
             </div>
           ))}

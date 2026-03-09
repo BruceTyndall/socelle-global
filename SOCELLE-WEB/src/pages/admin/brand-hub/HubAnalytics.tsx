@@ -82,9 +82,9 @@ export default function HubAnalytics() {
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-pro-stone animate-pulse" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-white rounded-xl border border-accent-soft animate-pulse" />)}
         </div>
-        <div className="h-48 bg-white rounded-xl border border-pro-stone animate-pulse" />
+        <div className="h-48 bg-white rounded-xl border border-accent-soft animate-pulse" />
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function HubAnalytics() {
         </CardHeader>
 
         {data.monthly.every(m => m.revenue === 0) ? (
-          <p className="text-sm text-pro-warm-gray font-sans px-1 pb-4">No revenue data yet for this period.</p>
+          <p className="text-sm text-graphite/60 font-sans px-1 pb-4">No revenue data yet for this period.</p>
         ) : (
           <div className="h-48 relative">
             <div className="absolute inset-0 flex items-end gap-1 px-1">
@@ -139,11 +139,11 @@ export default function HubAnalytics() {
                 return (
                   <div key={m.month} className="flex-1 flex flex-col items-center gap-1 group">
                     <div
-                      className={`w-full rounded-t-sm transition-all ${isLast ? 'bg-pro-navy' : 'bg-pro-stone group-hover:bg-pro-navy/40'}`}
+                      className={`w-full rounded-t-sm transition-all ${isLast ? 'bg-graphite' : 'bg-accent-soft group-hover:bg-graphite/40'}`}
                       style={{ height: `${Math.max(pct, 2)}%` }}
                       title={`${m.label}: $${m.revenue.toLocaleString()}`}
                     />
-                    <span className="text-[10px] text-pro-warm-gray font-sans">{m.label}</span>
+                    <span className="text-[10px] text-graphite/60 font-sans">{m.label}</span>
                   </div>
                 );
               })}
@@ -162,8 +162,8 @@ export default function HubAnalytics() {
               { label: 'Avg Order',      value: lastMonth.orders > 0 ? `$${Math.round(lastMonth.revenue / lastMonth.orders).toLocaleString()}` : '—' },
             ].map(m => (
               <div key={m.label} className="flex justify-between items-center">
-                <span className="text-sm font-sans text-pro-warm-gray">{m.label}</span>
-                <span className="text-sm font-bold font-sans text-pro-charcoal">{m.value}</span>
+                <span className="text-sm font-sans text-graphite/60">{m.label}</span>
+                <span className="text-sm font-bold font-sans text-graphite">{m.value}</span>
               </div>
             ))}
           </div>
@@ -179,8 +179,8 @@ export default function HubAnalytics() {
               { label: 'Avg Order Value',   value: data.avgOrderValue > 0 ? `$${data.avgOrderValue.toLocaleString()}` : '—' },
             ].map(m => (
               <div key={m.label} className="flex justify-between items-center">
-                <span className="text-sm font-sans text-pro-warm-gray">{m.label}</span>
-                <span className="text-sm font-bold font-sans text-pro-charcoal">{m.value}</span>
+                <span className="text-sm font-sans text-graphite/60">{m.label}</span>
+                <span className="text-sm font-bold font-sans text-graphite">{m.value}</span>
               </div>
             ))}
           </div>

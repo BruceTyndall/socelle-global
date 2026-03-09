@@ -127,31 +127,31 @@ export default function CampaignEditor() {
         <div>
           <Link
             to="/portal/marketing"
-            className="inline-flex items-center gap-1.5 text-sm font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm font-sans text-graphite/60 hover:text-graphite transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Marketing
           </Link>
 
           <div className="flex items-center gap-3">
-            <h1 className="font-serif text-3xl text-pro-charcoal">New Campaign</h1>
+            <h1 className="font-sans text-3xl text-graphite">New Campaign</h1>
             {!isLive && (
               <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">
                 DEMO
               </span>
             )}
           </div>
-          <p className="text-sm text-pro-warm-gray font-sans mt-1">
+          <p className="text-sm text-graphite/60 font-sans mt-1">
             Create an opt-in campaign for your consented contacts
           </p>
         </div>
 
         {/* ── Campaign Basics ─────────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm space-y-5">
-          <h2 className="font-serif text-lg text-pro-charcoal">Campaign Details</h2>
+        <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm space-y-5">
+          <h2 className="font-sans text-lg text-graphite">Campaign Details</h2>
 
           <div>
-            <label className="block text-xs font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
               Campaign Name
             </label>
             <input
@@ -159,19 +159,19 @@ export default function CampaignEditor() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Spring Product Launch"
-              className="w-full h-10 px-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal placeholder:text-pro-warm-gray/50 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+              className="w-full h-10 px-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite placeholder:text-graphite/60/50 focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
                 Campaign Type
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as CampaignType)}
-                className="w-full h-10 px-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors bg-white"
+                className="w-full h-10 px-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors bg-white"
               >
                 {CAMPAIGN_TYPES.map((ct) => (
                   <option key={ct.value} value={ct.value}>
@@ -182,14 +182,14 @@ export default function CampaignEditor() {
             </div>
 
             <div>
-              <label className="block text-xs font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
                 <Users className="w-3.5 h-3.5 inline mr-1" />
                 Audience Segment
               </label>
               <select
                 value={segmentId}
                 onChange={(e) => setSegmentId(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors bg-white"
+                className="w-full h-10 px-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors bg-white"
               >
                 <option value="">All consented contacts</option>
                 {segments.map((s) => (
@@ -202,7 +202,7 @@ export default function CampaignEditor() {
           </div>
 
           <div>
-            <label className="block text-xs font-sans text-pro-warm-gray uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-sans text-graphite/60 uppercase tracking-wider mb-1.5">
               <Calendar className="w-3.5 h-3.5 inline mr-1" />
               Schedule (optional)
             </label>
@@ -210,24 +210,24 @@ export default function CampaignEditor() {
               type="datetime-local"
               value={scheduledAt}
               onChange={(e) => setScheduledAt(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+              className="w-full h-10 px-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
             />
           </div>
         </div>
 
         {/* ── Template Selection ───────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm space-y-4">
           <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-pro-navy" />
-            <h2 className="font-serif text-lg text-pro-charcoal">Start from Template</h2>
+            <FileText className="w-5 h-5 text-graphite" />
+            <h2 className="font-sans text-lg text-graphite">Start from Template</h2>
           </div>
           {templatesLoading ? (
             <div className="flex items-center gap-2 py-4">
-              <Loader2 className="w-4 h-4 animate-spin text-pro-warm-gray" />
-              <span className="text-sm text-pro-warm-gray font-sans">Loading templates...</span>
+              <Loader2 className="w-4 h-4 animate-spin text-graphite/60" />
+              <span className="text-sm text-graphite/60 font-sans">Loading templates...</span>
             </div>
           ) : templates.length === 0 ? (
-            <p className="text-sm text-pro-warm-gray font-sans">No templates available yet.</p>
+            <p className="text-sm text-graphite/60 font-sans">No templates available yet.</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {templates.slice(0, 6).map((tpl) => (
@@ -236,15 +236,15 @@ export default function CampaignEditor() {
                   onClick={() => applyTemplate(tpl.id)}
                   className={`text-left p-3 rounded-lg border transition-colors ${
                     selectedTemplate === tpl.id
-                      ? 'border-pro-navy bg-pro-navy/5'
-                      : 'border-pro-stone hover:bg-pro-cream/50'
+                      ? 'border-graphite bg-graphite/5'
+                      : 'border-accent-soft hover:bg-accent-soft/50'
                   }`}
                 >
-                  <div className="w-full h-16 bg-pro-cream/50 rounded mb-2 flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-pro-warm-gray/40" />
+                  <div className="w-full h-16 bg-accent-soft/50 rounded mb-2 flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-graphite/60/40" />
                   </div>
-                  <p className="text-xs font-sans font-medium text-pro-charcoal truncate">{tpl.name}</p>
-                  <p className="text-xs text-pro-warm-gray mt-0.5">{tpl.type}</p>
+                  <p className="text-xs font-sans font-medium text-graphite truncate">{tpl.name}</p>
+                  <p className="text-xs text-graphite/60 mt-0.5">{tpl.type}</p>
                 </button>
               ))}
             </div>
@@ -252,14 +252,14 @@ export default function CampaignEditor() {
         </div>
 
         {/* ── Content / Variants ───────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-pro-stone p-6 shadow-sm space-y-5">
+        <div className="bg-white rounded-xl border border-accent-soft p-6 shadow-sm space-y-5">
           <div className="flex items-center justify-between">
-            <h2 className="font-serif text-lg text-pro-charcoal">
+            <h2 className="font-sans text-lg text-graphite">
               Content {variants.length > 1 ? '(A/B Test)' : ''}
             </h2>
             <button
               onClick={addVariant}
-              className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-pro-navy hover:text-pro-navy/80 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-graphite hover:text-graphite/80 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Variant
@@ -267,13 +267,13 @@ export default function CampaignEditor() {
           </div>
 
           {variants.map((v, idx) => (
-            <div key={v.id} className="space-y-4 border-t border-pro-stone/50 pt-5 first:border-0 first:pt-0">
+            <div key={v.id} className="space-y-4 border-t border-accent-soft/50 pt-5 first:border-0 first:pt-0">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-sans font-semibold text-pro-charcoal">{v.label}</span>
+                <span className="text-sm font-sans font-semibold text-graphite">{v.label}</span>
                 {variants.length > 1 && (
                   <button
                     onClick={() => removeVariant(v.id)}
-                    className="text-pro-warm-gray hover:text-red-500 transition-colors"
+                    className="text-graphite/60 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -283,36 +283,36 @@ export default function CampaignEditor() {
               {type === 'email' && (
                 <>
                   <div>
-                    <label className="block text-xs font-sans text-pro-warm-gray mb-1">Subject Line</label>
+                    <label className="block text-xs font-sans text-graphite/60 mb-1">Subject Line</label>
                     <input
                       type="text"
                       value={v.subject}
                       onChange={(e) => updateVariant(v.id, 'subject', e.target.value)}
                       placeholder="Subject line"
-                      className="w-full h-10 px-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal placeholder:text-pro-warm-gray/50 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                      className="w-full h-10 px-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite placeholder:text-graphite/60/50 focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-sans text-pro-warm-gray mb-1">Preview Text</label>
+                    <label className="block text-xs font-sans text-graphite/60 mb-1">Preview Text</label>
                     <input
                       type="text"
                       value={v.previewText}
                       onChange={(e) => updateVariant(v.id, 'previewText', e.target.value)}
                       placeholder="Preview text shown in inbox"
-                      className="w-full h-10 px-3 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal placeholder:text-pro-warm-gray/50 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors"
+                      className="w-full h-10 px-3 rounded-lg border border-accent-soft text-sm font-sans text-graphite placeholder:text-graphite/60/50 focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors"
                     />
                   </div>
                 </>
               )}
 
               <div>
-                <label className="block text-xs font-sans text-pro-warm-gray mb-1">Content</label>
+                <label className="block text-xs font-sans text-graphite/60 mb-1">Content</label>
                 <textarea
                   value={v.body}
                   onChange={(e) => updateVariant(v.id, 'body', e.target.value)}
                   placeholder="Write your message content..."
                   rows={8}
-                  className="w-full px-3 py-2.5 rounded-lg border border-pro-stone text-sm font-sans text-pro-charcoal placeholder:text-pro-warm-gray/50 focus:outline-none focus:ring-2 focus:ring-pro-navy/20 focus:border-pro-navy transition-colors resize-y"
+                  className="w-full px-3 py-2.5 rounded-lg border border-accent-soft text-sm font-sans text-graphite placeholder:text-graphite/60/50 focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite transition-colors resize-y"
                 />
               </div>
             </div>
@@ -324,7 +324,7 @@ export default function CampaignEditor() {
           <button
             onClick={() => handleSave(true)}
             disabled={!name.trim() || saving}
-            className="inline-flex items-center gap-2 h-10 px-5 rounded-full border border-pro-stone text-sm font-sans font-medium text-pro-charcoal hover:bg-pro-cream transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 h-10 px-5 rounded-full border border-accent-soft text-sm font-sans font-medium text-graphite hover:bg-accent-soft transition-colors disabled:opacity-50"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Draft
@@ -332,7 +332,7 @@ export default function CampaignEditor() {
           <button
             onClick={() => handleSave(false)}
             disabled={!name.trim() || saving}
-            className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-pro-navy text-white text-sm font-sans font-medium hover:bg-pro-navy/90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-graphite text-white text-sm font-sans font-medium hover:bg-graphite/90 transition-colors disabled:opacity-50"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             {scheduledAt ? 'Schedule Campaign' : 'Save Campaign'}

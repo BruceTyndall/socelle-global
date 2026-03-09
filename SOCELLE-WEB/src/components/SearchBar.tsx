@@ -106,9 +106,9 @@ export default function SearchBar({
       {/* Search icon */}
       <div className={`absolute ${iconOffset} top-1/2 -translate-y-1/2 pointer-events-none`}>
         {loadingSuggestions ? (
-          <Loader2 className={`${iconSize} text-pro-warm-gray animate-spin`} />
+          <Loader2 className={`${iconSize} text-graphite/60 animate-spin`} />
         ) : (
-          <Search className={`${iconSize} text-pro-warm-gray`} />
+          <Search className={`${iconSize} text-graphite/60`} />
         )}
       </div>
 
@@ -123,7 +123,7 @@ export default function SearchBar({
         placeholder={placeholder}
         className={`
           input ${sizeClasses}
-          focus:ring-2 focus:ring-pro-navy/10 focus:border-pro-navy
+          focus:ring-2 focus:ring-graphite/10 focus:border-graphite
         `}
         autoComplete="off"
         autoCorrect="off"
@@ -134,7 +134,7 @@ export default function SearchBar({
       {value && (
         <button
           onClick={() => { setValue(''); onSearch?.(''); setSuggestions([]); inputRef.current?.focus(); }}
-          className={`absolute ${size === 'lg' ? 'right-3.5' : 'right-3'} top-1/2 -translate-y-1/2 text-pro-warm-gray hover:text-pro-charcoal transition-colors`}
+          className={`absolute ${size === 'lg' ? 'right-3.5' : 'right-3'} top-1/2 -translate-y-1/2 text-graphite/60 hover:text-graphite transition-colors`}
           aria-label="Clear search"
         >
           <X className={iconSize} />
@@ -143,7 +143,7 @@ export default function SearchBar({
 
       {/* Suggestions dropdown */}
       {showSuggestions && (
-        <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-pro-stone rounded-lg shadow-dropdown overflow-hidden">
+        <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-accent-soft rounded-lg shadow-dropdown overflow-hidden">
           {suggestions.map((s, i) => (
             <li key={s}>
               <button
@@ -151,11 +151,11 @@ export default function SearchBar({
                 onClick={() => handleSubmit(s)}
                 className={`
                   w-full text-left px-4 py-2.5 text-sm font-sans flex items-center gap-2.5
-                  hover:bg-pro-cream transition-colors
-                  ${i === activeSuggestion ? 'bg-pro-cream text-pro-navy' : 'text-pro-charcoal'}
+                  hover:bg-accent-soft transition-colors
+                  ${i === activeSuggestion ? 'bg-accent-soft text-graphite' : 'text-graphite'}
                 `}
               >
-                <Search className="w-3.5 h-3.5 text-pro-warm-gray flex-shrink-0" />
+                <Search className="w-3.5 h-3.5 text-graphite/60 flex-shrink-0" />
                 {s}
               </button>
             </li>

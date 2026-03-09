@@ -185,19 +185,19 @@ export default function AdminOrderDetail() {
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       submitted: 'bg-yellow-100 text-yellow-700',
-      reviewing: 'bg-pro-stone text-pro-charcoal',
+      reviewing: 'bg-accent-soft text-graphite',
       sent_to_brand: 'bg-purple-100 text-purple-700',
       confirmed: 'bg-green-100 text-green-700',
-      fulfilled: 'bg-pro-stone text-pro-charcoal',
+      fulfilled: 'bg-accent-soft text-graphite',
       cancelled: 'bg-red-100 text-red-700',
     };
-    return colors[status] || 'bg-pro-stone text-pro-charcoal';
+    return colors[status] || 'bg-accent-soft text-graphite';
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-pro-warm-gray">Loading order...</div>
+        <div className="text-graphite/60">Loading order...</div>
       </div>
     );
   }
@@ -213,7 +213,7 @@ export default function AdminOrderDetail() {
           >
             Retry
           </button>
-          <Link to="/admin/orders" className="text-pro-navy hover:text-pro-charcoal">
+          <Link to="/admin/orders" className="text-graphite hover:text-graphite">
             Back to Orders
           </Link>
         </div>
@@ -225,8 +225,8 @@ export default function AdminOrderDetail() {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
         <div className="text-center">
-          <p className="text-pro-warm-gray mb-4">Order not found</p>
-          <Link to="/admin/orders" className="text-pro-navy hover:text-pro-charcoal">
+          <p className="text-graphite/60 mb-4">Order not found</p>
+          <Link to="/admin/orders" className="text-graphite hover:text-graphite">
             Back to Orders
           </Link>
         </div>
@@ -243,18 +243,18 @@ export default function AdminOrderDetail() {
       <div className="mb-6">
         <Link
           to="/admin/orders"
-          className="inline-flex items-center gap-2 text-pro-warm-gray hover:text-pro-charcoal font-medium"
+          className="inline-flex items-center gap-2 text-graphite/60 hover:text-graphite font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Orders
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
+      <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-pro-charcoal mb-2">Order {order.order_number}</h1>
-            <div className="flex items-center gap-4 text-sm text-pro-warm-gray">
+            <h1 className="text-2xl font-bold text-graphite mb-2">Order {order.order_number}</h1>
+            <div className="flex items-center gap-4 text-sm text-graphite/60">
               <span>Business: {order.business_name}</span>
               <span>Brand: {order.brand_name}</span>
               <span>{new Date(order.created_at).toLocaleDateString()}</span>
@@ -267,17 +267,17 @@ export default function AdminOrderDetail() {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
-        <div className="md:col-span-2 bg-white rounded-lg border border-pro-stone p-6">
-          <h2 className="text-xl font-bold text-pro-charcoal mb-4">Order Items</h2>
+        <div className="md:col-span-2 bg-white rounded-lg border border-accent-soft p-6">
+          <h2 className="text-xl font-bold text-graphite mb-4">Order Items</h2>
           <div className="space-y-3">
             {items.map((item) => (
-              <div key={item.id} className="flex items-center gap-4 p-4 bg-pro-ivory rounded-lg">
+              <div key={item.id} className="flex items-center gap-4 p-4 bg-background rounded-lg">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-pro-charcoal">{item.product_name}</h3>
+                  <h3 className="font-semibold text-graphite">{item.product_name}</h3>
                   <span
                     className={`inline-block px-2 py-0.5 text-xs font-medium rounded mt-1 ${
                       item.product_type === 'pro'
-                        ? 'bg-pro-stone text-pro-charcoal'
+                        ? 'bg-accent-soft text-graphite'
                         : 'bg-green-100 text-green-700'
                     }`}
                   >
@@ -285,19 +285,19 @@ export default function AdminOrderDetail() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-pro-warm-gray">Qty:</span>
+                  <span className="text-sm text-graphite/60">Qty:</span>
                   <input
                     type="number"
                     value={item.qty}
                     onChange={(e) => updateItem(item.id, { qty: parseInt(e.target.value) || 0 })}
-                    className="w-20 px-2 py-1 border border-pro-stone rounded"
+                    className="w-20 px-2 py-1 border border-accent-soft rounded"
                     min="1"
                   />
                 </div>
-                <div className="text-sm text-pro-warm-gray">
+                <div className="text-sm text-graphite/60">
                   ${item.unit_price.toFixed(2)} ea
                 </div>
-                <div className="text-lg font-bold text-pro-charcoal min-w-[100px] text-right">
+                <div className="text-lg font-bold text-graphite min-w-[100px] text-right">
                   ${item.line_total.toFixed(2)}
                 </div>
                 <button
@@ -309,24 +309,24 @@ export default function AdminOrderDetail() {
               </div>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-pro-stone flex items-center justify-between">
-            <span className="text-lg font-semibold text-pro-charcoal">Subtotal:</span>
-            <span className="text-2xl font-bold text-pro-charcoal">${subtotal.toFixed(2)}</span>
+          <div className="mt-4 pt-4 border-t border-accent-soft flex items-center justify-between">
+            <span className="text-lg font-semibold text-graphite">Subtotal:</span>
+            <span className="text-2xl font-bold text-graphite">${subtotal.toFixed(2)}</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-pro-stone p-6">
-          <h2 className="text-xl font-bold text-pro-charcoal mb-4">Margin Calculation</h2>
+        <div className="bg-white rounded-lg border border-accent-soft p-6">
+          <h2 className="text-xl font-bold text-graphite mb-4">Margin Calculation</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Subtotal
               </label>
-              <div className="text-2xl font-bold text-pro-charcoal">${subtotal.toFixed(2)}</div>
+              <div className="text-2xl font-bold text-graphite">${subtotal.toFixed(2)}</div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Commission %
               </label>
               <input
@@ -335,7 +335,7 @@ export default function AdminOrderDetail() {
                 onChange={(e) =>
                   setOrder({ ...order, commission_percent: parseFloat(e.target.value) || 0 })
                 }
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg"
                 step="0.5"
                 min="0"
                 max="100"
@@ -343,28 +343,28 @@ export default function AdminOrderDetail() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Commission Amount
               </label>
               <div className="text-xl font-bold text-green-600">${commissionAmount.toFixed(2)}</div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Admin Fee
               </label>
               <input
                 type="number"
                 value={order.admin_fee}
                 onChange={(e) => setOrder({ ...order, admin_fee: parseFloat(e.target.value) || 0 })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg"
                 step="0.01"
                 min="0"
               />
             </div>
 
-            <div className="pt-4 border-t border-pro-stone">
-              <label className="block text-sm font-medium text-pro-charcoal mb-2">
+            <div className="pt-4 border-t border-accent-soft">
+              <label className="block text-sm font-medium text-graphite mb-2">
                 Total Margin
               </label>
               <div className="text-2xl font-bold text-green-600">${totalMargin.toFixed(2)}</div>
@@ -373,52 +373,52 @@ export default function AdminOrderDetail() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-        <h2 className="text-xl font-bold text-pro-charcoal mb-4">Notes</h2>
+      <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+        <h2 className="text-xl font-bold text-graphite mb-4">Notes</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               Business Notes (Read-only)
             </label>
             <textarea
               value={order.notes || ''}
               readOnly
               rows={4}
-              className="w-full px-3 py-2 border border-pro-stone rounded-lg bg-pro-ivory"
+              className="w-full px-3 py-2 border border-accent-soft rounded-lg bg-background"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               Internal Admin Notes
             </label>
             <textarea
               value={order.admin_notes || ''}
               onChange={(e) => setOrder({ ...order, admin_notes: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 border border-pro-stone rounded-lg"
+              className="w-full px-3 py-2 border border-accent-soft rounded-lg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               Notes to Brand
             </label>
             <textarea
               value={order.brand_notes || ''}
               onChange={(e) => setOrder({ ...order, brand_notes: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 border border-pro-stone rounded-lg"
+              className="w-full px-3 py-2 border border-accent-soft rounded-lg"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6">
-        <h2 className="text-xl font-bold text-pro-charcoal mb-4">Actions</h2>
+      <div className="bg-white rounded-lg border border-accent-soft p-6">
+        <h2 className="text-xl font-bold text-graphite mb-4">Actions</h2>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-pro-navy text-white font-semibold rounded-lg hover:bg-pro-charcoal transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-graphite text-white font-semibold rounded-lg hover:bg-graphite transition-colors disabled:opacity-50"
           >
             <Save className="w-5 h-5" />
             Save Changes
@@ -427,7 +427,7 @@ export default function AdminOrderDetail() {
           {order.status === 'submitted' && (
             <button
               onClick={() => updateStatus('reviewing')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-pro-charcoal text-white font-semibold rounded-lg hover:bg-pro-charcoal transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-graphite text-white font-semibold rounded-lg hover:bg-graphite transition-colors"
             >
               Start Review
             </button>
@@ -438,7 +438,7 @@ export default function AdminOrderDetail() {
               order.brand_notes || ''
             )}`}
             onClick={() => updateStatus('sent_to_brand')}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-pro-navy text-white font-semibold rounded-lg hover:bg-pro-charcoal transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-graphite text-white font-semibold rounded-lg hover:bg-graphite transition-colors"
           >
             <Send className="w-5 h-5" />
             Send to Brand
@@ -457,7 +457,7 @@ export default function AdminOrderDetail() {
           {order.status === 'confirmed' && (
             <button
               onClick={() => updateStatus('fulfilled')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-pro-charcoal text-white font-semibold rounded-lg hover:bg-pro-charcoal transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-graphite text-white font-semibold rounded-lg hover:bg-graphite transition-colors"
             >
               <CheckCircle className="w-5 h-5" />
               Mark Fulfilled
@@ -484,8 +484,8 @@ export default function AdminOrderDetail() {
           />
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8">
-              <h2 className="text-2xl font-bold text-pro-charcoal mb-4">Cancel Order?</h2>
-              <p className="text-pro-warm-gray mb-6">
+              <h2 className="text-2xl font-bold text-graphite mb-4">Cancel Order?</h2>
+              <p className="text-graphite/60 mb-6">
                 Are you sure you want to cancel this order? This action cannot be undone.
               </p>
               <div className="flex gap-3">
@@ -497,7 +497,7 @@ export default function AdminOrderDetail() {
                 </button>
                 <button
                   onClick={() => setShowCancelConfirm(false)}
-                  className="flex-1 py-3 px-6 bg-pro-stone text-pro-charcoal font-semibold rounded-lg hover:bg-pro-stone transition-colors"
+                  className="flex-1 py-3 px-6 bg-accent-soft text-graphite font-semibold rounded-lg hover:bg-accent-soft transition-colors"
                 >
                   No, Keep
                 </button>

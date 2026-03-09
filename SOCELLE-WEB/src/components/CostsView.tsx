@@ -109,13 +109,13 @@ export default function CostsView() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-semibold text-pro-charcoal">Treatment Costs</h2>
-          <p className="text-sm text-pro-warm-gray mt-1">COGS data for calculating cost-per-treatment</p>
+          <h2 className="text-2xl font-semibold text-graphite">Treatment Costs</h2>
+          <p className="text-sm text-graphite/60 mt-1">COGS data for calculating cost-per-treatment</p>
         </div>
         {!isAdding && !editingId && (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add Cost Entry</span>
@@ -124,17 +124,17 @@ export default function CostsView() {
       </div>
 
       {(isAdding || editingId) && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-          <h3 className="text-lg font-medium text-pro-charcoal mb-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+          <h3 className="text-lg font-medium text-graphite mb-4">
             {editingId ? 'Edit Cost Entry' : 'New Cost Entry'}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Item Type</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Item Type</label>
               <select
                 value={formData.item_type}
                 onChange={(e) => setFormData({ ...formData, item_type: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               >
                 <option value="product">Product</option>
                 <option value="protocol">Protocol</option>
@@ -142,54 +142,54 @@ export default function CostsView() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Item Reference</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Item Reference</label>
               <input
                 type="text"
                 required
                 value={formData.item_reference}
                 onChange={(e) => setFormData({ ...formData, item_reference: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="Product/Protocol name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Cost Per Unit</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Cost Per Unit</label>
               <input
                 type="number"
                 step="0.01"
                 value={formData.cost_per_unit}
                 onChange={(e) => setFormData({ ...formData, cost_per_unit: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="0.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Unit Type</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Unit Type</label>
               <input
                 type="text"
                 value={formData.unit_type}
                 onChange={(e) => setFormData({ ...formData, unit_type: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="ml, application, treatment"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Typical Usage Amount</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Typical Usage Amount</label>
               <input
                 type="number"
                 step="0.01"
                 value={formData.typical_usage_amount}
                 onChange={(e) => setFormData({ ...formData, typical_usage_amount: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 placeholder="Amount used per treatment"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-pro-charcoal mb-1">Notes</label>
+              <label className="block text-sm font-medium text-graphite mb-1">Notes</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+                className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
                 rows={2}
               />
             </div>
@@ -197,7 +197,7 @@ export default function CostsView() {
           <div className="flex space-x-3 mt-4">
             <button
               type="submit"
-              className="flex items-center space-x-2 px-4 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal"
+              className="flex items-center space-x-2 px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite"
             >
               <Save className="w-4 h-4" />
               <span>{editingId ? 'Update' : 'Save'}</span>
@@ -205,7 +205,7 @@ export default function CostsView() {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center space-x-2 px-4 py-2 border border-pro-stone rounded-lg hover:bg-pro-ivory"
+              className="flex items-center space-x-2 px-4 py-2 border border-accent-soft rounded-lg hover:bg-background"
             >
               <X className="w-4 h-4" />
               <span>Cancel</span>
@@ -214,36 +214,36 @@ export default function CostsView() {
         </form>
       )}
 
-      <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+      <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-pro-ivory border-b border-pro-stone">
+            <thead className="bg-background border-b border-accent-soft">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Type</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Item Reference</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Cost/Unit</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Usage Amount</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Notes</th>
-                <th className="px-4 py-3 text-right text-sm font-medium text-pro-charcoal">Actions</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Type</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Item Reference</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Cost/Unit</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Usage Amount</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Notes</th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-graphite">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pro-stone">
+            <tbody className="divide-y divide-accent-soft">
               {costs.map((cost) => (
-                <tr key={cost.id} className="hover:bg-pro-ivory">
-                  <td className="px-4 py-3 text-sm text-pro-charcoal capitalize">{cost.item_type}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-pro-charcoal">{cost.item_reference}</td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray">
+                <tr key={cost.id} className="hover:bg-background">
+                  <td className="px-4 py-3 text-sm text-graphite capitalize">{cost.item_type}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-graphite">{cost.item_reference}</td>
+                  <td className="px-4 py-3 text-sm text-graphite/60">
                     {cost.cost_per_unit ? `$${cost.cost_per_unit.toFixed(2)}${cost.unit_type ? `/${cost.unit_type}` : ''}` : '—'}
                   </td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray">
+                  <td className="px-4 py-3 text-sm text-graphite/60">
                     {cost.typical_usage_amount || '—'}
                   </td>
-                  <td className="px-4 py-3 text-sm text-pro-warm-gray">{cost.notes || '—'}</td>
+                  <td className="px-4 py-3 text-sm text-graphite/60">{cost.notes || '—'}</td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(cost)}
-                        className="p-1 text-pro-warm-gray hover:text-pro-charcoal"
+                        className="p-1 text-graphite/60 hover:text-graphite"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -261,7 +261,7 @@ export default function CostsView() {
           </table>
         </div>
         {costs.length === 0 && (
-          <div className="text-center py-12 text-pro-warm-gray">
+          <div className="text-center py-12 text-graphite/60">
             No cost entries yet. Add your first entry to get started.
           </div>
         )}

@@ -43,8 +43,8 @@ export default function AdminMarketingHub() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-serif text-pro-navy">
-              Marketing Hub<span className="text-pro-gold">.</span>
+            <h1 className="text-3xl font-sans text-graphite">
+              Marketing Hub<span className="text-accent">.</span>
             </h1>
             {!isLive && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 font-sans">
@@ -53,7 +53,7 @@ export default function AdminMarketingHub() {
               </span>
             )}
           </div>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Marketing platform administration — all campaigns are opt-in only, zero cold outreach
           </p>
         </div>
@@ -67,18 +67,18 @@ export default function AdminMarketingHub() {
           { label: 'Templates', value: templates.length, icon: FileText },
           { label: 'Landing Pages', value: pages.length, icon: Globe },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white border border-pro-stone rounded-xl p-4">
+          <div key={stat.label} className="bg-white border border-accent-soft rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60 font-sans">{stat.label}</span>
-              <stat.icon className="w-4 h-4 text-pro-navy/30" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-graphite/60/60 font-sans">{stat.label}</span>
+              <stat.icon className="w-4 h-4 text-graphite/30" />
             </div>
-            <p className="text-2xl font-semibold text-pro-charcoal font-sans">{stat.value}</p>
+            <p className="text-2xl font-semibold text-graphite font-sans">{stat.value}</p>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-pro-stone">
+      <div className="border-b border-accent-soft">
         <div className="flex gap-0">
           {TABS.map((tab) => (
             <button
@@ -86,8 +86,8 @@ export default function AdminMarketingHub() {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2.5 text-sm font-sans font-medium border-b-2 transition-colors ${
                 activeTab === tab
-                  ? 'border-pro-navy text-pro-charcoal'
-                  : 'border-transparent text-pro-warm-gray hover:text-pro-charcoal'
+                  ? 'border-graphite text-graphite'
+                  : 'border-transparent text-graphite/60 hover:text-graphite'
               }`}
             >
               {tab}
@@ -98,39 +98,39 @@ export default function AdminMarketingHub() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-6 h-6 text-pro-navy/40 animate-spin" />
+          <Loader2 className="w-6 h-6 text-graphite/40 animate-spin" />
         </div>
       ) : (
         <>
           {/* Campaigns Tab */}
           {activeTab === 'Campaigns' && (
             campaigns.length === 0 ? (
-              <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-                <Megaphone className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">No campaigns yet.</p>
+              <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+                <Megaphone className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                <p className="text-sm text-graphite/60 font-sans">No campaigns yet.</p>
               </div>
             ) : (
-              <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+              <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone">
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Name</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Type</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Status</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Created</th>
+                    <tr className="border-b border-accent-soft">
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Name</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Type</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Status</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Created</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {campaigns.map((c: MarketingCampaign) => (
-                      <tr key={c.id} className="hover:bg-pro-cream/50 transition-colors">
-                        <td className="px-4 py-2.5 font-medium text-pro-charcoal">{c.name}</td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray capitalize">{c.type.replace('_', ' ')}</td>
+                      <tr key={c.id} className="hover:bg-accent-soft/50 transition-colors">
+                        <td className="px-4 py-2.5 font-medium text-graphite">{c.name}</td>
+                        <td className="px-4 py-2.5 text-graphite/60 capitalize">{c.type.replace('_', ' ')}</td>
                         <td className="px-4 py-2.5">
                           <span className={`text-xs font-semibold px-2 py-0.5 rounded-full capitalize ${STATUS_COLORS[c.status] || ''}`}>
                             {c.status}
                           </span>
                         </td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray text-xs">{new Date(c.created_at).toLocaleDateString()}</td>
+                        <td className="px-4 py-2.5 text-graphite/60 text-xs">{new Date(c.created_at).toLocaleDateString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -142,26 +142,26 @@ export default function AdminMarketingHub() {
           {/* Segments Tab */}
           {activeTab === 'Segments' && (
             segments.length === 0 ? (
-              <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-                <Users className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">No audience segments yet.</p>
+              <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+                <Users className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                <p className="text-sm text-graphite/60 font-sans">No audience segments yet.</p>
               </div>
             ) : (
-              <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+              <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone">
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Name</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Est. Size</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Filters</th>
+                    <tr className="border-b border-accent-soft">
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Name</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Est. Size</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Filters</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {segments.map((s: AudienceSegment) => (
-                      <tr key={s.id} className="hover:bg-pro-cream/50 transition-colors">
-                        <td className="px-4 py-2.5 font-medium text-pro-charcoal">{s.name}</td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray">{s.estimated_size.toLocaleString()}</td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray text-xs">{s.filters?.length || 0} rules</td>
+                      <tr key={s.id} className="hover:bg-accent-soft/50 transition-colors">
+                        <td className="px-4 py-2.5 font-medium text-graphite">{s.name}</td>
+                        <td className="px-4 py-2.5 text-graphite/60">{s.estimated_size.toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-graphite/60 text-xs">{s.filters?.length || 0} rules</td>
                       </tr>
                     ))}
                   </tbody>
@@ -173,26 +173,26 @@ export default function AdminMarketingHub() {
           {/* Templates Tab */}
           {activeTab === 'Templates' && (
             templates.length === 0 ? (
-              <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-                <FileText className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">No content templates yet.</p>
+              <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+                <FileText className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                <p className="text-sm text-graphite/60 font-sans">No content templates yet.</p>
               </div>
             ) : (
-              <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+              <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone">
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Name</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Type</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">System</th>
+                    <tr className="border-b border-accent-soft">
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Name</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Type</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">System</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {templates.map((t: ContentTemplate) => (
-                      <tr key={t.id} className="hover:bg-pro-cream/50 transition-colors">
-                        <td className="px-4 py-2.5 font-medium text-pro-charcoal">{t.name}</td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray capitalize">{t.type.replace('_', ' ')}</td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray text-xs">{t.is_system ? 'Yes' : 'No'}</td>
+                      <tr key={t.id} className="hover:bg-accent-soft/50 transition-colors">
+                        <td className="px-4 py-2.5 font-medium text-graphite">{t.name}</td>
+                        <td className="px-4 py-2.5 text-graphite/60 capitalize">{t.type.replace('_', ' ')}</td>
+                        <td className="px-4 py-2.5 text-graphite/60 text-xs">{t.is_system ? 'Yes' : 'No'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -204,32 +204,32 @@ export default function AdminMarketingHub() {
           {/* Landing Pages Tab */}
           {activeTab === 'Landing Pages' && (
             pages.length === 0 ? (
-              <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-                <Globe className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                <p className="text-sm text-pro-warm-gray font-sans">No landing pages yet.</p>
+              <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+                <Globe className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                <p className="text-sm text-graphite/60 font-sans">No landing pages yet.</p>
               </div>
             ) : (
-              <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
+              <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
                 <table className="w-full text-sm font-sans">
                   <thead>
-                    <tr className="border-b border-pro-stone">
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Title</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Status</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Views</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-pro-warm-gray/60">Conversions</th>
+                    <tr className="border-b border-accent-soft">
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Title</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Status</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Views</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-graphite/60/60">Conversions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-pro-stone/50">
+                  <tbody className="divide-y divide-accent-soft/50">
                     {pages.map((p: LandingPage) => (
-                      <tr key={p.id} className="hover:bg-pro-cream/50 transition-colors">
-                        <td className="px-4 py-2.5 font-medium text-pro-charcoal">{p.title}</td>
+                      <tr key={p.id} className="hover:bg-accent-soft/50 transition-colors">
+                        <td className="px-4 py-2.5 font-medium text-graphite">{p.title}</td>
                         <td className="px-4 py-2.5">
                           <span className={`text-xs font-semibold px-2 py-0.5 rounded-full capitalize ${STATUS_COLORS[p.status] || ''}`}>
                             {p.status}
                           </span>
                         </td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray">{p.views.toLocaleString()}</td>
-                        <td className="px-4 py-2.5 text-pro-warm-gray">{p.conversions.toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-graphite/60">{p.views.toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-graphite/60">{p.conversions.toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>

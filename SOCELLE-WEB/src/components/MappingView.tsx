@@ -69,40 +69,40 @@ export default function MappingView() {
 
   const getConfidenceBadge = (confidence: string) => {
     const colors = {
-      High: 'bg-pro-stone text-pro-navy',
+      High: 'bg-accent-soft text-graphite',
       Medium: 'bg-amber-100 text-amber-800',
-      Low: 'bg-pro-stone text-pro-charcoal',
+      Low: 'bg-accent-soft text-graphite',
     };
     return colors[confidence as keyof typeof colors] || colors.Low;
   };
 
   const getMatchTypeBadge = (matchType: string) => {
     const colors = {
-      'Direct Fit': 'bg-pro-stone text-pro-navy',
+      'Direct Fit': 'bg-accent-soft text-graphite',
       'Partial Fit': 'bg-purple-100 text-purple-800',
       'Adjacent Opportunity': 'bg-orange-100 text-orange-800',
     };
-    return colors[matchType as keyof typeof colors] || 'bg-pro-stone text-pro-charcoal';
+    return colors[matchType as keyof typeof colors] || 'bg-accent-soft text-graphite';
   };
 
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-pro-charcoal">Service Mapping Engine</h2>
-        <p className="text-sm text-pro-warm-gray mt-1">
+        <h2 className="text-2xl font-semibold text-graphite">Service Mapping Engine</h2>
+        <p className="text-sm text-graphite/60 mt-1">
           Map spa services to Naturopathica solutions using AI-powered analysis
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-pro-stone p-6 mb-6">
-        <h3 className="text-lg font-medium text-pro-charcoal mb-4">Select Spa Menu</h3>
+      <div className="bg-white rounded-lg border border-accent-soft p-6 mb-6">
+        <h3 className="text-lg font-medium text-graphite mb-4">Select Spa Menu</h3>
         <div className="flex items-end space-x-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-pro-charcoal mb-2">Spa Menu</label>
+            <label className="block text-sm font-medium text-graphite mb-2">Spa Menu</label>
             <select
               value={selectedMenuId}
               onChange={(e) => setSelectedMenuId(e.target.value)}
-              className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:outline-none focus:ring-2 focus:ring-pro-navy"
+              className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:outline-none focus:ring-2 focus:ring-graphite"
               disabled={isMapping}
             >
               <option value="">Select a spa menu...</option>
@@ -116,7 +116,7 @@ export default function MappingView() {
           <button
             onClick={handleStartMapping}
             disabled={!selectedMenuId || isMapping}
-            className="flex items-center space-x-2 px-6 py-2 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:bg-pro-stone disabled:cursor-not-allowed transition-colors"
+            className="flex items-center space-x-2 px-6 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:bg-accent-soft disabled:cursor-not-allowed transition-colors"
           >
             {isMapping ? (
               <>
@@ -140,10 +140,10 @@ export default function MappingView() {
       </div>
 
       {isMapping && (
-        <div className="bg-white rounded-lg border border-pro-stone p-12 text-center">
-          <Loader2 className="w-12 h-12 text-pro-navy animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-pro-charcoal mb-2">Analyzing Service Menu</h3>
-          <p className="text-pro-warm-gray">
+        <div className="bg-white rounded-lg border border-accent-soft p-12 text-center">
+          <Loader2 className="w-12 h-12 text-graphite animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-graphite mb-2">Analyzing Service Menu</h3>
+          <p className="text-graphite/60">
             Parsing services, matching protocols, and generating recommendations...
           </p>
         </div>
@@ -151,38 +151,38 @@ export default function MappingView() {
 
       {mappingResults.length > 0 && !isMapping && (
         <div className="space-y-6">
-          <div className="bg-pro-cream border border-pro-stone rounded-lg p-4 flex items-start space-x-3">
-            <CheckCircle2 className="w-5 h-5 text-pro-navy mt-0.5 flex-shrink-0" />
+          <div className="bg-accent-soft border border-accent-soft rounded-lg p-4 flex items-start space-x-3">
+            <CheckCircle2 className="w-5 h-5 text-graphite mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm text-pro-navy font-medium">Mapping Complete</p>
-              <p className="text-sm text-pro-navy mt-1">
+              <p className="text-sm text-graphite font-medium">Mapping Complete</p>
+              <p className="text-sm text-graphite mt-1">
                 Successfully mapped {mappingResults.length} services. View results below or generate reports.
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-pro-stone overflow-hidden">
+          <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-pro-ivory border-b border-pro-stone">
+                <thead className="bg-background border-b border-accent-soft">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Spa Service</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Category</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Solution</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Type</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Match</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Confidence</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-pro-charcoal">Retail Attach</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Spa Service</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Category</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Solution</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Type</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Match</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Confidence</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-graphite">Retail Attach</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-pro-stone">
+                <tbody className="divide-y divide-accent-soft">
                   {mappingResults.map((result, index) => (
-                    <tr key={index} className="hover:bg-pro-ivory">
-                      <td className="px-4 py-3 text-sm font-medium text-pro-charcoal">{result.serviceName}</td>
-                      <td className="px-4 py-3 text-sm text-pro-warm-gray">{result.category}</td>
-                      <td className="px-4 py-3 text-sm text-pro-charcoal">{result.solutionReference}</td>
+                    <tr key={index} className="hover:bg-background">
+                      <td className="px-4 py-3 text-sm font-medium text-graphite">{result.serviceName}</td>
+                      <td className="px-4 py-3 text-sm text-graphite/60">{result.category}</td>
+                      <td className="px-4 py-3 text-sm text-graphite">{result.solutionReference}</td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-pro-warm-gray">{result.solutionType}</span>
+                        <span className="text-xs text-graphite/60">{result.solutionType}</span>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getMatchTypeBadge(result.matchType)}`}>
@@ -194,7 +194,7 @@ export default function MappingView() {
                           {result.confidence}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-pro-warm-gray">
+                      <td className="px-4 py-3 text-sm text-graphite/60">
                         {result.retailAttach.length > 0 ? result.retailAttach.join(', ') : '—'}
                       </td>
                     </tr>
@@ -207,10 +207,10 @@ export default function MappingView() {
       )}
 
       {mappingResults.length === 0 && !isMapping && (
-        <div className="bg-white rounded-lg border border-pro-stone p-12 text-center">
-          <MapPin className="w-12 h-12 text-pro-warm-gray mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-pro-charcoal mb-2">No Mapping Results</h3>
-          <p className="text-pro-warm-gray">Select a spa menu and click Start Mapping to begin</p>
+        <div className="bg-white rounded-lg border border-accent-soft p-12 text-center">
+          <MapPin className="w-12 h-12 text-graphite/60 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-graphite mb-2">No Mapping Results</h3>
+          <p className="text-graphite/60">Select a spa menu and click Start Mapping to begin</p>
         </div>
       )}
     </div>

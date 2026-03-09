@@ -26,16 +26,16 @@ function FilterGroup({ title, defaultOpen = true, children }: FilterGroupProps) 
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-pro-stone last:border-b-0">
+    <div className="border-b border-accent-soft last:border-b-0">
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between py-3 text-left"
       >
-        <span className="font-sans font-semibold text-sm text-pro-charcoal">{title}</span>
+        <span className="font-sans font-semibold text-sm text-graphite">{title}</span>
         {open ? (
-          <ChevronUp className="w-4 h-4 text-pro-warm-gray" />
+          <ChevronUp className="w-4 h-4 text-graphite/60" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-pro-warm-gray" />
+          <ChevronDown className="w-4 h-4 text-graphite/60" />
         )}
       </button>
       {open && <div className="pb-4">{children}</div>}
@@ -99,17 +99,17 @@ export function ActiveFilterChips({
       {chips.map((chip) => (
         <span
           key={chip.label}
-          className="inline-flex items-center gap-1 px-2.5 py-1 bg-pro-gold-pale text-pro-navy text-xs font-medium font-sans rounded-full border border-pro-gold/30"
+          className="inline-flex items-center gap-1 px-2.5 py-1 bg-accent-pale text-graphite text-xs font-medium font-sans rounded-full border border-accent/30"
         >
           {chip.label}
-          <button onClick={chip.onRemove} className="hover:text-pro-gold transition-colors ml-0.5">
+          <button onClick={chip.onRemove} className="hover:text-accent transition-colors ml-0.5">
             <X className="w-3 h-3" />
           </button>
         </span>
       ))}
       <button
         onClick={onClear}
-        className="text-xs font-medium font-sans text-pro-warm-gray hover:text-pro-navy transition-colors ml-1"
+        className="text-xs font-medium font-sans text-graphite/60 hover:text-graphite transition-colors ml-1"
       >
         Clear all
       </button>
@@ -145,10 +145,10 @@ export default function SearchFilters({
       {/* Header */}
       <div className="flex items-center justify-between mb-4 px-4 pt-4 lg:px-0 lg:pt-0">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="w-4 h-4 text-pro-warm-gray" />
-          <span className="font-sans font-semibold text-sm text-pro-charcoal">Filters</span>
+          <SlidersHorizontal className="w-4 h-4 text-graphite/60" />
+          <span className="font-sans font-semibold text-sm text-graphite">Filters</span>
           {activeCount > 0 && (
-            <span className="w-5 h-5 bg-pro-navy text-white text-[10px] rounded-full flex items-center justify-center font-sans font-medium">
+            <span className="w-5 h-5 bg-graphite text-white text-[10px] rounded-full flex items-center justify-center font-sans font-medium">
               {activeCount}
             </span>
           )}
@@ -157,13 +157,13 @@ export default function SearchFilters({
           {activeCount > 0 && (
             <button
               onClick={onClear}
-              className="text-xs font-medium font-sans text-pro-warm-gray hover:text-pro-navy transition-colors"
+              className="text-xs font-medium font-sans text-graphite/60 hover:text-graphite transition-colors"
             >
               Clear all
             </button>
           )}
           {onMobileClose && (
-            <button onClick={onMobileClose} className="lg:hidden text-pro-warm-gray hover:text-pro-charcoal">
+            <button onClick={onMobileClose} className="lg:hidden text-graphite/60 hover:text-graphite">
               <X className="w-5 h-5" />
             </button>
           )}
@@ -182,9 +182,9 @@ export default function SearchFilters({
                   value={opt.key}
                   checked={(filters.sort ?? 'relevance') === opt.key}
                   onChange={() => onChange({ sort: opt.key })}
-                  className="accent-pro-navy w-4 h-4"
+                  className="accent-graphite w-4 h-4"
                 />
-                <span className="text-sm font-sans text-pro-charcoal group-hover:text-pro-navy transition-colors">
+                <span className="text-sm font-sans text-graphite group-hover:text-graphite transition-colors">
                   {opt.label}
                 </span>
               </label>
@@ -201,9 +201,9 @@ export default function SearchFilters({
                 name="category"
                 checked={!filters.category}
                 onChange={() => onChange({ category: undefined })}
-                className="accent-pro-navy w-4 h-4"
+                className="accent-graphite w-4 h-4"
               />
-              <span className="text-sm font-sans text-pro-charcoal group-hover:text-pro-navy transition-colors">
+              <span className="text-sm font-sans text-graphite group-hover:text-graphite transition-colors">
                 All categories
               </span>
             </label>
@@ -214,9 +214,9 @@ export default function SearchFilters({
                   name="category"
                   checked={filters.category === cat}
                   onChange={() => onChange({ category: cat })}
-                  className="accent-pro-navy w-4 h-4"
+                  className="accent-graphite w-4 h-4"
                 />
-                <span className="text-sm font-sans text-pro-charcoal group-hover:text-pro-navy transition-colors">
+                <span className="text-sm font-sans text-graphite group-hover:text-graphite transition-colors">
                   {cat}
                 </span>
               </label>
@@ -234,9 +234,9 @@ export default function SearchFilters({
                   name="productType"
                   checked={(filters.productType ?? 'all') === pt.key}
                   onChange={() => onChange({ productType: pt.key as SearchFilters['productType'] })}
-                  className="accent-pro-navy w-4 h-4"
+                  className="accent-graphite w-4 h-4"
                 />
-                <span className="text-sm font-sans text-pro-charcoal group-hover:text-pro-navy transition-colors">
+                <span className="text-sm font-sans text-graphite group-hover:text-graphite transition-colors">
                   {pt.label}
                 </span>
               </label>
@@ -248,7 +248,7 @@ export default function SearchFilters({
         <FilterGroup title="Price range" defaultOpen={false}>
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <label className="text-xs text-pro-warm-gray font-sans mb-1 block">Min ($)</label>
+              <label className="text-xs text-graphite/60 font-sans mb-1 block">Min ($)</label>
               <input
                 type="number"
                 min={0}
@@ -262,9 +262,9 @@ export default function SearchFilters({
                 className="input text-sm py-2 px-3"
               />
             </div>
-            <span className="text-pro-stone mt-5">–</span>
+            <span className="text-accent-soft mt-5">–</span>
             <div className="flex-1">
-              <label className="text-xs text-pro-warm-gray font-sans mb-1 block">Max ($)</label>
+              <label className="text-xs text-graphite/60 font-sans mb-1 block">Max ($)</label>
               <input
                 type="number"
                 min={0}
@@ -291,7 +291,7 @@ export default function SearchFilters({
             className="input text-sm py-2 px-3 mb-2"
           />
           {brandSearch && (
-            <p className="text-xs text-pro-warm-gray font-sans">
+            <p className="text-xs text-graphite/60 font-sans">
               Use the search bar above to filter by brand name.
             </p>
           )}

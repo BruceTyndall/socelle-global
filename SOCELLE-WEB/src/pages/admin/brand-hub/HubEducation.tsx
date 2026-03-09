@@ -47,7 +47,7 @@ export default function HubEducation() {
     <div className="space-y-4">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-pro-navy text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
+        <div className="fixed bottom-6 right-6 z-50 bg-graphite text-white text-sm font-sans px-4 py-2.5 rounded-lg shadow-lg">
           {toast}
         </div>
       )}
@@ -69,8 +69,8 @@ export default function HubEducation() {
               onClick={() => setTypeFilter(t)}
               className={`px-3 py-1.5 text-xs font-medium font-sans rounded-full border transition-colors ${
                 typeFilter === t
-                  ? 'bg-pro-navy text-white border-pro-navy'
-                  : 'bg-white text-pro-warm-gray border-pro-stone hover:border-pro-navy hover:text-pro-navy'
+                  ? 'bg-graphite text-white border-graphite'
+                  : 'bg-white text-graphite/60 border-accent-soft hover:border-graphite hover:text-graphite'
               }`}
             >
               {t === 'all' ? 'All Types' : t}
@@ -97,23 +97,23 @@ export default function HubEducation() {
       </div>
 
       {/* Content List */}
-      <div className="bg-white rounded-xl border border-pro-stone divide-y divide-pro-stone/50">
+      <div className="bg-white rounded-xl border border-accent-soft divide-y divide-accent-soft/50">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <GraduationCap className="w-10 h-10 text-pro-stone mb-3" />
-            <p className="text-sm font-sans text-pro-warm-gray">No education content matches your filters.</p>
+            <GraduationCap className="w-10 h-10 text-accent-soft mb-3" />
+            <p className="text-sm font-sans text-graphite/60">No education content matches your filters.</p>
           </div>
         ) : (
           filtered.map((item, idx) => {
             const Icon = TYPE_ICONS[item.type] || FileText;
             const completionRate = item.views > 0 ? Math.round((item.completions / item.views) * 100) : 0;
             return (
-              <div key={idx} className="flex items-center gap-4 p-4 hover:bg-pro-ivory/50 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-5 h-5 text-pro-navy" />
+              <div key={idx} className="flex items-center gap-4 p-4 hover:bg-background/50 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-graphite" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-pro-charcoal font-sans text-sm">{item.title}</p>
+                  <p className="font-medium text-graphite font-sans text-sm">{item.title}</p>
                   <div className="flex items-center gap-3 mt-1">
                     <Badge variant="navy">{item.type}</Badge>
                     {item.ceCredits > 0 && (
@@ -123,22 +123,22 @@ export default function HubEducation() {
                 </div>
                 <div className="hidden sm:flex items-center gap-6 text-right">
                   <div>
-                    <p className="text-xs text-pro-warm-gray font-sans">Views</p>
-                    <p className="text-sm font-semibold text-pro-charcoal font-sans">{item.views.toLocaleString()}</p>
+                    <p className="text-xs text-graphite/60 font-sans">Views</p>
+                    <p className="text-sm font-semibold text-graphite font-sans">{item.views.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-pro-warm-gray font-sans">Completions</p>
-                    <p className="text-sm font-semibold text-pro-charcoal font-sans">{item.completions.toLocaleString()}</p>
+                    <p className="text-xs text-graphite/60 font-sans">Completions</p>
+                    <p className="text-sm font-semibold text-graphite font-sans">{item.completions.toLocaleString()}</p>
                   </div>
                   <div className="w-20">
-                    <p className="text-xs text-pro-warm-gray font-sans mb-1">Rate</p>
-                    <div className="w-full h-1.5 bg-pro-stone rounded-full overflow-hidden">
+                    <p className="text-xs text-graphite/60 font-sans mb-1">Rate</p>
+                    <div className="w-full h-1.5 bg-accent-soft rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${completionRate >= 70 ? 'bg-emerald-500' : completionRate >= 40 ? 'bg-amber-500' : 'bg-red-500'}`}
                         style={{ width: `${completionRate}%` }}
                       />
                     </div>
-                    <p className="text-xs font-semibold text-pro-charcoal font-sans mt-0.5">{completionRate}%</p>
+                    <p className="text-xs font-semibold text-graphite font-sans mt-0.5">{completionRate}%</p>
                   </div>
                 </div>
               </div>
@@ -161,11 +161,11 @@ export default function HubEducation() {
               const pct = (item.ceCredits / maxCE) * 100;
               return (
                 <div key={idx} className="flex items-center gap-3">
-                  <p className="text-xs text-pro-warm-gray font-sans w-48 truncate flex-shrink-0">{item.title}</p>
-                  <div className="flex-1 h-2 bg-pro-stone/40 rounded-full overflow-hidden">
-                    <div className="h-full bg-pro-gold rounded-full" style={{ width: `${pct}%` }} />
+                  <p className="text-xs text-graphite/60 font-sans w-48 truncate flex-shrink-0">{item.title}</p>
+                  <div className="flex-1 h-2 bg-accent-soft/40 rounded-full overflow-hidden">
+                    <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
                   </div>
-                  <p className="text-xs font-semibold text-pro-charcoal font-sans w-12 text-right">{item.ceCredits}</p>
+                  <p className="text-xs font-semibold text-graphite font-sans w-12 text-right">{item.ceCredits}</p>
                 </div>
               );
             })}

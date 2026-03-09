@@ -85,8 +85,8 @@ export default function BusinessOrders() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
         <div>
-          <h1 className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight">Orders</h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-1">Track and manage your product orders</p>
+          <h1 className="text-2xl font-sans font-semibold text-graphite tracking-tight">Orders</h1>
+          <p className="text-sm text-graphite/60 font-sans mt-1">Track and manage your product orders</p>
         </div>
 
         {error && (
@@ -103,17 +103,17 @@ export default function BusinessOrders() {
           </div>
         )}
 
-        <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
+        <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
           {loading ? (
-            <div className="divide-y divide-pro-stone/50">
+            <div className="divide-y divide-accent-soft/50">
               {[0, 1, 2, 3].map(i => (
                 <div key={i} className="flex items-center gap-4 p-4 animate-pulse">
-                  <div className="w-10 h-10 rounded-lg bg-pro-stone/30 flex-shrink-0" />
+                  <div className="w-10 h-10 rounded-lg bg-accent-soft/30 flex-shrink-0" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-pro-stone/30 rounded w-36" />
-                    <div className="h-3 bg-pro-stone/30 rounded w-24" />
+                    <div className="h-4 bg-accent-soft/30 rounded w-36" />
+                    <div className="h-3 bg-accent-soft/30 rounded w-24" />
                   </div>
-                  <div className="h-5 bg-pro-stone/30 rounded w-20" />
+                  <div className="h-5 bg-accent-soft/30 rounded w-20" />
                 </div>
               ))}
             </div>
@@ -124,34 +124,34 @@ export default function BusinessOrders() {
               description="Browse brands and add products to place your first order."
             />
           ) : (
-            <div className="divide-y divide-pro-stone/50">
+            <div className="divide-y divide-accent-soft/50">
               {orders.map(order => {
                 const config = STATUS_CONFIG[order.status];
                 return (
                   <Link
                     key={order.id}
                     to={`/portal/orders/${order.id}`}
-                    className="flex items-center gap-4 p-4 hover:bg-pro-ivory/50 transition-colors group"
+                    className="flex items-center gap-4 p-4 hover:bg-background/50 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                      <Package className="w-5 h-5 text-pro-stone" />
+                    <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                      <Package className="w-5 h-5 text-accent-soft" />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <p className="text-sm font-semibold text-pro-charcoal font-sans">{order.order_number}</p>
+                        <p className="text-sm font-semibold text-graphite font-sans">{order.order_number}</p>
                         {config && <Badge variant={config.variant}>{config.label}</Badge>}
                       </div>
-                      <p className="text-xs text-pro-warm-gray font-sans">
+                      <p className="text-xs text-graphite/60 font-sans">
                         {order.brand_name} · {order.items_count} item{order.items_count !== 1 ? 's' : ''} · {formatDate(order.created_at)}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-4 flex-shrink-0">
-                      <p className="hidden sm:block text-sm font-semibold text-pro-charcoal font-sans">
+                      <p className="hidden sm:block text-sm font-semibold text-graphite font-sans">
                         ${order.subtotal.toFixed(2)}
                       </p>
-                      <ChevronRight className="w-4 h-4 text-pro-stone group-hover:text-pro-warm-gray transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-accent-soft group-hover:text-graphite/60 transition-colors" />
                     </div>
                   </Link>
                 );

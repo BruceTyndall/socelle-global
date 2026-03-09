@@ -55,14 +55,14 @@ const EMPTY_TIERED: TieredPricing = {
 
 const TIER_COLORS: Record<string, string> = {
   active: 'bg-blue-400',
-  elite:  'bg-pro-gold',
+  elite:  'bg-accent',
   master: 'bg-purple-400',
 };
 
 const FIELD_CLS =
-  'w-full px-4 py-2.5 rounded-xl border border-pro-stone bg-white font-sans text-sm ' +
-  'text-pro-charcoal placeholder:text-pro-warm-gray/60 focus:outline-none focus:ring-2 ' +
-  'focus:ring-pro-navy/15 focus:border-pro-navy transition-colors disabled:opacity-50';
+  'w-full px-4 py-2.5 rounded-xl border border-accent-soft bg-white font-sans text-sm ' +
+  'text-graphite placeholder:text-graphite/60/60 focus:outline-none focus:ring-2 ' +
+  'focus:ring-graphite/15 focus:border-graphite transition-colors disabled:opacity-50';
 
 // ─── ProductFormModal ─────────────────────────────────────────────────────────
 
@@ -247,7 +247,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
 
         {/* ── Product Details ─────────────────────────────────────────── */}
         <section>
-          <h3 className="text-xs font-semibold text-pro-warm-gray uppercase tracking-wider font-sans mb-4">
+          <h3 className="text-xs font-semibold text-graphite/60 uppercase tracking-wider font-sans mb-4">
             Product Details
           </h3>
 
@@ -260,8 +260,8 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
                 onClick={() => setType(t)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
                   type === t
-                    ? 'bg-pro-navy text-white'
-                    : 'border border-pro-stone text-pro-warm-gray hover:text-pro-charcoal'
+                    ? 'bg-graphite text-white'
+                    : 'border border-accent-soft text-graphite/60 hover:text-graphite'
                 }`}
               >
                 {t === 'PRO' ? 'PRO (Professional Use)' : 'Retail (Resale)'}
@@ -285,7 +285,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
                 onChange={e => setSku(e.target.value)}
               />
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+                <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                   Category
                 </label>
                 <select
@@ -307,7 +307,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
             />
 
             <div>
-              <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+              <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
                 Product Function / Description <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -329,11 +329,11 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
           </div>
         </section>
 
-        <hr className="border-pro-stone" />
+        <hr className="border-accent-soft" />
 
         {/* ── Pricing ────────────────────────────────────────────────── */}
         <section>
-          <h3 className="text-xs font-semibold text-pro-warm-gray uppercase tracking-wider font-sans mb-4">
+          <h3 className="text-xs font-semibold text-graphite/60 uppercase tracking-wider font-sans mb-4">
             Pricing
           </h3>
 
@@ -363,19 +363,19 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
           </div>
 
           {/* Tiered pricing grid */}
-          <div className="bg-pro-ivory/60 rounded-xl border border-pro-stone/50 p-4">
-            <p className="text-xs font-semibold text-pro-charcoal font-sans mb-0.5 flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-pro-warm-gray" />
+          <div className="bg-background/60 rounded-xl border border-accent-soft/50 p-4">
+            <p className="text-xs font-semibold text-graphite font-sans mb-0.5 flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-graphite/60" />
               Tiered Wholesale Pricing
             </p>
-            <p className="text-xs text-pro-warm-gray font-sans mb-4">
+            <p className="text-xs text-graphite/60 font-sans mb-4">
               Set prices for each reseller tier. Leave blank to fall back to base wholesale.
             </p>
 
             {loadingPricing ? (
               <div className="space-y-3">
                 {[0, 1, 2].map(i => (
-                  <div key={i} className="h-10 bg-pro-stone/20 rounded-lg animate-pulse" />
+                  <div key={i} className="h-10 bg-accent-soft/20 rounded-lg animate-pulse" />
                 ))}
               </div>
             ) : (
@@ -383,10 +383,10 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
                 {/* Column headers */}
                 <div className="grid grid-cols-[100px_1fr_1fr] gap-3">
                   <div />
-                  <p className="text-xs font-medium text-pro-warm-gray font-sans text-center">
+                  <p className="text-xs font-medium text-graphite/60 font-sans text-center">
                     Price / Unit
                   </p>
-                  <p className="text-xs font-medium text-pro-warm-gray font-sans text-center">
+                  <p className="text-xs font-medium text-graphite/60 font-sans text-center">
                     Min. Order Qty
                   </p>
                 </div>
@@ -395,7 +395,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
                 <div className="grid grid-cols-[100px_1fr_1fr] gap-3 items-center">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${TIER_COLORS.active}`} />
-                    <span className="text-sm font-medium text-pro-charcoal font-sans">Active</span>
+                    <span className="text-sm font-medium text-graphite font-sans">Active</span>
                   </div>
                   <input
                     type="number" min="0" step="0.01" placeholder="0.00"
@@ -415,7 +415,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
                 <div className="grid grid-cols-[100px_1fr_1fr] gap-3 items-center">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${TIER_COLORS.elite}`} />
-                    <span className="text-sm font-medium text-pro-charcoal font-sans">Elite</span>
+                    <span className="text-sm font-medium text-graphite font-sans">Elite</span>
                   </div>
                   <input
                     type="number" min="0" step="0.01" placeholder="0.00"
@@ -435,7 +435,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
                 <div className="grid grid-cols-[100px_1fr_1fr] gap-3 items-center">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${TIER_COLORS.master}`} />
-                    <span className="text-sm font-medium text-pro-charcoal font-sans">Master</span>
+                    <span className="text-sm font-medium text-graphite font-sans">Master</span>
                   </div>
                   <input
                     type="number" min="0" step="0.01" placeholder="0.00"
@@ -455,11 +455,11 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
           </div>
         </section>
 
-        <hr className="border-pro-stone" />
+        <hr className="border-accent-soft" />
 
         {/* ── Inventory ──────────────────────────────────────────────── */}
         <section>
-          <h3 className="text-xs font-semibold text-pro-warm-gray uppercase tracking-wider font-sans mb-4">
+          <h3 className="text-xs font-semibold text-graphite/60 uppercase tracking-wider font-sans mb-4">
             Inventory
           </h3>
           <div className="space-y-4">
@@ -482,7 +482,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
               <Toggle
                 enabled={isBestseller}
                 onToggle={() => setIsBestseller(v => !v)}
-                activeColor="bg-pro-gold"
+                activeColor="bg-accent"
                 label="Bestseller"
                 sub="Shows badge on storefront"
               />
@@ -522,7 +522,7 @@ function Toggle({
     >
       <div
         className={`w-10 h-5 rounded-full relative transition-colors ${
-          enabled ? activeColor : 'bg-pro-stone'
+          enabled ? activeColor : 'bg-accent-soft'
         }`}
       >
         <div
@@ -531,8 +531,8 @@ function Toggle({
           }`}
         />
       </div>
-      <span className="text-sm font-medium font-sans text-pro-charcoal">{label}</span>
-      <span className="text-xs text-pro-warm-gray font-sans">{sub}</span>
+      <span className="text-sm font-medium font-sans text-graphite">{label}</span>
+      <span className="text-xs text-graphite/60 font-sans">{sub}</span>
     </button>
   );
 }
@@ -651,7 +651,7 @@ export default function BrandProducts() {
   if (!brandId) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-pro-warm-gray font-sans">No brand associated with your account.</p>
+        <p className="text-graphite/60 font-sans">No brand associated with your account.</p>
       </div>
     );
   }
@@ -662,8 +662,8 @@ export default function BrandProducts() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl text-pro-navy">Products</h1>
-          <p className="text-sm text-pro-warm-gray font-sans mt-0.5">
+          <h1 className="font-sans text-2xl text-graphite">Products</h1>
+          <p className="text-sm text-graphite/60 font-sans mt-0.5">
             {loading ? 'Loading…' : `${products.length} product${products.length !== 1 ? 's' : ''} in catalog`}
           </p>
         </div>
@@ -696,8 +696,8 @@ export default function BrandProducts() {
       )}
 
       {/* Filters + Grid */}
-      <div className="bg-white rounded-xl border border-pro-stone">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border-b border-pro-stone">
+      <div className="bg-white rounded-xl border border-accent-soft">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border-b border-accent-soft">
           <div className="w-full sm:w-72">
             <Input
               placeholder="Search by name, SKU, or category…"
@@ -713,15 +713,15 @@ export default function BrandProducts() {
                 onClick={() => setTypeFilter(t)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium font-sans transition-colors ${
                   typeFilter === t
-                    ? 'bg-pro-navy text-white'
-                    : 'bg-pro-stone/50 text-pro-warm-gray hover:text-pro-charcoal'
+                    ? 'bg-graphite text-white'
+                    : 'bg-accent-soft/50 text-graphite/60 hover:text-graphite'
                 }`}
               >
                 {t === 'all' ? 'All Types' : t}
               </button>
             ))}
           </div>
-          <label className="flex items-center gap-2 ml-auto cursor-pointer text-xs font-sans text-pro-warm-gray select-none">
+          <label className="flex items-center gap-2 ml-auto cursor-pointer text-xs font-sans text-graphite/60 select-none">
             <input
               type="checkbox"
               checked={showInactive}
@@ -733,12 +733,12 @@ export default function BrandProducts() {
         </div>
 
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x divide-y divide-pro-stone/50">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x divide-y divide-accent-soft/50">
             {[0, 1, 2, 3, 4, 5].map(i => (
               <div key={i} className="p-4 animate-pulse space-y-3">
-                <div className="aspect-square rounded-lg bg-pro-stone/30" />
-                <div className="h-4 bg-pro-stone/30 rounded" />
-                <div className="h-3 bg-pro-stone/30 rounded w-2/3" />
+                <div className="aspect-square rounded-lg bg-accent-soft/30" />
+                <div className="h-4 bg-accent-soft/30 rounded" />
+                <div className="h-3 bg-accent-soft/30 rounded w-2/3" />
               </div>
             ))}
           </div>
@@ -758,7 +758,7 @@ export default function BrandProducts() {
             }
           />
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x divide-y divide-pro-stone/50">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x divide-y divide-accent-soft/50">
             {filtered.map(product => (
               <ProductCard key={product.id} product={product} onEdit={openEdit} />
             ))}
@@ -784,10 +784,10 @@ export default function BrandProducts() {
 
 function ProductCard({ product, onEdit }: { product: Product; onEdit: (p: Product) => void }) {
   return (
-    <div className="p-4 group hover:bg-pro-ivory/50 transition-colors">
+    <div className="p-4 group hover:bg-background/50 transition-colors">
       {/* Image placeholder */}
-      <div className="aspect-square rounded-lg bg-pro-cream mb-3 flex items-center justify-center relative overflow-hidden">
-        <Package className="w-8 h-8 text-pro-stone" />
+      <div className="aspect-square rounded-lg bg-accent-soft mb-3 flex items-center justify-center relative overflow-hidden">
+        <Package className="w-8 h-8 text-accent-soft" />
 
         {product.bestseller && (
           <div className="absolute top-2 left-2">
@@ -811,7 +811,7 @@ function ProductCard({ product, onEdit }: { product: Product; onEdit: (p: Produc
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onEdit(product)}
-            className="w-7 h-7 bg-white rounded-lg shadow flex items-center justify-center text-pro-warm-gray hover:text-pro-navy"
+            className="w-7 h-7 bg-white rounded-lg shadow flex items-center justify-center text-graphite/60 hover:text-graphite"
             title="Edit product"
           >
             <Edit2 className="w-3.5 h-3.5" />
@@ -821,37 +821,37 @@ function ProductCard({ product, onEdit }: { product: Product; onEdit: (p: Produc
 
       <div className="space-y-1">
         <div className="flex items-start justify-between gap-1">
-          <p className="font-medium text-pro-charcoal text-sm leading-snug font-sans">{product.name}</p>
+          <p className="font-medium text-graphite text-sm leading-snug font-sans">{product.name}</p>
           <Badge variant={product.type === 'PRO' ? 'navy' : 'gold'} className="flex-shrink-0">
             {product.type}
           </Badge>
         </div>
-        <p className="text-xs text-pro-warm-gray font-sans">
+        <p className="text-xs text-graphite/60 font-sans">
           {[product.sku, product.category].filter(Boolean).join(' · ') ||
            product.function?.slice(0, 50) || '—'}
         </p>
         <div className="flex items-center justify-between pt-1">
           <div>
-            <p className="text-xs text-pro-warm-gray font-sans">
+            <p className="text-xs text-graphite/60 font-sans">
               {product.msrp != null ? 'MSRP / Wholesale' : 'Function'}
             </p>
             {product.msrp != null ? (
-              <p className="text-sm font-semibold text-pro-charcoal font-sans">
+              <p className="text-sm font-semibold text-graphite font-sans">
                 ${product.msrp}
                 {product.wholesale != null && (
-                  <span className="text-pro-warm-gray font-normal"> / ${product.wholesale}</span>
+                  <span className="text-graphite/60 font-normal"> / ${product.wholesale}</span>
                 )}
               </p>
             ) : (
-              <p className="text-xs text-pro-warm-gray font-sans truncate max-w-[120px]">
+              <p className="text-xs text-graphite/60 font-sans truncate max-w-[120px]">
                 {product.function?.slice(0, 40) ?? '—'}
               </p>
             )}
           </div>
           {product.stock != null && (
             <div className="text-right">
-              <p className="text-xs text-pro-warm-gray font-sans">Stock</p>
-              <p className={`text-sm font-semibold font-sans ${product.stock === 0 ? 'text-red-500' : 'text-pro-charcoal'}`}>
+              <p className="text-xs text-graphite/60 font-sans">Stock</p>
+              <p className={`text-sm font-semibold font-sans ${product.stock === 0 ? 'text-red-500' : 'text-graphite'}`}>
                 {product.stock}
               </p>
             </div>

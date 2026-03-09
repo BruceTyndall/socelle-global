@@ -42,11 +42,11 @@ interface UserProfile {
 }
 
 const STATUS_OPTIONS = [
-  { value: 'draft', label: 'Draft', color: 'bg-pro-stone text-pro-charcoal' },
-  { value: 'submitted', label: 'Submitted', color: 'bg-pro-stone text-pro-charcoal' },
+  { value: 'draft', label: 'Draft', color: 'bg-accent-soft text-graphite' },
+  { value: 'submitted', label: 'Submitted', color: 'bg-accent-soft text-graphite' },
   { value: 'under_review', label: 'Under Review', color: 'bg-orange-100 text-orange-700' },
   { value: 'approved', label: 'Approved', color: 'bg-green-100 text-green-700' },
-  { value: 'completed', label: 'Completed', color: 'bg-pro-stone text-pro-navy' },
+  { value: 'completed', label: 'Completed', color: 'bg-accent-soft text-graphite' },
 ];
 
 export default function SubmissionDetail() {
@@ -153,7 +153,7 @@ export default function SubmissionDetail() {
   };
 
   const getStatusColor = (status: string) => {
-    return STATUS_OPTIONS.find(s => s.value === status)?.color || 'bg-pro-stone text-pro-charcoal';
+    return STATUS_OPTIONS.find(s => s.value === status)?.color || 'bg-accent-soft text-graphite';
   };
 
   const getStatusIcon = (status: string) => {
@@ -171,7 +171,7 @@ export default function SubmissionDetail() {
         </div>
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-white rounded-lg border border-pro-stone p-6">
+            <div className="bg-white rounded-lg border border-accent-soft p-6">
               <Skeleton className="h-6 w-48 mb-4" />
               {[0, 1, 2, 3].map(i => (
                 <div key={i} className="flex gap-4 mb-3">
@@ -182,7 +182,7 @@ export default function SubmissionDetail() {
             </div>
           </div>
           <div className="space-y-4">
-            <div className="bg-white rounded-lg border border-pro-stone p-6">
+            <div className="bg-white rounded-lg border border-accent-soft p-6">
               <Skeleton className="h-6 w-32 mb-4" />
               <Skeleton className="h-10 w-full mb-3 rounded" />
               <Skeleton className="h-24 w-full mb-3 rounded" />
@@ -197,7 +197,7 @@ export default function SubmissionDetail() {
   if (error || !submission) {
     return (
       <div className="space-y-4">
-        <Link to="/admin/inbox" className="flex items-center gap-2 text-pro-warm-gray hover:text-pro-charcoal">
+        <Link to="/admin/inbox" className="flex items-center gap-2 text-graphite/60 hover:text-graphite">
           <ArrowLeft className="w-4 h-4" />
           Back to Inbox
         </Link>
@@ -229,13 +229,13 @@ export default function SubmissionDetail() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/admin/inbox')}
-            className="p-2 text-pro-warm-gray hover:bg-pro-stone rounded-lg transition-colors"
+            className="p-2 text-graphite/60 hover:bg-accent-soft rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-semibold text-pro-charcoal">
+              <h1 className="text-2xl font-semibold text-graphite">
                 {submission.spa_name || 'Unnamed Business'}
               </h1>
               <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(submission.submission_status)}`}>
@@ -246,7 +246,7 @@ export default function SubmissionDetail() {
                 <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded">NEW</span>
               )}
             </div>
-            <p className="text-sm text-pro-warm-gray mt-0.5">
+            <p className="text-sm text-graphite/60 mt-0.5">
               Submitted {new Date(submission.created_at).toLocaleDateString('en-US', { dateStyle: 'long' })}
             </p>
           </div>
@@ -258,49 +258,49 @@ export default function SubmissionDetail() {
         <div className="lg:col-span-2 space-y-6">
 
           {/* Business Info */}
-          <div className="bg-white rounded-lg border border-pro-stone">
-            <div className="p-5 border-b border-pro-stone flex items-center gap-2">
-              <Inbox className="w-5 h-5 text-pro-warm-gray" />
-              <h2 className="font-semibold text-pro-charcoal">Submission Details</h2>
+          <div className="bg-white rounded-lg border border-accent-soft">
+            <div className="p-5 border-b border-accent-soft flex items-center gap-2">
+              <Inbox className="w-5 h-5 text-graphite/60" />
+              <h2 className="font-semibold text-graphite">Submission Details</h2>
             </div>
             <div className="p-5">
               <dl className="grid grid-cols-2 gap-x-8 gap-y-4">
                 <div>
-                  <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Business Name</dt>
-                  <dd className="text-pro-charcoal font-medium">{submission.spa_name || '—'}</dd>
+                  <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Business Name</dt>
+                  <dd className="text-graphite font-medium">{submission.spa_name || '—'}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Spa Type</dt>
-                  <dd className="text-pro-charcoal capitalize">{submission.spa_type || '—'}</dd>
+                  <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Spa Type</dt>
+                  <dd className="text-graphite capitalize">{submission.spa_type || '—'}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Contact Email</dt>
-                  <dd className="text-pro-charcoal">
+                  <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Contact Email</dt>
+                  <dd className="text-graphite">
                     {submission.contact_email
-                      ? <a href={`mailto:${submission.contact_email}`} className="text-pro-navy hover:underline">{submission.contact_email}</a>
+                      ? <a href={`mailto:${submission.contact_email}`} className="text-graphite hover:underline">{submission.contact_email}</a>
                       : userProfile?.contact_email
-                        ? <a href={`mailto:${userProfile.contact_email}`} className="text-pro-navy hover:underline">{userProfile.contact_email}</a>
+                        ? <a href={`mailto:${userProfile.contact_email}`} className="text-graphite hover:underline">{userProfile.contact_email}</a>
                         : '—'
                     }
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Phone</dt>
-                  <dd className="text-pro-charcoal">{submission.contact_phone || userProfile?.contact_phone || '—'}</dd>
+                  <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Phone</dt>
+                  <dd className="text-graphite">{submission.contact_phone || userProfile?.contact_phone || '—'}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Submitted</dt>
-                  <dd className="text-pro-charcoal">{new Date(submission.created_at).toLocaleString()}</dd>
+                  <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Submitted</dt>
+                  <dd className="text-graphite">{new Date(submission.created_at).toLocaleString()}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Last Updated</dt>
-                  <dd className="text-pro-charcoal">{new Date(submission.updated_at).toLocaleString()}</dd>
+                  <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Last Updated</dt>
+                  <dd className="text-graphite">{new Date(submission.updated_at).toLocaleString()}</dd>
                 </div>
                 {submission.last_viewed_at && (
                   <div>
-                    <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Last Viewed</dt>
-                    <dd className="flex items-center gap-1 text-pro-charcoal">
-                      <Eye className="w-3.5 h-3.5 text-pro-warm-gray" />
+                    <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Last Viewed</dt>
+                    <dd className="flex items-center gap-1 text-graphite">
+                      <Eye className="w-3.5 h-3.5 text-graphite/60" />
                       {new Date(submission.last_viewed_at).toLocaleString()}
                     </dd>
                   </div>
@@ -310,9 +310,9 @@ export default function SubmissionDetail() {
           </div>
 
           {/* Pipeline Status */}
-          <div className="bg-white rounded-lg border border-pro-stone">
-            <div className="p-5 border-b border-pro-stone">
-              <h2 className="font-semibold text-pro-charcoal">Pipeline Progress</h2>
+          <div className="bg-white rounded-lg border border-accent-soft">
+            <div className="p-5 border-b border-accent-soft">
+              <h2 className="font-semibold text-graphite">Pipeline Progress</h2>
             </div>
             <div className="p-5">
               <div className="flex items-center gap-0">
@@ -325,14 +325,14 @@ export default function SubmissionDetail() {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border-2 ${
                       step.done
                         ? 'bg-green-600 border-green-600 text-white'
-                        : 'bg-white border-pro-stone text-pro-warm-gray'
+                        : 'bg-white border-accent-soft text-graphite/60'
                     }`}>
                       {step.done ? <CheckCircle className="w-4 h-4" /> : idx + 1}
                     </div>
                     {idx < 2 && (
-                      <div className={`absolute mt-4 h-0.5 w-full ${step.done ? 'bg-green-600' : 'bg-pro-stone'}`} style={{ left: '50%', width: 'calc(100% - 2rem)' }} />
+                      <div className={`absolute mt-4 h-0.5 w-full ${step.done ? 'bg-green-600' : 'bg-accent-soft'}`} style={{ left: '50%', width: 'calc(100% - 2rem)' }} />
                     )}
-                    <p className={`text-xs font-medium mt-2 text-center ${step.done ? 'text-green-700' : 'text-pro-warm-gray'}`}>
+                    <p className={`text-xs font-medium mt-2 text-center ${step.done ? 'text-green-700' : 'text-graphite/60'}`}>
                       {step.label}
                     </p>
                   </div>
@@ -342,38 +342,38 @@ export default function SubmissionDetail() {
           </div>
 
           {/* Related Plans */}
-          <div className="bg-white rounded-lg border border-pro-stone">
+          <div className="bg-white rounded-lg border border-accent-soft">
             <button
               onClick={() => setShowAnalysis(!showAnalysis)}
-              className="w-full p-5 flex items-center justify-between text-left border-b border-pro-stone hover:bg-pro-ivory transition-colors"
+              className="w-full p-5 flex items-center justify-between text-left border-b border-accent-soft hover:bg-background transition-colors"
             >
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-pro-warm-gray" />
-                <h2 className="font-semibold text-pro-charcoal">Related Plans ({plans.length})</h2>
+                <FileText className="w-5 h-5 text-graphite/60" />
+                <h2 className="font-semibold text-graphite">Related Plans ({plans.length})</h2>
               </div>
-              {showAnalysis ? <ChevronUp className="w-4 h-4 text-pro-warm-gray" /> : <ChevronDown className="w-4 h-4 text-pro-warm-gray" />}
+              {showAnalysis ? <ChevronUp className="w-4 h-4 text-graphite/60" /> : <ChevronDown className="w-4 h-4 text-graphite/60" />}
             </button>
             {showAnalysis && (
-              <div className="divide-y divide-pro-stone">
+              <div className="divide-y divide-accent-soft">
                 {plans.length === 0 ? (
                   <div className="p-8 text-center">
-                    <FileText className="w-10 h-10 text-pro-stone mx-auto mb-3" />
-                    <p className="text-pro-warm-gray text-sm">No plans generated yet for this user</p>
+                    <FileText className="w-10 h-10 text-accent-soft mx-auto mb-3" />
+                    <p className="text-graphite/60 text-sm">No plans generated yet for this user</p>
                   </div>
                 ) : (
                   plans.map(plan => (
                     <div key={plan.id} className="p-4 flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-pro-charcoal text-sm">{plan.name}</p>
+                        <p className="font-medium text-graphite text-sm">{plan.name}</p>
                         <div className="flex items-center gap-3 mt-1">
-                          <span className="text-xs text-pro-warm-gray flex items-center gap-1">
+                          <span className="text-xs text-graphite/60 flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             {new Date(plan.created_at).toLocaleDateString()}
                           </span>
                           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                             plan.status === 'ready' ? 'bg-green-100 text-green-700' :
-                            plan.status === 'processing' ? 'bg-pro-stone text-pro-charcoal' :
-                            'bg-pro-stone text-pro-warm-gray'
+                            plan.status === 'processing' ? 'bg-accent-soft text-graphite' :
+                            'bg-accent-soft text-graphite/60'
                           }`}>
                             {plan.status}
                           </span>
@@ -381,7 +381,7 @@ export default function SubmissionDetail() {
                       </div>
                       <div className="flex items-center gap-3">
                         {plan.fit_score !== null && (
-                          <span className="text-lg font-bold text-pro-navy">{plan.fit_score}%</span>
+                          <span className="text-lg font-bold text-graphite">{plan.fit_score}%</span>
                         )}
                       </div>
                     </div>
@@ -393,24 +393,24 @@ export default function SubmissionDetail() {
 
           {/* User Profile */}
           {userProfile && (
-            <div className="bg-white rounded-lg border border-pro-stone">
-              <div className="p-5 border-b border-pro-stone flex items-center gap-2">
-                <User className="w-5 h-5 text-pro-warm-gray" />
-                <h2 className="font-semibold text-pro-charcoal">User Account</h2>
+            <div className="bg-white rounded-lg border border-accent-soft">
+              <div className="p-5 border-b border-accent-soft flex items-center gap-2">
+                <User className="w-5 h-5 text-graphite/60" />
+                <h2 className="font-semibold text-graphite">User Account</h2>
               </div>
               <div className="p-5">
                 <dl className="grid grid-cols-2 gap-4">
                   <div>
-                    <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Role</dt>
-                    <dd className="text-pro-charcoal capitalize">{userProfile.role.replace('_', ' ')}</dd>
+                    <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Role</dt>
+                    <dd className="text-graphite capitalize">{userProfile.role.replace('_', ' ')}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">Joined</dt>
-                    <dd className="text-pro-charcoal">{new Date(userProfile.created_at).toLocaleDateString()}</dd>
+                    <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">Joined</dt>
+                    <dd className="text-graphite">{new Date(userProfile.created_at).toLocaleDateString()}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-medium text-pro-warm-gray uppercase tracking-wide mb-1">User ID</dt>
-                    <dd className="text-pro-warm-gray font-mono text-xs truncate">{userProfile.id}</dd>
+                    <dt className="text-xs font-medium text-graphite/60 uppercase tracking-wide mb-1">User ID</dt>
+                    <dd className="text-graphite/60 font-mono text-xs truncate">{userProfile.id}</dd>
                   </div>
                 </dl>
               </div>
@@ -421,19 +421,19 @@ export default function SubmissionDetail() {
         {/* Right column — actions */}
         <div className="space-y-5">
           {/* Status & Notes Editor */}
-          <div className="bg-white rounded-lg border border-pro-stone">
-            <div className="p-5 border-b border-pro-stone">
-              <h2 className="font-semibold text-pro-charcoal">Review Actions</h2>
+          <div className="bg-white rounded-lg border border-accent-soft">
+            <div className="p-5 border-b border-accent-soft">
+              <h2 className="font-semibold text-graphite">Review Actions</h2>
             </div>
             <div className="p-5 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal mb-1.5">
+                <label className="block text-sm font-medium text-graphite mb-1.5">
                   Update Status
                 </label>
                 <select
                   value={editStatus}
                   onChange={e => setEditStatus(e.target.value)}
-                  className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy bg-white"
+                  className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-graphite bg-white"
                 >
                   {STATUS_OPTIONS.map(s => (
                     <option key={s.value} value={s.value}>{s.label}</option>
@@ -442,7 +442,7 @@ export default function SubmissionDetail() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal mb-1.5">
+                <label className="block text-sm font-medium text-graphite mb-1.5">
                   Internal Notes
                 </label>
                 <textarea
@@ -450,14 +450,14 @@ export default function SubmissionDetail() {
                   onChange={e => setEditNotes(e.target.value)}
                   rows={5}
                   placeholder="Add internal notes about this submission..."
-                  className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy resize-none"
+                  className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-graphite resize-none"
                 />
               </div>
 
               <button
                 onClick={handleSave}
                 disabled={saving || !hasChanges}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-pro-navy text-white text-sm font-medium rounded-lg hover:bg-pro-charcoal disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-graphite text-white text-sm font-medium rounded-lg hover:bg-graphite disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {saving ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -477,14 +477,14 @@ export default function SubmissionDetail() {
           </div>
 
           {/* Quick Links */}
-          <div className="bg-white rounded-lg border border-pro-stone">
-            <div className="p-5 border-b border-pro-stone">
-              <h2 className="font-semibold text-pro-charcoal">Quick Links</h2>
+          <div className="bg-white rounded-lg border border-accent-soft">
+            <div className="p-5 border-b border-accent-soft">
+              <h2 className="font-semibold text-graphite">Quick Links</h2>
             </div>
             <div className="p-5 space-y-2">
               <Link
                 to="/admin/inbox"
-                className="flex items-center gap-2 text-sm text-pro-charcoal hover:text-pro-navy transition-colors py-1"
+                className="flex items-center gap-2 text-sm text-graphite hover:text-graphite transition-colors py-1"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Inbox
@@ -492,7 +492,7 @@ export default function SubmissionDetail() {
               {plans.length > 0 && (
                 <button
                   onClick={() => setShowAnalysis(true)}
-                  className="flex items-center gap-2 text-sm text-pro-charcoal hover:text-pro-navy transition-colors py-1"
+                  className="flex items-center gap-2 text-sm text-graphite hover:text-graphite transition-colors py-1"
                 >
                   <FileText className="w-4 h-4" />
                   View {plans.length} plan{plans.length !== 1 ? 's' : ''}

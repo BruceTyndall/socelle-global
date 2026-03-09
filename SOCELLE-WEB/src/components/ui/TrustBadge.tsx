@@ -27,9 +27,9 @@ export function TrustBadge({ variant, size = 'sm', className = '' }: TrustBadgeP
 
   return (
     <span
-      className={`inline-flex items-center ${s.wrapper} font-sans font-medium ${s.text} text-pro-charcoal/70 ${className}`}
+      className={`inline-flex items-center ${s.wrapper} font-sans font-medium ${s.text} text-graphite/70 ${className}`}
     >
-      <Icon className={`${s.icon} text-pro-navy flex-shrink-0`} />
+      <Icon className={`${s.icon} text-graphite flex-shrink-0`} />
       {label}
     </span>
   );

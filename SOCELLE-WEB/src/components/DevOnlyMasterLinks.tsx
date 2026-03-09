@@ -21,17 +21,17 @@ export default function DevOnlyMasterLinks() {
   ];
 
   return (
-    <div className="mt-16 border-t border-pro-stone bg-white">
+    <div className="mt-16 border-t border-accent-soft bg-white">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-xs font-semibold tracking-wide text-pro-warm-gray uppercase">
+            <p className="text-xs font-semibold tracking-wide text-graphite/60 uppercase">
               Dev Tools
             </p>
-            <h3 className="text-lg font-semibold text-pro-charcoal">
+            <h3 className="text-lg font-semibold text-graphite">
               Master Links
             </h3>
-            <p className="text-sm text-pro-warm-gray">
+            <p className="text-sm text-graphite/60">
               Quick navigation for testing portals without hunting routes.
             </p>
           </div>
@@ -43,18 +43,18 @@ export default function DevOnlyMasterLinks() {
                 <Link
                   key={l.to}
                   to={l.to}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-pro-stone bg-pro-ivory text-pro-charcoal hover:bg-pro-stone transition-colors text-sm"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-accent-soft bg-background text-graphite hover:bg-accent-soft transition-colors text-sm"
                 >
                   <Icon className="w-4 h-4" />
                   <span>{l.label}</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-pro-warm-gray" />
+                  <ExternalLink className="w-3.5 h-3.5 text-graphite/60" />
                 </Link>
               );
             })}
           </div>
         </div>
 
-        <div className="mt-3 text-xs text-pro-warm-gray">
+        <div className="mt-3 text-xs text-graphite/60">
           Visible only in <span className="font-semibold">DEV</span> mode (never in production builds).
         </div>
       </div>

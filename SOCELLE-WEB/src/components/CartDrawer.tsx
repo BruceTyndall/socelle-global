@@ -44,25 +44,25 @@ export default function CartDrawer({
           animation: 'slideIn 0.3s ease-out',
         }}
       >
-        <div className="p-6 border-b border-pro-stone">
+        <div className="p-6 border-b border-accent-soft">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-pro-charcoal">
+            <h2 className="text-2xl font-bold text-graphite">
               Your Order — {brandName}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-pro-stone rounded-lg transition-colors"
+              className="p-2 hover:bg-accent-soft rounded-lg transition-colors"
             >
-              <X className="w-6 h-6 text-pro-warm-gray" />
+              <X className="w-6 h-6 text-graphite/60" />
             </button>
           </div>
         </div>
 
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <ShoppingBag className="w-16 h-16 text-pro-stone mb-4" />
-            <p className="text-xl font-medium text-pro-charcoal mb-2">Your cart is empty</p>
-            <p className="text-pro-warm-gray">Add some products to get started</p>
+            <ShoppingBag className="w-16 h-16 text-accent-soft mb-4" />
+            <p className="text-xl font-medium text-graphite mb-2">Your cart is empty</p>
+            <p className="text-graphite/60">Add some products to get started</p>
           </div>
         ) : (
           <>
@@ -70,21 +70,21 @@ export default function CartDrawer({
               {items.map((item) => (
                 <div
                   key={item.productId}
-                  className="bg-pro-ivory rounded-lg p-4 border border-pro-stone"
+                  className="bg-background rounded-lg p-4 border border-accent-soft"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-pro-charcoal">{item.productName}</h3>
+                      <h3 className="font-semibold text-graphite">{item.productName}</h3>
                       <span
                         className={`inline-block px-2 py-0.5 text-xs font-medium rounded mt-1 ${
                           item.productType === 'pro'
-                            ? 'bg-pro-stone text-pro-charcoal'
+                            ? 'bg-accent-soft text-graphite'
                             : 'bg-green-100 text-green-700'
                         }`}
                       >
                         {item.productType === 'pro' ? 'Professional' : 'Retail'}
                       </span>
-                      <p className="text-sm text-pro-warm-gray mt-1">
+                      <p className="text-sm text-graphite/60 mt-1">
                         ${item.unitPrice.toFixed(2)} each
                       </p>
                     </div>
@@ -100,9 +100,9 @@ export default function CartDrawer({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onUpdateQty(item.productId, item.qty - 1)}
-                        className="p-1 hover:bg-pro-stone rounded transition-colors"
+                        className="p-1 hover:bg-accent-soft rounded transition-colors"
                       >
-                        <Minus className="w-4 h-4 text-pro-warm-gray" />
+                        <Minus className="w-4 h-4 text-graphite/60" />
                       </button>
                       <input
                         type="number"
@@ -110,17 +110,17 @@ export default function CartDrawer({
                         onChange={(e) =>
                           onUpdateQty(item.productId, parseInt(e.target.value) || 0)
                         }
-                        className="w-16 px-2 py-1 text-center border border-pro-stone rounded"
+                        className="w-16 px-2 py-1 text-center border border-accent-soft rounded"
                         min="0"
                       />
                       <button
                         onClick={() => onUpdateQty(item.productId, item.qty + 1)}
-                        className="p-1 hover:bg-pro-stone rounded transition-colors"
+                        className="p-1 hover:bg-accent-soft rounded transition-colors"
                       >
-                        <Plus className="w-4 h-4 text-pro-warm-gray" />
+                        <Plus className="w-4 h-4 text-graphite/60" />
                       </button>
                     </div>
-                    <p className="text-lg font-bold text-pro-charcoal">
+                    <p className="text-lg font-bold text-graphite">
                       ${(item.unitPrice * item.qty).toFixed(2)}
                     </p>
                   </div>
@@ -128,21 +128,21 @@ export default function CartDrawer({
               ))}
             </div>
 
-            <div className="border-t border-pro-stone p-6 space-y-4 bg-pro-ivory">
+            <div className="border-t border-accent-soft p-6 space-y-4 bg-background">
               <div className="flex items-center justify-between text-lg font-bold">
-                <span className="text-pro-charcoal">Subtotal:</span>
-                <span className="text-pro-charcoal">${subtotal.toFixed(2)}</span>
+                <span className="text-graphite">Subtotal:</span>
+                <span className="text-graphite">${subtotal.toFixed(2)}</span>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pro-charcoal mb-2">
+                <label className="block text-sm font-medium text-graphite mb-2">
                   Order Notes (Optional)
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => onNotesChange(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-pro-stone rounded-lg focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+                  className="w-full px-3 py-2 border border-accent-soft rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                   placeholder="Add any special instructions or notes..."
                 />
               </div>
@@ -156,7 +156,7 @@ export default function CartDrawer({
               <button
                 onClick={onSubmit}
                 disabled={submitting}
-                className="w-full py-3 px-6 bg-pro-navy text-white font-semibold rounded-lg hover:bg-pro-charcoal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 px-6 bg-graphite text-white font-semibold rounded-lg hover:bg-graphite transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Submitting...' : 'Submit Order Request'}
               </button>

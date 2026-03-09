@@ -183,7 +183,7 @@ export default function BusinessOrderDetail() {
         <div className="flex items-center gap-3">
           <Link
             to="/portal/orders"
-            className="flex items-center gap-1.5 text-sm font-sans text-pro-warm-gray hover:text-pro-charcoal transition-colors"
+            className="flex items-center gap-1.5 text-sm font-sans text-graphite/60 hover:text-graphite transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Orders
@@ -192,10 +192,10 @@ export default function BusinessOrderDetail() {
 
         {loading ? (
           <div className="space-y-4 animate-pulse">
-            <div className="h-8 bg-pro-stone/30 rounded w-48" />
-            <div className="h-4 bg-pro-stone/30 rounded w-32" />
-            <div className="bg-white rounded-xl border border-pro-stone p-6 space-y-3">
-              {[0,1,2,3].map(i => <div key={i} className="h-4 bg-pro-stone/30 rounded" />)}
+            <div className="h-8 bg-accent-soft/30 rounded w-48" />
+            <div className="h-4 bg-accent-soft/30 rounded w-32" />
+            <div className="bg-white rounded-xl border border-accent-soft p-6 space-y-3">
+              {[0,1,2,3].map(i => <div key={i} className="h-4 bg-accent-soft/30 rounded" />)}
             </div>
           </div>
         ) : error ? (
@@ -208,10 +208,10 @@ export default function BusinessOrderDetail() {
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-sans font-semibold text-pro-charcoal tracking-tight">
+                <h1 className="text-2xl font-sans font-semibold text-graphite tracking-tight">
                   {order.order_number}
                 </h1>
-                <p className="text-sm text-pro-warm-gray font-sans mt-1">
+                <p className="text-sm text-graphite/60 font-sans mt-1">
                   {order.brand_name} · {formatDate(order.created_at)}
                 </p>
               </div>
@@ -224,8 +224,8 @@ export default function BusinessOrderDetail() {
 
             {/* Status timeline — only for non-cancelled orders */}
             {order.status !== 'cancelled' && (
-              <div className="bg-white rounded-xl border border-pro-stone p-5">
-                <p className="text-xs font-semibold font-sans text-pro-warm-gray uppercase tracking-wider mb-4">Order status</p>
+              <div className="bg-white rounded-xl border border-accent-soft p-5">
+                <p className="text-xs font-semibold font-sans text-graphite/60 uppercase tracking-wider mb-4">Order status</p>
                 <div className="flex items-center gap-0 overflow-x-auto pb-2">
                   {STATUS_STEPS.map((step, i) => {
                     const config = STATUS_CONFIG[step];
@@ -236,16 +236,16 @@ export default function BusinessOrderDetail() {
                       <div key={step} className="flex items-center flex-1 min-w-0">
                         <div className="flex flex-col items-center">
                           <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-sans transition-colors ${
-                            done ? 'bg-pro-charcoal text-white' : 'bg-pro-stone/40 text-pro-warm-gray'
+                            done ? 'bg-graphite text-white' : 'bg-accent-soft/40 text-graphite/60'
                           }`}>
                             {i + 1}
                           </div>
-                          <p className={`text-[10px] font-sans mt-1.5 text-center whitespace-nowrap ${done ? 'text-pro-charcoal font-medium' : 'text-pro-stone'}`}>
+                          <p className={`text-[10px] font-sans mt-1.5 text-center whitespace-nowrap ${done ? 'text-graphite font-medium' : 'text-accent-soft'}`}>
                             {config.label}
                           </p>
                         </div>
                         {!isLast && (
-                          <div className={`flex-1 h-0.5 mx-0.5 mb-3 transition-colors min-w-[8px] ${i < current ? 'bg-pro-charcoal' : 'bg-pro-stone/40'}`} />
+                          <div className={`flex-1 h-0.5 mx-0.5 mb-3 transition-colors min-w-[8px] ${i < current ? 'bg-graphite' : 'bg-accent-soft/40'}`} />
                         )}
                       </div>
                     );
@@ -256,35 +256,35 @@ export default function BusinessOrderDetail() {
 
             {/* Tracking — when brand has entered tracking info */}
             {(order.tracking_number || order.tracking_carrier || order.shipped_at) && (
-              <div className="bg-white rounded-xl border border-pro-stone p-5">
+              <div className="bg-white rounded-xl border border-accent-soft p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <Truck className="w-5 h-5 text-pro-navy" />
-                  <p className="text-xs font-semibold font-sans text-pro-warm-gray uppercase tracking-wider">Tracking</p>
+                  <Truck className="w-5 h-5 text-graphite" />
+                  <p className="text-xs font-semibold font-sans text-graphite/60 uppercase tracking-wider">Tracking</p>
                 </div>
                 <div className="space-y-2 text-sm font-sans">
                   {order.shipped_at && (
-                    <p className="text-pro-charcoal">
+                    <p className="text-graphite">
                       Shipped {formatDateTime(order.shipped_at)}
                       {order.delivered_at && (
-                        <span className="text-pro-warm-gray"> · Delivered {formatDateTime(order.delivered_at)}</span>
+                        <span className="text-graphite/60"> · Delivered {formatDateTime(order.delivered_at)}</span>
                       )}
                     </p>
                   )}
                   {order.tracking_carrier && (
-                    <p className="text-pro-warm-gray">
-                      <span className="font-medium text-pro-charcoal">Carrier:</span> {order.tracking_carrier}
+                    <p className="text-graphite/60">
+                      <span className="font-medium text-graphite">Carrier:</span> {order.tracking_carrier}
                     </p>
                   )}
                   {order.tracking_number && (
-                    <p className="text-pro-warm-gray">
-                      <span className="font-medium text-pro-charcoal">Tracking number:</span>{' '}
-                      <span className="font-mono text-pro-charcoal">{order.tracking_number}</span>
+                    <p className="text-graphite/60">
+                      <span className="font-medium text-graphite">Tracking number:</span>{' '}
+                      <span className="font-mono text-graphite">{order.tracking_number}</span>
                       {trackUrl && (
                         <a
                           href={trackUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="ml-2 inline-flex items-center gap-1 text-pro-navy hover:text-pro-gold font-medium transition-colors"
+                          className="ml-2 inline-flex items-center gap-1 text-graphite hover:text-accent font-medium transition-colors"
                         >
                           Track package
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -297,37 +297,37 @@ export default function BusinessOrderDetail() {
             )}
 
             {/* Line items */}
-            <div className="bg-white rounded-xl border border-pro-stone overflow-hidden">
-              <div className="px-5 py-4 border-b border-pro-stone">
-                <p className="text-xs font-semibold font-sans text-pro-warm-gray uppercase tracking-wider">
+            <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+              <div className="px-5 py-4 border-b border-accent-soft">
+                <p className="text-xs font-semibold font-sans text-graphite/60 uppercase tracking-wider">
                   Items ({order.items.length})
                 </p>
               </div>
 
               {order.items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
-                  <Package className="w-8 h-8 text-pro-stone mb-2" />
-                  <p className="text-sm text-pro-warm-gray font-sans">No items on this order</p>
+                  <Package className="w-8 h-8 text-accent-soft mb-2" />
+                  <p className="text-sm text-graphite/60 font-sans">No items on this order</p>
                 </div>
               ) : (
                 <>
-                  <div className="divide-y divide-pro-stone/50">
+                  <div className="divide-y divide-accent-soft/50">
                     {order.items.map(item => (
                       <div key={item.id} className="flex items-center gap-4 px-5 py-4">
-                        <div className="w-9 h-9 rounded-lg bg-pro-cream flex items-center justify-center flex-shrink-0">
-                          <Package className="w-4 h-4 text-pro-stone" />
+                        <div className="w-9 h-9 rounded-lg bg-accent-soft flex items-center justify-center flex-shrink-0">
+                          <Package className="w-4 h-4 text-accent-soft" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-pro-charcoal font-sans">{item.product_name}</p>
-                          <p className="text-xs text-pro-warm-gray font-sans">
+                          <p className="text-sm font-medium text-graphite font-sans">{item.product_name}</p>
+                          <p className="text-xs text-graphite/60 font-sans">
                             {[item.product_type?.toUpperCase(), item.sku].filter(Boolean).join(' · ')}
                           </p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="text-sm font-medium text-pro-charcoal font-sans">
+                          <p className="text-sm font-medium text-graphite font-sans">
                             ${item.line_total.toFixed(2)}
                           </p>
-                          <p className="text-xs text-pro-warm-gray font-sans">
+                          <p className="text-xs text-graphite/60 font-sans">
                             {item.qty} × ${item.unit_price.toFixed(2)}
                           </p>
                         </div>
@@ -336,10 +336,10 @@ export default function BusinessOrderDetail() {
                   </div>
 
                   {/* Totals */}
-                  <div className="px-5 py-4 border-t border-pro-stone bg-pro-ivory/50">
+                  <div className="px-5 py-4 border-t border-accent-soft bg-background/50">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold font-sans text-pro-charcoal">Subtotal</span>
-                      <span className="text-sm font-semibold font-sans text-pro-charcoal">
+                      <span className="text-sm font-semibold font-sans text-graphite">Subtotal</span>
+                      <span className="text-sm font-semibold font-sans text-graphite">
                         ${order.subtotal.toFixed(2)}
                       </span>
                     </div>
@@ -349,19 +349,19 @@ export default function BusinessOrderDetail() {
             </div>
 
             {/* Message about this order */}
-            <div className="bg-white rounded-xl border border-pro-stone p-5">
+            <div className="bg-white rounded-xl border border-accent-soft p-5">
               <div className="flex items-center gap-2 mb-3">
-                <MessageSquare className="w-5 h-5 text-pro-navy" />
-                <p className="text-xs font-semibold font-sans text-pro-warm-gray uppercase tracking-wider">Message brand</p>
+                <MessageSquare className="w-5 h-5 text-graphite" />
+                <p className="text-xs font-semibold font-sans text-graphite/60 uppercase tracking-wider">Message brand</p>
               </div>
-              <p className="text-sm text-pro-warm-gray font-sans mb-3">
+              <p className="text-sm text-graphite/60 font-sans mb-3">
                 Need help with this order? Start a conversation with the brand.
               </p>
               <button
                 type="button"
                 onClick={handleMessageOrder}
                 disabled={messageLoading}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-medium bg-pro-navy text-white hover:bg-pro-charcoal disabled:opacity-60 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-medium bg-graphite text-white hover:bg-graphite disabled:opacity-60 transition-colors"
               >
                 <MessageSquare className="w-4 h-4" />
                 {messageLoading ? 'Opening…' : 'Message about this order'}
@@ -373,16 +373,16 @@ export default function BusinessOrderDetail() {
 
             {/* Return request — only when shipped/delivered and no return yet, or show status */}
             {(order.status === 'shipped' || order.status === 'delivered') && (
-              <div className="bg-white rounded-xl border border-pro-stone p-5">
+              <div className="bg-white rounded-xl border border-accent-soft p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <RotateCcw className="w-5 h-5 text-pro-navy" />
-                  <p className="text-xs font-semibold font-sans text-pro-warm-gray uppercase tracking-wider">Return</p>
+                  <RotateCcw className="w-5 h-5 text-graphite" />
+                  <p className="text-xs font-semibold font-sans text-graphite/60 uppercase tracking-wider">Return</p>
                 </div>
                 {order.return_status === 'none' && !showReturnForm && (
                   <button
                     type="button"
                     onClick={() => setShowReturnForm(true)}
-                    className="text-sm font-sans font-medium text-pro-gold hover:text-pro-navy transition-colors"
+                    className="text-sm font-sans font-medium text-accent hover:text-graphite transition-colors"
                   >
                     Request return
                   </button>
@@ -393,7 +393,7 @@ export default function BusinessOrderDetail() {
                       value={returnReason}
                       onChange={(e) => setReturnReason(e.target.value)}
                       placeholder="Reason for return (optional)"
-                      className="w-full px-3 py-2 border border-pro-stone rounded-lg text-sm font-sans text-pro-charcoal"
+                      className="w-full px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans text-graphite"
                       rows={2}
                     />
                     <div className="flex gap-2">
@@ -408,7 +408,7 @@ export default function BusinessOrderDetail() {
                       <button
                         type="button"
                         onClick={() => { setShowReturnForm(false); setReturnReason(''); }}
-                        className="px-4 py-2 border border-pro-stone rounded-lg text-sm font-sans text-pro-charcoal hover:bg-pro-cream"
+                        className="px-4 py-2 border border-accent-soft rounded-lg text-sm font-sans text-graphite hover:bg-accent-soft"
                       >
                         Cancel
                       </button>
@@ -416,7 +416,7 @@ export default function BusinessOrderDetail() {
                   </div>
                 )}
                 {order.return_status === 'requested' && (
-                  <p className="text-sm font-sans text-pro-charcoal">
+                  <p className="text-sm font-sans text-graphite">
                     Return requested{order.return_reason ? `: ${order.return_reason}` : ''}. The brand will review.
                   </p>
                 )}
@@ -424,16 +424,16 @@ export default function BusinessOrderDetail() {
                   <p className="text-sm font-sans text-green-700">Return approved. Refund will be processed per brand policy.</p>
                 )}
                 {order.return_status === 'rejected' && (
-                  <p className="text-sm font-sans text-pro-warm-gray">Return request was declined.</p>
+                  <p className="text-sm font-sans text-graphite/60">Return request was declined.</p>
                 )}
               </div>
             )}
 
             {/* Notes */}
             {order.notes && (
-              <div className="bg-white rounded-xl border border-pro-stone p-5">
-                <p className="text-xs font-semibold font-sans text-pro-warm-gray uppercase tracking-wider mb-2">Order notes</p>
-                <p className="text-sm text-pro-charcoal font-sans leading-relaxed">{order.notes}</p>
+              <div className="bg-white rounded-xl border border-accent-soft p-5">
+                <p className="text-xs font-semibold font-sans text-graphite/60 uppercase tracking-wider mb-2">Order notes</p>
+                <p className="text-sm text-graphite font-sans leading-relaxed">{order.notes}</p>
               </div>
             )}
           </>

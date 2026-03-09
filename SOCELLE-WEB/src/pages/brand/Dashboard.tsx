@@ -28,11 +28,11 @@ interface BrandInfo {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  submitted:      'bg-pro-cream text-pro-charcoal',
-  reviewing:      'bg-pro-stone text-pro-charcoal',
+  submitted:      'bg-accent-soft text-graphite',
+  reviewing:      'bg-accent-soft text-graphite',
   sent_to_brand:  'bg-blue-50 text-blue-700',
   confirmed:      'bg-green-50 text-green-700',
-  fulfilled:      'bg-pro-ivory text-pro-navy',
+  fulfilled:      'bg-background text-graphite',
   cancelled:      'bg-red-50 text-red-700',
 };
 
@@ -40,7 +40,7 @@ const VERIFICATION_BADGE: Record<string, { label: string; icon: typeof CheckCirc
   verified:             { label: 'Verified',             icon: CheckCircle, cls: 'text-green-600 bg-green-50' },
   pending_verification: { label: 'Pending Review',       icon: Clock,       cls: 'text-amber-600 bg-amber-50' },
   pending_claim:        { label: 'Claim Pending',        icon: Clock,       cls: 'text-amber-600 bg-amber-50' },
-  unverified:           { label: 'Not Yet Verified',     icon: AlertCircle, cls: 'text-pro-warm-gray bg-pro-cream' },
+  unverified:           { label: 'Not Yet Verified',     icon: AlertCircle, cls: 'text-graphite/60 bg-accent-soft' },
   suspended:            { label: 'Suspended',            icon: AlertCircle, cls: 'text-red-600 bg-red-50' },
 };
 
@@ -64,10 +64,10 @@ function BrandMarketPositionCard({ brandSlug }: { brandSlug: string }) {
   };
 
   return (
-    <div className="bg-pro-charcoal rounded-xl p-6 text-white">
+    <div className="bg-graphite rounded-xl p-6 text-white">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Brain className="w-6 h-6 text-pro-gold" />
+          <Brain className="w-6 h-6 text-accent" />
           <h3 className="font-heading text-lg font-semibold">Market Position</h3>
         </div>
         <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ function BrandMarketPositionCard({ brandSlug }: { brandSlug: string }) {
           <p className="text-2xl font-heading font-bold">{metrics.momentumScore}</p>
           <div className="w-full bg-white/20 rounded-full h-1.5 mt-2">
             <div
-              className="bg-pro-gold rounded-full h-1.5 transition-all"
+              className="bg-accent rounded-full h-1.5 transition-all"
               style={{ width: `${metrics.momentumScore}%` }}
             />
           </div>
@@ -129,21 +129,21 @@ function BrandTopSignalsCard({ brandSlug }: { brandSlug: string }) {
 
   return (
     <div className="space-y-3">
-      <h3 className="font-heading text-lg font-semibold text-pro-charcoal">Recent Market Signals</h3>
+      <h3 className="font-heading text-lg font-semibold text-graphite">Recent Market Signals</h3>
       <div className="grid gap-3 md:grid-cols-2">
         {signals.slice(0, 4).map((signal) => (
           <div
             key={signal.id}
-            className="bg-white rounded-lg border border-pro-stone p-4 hover:shadow-md transition-shadow"
+            className="bg-white rounded-lg border border-accent-soft p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between gap-2 mb-2">
-              <h4 className="font-sans font-medium text-sm text-pro-charcoal leading-tight">{signal.title}</h4>
+              <h4 className="font-sans font-medium text-sm text-graphite leading-tight">{signal.title}</h4>
               <div className={`flex items-center gap-1 flex-shrink-0 text-xs font-medium font-sans px-2 py-0.5 rounded-full ${
                 signal.direction === 'up'
                   ? 'bg-emerald-50 text-emerald-700'
                   : signal.direction === 'down'
                   ? 'bg-red-50 text-red-700'
-                  : 'bg-pro-cream text-pro-warm-gray'
+                  : 'bg-accent-soft text-graphite/60'
               }`}>
                 {signal.direction === 'up' ? (
                   <TrendingUp className="w-3 h-3" />
@@ -153,7 +153,7 @@ function BrandTopSignalsCard({ brandSlug }: { brandSlug: string }) {
                 {signal.magnitude > 0 ? `${signal.direction === 'down' ? '-' : '+'}${signal.magnitude}%` : 'Stable'}
               </div>
             </div>
-            <p className="text-xs text-pro-warm-gray font-sans line-clamp-2">{signal.description}</p>
+            <p className="text-xs text-graphite/60 font-sans line-clamp-2">{signal.description}</p>
           </div>
         ))}
       </div>
@@ -254,29 +254,29 @@ export default function BrandDashboard() {
       label: 'Orders',
       value: stats.ordersCount.toString(),
       icon: ShoppingBag,
-      iconBg: 'bg-pro-cream',
-      iconColor: 'text-pro-navy',
+      iconBg: 'bg-accent-soft',
+      iconColor: 'text-graphite',
     },
     {
       label: 'Revenue',
       value: `$${stats.revenueTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
       icon: DollarSign,
-      iconBg: 'bg-pro-ivory',
-      iconColor: 'text-pro-charcoal',
+      iconBg: 'bg-background',
+      iconColor: 'text-graphite',
     },
     {
       label: 'Products',
       value: stats.productsCount.toString(),
       icon: Package,
-      iconBg: 'bg-pro-stone',
-      iconColor: 'text-pro-gold',
+      iconBg: 'bg-accent-soft',
+      iconColor: 'text-accent',
     },
     {
       label: 'Resellers',
       value: stats.resellersCount.toString(),
       icon: Users,
-      iconBg: 'bg-pro-cream',
-      iconColor: 'text-pro-navy',
+      iconBg: 'bg-accent-soft',
+      iconColor: 'text-graphite',
     },
   ];
 
@@ -313,10 +313,10 @@ export default function BrandDashboard() {
           {[0, 1, 2, 3].map(i => <StatCardSkeleton key={i} />)}
         </div>
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <Skeleton className="h-6 w-40 mb-4" />
             {[0, 1, 2, 3, 4].map(i => (
-              <div key={i} className="flex justify-between py-3 border-b border-pro-stone last:border-0">
+              <div key={i} className="flex justify-between py-3 border-b border-accent-soft last:border-0">
                 <div className="space-y-1">
                   <Skeleton className="h-4 w-36" />
                   <Skeleton className="h-3 w-24" />
@@ -325,7 +325,7 @@ export default function BrandDashboard() {
               </div>
             ))}
           </div>
-          <div className="bg-white rounded-lg border border-pro-stone p-6">
+          <div className="bg-white rounded-lg border border-accent-soft p-6">
             <Skeleton className="h-6 w-36 mb-4" />
             {[0, 1, 2].map(i => <Skeleton key={i} className="h-14 w-full rounded-lg mb-3" />)}
           </div>
@@ -339,10 +339,10 @@ export default function BrandDashboard() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-serif text-pro-navy mb-2">
-            {brandInfo?.name || 'Brand Dashboard'}<span className="text-pro-gold">.</span>
+          <h1 className="text-3xl font-sans text-graphite mb-2">
+            {brandInfo?.name || 'Brand Dashboard'}<span className="text-accent">.</span>
           </h1>
-          <p className="text-pro-warm-gray font-sans">
+          <p className="text-graphite/60 font-sans">
             {stats.ordersCount > 0
               ? `${stats.ordersCount} order${stats.ordersCount !== 1 ? 's' : ''} · ${stats.resellersCount} reseller${stats.resellersCount !== 1 ? 's' : ''} · $${stats.revenueTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })} revenue`
               : 'Your Socelle brand command center'}
@@ -366,7 +366,7 @@ export default function BrandDashboard() {
                 Getting Started
               </h2>
             </div>
-            <span className="text-xs text-pro-warm-gray font-sans">
+            <span className="text-xs text-graphite/60 font-sans">
               {setupSteps.filter(s => s.done).length}/{setupSteps.length} complete
             </span>
           </div>
@@ -378,18 +378,18 @@ export default function BrandDashboard() {
                 className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                   step.done
                     ? 'opacity-60 cursor-default pointer-events-none'
-                    : 'hover:bg-pro-cream'
+                    : 'hover:bg-accent-soft'
                 }`}
               >
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 border-2 ${
-                  step.done ? 'border-green-400 bg-green-400' : 'border-pro-stone bg-white'
+                  step.done ? 'border-green-400 bg-green-400' : 'border-accent-soft bg-white'
                 }`}>
                   {step.done && <CheckCircle className="w-3.5 h-3.5 text-white" />}
                 </div>
-                <span className={`text-sm font-sans ${step.done ? 'line-through text-pro-warm-gray' : 'text-pro-charcoal font-medium'}`}>
+                <span className={`text-sm font-sans ${step.done ? 'line-through text-graphite/60' : 'text-graphite font-medium'}`}>
                   {step.label}
                 </span>
-                {!step.done && <ArrowRight className="w-3.5 h-3.5 text-pro-warm-gray ml-auto" />}
+                {!step.done && <ArrowRight className="w-3.5 h-3.5 text-graphite/60 ml-auto" />}
               </Link>
             ))}
           </div>
@@ -403,15 +403,15 @@ export default function BrandDashboard() {
           return (
             <div
               key={stat.label}
-              className="bg-white rounded-lg border border-pro-stone p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg border border-accent-soft p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 ${stat.iconBg} rounded-lg flex items-center justify-center`}>
                   <Icon className={`w-6 h-6 ${stat.iconColor}`} />
                 </div>
               </div>
-              <p className="text-2xl font-serif text-pro-navy mb-1">{stat.value}</p>
-              <p className="text-sm text-pro-warm-gray font-sans">{stat.label}</p>
+              <p className="text-2xl font-sans text-graphite mb-1">{stat.value}</p>
+              <p className="text-sm text-graphite/60 font-sans">{stat.label}</p>
             </div>
           );
         })}
@@ -419,38 +419,38 @@ export default function BrandDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-lg border border-pro-stone p-6 shadow-sm">
+        <div className="bg-white rounded-lg border border-accent-soft p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-serif text-pro-navy">Recent Orders</h2>
+            <h2 className="text-xl font-sans text-graphite">Recent Orders</h2>
             <Link
               to="/brand/orders"
-              className="text-sm text-pro-gold hover:text-pro-navy font-medium font-sans flex items-center gap-1 transition-colors"
+              className="text-sm text-accent hover:text-graphite font-medium font-sans flex items-center gap-1 transition-colors"
             >
               View All
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           {recentOrders.length === 0 ? (
-            <div className="text-center py-8 text-pro-warm-gray font-sans">
-              <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-pro-stone" />
+            <div className="text-center py-8 text-graphite/60 font-sans">
+              <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-accent-soft" />
               <p className="font-medium">No orders yet</p>
               <p className="text-sm mt-1">Orders from resellers will appear here</p>
             </div>
           ) : (
-            <div className="divide-y divide-pro-stone">
+            <div className="divide-y divide-accent-soft">
               {recentOrders.map((order) => (
                 <div key={order.id} className="flex items-center justify-between py-3">
                   <div>
-                    <p className="font-medium text-pro-charcoal font-sans text-sm">{order.business_name}</p>
-                    <p className="text-xs text-pro-warm-gray font-sans">
+                    <p className="font-medium text-graphite font-sans text-sm">{order.business_name}</p>
+                    <p className="text-xs text-graphite/60 font-sans">
                       {order.order_number} · {new Date(order.created_at).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium font-sans capitalize ${STATUS_COLORS[order.status] || 'bg-pro-cream text-pro-charcoal'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium font-sans capitalize ${STATUS_COLORS[order.status] || 'bg-accent-soft text-graphite'}`}>
                       {order.status.replace(/_/g, ' ')}
                     </span>
-                    <span className="text-sm font-serif text-pro-navy">
+                    <span className="text-sm font-sans text-graphite">
                       ${order.subtotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
                   </div>
@@ -461,8 +461,8 @@ export default function BrandDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg border border-pro-stone p-6 shadow-sm">
-          <h2 className="text-xl font-serif text-pro-navy mb-4">Quick Actions</h2>
+        <div className="bg-white rounded-lg border border-accent-soft p-6 shadow-sm">
+          <h2 className="text-xl font-sans text-graphite mb-4">Quick Actions</h2>
           <div className="space-y-3">
             {[
               { to: '/brand/orders',   label: 'Manage Orders',   sub: 'Review and fulfill reseller orders' },
@@ -473,13 +473,13 @@ export default function BrandDashboard() {
               <Link
                 key={to}
                 to={to}
-                className="group flex items-center justify-between p-4 rounded-lg border border-pro-stone hover:border-pro-charcoal/30 hover:bg-pro-cream/50 transition-all"
+                className="group flex items-center justify-between p-4 rounded-lg border border-accent-soft hover:border-graphite/30 hover:bg-accent-soft/50 transition-all"
               >
                 <div>
-                  <p className="font-medium text-pro-charcoal font-sans text-sm">{label}</p>
-                  <p className="text-xs text-pro-warm-gray font-sans mt-0.5">{sub}</p>
+                  <p className="font-medium text-graphite font-sans text-sm">{label}</p>
+                  <p className="text-xs text-graphite/60 font-sans mt-0.5">{sub}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-pro-warm-gray group-hover:text-pro-charcoal transition-colors" />
+                <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-graphite transition-colors" />
               </Link>
             ))}
           </div>
@@ -489,10 +489,10 @@ export default function BrandDashboard() {
       {/* ── Brand Intelligence — WO-12 ─────────────────────── */}
       <section className="mt-12 space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-heading text-2xl font-bold text-pro-charcoal">Your Brand Intelligence</h2>
+          <h2 className="font-heading text-2xl font-bold text-graphite">Your Brand Intelligence</h2>
           <Link
             to="/brand/intelligence"
-            className="text-sm text-pro-gold hover:text-pro-navy font-medium font-sans flex items-center gap-1 transition-colors"
+            className="text-sm text-accent hover:text-graphite font-medium font-sans flex items-center gap-1 transition-colors"
           >
             Full Intelligence Hub
             <ArrowRight className="w-4 h-4" />

@@ -72,34 +72,34 @@ export default function AdminSeeding() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-serif text-pro-navy">
-          Seeding<span className="text-pro-gold">.</span>
+        <h1 className="text-3xl font-sans text-graphite">
+          Seeding<span className="text-accent">.</span>
         </h1>
-        <p className="text-pro-warm-gray font-sans mt-1">
+        <p className="text-graphite/60 font-sans mt-1">
           Manually seed unverified brand and business pages for platform cold start
         </p>
       </div>
 
       {/* Info banner */}
-      <div className="bg-pro-cream border border-pro-stone rounded-xl p-4 flex gap-3">
-        <div className="w-5 h-5 rounded-full bg-pro-gold/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-          <span className="text-pro-gold text-xs font-bold">i</span>
+      <div className="bg-accent-soft border border-accent-soft rounded-xl p-4 flex gap-3">
+        <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span className="text-accent text-xs font-bold">i</span>
         </div>
-        <div className="text-sm text-pro-charcoal font-sans space-y-1">
+        <div className="text-sm text-graphite font-sans space-y-1">
           <p><strong>Seeded records are unverified by default.</strong> They appear in the directory but display an unverified badge. Brands can claim their page via the public application flow. Admin team follows up via outreach.</p>
-          <p className="text-pro-warm-gray">Slug is auto-generated from name — edit it only if a conflict exists.</p>
+          <p className="text-graphite/60">Slug is auto-generated from name — edit it only if a conflict exists.</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-accent-soft/40 rounded-xl p-1 w-fit">
         <button
           type="button"
           onClick={() => setTab('brand')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
             tab === 'brand'
-              ? 'bg-white text-pro-navy shadow-sm'
-              : 'text-pro-warm-gray hover:text-pro-charcoal'
+              ? 'bg-white text-graphite shadow-sm'
+              : 'text-graphite/60 hover:text-graphite'
           }`}
         >
           <Building2 className="w-4 h-4" />
@@ -110,8 +110,8 @@ export default function AdminSeeding() {
           onClick={() => setTab('business')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
             tab === 'business'
-              ? 'bg-white text-pro-navy shadow-sm'
-              : 'text-pro-warm-gray hover:text-pro-charcoal'
+              ? 'bg-white text-graphite shadow-sm'
+              : 'text-graphite/60 hover:text-graphite'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -230,12 +230,12 @@ function BrandSeedPanel({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white border border-pro-stone rounded-xl p-6 space-y-5">
-        <h2 className="text-lg font-serif text-pro-navy">Seed a Brand</h2>
+      <form onSubmit={handleSubmit} className="bg-white border border-accent-soft rounded-xl p-6 space-y-5">
+        <h2 className="text-lg font-sans text-graphite">Seed a Brand</h2>
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Brand name <span className="text-red-500">*</span>
           </label>
           <input
@@ -243,19 +243,19 @@ function BrandSeedPanel({
             value={form.name}
             onChange={e => handleNameChange(e.target.value)}
             placeholder="e.g. Naturopathica"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
             required
           />
         </div>
 
         {/* Slug */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Slug <span className="text-red-500">*</span>
-            <span className="ml-2 text-xs text-pro-warm-gray font-normal">Auto-generated — edit only if conflict exists</span>
+            <span className="ml-2 text-xs text-graphite/60 font-normal">Auto-generated — edit only if conflict exists</span>
           </label>
-          <div className="flex items-center border border-pro-stone rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-pro-navy focus-within:border-pro-navy">
-            <span className="px-3 py-2.5 bg-pro-cream text-pro-warm-gray text-sm font-sans border-r border-pro-stone flex-shrink-0">
+          <div className="flex items-center border border-accent-soft rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-graphite focus-within:border-graphite">
+            <span className="px-3 py-2.5 bg-accent-soft text-graphite/60 text-sm font-sans border-r border-accent-soft flex-shrink-0">
               /brands/
             </span>
             <input
@@ -271,7 +271,7 @@ function BrandSeedPanel({
 
         {/* Website */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Website URL
           </label>
           <input
@@ -279,13 +279,13 @@ function BrandSeedPanel({
             value={form.website_url}
             onChange={e => setForm(prev => ({ ...prev, website_url: e.target.value }))}
             placeholder="https://brand.com"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
         </div>
 
         {/* Contact email */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Contact email
           </label>
           <input
@@ -293,19 +293,19 @@ function BrandSeedPanel({
             value={form.contact_email}
             onChange={e => setForm(prev => ({ ...prev, contact_email: e.target.value }))}
             placeholder="hello@brand.com"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
         </div>
 
         {/* Service tier */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Service tier
           </label>
           <select
             value={form.service_tier}
             onChange={e => setForm(prev => ({ ...prev, service_tier: e.target.value as 'standard' | 'premier' }))}
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy bg-white"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite bg-white"
           >
             <option value="standard">Standard — self-serve</option>
             <option value="premier">Premier — managed by Socelle</option>
@@ -314,7 +314,7 @@ function BrandSeedPanel({
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Short description
           </label>
           <textarea
@@ -322,13 +322,13 @@ function BrandSeedPanel({
             onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
             placeholder="Brief description of the brand and what they offer..."
             rows={3}
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy resize-none"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite resize-none"
           />
         </div>
 
         {/* Logo URL */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Logo URL
           </label>
           <input
@@ -336,22 +336,22 @@ function BrandSeedPanel({
             value={form.logo_url}
             onChange={e => setForm(prev => ({ ...prev, logo_url: e.target.value }))}
             placeholder="https://cdn.brand.com/logo.png"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
         </div>
 
         {/* Category tags */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Category tags
-            <span className="ml-2 text-xs text-pro-warm-gray font-normal">Comma-separated</span>
+            <span className="ml-2 text-xs text-graphite/60 font-normal">Comma-separated</span>
           </label>
           <input
             type="text"
             value={form.category_tags}
             onChange={e => setForm(prev => ({ ...prev, category_tags: e.target.value }))}
             placeholder="skincare, anti-aging, professional"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
         </div>
 
@@ -360,7 +360,7 @@ function BrandSeedPanel({
           <button
             type="submit"
             disabled={submitting || !form.name.trim() || !form.slug.trim()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:opacity-50 disabled:cursor-not-allowed font-sans text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-graphite text-white rounded-lg hover:bg-graphite disabled:opacity-50 disabled:cursor-not-allowed font-sans text-sm font-medium transition-colors"
           >
             {submitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -469,12 +469,12 @@ function BusinessSeedPanel({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white border border-pro-stone rounded-xl p-6 space-y-5">
-        <h2 className="text-lg font-serif text-pro-navy">Seed a Business</h2>
+      <form onSubmit={handleSubmit} className="bg-white border border-accent-soft rounded-xl p-6 space-y-5">
+        <h2 className="text-lg font-sans text-graphite">Seed a Business</h2>
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Business name <span className="text-red-500">*</span>
           </label>
           <input
@@ -482,19 +482,19 @@ function BusinessSeedPanel({
             value={form.name}
             onChange={e => handleNameChange(e.target.value)}
             placeholder="e.g. Skin Lounge Beverly Hills"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
             required
           />
         </div>
 
         {/* Slug */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Slug <span className="text-red-500">*</span>
-            <span className="ml-2 text-xs text-pro-warm-gray font-normal">Auto-generated — edit only if conflict exists</span>
+            <span className="ml-2 text-xs text-graphite/60 font-normal">Auto-generated — edit only if conflict exists</span>
           </label>
-          <div className="flex items-center border border-pro-stone rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-pro-navy focus-within:border-pro-navy">
-            <span className="px-3 py-2.5 bg-pro-cream text-pro-warm-gray text-sm font-sans border-r border-pro-stone flex-shrink-0">
+          <div className="flex items-center border border-accent-soft rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-graphite focus-within:border-graphite">
+            <span className="px-3 py-2.5 bg-accent-soft text-graphite/60 text-sm font-sans border-r border-accent-soft flex-shrink-0">
               /businesses/
             </span>
             <input
@@ -510,13 +510,13 @@ function BusinessSeedPanel({
 
         {/* Business type */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Business type
           </label>
           <select
             value={form.business_type}
             onChange={e => setForm(prev => ({ ...prev, business_type: e.target.value as BusinessSeedForm['business_type'] }))}
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy bg-white"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite bg-white"
           >
             <option value="">Select type…</option>
             <option value="salon">Salon</option>
@@ -530,7 +530,7 @@ function BusinessSeedPanel({
         {/* Location */}
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+            <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
               City
             </label>
             <input
@@ -538,11 +538,11 @@ function BusinessSeedPanel({
               value={form.city}
               onChange={e => setForm(prev => ({ ...prev, city: e.target.value }))}
               placeholder="Beverly Hills"
-              className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+              className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+            <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
               State
             </label>
             <input
@@ -551,14 +551,14 @@ function BusinessSeedPanel({
               onChange={e => setForm(prev => ({ ...prev, state: e.target.value }))}
               placeholder="CA"
               maxLength={2}
-              className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy uppercase"
+              className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite uppercase"
             />
           </div>
         </div>
 
         {/* Website */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Website URL
           </label>
           <input
@@ -566,13 +566,13 @@ function BusinessSeedPanel({
             value={form.website_url}
             onChange={e => setForm(prev => ({ ...prev, website_url: e.target.value }))}
             placeholder="https://skinlounge.com"
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-pro-charcoal font-sans mb-1.5">
+          <label className="block text-sm font-medium text-graphite font-sans mb-1.5">
             Description
           </label>
           <textarea
@@ -580,7 +580,7 @@ function BusinessSeedPanel({
             onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
             placeholder="Brief description of the business..."
             rows={3}
-            className="w-full px-3 py-2.5 border border-pro-stone rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-pro-navy focus:border-pro-navy resize-none"
+            className="w-full px-3 py-2.5 border border-accent-soft rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-graphite focus:border-graphite resize-none"
           />
         </div>
 
@@ -589,7 +589,7 @@ function BusinessSeedPanel({
           <button
             type="submit"
             disabled={submitting || !form.name.trim() || !form.slug.trim()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-pro-navy text-white rounded-lg hover:bg-pro-charcoal disabled:opacity-50 disabled:cursor-not-allowed font-sans text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-graphite text-white rounded-lg hover:bg-graphite disabled:opacity-50 disabled:cursor-not-allowed font-sans text-sm font-medium transition-colors"
           >
             {submitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />

@@ -81,7 +81,7 @@ export default function OnboardingChecklist({ hasPlan, hasOrders, hasProfile }: 
   const progress = Math.round((completedCount / items.length) * 100);
 
   return (
-    <div className="bg-white border border-pro-stone rounded-lg shadow-sm">
+    <div className="bg-white border border-accent-soft rounded-lg shadow-sm">
       <div className="flex items-center justify-between px-5 py-4">
         <button
           onClick={() => setExpanded(!expanded)}
@@ -89,27 +89,27 @@ export default function OnboardingChecklist({ hasPlan, hasOrders, hasProfile }: 
         >
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
-              <h3 className="font-semibold text-pro-charcoal">Getting Started</h3>
-              <span className="text-xs font-medium text-pro-charcoal bg-pro-stone px-2 py-0.5 rounded-full">
+              <h3 className="font-semibold text-graphite">Getting Started</h3>
+              <span className="text-xs font-medium text-graphite bg-accent-soft px-2 py-0.5 rounded-full">
                 {completedCount}/{items.length} complete
               </span>
             </div>
-            <div className="w-full bg-pro-stone rounded-full h-1.5 max-w-xs">
+            <div className="w-full bg-accent-soft rounded-full h-1.5 max-w-xs">
               <div
-                className="bg-pro-navy h-1.5 rounded-full transition-all duration-500"
+                className="bg-graphite h-1.5 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-pro-warm-gray flex-shrink-0" />
+            <ChevronUp className="w-4 h-4 text-graphite/60 flex-shrink-0" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-pro-warm-gray flex-shrink-0" />
+            <ChevronDown className="w-4 h-4 text-graphite/60 flex-shrink-0" />
           )}
         </button>
         <button
           onClick={handleDismiss}
-          className="ml-3 p-1 text-pro-warm-gray hover:text-pro-warm-gray transition-colors flex-shrink-0"
+          className="ml-3 p-1 text-graphite/60 hover:text-graphite/60 transition-colors flex-shrink-0"
           title="Dismiss checklist"
         >
           <X className="w-4 h-4" />
@@ -117,30 +117,30 @@ export default function OnboardingChecklist({ hasPlan, hasOrders, hasProfile }: 
       </div>
 
       {expanded && (
-        <div className="border-t border-pro-stone divide-y divide-pro-stone">
+        <div className="border-t border-accent-soft divide-y divide-accent-soft">
           {items.map(item => (
             <div key={item.id} className={`px-5 py-3.5 flex items-start gap-3 ${item.done ? 'opacity-60' : ''}`}>
               {item.done ? (
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               ) : (
-                <Circle className="w-5 h-5 text-pro-stone flex-shrink-0 mt-0.5" />
+                <Circle className="w-5 h-5 text-accent-soft flex-shrink-0 mt-0.5" />
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-4">
-                  <p className={`text-sm font-medium ${item.done ? 'line-through text-pro-warm-gray' : 'text-pro-charcoal'}`}>
+                  <p className={`text-sm font-medium ${item.done ? 'line-through text-graphite/60' : 'text-graphite'}`}>
                     {item.label}
                   </p>
                   {!item.done && item.href && (
                     <Link
                       to={item.href}
-                      className="text-xs font-medium text-pro-navy hover:text-pro-charcoal whitespace-nowrap flex-shrink-0 border border-pro-stone px-2 py-1 rounded hover:bg-pro-cream transition-colors"
+                      className="text-xs font-medium text-graphite hover:text-graphite whitespace-nowrap flex-shrink-0 border border-accent-soft px-2 py-1 rounded hover:bg-accent-soft transition-colors"
                     >
                       {item.cta}
                     </Link>
                   )}
                 </div>
                 {!item.done && (
-                  <p className="text-xs text-pro-warm-gray mt-0.5">{item.description}</p>
+                  <p className="text-xs text-graphite/60 mt-0.5">{item.description}</p>
                 )}
               </div>
             </div>

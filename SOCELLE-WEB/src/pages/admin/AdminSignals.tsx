@@ -70,7 +70,7 @@ function RankBadge({ rank }: { rank: number }) {
   if (rank === 2) return <span className="text-lg">🥈</span>;
   if (rank === 3) return <span className="text-lg">🥉</span>;
   return (
-    <span className="w-7 h-7 rounded-full bg-pro-stone flex items-center justify-center text-xs font-bold text-pro-charcoal font-sans">
+    <span className="w-7 h-7 rounded-full bg-accent-soft flex items-center justify-center text-xs font-bold text-graphite font-sans">
       {rank}
     </span>
   );
@@ -189,10 +189,10 @@ export default function AdminSignals() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-serif text-pro-navy">
-            Interest Signals<span className="text-pro-gold">.</span>
+          <h1 className="text-3xl font-sans text-graphite">
+            Interest Signals<span className="text-accent">.</span>
           </h1>
-          <p className="text-pro-warm-gray font-sans mt-1">
+          <p className="text-graphite/60 font-sans mt-1">
             Demand signals from resellers and brands — who's getting attention
           </p>
         </div>
@@ -200,7 +200,7 @@ export default function AdminSignals() {
           type="button"
           onClick={loadSignals}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-pro-stone text-pro-charcoal hover:bg-pro-cream disabled:opacity-60 font-sans text-sm transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -210,16 +210,16 @@ export default function AdminSignals() {
       {/* Summary chips */}
       {!loading && (
         <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 bg-white border border-pro-stone rounded-xl px-4 py-2.5">
-            <TrendingUp className="w-4 h-4 text-pro-gold" />
-            <span className="text-sm font-sans text-pro-charcoal">
+          <div className="flex items-center gap-2 bg-white border border-accent-soft rounded-xl px-4 py-2.5">
+            <TrendingUp className="w-4 h-4 text-accent" />
+            <span className="text-sm font-sans text-graphite">
               <strong>{totalBrandSignals}</strong> brand signals across{' '}
               <strong>{brandSignals.length}</strong> brands
             </span>
           </div>
-          <div className="flex items-center gap-2 bg-white border border-pro-stone rounded-xl px-4 py-2.5">
-            <Award className="w-4 h-4 text-pro-gold" />
-            <span className="text-sm font-sans text-pro-charcoal">
+          <div className="flex items-center gap-2 bg-white border border-accent-soft rounded-xl px-4 py-2.5">
+            <Award className="w-4 h-4 text-accent" />
+            <span className="text-sm font-sans text-graphite">
               <strong>{totalBizSignals}</strong> business signals across{' '}
               <strong>{businessSignals.length}</strong> businesses
             </span>
@@ -228,21 +228,21 @@ export default function AdminSignals() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-pro-stone/40 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-accent-soft/40 rounded-xl p-1 w-fit">
         <button
           type="button"
           onClick={() => setTab('brands')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
             tab === 'brands'
-              ? 'bg-white text-pro-navy shadow-sm'
-              : 'text-pro-warm-gray hover:text-pro-charcoal'
+              ? 'bg-white text-graphite shadow-sm'
+              : 'text-graphite/60 hover:text-graphite'
           }`}
         >
           <Building2 className="w-4 h-4" />
           Brand Demand
           {brandSignals.length > 0 && (
             <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
-              tab === 'brands' ? 'bg-pro-navy text-white' : 'bg-pro-stone text-pro-charcoal'
+              tab === 'brands' ? 'bg-graphite text-white' : 'bg-accent-soft text-graphite'
             }`}>
               {brandSignals.length}
             </span>
@@ -253,15 +253,15 @@ export default function AdminSignals() {
           onClick={() => setTab('businesses')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
             tab === 'businesses'
-              ? 'bg-white text-pro-navy shadow-sm'
-              : 'text-pro-warm-gray hover:text-pro-charcoal'
+              ? 'bg-white text-graphite shadow-sm'
+              : 'text-graphite/60 hover:text-graphite'
           }`}
         >
           <Users className="w-4 h-4" />
           Business Pipeline
           {businessSignals.length > 0 && (
             <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
-              tab === 'businesses' ? 'bg-pro-navy text-white' : 'bg-pro-stone text-pro-charcoal'
+              tab === 'businesses' ? 'bg-graphite text-white' : 'bg-accent-soft text-graphite'
             }`}>
               {businessSignals.length}
             </span>
@@ -286,9 +286,9 @@ export default function AdminSignals() {
 function BrandLeaderboard({ rows }: { rows: BrandSignalRow[] }) {
   if (rows.length === 0) {
     return (
-      <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-        <TrendingUp className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-        <p className="text-pro-warm-gray font-sans text-sm">
+      <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+        <TrendingUp className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+        <p className="text-graphite/60 font-sans text-sm">
           No brand interest signals yet. They'll appear here once resellers start browsing and expressing interest.
         </p>
       </div>
@@ -296,13 +296,13 @@ function BrandLeaderboard({ rows }: { rows: BrandSignalRow[] }) {
   }
 
   return (
-    <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-pro-stone bg-pro-cream/50">
-        <p className="text-xs font-bold uppercase tracking-widest text-pro-warm-gray/70 font-sans">
+    <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-accent-soft bg-accent-soft/50">
+        <p className="text-xs font-bold uppercase tracking-widest text-graphite/60/70 font-sans">
           Brand Demand — Sorted by total signals
         </p>
       </div>
-      <div className="divide-y divide-pro-stone">
+      <div className="divide-y divide-accent-soft">
         {rows.map((row, idx) => (
           <div key={row.brand_id} className="flex items-center gap-4 px-5 py-4">
             {/* Rank */}
@@ -311,16 +311,16 @@ function BrandLeaderboard({ rows }: { rows: BrandSignalRow[] }) {
             </div>
 
             {/* Avatar */}
-            <div className="w-10 h-10 rounded-lg bg-pro-navy flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-serif text-lg font-bold">
+            <div className="w-10 h-10 rounded-lg bg-graphite flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-sans text-lg font-bold">
                 {row.brand_name.charAt(0)}
               </span>
             </div>
 
             {/* Info */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-pro-navy font-sans truncate">{row.brand_name}</p>
-              <p className="text-xs text-pro-warm-gray font-sans">/{row.brand_slug}</p>
+              <p className="text-sm font-semibold text-graphite font-sans truncate">{row.brand_name}</p>
+              <p className="text-xs text-graphite/60 font-sans">/{row.brand_slug}</p>
             </div>
 
             {/* Signal pills */}
@@ -329,7 +329,7 @@ function BrandLeaderboard({ rows }: { rows: BrandSignalRow[] }) {
                 icon={Star}
                 label="express interest"
                 count={row.express_interest}
-                color="bg-pro-gold/15 text-amber-700"
+                color="bg-accent/15 text-amber-700"
               />
               <SignalPill
                 icon={Bell}
@@ -341,14 +341,14 @@ function BrandLeaderboard({ rows }: { rows: BrandSignalRow[] }) {
                 icon={Eye}
                 label="page views"
                 count={row.page_view}
-                color="bg-pro-stone text-pro-charcoal"
+                color="bg-accent-soft text-graphite"
               />
             </div>
 
             {/* Total */}
             <div className="flex-shrink-0 text-right ml-3">
-              <p className="text-2xl font-serif text-pro-navy">{row.total}</p>
-              <p className="text-xs text-pro-warm-gray font-sans">signals</p>
+              <p className="text-2xl font-sans text-graphite">{row.total}</p>
+              <p className="text-xs text-graphite/60 font-sans">signals</p>
             </div>
           </div>
         ))}
@@ -362,9 +362,9 @@ function BrandLeaderboard({ rows }: { rows: BrandSignalRow[] }) {
 function BusinessLeaderboard({ rows }: { rows: BusinessSignalRow[] }) {
   if (rows.length === 0) {
     return (
-      <div className="bg-white border border-pro-stone rounded-xl p-12 text-center">
-        <Target className="w-12 h-12 text-pro-stone mx-auto mb-4" />
-        <p className="text-pro-warm-gray font-sans text-sm">
+      <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
+        <Target className="w-12 h-12 text-accent-soft mx-auto mb-4" />
+        <p className="text-graphite/60 font-sans text-sm">
           No business signals yet. Brands can flag businesses as potential fits or target accounts from the brand portal.
         </p>
       </div>
@@ -372,13 +372,13 @@ function BusinessLeaderboard({ rows }: { rows: BusinessSignalRow[] }) {
   }
 
   return (
-    <div className="bg-white border border-pro-stone rounded-xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-pro-stone bg-pro-cream/50">
-        <p className="text-xs font-bold uppercase tracking-widest text-pro-warm-gray/70 font-sans">
+    <div className="bg-white border border-accent-soft rounded-xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-accent-soft bg-accent-soft/50">
+        <p className="text-xs font-bold uppercase tracking-widest text-graphite/60/70 font-sans">
           Business Pipeline — Sorted by brand attention
         </p>
       </div>
-      <div className="divide-y divide-pro-stone">
+      <div className="divide-y divide-accent-soft">
         {rows.map((row, idx) => {
           const location = [row.city, row.state].filter(Boolean).join(', ');
           const typeLabel = row.business_type
@@ -392,21 +392,21 @@ function BusinessLeaderboard({ rows }: { rows: BusinessSignalRow[] }) {
               </div>
 
               {/* Avatar */}
-              <div className="w-10 h-10 rounded-lg bg-pro-charcoal flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-serif text-lg font-bold">
+              <div className="w-10 h-10 rounded-lg bg-graphite flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-sans text-lg font-bold">
                   {row.business_name.charAt(0)}
                 </span>
               </div>
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-pro-navy font-sans truncate">{row.business_name}</p>
+                <p className="text-sm font-semibold text-graphite font-sans truncate">{row.business_name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   {typeLabel && (
-                    <span className="text-xs text-pro-warm-gray font-sans">{typeLabel}</span>
+                    <span className="text-xs text-graphite/60 font-sans">{typeLabel}</span>
                   )}
                   {location && (
-                    <span className="flex items-center gap-1 text-xs text-pro-warm-gray font-sans">
+                    <span className="flex items-center gap-1 text-xs text-graphite/60 font-sans">
                       {typeLabel && <span>·</span>}
                       <MapPin className="w-3 h-3" />
                       {location}
@@ -427,7 +427,7 @@ function BusinessLeaderboard({ rows }: { rows: BusinessSignalRow[] }) {
                   icon={Target}
                   label="target acct"
                   count={row.target_account}
-                  color="bg-pro-gold/15 text-amber-700"
+                  color="bg-accent/15 text-amber-700"
                 />
                 <SignalPill
                   icon={Users}
@@ -439,8 +439,8 @@ function BusinessLeaderboard({ rows }: { rows: BusinessSignalRow[] }) {
 
               {/* Total */}
               <div className="flex-shrink-0 text-right ml-3">
-                <p className="text-2xl font-serif text-pro-navy">{row.total}</p>
-                <p className="text-xs text-pro-warm-gray font-sans">signals</p>
+                <p className="text-2xl font-sans text-graphite">{row.total}</p>
+                <p className="text-xs text-graphite/60 font-sans">signals</p>
               </div>
             </div>
           );
@@ -454,20 +454,20 @@ function BusinessLeaderboard({ rows }: { rows: BusinessSignalRow[] }) {
 
 function LeaderboardSkeleton() {
   return (
-    <div className="bg-white border border-pro-stone rounded-xl overflow-hidden animate-pulse">
-      <div className="px-5 py-4 border-b border-pro-stone bg-pro-cream/50">
-        <div className="h-3 bg-pro-stone rounded w-48" />
+    <div className="bg-white border border-accent-soft rounded-xl overflow-hidden animate-pulse">
+      <div className="px-5 py-4 border-b border-accent-soft bg-accent-soft/50">
+        <div className="h-3 bg-accent-soft rounded w-48" />
       </div>
-      <div className="divide-y divide-pro-stone">
+      <div className="divide-y divide-accent-soft">
         {[...Array(5)].map((_, i) => (
           <div key={i} className="flex items-center gap-4 px-5 py-4">
-            <div className="w-8 h-8 rounded-full bg-pro-stone flex-shrink-0" />
-            <div className="w-10 h-10 rounded-lg bg-pro-stone flex-shrink-0" />
+            <div className="w-8 h-8 rounded-full bg-accent-soft flex-shrink-0" />
+            <div className="w-10 h-10 rounded-lg bg-accent-soft flex-shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-pro-stone rounded w-1/3" />
-              <div className="h-3 bg-pro-stone rounded w-1/4" />
+              <div className="h-4 bg-accent-soft rounded w-1/3" />
+              <div className="h-3 bg-accent-soft rounded w-1/4" />
             </div>
-            <div className="w-12 h-8 bg-pro-stone rounded" />
+            <div className="w-12 h-8 bg-accent-soft rounded" />
           </div>
         ))}
       </div>
