@@ -4,6 +4,7 @@
  */
 
 import { vi } from 'vitest';
+import '@testing-library/jest-dom';
 
 // Stub Vite's import.meta.env
 Object.defineProperty(import.meta, 'env', {

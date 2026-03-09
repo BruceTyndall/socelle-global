@@ -186,6 +186,29 @@ export default function Pricing() {
             ]
           }
         `}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: 'Socelle Plans',
+          description: 'Intelligence subscription tiers for professional beauty operators and brands.',
+          url: 'https://socelle.com/plans',
+          numberOfItems: TIERS.length,
+          itemListElement: TIERS.map((tier, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+              '@type': 'Product',
+              name: `Socelle ${tier.name}`,
+              description: tier.description,
+              offers: {
+                '@type': 'Offer',
+                price: tier.price === 'Free' ? '0' : tier.price === 'Custom' ? undefined : tier.price.replace('$', ''),
+                priceCurrency: 'USD',
+                ...(tier.price !== 'Custom' && { availability: 'https://schema.org/InStock' }),
+              },
+            },
+          })),
+        })}</script>
       </Helmet>
       <MainNav />
 

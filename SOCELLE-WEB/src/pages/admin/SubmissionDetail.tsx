@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeft, Inbox, CheckCircle, Clock, XCircle, Eye, User,
   FileText, Calendar, AlertCircle, ChevronDown, ChevronUp, Save
@@ -52,12 +53,8 @@ const STATUS_OPTIONS = [
 export default function SubmissionDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [submission, setSubmission] = useState<Submission | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -65,18 +62,10 @@ export default function SubmissionDetail() {
   const [editNotes, setEditNotes] = useState('');
   const [showAnalysis, setShowAnalysis] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      loadSubmission();
-    }
-  }, [id]);
-
-  const loadSubmission = async () => {
-    if (!id) return;
-
-    try {
-      setLoading(true);
-      setError(null);
+  const { data: queryData, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['admin-submission', id],
+    queryFn: async () => {
+      if (!id) throw new Error('No submission ID');
 
       const { data, error: fetchError } = await supabase
         .from('plan_submissions')
@@ -86,10 +75,6 @@ export default function SubmissionDetail() {
 
       if (fetchError) throw fetchError;
       if (!data) throw new Error('Submission not found');
-
-      setSubmission(data);
-      setEditStatus(data.submission_status);
-      setEditNotes(data.notes || '');
 
       // Mark as viewed
       await supabase
@@ -104,8 +89,6 @@ export default function SubmissionDetail() {
         .eq('id', data.user_id)
         .maybeSingle();
 
-      if (profileData) setUserProfile(profileData);
-
       // Fetch plans associated with this user
       const { data: plansData } = await supabase
         .from('plans')
@@ -114,13 +97,28 @@ export default function SubmissionDetail() {
         .order('created_at', { ascending: false })
         .limit(10);
 
-      setPlans(plansData || []);
-    } catch (err: any) {
-      console.error('Error loading submission:', err);
-      setError(err.message || 'Failed to load submission');
-    } finally {
-      setLoading(false);
-    }
+      return {
+        submission: data as Submission,
+        userProfile: (profileData as UserProfile) || null,
+        plans: (plansData as Plan[]) || [],
+      };
+    },
+    enabled: !!id,
+  });
+
+  const submission = queryData?.submission ?? null;
+  const userProfile = queryData?.userProfile ?? null;
+  const plans = queryData?.plans ?? [];
+  const error = queryError ? (queryError as Error).message : null;
+
+  // Sync edit state when submission loads
+  if (submission && editStatus === '' && !loading) {
+    setEditStatus(submission.submission_status);
+    setEditNotes(submission.notes || '');
+  }
+
+  const loadSubmission = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-submission', id] });
   };
 
   const handleSave = async () => {
@@ -141,7 +139,7 @@ export default function SubmissionDetail() {
 
       if (updateError) throw updateError;
 
-      setSubmission(prev => prev ? { ...prev, submission_status: editStatus, notes: editNotes } : prev);
+      queryClient.invalidateQueries({ queryKey: ['admin-submission', id] });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err: any) {

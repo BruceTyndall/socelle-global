@@ -25,7 +25,8 @@
  *   </PaywallGate>
  */
 
-import { useEffect, useState, ReactNode } from 'react';
+import { ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import { useSubscription } from '../lib/useSubscription';
@@ -87,36 +88,30 @@ interface PaywallGateProps {
 // ── Hook: gap analysis count ───────────────────────────────────────────────────
 
 function useMonthlyGapCount(userId: string | null) {
-  const [count, setCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: count = 0, isLoading: loading } = useQuery({
+    queryKey: ['monthly-gap-count', userId],
+    queryFn: async () => {
+      if (!userId) return 0;
 
-  useEffect(() => {
-    if (!userId) {
-      setCount(0);
-      setLoading(false);
-      return;
-    }
+      // Count plans created this calendar month — each plan = 1 gap analysis
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
 
-    // Count plans created this calendar month — each plan = 1 gap analysis
-    const monthStart = new Date();
-    monthStart.setDate(1);
-    monthStart.setHours(0, 0, 0, 0);
+      const { count: c, error } = await supabase
+        .from('plans')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .gte('created_at', monthStart.toISOString());
 
-    supabase
-      .from('plans')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', userId)
-      .gte('created_at', monthStart.toISOString())
-      .then(({ count: c, error }) => {
-        if (error) {
-          console.warn('PaywallGate: gap count fetch error', error.message);
-          setCount(0);
-        } else {
-          setCount(c ?? 0);
-        }
-        setLoading(false);
-      });
-  }, [userId]);
+      if (error) {
+        console.warn('PaywallGate: gap count fetch error', error.message);
+        return 0;
+      }
+      return c ?? 0;
+    },
+    enabled: !!userId,
+  });
 
   return { count, loading };
 }

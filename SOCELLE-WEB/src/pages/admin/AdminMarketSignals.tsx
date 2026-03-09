@@ -2,7 +2,7 @@
 // Admin UI for curating Intelligence Hub market signals.
 // Create, activate/deactivate, and expire signals surfaced publicly.
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Plus,
   RefreshCw,
@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   BarChart3,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -112,8 +113,7 @@ const BLANK: Omit<MarketSignalRow, 'id' | 'created_at' | 'updated_at'> = {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminMarketSignals() {
-  const [signals, setSignals] = useState<MarketSignalRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -127,23 +127,18 @@ export default function AdminMarketSignals() {
 
   // ── Fetch ────────────────────────────────────────────────────────
 
-  const fetchSignals = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('market_signals')
-      .select('*')
-      .order('display_order', { ascending: true })
-      .order('created_at', { ascending: false });
-    if (err) {
-      setError(err.message);
-    } else {
-      setSignals((data ?? []) as MarketSignalRow[]);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetchSignals(); }, [fetchSignals]);
+  const { data: signals = [], isLoading: loading, refetch: fetchSignals } = useQuery({
+    queryKey: ['admin-market-signals'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('market_signals')
+        .select('*')
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (err) throw new Error(err.message);
+      return (data ?? []) as MarketSignalRow[];
+    },
+  });
 
   // ── Toggle active ────────────────────────────────────────────────
 
@@ -153,7 +148,7 @@ export default function AdminMarketSignals() {
       .update({ active: !current })
       .eq('id', id);
     if (err) { showToast('err', err.message); return; }
-    setSignals((prev) => prev.map((s) => s.id === id ? { ...s, active: !current } : s));
+    queryClient.invalidateQueries({ queryKey: ['admin-market-signals'] });
     showToast('ok', current ? 'Signal deactivated' : 'Signal activated');
   };
 
@@ -165,7 +160,7 @@ export default function AdminMarketSignals() {
       .update({ active: false, expires_at: new Date().toISOString() })
       .eq('id', id);
     if (err) { showToast('err', err.message); return; }
-    setSignals((prev) => prev.map((s) => s.id === id ? { ...s, active: false, expires_at: new Date().toISOString() } : s));
+    queryClient.invalidateQueries({ queryKey: ['admin-market-signals'] });
     showToast('ok', 'Signal expired');
   };
 
@@ -192,7 +187,7 @@ export default function AdminMarketSignals() {
     showToast('ok', 'Signal created');
     setShowForm(false);
     setForm({ ...BLANK });
-    fetchSignals();
+    queryClient.invalidateQueries({ queryKey: ['admin-market-signals'] });
   };
 
   // ── Render ───────────────────────────────────────────────────────

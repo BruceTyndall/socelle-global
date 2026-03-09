@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Plus,
   Pencil,
@@ -7,6 +7,7 @@ import {
   AlertCircle,
   GitMerge,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
 
@@ -49,19 +50,15 @@ const TYPE_STYLES: Record<string, string> = {
 };
 
 export default function AdminIngredientInteractions() {
-  const [interactions, setInteractions] = useState<Interaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<InteractionForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
-  const fetchInteractions = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: interactions = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['admin-ingredient-interactions'],
+    queryFn: async () => {
       const { data, error: err } = await supabase
         .from('ingredient_interactions')
         .select('id, ingredient_id_a, ingredient_id_b, interaction_type, explanation, source')
@@ -72,7 +69,7 @@ export default function AdminIngredientInteractions() {
 
       // Resolve ingredient names
       const allIds = new Set<string>();
-      (data ?? []).forEach((i) => { allIds.add(i.ingredient_id_a); allIds.add(i.ingredient_id_b); });
+      (data ?? []).forEach((i: { ingredient_id_a: string; ingredient_id_b: string }) => { allIds.add(i.ingredient_id_a); allIds.add(i.ingredient_id_b); });
 
       let nameMap: Record<string, string> = {};
       if (allIds.size > 0) {
@@ -80,26 +77,19 @@ export default function AdminIngredientInteractions() {
           .from('ingredients')
           .select('id, inci_name')
           .in('id', Array.from(allIds));
-        if (ings) nameMap = Object.fromEntries(ings.map((i) => [i.id, i.inci_name]));
+        if (ings) nameMap = Object.fromEntries(ings.map((i: { id: string; inci_name: string }) => [i.id, i.inci_name]));
       }
 
-      setInteractions(
-        (data ?? []).map((i) => ({
-          ...i,
-          name_a: nameMap[i.ingredient_id_a] ?? 'Unknown',
-          name_b: nameMap[i.ingredient_id_b] ?? 'Unknown',
-        }))
-      );
-      setIsLive(true);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load interactions');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return (data ?? []).map((i: Record<string, unknown>) => ({
+        ...i,
+        name_a: nameMap[i.ingredient_id_a as string] ?? 'Unknown',
+        name_b: nameMap[i.ingredient_id_b as string] ?? 'Unknown',
+      })) as Interaction[];
+    },
+  });
 
-  useEffect(() => { fetchInteractions(); }, [fetchInteractions]);
+  const isLive = !queryError;
+  const error = queryError ? (queryError as Error).message : null;
 
   const openCreate = () => {
     setEditId(null);
@@ -164,7 +154,7 @@ export default function AdminIngredientInteractions() {
 
       setShowForm(false);
       setEditId(null);
-      fetchInteractions();
+      queryClient.invalidateQueries({ queryKey: ['admin-ingredient-interactions'] });
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Save failed');
     } finally {
@@ -176,10 +166,10 @@ export default function AdminIngredientInteractions() {
     if (!confirm('Delete this interaction?')) return;
     const { error: err } = await supabase.from('ingredient_interactions').delete().eq('id', id);
     if (err) alert(err.message);
-    else fetchInteractions();
+    else queryClient.invalidateQueries({ queryKey: ['admin-ingredient-interactions'] });
   };
 
-  if (error) return <ErrorState message={error} onRetry={fetchInteractions} />;
+  if (error) return <ErrorState message={error} />;
 
   return (
     <div className="space-y-6">

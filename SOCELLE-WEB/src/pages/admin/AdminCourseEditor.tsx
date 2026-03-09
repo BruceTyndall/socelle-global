@@ -3,8 +3,9 @@
  * Data source: courses, course_modules, course_lessons, quizzes, quiz_questions (LIVE)
  * Route: /admin/courses/:id/edit
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeft,
   Save,
@@ -113,11 +114,11 @@ const LESSON_ICONS: Record<string, React.ElementType> = {
 export default function AdminCourseEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isNew = id === 'new';
 
   const [form, setForm] = useState<CourseForm>(EMPTY_COURSE);
   const [modules, setModules] = useState<ModuleForm[]>([]);
-  const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeModuleIndex, setActiveModuleIndex] = useState<number | null>(null);
@@ -128,10 +129,9 @@ export default function AdminCourseEditor() {
 
   /* ── Load existing course ──────────────────────────────────────── */
 
-  const loadCourse = useCallback(async () => {
-    if (isNew || !isSupabaseConfigured) { setLoading(false); return; }
-
-    try {
+  const { isLoading: loading } = useQuery({
+    queryKey: ['admin-course-editor', id],
+    queryFn: async () => {
       const { data, error: fetchError } = await supabase
         .from('courses')
         .select(`
@@ -144,10 +144,10 @@ export default function AdminCourseEditor() {
             )
           )
         `)
-        .eq('id', id)
+        .eq('id', id!)
         .single();
 
-      if (fetchError) { setError(fetchError.message); return; }
+      if (fetchError) throw new Error(fetchError.message);
 
       const c = data as Record<string, unknown>;
       setForm({
@@ -197,14 +197,10 @@ export default function AdminCourseEditor() {
         }));
 
       setModules(mods);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load course');
-    } finally {
-      setLoading(false);
-    }
-  }, [id, isNew]);
-
-  useEffect(() => { loadCourse(); }, [loadCourse]);
+      return data;
+    },
+    enabled: isSupabaseConfigured && !isNew && !!id,
+  });
 
   /* ── Save ──────────────────────────────────────────────────────── */
 
@@ -294,7 +290,7 @@ export default function AdminCourseEditor() {
       if (isNew) {
         navigate(`/admin/courses/${courseId}/edit`, { replace: true });
       } else {
-        loadCourse();
+        queryClient.invalidateQueries({ queryKey: ['admin-course-editor', id] });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed');

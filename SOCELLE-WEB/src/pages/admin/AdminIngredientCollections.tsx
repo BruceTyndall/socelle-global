@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Plus,
   Pencil,
@@ -8,6 +8,7 @@ import {
   Layers,
   Star,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
 
@@ -46,19 +47,15 @@ const COLLECTION_TYPES = [
 ];
 
 export default function AdminIngredientCollections() {
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<CollectionForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
-  const fetchCollections = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: collections = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['admin-ingredient-collections'],
+    queryFn: async () => {
       const { data, error: err } = await supabase
         .from('ingredient_collections')
         .select('id, name, description, slug, collection_type, is_featured, created_at')
@@ -67,29 +64,24 @@ export default function AdminIngredientCollections() {
       if (err) throw err;
 
       // Get item counts
-      const ids = (data ?? []).map((c) => c.id);
-      let counts: Record<string, number> = {};
+      const ids = (data ?? []).map((c: { id: string }) => c.id);
+      const counts: Record<string, number> = {};
       if (ids.length > 0) {
         const { data: items } = await supabase
           .from('ingredient_collection_items')
           .select('collection_id')
           .in('collection_id', ids);
-        (items ?? []).forEach((item) => {
+        (items ?? []).forEach((item: { collection_id: string }) => {
           counts[item.collection_id] = (counts[item.collection_id] || 0) + 1;
         });
       }
 
-      setCollections((data ?? []).map((c) => ({ ...c, item_count: counts[c.id] || 0 })));
-      setIsLive(true);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load collections');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return (data ?? []).map((c: Record<string, unknown>) => ({ ...c, item_count: counts[c.id as string] || 0 })) as Collection[];
+    },
+  });
 
-  useEffect(() => { fetchCollections(); }, [fetchCollections]);
+  const isLive = !queryError && collections.length >= 0;
+  const error = queryError ? (queryError as Error).message : null;
 
   const openCreate = () => {
     setEditId(null);
@@ -130,7 +122,7 @@ export default function AdminIngredientCollections() {
 
       setShowForm(false);
       setEditId(null);
-      fetchCollections();
+      queryClient.invalidateQueries({ queryKey: ['admin-ingredient-collections'] });
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Save failed');
     } finally {
@@ -142,16 +134,16 @@ export default function AdminIngredientCollections() {
     if (!confirm('Delete this collection? Items will be removed.')) return;
     const { error: err } = await supabase.from('ingredient_collections').delete().eq('id', id);
     if (err) alert(err.message);
-    else fetchCollections();
+    else queryClient.invalidateQueries({ queryKey: ['admin-ingredient-collections'] });
   };
 
   const toggleFeatured = async (id: string, current: boolean) => {
     const { error: err } = await supabase.from('ingredient_collections').update({ is_featured: !current }).eq('id', id);
     if (err) alert(err.message);
-    else fetchCollections();
+    else queryClient.invalidateQueries({ queryKey: ['admin-ingredient-collections'] });
   };
 
-  if (error) return <ErrorState message={error} onRetry={fetchCollections} />;
+  if (error) return <ErrorState message={error} />;
 
   return (
     <div className="space-y-6">

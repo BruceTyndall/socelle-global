@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { StatCard, Badge, Table, TableHead, TableBody, TableRow, Th, Td, EmptyState } from '../../../components/ui';
 import { supabase } from '../../../lib/supabase';
 
@@ -25,37 +25,32 @@ const STATUS: Record<string, { variant: 'green' | 'amber' | 'gray' | 'red'; labe
 
 export default function HubOrders() {
   const { id: brandId } = useParams<{ id: string }>();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!brandId) return;
-    (async () => {
-      try {
-        const { data } = await supabase
-          .from('orders')
-          .select(`
-            id, status, total_amount, created_at,
-            businesses!inner(name),
-            order_items(id)
-          `)
-          .eq('brand_id', brandId)
-          .order('created_at', { ascending: false })
-          .limit(100);
+  const { data: orders = [], isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-hub-orders', brandId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('orders')
+        .select(`
+          id, status, total_amount, created_at,
+          businesses!inner(name),
+          order_items(id)
+        `)
+        .eq('brand_id', brandId!)
+        .order('created_at', { ascending: false })
+        .limit(100);
 
-        setOrders((data ?? []).map((o: any) => ({
-          id: o.id,
-          status: o.status ?? 'pending',
-          total_amount: o.total_amount,
-          created_at: o.created_at,
-          business_name: (o.businesses as { name: string })?.name ?? 'Unknown',
-          item_count: Array.isArray(o.order_items) ? o.order_items.length : 0,
-        })));
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [brandId]);
+      return (data ?? []).map((o: any) => ({
+        id: o.id,
+        status: o.status ?? 'pending',
+        total_amount: o.total_amount,
+        created_at: o.created_at,
+        business_name: (o.businesses as { name: string })?.name ?? 'Unknown',
+        item_count: Array.isArray(o.order_items) ? o.order_items.length : 0,
+      }));
+    },
+    enabled: !!brandId,
+  });
 
   if (loading) {
     return (

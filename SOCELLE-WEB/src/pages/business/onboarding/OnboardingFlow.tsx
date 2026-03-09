@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '../../../lib/auth';
+import { supabase } from '../../../lib/supabase';
 import OnboardingWelcome from './OnboardingWelcome';
 import OnboardingRole from './OnboardingRole';
 import type { OnboardingRoleValue } from './OnboardingRole';
@@ -32,7 +34,42 @@ export default function OnboardingFlow() {
     );
   }, []);
 
+  // ── Persist onboarding selections to Supabase ─────────────────────
+  const saveOnboardingMutation = useMutation({
+    mutationFn: async (payload: {
+      role: OnboardingRoleValue | null;
+      interests: InterestValue[];
+    }) => {
+      if (!user?.id) throw new Error('Not authenticated');
+
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({
+          onboarding_role: payload.role,
+          onboarding_interests: payload.interests,
+          onboarding_completed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      if (error) {
+        // 42P01 = table/column missing — fall back to localStorage only
+        if (error.code === '42P01' || error.message.toLowerCase().includes('does not exist')) {
+          console.warn('[onboarding] Supabase column not yet available, saving to localStorage only.');
+          return;
+        }
+        // 42703 = column does not exist — same fallback
+        if (error.code === '42703') {
+          console.warn('[onboarding] Onboarding columns not yet migrated, saving to localStorage only.');
+          return;
+        }
+        throw error;
+      }
+    },
+  });
+
   const handleFinish = useCallback(() => {
+    // Always persist to localStorage as a fast fallback
     try {
       localStorage.setItem(
         STORAGE_KEY,
@@ -45,7 +82,13 @@ export default function OnboardingFlow() {
     } catch {
       // localStorage unavailable — silently continue
     }
-  }, [selectedRole, selectedInterests]);
+
+    // Persist to Supabase (fire-and-forget — mutation handles errors gracefully)
+    saveOnboardingMutation.mutate({
+      role: selectedRole,
+      interests: selectedInterests,
+    });
+  }, [selectedRole, selectedInterests, saveOnboardingMutation]);
 
   const renderStep = () => {
     switch (currentStep) {

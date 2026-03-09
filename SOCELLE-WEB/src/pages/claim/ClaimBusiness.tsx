@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
@@ -15,9 +16,6 @@ export default function ClaimBusiness() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [business, setBusiness] = useState<BusinessRow | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [claiming, setClaiming] = useState(false);
   const [claimDone, setClaimDone] = useState(false);
   const [email, setEmail] = useState('');
@@ -25,32 +23,29 @@ export default function ClaimBusiness() {
   const [signUp, setSignUp] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
+  const [claimError, setClaimError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!slug) return;
-    (async () => {
-      setLoading(true);
-      setError(null);
+  const { data: queryResult, isLoading: loading } = useQuery({
+    queryKey: ['claim-business', slug],
+    queryFn: async () => {
       const { data, error: e } = await supabase
         .from('businesses')
         .select('id, name, slug, verification_status')
-        .eq('slug', slug)
+        .eq('slug', slug!)
         .maybeSingle();
-      if (e) {
-        setError(e.message);
-        setBusiness(null);
-      } else if (!data) {
-        setError('Business not found.');
-        setBusiness(null);
-      } else {
-        setBusiness(data as BusinessRow);
-        if ((data as BusinessRow).verification_status !== 'unverified') {
-          setError('This business is already claimed or verified.');
-        }
-      }
-      setLoading(false);
-    })();
-  }, [slug]);
+      if (e) return { business: null, error: e.message };
+      if (!data) return { business: null, error: 'Business not found.' };
+      const biz = data as BusinessRow;
+      const err = biz.verification_status !== 'unverified'
+        ? 'This business is already claimed or verified.'
+        : null;
+      return { business: biz, error: err };
+    },
+    enabled: !!slug,
+  });
+
+  const business = queryResult?.business ?? null;
+  const error = claimError ?? queryResult?.error ?? null;
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +70,7 @@ export default function ClaimBusiness() {
   const handleClaim = async () => {
     if (!business || business.verification_status !== 'unverified') return;
     setClaiming(true);
-    setError(null);
+    setClaimError(null);
     try {
       const { data, error: rpcError } = await supabase.rpc('claim_business', { p_business_id: business.id });
       const result = data as { ok?: boolean; error?: string } | null;
@@ -84,7 +79,7 @@ export default function ClaimBusiness() {
       setClaimDone(true);
       setTimeout(() => navigate('/portal/claim/review', { replace: true }), 1500);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Claim failed.');
+      setClaimError(err instanceof Error ? err.message : 'Claim failed.');
     } finally {
       setClaiming(false);
     }

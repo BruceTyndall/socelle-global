@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2, Edit2, Save, X, Sparkles, CheckCircle, AlertCircle, FileEdit, AlertTriangle, Upload } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { matchFeaturedToCanonical } from '../lib/dataIntegrityRules';
 import ProtocolCompletionEditor from './ProtocolCompletionEditor';
@@ -28,16 +29,12 @@ interface Brand {
 }
 
 export default function ProtocolsView() {
-  const [protocols, setProtocols] = useState<Protocol[]>([]);
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [currentMonthData, setCurrentMonthData] = useState<MarketingMonth | null>(null);
+  const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [completionEditorId, setCompletionEditorId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'incomplete' | 'steps_complete' | 'fully_complete'>('all');
   const [filterBrand, setFilterBrand] = useState<string>('all');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     protocol_name: '',
     category: '',
@@ -47,60 +44,37 @@ export default function ProtocolsView() {
     contraindications: '',
   });
 
-  useEffect(() => {
-    loadInitialData();
-  }, []);
+  interface ProtocolsData {
+    protocols: Protocol[];
+    brands: Brand[];
+    currentMonthData: MarketingMonth | null;
+  }
 
-  const loadInitialData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await Promise.all([
-        loadProtocols(),
-        loadBrands(),
-        loadCurrentMonthMarketing()
+  const { data: queryResult, isLoading: loading, error: queryError } = useQuery<ProtocolsData>({
+    queryKey: ['protocols-view'],
+    queryFn: async () => {
+      const [protocolsRes, brandsRes, marketingRes] = await Promise.all([
+        supabase.from('canonical_protocols').select('*').order('created_at', { ascending: false }),
+        supabase.from('brands').select('id, name, slug').order('name'),
+        supabase.from('marketing_calendar').select('month, month_name, theme, featured_protocols')
+          .eq('year', 2026).eq('month', new Date().getMonth() + 1).maybeSingle(),
       ]);
-    } catch (err: any) {
-      console.error('Error loading data:', err);
-      setError(err.message || 'Failed to load data');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const loadBrands = async () => {
-    const { data, error: brandsError } = await supabase
-      .from('brands')
-      .select('id, name, slug')
-      .order('name');
+      if (protocolsRes.error) throw protocolsRes.error;
+      if (brandsRes.error) throw brandsRes.error;
 
-    if (brandsError) throw brandsError;
-    if (data) setBrands(data);
-  };
+      return {
+        protocols: (protocolsRes.data || []) as Protocol[],
+        brands: (brandsRes.data || []) as Brand[],
+        currentMonthData: (marketingRes.data as MarketingMonth | null) ?? null,
+      };
+    },
+  });
 
-  const loadCurrentMonthMarketing = async () => {
-    const currentMonth = new Date().getMonth() + 1;
-    const { data } = await supabase
-      .from('marketing_calendar')
-      .select('month, month_name, theme, featured_protocols')
-      .eq('year', 2026)
-      .eq('month', currentMonth)
-      .maybeSingle();
-
-    if (data) {
-      setCurrentMonthData(data);
-    }
-  };
-
-  const loadProtocols = async () => {
-    const { data, error: protocolsError } = await supabase
-      .from('canonical_protocols')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (protocolsError) throw protocolsError;
-    if (data) setProtocols(data);
-  };
+  const protocols = queryResult?.protocols ?? [];
+  const brands = queryResult?.brands ?? [];
+  const currentMonthData = queryResult?.currentMonthData ?? null;
+  const error = queryError ? (queryError as Error).message : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +97,7 @@ export default function ProtocolsView() {
       if (!error) {
         setEditingId(null);
         resetForm();
-        loadProtocols();
+        queryClient.invalidateQueries({ queryKey: ['protocols-view'] });
       }
     } else {
       const { error } = await supabase
@@ -133,7 +107,7 @@ export default function ProtocolsView() {
       if (!error) {
         setIsAdding(false);
         resetForm();
-        loadProtocols();
+        queryClient.invalidateQueries({ queryKey: ['protocols-view'] });
       }
     }
   };
@@ -153,7 +127,7 @@ export default function ProtocolsView() {
   const handleDelete = async (id: string) => {
     if (confirm('Delete this protocol?')) {
       await supabase.from('canonical_protocols').delete().eq('id', id);
-      loadProtocols();
+      queryClient.invalidateQueries({ queryKey: ['protocols-view'] });
     }
   };
 

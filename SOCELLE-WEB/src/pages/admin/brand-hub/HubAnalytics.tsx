@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { TrendingUp, DollarSign, ShoppingBag, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { StatCard, Card, CardHeader, CardTitle } from '../../../components/ui';
 import { supabase } from '../../../lib/supabase';
 
@@ -26,57 +26,53 @@ function buildMonthLabel(ym: string): string {
 
 export default function HubAnalytics() {
   const { id: brandId } = useParams<{ id: string }>();
-  const [data, setData] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!brandId) return;
-    (async () => {
-      try {
-        const { data: orders } = await supabase
-          .from('orders')
-          .select('total_amount, business_id, created_at')
-          .eq('brand_id', brandId)
-          .not('status', 'eq', 'cancelled');
+  const { data, isLoading: loading } = useQuery<AnalyticsData | null>({
+    queryKey: ['admin', 'brand-hub-analytics', brandId],
+    queryFn: async () => {
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('total_amount, business_id, created_at')
+        .eq('brand_id', brandId!)
+        .not('status', 'eq', 'cancelled');
 
-        const rows = orders ?? [];
+      const rows = orders ?? [];
 
-        // Monthly buckets (last 12 months)
-        const bucketMap = new Map<string, MonthBucket>();
-        const now = new Date();
-        for (let i = 11; i >= 0; i--) {
-          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-          bucketMap.set(key, { month: key, label: buildMonthLabel(key), revenue: 0, orders: 0 });
-        }
-
-        let totalRevenue = 0;
-        const uniqueBiz = new Set<string>();
-
-        for (const o of rows) {
-          const d = new Date(o.created_at);
-          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-          totalRevenue += o.total_amount ?? 0;
-          if (o.business_id) uniqueBiz.add(o.business_id);
-          if (bucketMap.has(key)) {
-            const b = bucketMap.get(key)!;
-            b.revenue += o.total_amount ?? 0;
-            b.orders  += 1;
-          }
-        }
-
-        setData({
-          totalRevenue,
-          totalOrders: rows.length,
-          uniqueRetailers: uniqueBiz.size,
-          avgOrderValue: rows.length > 0 ? Math.round(totalRevenue / rows.length) : 0,
-          monthly: Array.from(bucketMap.values()),
-        });
-      } finally {
-        setLoading(false);
+      // Monthly buckets (last 12 months)
+      const bucketMap = new Map<string, MonthBucket>();
+      const now = new Date();
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        bucketMap.set(key, { month: key, label: buildMonthLabel(key), revenue: 0, orders: 0 });
       }
-    })();
-  }, [brandId]);
+
+      let totalRevenue = 0;
+      const uniqueBiz = new Set<string>();
+
+      for (const o of rows) {
+        const d = new Date(o.created_at);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        totalRevenue += o.total_amount ?? 0;
+        if (o.business_id) uniqueBiz.add(o.business_id);
+        if (bucketMap.has(key)) {
+          const b = bucketMap.get(key)!;
+          b.revenue += o.total_amount ?? 0;
+          b.orders  += 1;
+        }
+      }
+
+      return {
+        totalRevenue,
+        totalOrders: rows.length,
+        uniqueRetailers: uniqueBiz.size,
+        avgOrderValue: rows.length > 0 ? Math.round(totalRevenue / rows.length) : 0,
+        monthly: Array.from(bucketMap.values()),
+      };
+    },
+    enabled: !!brandId,
+    initialData: null,
+  });
 
   if (loading) {
     return (

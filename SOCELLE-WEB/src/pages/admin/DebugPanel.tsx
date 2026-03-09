@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Bug, Copy, CheckCircle, AlertCircle, Database, User, Shield } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 
@@ -10,119 +11,71 @@ interface QueryResult {
   isRLSError?: boolean;
 }
 
+interface DbTestResults {
+  brandsResult: QueryResult | null;
+  protocolsResult: QueryResult | null;
+  productsResult: QueryResult | null;
+}
+
+async function runSingleTest(table: string, selectQuery: string, opts?: { count?: boolean; limit?: number }): Promise<QueryResult> {
+  try {
+    if (opts?.count) {
+      const { count, error } = await supabase
+        .from(table)
+        .select('*', { count: 'exact', head: true });
+
+      if (error) {
+        const isRLS = error.code === 'PGRST301' ||
+                     error.message?.toLowerCase().includes('permission') ||
+                     error.message?.toLowerCase().includes('rls');
+        return { success: false, error: error.message, isRLSError: isRLS };
+      }
+      return { success: true, data: { count: count || 0 } };
+    }
+
+    const { data, error } = await supabase
+      .from(table)
+      .select(selectQuery)
+      .order('name')
+      .limit(opts?.limit ?? 3);
+
+    if (error) {
+      const isRLS = error.code === 'PGRST301' ||
+                   error.message?.toLowerCase().includes('permission') ||
+                   error.message?.toLowerCase().includes('rls');
+      return { success: false, error: error.message, isRLSError: isRLS };
+    }
+    return { success: true, data: { count: data?.length || 0, sample: data || [] } };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Unknown error' };
+  }
+}
+
 export default function DebugPanel() {
   const { user, profile, session, loading: authLoading } = useAuth();
-  const [brandsResult, setBrandsResult] = useState<QueryResult | null>(null);
-  const [protocolsResult, setProtocolsResult] = useState<QueryResult | null>(null);
-  const [productsResult, setProductsResult] = useState<QueryResult | null>(null);
   const [copied, setCopied] = useState(false);
-  const [testing, setTesting] = useState(false);
 
   const isSupabaseConfigured = !!(
     import.meta.env.VITE_SUPABASE_URL &&
     import.meta.env.VITE_SUPABASE_ANON_KEY
   );
 
-  useEffect(() => {
-    if (!authLoading && user) {
-      runDatabaseTests();
-    }
-  }, [authLoading, user]);
+  const { data: testResults, isLoading: testing, refetch: runDatabaseTests } = useQuery<DbTestResults>({
+    queryKey: ['admin', 'debug-panel-tests'],
+    queryFn: async () => {
+      const [brandsResult, protocolsResult, productsResult] = await Promise.all([
+        runSingleTest('brands', 'id, name, slug, status', { limit: 3 }),
+        runSingleTest('canonical_protocols', '*', { count: true }),
+        runSingleTest('pro_products', '*', { count: true }),
+      ]);
+      return { brandsResult, protocolsResult, productsResult };
+    },
+    enabled: !authLoading && !!user,
+  });
 
-  const runDatabaseTests = async () => {
-    setTesting(true);
-
-    // Test 1: Brands
-    try {
-      const { data, error } = await supabase
-        .from('brands')
-        .select('id, name, slug, status')
-        .order('name')
-        .limit(3);
-
-      if (error) {
-        const isRLS = error.code === 'PGRST301' ||
-                     error.message?.toLowerCase().includes('permission') ||
-                     error.message?.toLowerCase().includes('rls');
-        setBrandsResult({
-          success: false,
-          error: error.message,
-          isRLSError: isRLS
-        });
-      } else {
-        setBrandsResult({
-          success: true,
-          data: {
-            count: data?.length || 0,
-            sample: data || []
-          }
-        });
-      }
-    } catch (err: any) {
-      setBrandsResult({
-        success: false,
-        error: err.message || 'Unknown error'
-      });
-    }
-
-    // Test 2: Protocols
-    try {
-      const { count, error } = await supabase
-        .from('canonical_protocols')
-        .select('*', { count: 'exact', head: true });
-
-      if (error) {
-        const isRLS = error.code === 'PGRST301' ||
-                     error.message?.toLowerCase().includes('permission') ||
-                     error.message?.toLowerCase().includes('rls');
-        setProtocolsResult({
-          success: false,
-          error: error.message,
-          isRLSError: isRLS
-        });
-      } else {
-        setProtocolsResult({
-          success: true,
-          data: { count: count || 0 }
-        });
-      }
-    } catch (err: any) {
-      setProtocolsResult({
-        success: false,
-        error: err.message || 'Unknown error'
-      });
-    }
-
-    // Test 3: Products
-    try {
-      const { count, error } = await supabase
-        .from('pro_products')
-        .select('*', { count: 'exact', head: true });
-
-      if (error) {
-        const isRLS = error.code === 'PGRST301' ||
-                     error.message?.toLowerCase().includes('permission') ||
-                     error.message?.toLowerCase().includes('rls');
-        setProductsResult({
-          success: false,
-          error: error.message,
-          isRLSError: isRLS
-        });
-      } else {
-        setProductsResult({
-          success: true,
-          data: { count: count || 0 }
-        });
-      }
-    } catch (err: any) {
-      setProductsResult({
-        success: false,
-        error: err.message || 'Unknown error'
-      });
-    }
-
-    setTesting(false);
-  };
+  const brandsResult = testResults?.brandsResult ?? null;
+  const protocolsResult = testResults?.protocolsResult ?? null;
+  const productsResult = testResults?.productsResult ?? null;
 
   const copyDebugInfo = () => {
     const debugInfo = {

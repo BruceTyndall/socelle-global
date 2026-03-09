@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { MessageCircle, Search, Filter, Download, Eye, TrendingUp, AlertTriangle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 
 interface ChatLog {
@@ -20,32 +21,14 @@ interface ChatLog {
 }
 
 export default function AIConciergeLogsView() {
-  const [logs, setLogs] = useState<ChatLog[]>([]);
-  const [filteredLogs, setFilteredLogs] = useState<ChatLog[]>([]);
   const [selectedLog, setSelectedLog] = useState<ChatLog | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMode, setFilterMode] = useState<string>('all');
   const [filterConfidence, setFilterConfidence] = useState<string>('all');
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalQuestions: 0,
-    avgConfidence: 0,
-    topMode: '',
-    flaggedQuestions: 0
-  });
 
-  useEffect(() => {
-    loadLogs();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-    calculateStats();
-  }, [logs, searchTerm, filterMode, filterConfidence]);
-
-  const loadLogs = async () => {
-    try {
-      setLoading(true);
+  const { data: logs = [], isLoading: loading } = useQuery({
+    queryKey: ['ai-concierge-logs'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('ai_concierge_chat_logs')
         .select(`
@@ -56,16 +39,11 @@ export default function AIConciergeLogsView() {
         .limit(500);
 
       if (error) throw error;
+      return (data || []) as ChatLog[];
+    },
+  });
 
-      setLogs(data || []);
-    } catch (error) {
-      console.error('Error loading logs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const applyFilters = () => {
+  const filteredLogs = useMemo(() => {
     let filtered = [...logs];
 
     if (searchTerm) {
@@ -84,10 +62,10 @@ export default function AIConciergeLogsView() {
       filtered = filtered.filter(log => log.confidence_level === filterConfidence);
     }
 
-    setFilteredLogs(filtered);
-  };
+    return filtered;
+  }, [logs, searchTerm, filterMode, filterConfidence]);
 
-  const calculateStats = () => {
+  const stats = useMemo(() => {
     const total = filteredLogs.length;
     const flagged = filteredLogs.filter(log => log.missing_data_flags.length > 0).length;
 
@@ -111,13 +89,13 @@ export default function AIConciergeLogsView() {
 
     const topMode = Object.entries(modeCounts).sort(([, a], [, b]) => b - a)[0]?.[0] || 'N/A';
 
-    setStats({
+    return {
       totalQuestions: total,
       avgConfidence: avgScore,
       topMode,
       flaggedQuestions: flagged
-    });
-  };
+    };
+  }, [filteredLogs]);
 
   const exportLogs = () => {
     const csv = [

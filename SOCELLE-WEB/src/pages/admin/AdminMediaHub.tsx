@@ -2,7 +2,7 @@
 // Media library. CRUD on media_library table. Upload to Supabase Storage.
 // Data label: LIVE — reads/writes media_library with real updated_at
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Upload,
   Trash2,
@@ -19,6 +19,7 @@ import {
   Copy,
   ExternalLink,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -73,8 +74,7 @@ function isImage(mimeType: string): boolean {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminMediaHub() {
-  const [items, setItems] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -84,26 +84,17 @@ export default function AdminMediaHub() {
 
   // ── Fetch ──────────────────────────────────────────────────────
 
-  const fetchMedia = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('media_library')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (err) {
-      setError(err.message);
-      setItems([]);
-    } else {
-      setItems((data as MediaItem[]) || []);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchMedia();
-  }, [fetchMedia]);
+  const { data: items = [], isLoading: loading, refetch: fetchMedia } = useQuery({
+    queryKey: ['admin-media-library'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('media_library')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (err) throw new Error(err.message);
+      return (data as MediaItem[]) || [];
+    },
+  });
 
   // ── Filter ─────────────────────────────────────────────────────
 
@@ -177,7 +168,7 @@ export default function AdminMediaHub() {
       setTimeout(() => setSuccessMsg(null), 3000);
     }
     setUploading(false);
-    fetchMedia();
+    queryClient.invalidateQueries({ queryKey: ['admin-media-library'] });
 
     // Reset file input
     e.target.value = '';
@@ -194,7 +185,7 @@ export default function AdminMediaHub() {
     // Delete from table
     const { error: err } = await supabase.from('media_library').delete().eq('id', item.id);
     if (err) setError(err.message);
-    else fetchMedia();
+    else queryClient.invalidateQueries({ queryKey: ['admin-media-library'] });
   };
 
   // ── Copy URL ───────────────────────────────────────────────────

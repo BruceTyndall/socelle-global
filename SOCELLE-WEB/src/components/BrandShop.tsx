@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, LogIn, ShoppingCart } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { createScopedLogger } from '../lib/logger';
 import type { BrandTheme } from '../lib/types';
@@ -37,8 +38,6 @@ export default function BrandShop({
   userRole,
   onAddToCart,
 }: BrandShopProps) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeTab, setActiveTab] = useState<'retail' | 'pro'>('retail');
@@ -46,13 +45,9 @@ export default function BrandShop({
   const canViewPro = ['business_user', 'admin', 'platform_admin'].includes(userRole);
   const accentColor = brandTheme?.colors?.accent || '#3b82f6';
 
-  useEffect(() => {
-    loadProducts();
-  }, [brandId, userRole]);
-
-  async function loadProducts() {
-    setLoading(true);
-    try {
+  const { data: products = [], isLoading: loading } = useQuery({
+    queryKey: ['brand-shop-products', brandId, userRole],
+    queryFn: async () => {
       const retailPromise = supabase
         .from('retail_products')
         .select('id, product_name, category, retail_price, size')
@@ -78,13 +73,10 @@ export default function BrandShop({
         ...proData.map((p: any) => ({ ...p, type: 'pro' as const })),
       ];
 
-      setProducts(allProducts);
-    } catch (error) {
-      log.error('Error loading products', { error: error instanceof Error ? error.message : String(error) });
-    } finally {
-      setLoading(false);
-    }
-  }
+      return allProducts;
+    },
+    enabled: !!brandId,
+  });
 
   const categories = useMemo(() => {
     const set = new Set<string>();

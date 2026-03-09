@@ -1,6 +1,7 @@
 // AdminShopOrders.tsx — /admin/shop/orders — Order management (LIVE — orders, order_items tables)
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Package, Eye, X } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import type { Tables } from '../../lib/database.types';
 import {
@@ -31,19 +32,18 @@ const DB_STATUS_MAP: Record<string, string> = {
 };
 
 export default function AdminShopOrders() {
-  const [orders, setOrders] = useState<ShopOrder[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [detail, setDetail] = useState<{ order: ShopOrder; items: ShopOrderItem[] } | null>(null);
 
-  const fetchOrders = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-    const rows = (data as OrderRow[] | null) ?? [];
-    setOrders(rows.map(normalizeShopOrder));
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetchOrders(); }, [fetchOrders]);
+  const { data: orders = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-shop-orders'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      const rows = (data as OrderRow[] | null) ?? [];
+      return rows.map(normalizeShopOrder);
+    },
+  });
 
   const openDetail = async (order: ShopOrder) => {
     const { data: items } = await supabase.from('order_items').select('*').eq('order_id', order.id);
@@ -59,7 +59,7 @@ export default function AdminShopOrders() {
     if (detail && detail.order.id === orderId) {
       setDetail({ ...detail, order: { ...detail.order, status: status as ShopOrder['status'] } });
     }
-    fetchOrders();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-orders'] });
   };
 
   return (

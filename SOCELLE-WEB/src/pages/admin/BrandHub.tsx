@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Link, Outlet, useParams, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import {
   User,
@@ -13,6 +12,7 @@ import {
   Building2,
   ExternalLink,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { Badge } from '../../components/ui';
 
@@ -41,21 +41,20 @@ export default function BrandHub() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const [brand, setBrand] = useState<Brand | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!id || id === 'new') { setLoading(false); return; }
-    supabase
-      .from('brands')
-      .select('id, name, slug, status, is_published, logo_url, theme')
-      .eq('id', id)
-      .single()
-      .then(({ data }) => {
-        setBrand(data);
-        setLoading(false);
-      });
-  }, [id]);
+  const { data: brand = null, isLoading: loading } = useQuery({
+    queryKey: ['admin-brand-hub', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brands')
+        .select('id, name, slug, status, is_published, logo_url, theme')
+        .eq('id', id!)
+        .single();
+      if (error) throw new Error(error.message);
+      return data as Brand | null;
+    },
+    enabled: !!id && id !== 'new',
+  });
 
   if (!id || id === 'new') {
     // Render BrandAdminEditor directly for new brand

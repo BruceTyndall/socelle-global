@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Inbox, Search, Clock, CheckCircle, XCircle, Eye, Download } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { exportToCSV } from '../../lib/csvExport';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
@@ -20,46 +21,22 @@ interface Submission {
 }
 
 export default function AdminInbox() {
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadSubmissions();
-  }, []);
-
-  const loadSubmissions = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const { data: submissions = [], isLoading: loading, error: queryError, refetch: loadSubmissions } = useQuery({
+    queryKey: ['admin-inbox-submissions'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('plan_submissions')
         .select('*')
         .order('updated_at', { ascending: false });
-
       if (error) throw error;
-      setSubmissions(data || []);
-    } catch (err: any) {
-      console.error('Error loading submissions:', err);
-      const message = err?.message?.toLowerCase() || '';
-      if (
-        ['PGRST301', 'PGRST116', '42501'].includes(err?.code) ||
-        message.includes('permission') ||
-        message.includes('rls') ||
-        message.includes('row-level security')
-      ) {
-        setError('Access denied. Your account does not have permission to view submissions.');
-      } else if (message.includes('fetch') || message.includes('network') || message.includes('failed to fetch')) {
-        setError('Network issue while loading submissions. Please refresh and try again.');
-      } else {
-        setError('Failed to load submissions. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+      return (data || []) as Submission[];
+    },
+  });
+
+  const error = queryError ? (queryError as Error).message : null;
 
   const filteredSubmissions = submissions.filter(submission => {
     const matchesFilter = filter === 'all' || submission.submission_status === filter;

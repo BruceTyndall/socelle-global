@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Users, MapPin } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { Badge, EmptyState, StatCard, Avatar } from '../../../components/ui';
 import { supabase } from '../../../lib/supabase';
 
@@ -18,53 +18,46 @@ interface Retailer {
 
 export default function HubRetailers() {
   const { id: brandId } = useParams<{ id: string }>();
-  const [retailers, setRetailers] = useState<Retailer[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!brandId) return;
-    (async () => {
-      try {
-        // Fetch all orders for this brand, grouped by business
-        const { data: orders } = await supabase
-          .from('orders')
-          .select('business_id, total_amount, created_at, businesses!inner(name, type, city, state, verification_status)')
-          .eq('brand_id', brandId)
-          .not('business_id', 'is', null);
+  const { data: retailers = [], isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-hub-retailers', brandId],
+    queryFn: async () => {
+      // Fetch all orders for this brand, grouped by business
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('business_id, total_amount, created_at, businesses!inner(name, type, city, state, verification_status)')
+        .eq('brand_id', brandId!)
+        .not('business_id', 'is', null);
 
-        const bizMap = new Map<string, Retailer>();
-        for (const o of orders ?? []) {
-          const biz = o.businesses as unknown as { name: string; type: string | null; city: string | null; state: string | null; verification_status: string | null };
-          const key = o.business_id as string;
-          if (!bizMap.has(key)) {
-            bizMap.set(key, {
-              business_id: key,
-              name: biz.name,
-              type: biz.type,
-              city: biz.city,
-              state: biz.state,
-              verification_status: biz.verification_status,
-              order_count: 0,
-              total_spend: 0,
-              last_order_at: null,
-            });
-          }
-          const r = bizMap.get(key)!;
-          r.order_count += 1;
-          r.total_spend += o.total_amount ?? 0;
-          if (!r.last_order_at || o.created_at > r.last_order_at) {
-            r.last_order_at = o.created_at;
-          }
+      const bizMap = new Map<string, Retailer>();
+      for (const o of orders ?? []) {
+        const biz = o.businesses as unknown as { name: string; type: string | null; city: string | null; state: string | null; verification_status: string | null };
+        const key = o.business_id as string;
+        if (!bizMap.has(key)) {
+          bizMap.set(key, {
+            business_id: key,
+            name: biz.name,
+            type: biz.type,
+            city: biz.city,
+            state: biz.state,
+            verification_status: biz.verification_status,
+            order_count: 0,
+            total_spend: 0,
+            last_order_at: null,
+          });
         }
-
-        setRetailers(
-          Array.from(bizMap.values()).sort((a, b) => b.total_spend - a.total_spend)
-        );
-      } finally {
-        setLoading(false);
+        const r = bizMap.get(key)!;
+        r.order_count += 1;
+        r.total_spend += o.total_amount ?? 0;
+        if (!r.last_order_at || o.created_at > r.last_order_at) {
+          r.last_order_at = o.created_at;
+        }
       }
-    })();
-  }, [brandId]);
+
+      return Array.from(bizMap.values()).sort((a, b) => b.total_spend - a.total_spend);
+    },
+    enabled: !!brandId,
+  });
 
   if (loading) {
     return (

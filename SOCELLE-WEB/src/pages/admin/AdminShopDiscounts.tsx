@@ -1,6 +1,7 @@
 // AdminShopDiscounts.tsx — /admin/shop/discounts — Discount management (LIVE — discount_codes table)
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Plus, Pencil, Trash2, X, Tag } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import type { DiscountCode } from '../../lib/shop/types';
 import { formatCents } from '../../lib/shop/types';
@@ -8,8 +9,7 @@ import { formatCents } from '../../lib/shop/types';
 const TYPES = ['percentage', 'fixed_amount', 'free_shipping'] as const;
 
 export default function AdminShopDiscounts() {
-  const [discounts, setDiscounts] = useState<DiscountCode[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<DiscountCode | null>(null);
   const [form, setForm] = useState({
@@ -18,14 +18,14 @@ export default function AdminShopDiscounts() {
     maximum_uses: 0, is_active: true, expires_at: '',
   });
 
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase.from('discount_codes').select('*').order('created_at', { ascending: false });
-    setDiscounts((data as DiscountCode[]) ?? []);
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetch(); }, [fetch]);
+  const { data: discounts = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-shop-discounts'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('discount_codes').select('*').order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data as DiscountCode[]) ?? [];
+    },
+  });
 
   const openCreate = () => {
     setEditing(null);
@@ -58,18 +58,18 @@ export default function AdminShopDiscounts() {
     if (editing) await supabase.from('discount_codes').update(payload).eq('id', editing.id);
     else await supabase.from('discount_codes').insert(payload);
     setShowForm(false);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-discounts'] });
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this discount code?')) return;
     await supabase.from('discount_codes').delete().eq('id', id);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-discounts'] });
   };
 
   const toggleActive = async (d: DiscountCode) => {
     await supabase.from('discount_codes').update({ is_active: !d.is_active }).eq('id', d.id);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-discounts'] });
   };
 
   return (

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Shield, CheckCircle, XCircle, Home, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -21,59 +21,49 @@ interface DebugInfo {
 
 export default function AuthDebug() {
   const { user, profile, profileError, effectiveRole, isAdmin, loading, lastAuthError } = useAuth();
-  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
-  const [loadingDebug, setLoadingDebug] = useState(true);
 
-  useEffect(() => {
-    const fetchDebugInfo = async () => {
-      try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const sessionUser = sessionData.session?.user;
+  const { data: debugInfo, isLoading: loadingDebug } = useQuery({
+    queryKey: ['auth-debug', loading, effectiveRole, isAdmin, profile?.brand_id, lastAuthError],
+    queryFn: async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const sessionUser = sessionData.session?.user;
 
-        let profileExists = false;
-        let profileRole = null;
-        let fetchError = null;
+      let profileExists = false;
+      let profileRole = null;
+      let fetchError = null;
 
-        if (sessionUser) {
-          const { data: profileData, error } = await supabase
-            .from('user_profiles')
-            .select('role')
-            .eq('id', sessionUser.id)
-            .maybeSingle();
+      if (sessionUser) {
+        const { data: profileData, error } = await supabase
+          .from('user_profiles')
+          .select('role')
+          .eq('id', sessionUser.id)
+          .maybeSingle();
 
-          if (error) {
-            fetchError = error.message;
-          } else if (profileData) {
-            profileExists = true;
-            profileRole = profileData.role;
-          }
+        if (error) {
+          fetchError = error.message;
+        } else if (profileData) {
+          profileExists = true;
+          profileRole = profileData.role;
         }
-
-        setDebugInfo({
-          windowOrigin: window.location.origin,
-          hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
-          sessionExists: !!sessionData.session,
-          authUid: sessionUser?.id || null,
-          email: sessionUser?.email || null,
-          brandId: profile?.brand_id || null,
-          profileExists,
-          profileRole,
-          profileError: fetchError,
-          effectiveRole: effectiveRole || null,
-          isAdmin,
-          lastAuthError: lastAuthError || null,
-        });
-      } catch (error) {
-        console.error('Debug fetch error:', error);
-      } finally {
-        setLoadingDebug(false);
       }
-    };
 
-    if (!loading) {
-      fetchDebugInfo();
-    }
-  }, [loading, effectiveRole, isAdmin, profile?.brand_id, lastAuthError]);
+      return {
+        windowOrigin: window.location.origin,
+        hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
+        sessionExists: !!sessionData.session,
+        authUid: sessionUser?.id || null,
+        email: sessionUser?.email || null,
+        brandId: profile?.brand_id || null,
+        profileExists,
+        profileRole,
+        profileError: fetchError,
+        effectiveRole: effectiveRole || null,
+        isAdmin,
+        lastAuthError: lastAuthError || null,
+      } as DebugInfo;
+    },
+    enabled: !loading,
+  });
 
   if (loading || loadingDebug) {
     return (

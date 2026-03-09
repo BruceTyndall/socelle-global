@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Users,
   RefreshCw,
@@ -46,16 +47,12 @@ function formatDate(iso: string) {
 }
 
 export default function CrmHub() {
-  const [rows, setRows] = useState<AccessRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<string>('all');
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: queryResult, isLoading: loading, error } = useQuery({
+    queryKey: ['admin-crm', filter],
+    queryFn: async () => {
       let query = supabase
         .from('access_requests')
         .select('id, created_at, email, business_name, contact_name, business_type, referral_source, status, notes, reviewed_at')
@@ -67,33 +64,30 @@ export default function CrmHub() {
       }
 
       const { data, error: dbError } = await query;
-      if (dbError) throw dbError;
-      setRows(data ?? []);
-      setIsLive(true);
-    } catch (err: any) {
-      console.error('CrmHub: load error', err);
-      const msg = err?.message?.toLowerCase() || '';
-      if (msg.includes('does not exist') || err?.code === '42P01') {
-        setIsLive(false);
-        setRows([]);
-      } else {
-        setError('Failed to load CRM data.');
+      if (dbError) {
+        const msg = dbError.message?.toLowerCase() || '';
+        if (msg.includes('does not exist') || dbError.code === '42P01') {
+          return { rows: [] as AccessRequest[], isLive: false };
+        }
+        throw dbError;
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [filter]);
+      return { rows: (data ?? []) as AccessRequest[], isLive: true };
+    },
+  });
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const rows = queryResult?.rows ?? [];
+  const isLive = queryResult?.isLive ?? false;
+
+  const loadData = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-crm'] });
+  };
 
   if (error) {
     return (
       <ErrorState
         icon={ShieldAlert}
         title="CRM Hub Unavailable"
-        message={error}
+        message="Failed to load CRM data."
         action={{ label: 'Retry', onClick: loadData }}
       />
     );

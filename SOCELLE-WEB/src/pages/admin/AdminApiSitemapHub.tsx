@@ -2,7 +2,7 @@
 // API route map viewer. Read api_route_map joined with api_registry.
 // Data label: LIVE — reads api_route_map with real created_at
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Search,
   X,
@@ -15,6 +15,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -49,36 +50,26 @@ const METHOD_COLORS: Record<string, string> = {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminApiSitemapHub() {
-  const [routes, setRoutes] = useState<ApiRouteRow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [methodFilter, setMethodFilter] = useState<string>('all');
   const [authFilter, setAuthFilter] = useState<string>('all');
   const [apiFilter, setApiFilter] = useState<string>('all');
-  const [error, setError] = useState<string | null>(null);
 
   // ── Fetch (join api_registry for API name) ─────────────────────
 
-  const fetchRoutes = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('api_route_map')
-      .select('*, api_registry:api_registry_id(name, provider, category)')
-      .order('route', { ascending: true });
+  const { data: routes = [], isLoading: loading, error: queryError, refetch: fetchRoutes } = useQuery({
+    queryKey: ['admin-api-route-map'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('api_route_map')
+        .select('*, api_registry:api_registry_id(name, provider, category)')
+        .order('route', { ascending: true });
+      if (err) throw new Error(err.message);
+      return (data as ApiRouteRow[]) || [];
+    },
+  });
 
-    if (err) {
-      setError(err.message);
-      setRoutes([]);
-    } else {
-      setRoutes((data as ApiRouteRow[]) || []);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchRoutes();
-  }, [fetchRoutes]);
+  const error = queryError ? (queryError as Error).message : null;
 
   // ── Unique API names for filter ────────────────────────────────
 

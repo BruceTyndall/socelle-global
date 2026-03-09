@@ -1,7 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
 import {
   DollarSign, Users, BarChart3, PieChart, Activity, Loader2,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { MODULE_KEYS } from '../../modules/_core/context/ModuleAccessContext';
 import { getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
@@ -34,17 +34,18 @@ const PLAN_COLORS = ['bg-accent', 'bg-blue-500', 'bg-green-500', 'bg-amber-500',
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export default function AdminSubscriptionMetrics() {
-  const [loading, setLoading] = useState(true);
-  const [totalMrr, setTotalMrr] = useState(0);
-  const [totalAccounts, setTotalAccounts] = useState(0);
-  const [planMetrics, setPlanMetrics] = useState<PlanMetric[]>([]);
-  const [moduleMetrics, setModuleMetrics] = useState<ModuleMetric[]>([]);
-  const [recentEvents, setRecentEvents] = useState<SubEvent[]>([]);
+interface MetricsData {
+  totalMrr: number;
+  totalAccounts: number;
+  planMetrics: PlanMetric[];
+  moduleMetrics: ModuleMetric[];
+  recentEvents: SubEvent[];
+}
 
-  const fetchMetrics = useCallback(async () => {
-    setLoading(true);
-    try {
+export default function AdminSubscriptionMetrics() {
+  const { data: metrics, isLoading: loading } = useQuery<MetricsData>({
+    queryKey: ['admin-subscription-metrics'],
+    queryFn: async () => {
       // Fetch all active subscriptions with plan info
       const { data: subs } = await supabase
         .from('account_subscriptions')
@@ -56,7 +57,6 @@ export default function AdminSubscriptionMetrics() {
 
       const subList = subs ?? [];
       const activeCount = subList.length;
-      setTotalAccounts(activeCount);
 
       // Plan distribution + MRR
       const planMap: Record<string, { name: string; count: number; mrr: number }> = {};
@@ -74,15 +74,12 @@ export default function AdminSubscriptionMetrics() {
         mrr += price;
       });
 
-      setTotalMrr(mrr);
-      setPlanMetrics(
-        Object.values(planMap).map((p, i) => ({
-          plan_name: p.name,
-          count: p.count,
-          mrr: p.mrr,
-          color: PLAN_COLORS[i % PLAN_COLORS.length],
-        })),
-      );
+      const planMetricsResult = Object.values(planMap).map((p, i) => ({
+        plan_name: p.name,
+        count: p.count,
+        mrr: p.mrr,
+        color: PLAN_COLORS[i % PLAN_COLORS.length],
+      }));
 
       // Module adoption
       const { data: accessData } = await supabase
@@ -96,17 +93,15 @@ export default function AdminSubscriptionMetrics() {
         moduleMap[a.module_key].add(a.account_id);
       });
 
-      setModuleMetrics(
-        MODULE_KEYS.map((key) => {
-          const count = moduleMap[key]?.size ?? 0;
-          return {
-            module_key: key,
-            label: getModuleMeta(key).label,
-            count,
-            percent: activeCount > 0 ? Math.round((count / activeCount) * 100) : 0,
-          };
-        }).sort((a, b) => b.count - a.count),
-      );
+      const moduleMetricsResult = MODULE_KEYS.map((key) => {
+        const count = moduleMap[key]?.size ?? 0;
+        return {
+          module_key: key,
+          label: getModuleMeta(key).label,
+          count,
+          percent: activeCount > 0 ? Math.round((count / activeCount) * 100) : 0,
+        };
+      }).sort((a, b) => b.count - a.count);
 
       // Recent events (last 20 subscription records)
       const { data: events } = await supabase
@@ -118,28 +113,32 @@ export default function AdminSubscriptionMetrics() {
         .order('created_at', { ascending: false })
         .limit(20);
 
-      setRecentEvents(
-        (events ?? []).map((e: Record<string, unknown>) => {
-          const planObj = Array.isArray(e.plan) ? e.plan[0] : e.plan;
-          return {
-            id: e.id as string,
-            account_id: (e.account_id as string).slice(0, 8) + '...',
-            status: e.status as string,
-            plan_name: (planObj as Record<string, unknown>)?.name as string ?? 'Unknown',
-            created_at: e.created_at as string,
-          };
-        }),
-      );
-    } catch (err) {
-      console.warn('[AdminSubscriptionMetrics] error:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      const recentEventsResult = (events ?? []).map((e: Record<string, unknown>) => {
+        const planObj = Array.isArray(e.plan) ? e.plan[0] : e.plan;
+        return {
+          id: e.id as string,
+          account_id: (e.account_id as string).slice(0, 8) + '...',
+          status: e.status as string,
+          plan_name: (planObj as Record<string, unknown>)?.name as string ?? 'Unknown',
+          created_at: e.created_at as string,
+        };
+      });
 
-  useEffect(() => {
-    fetchMetrics();
-  }, [fetchMetrics]);
+      return {
+        totalMrr: mrr,
+        totalAccounts: activeCount,
+        planMetrics: planMetricsResult,
+        moduleMetrics: moduleMetricsResult,
+        recentEvents: recentEventsResult,
+      };
+    },
+  });
+
+  const totalMrr = metrics?.totalMrr ?? 0;
+  const totalAccounts = metrics?.totalAccounts ?? 0;
+  const planMetrics = metrics?.planMetrics ?? [];
+  const moduleMetrics = metrics?.moduleMetrics ?? [];
+  const recentEvents = metrics?.recentEvents ?? [];
 
   if (loading) {
     return (

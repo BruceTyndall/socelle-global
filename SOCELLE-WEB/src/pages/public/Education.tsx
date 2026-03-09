@@ -72,18 +72,28 @@ const CATEGORY_CARDS: CategoryMeta[] = [
 
 // ── JSON-LD structured data ─────────────────────────────────────────
 
-const jsonLd = {
+const jsonLdEducationalOrg = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: 'Socelle Education Hub',
+  description:
+    'CE-eligible courses, treatment protocols, ingredient science, and compliance training built for licensed beauty professionals.',
+  url: 'https://socelle.com/education',
+  parentOrganization: {
+    '@type': 'Organization',
+    name: 'Socelle',
+    url: 'https://socelle.com',
+  },
+};
+
+const jsonLdWebPage = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'Education Hub | Socelle',
   description:
     'CE-eligible courses, treatment protocols, ingredient science, and compliance training built for licensed beauty professionals.',
   url: 'https://socelle.com/education',
-  publisher: {
-    '@type': 'Organization',
-    name: 'Socelle',
-    url: 'https://socelle.com',
-  },
+  isPartOf: { '@type': 'WebSite', url: 'https://socelle.com', name: 'Socelle' },
 };
 
 // ── Page ────────────────────────────────────────────────────────────
@@ -132,7 +142,8 @@ export default function Education() {
         <meta property="og:image" content="https://socelle.com/og-image.svg" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://socelle.com/education" />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(jsonLdEducationalOrg)}</script>
+        <script type="application/ld+json">{JSON.stringify(jsonLdWebPage)}</script>
       </Helmet>
 
       {/* ── Nav ─────────────────────────────────────────────────────── */}

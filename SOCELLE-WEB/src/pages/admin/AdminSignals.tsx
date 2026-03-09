@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   TrendingUp,
   Building2,
@@ -78,105 +79,98 @@ function RankBadge({ rank }: { rank: number }) {
 
 // ── Main component ─────────────────────────────────────────────────────────
 
+async function fetchSignalsData(): Promise<{ brandSignals: BrandSignalRow[]; businessSignals: BusinessSignalRow[] }> {
+  const [brandSigRes, bizSigRes] = await Promise.all([
+    supabase
+      .from('brand_interest_signals')
+      .select('brand_id, signal_type, brands(name, slug)')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('business_interest_signals')
+      .select('business_id, signal_type, businesses(name, slug, business_type, city, state)')
+      .order('created_at', { ascending: false }),
+  ]);
+
+  if (brandSigRes.error) throw brandSigRes.error;
+  if (bizSigRes.error) throw bizSigRes.error;
+
+  // Group brand signals
+  const brandMap = new Map<string, BrandSignalRow>();
+  for (const row of (brandSigRes.data ?? [])) {
+    const b = row.brands as unknown as { name: string; slug: string } | null;
+    if (!b) continue;
+    if (!brandMap.has(row.brand_id)) {
+      brandMap.set(row.brand_id, {
+        brand_id: row.brand_id,
+        brand_name: b.name,
+        brand_slug: b.slug,
+        express_interest: 0,
+        notify_me: 0,
+        page_view: 0,
+        total: 0,
+      });
+    }
+    const entry = brandMap.get(row.brand_id)!;
+    if (row.signal_type === 'express_interest') entry.express_interest++;
+    if (row.signal_type === 'notify_me') entry.notify_me++;
+    if (row.signal_type === 'page_view') entry.page_view++;
+    entry.total++;
+  }
+  const sortedBrands = [...brandMap.values()].sort((a, b) => b.total - a.total);
+
+  // Group business signals
+  const bizMap = new Map<string, BusinessSignalRow>();
+  for (const row of (bizSigRes.data ?? [])) {
+    const biz = row.businesses as unknown as { name: string; slug: string; business_type: string | null; city: string | null; state: string | null } | null;
+    if (!biz) continue;
+    if (!bizMap.has(row.business_id)) {
+      bizMap.set(row.business_id, {
+        business_id: row.business_id,
+        business_name: biz.name,
+        business_slug: biz.slug,
+        business_type: biz.business_type,
+        city: biz.city,
+        state: biz.state,
+        potential_fit: 0,
+        target_account: 0,
+        rep_visited: 0,
+        total: 0,
+      });
+    }
+    const entry = bizMap.get(row.business_id)!;
+    if (row.signal_type === 'potential_fit') entry.potential_fit++;
+    if (row.signal_type === 'target_account') entry.target_account++;
+    if (row.signal_type === 'rep_visited') entry.rep_visited++;
+    entry.total++;
+  }
+  const sortedBiz = [...bizMap.values()].sort((a, b) => b.total - a.total);
+
+  return { brandSignals: sortedBrands, businessSignals: sortedBiz };
+}
+
 export default function AdminSignals() {
   const [tab, setTab] = useState<Tab>('brands');
-  const [brandSignals, setBrandSignals] = useState<BrandSignalRow[]>([]);
-  const [businessSignals, setBusinessSignals] = useState<BusinessSignalRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const loadSignals = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // ── Brand interest signals ──────────────────────────────────────────
-      // Fetch all signals then group in JS (avoids needing a DB view)
-      const [brandSigRes, bizSigRes] = await Promise.all([
-        supabase
-          .from('brand_interest_signals')
-          .select('brand_id, signal_type, brands(name, slug)')
-          .order('created_at', { ascending: false }),
-        supabase
-          .from('business_interest_signals')
-          .select('business_id, signal_type, businesses(name, slug, business_type, city, state)')
-          .order('created_at', { ascending: false }),
-      ]);
+  const { data, isLoading: loading, error } = useQuery({
+    queryKey: ['admin-signals'],
+    queryFn: fetchSignalsData,
+  });
 
-      if (brandSigRes.error) throw brandSigRes.error;
-      if (bizSigRes.error) throw bizSigRes.error;
+  const brandSignals = data?.brandSignals ?? [];
+  const businessSignals = data?.businessSignals ?? [];
 
-      // Group brand signals
-      const brandMap = new Map<string, BrandSignalRow>();
-      for (const row of (brandSigRes.data ?? [])) {
-        const b = row.brands as unknown as { name: string; slug: string } | null;
-        if (!b) continue;
-        if (!brandMap.has(row.brand_id)) {
-          brandMap.set(row.brand_id, {
-            brand_id: row.brand_id,
-            brand_name: b.name,
-            brand_slug: b.slug,
-            express_interest: 0,
-            notify_me: 0,
-            page_view: 0,
-            total: 0,
-          });
-        }
-        const entry = brandMap.get(row.brand_id)!;
-        if (row.signal_type === 'express_interest') entry.express_interest++;
-        if (row.signal_type === 'notify_me') entry.notify_me++;
-        if (row.signal_type === 'page_view') entry.page_view++;
-        entry.total++;
-      }
-      const sortedBrands = [...brandMap.values()].sort((a, b) => b.total - a.total);
-
-      // Group business signals
-      const bizMap = new Map<string, BusinessSignalRow>();
-      for (const row of (bizSigRes.data ?? [])) {
-        const biz = row.businesses as unknown as { name: string; slug: string; business_type: string | null; city: string | null; state: string | null } | null;
-        if (!biz) continue;
-        if (!bizMap.has(row.business_id)) {
-          bizMap.set(row.business_id, {
-            business_id: row.business_id,
-            business_name: biz.name,
-            business_slug: biz.slug,
-            business_type: biz.business_type,
-            city: biz.city,
-            state: biz.state,
-            potential_fit: 0,
-            target_account: 0,
-            rep_visited: 0,
-            total: 0,
-          });
-        }
-        const entry = bizMap.get(row.business_id)!;
-        if (row.signal_type === 'potential_fit') entry.potential_fit++;
-        if (row.signal_type === 'target_account') entry.target_account++;
-        if (row.signal_type === 'rep_visited') entry.rep_visited++;
-        entry.total++;
-      }
-      const sortedBiz = [...bizMap.values()].sort((a, b) => b.total - a.total);
-
-      setBrandSignals(sortedBrands);
-      setBusinessSignals(sortedBiz);
-    } catch (err: any) {
-      console.error('Error loading signals:', err);
-      setError('Failed to load interest signals.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadSignals();
-  }, [loadSignals]);
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-signals'] });
+  };
 
   if (error) {
     return (
       <ErrorState
         icon={ShieldAlert}
         title="Signals Unavailable"
-        message={error}
-        action={{ label: 'Retry', onClick: loadSignals }}
+        message="Failed to load interest signals."
+        action={{ label: 'Retry', onClick: handleRefresh }}
       />
     );
   }
@@ -198,7 +192,7 @@ export default function AdminSignals() {
         </div>
         <button
           type="button"
-          onClick={loadSignals}
+          onClick={handleRefresh}
           disabled={loading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >

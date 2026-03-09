@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Shield, CheckCircle, AlertTriangle, XCircle, RefreshCw, Copy, FileText } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { runSchemaHealthCheck, getHealthSummary, type SchemaHealthResult } from '../lib/schemaHealth';
 import { supabase } from '../lib/supabase';
 
@@ -11,31 +12,20 @@ interface ProtocolCompletionStatus {
 }
 
 export default function SchemaHealthView() {
-  const [results, setResults] = useState<SchemaHealthResult[]>([]);
-  const [loading, setLoading] = useState(true);
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
-  const [protocolStatus, setProtocolStatus] = useState<ProtocolCompletionStatus | null>(null);
 
-  useEffect(() => {
-    performHealthCheck();
-    loadProtocolStatus();
-  }, []);
-
-  const performHealthCheck = async () => {
-    setLoading(true);
-    try {
+  const { data: results = [], isLoading: loading, refetch: performHealthCheck } = useQuery({
+    queryKey: ['schema-health-check'],
+    queryFn: async () => {
       const checkResults = await runSchemaHealthCheck();
-      setResults(checkResults);
       setLastChecked(new Date());
-    } catch (error) {
-      console.error('Health check failed:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return checkResults;
+    },
+  });
 
-  const loadProtocolStatus = async () => {
-    try {
+  const { data: protocolStatus = null } = useQuery<ProtocolCompletionStatus | null>({
+    queryKey: ['schema-health-protocol-status'],
+    queryFn: async () => {
       const { data: protocols, count: totalProtocols } = await supabase
         .from('canonical_protocols')
         .select('id, protocol_name, category', { count: 'exact' });
@@ -48,8 +38,8 @@ export default function SchemaHealthView() {
         .from('canonical_protocol_step_products')
         .select('protocol_step_id');
 
-      const protocolsWithSteps = new Set(stepsData?.map(s => s.canonical_protocol_id) || []);
-      const stepsWithProducts = new Set(productsData?.map(p => p.protocol_step_id) || []);
+      const protocolsWithSteps = new Set(stepsData?.map((s: { canonical_protocol_id: string }) => s.canonical_protocol_id) || []);
+      const stepsWithProducts = new Set(productsData?.map((p: { protocol_step_id: string }) => p.protocol_step_id) || []);
 
       const { data: stepsWithIds } = await supabase
         .from('canonical_protocol_steps')
@@ -57,22 +47,20 @@ export default function SchemaHealthView() {
 
       const protocolsWithProducts = new Set(
         stepsWithIds
-          ?.filter(s => stepsWithProducts.has(s.id))
-          .map(s => s.canonical_protocol_id) || []
+          ?.filter((s: { id: string }) => stepsWithProducts.has(s.id))
+          .map((s: { canonical_protocol_id: string }) => s.canonical_protocol_id) || []
       );
 
-      const incompleteProtocols = protocols?.filter(p => !protocolsWithSteps.has(p.id)) || [];
+      const incompleteProtocols = protocols?.filter((p: { id: string }) => !protocolsWithSteps.has(p.id)) || [];
 
-      setProtocolStatus({
+      return {
         totalProtocols: totalProtocols || 0,
         withSteps: protocolsWithSteps.size,
         withProducts: protocolsWithProducts.size,
         incompleteProtocols
-      });
-    } catch (error) {
-      console.error('Failed to load protocol status:', error);
-    }
-  };
+      };
+    },
+  });
 
   const summary = results.length > 0 ? getHealthSummary(results) : null;
 

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Shield, AlertTriangle, Trash2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, Button } from '../../../components/ui';
 import { supabase } from '../../../lib/supabase';
 
@@ -35,23 +36,24 @@ export default function HubSettings() {
   const navigate = useNavigate();
 
   const [settings, setSettings]   = useState<BrandSettings | null>(null);
-  const [loading, setLoading]     = useState(true);
   const [saving, setSaving]       = useState(false);
   const [archiving, setArchiving] = useState(false);
   const [toast, setToast]         = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!brandId) return;
-    supabase
-      .from('brands')
-      .select('is_published, status, service_tier')
-      .eq('id', brandId)
-      .single()
-      .then(({ data }) => {
-        if (data) setSettings(data as BrandSettings);
-        setLoading(false);
-      });
-  }, [brandId]);
+  const { isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-hub-settings', brandId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('brands')
+        .select('is_published, status, service_tier')
+        .eq('id', brandId!)
+        .single();
+
+      if (data) setSettings(data as BrandSettings);
+      return data as BrandSettings | null;
+    },
+    enabled: !!brandId,
+  });
 
   const showToast = (msg: string) => {
     setToast(msg);

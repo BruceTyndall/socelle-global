@@ -4,7 +4,7 @@
 // NOTE: This manages the Phase 2 live_data_feeds table, separate from
 // the Wave 13 data_feeds table managed by AdminFeedsHub.
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Plus,
   Pencil,
@@ -23,6 +23,7 @@ import {
   WifiOff,
   Clock,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -80,8 +81,7 @@ function timeSince(dateStr: string | null): string {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminLiveDataHub() {
-  const [feeds, setFeeds] = useState<LiveDataFeed[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [editing, setEditing] = useState<LiveDataFeed | null>(null);
@@ -101,26 +101,17 @@ export default function AdminLiveDataHub() {
 
   // ── Fetch ──────────────────────────────────────────────────────
 
-  const fetchFeeds = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('live_data_feeds')
-      .select('*')
-      .order('updated_at', { ascending: false });
-
-    if (err) {
-      setError(err.message);
-      setFeeds([]);
-    } else {
-      setFeeds((data as LiveDataFeed[]) || []);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchFeeds();
-  }, [fetchFeeds]);
+  const { data: feeds = [], isLoading: loading, refetch: fetchFeeds } = useQuery({
+    queryKey: ['admin-live-data-feeds'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('live_data_feeds')
+        .select('*')
+        .order('updated_at', { ascending: false });
+      if (err) throw new Error(err.message);
+      return (data as LiveDataFeed[]) || [];
+    },
+  });
 
   // ── Filter ─────────────────────────────────────────────────────
 
@@ -212,7 +203,7 @@ export default function AdminLiveDataHub() {
     }
     setSaving(false);
     resetForm();
-    fetchFeeds();
+    queryClient.invalidateQueries({ queryKey: ['admin-live-data-feeds'] });
     setTimeout(() => setSuccessMsg(null), 3000);
   };
 
@@ -220,7 +211,7 @@ export default function AdminLiveDataHub() {
     if (!window.confirm('Delete this feed?')) return;
     const { error: err } = await supabase.from('live_data_feeds').delete().eq('id', id);
     if (err) setError(err.message);
-    else fetchFeeds();
+    else queryClient.invalidateQueries({ queryKey: ['admin-live-data-feeds'] });
   };
 
   const toggleActive = async (feed: LiveDataFeed) => {
@@ -234,7 +225,7 @@ export default function AdminLiveDataHub() {
       })
       .eq('id', feed.id);
     if (err) setError(err.message);
-    else fetchFeeds();
+    else queryClient.invalidateQueries({ queryKey: ['admin-live-data-feeds'] });
   };
 
   const manualRefresh = async (feed: LiveDataFeed) => {
@@ -250,7 +241,7 @@ export default function AdminLiveDataHub() {
     else {
       setSuccessMsg(`Refresh queued for "${feed.name}" (Edge Function will process)`);
       setTimeout(() => setSuccessMsg(null), 3000);
-      fetchFeeds();
+      queryClient.invalidateQueries({ queryKey: ['admin-live-data-feeds'] });
     }
   };
 

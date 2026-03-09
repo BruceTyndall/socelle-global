@@ -5,7 +5,7 @@
 // SECURITY: NEVER display api_key_encrypted field.
 // Select specific columns to exclude it from network payloads.
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Search,
   X,
@@ -22,6 +22,7 @@ import {
   Wifi,
   WifiOff,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -83,8 +84,7 @@ function formatDate(dateStr: string): string {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminApiControlHub() {
-  const [apis, setApis] = useState<ApiRegistryRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -93,26 +93,17 @@ export default function AdminApiControlHub() {
 
   // ── Fetch (SECURITY: select only safe columns) ─────────────────
 
-  const fetchApis = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('api_registry')
-      .select(SAFE_COLUMNS)
-      .order('name', { ascending: true });
-
-    if (err) {
-      setError(err.message);
-      setApis([]);
-    } else {
-      setApis((data as ApiRegistryRow[]) || []);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchApis();
-  }, [fetchApis]);
+  const { data: apis = [], isLoading: loading, refetch: fetchApis } = useQuery({
+    queryKey: ['admin-api-registry'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('api_registry')
+        .select(SAFE_COLUMNS)
+        .order('name', { ascending: true });
+      if (err) throw new Error(err.message);
+      return (data as ApiRegistryRow[]) || [];
+    },
+  });
 
   // ── Filter ─────────────────────────────────────────────────────
 

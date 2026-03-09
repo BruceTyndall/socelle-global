@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Search,
   Plus,
@@ -8,6 +8,7 @@ import {
   X,
   AlertCircle,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
 
@@ -64,49 +65,44 @@ const EMPTY_FORM: IngredientForm = {
 };
 
 export default function AdminIngredientsHub() {
-  const [ingredients, setIngredients] = useState<AdminIngredient[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState(false);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
-  const [total, setTotal] = useState(0);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<IngredientForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
 
-  const fetchIngredients = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  // Debounce search
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), search ? 300 : 0);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const { data: queryResult, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['admin-ingredients', debouncedSearch],
+    queryFn: async () => {
       let query = supabase
         .from('ingredients')
         .select('id, inci_name, common_name, ewg_score, comedogenic_rating, is_vegan, eu_status, updated_at', { count: 'exact' })
         .order('inci_name')
         .limit(100);
 
-      if (search.trim()) {
-        query = query.or(`inci_name.ilike.%${search.trim()}%,common_name.ilike.%${search.trim()}%`);
+      if (debouncedSearch.trim()) {
+        query = query.or(`inci_name.ilike.%${debouncedSearch.trim()}%,common_name.ilike.%${debouncedSearch.trim()}%`);
       }
 
       const { data, error: err, count } = await query;
       if (err) throw err;
-      setIngredients((data ?? []) as AdminIngredient[]);
-      setTotal(count ?? 0);
-      setIsLive(true);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load ingredients');
-      setIsLive(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [search]);
+      return { ingredients: (data ?? []) as AdminIngredient[], total: count ?? 0 };
+    },
+  });
 
-  useEffect(() => {
-    const t = setTimeout(fetchIngredients, search ? 300 : 0);
-    return () => clearTimeout(t);
-  }, [fetchIngredients]);
+  const ingredients = queryResult?.ingredients ?? [];
+  const total = queryResult?.total ?? 0;
+  const isLive = !queryError;
+  const error = queryError ? (queryError as Error).message : null;
 
   const openCreate = () => {
     setEditId(null);
@@ -176,7 +172,7 @@ export default function AdminIngredientsHub() {
       setShowForm(false);
       setEditId(null);
       setForm(EMPTY_FORM);
-      fetchIngredients();
+      queryClient.invalidateQueries({ queryKey: ['admin-ingredients'] });
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Save failed');
     } finally {

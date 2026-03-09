@@ -3,7 +3,8 @@
 // Data label: LIVE — reads/writes blog_posts with real updated_at
 // Replaces previous stories-based implementation.
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
   Pencil,
@@ -88,8 +89,7 @@ function formatDate(dateStr: string): string {
 // ── Component ──────────────────────────────────────────────────────
 
 export default function AdminBlogHub() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [editing, setEditing] = useState<BlogPost | null>(null);
@@ -118,26 +118,22 @@ export default function AdminBlogHub() {
 
   // ── Fetch ──────────────────────────────────────────────────────
 
-  const fetchPosts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    const { data, error: err } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .order('updated_at', { ascending: false });
+  const { data: posts = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-blog-posts'],
+    queryFn: async () => {
+      const { data, error: err } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .order('updated_at', { ascending: false });
 
-    if (err) {
-      setError(err.message);
-      setPosts([]);
-    } else {
-      setPosts((data as BlogPost[]) || []);
-    }
-    setLoading(false);
-  }, []);
+      if (err) throw err;
+      return (data as BlogPost[]) || [];
+    },
+  });
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+  const fetchPosts = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-blog-posts'] });
+  };
 
   // ── Filter ─────────────────────────────────────────────────────
 

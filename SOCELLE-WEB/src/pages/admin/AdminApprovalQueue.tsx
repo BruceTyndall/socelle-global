@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import {
   CheckCircle,
   XCircle,
@@ -11,6 +11,7 @@ import {
   ExternalLink,
   ShieldAlert,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { useToast } from '../../components/Toast';
@@ -85,18 +86,14 @@ function ServiceTierBadge({ tier }: { tier: string }) {
 export default function AdminApprovalQueue() {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const queryClient = useQueryClient();
 
   const [tab, setTab] = useState<Tab>('brands');
-  const [pendingBrands, setPendingBrands] = useState<PendingBrand[]>([]);
-  const [pendingBusinesses, setPendingBusinesses] = useState<PendingBusiness[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [actioningId, setActioningId] = useState<string | null>(null);
 
-  const loadQueue = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: queueData, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['admin-approval-queue'],
+    queryFn: async () => {
       const [brandsRes, bizRes] = await Promise.all([
         supabase
           .from('brands')
@@ -111,19 +108,16 @@ export default function AdminApprovalQueue() {
       ]);
       if (brandsRes.error) throw brandsRes.error;
       if (bizRes.error) throw bizRes.error;
-      setPendingBrands(brandsRes.data ?? []);
-      setPendingBusinesses(bizRes.data ?? []);
-    } catch (err: any) {
-      console.error('Error loading approval queue:', err);
-      setError('Failed to load approval queue.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return {
+        pendingBrands: (brandsRes.data ?? []) as PendingBrand[],
+        pendingBusinesses: (bizRes.data ?? []) as PendingBusiness[],
+      };
+    },
+  });
 
-  useEffect(() => {
-    loadQueue();
-  }, [loadQueue]);
+  const pendingBrands = queueData?.pendingBrands ?? [];
+  const pendingBusinesses = queueData?.pendingBusinesses ?? [];
+  const error = queryError ? (queryError as Error).message : null;
 
   // ── Brand actions ──────────────────────────────────────────────────────
 
@@ -139,7 +133,7 @@ export default function AdminApprovalQueue() {
         })
         .eq('id', brand.id);
       if (error) throw error;
-      setPendingBrands(prev => prev.filter(b => b.id !== brand.id));
+      queryClient.invalidateQueries({ queryKey: ['admin-approval-queue'] });
       addToast(`${brand.name} approved.`, 'success');
     } catch (err: any) {
       console.error('Error approving brand:', err);
@@ -160,7 +154,7 @@ export default function AdminApprovalQueue() {
         })
         .eq('id', brand.id);
       if (error) throw error;
-      setPendingBrands(prev => prev.filter(b => b.id !== brand.id));
+      queryClient.invalidateQueries({ queryKey: ['admin-approval-queue'] });
       addToast(`${brand.name} returned to unverified.`, 'info');
     } catch (err: any) {
       console.error('Error rejecting brand:', err);
@@ -184,7 +178,7 @@ export default function AdminApprovalQueue() {
         })
         .eq('id', biz.id);
       if (error) throw error;
-      setPendingBusinesses(prev => prev.filter(b => b.id !== biz.id));
+      queryClient.invalidateQueries({ queryKey: ['admin-approval-queue'] });
       addToast(`${biz.name} approved.`, 'success');
     } catch (err: any) {
       console.error('Error approving business:', err);
@@ -204,7 +198,7 @@ export default function AdminApprovalQueue() {
         })
         .eq('id', biz.id);
       if (error) throw error;
-      setPendingBusinesses(prev => prev.filter(b => b.id !== biz.id));
+      queryClient.invalidateQueries({ queryKey: ['admin-approval-queue'] });
       addToast(`${biz.name} returned to unverified.`, 'info');
     } catch (err: any) {
       console.error('Error rejecting business:', err);

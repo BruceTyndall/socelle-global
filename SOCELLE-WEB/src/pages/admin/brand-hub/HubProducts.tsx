@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Package } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { Badge, EmptyState, StatCard } from '../../../components/ui';
 import { supabase } from '../../../lib/supabase';
 
@@ -18,35 +18,30 @@ interface Product {
 
 export default function HubProducts() {
   const { id: brandId } = useParams<{ id: string }>();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!brandId) return;
-    (async () => {
-      try {
-        const [proRes, retailRes] = await Promise.all([
-          supabase
-            .from('pro_products')
-            .select('id, name, sku, category, msrp_price, wholesale_price, stock_quantity, is_active')
-            .eq('brand_id', brandId)
-            .order('name'),
-          supabase
-            .from('retail_products')
-            .select('id, name, sku, category, msrp_price, wholesale_price, stock_quantity, is_active')
-            .eq('brand_id', brandId)
-            .order('name'),
-        ]);
+  const { data: products = [], isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-hub-products', brandId],
+    queryFn: async () => {
+      const [proRes, retailRes] = await Promise.all([
+        supabase
+          .from('pro_products')
+          .select('id, name, sku, category, msrp_price, wholesale_price, stock_quantity, is_active')
+          .eq('brand_id', brandId!)
+          .order('name'),
+        supabase
+          .from('retail_products')
+          .select('id, name, sku, category, msrp_price, wholesale_price, stock_quantity, is_active')
+          .eq('brand_id', brandId!)
+          .order('name'),
+      ]);
 
-        const pro: Product[]    = (proRes.data ?? []).map((p: any) => ({ ...p, productType: 'PRO' as const }));
-        const retail: Product[] = (retailRes.data ?? []).map((p: any) => ({ ...p, productType: 'Retail' as const }));
+      const pro: Product[]    = (proRes.data ?? []).map((p: any) => ({ ...p, productType: 'PRO' as const }));
+      const retail: Product[] = (retailRes.data ?? []).map((p: any) => ({ ...p, productType: 'Retail' as const }));
 
-        setProducts([...pro, ...retail]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [brandId]);
+      return [...pro, ...retail];
+    },
+    enabled: !!brandId,
+  });
 
   if (loading) {
     return (

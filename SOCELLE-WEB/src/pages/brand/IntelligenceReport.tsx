@@ -466,7 +466,10 @@ export default function IntelligenceReport() {
                 <Calendar className="w-4 h-4" />
                 <span>{formatReportDate(report.reportDate)}</span>
               </div>
-              <h1 className="text-2xl font-bold font-playfair text-graphite">{report.title}</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold font-playfair text-graphite">{report.title}</h1>
+                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
+              </div>
               <p className="text-sm text-graphite/60 mt-1">
                 Prepared for <span className="font-medium text-graphite">{brandName}</span>
                 {' | '}Generated {formatGeneratedDate(report.generatedAt)}

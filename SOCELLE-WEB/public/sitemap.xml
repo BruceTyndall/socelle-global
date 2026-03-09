@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   SITEMAP INDEX — socelle.com
-  Updated: 2026-03-06 (W12-09)
+  Updated: 2026-03-08 (SEO audit)
 
   All sub-sitemaps are served by the sitemap-generator Supabase Edge Function.
   Static routes are content-stable. Dynamic routes (brands, protocols, jobs, stories) are LIVE from DB.
@@ -21,31 +21,31 @@
   <!-- Static public routes (Home, Intelligence, Brands, Events, Jobs, Education, etc.) -->
   <sitemap>
     <loc>https://socelle.com/sitemap-static.xml</loc>
-    <lastmod>2026-03-06</lastmod>
+    <lastmod>2026-03-08</lastmod>
   </sitemap>
 
   <!-- Dynamic brand profiles — LIVE from `brands` table (status='active') -->
   <sitemap>
     <loc>https://socelle.com/sitemap-brands.xml</loc>
-    <lastmod>2026-03-06</lastmod>
+    <lastmod>2026-03-08</lastmod>
   </sitemap>
 
   <!-- Canonical protocols — LIVE from `canonical_protocols` table -->
   <sitemap>
     <loc>https://socelle.com/sitemap-protocols.xml</loc>
-    <lastmod>2026-03-06</lastmod>
+    <lastmod>2026-03-08</lastmod>
   </sitemap>
 
   <!-- Active job postings — LIVE from `job_postings` table (status='active') -->
   <sitemap>
     <loc>https://socelle.com/sitemap-jobs.xml</loc>
-    <lastmod>2026-03-06</lastmod>
+    <lastmod>2026-03-08</lastmod>
   </sitemap>
 
   <!-- Editorial stories — LIVE from `stories` table (status='published') W15-06 -->
   <sitemap>
     <loc>https://socelle.com/sitemap-stories.xml</loc>
-    <lastmod>2026-03-06</lastmod>
+    <lastmod>2026-03-08</lastmod>
   </sitemap>
 
 </sitemapindex>

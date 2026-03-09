@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
   ArrowLeft,
   Check,
@@ -177,70 +178,52 @@ export default function BrandAdminEditor() {
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [brand, setBrand] = useState<Brand | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [pageModules, setPageModules] = useState<PageModule[]>([]);
-  const [pageModulesLoading, setPageModulesLoading] = useState(false);
-  const [publishStats, setPublishStats] = useState({
-    enabledModules: 0,
-    totalModules: 0,
-    mediaAssets: 0,
-    loading: false,
-  });
   const showToast = (type: 'success' | 'error', message: string) => {
     addToast(message, type);
   };
 
-  useEffect(() => {
-    if (isCreateMode) {
-      setBrand({
-        id: '',
-        name: '',
-        slug: '',
-        status: 'inactive',
-        description: null,
-        short_description: null,
-        long_description: null,
-        category_tags: [],
-        contact_email: null,
-        logo_url: null,
-        hero_image_url: null,
-        hero_video_url: null,
-        website_url: null,
-        theme: DEFAULT_THEME,
-        is_published: false,
-        published_at: null,
-      });
-      setLoading(false);
-    } else {
-      loadBrand();
-    }
-  }, [id, isCreateMode]);
+  // ── Load brand data ──
+  const { isLoading: loading, refetch: loadBrand } = useQuery({
+    queryKey: ['admin', 'brand-editor', id],
+    queryFn: async () => {
+      if (isCreateMode) {
+        setBrand({
+          id: '',
+          name: '',
+          slug: '',
+          status: 'inactive',
+          description: null,
+          short_description: null,
+          long_description: null,
+          category_tags: [],
+          contact_email: null,
+          logo_url: null,
+          hero_image_url: null,
+          hero_video_url: null,
+          website_url: null,
+          theme: DEFAULT_THEME,
+          is_published: false,
+          published_at: null,
+        });
+        return null;
+      }
 
-  async function loadBrand() {
-    if (!id || isCreateMode) {
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
       const { data, error: fetchError } = await supabase
         .from('brands')
         .select('*')
-        .eq('id', id)
+        .eq('id', id!)
         .maybeSingle();
 
       if (fetchError) throw fetchError;
 
       if (!data) {
         setError('Brand not found');
-        return;
+        return null;
       }
 
       setBrand({
@@ -248,87 +231,66 @@ export default function BrandAdminEditor() {
         category_tags: data.category_tags || [],
         theme: data.theme || DEFAULT_THEME,
       });
-    } catch (err: any) {
-      console.error('Error loading brand:', err);
-      setError(err.message || 'Failed to load brand');
-    } finally {
-      setLoading(false);
-    }
-  }
+      return data;
+    },
+    meta: {
+      onError: (err: any) => {
+        console.error('Error loading brand:', err);
+        setError(err.message || 'Failed to load brand');
+      },
+    },
+  });
 
-  async function loadPageModules(brandId: string) {
-    if (!brandId) {
-      setPageModules([]);
-      return;
-    }
-
-    setPageModulesLoading(true);
-    try {
-      const { data, error } = await supabase
+  // ── Load page modules ──
+  const { isLoading: pageModulesLoading } = useQuery({
+    queryKey: ['admin', 'brand-page-modules', brand?.id, activeTab],
+    queryFn: async () => {
+      const { data, error: fetchErr } = await supabase
         .from('brand_page_modules')
         .select('*')
-        .eq('brand_id', brandId)
+        .eq('brand_id', brand!.id)
         .order('sort_order', { ascending: true });
 
-      if (error) {
-        console.error('Failed to load page modules:', error);
-        return;
+      if (fetchErr) {
+        console.error('Failed to load page modules:', fetchErr);
+        return [];
       }
 
       setPageModules(data || []);
-    } catch (err) {
-      console.error('Failed to load page modules:', err);
-    } finally {
-      setPageModulesLoading(false);
-    }
-  }
+      return data || [];
+    },
+    enabled: !!brand?.id,
+  });
 
-  async function loadPublishStats(brandId: string) {
-    if (!brandId) {
-      setPublishStats({
-        enabledModules: 0,
-        totalModules: 0,
-        mediaAssets: 0,
-        loading: false,
-      });
-      return;
-    }
-
-    setPublishStats((prev) => ({ ...prev, loading: true }));
-    try {
+  // ── Load publish stats ──
+  const { data: publishStats = { enabledModules: 0, totalModules: 0, mediaAssets: 0, loading: false } } = useQuery({
+    queryKey: ['admin', 'brand-publish-stats', brand?.id, activeTab],
+    queryFn: async () => {
       const [enabledModulesRes, totalModulesRes, mediaAssetsRes] = await Promise.all([
         supabase
           .from('brand_page_modules')
           .select('id', { count: 'exact', head: true })
-          .eq('brand_id', brandId)
+          .eq('brand_id', brand!.id)
           .eq('is_enabled', true),
         supabase
           .from('brand_page_modules')
           .select('id', { count: 'exact', head: true })
-          .eq('brand_id', brandId),
+          .eq('brand_id', brand!.id),
         supabase
           .from('brand_assets')
           .select('id', { count: 'exact', head: true })
-          .eq('brand_id', brandId),
+          .eq('brand_id', brand!.id),
       ]);
 
-      setPublishStats({
+      return {
         enabledModules: enabledModulesRes.count || 0,
         totalModules: totalModulesRes.count || 0,
         mediaAssets: mediaAssetsRes.count || 0,
         loading: false,
-      });
-    } catch (err) {
-      console.error('Failed to load publish stats', err);
-      setPublishStats((prev) => ({ ...prev, loading: false }));
-    }
-  }
-
-  useEffect(() => {
-    if (!brand?.id) return;
-    loadPublishStats(brand.id);
-    loadPageModules(brand.id);
-  }, [brand?.id, activeTab]);
+      };
+    },
+    enabled: !!brand?.id,
+  });
 
   function generateSlug(name: string): string {
     return name
@@ -1143,19 +1105,31 @@ function PageBuilderTab({
   onModulesChange: (modules: PageModule[]) => void;
 }) {
   const [modules, setModules] = useState<PageModule[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [showModuleMenu, setShowModuleMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (brandId) {
-      loadModules();
-    } else {
-      setLoading(false);
-      onModulesChange([]);
-    }
-  }, [brandId]);
+  const { isLoading: loading, refetch: loadModules } = useQuery({
+    queryKey: ['admin', 'brand-builder-modules', brandId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_page_modules')
+        .select('*')
+        .eq('brand_id', brandId)
+        .order('sort_order', { ascending: true });
+
+      if (error) {
+        showToast('error', error.message);
+        return [];
+      }
+
+      const nextModules = data || [];
+      setModules(nextModules);
+      onModulesChange(nextModules);
+      return nextModules;
+    },
+    enabled: !!brandId,
+  });
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -1167,24 +1141,6 @@ function PageBuilderTab({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  async function loadModules() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('brand_page_modules')
-      .select('*')
-      .eq('brand_id', brandId)
-      .order('sort_order', { ascending: true });
-
-    if (error) {
-      showToast('error', error.message);
-    } else {
-      const nextModules = data || [];
-      setModules(nextModules);
-      onModulesChange(nextModules);
-    }
-    setLoading(false);
-  }
 
   async function addModule(moduleType: string) {
     const moduleConfig = MODULE_TYPES.find(m => m.type === moduleType);
@@ -1727,23 +1683,20 @@ function FeaturedProtocolsModuleEditor({
   layoutVariant: string;
   updateLayoutVariant: (variant: string) => void;
 }) {
-  const [protocols, setProtocols] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const selectedIds = config.selected_protocol_ids || [];
 
-  useEffect(() => {
-    loadProtocols();
-  }, [brandId]);
-
-  async function loadProtocols() {
-    const { data } = await supabase
-      .from('canonical_protocols')
-      .select('id, protocol_name')
-      .eq('brand_id', brandId)
-      .order('protocol_name');
-    setProtocols(data || []);
-    setLoading(false);
-  }
+  const { data: protocols = [], isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-protocols-config', brandId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('canonical_protocols')
+        .select('id, protocol_name')
+        .eq('brand_id', brandId)
+        .order('protocol_name');
+      return data || [];
+    },
+    enabled: !!brandId,
+  });
 
   function toggleProtocol(id: string) {
     const newIds = selectedIds.includes(id)
@@ -1813,25 +1766,23 @@ function FeaturedProductsModuleEditor({
   layoutVariant: string;
   updateLayoutVariant: (variant: string) => void;
 }) {
-  const [proProducts, setProProducts] = useState<any[]>([]);
-  const [retailProducts, setRetailProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const selectedProIds = config.selected_pro_ids || [];
   const selectedRetailIds = config.selected_retail_ids || [];
 
-  useEffect(() => {
-    loadProducts();
-  }, [brandId]);
+  const { data: productsData, isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-products-config', brandId],
+    queryFn: async () => {
+      const [pro, retail] = await Promise.all([
+        supabase.from('pro_products').select('id, product_name').eq('brand_id', brandId).order('product_name'),
+        supabase.from('retail_products').select('id, product_name').eq('brand_id', brandId).order('product_name'),
+      ]);
+      return { proProducts: pro.data || [], retailProducts: retail.data || [] };
+    },
+    enabled: !!brandId,
+  });
 
-  async function loadProducts() {
-    const [pro, retail] = await Promise.all([
-      supabase.from('pro_products').select('id, product_name').eq('brand_id', brandId).order('product_name'),
-      supabase.from('retail_products').select('id, product_name').eq('brand_id', brandId).order('product_name'),
-    ]);
-    setProProducts(pro.data || []);
-    setRetailProducts(retail.data || []);
-    setLoading(false);
-  }
+  const proProducts = productsData?.proProducts ?? [];
+  const retailProducts = productsData?.retailProducts ?? [];
 
   function toggleProProduct(id: string) {
     const newIds = selectedProIds.includes(id)
@@ -2369,7 +2320,6 @@ function MediaLibraryTab({
   showToast: (type: 'success' | 'error', message: string) => void;
 }) {
   const [assets, setAssets] = useState<BrandAsset[]>([]);
-  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -2381,27 +2331,25 @@ function MediaLibraryTab({
   const [selectedAsset, setSelectedAsset] = useState<BrandAsset | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (brandId) {
-      loadAssets();
-    }
-  }, [brandId]);
+  const { isLoading: loading, refetch: loadAssets } = useQuery({
+    queryKey: ['admin', 'brand-media-assets', brandId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_assets')
+        .select('*')
+        .eq('brand_id', brandId)
+        .order('created_at', { ascending: false });
 
-  async function loadAssets() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('brand_assets')
-      .select('*')
-      .eq('brand_id', brandId)
-      .order('created_at', { ascending: false });
+      if (error) {
+        showToast('error', error.message);
+        return [];
+      }
 
-    if (error) {
-      showToast('error', error.message);
-    } else {
       setAssets(data || []);
-    }
-    setLoading(false);
-  }
+      return data || [];
+    },
+    enabled: !!brandId,
+  });
 
   async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -3172,30 +3120,27 @@ function EducationTab({
   showToast: (type: 'success' | 'error', message: string) => void;
 }) {
   const [modules, setModules] = useState<TrainingModule[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (brandId) {
-      loadModules();
-    }
-  }, [brandId]);
+  const { isLoading: loading, refetch: loadModules } = useQuery({
+    queryKey: ['admin', 'brand-training-modules', brandId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_training_modules')
+        .select('*')
+        .eq('brand_id', brandId)
+        .order('sort_order', { ascending: true });
 
-  async function loadModules() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('brand_training_modules')
-      .select('*')
-      .eq('brand_id', brandId)
-      .order('sort_order', { ascending: true });
+      if (error) {
+        showToast('error', error.message);
+        return [];
+      }
 
-    if (error) {
-      showToast('error', error.message);
-    } else {
       setModules(data || []);
-    }
-    setLoading(false);
-  }
+      return data || [];
+    },
+    enabled: !!brandId,
+  });
 
   async function addModule() {
     if (!brandId) return;
@@ -3528,30 +3473,27 @@ function CommercialTab({
   showToast: (type: 'success' | 'error', message: string) => void;
 }) {
   const [assets, setAssets] = useState<CommercialAsset[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedAssets, setExpandedAssets] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (brandId) {
-      loadAssets();
-    }
-  }, [brandId]);
+  const { isLoading: loading, refetch: loadAssets } = useQuery({
+    queryKey: ['admin', 'brand-commercial-assets', brandId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('brand_commercial_assets')
+        .select('*')
+        .eq('brand_id', brandId)
+        .order('sort_order', { ascending: true });
 
-  async function loadAssets() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('brand_commercial_assets')
-      .select('*')
-      .eq('brand_id', brandId)
-      .order('sort_order', { ascending: true });
+      if (error) {
+        showToast('error', error.message);
+        return [];
+      }
 
-    if (error) {
-      showToast('error', error.message);
-    } else {
       setAssets(data || []);
-    }
-    setLoading(false);
-  }
+      return data || [];
+    },
+    enabled: !!brandId,
+  });
 
   async function addAsset() {
     if (!brandId) return;
@@ -3858,23 +3800,14 @@ function ShopSettingsTab({
     lead_time_days: null,
     ordering_notes: '',
   });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [schemaMissing, setSchemaMissing] = useState(false);
 
-  useEffect(() => {
-    if (brand.id) {
-      loadSettings();
-    } else {
-      setLoading(false);
-    }
-  }, [brand.id]);
+  const { isLoading: loading } = useQuery({
+    queryKey: ['admin', 'brand-shop-settings', brand.id],
+    queryFn: async () => {
+      setSchemaMissing(false);
 
-  async function loadSettings() {
-    setLoading(true);
-    setSchemaMissing(false);
-
-    try {
       const { data, error } = await supabase
         .from('brand_shop_settings')
         .select('*')
@@ -3886,10 +3819,10 @@ function ShopSettingsTab({
         const isMissingRelation = message.includes('does not exist') || message.includes('relation') || error.code === '42P01';
         if (isMissingRelation) {
           setSchemaMissing(true);
-        } else {
-          showToast('error', error.message);
+          return null;
         }
-        return;
+        showToast('error', error.message);
+        return null;
       }
 
       if (data) {
@@ -3901,13 +3834,11 @@ function ShopSettingsTab({
           rep_email: brand.contact_email || prev.rep_email,
         }));
       }
-    } catch (err: any) {
-      console.error('Failed to load shop settings:', err);
-      showToast('error', 'Failed to load shop settings');
-    } finally {
-      setLoading(false);
-    }
-  }
+
+      return data;
+    },
+    enabled: !!brand.id,
+  });
 
   async function saveSettings() {
     if (!brand.id) {

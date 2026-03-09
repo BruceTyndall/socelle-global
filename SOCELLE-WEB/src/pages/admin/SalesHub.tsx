@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   ShoppingBag,
   RefreshCw,
@@ -13,6 +13,7 @@ import {
   Settings,
   TrendingUp,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useDeals, type Deal } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
@@ -66,20 +67,15 @@ function formatCurrency(amount: number) {
 
 export default function SalesHub() {
   const [tab, setTab] = useState<AdminTab>('orders');
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(true);
-  const [ordersError, setOrdersError] = useState<string | null>(null);
-  const [ordersLive, setOrdersLive] = useState(false);
   const [orderFilter, setOrderFilter] = useState<string>('all');
 
   const { deals, loading: dealsLoading, isLive: dealsLive } = useDeals();
   const { pipelines, loading: pipelinesLoading, isLive: pipelinesLive } = usePipelines();
   const { rules, payouts, loading: commissionsLoading, isLive: commissionsLive } = useCommissions();
 
-  const loadOrders = useCallback(async () => {
-    setOrdersLoading(true);
-    setOrdersError(null);
-    try {
+  const { data: ordersResult, isLoading: ordersLoading, error: ordersQueryError, refetch: refetchOrders } = useQuery({
+    queryKey: ['admin', 'sales-orders', orderFilter],
+    queryFn: async () => {
       let query = supabase
         .from('orders')
         .select('id, order_number, status, subtotal, commission_total, created_at, updated_at, brand_id, business_id')
@@ -87,23 +83,19 @@ export default function SalesHub() {
         .limit(100);
       if (orderFilter !== 'all') query = query.eq('status', orderFilter);
       const { data, error: dbError } = await query;
-      if (dbError) throw dbError;
-      setOrders(data ?? []);
-      setOrdersLive(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : '';
-      if (msg.includes('does not exist') || (err as { code?: string })?.code === '42P01') {
-        setOrdersLive(false);
-        setOrders([]);
-      } else {
-        setOrdersError('Failed to load orders.');
+      if (dbError) {
+        if ((dbError as { code?: string }).code === '42P01' || dbError.message?.toLowerCase().includes('does not exist')) {
+          return { orders: [] as Order[], isLive: false };
+        }
+        throw dbError;
       }
-    } finally {
-      setOrdersLoading(false);
-    }
-  }, [orderFilter]);
+      return { orders: (data ?? []) as Order[], isLive: true };
+    },
+  });
 
-  useEffect(() => { loadOrders(); }, [loadOrders]);
+  const orders = ordersResult?.orders ?? [];
+  const ordersLive = ordersResult?.isLive ?? false;
+  const ordersError = ordersQueryError ? 'Failed to load orders.' : null;
 
   const totalRevenue = orders.reduce((s, r) => s + (r.subtotal || 0), 0);
   const totalCommission = orders.reduce((s, r) => s + (r.commission_total || 0), 0);
@@ -124,7 +116,7 @@ export default function SalesHub() {
         icon={ShieldAlert}
         title="Sales Hub Unavailable"
         message={ordersError}
-        action={{ label: 'Retry', onClick: loadOrders }}
+        action={{ label: 'Retry', onClick: refetchOrders }}
       />
     );
   }
@@ -154,7 +146,7 @@ export default function SalesHub() {
         </div>
         <button
           type="button"
-          onClick={tab === 'orders' ? loadOrders : undefined}
+          onClick={tab === 'orders' ? refetchOrders : undefined}
           disabled={isLoading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft disabled:opacity-60 font-sans text-sm transition-colors"
         >

@@ -21,6 +21,7 @@ import {
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPanel';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
+import { TierGate, CreditGate } from '../../components/gates';
 
 // ── Cloud Modules (10) ──────────────────────────────────────────────
 import {
@@ -256,27 +257,35 @@ export default function IntelligenceHub() {
           )}
 
           {activeTab === 'categories' && (
-            <CategoryIntelligence
-              signals={signals}
-              loading={loading}
-              onSelectSignal={handleSelectSignal}
-            />
+            <TierGate requiredTier="starter" contextMessage="Category Intelligence requires a Starter plan or above.">
+              <CategoryIntelligence
+                signals={signals}
+                loading={loading}
+                onSelectSignal={handleSelectSignal}
+              />
+            </TierGate>
           )}
 
           {activeTab === 'competitive' && (
-            <CompetitiveTab signals={signals} loading={loading} />
+            <TierGate requiredTier="starter" contextMessage="Competitive Benchmarking requires a Starter plan or above.">
+              <CompetitiveTab signals={signals} loading={loading} />
+            </TierGate>
           )}
 
           {activeTab === 'local' && (
-            <LocalMarketView
-              signals={signals}
-              loading={loading}
-              onSelectSignal={handleSelectSignal}
-            />
+            <TierGate requiredTier="pro" contextMessage="Local Market View requires a Pro plan or above.">
+              <LocalMarketView
+                signals={signals}
+                loading={loading}
+                onSelectSignal={handleSelectSignal}
+              />
+            </TierGate>
           )}
 
           {activeTab === 'provenance' && (
-            <ConfidenceProvenance signal={selectedSignal} loading={loading} />
+            <TierGate requiredTier="starter" contextMessage="Confidence and Provenance data requires a Starter plan or above.">
+              <ConfidenceProvenance signal={selectedSignal} loading={loading} />
+            </TierGate>
           )}
         </div>
       </div>
@@ -308,28 +317,52 @@ export default function IntelligenceHub() {
         </div>
       </div>
 
-      {/* ── AI Tool Modals ─────────────────────────────────────── */}
+      {/* ── AI Tool Modals (tier + credit gated) ────────────────── */}
       {activeAITool === 'explain' && (
-        <ExplainSignal
-          signalId={selectedSignal?.id ?? ''}
-          signalTitle={selectedSignal?.title}
-          onClose={handleCloseAITool}
-        />
+        <TierGate requiredTier="starter" contextMessage="Explain Signal requires a Starter plan or above.">
+          <CreditGate cost={5}>
+            <ExplainSignal
+              signalId={selectedSignal?.id ?? ''}
+              signalTitle={selectedSignal?.title}
+              onClose={handleCloseAITool}
+            />
+          </CreditGate>
+        </TierGate>
       )}
       {activeAITool === 'search' && (
-        <SignalSearch onClose={handleCloseAITool} />
+        <TierGate requiredTier="starter" contextMessage="Signal Search requires a Starter plan or above.">
+          <CreditGate cost={2}>
+            <SignalSearch onClose={handleCloseAITool} />
+          </CreditGate>
+        </TierGate>
       )}
       {activeAITool === 'brief' && (
-        <BriefGenerator onClose={handleCloseAITool} />
+        <TierGate requiredTier="pro" contextMessage="Brief Generator requires a Pro plan or above.">
+          <CreditGate cost={25}>
+            <BriefGenerator onClose={handleCloseAITool} />
+          </CreditGate>
+        </TierGate>
       )}
       {activeAITool === 'plan' && (
-        <ActionPlanGenerator onClose={handleCloseAITool} />
+        <TierGate requiredTier="pro" contextMessage="Action Plan Generator requires a Pro plan or above.">
+          <CreditGate cost={30}>
+            <ActionPlanGenerator onClose={handleCloseAITool} />
+          </CreditGate>
+        </TierGate>
       )}
       {activeAITool === 'rnd' && (
-        <RnDScout onClose={handleCloseAITool} />
+        <TierGate requiredTier="pro" contextMessage="R&D Scout requires a Pro plan or above.">
+          <CreditGate cost={40}>
+            <RnDScout onClose={handleCloseAITool} />
+          </CreditGate>
+        </TierGate>
       )}
       {activeAITool === 'mocra' && (
-        <MoCRAChecker onClose={handleCloseAITool} />
+        <TierGate requiredTier="pro" contextMessage="MoCRA Checker requires a Pro plan or above.">
+          <CreditGate cost={20}>
+            <MoCRAChecker onClose={handleCloseAITool} />
+          </CreditGate>
+        </TierGate>
       )}
 
       {/* ── Signal Detail Slide-out ────────────────────────────── */}

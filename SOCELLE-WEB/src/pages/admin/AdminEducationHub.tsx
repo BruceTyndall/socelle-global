@@ -3,7 +3,6 @@
  * Admin overview: all courses, enrollments, certificates, CE report
  * Data: courses, course_enrollments, certificates tables (LIVE)
  */
-import { useState, useEffect } from 'react';
 import {
   BookOpen,
   Users,
@@ -13,6 +12,7 @@ import {
   Eye,
   TrendingUp,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 interface AdminStats {
@@ -35,69 +35,52 @@ interface CourseRow {
   updated_at: string;
 }
 
+interface EducationData {
+  stats: AdminStats;
+  courses: CourseRow[];
+}
+
 export default function AdminEducationHub() {
-  const [stats, setStats] = useState<AdminStats>({
-    totalCourses: 0,
-    publishedCourses: 0,
-    totalEnrollments: 0,
-    totalCertificates: 0,
-    totalCeCreditsIssued: 0,
-  });
-  const [courses, setCourses] = useState<CourseRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
+  const { data: eduData, isLoading: loading } = useQuery<EducationData>({
+    queryKey: ['admin-education-hub'],
+    queryFn: async () => {
+      // Fetch courses
+      const { data: coursesData } = await supabase
+        .from('courses')
+        .select('id, title, slug, is_published, enrollment_count, category, level, created_at, updated_at')
+        .order('created_at', { ascending: false });
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) {
-      setLoading(false);
-      return;
-    }
+      // Fetch enrollment count
+      const { count: enrollmentCount } = await supabase
+        .from('course_enrollments')
+        .select('id', { count: 'exact', head: true });
 
-    let cancelled = false;
+      // Fetch certificate count + CE total
+      const { data: certsData } = await supabase
+        .from('certificates')
+        .select('ce_credits');
 
-    async function fetchData() {
-      try {
-        // Fetch courses
-        const { data: coursesData } = await supabase
-          .from('courses')
-          .select('id, title, slug, is_published, enrollment_count, category, level, created_at, updated_at')
-          .order('created_at', { ascending: false });
+      const coursesList = (coursesData as CourseRow[]) || [];
+      const certs = (certsData as { ce_credits: number | null }[]) || [];
+      const totalCE = certs.reduce((sum, c) => sum + (c.ce_credits || 0), 0);
 
-        // Fetch enrollment count
-        const { count: enrollmentCount } = await supabase
-          .from('course_enrollments')
-          .select('id', { count: 'exact', head: true });
-
-        // Fetch certificate count + CE total
-        const { data: certsData } = await supabase
-          .from('certificates')
-          .select('ce_credits');
-
-        if (cancelled) return;
-
-        const coursesList = (coursesData as CourseRow[]) || [];
-        const certs = (certsData as { ce_credits: number | null }[]) || [];
-        const totalCE = certs.reduce((sum, c) => sum + (c.ce_credits || 0), 0);
-
-        setCourses(coursesList);
-        setStats({
+      return {
+        courses: coursesList,
+        stats: {
           totalCourses: coursesList.length,
           publishedCourses: coursesList.filter(c => c.is_published).length,
           totalEnrollments: enrollmentCount || 0,
           totalCertificates: certs.length,
           totalCeCreditsIssued: totalCE,
-        });
-        setIsLive(true);
-      } catch {
-        setIsLive(false);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
+        },
+      };
+    },
+    enabled: isSupabaseConfigured,
+  });
 
-    fetchData();
-    return () => { cancelled = true; };
-  }, []);
+  const courses = eduData?.courses ?? [];
+  const stats = eduData?.stats ?? { totalCourses: 0, publishedCourses: 0, totalEnrollments: 0, totalCertificates: 0, totalCeCreditsIssued: 0 };
+  const isLive = !!eduData;
 
   return (
     <div className="space-y-6">

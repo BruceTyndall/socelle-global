@@ -99,6 +99,11 @@ const STATIC_ROUTES: Array<{ path: string; changefreq: string; priority: string 
   { path: '/faq',            changefreq: 'monthly', priority: '0.6' },
   { path: '/about',          changefreq: 'monthly', priority: '0.5' },
   { path: '/contact',        changefreq: 'monthly', priority: '0.5' },
+  { path: '/blog',           changefreq: 'daily',   priority: '0.8' },
+  { path: '/help',           changefreq: 'monthly', priority: '0.5' },
+  { path: '/ingredients',    changefreq: 'weekly',  priority: '0.7' },
+  { path: '/plans',          changefreq: 'weekly',  priority: '0.7' },
+  { path: '/for-salons',     changefreq: 'monthly', priority: '0.7' },
   { path: '/privacy',        changefreq: 'yearly',  priority: '0.3' },
   { path: '/terms',          changefreq: 'yearly',  priority: '0.3' },
 ];

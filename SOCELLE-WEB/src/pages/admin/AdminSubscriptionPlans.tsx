@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Plus, Save, X, ToggleLeft, ToggleRight, Loader2,
   ChevronDown, ChevronUp, Pencil,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { MODULE_KEYS } from '../../modules/_core/context/ModuleAccessContext';
 import { getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
@@ -43,53 +44,38 @@ const EMPTY_PLAN: Omit<PlanRow, 'id' | 'created_at' | '_account_count'> = {
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function AdminSubscriptionPlans() {
-  const [plans, setPlans] = useState<PlanRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [editing, setEditing] = useState<Partial<PlanRow> | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPlans = useCallback(async () => {
-    setLoading(true);
-    try {
+  const { data: plans = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-subscription-plans'],
+    queryFn: async () => {
       const { data, error: err } = await supabase
         .from('subscription_plans')
         .select('*')
         .order('sort_order', { ascending: true });
 
-      if (err) {
-        setError(err.message);
-        setPlans([]);
-      } else {
-        // Try to get account counts per plan
-        const { data: subCounts } = await supabase
-          .from('account_subscriptions')
-          .select('plan_id')
-          .in('status', ['active', 'trialing']);
+      if (err) throw new Error(err.message);
 
-        const countMap: Record<string, number> = {};
-        subCounts?.forEach((s: { plan_id: string }) => {
-          countMap[s.plan_id] = (countMap[s.plan_id] ?? 0) + 1;
-        });
+      // Try to get account counts per plan
+      const { data: subCounts } = await supabase
+        .from('account_subscriptions')
+        .select('plan_id')
+        .in('status', ['active', 'trialing']);
 
-        setPlans(
-          (data as PlanRow[]).map((p) => ({
-            ...p,
-            _account_count: countMap[p.id] ?? 0,
-          })),
-        );
-        setError(null);
-      }
-    } catch (e) {
-      setError('Failed to load plans');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      const countMap: Record<string, number> = {};
+      subCounts?.forEach((s: { plan_id: string }) => {
+        countMap[s.plan_id] = (countMap[s.plan_id] ?? 0) + 1;
+      });
 
-  useEffect(() => {
-    fetchPlans();
-  }, [fetchPlans]);
+      return (data as PlanRow[]).map((p) => ({
+        ...p,
+        _account_count: countMap[p.id] ?? 0,
+      }));
+    },
+  });
 
   const handleToggleActive = async (plan: PlanRow) => {
     const { error: err } = await supabase
@@ -97,7 +83,7 @@ export default function AdminSubscriptionPlans() {
       .update({ is_active: !plan.is_active })
       .eq('id', plan.id);
 
-    if (!err) fetchPlans();
+    if (!err) queryClient.invalidateQueries({ queryKey: ['admin-subscription-plans'] });
   };
 
   const handleSave = async () => {
@@ -134,7 +120,7 @@ export default function AdminSubscriptionPlans() {
       }
 
       setEditing(null);
-      fetchPlans();
+      queryClient.invalidateQueries({ queryKey: ['admin-subscription-plans'] });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Save failed';
       setError(msg);

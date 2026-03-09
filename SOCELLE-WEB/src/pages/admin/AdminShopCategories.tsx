@@ -1,24 +1,24 @@
 // AdminShopCategories.tsx — /admin/shop/categories — Category management (LIVE — product_categories table)
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Plus, Pencil, Trash2, X, FolderTree } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import type { ProductCategory } from '../../lib/shop/types';
 
 export default function AdminShopCategories() {
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<ProductCategory | null>(null);
   const [form, setForm] = useState({ name: '', slug: '', description: '', parent_id: '', sort_order: 0, is_active: true, image_url: '' });
 
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase.from('product_categories').select('*').order('sort_order');
-    setCategories((data as ProductCategory[]) ?? []);
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetch(); }, [fetch]);
+  const { data: categories = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-shop-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('product_categories').select('*').order('sort_order');
+      if (error) throw new Error(error.message);
+      return (data as ProductCategory[]) ?? [];
+    },
+  });
 
   const openCreate = () => {
     setEditing(null);
@@ -45,13 +45,13 @@ export default function AdminShopCategories() {
     if (editing) await supabase.from('product_categories').update(payload).eq('id', editing.id);
     else await supabase.from('product_categories').insert(payload);
     setShowForm(false);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-categories'] });
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this category?')) return;
     await supabase.from('product_categories').delete().eq('id', id);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-categories'] });
   };
 
   const parents = categories.filter(c => !c.parent_id);

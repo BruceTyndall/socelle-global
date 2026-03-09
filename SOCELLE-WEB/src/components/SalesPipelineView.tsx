@@ -1,19 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Users, Plus, Search, TrendingUp, FileText, Mail, CheckCircle, Clock } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import PlanOutputView from './PlanOutputView';
 
 export default function SalesPipelineView() {
-  const [leads, setLeads] = useState<any[]>([]);
+  const queryClient = useQueryClient();
   const [selectedLead, setSelectedLead] = useState<any>(null);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [_showNewLeadModal, setShowNewLeadModal] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
-  const [activities, setActivities] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [newActivity, setNewActivity] = useState({
     activityType: 'note',
     title: '',
@@ -21,20 +19,9 @@ export default function SalesPipelineView() {
     followUpDate: ''
   });
 
-  useEffect(() => {
-    loadLeads();
-  }, [filterStatus]);
-
-  useEffect(() => {
-    if (selectedLead) {
-      loadActivities(selectedLead.id);
-    }
-  }, [selectedLead]);
-
-  const loadLeads = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const { data: leads = [], isLoading: loading, error: leadsQueryError } = useQuery({
+    queryKey: ['sales-pipeline-leads', filterStatus],
+    queryFn: async () => {
       let query = supabase
         .from('spa_leads')
         .select(`
@@ -49,30 +36,26 @@ export default function SalesPipelineView() {
       }
 
       const { data, error: queryError } = await query;
+      if (queryError) throw queryError;
+      return data || [];
+    },
+  });
 
-      if (queryError) {
-        console.error('Error loading leads:', queryError);
-        setError(queryError.message);
-      } else {
-        setLeads(data || []);
-      }
-    } catch (err) {
-      console.error('Error loading leads:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load leads');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = leadsQueryError ? (leadsQueryError as Error).message : null;
 
-  const loadActivities = async (leadId: string) => {
-    const { data } = await supabase
-      .from('lead_activities')
-      .select('*')
-      .eq('spa_lead_id', leadId)
-      .order('activity_date', { ascending: false });
+  const { data: activities = [] } = useQuery({
+    queryKey: ['sales-pipeline-activities', selectedLead?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('lead_activities')
+        .select('*')
+        .eq('spa_lead_id', selectedLead.id)
+        .order('activity_date', { ascending: false });
 
-    setActivities(data || []);
-  };
+      return data || [];
+    },
+    enabled: !!selectedLead?.id,
+  });
 
   const addActivity = async () => {
     if (!selectedLead || !newActivity.title) return;
@@ -88,8 +71,8 @@ export default function SalesPipelineView() {
 
     setNewActivity({ activityType: 'note', title: '', description: '', followUpDate: '' });
     setShowActivityModal(false);
-    loadActivities(selectedLead.id);
-    loadLeads();
+    queryClient.invalidateQueries({ queryKey: ['sales-pipeline-activities', selectedLead.id] });
+    queryClient.invalidateQueries({ queryKey: ['sales-pipeline-leads'] });
   };
 
   const updateLeadStatus = async (leadId: string, newStatus: string) => {
@@ -105,7 +88,7 @@ export default function SalesPipelineView() {
       created_by: 'current_user'
     });
 
-    loadLeads();
+    queryClient.invalidateQueries({ queryKey: ['sales-pipeline-leads'] });
   };
 
   const getStatusColor = (status: string) => {

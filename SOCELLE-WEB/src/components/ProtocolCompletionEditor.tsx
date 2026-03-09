@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Plus, Save, Trash2, AlertCircle, CheckCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 
 interface Protocol {
@@ -52,20 +53,13 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
   const [protocol, setProtocol] = useState<Protocol | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
   const [backbarProducts, setBackbarProducts] = useState<BackbarProduct[]>([]);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadProtocolData();
-  }, [protocolId]);
-
-  const loadProtocolData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const { isLoading: loading } = useQuery({
+    queryKey: ['protocol-completion-editor', protocolId],
+    queryFn: async () => {
       const { data: protocolData, error: protocolError } = await supabase
         .from('canonical_protocols')
         .select('*')
@@ -84,11 +78,11 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
       if (stepsError) throw stepsError;
 
       const stepsWithProducts = await Promise.all(
-        (stepsData || []).map(async (step) => {
+        (stepsData || []).map(async (step: Record<string, unknown>) => {
           const { data: productsData } = await supabase
             .from('canonical_protocol_step_products')
             .select('*')
-            .eq('protocol_step_id', step.id);
+            .eq('protocol_step_id', step.id as string);
 
           return {
             ...step,
@@ -97,7 +91,7 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
         })
       );
 
-      setSteps(stepsWithProducts);
+      setSteps(stepsWithProducts as Step[]);
 
       const { data: productsData, error: productsError } = await supabase
         .from('pro_products')
@@ -107,12 +101,10 @@ export default function ProtocolCompletionEditor({ protocolId, onClose, onSave }
       if (productsError) throw productsError;
       setBackbarProducts(productsData || []);
 
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load protocol');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return { protocolData, stepsWithProducts, productsData };
+    },
+    enabled: !!protocolId,
+  });
 
   const addStep = () => {
     const newStepNumber = steps.length > 0 ? Math.max(...steps.map(s => s.step_number)) + 1 : 1;

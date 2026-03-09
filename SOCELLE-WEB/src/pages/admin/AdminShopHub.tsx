@@ -1,11 +1,12 @@
 // AdminShopHub.tsx — /admin/shop — Shop management hub
 // Data: LIVE — products, product_categories, orders, discount_codes, reviews tables
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   ShoppingBag, Package, Tag, Layers, Star, BarChart3,
   Search, RefreshCw, Eye, Edit2, Check, X as XIcon,
 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useProducts } from '../../lib/shop/useProducts';
 import { useCategories } from '../../lib/shop/useCategories';
@@ -25,59 +26,47 @@ const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
 
 // ── Admin-scoped hooks (no user filter — admin sees all) ──
 function useAdminOrders() {
-  const [orders, setOrders] = useState<Array<Record<string, unknown>>>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from('orders')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    setOrders((data as Array<Record<string, unknown>>) ?? []);
-    setLoading(false);
-  }, []);
-
-  useState(() => { fetch(); });
-  return { orders, loading, refetch: fetch };
+  const { data: orders = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['admin-shop-hub-orders'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      return (data as Array<Record<string, unknown>>) ?? [];
+    },
+  });
+  return { orders, loading, refetch };
 }
 
 function useAdminDiscounts() {
-  const [discounts, setDiscounts] = useState<Array<Record<string, unknown>>>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from('discount_codes')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setDiscounts((data as Array<Record<string, unknown>>) ?? []);
-    setLoading(false);
-  }, []);
-
-  useState(() => { fetch(); });
-  return { discounts, loading, refetch: fetch };
+  const { data: discounts = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['admin-shop-hub-discounts'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('discount_codes')
+        .select('*')
+        .order('created_at', { ascending: false });
+      return (data as Array<Record<string, unknown>>) ?? [];
+    },
+  });
+  return { discounts, loading, refetch };
 }
 
 function useAdminReviews() {
-  const [reviews, setReviews] = useState<Array<Record<string, unknown>>>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from('reviews')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    setReviews((data as Array<Record<string, unknown>>) ?? []);
-    setLoading(false);
-  }, []);
-
-  useState(() => { fetch(); });
-  return { reviews, loading, refetch: fetch };
+  const { data: reviews = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['admin-shop-hub-reviews'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('reviews')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      return (data as Array<Record<string, unknown>>) ?? [];
+    },
+  });
+  return { reviews, loading, refetch };
 }
 
 export default function AdminShopHub() {

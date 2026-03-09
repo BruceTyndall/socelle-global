@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Rocket, CheckCircle, AlertTriangle, Calendar, Package, TrendingUp, FileText } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { generateAllReadinessForMenu } from '../lib/implementationReadinessEngine';
 import { generatePhasedRolloutPlan, getRolloutPlanSummary } from '../lib/phasedRolloutPlanner';
@@ -13,108 +14,103 @@ interface SpaMenu {
 }
 
 export default function ImplementationPlannerView() {
-  const [menus, setMenus] = useState<SpaMenu[]>([]);
   const [selectedMenuId, setSelectedMenuId] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'readiness' | 'rollout' | 'opening' | 'brand'>('readiness');
-  const [loading, setLoading] = useState(false);
   const [readinessData, setReadinessData] = useState<any[]>([]);
   const [rolloutPlan, setRolloutPlan] = useState<any>(null);
   const [openingOrder, setOpeningOrder] = useState<any>(null);
   const [brandNarrative, setBrandNarrative] = useState<any>(null);
 
-  useEffect(() => {
-    loadMenus();
-  }, []);
-
-  useEffect(() => {
-    if (selectedMenuId) {
-      loadData();
-    }
-  }, [selectedMenuId, activeTab]);
-
-  const loadMenus = async () => {
-    const { data } = await supabase
-      .from('spa_menus')
-      .select('id, spa_name, spa_type')
-      .order('created_at', { ascending: false });
-
-    if (data) {
-      setMenus(data);
-      if (data.length > 0 && !selectedMenuId) {
-        setSelectedMenuId(data[0].id);
-      }
-    }
-  };
-
-  const loadData = async () => {
-    if (!selectedMenuId) return;
-
-    if (activeTab === 'readiness') {
+  const { data: menus = [] } = useQuery({
+    queryKey: ['implementation-planner-menus'],
+    queryFn: async () => {
       const { data } = await supabase
-        .from('implementation_readiness')
-        .select(`
-          *,
-          service_mapping:spa_service_mapping(service_name),
-          gap:service_gap_analysis(gap_description),
-          protocol:canonical_protocols(protocol_name)
-        `)
-        .eq('spa_menu_id', selectedMenuId)
-        .order('overall_implementation_risk_score');
+        .from('spa_menus')
+        .select('id, spa_name, spa_type')
+        .order('created_at', { ascending: false });
 
-      setReadinessData(data || []);
-    } else if (activeTab === 'rollout') {
-      const { data: plans } = await supabase
-        .from('phased_rollout_plans')
-        .select('*')
-        .eq('spa_menu_id', selectedMenuId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (plans) {
-        const summary = await getRolloutPlanSummary(plans.id);
-        setRolloutPlan(summary);
-
-        const selectedMenu = menus.find(m => m.id === selectedMenuId);
-        if (selectedMenu) {
-          const narrative = await generateBrandNarrative(
-            selectedMenu.spa_type as 'medspa' | 'spa' | 'hybrid',
-            plans.id
-          );
-          setBrandNarrative(narrative);
-        }
+      const menusList = (data || []) as SpaMenu[];
+      if (menusList.length > 0 && !selectedMenuId) {
+        setSelectedMenuId(menusList[0].id);
       }
-    } else if (activeTab === 'opening') {
-      const { data: plans } = await supabase
-        .from('phased_rollout_plans')
-        .select('id')
-        .eq('spa_menu_id', selectedMenuId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      return menusList;
+    },
+  });
 
-      if (plans) {
-        const { data: order } = await supabase
-          .from('opening_orders')
+  const { isLoading: loading, refetch: refetchData } = useQuery({
+    queryKey: ['implementation-planner-data', selectedMenuId, activeTab],
+    queryFn: async () => {
+      if (activeTab === 'readiness') {
+        const { data } = await supabase
+          .from('implementation_readiness')
+          .select(`
+            *,
+            service_mapping:spa_service_mapping(service_name),
+            gap:service_gap_analysis(gap_description),
+            protocol:canonical_protocols(protocol_name)
+          `)
+          .eq('spa_menu_id', selectedMenuId)
+          .order('overall_implementation_risk_score');
+
+        setReadinessData(data || []);
+      } else if (activeTab === 'rollout') {
+        const { data: plans } = await supabase
+          .from('phased_rollout_plans')
           .select('*')
-          .eq('rollout_plan_id', plans.id)
+          .eq('spa_menu_id', selectedMenuId)
+          .order('created_at', { ascending: false })
+          .limit(1)
           .single();
 
-        setOpeningOrder(order);
+        if (plans) {
+          const summary = await getRolloutPlanSummary(plans.id);
+          setRolloutPlan(summary);
+
+          const selectedMenu = menus.find(m => m.id === selectedMenuId);
+          if (selectedMenu) {
+            const narrative = await generateBrandNarrative(
+              selectedMenu.spa_type as 'medspa' | 'spa' | 'hybrid',
+              plans.id
+            );
+            setBrandNarrative(narrative);
+          }
+        }
+      } else if (activeTab === 'opening') {
+        const { data: plans } = await supabase
+          .from('phased_rollout_plans')
+          .select('id')
+          .eq('spa_menu_id', selectedMenuId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (plans) {
+          const { data: order } = await supabase
+            .from('opening_orders')
+            .select('*')
+            .eq('rollout_plan_id', plans.id)
+            .single();
+
+          setOpeningOrder(order);
+        }
+      } else if (activeTab === 'brand') {
+        const selectedMenu = menus.find(m => m.id === selectedMenuId);
+        if (selectedMenu) {
+          const brandSection = await getWhyThisBrandSection(selectedMenu.spa_type as 'medspa' | 'spa' | 'hybrid');
+          setBrandNarrative(brandSection);
+        }
       }
-    } else if (activeTab === 'brand') {
-      const selectedMenu = menus.find(m => m.id === selectedMenuId);
-      if (selectedMenu) {
-        const brandSection = await getWhyThisBrandSection(selectedMenu.spa_type as 'medspa' | 'spa' | 'hybrid');
-        setBrandNarrative(brandSection);
-      }
-    }
-  };
+      return { activeTab, selectedMenuId };
+    },
+    enabled: !!selectedMenuId,
+  });
+
+  const [generating, setGenerating] = useState(false);
 
   const generatePlan = async () => {
     if (!selectedMenuId) return;
 
-    setLoading(true);
+    setGenerating(true);
     try {
       const selectedMenu = menus.find(m => m.id === selectedMenuId);
       if (!selectedMenu) return;
@@ -130,9 +126,9 @@ export default function ImplementationPlannerView() {
         await generateOpeningOrder(planId, selectedMenuId);
       }
 
-      await loadData();
+      await refetchData();
     } finally {
-      setLoading(false);
+      setGenerating(false);
     }
   };
 
@@ -175,10 +171,10 @@ export default function ImplementationPlannerView() {
 
             <button
               onClick={generatePlan}
-              disabled={loading || !selectedMenuId}
+              disabled={loading || generating || !selectedMenuId}
               className="px-4 py-2 bg-graphite text-white rounded-lg hover:bg-graphite disabled:opacity-50 flex items-center gap-2"
             >
-              {loading ? 'Generating...' : 'Generate Plan'}
+              {generating ? 'Generating...' : 'Generate Plan'}
             </button>
           </div>
         </div>

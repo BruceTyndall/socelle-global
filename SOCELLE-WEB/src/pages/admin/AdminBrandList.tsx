@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Package, AlertCircle, Download } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { exportToCSV } from '../../lib/csvExport';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
@@ -26,18 +27,24 @@ interface Brand {
 }
 
 export default function AdminBrandList() {
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [filteredBrands, setFilteredBrands] = useState<Brand[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
-  useEffect(() => {
-    loadBrands();
-  }, []);
+  const { data: brands = [], isLoading: loading, error: queryError, refetch: loadBrands } = useQuery({
+    queryKey: ['admin-brand-list'],
+    queryFn: async () => {
+      const { data, error: fetchError } = await supabase
+        .from('brands')
+        .select('*')
+        .order('updated_at', { ascending: false });
+      if (fetchError) throw fetchError;
+      return (data || []) as Brand[];
+    },
+  });
 
-  useEffect(() => {
+  const error = queryError ? (queryError as Error).message : null;
+
+  const filteredBrands = useMemo(() => {
     let filtered = brands;
 
     // Apply status filter
@@ -57,41 +64,8 @@ export default function AdminBrandList() {
       );
     }
 
-    setFilteredBrands(filtered);
+    return filtered;
   }, [searchTerm, brands, activeFilter]);
-
-  async function loadBrands() {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('brands')
-        .select('*')
-        .order('updated_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
-
-      setBrands(data || []);
-    } catch (err: any) {
-      console.error('Error loading brands:', err);
-      const message = err?.message?.toLowerCase() || '';
-      if (
-        ['PGRST301', 'PGRST116', '42501'].includes(err?.code) ||
-        message.includes('permission') ||
-        message.includes('rls') ||
-        message.includes('row-level security')
-      ) {
-        setError('Access denied. Your account does not have permission to view brands.');
-      } else if (message.includes('fetch') || message.includes('network') || message.includes('failed to fetch')) {
-        setError('Network issue while loading brands. Please refresh and try again.');
-      } else {
-        setError('Failed to load brands. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function getInitial(name: string): string {
     return name.charAt(0).toUpperCase();

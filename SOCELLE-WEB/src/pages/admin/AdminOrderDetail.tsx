@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Send, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 
 interface Order {
@@ -36,32 +37,22 @@ interface OrderItem {
 
 export default function AdminOrderDetail() {
   const { id } = useParams<{ id: string }>();
-
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      loadOrder();
-    }
-  }, [id]);
-
-  async function loadOrder() {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data: orderData, error: orderError } = await supabase
+  const { isLoading: loading, error: queryError, refetch: loadOrder } = useQuery({
+    queryKey: ['admin-order-detail', id],
+    queryFn: async () => {
+      const { data: orderResult, error: orderError } = await supabase
         .from('orders')
         .select(`
           *,
           brands!inner(name, contact_email),
           businesses!inner(name)
         `)
-        .eq('id', id)
+        .eq('id', id!)
         .single();
 
       if (orderError) throw orderError;
@@ -69,31 +60,33 @@ export default function AdminOrderDetail() {
       const { data: itemsData, error: itemsError } = await supabase
         .from('order_items')
         .select('*')
-        .eq('order_id', id)
+        .eq('order_id', id!)
         .order('created_at');
 
       if (itemsError) throw itemsError;
 
-      setOrder({
-        ...orderData,
-        brand_name: orderData.brands?.name,
-        brand_contact_email: orderData.brands?.contact_email,
-        business_name: orderData.businesses?.name,
-      });
-      setItems(itemsData || []);
-    } catch (err: any) {
-      console.error('Error loading order:', err);
-      if (err?.code === 'PGRST301' || err?.message?.toLowerCase().includes('permission')) {
-        setError('Access denied. Your account does not have permission to view this order.');
-      } else if (err?.message?.toLowerCase().includes('fetch') || err?.message?.toLowerCase().includes('network')) {
-        setError('Network issue while loading this order. Please refresh and try again.');
-      } else {
-        setError('Failed to load order details. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+      const parsed = {
+        ...orderResult,
+        brand_name: orderResult.brands?.name,
+        brand_contact_email: orderResult.brands?.contact_email,
+        business_name: orderResult.businesses?.name,
+      } as Order;
+
+      setOrder(parsed);
+      setItems((itemsData || []) as OrderItem[]);
+
+      return { order: parsed, items: (itemsData || []) as OrderItem[] };
+    },
+    enabled: !!id,
+  });
+
+  const error = queryError
+    ? ((queryError as any)?.code === 'PGRST301' || (queryError as any)?.message?.toLowerCase().includes('permission'))
+      ? 'Access denied. Your account does not have permission to view this order.'
+      : ((queryError as any)?.message?.toLowerCase().includes('fetch') || (queryError as any)?.message?.toLowerCase().includes('network'))
+        ? 'Network issue while loading this order. Please refresh and try again.'
+        : 'Failed to load order details. Please try again.'
+    : null;
 
   async function handleSave() {
     if (!order) return;
@@ -208,7 +201,7 @@ export default function AdminOrderDetail() {
         <div className="text-center">
           <p className="text-red-700 font-medium mb-4">{error}</p>
           <button
-            onClick={loadOrder}
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-order-detail', id] })}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors mr-3"
           >
             Retry

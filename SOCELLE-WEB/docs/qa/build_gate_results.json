@@ -38,6 +38,24 @@
       "errors": 64,
       "warnings": 314,
       "notes": "4 unused import errors in CoursePlayer, Pricing, Protocols. Bulk are pre-existing warnings."
+    },
+    "token_compliance": {
+      "status": "PASS",
+      "pro_star_count": 0,
+      "font_serif_count": 0,
+      "notes": "All pro-* and font-serif tokens purged Session 48"
+    },
+    "sentry_status": {
+      "status": "PASS",
+      "references_in_src": 0,
+      "references_in_config": 0,
+      "notes": "Sentry fully removed Session 48 — @sentry/react + @sentry/vite-plugin uninstalled"
+    },
+    "tanstack_migration": {
+      "status": "IN_PROGRESS",
+      "pages_migrated": 40,
+      "pages_remaining": 39,
+      "notes": "Lane B-4 completing remaining pages"
     }
   },
   "overall": "PASS (lint warnings pre-existing, non-blocking)"

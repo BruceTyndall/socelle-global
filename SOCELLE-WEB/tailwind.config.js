@@ -29,21 +29,6 @@ export default {
           down:        '#8E6464',   // negative / decline
         },
 
-        // ── Legacy pro-* tokens (portals depend on these) ──────────
-        pro: {
-          navy:       '#8C6B6E',
-          'navy-dark':'#6E5254',
-          'navy-light':'#A8888B',
-          gold:       '#D4A44C',
-          'gold-light':'#E0BA72',
-          'gold-pale': '#F5EDE0',
-          ivory:      '#F5F3F0',
-          cream:      '#EDEDE5',
-          stone:      '#D6D1C9',
-          charcoal:   '#1A1714',
-          'warm-gray':'#6B6560',
-          'light-gray':'#5C5652',
-        },
         // ── Legacy semantic tokens (portals) ────────────────────────
         brand: {
           bg:           '#F5F3F0',
@@ -59,14 +44,6 @@ export default {
           'accent-dark':'#6E5254',
           gold:         '#D4A44C',
           'gold-light': '#E0BA72',
-        },
-        natura: {
-          navy:       '#8C6B6E',
-          'navy-dark':'#6E5254',
-          cream:      '#EDEDE5',
-          stone:      '#D6D1C9',
-          charcoal:   '#1A1714',
-          'warm-gray':'#6B6560',
         },
         // ── Intelligence layer (portal dashboards) ─────────────────
         intel: {

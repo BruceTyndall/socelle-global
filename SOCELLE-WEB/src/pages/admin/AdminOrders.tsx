@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Eye, AlertCircle, Download } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { exportToCSV } from '../../lib/csvExport';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
@@ -25,55 +26,22 @@ interface BrandOption {
 }
 
 export default function AdminOrders() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [brandFilter, setBrandFilter] = useState<string>('all');
-  const [brands, setBrands] = useState<BrandOption[]>([]);
-  const [brandFilterError, setBrandFilterError] = useState<string | null>(null);
 
-  const [stats, setStats] = useState({
-    total: 0,
-    pending: 0,
-    sent: 0,
-    revenue: 0,
+  const { data: brands = [] } = useQuery({
+    queryKey: ['admin-orders-brands'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('brands').select('id, name').order('name');
+      if (error) throw error;
+      return (data || []) as BrandOption[];
+    },
   });
 
-  useEffect(() => {
-    loadOrders();
-    loadBrands();
-  }, []);
-
-  async function loadBrands() {
-    setBrandFilterError(null);
-    const { data, error: brandsError } = await supabase.from('brands').select('id, name').order('name');
-    if (brandsError) {
-      console.error('Error loading brands filter:', brandsError);
-      const message = brandsError.message?.toLowerCase() || '';
-      if (
-        ['PGRST301', 'PGRST116', '42501'].includes(brandsError.code || '') ||
-        message.includes('permission') ||
-        message.includes('rls') ||
-        message.includes('row-level security')
-      ) {
-        setBrandFilterError('Brand filter unavailable: insufficient permissions.');
-      } else if (message.includes('fetch') || message.includes('network') || message.includes('failed to fetch')) {
-        setBrandFilterError('Brand filter unavailable due to a network issue.');
-      } else {
-        setBrandFilterError('Brand filter unavailable right now.');
-      }
-      return;
-    }
-    setBrands(data || []);
-  }
-
-  async function loadOrders() {
-    setLoading(true);
-    setError(null);
-
-    try {
+  const { data: orders = [], isLoading: loading, error: queryError, refetch: loadOrders } = useQuery({
+    queryKey: ['admin-orders'],
+    queryFn: async () => {
       const { data: ordersData, error: fetchError } = await supabase
         .from('orders')
         .select(`
@@ -86,59 +54,40 @@ export default function AdminOrders() {
       if (fetchError) throw fetchError;
 
       const ordersWithCounts = await Promise.all(
-        (ordersData || []).map(async (order) => {
+        (ordersData || []).map(async (order: Record<string, unknown>) => {
           const { count } = await supabase
             .from('order_items')
             .select('*', { count: 'exact', head: true })
-            .eq('order_id', order.id);
+            .eq('order_id', order.id as string);
 
           return {
             ...order,
             items_count: count || 0,
-            brand_name: order.brands?.name,
-            business_name: order.businesses?.name,
+            brand_name: (order.brands as Record<string, unknown>)?.name,
+            business_name: (order.businesses as Record<string, unknown>)?.name,
           };
         })
       );
 
-      setOrders(ordersWithCounts);
+      return ordersWithCounts as Order[];
+    },
+  });
 
-      const totalOrders = ordersWithCounts.length;
-      const pendingOrders = ordersWithCounts.filter((o) =>
-        ['submitted', 'reviewing'].includes(o.status)
-      ).length;
-      const sentOrders = ordersWithCounts.filter((o) => o.status === 'sent_to_brand').length;
-      const revenue = ordersWithCounts
-        .filter((o) => ['confirmed', 'fulfilled'].includes(o.status))
-        .reduce((sum, o) => sum + (o.commission_total || 0), 0);
+  const error = queryError ? (queryError as Error).message : null;
 
-      setStats({
-        total: totalOrders,
-        pending: pendingOrders,
-        sent: sentOrders,
-        revenue,
-      });
-    } catch (err: any) {
-      console.error('Error loading orders:', err);
-      const message = err?.message?.toLowerCase() || '';
-      if (
-        ['PGRST301', 'PGRST116', '42501'].includes(err?.code) ||
-        message.includes('permission') ||
-        message.includes('rls') ||
-        message.includes('row-level security')
-      ) {
-        setError('Access denied. Your account does not have permission to view orders.');
-      } else if (message.includes('fetch') || message.includes('network') || message.includes('failed to fetch')) {
-        setError('Network issue while loading orders. Please refresh and try again.');
-      } else {
-        setError('Failed to load orders. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  const stats = useMemo(() => {
+    const totalOrders = orders.length;
+    const pendingOrders = orders.filter((o) =>
+      ['submitted', 'reviewing'].includes(o.status)
+    ).length;
+    const sentOrders = orders.filter((o) => o.status === 'sent_to_brand').length;
+    const revenue = orders
+      .filter((o) => ['confirmed', 'fulfilled'].includes(o.status))
+      .reduce((sum, o) => sum + (o.commission_total || 0), 0);
+    return { total: totalOrders, pending: pendingOrders, sent: sentOrders, revenue };
+  }, [orders]);
 
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = useMemo(() => orders.filter((order) => {
     const matchesSearch =
       order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.business_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -146,7 +95,7 @@ export default function AdminOrders() {
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     const matchesBrand = brandFilter === 'all' || order.brand_id === brandFilter;
     return matchesSearch && matchesStatus && matchesBrand;
-  });
+  }), [orders, searchTerm, statusFilter, brandFilter]);
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -271,9 +220,6 @@ export default function AdminOrders() {
             ))}
           </select>
         </div>
-        {brandFilterError && (
-          <p className="mt-3 text-sm text-amber-700">{brandFilterError}</p>
-        )}
       </div>
 
       <div className="bg-white rounded-lg border border-accent-soft overflow-hidden">

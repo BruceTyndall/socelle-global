@@ -1,35 +1,35 @@
 // AdminShopReviews.tsx — /admin/shop/reviews — Review moderation (LIVE — reviews table)
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Star, Check, X, MessageSquare } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import type { Review } from '../../lib/shop/types';
 
 export default function AdminShopReviews() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('all');
 
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    let query = supabase.from('reviews').select('*').order('created_at', { ascending: false });
-    if (filter === 'pending') query = query.eq('is_approved', false);
-    else if (filter === 'approved') query = query.eq('is_approved', true);
-    const { data } = await query;
-    setReviews((data as Review[]) ?? []);
-    setLoading(false);
-  }, [filter]);
-
-  useEffect(() => { fetch(); }, [fetch]);
+  const { data: reviews = [], isLoading: loading } = useQuery({
+    queryKey: ['admin-shop-reviews', filter],
+    queryFn: async () => {
+      let query = supabase.from('reviews').select('*').order('created_at', { ascending: false });
+      if (filter === 'pending') query = query.eq('is_approved', false);
+      else if (filter === 'approved') query = query.eq('is_approved', true);
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data as Review[]) ?? [];
+    },
+  });
 
   const toggleApproval = async (review: Review) => {
     await supabase.from('reviews').update({ is_approved: !review.is_approved }).eq('id', review.id);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-reviews'] });
   };
 
   const deleteReview = async (id: string) => {
     if (!confirm('Delete this review?')) return;
     await supabase.from('reviews').delete().eq('id', id);
-    fetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-reviews'] });
   };
 
   return (

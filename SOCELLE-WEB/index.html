@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#141418" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Socelle — Professional Beauty Intelligence Platform</title>
     <meta name="description" content="Socelle is the intelligence platform for professional beauty. Market signals, benchmarks, and commerce for salons, spas, and medspas." />
@@ -55,5 +59,14 @@
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {
+            // Service worker registration failed — app continues without it
+          });
+        });
+      }
+    </script>
   </body>
 </html>
