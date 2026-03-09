@@ -37,6 +37,12 @@ import {
   MonitorSmartphone,
   RefreshCw,
   Download,
+  Palette,
+  FileDown,
+  LayoutGrid,
+  List as ListIcon,
+  ChevronRight,
+  Check,
 } from 'lucide-react';
 import { useStudioDoc, useStudioDocs } from '../../../lib/studio/useStudioDocs';
 import type { CmsBlockType } from '../../../lib/cms/types';
@@ -50,6 +56,9 @@ import {
 import { useStudioSmartFill } from '../../../lib/studio/useStudioSmartFill';
 import { useAuth } from '../../../lib/auth';
 import { generateStudioSharePack, downloadStudioSharePack } from '../../../lib/studio/studioSharePack';
+import DragCanvas, { type CanvasBlock as DragCanvasBlock } from '../../../components/studio/DragCanvas';
+import { exportStudioDocument, type ExportOptions } from '../../../lib/studio/studioExportEngine';
+import { getTemplatesByCategory, TEMPLATE_CATEGORIES, type StudioTemplate } from '../../../lib/studio/studioTemplates';
 
 // ── Extended block types for studio ─────────────────────────────────
 
@@ -355,6 +364,206 @@ function CanvasBlock({
   );
 }
 
+// ── Template Picker Modal ────────────────────────────────────────────
+
+function TemplatePickerModal({
+  onApply,
+  onClose,
+}: {
+  onApply: (template: StudioTemplate) => void;
+  onClose: () => void;
+}) {
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+
+  const categories = ['All', ...TEMPLATE_CATEGORIES];
+  const templates =
+    activeCategory === 'All'
+      ? getTemplatesByCategory('All')
+      : getTemplatesByCategory(activeCategory);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#141418]/40">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8EDF1]">
+          <div>
+            <h2 className="text-lg font-semibold text-[#141418]">Template Library</h2>
+            <p className="text-xs text-[#141418]/50 mt-0.5">Choose a starting point for your design</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-[#E8EDF1] text-[#141418]/50 hover:text-[#141418] transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Category filter */}
+        <div className="px-6 py-3 border-b border-[#E8EDF1] flex items-center gap-2 overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                activeCategory === cat
+                  ? 'bg-[#141418] text-white'
+                  : 'bg-[#F6F3EF] text-[#141418]/60 hover:bg-[#E8EDF1]'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Template grid */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {templates.map((tpl) => (
+              <button
+                key={tpl.id}
+                onClick={() => onApply(tpl)}
+                className="group text-left rounded-xl border border-[#E8EDF1] overflow-hidden hover:border-[#6E879B] hover:shadow-md transition-all cursor-pointer"
+              >
+                {/* Thumbnail */}
+                <div
+                  className="h-32 flex items-center justify-center relative"
+                  style={{ backgroundColor: tpl.thumbnailColor }}
+                >
+                  <span className="text-white/70 text-xs font-medium uppercase tracking-widest">
+                    {tpl.category}
+                  </span>
+                  <div className="absolute inset-0 bg-[#141418]/0 group-hover:bg-[#141418]/10 transition-colors flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#141418] text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
+                      <Check className="w-3 h-3" /> Use this
+                    </span>
+                  </div>
+                </div>
+                {/* Info */}
+                <div className="p-3">
+                  <p className="text-sm font-medium text-[#141418] leading-tight">{tpl.title}</p>
+                  <p className="text-[10px] text-[#141418]/40 mt-0.5 uppercase tracking-wider">
+                    {tpl.category}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Export Modal ─────────────────────────────────────────────────────
+
+function ExportModal({
+  title,
+  preset,
+  canvasBlocks,
+  onClose,
+}: {
+  title: string;
+  preset: OutputPreset;
+  canvasBlocks: DragCanvasBlock[];
+  onClose: () => void;
+}) {
+  const [format, setFormat] = useState<'png' | 'jpg' | 'pdf' | 'svg' | 'scorm'>('png');
+  const [exporting, setExporting] = useState(false);
+
+  const FORMAT_OPTIONS: { id: 'png' | 'jpg' | 'pdf' | 'svg' | 'scorm'; label: string; desc: string }[] = [
+    { id: 'png', label: 'PNG', desc: 'High-quality raster — social posts, email headers' },
+    { id: 'jpg', label: 'JPG', desc: 'Compressed raster — smaller file size' },
+    { id: 'pdf', label: 'PDF', desc: 'Print-ready document' },
+    { id: 'svg', label: 'SVG', desc: 'Scalable vector — web embeds' },
+    { id: 'scorm', label: 'SCORM 2004', desc: 'LMS-compatible course package (ZIP)' },
+  ];
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const opts: ExportOptions = {
+        title,
+        format,
+        presetWidth: preset.width,
+        presetHeight: preset.height,
+        safeMargin: preset.safeMargin,
+        blocks: canvasBlocks.map((b) => ({
+          id: b.id,
+          type: b.type,
+          x: b.x,
+          y: b.y,
+          w: b.w,
+          h: b.h,
+          content: typeof b.content === 'string' ? b.content : String(b.content ?? ''),
+          bg: b.bg,
+          color: b.color,
+        })),
+      };
+      await exportStudioDocument(opts);
+      onClose();
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#141418]/40">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8EDF1]">
+          <h2 className="text-lg font-semibold text-[#141418]">Export Design</h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-[#E8EDF1] text-[#141418]/50 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-6 space-y-3">
+          {FORMAT_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              onClick={() => setFormat(opt.id)}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors cursor-pointer text-left ${
+                format === opt.id
+                  ? 'border-[#6E879B] bg-[#6E879B]/5'
+                  : 'border-[#E8EDF1] hover:border-[#6E879B]/40'
+              }`}
+            >
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                format === opt.id ? 'bg-[#6E879B] text-white' : 'bg-[#F6F3EF] text-[#141418]/50'
+              }`}>
+                <FileDown className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[#141418]">{opt.label}</p>
+                <p className="text-xs text-[#141418]/50">{opt.desc}</p>
+              </div>
+              {format === opt.id && (
+                <Check className="w-4 h-4 text-[#6E879B] ml-auto flex-shrink-0" />
+              )}
+            </button>
+          ))}
+        </div>
+        <div className="px-6 pb-6">
+          <button
+            onClick={handleExport}
+            disabled={exporting || canvasBlocks.length === 0}
+            className="w-full flex items-center justify-center gap-2 bg-[#141418] text-white text-sm font-semibold py-3 rounded-xl hover:bg-[#141418]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <FileDown className="w-4 h-4" />
+            {exporting ? 'Exporting...' : `Export as ${format.toUpperCase()}`}
+          </button>
+          {canvasBlocks.length === 0 && (
+            <p className="text-xs text-[#141418]/40 text-center mt-2">
+              Switch to Canvas mode and add blocks to export.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Editor ─────────────────────────────────────────────────────
 
 export default function StudioEditor() {
@@ -375,6 +584,14 @@ export default function StudioEditor() {
   const [saving, setSaving] = useState(false);
   const [selectedPresetId, setSelectedPresetId] = useState<string>('slide-16x9');
   const [lastUnresolvedVariables, setLastUnresolvedVariables] = useState<string[]>([]);
+
+  // Canvas design mode state
+  const [canvasMode, setCanvasMode] = useState(false);
+  const [canvasBlocks, setCanvasBlocks] = useState<DragCanvasBlock[]>([]);
+  const [selectedCanvasBlockId, setSelectedCanvasBlockId] = useState<string | null>(null);
+  const [showGrid, setShowGrid] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showExport, setShowExport] = useState(false);
 
   // Canvas scale — fits preset dimensions into available viewport width
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -406,6 +623,9 @@ export default function StudioEditor() {
       const meta = doc.metadata as Record<string, unknown> | null;
       const savedBlocks = (meta?.blocks as EditorBlock[]) ?? [];
       setBlocks(savedBlocks);
+      const savedCanvasBlocks = (meta?.canvas_blocks as DragCanvasBlock[]) ?? [];
+      setCanvasBlocks(savedCanvasBlocks);
+      if (savedCanvasBlocks.length > 0) setCanvasMode(true);
       const savedPreset = typeof meta?.output_preset === 'string' ? meta.output_preset : null;
       if (savedPreset && OUTPUT_PRESETS.some((preset) => preset.id === savedPreset)) {
         setSelectedPresetId(savedPreset);
@@ -506,6 +726,47 @@ export default function StudioEditor() {
     setLastUnresolvedVariables(Array.from(unresolved));
   }, [title, smartFillContext]);
 
+  const handleApplyTemplate = useCallback((template: StudioTemplate) => {
+    const newBlocks: DragCanvasBlock[] = template.blocks.map((b, i) => ({
+      ...b,
+      id: `tblock-${Date.now()}-${i}`,
+    }));
+    setCanvasBlocks(newBlocks);
+    setSelectedCanvasBlockId(null);
+    if (template.presetId) setSelectedPresetId(template.presetId);
+    setCanvasMode(true);
+    setShowTemplates(false);
+  }, []);
+
+  const handleCanvasBlockChange = useCallback(
+    (id: string, changes: Partial<DragCanvasBlock>) => {
+      setCanvasBlocks((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, ...changes } : b))
+      );
+    },
+    []
+  );
+
+  const handleCanvasBlockDelete = useCallback((id: string) => {
+    setCanvasBlocks((prev) => prev.filter((b) => b.id !== id));
+    setSelectedCanvasBlockId((prev) => (prev === id ? null : prev));
+  }, []);
+
+  const handleCanvasBlockReorder = useCallback(
+    (id: string, direction: 'up' | 'down') => {
+      setCanvasBlocks((prev) => {
+        const idx = prev.findIndex((b) => b.id === id);
+        if (idx < 0) return prev;
+        const next = [...prev];
+        const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+        if (targetIdx < 0 || targetIdx >= next.length) return prev;
+        [next[idx], next[targetIdx]] = [next[targetIdx], next[idx]];
+        return next.map((b, i) => ({ ...b, zIndex: i + 1 }));
+      });
+    },
+    []
+  );
+
   const handleDownloadSharePack = useCallback(() => {
     const copyBlocks = blocks
       .flatMap((b) => {
@@ -539,6 +800,7 @@ export default function StudioEditor() {
       const metadata: Json = {
         ...(currentMeta ?? {}),
         blocks: blocks as unknown as Json,
+        canvas_blocks: canvasBlocks as unknown as Json,
         version: currentVersion + 1,
         output_preset: selectedPreset.id,
         unresolved_variables: unresolvedVariables,
@@ -686,6 +948,41 @@ export default function StudioEditor() {
               ))}
             </select>
           </div>
+          {/* Mode toggle */}
+          <div className="hidden md:flex items-center rounded-lg border border-[#E8EDF1] overflow-hidden">
+            <button
+              onClick={() => setCanvasMode(false)}
+              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
+                !canvasMode ? 'bg-[#141418] text-white' : 'text-[#141418]/60 hover:bg-[#F6F3EF]'
+              }`}
+              title="Document mode — vertical block list"
+            >
+              <ListIcon className="w-3.5 h-3.5" /> Doc
+            </button>
+            <button
+              onClick={() => setCanvasMode(true)}
+              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
+                canvasMode ? 'bg-[#141418] text-white' : 'text-[#141418]/60 hover:bg-[#F6F3EF]'
+              }`}
+              title="Canvas mode — drag and resize blocks"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" /> Canvas
+            </button>
+          </div>
+          <button
+            onClick={() => setShowTemplates(true)}
+            className="hidden md:flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185] px-3 py-1.5 rounded-lg border border-[#E8EDF1] hover:border-[#6E879B] transition-colors"
+            title="Browse template library"
+          >
+            <Palette className="w-4 h-4" /> Templates
+          </button>
+          <button
+            onClick={() => setShowExport(true)}
+            className="hidden md:flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185] px-3 py-1.5 rounded-lg border border-[#E8EDF1] hover:border-[#6E879B] transition-colors"
+            title="Export design as PNG, JPG, PDF, SVG, or SCORM"
+          >
+            <FileDown className="w-4 h-4" /> Export
+          </button>
           <button
             onClick={handleSmartFill}
             className="flex items-center gap-1 text-sm text-[#6E879B] hover:text-[#5A7185] px-3 py-1.5 rounded-lg border border-[#E8EDF1] hover:border-[#6E879B] transition-colors"
@@ -764,61 +1061,120 @@ export default function StudioEditor() {
           >
             <div className="mb-2 flex items-center justify-between text-xs text-[#141418]/55">
               <span>{selectedPreset.label}</span>
-              <span>
-                {selectedPreset.width} × {selectedPreset.height}px · Safe margin {selectedPreset.safeMargin}px
-                {canvasScale < 0.99 ? ` · ${Math.round(canvasScale * 100)}%` : ''}
-              </span>
+              <div className="flex items-center gap-3">
+                {canvasMode && (
+                  <button
+                    onClick={() => setShowGrid((v) => !v)}
+                    className={`flex items-center gap-1 transition-colors ${showGrid ? 'text-[#6E879B]' : 'text-[#141418]/30 hover:text-[#141418]/50'}`}
+                    title="Toggle grid"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    Grid
+                  </button>
+                )}
+                <span>
+                  {selectedPreset.width} × {selectedPreset.height}px · {selectedPreset.safeMargin}px safe
+                  {canvasScale < 0.99 ? ` · ${Math.round(canvasScale * 100)}%` : ''}
+                </span>
+              </div>
             </div>
-            <div style={{ transform: `scale(${canvasScale})`, transformOrigin: 'top left' }}>
-              <div className="rounded-xl border border-[#E8EDF1] bg-white/60 p-4 shadow-sm">
-                <div
-                  className="relative overflow-hidden rounded-lg border border-[#E8EDF1] bg-[#F6F3EF]"
-                  style={{ width: selectedPreset.width, minHeight: selectedPreset.height }}
-                >
+
+            {canvasMode ? (
+              /* ── Canvas / Design mode ─────────────────────────────── */
+              <div style={{ transform: `scale(${canvasScale})`, transformOrigin: 'top left' }}>
+                <div className="rounded-xl border border-[#E8EDF1] bg-white/60 p-4 shadow-sm">
+                  {canvasBlocks.length === 0 ? (
+                    <div
+                      className="relative rounded-lg border border-[#E8EDF1] bg-[#F6F3EF] flex flex-col items-center justify-center text-center"
+                      style={{ width: selectedPreset.width, height: Math.min(selectedPreset.height, 600) }}
+                    >
+                      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EDF1]">
+                        <Palette className="h-8 w-8 text-[#6E879B]" />
+                      </div>
+                      <h2 className="mb-2 text-lg font-semibold text-[#141418]">
+                        Start with a template
+                      </h2>
+                      <p className="max-w-sm text-sm text-[#141418]/60 mb-4">
+                        Choose from 52 templates or add shapes and text manually.
+                      </p>
+                      <button
+                        onClick={() => setShowTemplates(true)}
+                        className="flex items-center gap-2 bg-[#6E879B] text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#5A7185] transition-colors"
+                      >
+                        <Palette className="w-4 h-4" /> Browse Templates
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <DragCanvas
+                      blocks={canvasBlocks}
+                      selectedId={selectedCanvasBlockId}
+                      canvasScale={canvasScale}
+                      presetWidth={selectedPreset.width}
+                      presetHeight={selectedPreset.height}
+                      safeMargin={selectedPreset.safeMargin}
+                      showGrid={showGrid}
+                      onSelect={setSelectedCanvasBlockId}
+                      onBlockChange={handleCanvasBlockChange}
+                      onBlockDelete={handleCanvasBlockDelete}
+                      onBlockReorder={handleCanvasBlockReorder}
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* ── Document / List mode ─────────────────────────────── */
+              <div style={{ transform: `scale(${canvasScale})`, transformOrigin: 'top left' }}>
+                <div className="rounded-xl border border-[#E8EDF1] bg-white/60 p-4 shadow-sm">
                   <div
-                    className="pointer-events-none absolute border border-dashed border-[#6E879B]/40"
-                    style={{
-                      top: selectedPreset.safeMargin,
-                      right: selectedPreset.safeMargin,
-                      bottom: selectedPreset.safeMargin,
-                      left: selectedPreset.safeMargin,
-                    }}
-                  />
-                  <div className="relative p-4">
-                    {blocks.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-24 text-center">
-                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EDF1]">
-                          <Plus className="h-8 w-8 text-[#6E879B]" />
+                    className="relative overflow-hidden rounded-lg border border-[#E8EDF1] bg-[#F6F3EF]"
+                    style={{ width: selectedPreset.width, minHeight: selectedPreset.height }}
+                  >
+                    <div
+                      className="pointer-events-none absolute border border-dashed border-[#6E879B]/40"
+                      style={{
+                        top: selectedPreset.safeMargin,
+                        right: selectedPreset.safeMargin,
+                        bottom: selectedPreset.safeMargin,
+                        left: selectedPreset.safeMargin,
+                      }}
+                    />
+                    <div className="relative p-4">
+                      {blocks.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-24 text-center">
+                          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EDF1]">
+                            <Plus className="h-8 w-8 text-[#6E879B]" />
+                          </div>
+                          <h2 className="mb-2 text-lg font-semibold text-[#141418]">
+                            Start building
+                          </h2>
+                          <p className="max-w-sm text-sm text-[#141418]/60">
+                            Add blocks from the picker on the left to build your document.
+                          </p>
                         </div>
-                        <h2 className="mb-2 text-lg font-semibold text-[#141418]">
-                          Start building
-                        </h2>
-                        <p className="max-w-sm text-sm text-[#141418]/60">
-                          Add blocks from the picker on the left to build your document.
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {blocks.map((block, index) => (
-                          <CanvasBlock
-                            key={block.id}
-                            block={block}
-                            isSelected={selectedBlockId === block.id}
-                            isFirst={index === 0}
-                            isLast={index === blocks.length - 1}
-                            hasUnresolvedVariables={(unresolvedByBlock[block.id] ?? []).length > 0}
-                            onSelect={() => setSelectedBlockId(block.id)}
-                            onMoveUp={() => moveBlock(index, 'up')}
-                            onMoveDown={() => moveBlock(index, 'down')}
-                            onDelete={() => deleteBlock(block.id)}
-                          />
-                        ))}
-                      </div>
-                    )}
+                      ) : (
+                        <div className="space-y-3">
+                          {blocks.map((block, index) => (
+                            <CanvasBlock
+                              key={block.id}
+                              block={block}
+                              isSelected={selectedBlockId === block.id}
+                              isFirst={index === 0}
+                              isLast={index === blocks.length - 1}
+                              hasUnresolvedVariables={(unresolvedByBlock[block.id] ?? []).length > 0}
+                              onSelect={() => setSelectedBlockId(block.id)}
+                              onMoveUp={() => moveBlock(index, 'up')}
+                              onMoveDown={() => moveBlock(index, 'down')}
+                              onDelete={() => deleteBlock(block.id)}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

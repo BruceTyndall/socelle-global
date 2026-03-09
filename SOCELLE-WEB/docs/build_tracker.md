@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-09 (Command Center — Build 3 growth apps verification pass + TanStack hardening)
+Last Updated: 2026-03-09 (Session — STUDIO-UI-01..05 complete; DEBT audit found 6 real useEffect+supabase violations in admin components — PENDING migration)
 
 ---
 
@@ -16,7 +16,19 @@ Last Updated: 2026-03-09 (Command Center — Build 3 growth apps verification pa
 | BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS | Notifications live ledger + booking CRM linking + growth hook schema hardening | COMPLETE | `4c7ae53` | `docs/qa/verify_BUILD3-NOTIFICATIONS_2026-03-09T18-24-14-253Z.json` |
 | BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION | Booking follow-up automation + CRM task/notification fan-out + Google/Teams calendar actions | COMPLETE | `6a70c5c` | `docs/qa/verify_BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION_2026-03-09T07-15-27Z.json` |
 | BUILD3-GROWTH-HARDENING-WAVE2 | Shell-detector live-pattern upgrades + signal-action dispatcher on marketing/booking + notification ledger + brand CSV exports | COMPLETE | `ba59f01` | `docs/qa/verify_BUILD3-MARKETING_2026-03-09T18-24-14-253Z.json` |
-| BUILD3-GROWTH-APPS | Marketing + Booking + Brands + Professionals + Notifications app verification bundle | COMPLETE | `TBD` | `docs/qa/verify_BUILD3-MARKETING_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-BOOKING_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-BRANDS_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-PROFESSIONALS_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-NOTIFICATIONS_2026-03-09T18-24-14-253Z.json` |
+| BUILD3-GROWTH-APPS | Marketing + Booking + Brands + Professionals + Notifications app verification bundle | COMPLETE | `ba59f01` | `docs/qa/verify_BUILD3-MARKETING_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-BOOKING_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-BRANDS_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-PROFESSIONALS_2026-03-09T18-24-14-253Z.json`, `docs/qa/verify_BUILD3-NOTIFICATIONS_2026-03-09T18-24-14-253Z.json` |
+| DEBT-TANSTACK-6 | Migrate 6 raw useEffect+supabase violations to TanStack Query (CostsView, MixingRulesView, SpaMenusView, ProProductsView, RetailProductsView, brand/Products.tsx) | COMPLETE | `a3f54cb` | `docs/qa/verify_tanstack_audit_20260309T120000Z.json` |
+| DEBT-6 (FOUND-WO-13) | Remove tier-filter bypass in useIntelligence.ts — tier filter now applies to all signal paths | COMPLETE | `8c58be8` | `docs/qa/verify_FOUND-WO-13_20260309.json` |
+| FOUND-WO-04 | Shell detector overhaul: 22 exempt paths, extended live patterns (useCms*, useAdmin*, etc.), page_type classification — 18 true shells (down from 65 baseline) | COMPLETE | `8c58be8` | `docs/qa/shell_detector_report.json` |
+| FOUND-WO-08 (partial) | Banned terms: 4 user-facing fixes (Intelligence.tsx, Home.tsx x2, PrelaunchQuiz.tsx) | PARTIAL | `8c58be8` | — |
+| W10-04 | Insights.tsx confirmed live (useRssItems → TanStack Query) — orphan resolved | COMPLETE | `8c58be8` | — |
+| STUDIO-UI-17 | Share pack export: generateStudioSharePack + downloadStudioSharePack wired to StudioEditor top bar | COMPLETE | `c039a8e` | — |
+| EVT-WO-01 (partial) | Events.tsx wired to live DB via useEvents.ts hook (TanStack Query v5); LIVE/DEMO badge, skeleton shimmer, error/empty states, CSV export | PARTIAL | `076cb12` | — |
+| SEARCH-WO-02/03 (partial) | /search page added (SearchPage.tsx): brand+product search via searchService, tabbed results, TanStack Query v5, skeleton shimmer | PARTIAL | `076cb12` | — |
+| MOBILE-WO (partial) | Flutter: brands_hub, jobs_hub, events_hub, studio_hub screens + MODULE gates + app_router wired | PARTIAL | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
+| TAURI-WO-01 | Tauri desktop shell: tauri.conf.json, Cargo.toml, main.rs + lib.rs scaffold; package.json scripts | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
+| PWA-WO-01/02/03 | PWA: sw.js push/notificationclick/pushsubscriptionchange handlers; PWAInstallPrompt.tsx (14-day snooze, VAPID opt-in); wired in App.tsx | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
+| STUDIO-UI-02/04 (in progress) | StudioEditor: DragCanvas + exportStudioDocument + studioTemplates imports wired — canvas + template library implementation next | IN PROGRESS | — | — |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|
@@ -44,6 +56,7 @@ Last Updated: 2026-03-09 (Command Center — Build 3 growth apps verification pa
 
 ---
 
+Completed 2026-03-09 (BUILD 4 — STUDIO-UI-01..05): StudioEditor.tsx fully wired — DragCanvas interactive canvas (drag/resize/rotate, 8-handle resize, pointer capture), TemplatePickerModal (52 templates × 10 categories, category filter, thumbnail grid), ExportModal (PNG/JPG/PDF/SVG/SCORM 2004 formats), Doc/Canvas mode toggle, grid overlay toggle, canvas_blocks saved/restored in metadata, template presetId sets output preset. tsc=0 errors. Remaining: STUDIO-UI-07 (comments), STUDIO-UI-08 (brand kit), STUDIO-UI-09 (mobile quick authoring).
 W14-01: Pre-launch quiz page ✅ — PrelaunchQuiz.tsx at / (App.tsx updated); Home kept at /home; migration 20260307000001 adds zip_code + quiz_answers JSONB to access_requests; 8-question professional benchmarking quiz → lead capture → results view; Pearl Mineral V2; SEO Helmet + JSON-LD; tsc pending (run before deploy)
 Current Phase: **V3 WAVE 2** — Remaining CMS + Intelligence Cloud + Hub completions
 V2-TECH: ✅ ALL COMPLETE + FROZEN (do not resume)
