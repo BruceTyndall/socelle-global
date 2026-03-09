@@ -188,14 +188,18 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   }, [isLive, rawSignals]);
 
   // ── Tier gating ────────────────────────────────────────────────────
+  // Always filter by tier regardless of isLive. rowToSignal defaults
+  // tier_visibility to 'free' for DB rows missing the column, so live
+  // signals without the column pass correctly. Applying the filter to
+  // all paths prevents tier bypass if signals are ever injected from
+  // outside the DB query path.
   const allowedTiers = TIER_ACCESS[userTier];
   const tieredSignals = useMemo(() => {
-    if (!isLive) return rawSignals; // mock data has no tier_visibility
     return rawSignals.filter((s) => {
       const tier = s.tier_visibility ?? 'free';
       return allowedTiers.includes(tier);
     });
-  }, [rawSignals, isLive, allowedTiers]);
+  }, [rawSignals, allowedTiers]);
 
   // ── Filter + sort ──────────────────────────────────────────────────
   const signals = useMemo(() => {

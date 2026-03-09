@@ -1,0 +1,477 @@
+{
+  "wo_id": "ULTRA-DRIVE-TANSTACK-AUDIT",
+  "skill": "dev-best-practice-checker",
+  "audit_type": "tanstack_query_migration_audit",
+  "timestamp": "2026-03-09T20:00:00.000Z",
+  "audited_path": "SOCELLE-WEB/src/",
+  "context7_docs_used": ["@tanstack/react-query v5 — useQuery, queryKey, queryFn, staleTime, keepPreviousData→placeholderData"],
+
+  "methodology": {
+    "step_1": "grep -rln supabase.from() across all src/ → 85 files",
+    "step_2": "grep -rln useEffect across all src/ → 84 files",
+    "step_3": "comm -12 on sorted file lists → 12 files with BOTH useEffect AND supabase.from()",
+    "step_4": "For each of 12: inspect useEffect body to confirm fetch (READ) vs side-effect (WRITE/SCHEDULE/UI)",
+    "step_5": "Broadened search: pages/components with supabase import + useEffect but no useQuery → 12 additional files",
+    "step_6": "For each additional file: grep for actual supabase.from() vs supabase.auth → identified 6 more violations",
+    "step_7": "Cross-reference each violation table against src/lib/ and src/hooks/ for TanStack Query equivalents",
+    "step_8": "dev-best-practice-checker Steps 2-6 run across all src/"
+  },
+
+  "summary": {
+    "total_files_scanned": 312,
+    "violations_confirmed": 11,
+    "exemptions_documented": 3,
+    "non_violations_inspected": 5,
+    "tanstack_query_hooks_existing": 89,
+    "violation_tables_with_no_hook": 9,
+    "launch_gate_23_status": "FAIL"
+  },
+
+  "violations": [
+    {
+      "id": "V-001",
+      "file": "src/components/CostsView.tsx",
+      "hook_name": "loadCosts (inline async fn called by useEffect)",
+      "useeffect_line": 21,
+      "supabase_tables": ["treatment_costs"],
+      "pattern": "useEffect(() => { loadCosts(); }, []) — loadCosts reads from treatment_costs",
+      "has_error_handling": false,
+      "has_loading_state": "useState only (no isPending/isLoading from TanStack)",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useTreatmentCosts — useQuery({ queryKey: ['treatment_costs', brandId], queryFn: ... })",
+      "portal_scope": "Business Portal (imported in App.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23 — 0 pages using raw useEffect + supabase.from()"
+    },
+    {
+      "id": "V-002",
+      "file": "src/components/MixingRulesView.tsx",
+      "hook_name": "loadRules (inline async fn called by useEffect)",
+      "useeffect_line": 19,
+      "supabase_tables": ["mixing_rules"],
+      "pattern": "useEffect(() => { loadRules(); }, []) — loadRules reads from mixing_rules",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useMixingRules — useQuery({ queryKey: ['mixing_rules', brandId], queryFn: ... })",
+      "portal_scope": "Business Portal (imported in App.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-003",
+      "file": "src/components/ProProductsView.tsx",
+      "hook_name": "loadProducts (inline async fn called by useEffect)",
+      "useeffect_line": 20,
+      "supabase_tables": ["pro_products"],
+      "pattern": "useEffect(() => { loadProducts(); }, []) — loadProducts reads from pro_products",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "note": "src/lib/shop/useProducts.ts covers shop catalogue — different scope from portal pro_products",
+      "suggested_hook": "useProProducts — useQuery({ queryKey: ['pro_products', brandId], queryFn: ... })",
+      "portal_scope": "Business Portal (imported in App.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-004",
+      "file": "src/components/RetailProductsView.tsx",
+      "hook_name": "loadProducts (inline async fn called by useEffect)",
+      "useeffect_line": 20,
+      "supabase_tables": ["retail_products"],
+      "pattern": "useEffect(() => { loadProducts(); }, []) — loadProducts reads from retail_products",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useRetailProducts — useQuery({ queryKey: ['retail_products', brandId], queryFn: ... })",
+      "portal_scope": "Business Portal (imported in App.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-005",
+      "file": "src/components/SpaMenusView.tsx",
+      "hook_name": "loadMenus (inline async fn called by useEffect)",
+      "useeffect_line": 18,
+      "supabase_tables": ["spa_menus"],
+      "pattern": "useEffect(() => { loadMenus(); }, []) — loadMenus reads from spa_menus",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "note": "spa_menus also accessed by mappingEngine.ts (service utility) — no React hook equivalent",
+      "suggested_hook": "useSpaMenus — useQuery({ queryKey: ['spa_menus', locationId], queryFn: ... })",
+      "portal_scope": "Orphaned (no importers found)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-006",
+      "file": "src/components/BusinessRulesView.tsx",
+      "hook_name": "(inline — both fetch and mutation inside single useEffect body)",
+      "useeffect_line": 31,
+      "supabase_tables": ["service_category_benchmarks", "revenue_model_defaults"],
+      "pattern": "useEffect with async IIFE fetching from 2 tables — reads AND writes intermixed",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useBusinessRules — useQuery per table + useMutation for writes",
+      "portal_scope": "Business Portal (imported in App.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-007",
+      "file": "src/components/MappingView.tsx",
+      "hook_name": "(inline useEffect body)",
+      "useeffect_line": 35,
+      "supabase_tables": ["spa_menus"],
+      "pattern": "useEffect with inline async fetch from spa_menus",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useSpaMenus (shared with V-005)",
+      "portal_scope": "Orphaned (no importers found)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-008",
+      "file": "src/components/MarketingCalendarView.tsx",
+      "hook_name": "(inline useEffect body)",
+      "useeffect_line": 27,
+      "supabase_tables": ["marketing_calendar"],
+      "pattern": "useEffect with inline async fetch from marketing_calendar",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "note": "src/lib/marketing/useMarketingCampaigns.ts covers campaigns, NOT the calendar table",
+      "suggested_hook": "useMarketingCalendar — useQuery({ queryKey: ['marketing_calendar', month], queryFn: ... })",
+      "portal_scope": "Business Portal (App.tsx, pages/business/MarketingCalendar.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-009",
+      "file": "src/components/PlanOutputView.tsx",
+      "hook_name": "(inline useEffect body)",
+      "useeffect_line": 17,
+      "supabase_tables": ["plan_outputs"],
+      "pattern": "useEffect with inline async fetch from plan_outputs",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "note": "planOutputGenerator.ts is a service utility — no React hook wrapper exists",
+      "suggested_hook": "usePlanOutput — useQuery({ queryKey: ['plan_outputs', planId], queryFn: ... })",
+      "portal_scope": "Business Portal (via SalesPipelineView.tsx)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-010",
+      "file": "src/components/ReportsView.tsx",
+      "hook_name": "(inline useEffect body)",
+      "useeffect_line": 26,
+      "supabase_tables": ["spa_menus"],
+      "pattern": "useEffect with inline async fetch from spa_menus",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useSpaMenus (shared with V-005, V-007)",
+      "portal_scope": "Orphaned (no importers found)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    },
+    {
+      "id": "V-011",
+      "file": "src/components/ServiceIntelligenceView.tsx",
+      "hook_name": "(two inline useEffect bodies)",
+      "useeffect_lines": [61, 65],
+      "supabase_tables": ["service_gap_analysis", "spa_menus", "spa_service_mapping"],
+      "pattern": "Two useEffect hooks with inline async fetches across 3 tables — largest violation (619 lines)",
+      "has_error_handling": false,
+      "has_loading_state": "useState only",
+      "tanstack_hook_equivalent_in_src": false,
+      "suggested_hook": "useServiceIntelligence — multiple useQuery calls per table",
+      "portal_scope": "Orphaned (no importers found)",
+      "severity": "BLOCK",
+      "launch_gate": "#23"
+    }
+  ],
+
+  "exemptions": [
+    {
+      "file": "src/lib/shop/useShopCart.ts",
+      "useeffect_line": 57,
+      "reason": "Cart initialization — ensureCart is a DB write side-effect, not a data read. File comment confirms: 'Retains useEffect for cart initialization'. useQuery handles all reads on line 66.",
+      "status": "EXEMPT"
+    },
+    {
+      "file": "src/lib/shop/useWishlist.ts",
+      "useeffect_line": 38,
+      "reason": "Wishlist initialization — ensureWishlist is a DB write side-effect. File comment confirms: 'Retains useEffect for wishlist initialization'. useQuery handles reads on line 46.",
+      "status": "EXEMPT"
+    },
+    {
+      "file": "src/lib/enrichment/useEnrichment.ts",
+      "useeffect_line": 38,
+      "reason": "Operator enrichment scheduling side-effect — file comment confirms: 'useOperatorEnrichment retains scheduling side-effect via useEffect'. useQuery handles reads on lines 29 and 87.",
+      "status": "EXEMPT"
+    }
+  ],
+
+  "non_violations_inspected": [
+    {
+      "file": "src/pages/admin/AdminIngredientsHub.tsx",
+      "useeffect_line": 78,
+      "finding": "useEffect debounces search query (setTimeout/clearTimeout). supabase.from() is inside useQuery queryFn on line 83. CLEAN.",
+      "status": "PASS"
+    },
+    {
+      "file": "src/pages/admin/BrandAdminEditor.tsx",
+      "useeffect_line": 1134,
+      "finding": "useEffect attaches/removes click-outside event listener for dropdown menu. supabase.from() calls are inside useQuery queryFns (lines 191-3806). CLEAN.",
+      "status": "PASS"
+    },
+    {
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "useeffect_line": 363,
+      "finding": "useEffect syncs derived state: updates selectedReportId when reports array changes. supabase.from() on line 321 is inside useQuery queryFn. CLEAN.",
+      "status": "PASS"
+    },
+    {
+      "file": "src/pages/brand/Products.tsx",
+      "useeffect_line": 102,
+      "finding": "useEffect populates form fields when modal opens (editProduct prop changes). supabase.from() on lines 186/190 are in mutation event handlers. CLEAN.",
+      "status": "PASS"
+    },
+    {
+      "file": "src/pages/public/ResetPassword.tsx",
+      "useeffect_line": 16,
+      "finding": "useEffect calls supabase.auth.onAuthStateChange (auth subscription — NOT supabase.from()). Correct pattern for auth state. CLEAN.",
+      "status": "PASS"
+    }
+  ],
+
+  "dev_best_practice_checker": {
+    "typescript_strict": {
+      "status": "WARN",
+      "any_type_count": 182,
+      "ts_ignore_count": 0,
+      "ts_expect_error_count": 0,
+      "non_null_assertions": 34,
+      "blockers": 0,
+      "warnings": 2,
+      "details": [
+        "182 occurrences of ': any' / 'as any' — WARN: high count, should be resolved progressively",
+        "34 non-null assertions (!) — WARN: acceptable where context is clear, review for risky callsites",
+        "0 @ts-ignore or @ts-expect-error — PASS"
+      ]
+    },
+    "react_patterns": {
+      "status": "WARN",
+      "class_components": 2,
+      "class_component_files": [
+        "src/components/ErrorBoundary.tsx",
+        "src/components/RouteErrorBoundary.tsx"
+      ],
+      "class_components_exempt": true,
+      "class_components_reason": "React error boundaries MUST be class components (require componentDidCatch lifecycle). This is the correct pattern.",
+      "violation_useeffects_missing_cleanup": 11,
+      "blockers": 0,
+      "warnings": 1,
+      "details": [
+        "2 class components — EXEMPT (ErrorBoundary, RouteErrorBoundary — required by React)",
+        "11 violation useEffect hooks have no cleanup return — WARN for subscription/timer safety"
+      ]
+    },
+    "supabase_safety": {
+      "status": "WARN",
+      "reads_without_error_check": 77,
+      "unbounded_selects_no_limit": 49,
+      "sentry_references": 1,
+      "sentry_files": ["src/pages/admin/AdminInventoryReport.tsx"],
+      "sentry_exempt": true,
+      "sentry_reason": "Reference is a label string in a health-check array ({ key: 'sentryInSrc' }) — NOT an actual Sentry import or init. EXEMPT.",
+      "blockers": 0,
+      "warnings": 2,
+      "details": [
+        "77 supabase.from() calls with no explicit error check — WARN (pattern: destructure error but no throw/handle)",
+        "49 selects with no .limit() / .single() / .maybeSingle() — WARN: risk of unbounded result sets",
+        "1 'sentry' string reference in AdminInventoryReport.tsx health check label — EXEMPT"
+      ]
+    },
+    "cross_boundary": {
+      "status": "PASS",
+      "pro_star_tokens_in_public_pages": 0,
+      "sentry_in_src_or_vite_config": false,
+      "commerce_hooks_modified": false,
+      "auth_hooks_modified": false,
+      "blockers": 0,
+      "warnings": 0,
+      "details": [
+        "0 pro-* / brand-* / intel-* / natura-* / edu-* tokens in src/pages/public/ — PASS",
+        "0 active Sentry imports in src/ or vite.config.ts — PASS",
+        "useCart.ts and auth.tsx untouched — PASS"
+      ]
+    },
+    "code_hygiene": {
+      "status": "WARN",
+      "console_log_count": 3,
+      "console_log_files": [
+        "src/components/modules/EmailCapture.tsx:31 — dev log (should be removed or guarded)",
+        "src/lib/analytics/funnelEvents.ts:60 — funnel event debug log (acceptable in analytics path)",
+        "src/pages/public/ApiDocs.tsx:61 — inside example code string literal (not executed)"
+      ],
+      "todo_fixme_count": 3,
+      "todo_fixme_locations": [
+        "src/components/modules/EmailCapture.tsx:30 — wire to newsletter_subscribers table",
+        "src/pages/business/SubscriptionManagement.tsx:161 — wire Stripe cancellation",
+        "src/pages/admin/AdminSettingsHub.tsx:112 — wire site_settings table (Phase 6)"
+      ],
+      "blockers": 0,
+      "warnings": 2,
+      "details": [
+        "3 console.log occurrences — WARN (1 acceptable in example code, 2 should be removed or guarded by isDev)",
+        "3 TODO/FIXME comments — INFO (all reference future WOs, not blocking)"
+      ]
+    }
+  },
+
+  "tanstack_query_coverage": {
+    "total_hooks_using_usequery": 89,
+    "hooks_directory": "src/lib/ and src/hooks/",
+    "covered_tables_sample": [
+      "market_signals (useIntelligence)",
+      "ingredients (useIngredients, useIngredientDetail)",
+      "brands (useBrandAnalytics, useBrandIntelligence)",
+      "cms_* tables (useCmsPages, useCmsPosts, useCmsDocs, useCmsBlocks, etc.)",
+      "education_* tables (useCourses, useCourse, useEnrollment, etc.)",
+      "notifications (useNotifications)",
+      "market_signals (useActionableSignals, useSignalModules)",
+      "credits (useCreditBalance)",
+      "shop/* (useProducts, useProduct, useOrders, useCategories)",
+      "crm/* (useCrmContacts, useCrmCompanies, useCrmTasks, useCrmSegments)",
+      "campaigns (useCampaigns, useMarketingCampaigns)"
+    ],
+    "uncovered_tables_in_violations": [
+      "treatment_costs — no useQuery hook (V-001)",
+      "mixing_rules — no useQuery hook (V-002)",
+      "pro_products (portal scope) — no useQuery hook (V-003)",
+      "retail_products — no useQuery hook (V-004)",
+      "spa_menus — no useQuery hook (V-005, V-007, V-010)",
+      "service_category_benchmarks — no useQuery hook (V-006)",
+      "revenue_model_defaults — no useQuery hook (V-006)",
+      "marketing_calendar — no useQuery hook (V-008)",
+      "plan_outputs — no useQuery hook (V-009)",
+      "service_gap_analysis — no useQuery hook (V-011)",
+      "spa_service_mapping — no useQuery hook (V-011)"
+    ]
+  },
+
+  "recommended_migrations": [
+    {
+      "priority": 1,
+      "hook_to_create": "src/lib/useSpaMenus.ts",
+      "covers_violations": ["V-005", "V-007", "V-010"],
+      "tables": ["spa_menus"],
+      "tanstack_v5_pattern": "useQuery({ queryKey: ['spa_menus', locationId], queryFn: async () => { const { data, error } = await supabase.from('spa_menus').select('*').eq('location_id', locationId).order('name'); if (error) throw error; return data ?? []; }, staleTime: 5 * 60 * 1000 })"
+    },
+    {
+      "priority": 2,
+      "hook_to_create": "src/lib/useTreatmentCosts.ts",
+      "covers_violations": ["V-001"],
+      "tables": ["treatment_costs"],
+      "tanstack_v5_pattern": "useQuery({ queryKey: ['treatment_costs', brandId], queryFn: ... })"
+    },
+    {
+      "priority": 3,
+      "hook_to_create": "src/lib/useMixingRules.ts",
+      "covers_violations": ["V-002"],
+      "tables": ["mixing_rules"],
+      "tanstack_v5_pattern": "useQuery({ queryKey: ['mixing_rules', brandId], queryFn: ... })"
+    },
+    {
+      "priority": 4,
+      "hook_to_create": "src/lib/usePortalProducts.ts",
+      "covers_violations": ["V-003", "V-004"],
+      "tables": ["pro_products", "retail_products"],
+      "tanstack_v5_pattern": "useQuery({ queryKey: ['portal_products', brandId, type], queryFn: ... })"
+    },
+    {
+      "priority": 5,
+      "hook_to_create": "src/lib/useBusinessRules.ts",
+      "covers_violations": ["V-006"],
+      "tables": ["service_category_benchmarks", "revenue_model_defaults"],
+      "tanstack_v5_pattern": "Separate useQuery per table + useMutation for writes"
+    },
+    {
+      "priority": 6,
+      "hook_to_create": "src/lib/useMarketingCalendar.ts",
+      "covers_violations": ["V-008"],
+      "tables": ["marketing_calendar"],
+      "tanstack_v5_pattern": "useQuery({ queryKey: ['marketing_calendar', year, month], queryFn: ... })"
+    },
+    {
+      "priority": 7,
+      "hook_to_create": "src/lib/usePlanOutput.ts",
+      "covers_violations": ["V-009"],
+      "tables": ["plan_outputs"],
+      "tanstack_v5_pattern": "useQuery({ queryKey: ['plan_outputs', planId], queryFn: ... })"
+    },
+    {
+      "priority": 8,
+      "hook_to_create": "src/lib/useServiceIntelligence.ts",
+      "covers_violations": ["V-011"],
+      "tables": ["service_gap_analysis", "spa_service_mapping"],
+      "tanstack_v5_pattern": "Multiple useQuery calls — one per table"
+    }
+  ],
+
+  "results": {
+    "tanstack_migration_audit": {
+      "status": "FAIL",
+      "violations": 11,
+      "exemptions": 3,
+      "failures": [
+        "V-001 src/components/CostsView.tsx — treatment_costs",
+        "V-002 src/components/MixingRulesView.tsx — mixing_rules",
+        "V-003 src/components/ProProductsView.tsx — pro_products",
+        "V-004 src/components/RetailProductsView.tsx — retail_products",
+        "V-005 src/components/SpaMenusView.tsx — spa_menus",
+        "V-006 src/components/BusinessRulesView.tsx — service_category_benchmarks, revenue_model_defaults",
+        "V-007 src/components/MappingView.tsx — spa_menus",
+        "V-008 src/components/MarketingCalendarView.tsx — marketing_calendar",
+        "V-009 src/components/PlanOutputView.tsx — plan_outputs",
+        "V-010 src/components/ReportsView.tsx — spa_menus",
+        "V-011 src/components/ServiceIntelligenceView.tsx — service_gap_analysis, spa_menus, spa_service_mapping"
+      ]
+    },
+    "dev_best_practice_checker": {
+      "status": "PASS_WITH_WARNINGS",
+      "blockers": 0,
+      "warnings": 7,
+      "typescript_strict": "WARN (182 any types, 34 non-null assertions)",
+      "react_patterns": "WARN (11 violation useEffects lack cleanup)",
+      "supabase_safety": "WARN (77 reads without error check, 49 unbounded selects)",
+      "cross_boundary": "PASS",
+      "code_hygiene": "WARN (3 console.log, 3 TODO/FIXME)"
+    }
+  },
+
+  "overall": "FAIL",
+  "overall_reason": "11 components use raw useEffect + supabase.from() for data reads without TanStack Query. Violates CLAUDE.md §4, CLAUDE.md §9 stop condition #13, and Launch Gate #23. No TanStack Query hook exists for any of the 11 affected tables. 8 new hooks required.",
+  "merge_recommendation": "BLOCK",
+  "remediation_wos_needed": [
+    "Create src/lib/useSpaMenus.ts — covers V-005, V-007, V-010 (3 violations with 1 hook)",
+    "Create src/lib/useTreatmentCosts.ts — V-001",
+    "Create src/lib/useMixingRules.ts — V-002",
+    "Create src/lib/usePortalProducts.ts — V-003, V-004",
+    "Create src/lib/useBusinessRules.ts — V-006",
+    "Create src/lib/useMarketingCalendar.ts — V-008",
+    "Create src/lib/usePlanOutput.ts — V-009",
+    "Create src/lib/useServiceIntelligence.ts — V-011",
+    "Update all 11 components to consume new hooks",
+    "Verify orphaned components (SpaMenusView, MappingView, ReportsView, ServiceIntelligenceView) — no importers found; consider deletion after WO review"
+  ]
+}

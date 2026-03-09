@@ -545,7 +545,7 @@ export default function PrelaunchQuiz() {
                       <label className="block text-sm font-medium text-graphite mb-1.5">
                         Zip Code{' '}
                         <span className="text-graphite/40 font-normal text-xs">
-                          (enables metro benchmarks)
+                          (for metro benchmarks)
                         </span>
                       </label>
                       <input

@@ -1,0 +1,60 @@
+{
+  "wo_id": "DEBT-6 + FOUND-WO-04",
+  "timestamp": "2026-03-09T21:00:00.000Z",
+  "skills_run": ["live-demo-detector", "hub-shell-detector"],
+  "changes": [
+    {
+      "file": "src/lib/intelligence/useIntelligence.ts",
+      "change": "Removed early return `if (!isLive) return rawSignals` in tier gating useMemo. Tier filter now applied to all signal paths regardless of isLive. rowToSignal already defaults tier_visibility to 'free' so existing live signals pass correctly.",
+      "maps_to": "DEBT-6 / FOUND-WO-13"
+    },
+    {
+      "file": "scripts/shell-detector.mjs",
+      "changes": [
+        "Added EXEMPT_PATHS set (22 auth/commerce/onboarding pages) — these are classified EXEMPT, not SHELL, and excluded from shell rate calculation",
+        "Extended LIVE_PATTERNS to match useCms[A-Z]*, useAdmin[A-Z]*, useFeed[A-Z]*, useSignal[A-Z]* hook patterns — fixes 7 CMS admin false positives",
+        "Added getPageType() function returning auth | onboarding | commerce | confirmation | content",
+        "Added page_type field to all classification results",
+        "Updated summary to track exempt count separately from shell count",
+        "Shell rate now calculated as shell / scored (excludes exempt) not shell / total",
+        "Per-hub breakdown shows exempt count with X suffix",
+        "Regression check still only compares SHELL-classified pages against baseline"
+      ],
+      "maps_to": "FOUND-WO-04 / DEBT-7 / DEBT-8"
+    },
+    {
+      "file": "docs/qa/shell_detector_baseline.json",
+      "change": "Updated baseline from 65 shells → 21 true shells after exemption + pattern fixes"
+    },
+    {
+      "file": "docs/qa/fake_live_baseline.json",
+      "change": "Updated to include pre-existing useEvents.ts:6 comment ('replacing DEMO_EVENTS stub') — historical comment, not a fake-live surface"
+    }
+  ],
+  "results": {
+    "fakelive:check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Fake-live guard passed (85 tracked entries, 0 regressions)"
+    },
+    "shell:check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "21 true shells (8.4% of scored pages). 22 exempt. Gate passed. No new shells introduced.",
+      "shell_breakdown": {
+        "admin": {"live": 62, "demo": 10, "shell": 5, "exempt": 1},
+        "brand": {"live": 21, "demo": 0, "shell": 2, "exempt": 2},
+        "business": {"live": 43, "demo": 20, "shell": 6, "exempt": 5},
+        "education": {"live": 7, "demo": 4, "shell": 1, "exempt": 0},
+        "public": {"live": 28, "demo": 15, "shell": 6, "exempt": 14},
+        "sales": {"live": 2, "demo": 6, "shell": 1, "exempt": 0}
+      }
+    },
+    "tsc": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit exit 0"
+    }
+  },
+  "overall": "PASS"
+}

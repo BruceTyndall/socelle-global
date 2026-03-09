@@ -1,17 +1,20 @@
 {
-  "scan_date": "2026-03-09T18:23:31.366Z",
+  "scan_date": "2026-03-09T21:11:21.728Z",
   "summary": {
-    "total": 271,
-    "live": 152,
-    "demo": 67,
-    "shell": 52,
-    "shell_rate": "19.2"
+    "total": 272,
+    "scored": 250,
+    "exempt": 22,
+    "live": 176,
+    "demo": 56,
+    "shell": 18,
+    "shell_rate": "7.2"
   },
   "by_hub": {
     "admin": {
-      "live": 55,
+      "live": 62,
       "demo": 10,
-      "shell": 13,
+      "shell": 5,
+      "exempt": 1,
       "pages": [
         {
           "file": "src/pages/admin/AdminApiControlHub.tsx",
@@ -110,8 +113,8 @@
         },
         {
           "file": "src/pages/admin/AdminLogin.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/admin/AdminMarketSignals.tsx",
@@ -370,49 +373,50 @@
         },
         {
           "file": "src/pages/admin/cms/CmsBlockLibrary.tsx",
-          "classification": "SHELL",
-          "feature_score": 4
-        },
-        {
-          "file": "src/pages/admin/cms/CmsDashboard.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
-        },
-        {
-          "file": "src/pages/admin/cms/CmsMediaLibrary.tsx",
-          "classification": "SHELL",
+          "classification": "LIVE",
           "feature_score": 5
         },
         {
-          "file": "src/pages/admin/cms/CmsPagesList.tsx",
-          "classification": "SHELL",
+          "file": "src/pages/admin/cms/CmsDashboard.tsx",
+          "classification": "LIVE",
           "feature_score": 4
+        },
+        {
+          "file": "src/pages/admin/cms/CmsMediaLibrary.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/cms/CmsPagesList.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/admin/cms/CmsPostsList.tsx",
-          "classification": "SHELL",
-          "feature_score": 4
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/admin/cms/CmsSpacesConfig.tsx",
-          "classification": "SHELL",
-          "feature_score": 4
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/admin/cms/CmsTemplatesList.tsx",
-          "classification": "SHELL",
-          "feature_score": 4
+          "classification": "LIVE",
+          "feature_score": 5
         }
       ]
     },
     "brand": {
       "live": 21,
       "demo": 0,
-      "shell": 4,
+      "shell": 2,
+      "exempt": 2,
       "pages": [
         {
           "file": "src/pages/brand/ApplicationReceived.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
@@ -482,8 +486,8 @@
         },
         {
           "file": "src/pages/brand/Login.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/brand/Messages.tsx",
@@ -539,8 +543,9 @@
     },
     "business": {
       "live": 43,
-      "demo": 19,
-      "shell": 12,
+      "demo": 20,
+      "shell": 6,
+      "exempt": 5,
       "pages": [
         {
           "file": "src/pages/business/AIAdvisor.tsx",
@@ -704,8 +709,8 @@
         },
         {
           "file": "src/pages/business/Login.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/business/MarketingAnalytics.tsx",
@@ -874,7 +879,7 @@
         },
         {
           "file": "src/pages/business/onboarding/OnboardingComplete.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
@@ -884,18 +889,18 @@
         },
         {
           "file": "src/pages/business/onboarding/OnboardingInterests.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
           "file": "src/pages/business/onboarding/OnboardingRole.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
           "file": "src/pages/business/onboarding/OnboardingWelcome.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/business/studio/CourseBuilder.tsx",
@@ -904,8 +909,8 @@
         },
         {
           "file": "src/pages/business/studio/StudioEditor.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "DEMO",
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/studio/StudioHome.tsx",
@@ -918,6 +923,7 @@
       "live": 2,
       "demo": 0,
       "shell": 0,
+      "exempt": 0,
       "pages": [
         {
           "file": "src/pages/claim/ClaimBrand.tsx",
@@ -935,6 +941,7 @@
       "live": 0,
       "demo": 1,
       "shell": 0,
+      "exempt": 0,
       "pages": [
         {
           "file": "src/pages/dev/MasterIndex.tsx",
@@ -947,6 +954,7 @@
       "live": 7,
       "demo": 4,
       "shell": 1,
+      "exempt": 0,
       "pages": [
         {
           "file": "src/pages/education/CECreditDashboard.tsx",
@@ -1014,6 +1022,7 @@
       "live": 7,
       "demo": 1,
       "shell": 0,
+      "exempt": 0,
       "pages": [
         {
           "file": "src/pages/marketing/CampaignBuilder.tsx",
@@ -1058,14 +1067,15 @@
       ]
     },
     "public": {
-      "live": 15,
-      "demo": 26,
-      "shell": 21,
+      "live": 32,
+      "demo": 14,
+      "shell": 3,
+      "exempt": 14,
       "pages": [
         {
           "file": "src/pages/public/About.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/ApiDocs.tsx",
@@ -1079,13 +1089,13 @@
         },
         {
           "file": "src/pages/public/BlogListPage.tsx",
-          "classification": "DEMO",
-          "feature_score": 3
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/public/BlogPostPage.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/BookingWidget.tsx",
@@ -1104,8 +1114,8 @@
         },
         {
           "file": "src/pages/public/Cart.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/CertificateVerify.tsx",
@@ -1114,8 +1124,8 @@
         },
         {
           "file": "src/pages/public/Checkout.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/CourseDetail.tsx",
@@ -1134,8 +1144,8 @@
         },
         {
           "file": "src/pages/public/Education.tsx",
-          "classification": "SHELL",
-          "feature_score": 0
+          "classification": "LIVE",
+          "feature_score": 1
         },
         {
           "file": "src/pages/public/EducationArticles.tsx",
@@ -1144,13 +1154,13 @@
         },
         {
           "file": "src/pages/public/Events.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 6
         },
         {
           "file": "src/pages/public/FAQ.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/ForBrands.tsx",
@@ -1159,23 +1169,23 @@
         },
         {
           "file": "src/pages/public/ForMedspas.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/ForSalons.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/ForgotPassword.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/HelpCenter.tsx",
-          "classification": "DEMO",
-          "feature_score": 3
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/public/Home.tsx",
@@ -1184,8 +1194,8 @@
         },
         {
           "file": "src/pages/public/HowItWorks.tsx",
-          "classification": "DEMO",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 3
         },
         {
           "file": "src/pages/public/IngredientCollection.tsx",
@@ -1204,8 +1214,8 @@
         },
         {
           "file": "src/pages/public/Insights.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/Intelligence.tsx",
@@ -1244,18 +1254,18 @@
         },
         {
           "file": "src/pages/public/OrderDetail.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/OrderHistory.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/Plans.tsx",
-          "classification": "DEMO",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 3
         },
         {
           "file": "src/pages/public/PrelaunchQuiz.tsx",
@@ -1269,13 +1279,13 @@
         },
         {
           "file": "src/pages/public/Privacy.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/ProductDetail.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ProfessionalDetail.tsx",
@@ -1294,8 +1304,8 @@
         },
         {
           "file": "src/pages/public/Protocols.tsx",
-          "classification": "SHELL",
-          "feature_score": 0
+          "classification": "LIVE",
+          "feature_score": 1
         },
         {
           "file": "src/pages/public/RequestAccess.tsx",
@@ -1304,8 +1314,13 @@
         },
         {
           "file": "src/pages/public/ResetPassword.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/public/SearchPage.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/public/Shop.tsx",
@@ -1314,8 +1329,8 @@
         },
         {
           "file": "src/pages/public/ShopCart.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ShopCategory.tsx",
@@ -1324,33 +1339,33 @@
         },
         {
           "file": "src/pages/public/ShopCheckout.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ShopOrderDetail.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ShopOrders.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ShopProduct.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ShopWishlist.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/Stories.tsx",
-          "classification": "DEMO",
-          "feature_score": 3
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/public/StoriesIndex.tsx",
@@ -1364,13 +1379,13 @@
         },
         {
           "file": "src/pages/public/Terms.tsx",
-          "classification": "DEMO",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/WishlistPage.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         }
       ]
     },
@@ -1378,6 +1393,7 @@
       "live": 2,
       "demo": 6,
       "shell": 1,
+      "exempt": 0,
       "pages": [
         {
           "file": "src/pages/sales/CommissionDashboard.tsx",
@@ -1431,6 +1447,7 @@
     {
       "file": "src/pages/admin/AdminApiControlHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1446,6 +1463,7 @@
     {
       "file": "src/pages/admin/AdminApiControls.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1461,6 +1479,7 @@
     {
       "file": "src/pages/admin/AdminApiSitemapHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1476,6 +1495,7 @@
     {
       "file": "src/pages/admin/AdminApprovalQueue.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1491,6 +1511,7 @@
     {
       "file": "src/pages/admin/AdminAuditLog.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1506,6 +1527,7 @@
     {
       "file": "src/pages/admin/AdminBlogHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1521,6 +1543,7 @@
     {
       "file": "src/pages/admin/AdminBrandList.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1536,6 +1559,7 @@
     {
       "file": "src/pages/admin/AdminCourseEditor.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1551,6 +1575,7 @@
     {
       "file": "src/pages/admin/AdminCoursesHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1566,6 +1591,7 @@
     {
       "file": "src/pages/admin/AdminDashboard.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1581,6 +1607,7 @@
     {
       "file": "src/pages/admin/AdminEducationHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1596,6 +1623,7 @@
     {
       "file": "src/pages/admin/AdminFeatureFlags.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1611,6 +1639,7 @@
     {
       "file": "src/pages/admin/AdminFeedsHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1626,6 +1655,7 @@
     {
       "file": "src/pages/admin/AdminInbox.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1641,6 +1671,7 @@
     {
       "file": "src/pages/admin/AdminIngredientCollections.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1656,6 +1687,7 @@
     {
       "file": "src/pages/admin/AdminIngredientInteractions.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1671,6 +1703,7 @@
     {
       "file": "src/pages/admin/AdminIngredientsHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1686,6 +1719,7 @@
     {
       "file": "src/pages/admin/AdminInventoryReport.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1701,6 +1735,7 @@
     {
       "file": "src/pages/admin/AdminLiveDataHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1716,21 +1751,15 @@
     {
       "file": "src/pages/admin/AdminLogin.tsx",
       "hub": "admin",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": true,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "auth",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/admin/AdminMarketSignals.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1746,6 +1775,7 @@
     {
       "file": "src/pages/admin/AdminMarketingHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1761,6 +1791,7 @@
     {
       "file": "src/pages/admin/AdminMediaHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1776,6 +1807,7 @@
     {
       "file": "src/pages/admin/AdminOrderDetail.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1791,6 +1823,7 @@
     {
       "file": "src/pages/admin/AdminOrders.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1806,6 +1839,7 @@
     {
       "file": "src/pages/admin/AdminPagesHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1821,6 +1855,7 @@
     {
       "file": "src/pages/admin/AdminPlatformSettings.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1836,6 +1871,7 @@
     {
       "file": "src/pages/admin/AdminRecovery.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1851,6 +1887,7 @@
     {
       "file": "src/pages/admin/AdminResellerHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1866,6 +1903,7 @@
     {
       "file": "src/pages/admin/AdminSalesPlatformHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1881,6 +1919,7 @@
     {
       "file": "src/pages/admin/AdminSeeding.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1896,6 +1935,7 @@
     {
       "file": "src/pages/admin/AdminSeoHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1911,6 +1951,7 @@
     {
       "file": "src/pages/admin/AdminSettingsHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -1926,6 +1967,7 @@
     {
       "file": "src/pages/admin/AdminShellDetection.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1941,6 +1983,7 @@
     {
       "file": "src/pages/admin/AdminShopCategories.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1956,6 +1999,7 @@
     {
       "file": "src/pages/admin/AdminShopDiscounts.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1971,6 +2015,7 @@
     {
       "file": "src/pages/admin/AdminShopHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -1986,6 +2031,7 @@
     {
       "file": "src/pages/admin/AdminShopOrders.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2001,6 +2047,7 @@
     {
       "file": "src/pages/admin/AdminShopProducts.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2016,6 +2063,7 @@
     {
       "file": "src/pages/admin/AdminShopReviews.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2031,6 +2079,7 @@
     {
       "file": "src/pages/admin/AdminShopShipping.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2046,6 +2095,7 @@
     {
       "file": "src/pages/admin/AdminSignals.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2061,6 +2111,7 @@
     {
       "file": "src/pages/admin/AdminSubscriptionAccounts.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2076,6 +2127,7 @@
     {
       "file": "src/pages/admin/AdminSubscriptionMetrics.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2091,6 +2143,7 @@
     {
       "file": "src/pages/admin/AdminSubscriptionPlans.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2106,6 +2159,7 @@
     {
       "file": "src/pages/admin/AdminUsers.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2121,6 +2175,7 @@
     {
       "file": "src/pages/admin/AffiliatesHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -2136,6 +2191,7 @@
     {
       "file": "src/pages/admin/ApiDashboard.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2151,6 +2207,7 @@
     {
       "file": "src/pages/admin/AuthDebug.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2166,6 +2223,7 @@
     {
       "file": "src/pages/admin/BrandAdminEditor.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2181,6 +2239,7 @@
     {
       "file": "src/pages/admin/BrandHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2196,6 +2255,7 @@
     {
       "file": "src/pages/admin/BulkProtocolImport.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2211,6 +2271,7 @@
     {
       "file": "src/pages/admin/CrmHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2226,6 +2287,7 @@
     {
       "file": "src/pages/admin/DebugPanel.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2241,6 +2303,7 @@
     {
       "file": "src/pages/admin/EditorialHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2256,6 +2319,7 @@
     {
       "file": "src/pages/admin/EventsHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2271,6 +2335,7 @@
     {
       "file": "src/pages/admin/IntelligenceDashboard.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2286,6 +2351,7 @@
     {
       "file": "src/pages/admin/JobsHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2301,6 +2367,7 @@
     {
       "file": "src/pages/admin/RecruitmentHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -2316,6 +2383,7 @@
     {
       "file": "src/pages/admin/RegionManagement.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2331,6 +2399,7 @@
     {
       "file": "src/pages/admin/ReportsLibrary.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2346,6 +2415,7 @@
     {
       "file": "src/pages/admin/SalesHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2361,6 +2431,7 @@
     {
       "file": "src/pages/admin/SocialHub.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -2376,6 +2447,7 @@
     {
       "file": "src/pages/admin/SubmissionDetail.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2391,6 +2463,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubAnalytics.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2406,6 +2479,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubEducation.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2421,6 +2495,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubOrders.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2436,6 +2511,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubProducts.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2451,6 +2527,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubProtocols.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2466,6 +2543,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubRetailers.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2481,6 +2559,7 @@
     {
       "file": "src/pages/admin/brand-hub/HubSettings.tsx",
       "hub": "admin",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2496,9 +2575,10 @@
     {
       "file": "src/pages/admin/cms/CmsBlockLibrary.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2506,14 +2586,15 @@
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/admin/cms/CmsDashboard.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2521,14 +2602,15 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/admin/cms/CmsMediaLibrary.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2536,14 +2618,15 @@
         "crud": true,
         "export": true
       },
-      "feature_score": 5
+      "feature_score": 6
     },
     {
       "file": "src/pages/admin/cms/CmsPagesList.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2551,14 +2634,15 @@
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/admin/cms/CmsPostsList.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2566,14 +2650,15 @@
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/admin/cms/CmsSpacesConfig.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2581,14 +2666,15 @@
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/admin/cms/CmsTemplatesList.tsx",
       "hub": "admin",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -2596,26 +2682,20 @@
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/brand/ApplicationReceived.tsx",
       "hub": "brand",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
       "file": "src/pages/brand/Apply.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2631,6 +2711,7 @@
     {
       "file": "src/pages/brand/Automations.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2646,6 +2727,7 @@
     {
       "file": "src/pages/brand/BrandAIAdvisor.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2661,6 +2743,7 @@
     {
       "file": "src/pages/brand/BrandIntelligenceHub.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2676,6 +2759,7 @@
     {
       "file": "src/pages/brand/BrandNotificationPreferences.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2691,6 +2775,7 @@
     {
       "file": "src/pages/brand/CampaignBuilder.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2706,6 +2791,7 @@
     {
       "file": "src/pages/brand/Campaigns.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2721,6 +2807,7 @@
     {
       "file": "src/pages/brand/ClaimReview.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2736,6 +2823,7 @@
     {
       "file": "src/pages/brand/Customers.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2751,6 +2839,7 @@
     {
       "file": "src/pages/brand/Dashboard.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2766,6 +2855,7 @@
     {
       "file": "src/pages/brand/IntelligencePricing.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -2781,6 +2871,7 @@
     {
       "file": "src/pages/brand/IntelligenceReport.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2796,6 +2887,7 @@
     {
       "file": "src/pages/brand/Leads.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2811,21 +2903,15 @@
     {
       "file": "src/pages/brand/Login.tsx",
       "hub": "brand",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": true,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "auth",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/brand/Messages.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2841,6 +2927,7 @@
     {
       "file": "src/pages/brand/Onboarding.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2856,6 +2943,7 @@
     {
       "file": "src/pages/brand/OrderDetail.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2871,6 +2959,7 @@
     {
       "file": "src/pages/brand/Orders.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2886,6 +2975,7 @@
     {
       "file": "src/pages/brand/Performance.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2901,6 +2991,7 @@
     {
       "file": "src/pages/brand/Pipeline.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2916,6 +3007,7 @@
     {
       "file": "src/pages/brand/Plans.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2931,6 +3023,7 @@
     {
       "file": "src/pages/brand/Products.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2946,6 +3039,7 @@
     {
       "file": "src/pages/brand/Promotions.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2961,6 +3055,7 @@
     {
       "file": "src/pages/brand/Storefront.tsx",
       "hub": "brand",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2976,6 +3071,7 @@
     {
       "file": "src/pages/business/AIAdvisor.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -2991,6 +3087,7 @@
     {
       "file": "src/pages/business/Account.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3006,6 +3103,7 @@
     {
       "file": "src/pages/business/AddCompany.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3021,6 +3119,7 @@
     {
       "file": "src/pages/business/AddContact.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3036,6 +3135,7 @@
     {
       "file": "src/pages/business/AddServiceRecord.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -3051,6 +3151,7 @@
     {
       "file": "src/pages/business/Apply.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3066,6 +3167,7 @@
     {
       "file": "src/pages/business/AppointmentCalendar.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3081,6 +3183,7 @@
     {
       "file": "src/pages/business/AppointmentDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3096,6 +3199,7 @@
     {
       "file": "src/pages/business/AudienceSegments.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3111,6 +3215,7 @@
     {
       "file": "src/pages/business/BenchmarkDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -3126,6 +3231,7 @@
     {
       "file": "src/pages/business/BookingDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3141,6 +3247,7 @@
     {
       "file": "src/pages/business/BrandDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3156,6 +3263,7 @@
     {
       "file": "src/pages/business/CECredits.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -3171,6 +3279,7 @@
     {
       "file": "src/pages/business/CampaignDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3186,6 +3295,7 @@
     {
       "file": "src/pages/business/CampaignEditor.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3201,6 +3311,7 @@
     {
       "file": "src/pages/business/ClaimReview.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3216,6 +3327,7 @@
     {
       "file": "src/pages/business/ClientRecords.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3231,6 +3343,7 @@
     {
       "file": "src/pages/business/CommissionsDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3246,6 +3359,7 @@
     {
       "file": "src/pages/business/CompanyDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3261,6 +3375,7 @@
     {
       "file": "src/pages/business/CompanyList.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3276,6 +3391,7 @@
     {
       "file": "src/pages/business/ContactDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3291,6 +3407,7 @@
     {
       "file": "src/pages/business/ContactList.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3306,6 +3423,7 @@
     {
       "file": "src/pages/business/ContentTemplates.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3321,6 +3439,7 @@
     {
       "file": "src/pages/business/CrmDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3336,6 +3455,7 @@
     {
       "file": "src/pages/business/CrmSegments.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3351,6 +3471,7 @@
     {
       "file": "src/pages/business/CrmTasks.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3366,6 +3487,7 @@
     {
       "file": "src/pages/business/Dashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3381,6 +3503,7 @@
     {
       "file": "src/pages/business/DealDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3396,6 +3519,7 @@
     {
       "file": "src/pages/business/EditCompany.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3411,6 +3535,7 @@
     {
       "file": "src/pages/business/EditContact.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3426,6 +3551,7 @@
     {
       "file": "src/pages/business/IntelligenceHub.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3441,6 +3567,7 @@
     {
       "file": "src/pages/business/LocationsDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -3456,21 +3583,15 @@
     {
       "file": "src/pages/business/Login.tsx",
       "hub": "business",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": true,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "auth",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/business/MarketingAnalytics.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3486,6 +3607,7 @@
     {
       "file": "src/pages/business/MarketingCalendar.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3501,6 +3623,7 @@
     {
       "file": "src/pages/business/MarketingDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3516,6 +3639,7 @@
     {
       "file": "src/pages/business/Messages.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3531,6 +3655,7 @@
     {
       "file": "src/pages/business/NotificationPreferences.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3546,6 +3671,7 @@
     {
       "file": "src/pages/business/OrderDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3561,6 +3687,7 @@
     {
       "file": "src/pages/business/Orders.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3576,6 +3703,7 @@
     {
       "file": "src/pages/business/PipelineBoard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3591,6 +3719,7 @@
     {
       "file": "src/pages/business/PlanComparison.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3606,6 +3735,7 @@
     {
       "file": "src/pages/business/PlanResults.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3621,6 +3751,7 @@
     {
       "file": "src/pages/business/PlanWizard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3636,6 +3767,7 @@
     {
       "file": "src/pages/business/PlansList.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3651,6 +3783,7 @@
     {
       "file": "src/pages/business/PortalHome.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3666,6 +3799,7 @@
     {
       "file": "src/pages/business/ProposalEditor.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3681,6 +3815,7 @@
     {
       "file": "src/pages/business/ProspectDetail.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3696,6 +3831,7 @@
     {
       "file": "src/pages/business/ProspectList.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3711,6 +3847,7 @@
     {
       "file": "src/pages/business/ResellerClients.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3726,6 +3863,7 @@
     {
       "file": "src/pages/business/ResellerDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3741,6 +3879,7 @@
     {
       "file": "src/pages/business/ResellerRevenue.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3756,6 +3895,7 @@
     {
       "file": "src/pages/business/SalesDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3771,6 +3911,7 @@
     {
       "file": "src/pages/business/ServiceManager.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3786,6 +3927,7 @@
     {
       "file": "src/pages/business/Signup.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3801,6 +3943,7 @@
     {
       "file": "src/pages/business/StaffManager.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3816,6 +3959,7 @@
     {
       "file": "src/pages/business/SubscriptionManagement.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3831,6 +3975,7 @@
     {
       "file": "src/pages/business/WhiteLabelConfig.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3846,6 +3991,7 @@
     {
       "file": "src/pages/business/affiliates/AffiliateDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3861,6 +4007,7 @@
     {
       "file": "src/pages/business/affiliates/AffiliateLinks.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3876,6 +4023,7 @@
     {
       "file": "src/pages/business/credits/CreditDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3891,6 +4039,7 @@
     {
       "file": "src/pages/business/credits/CreditPurchase.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -3906,6 +4055,7 @@
     {
       "file": "src/pages/business/marketing/CampaignBuilder.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3921,6 +4071,7 @@
     {
       "file": "src/pages/business/marketing/CampaignList.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3936,6 +4087,7 @@
     {
       "file": "src/pages/business/marketing/MarketingDashboard.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3951,6 +4103,7 @@
     {
       "file": "src/pages/business/marketing/MarketingTemplates.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3966,21 +4119,15 @@
     {
       "file": "src/pages/business/onboarding/OnboardingComplete.tsx",
       "hub": "business",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "onboarding",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
       "file": "src/pages/business/onboarding/OnboardingFlow.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -3996,51 +4143,31 @@
     {
       "file": "src/pages/business/onboarding/OnboardingInterests.tsx",
       "hub": "business",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "onboarding",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
       "file": "src/pages/business/onboarding/OnboardingRole.tsx",
       "hub": "business",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "onboarding",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
       "file": "src/pages/business/onboarding/OnboardingWelcome.tsx",
       "hub": "business",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "onboarding",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/business/studio/CourseBuilder.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -4056,21 +4183,23 @@
     {
       "file": "src/pages/business/studio/StudioEditor.tsx",
       "hub": "business",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "DEMO",
       "features": {
         "live_data": false,
-        "demo_labeled": false,
+        "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
         "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/studio/StudioHome.tsx",
       "hub": "business",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -4086,6 +4215,7 @@
     {
       "file": "src/pages/claim/ClaimBrand.tsx",
       "hub": "claim",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4101,6 +4231,7 @@
     {
       "file": "src/pages/claim/ClaimBusiness.tsx",
       "hub": "claim",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4116,6 +4247,7 @@
     {
       "file": "src/pages/dev/MasterIndex.tsx",
       "hub": "dev",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4131,6 +4263,7 @@
     {
       "file": "src/pages/education/CECreditDashboard.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4146,6 +4279,7 @@
     {
       "file": "src/pages/education/CertificateVerify.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4161,6 +4295,7 @@
     {
       "file": "src/pages/education/CourseCatalog.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4176,6 +4311,7 @@
     {
       "file": "src/pages/education/CourseDetail.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4191,6 +4327,7 @@
     {
       "file": "src/pages/education/CoursePlayer.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4206,6 +4343,7 @@
     {
       "file": "src/pages/education/EducationHub.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4221,6 +4359,7 @@
     {
       "file": "src/pages/education/MyCertificates.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4236,6 +4375,7 @@
     {
       "file": "src/pages/education/QuizPlayer.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -4251,6 +4391,7 @@
     {
       "file": "src/pages/education/ScormPlayer.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4266,6 +4407,7 @@
     {
       "file": "src/pages/education/StaffTraining.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4281,6 +4423,7 @@
     {
       "file": "src/pages/education/author/AuthorDashboard.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4296,6 +4439,7 @@
     {
       "file": "src/pages/education/author/CourseBuilder.tsx",
       "hub": "education",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4311,6 +4455,7 @@
     {
       "file": "src/pages/marketing/CampaignBuilder.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4326,6 +4471,7 @@
     {
       "file": "src/pages/marketing/CampaignDetail.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4341,6 +4487,7 @@
     {
       "file": "src/pages/marketing/CampaignList.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4356,6 +4503,7 @@
     {
       "file": "src/pages/marketing/LandingPageList.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4371,6 +4519,7 @@
     {
       "file": "src/pages/marketing/MarketingCalendar.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4386,6 +4535,7 @@
     {
       "file": "src/pages/marketing/MarketingDashboard.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4401,6 +4551,7 @@
     {
       "file": "src/pages/marketing/SegmentList.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4416,6 +4567,7 @@
     {
       "file": "src/pages/marketing/TemplateGallery.tsx",
       "hub": "marketing",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4431,9 +4583,10 @@
     {
       "file": "src/pages/public/About.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -4441,11 +4594,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/ApiDocs.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -4461,6 +4615,7 @@
     {
       "file": "src/pages/public/ApiPricing.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -4476,9 +4631,10 @@
     {
       "file": "src/pages/public/BlogListPage.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
@@ -4486,14 +4642,15 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/public/BlogPostPage.tsx",
       "hub": "public",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": false,
@@ -4501,11 +4658,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/BookingWidget.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4521,6 +4679,7 @@
     {
       "file": "src/pages/public/BrandStorefront.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4536,6 +4695,7 @@
     {
       "file": "src/pages/public/Brands.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4551,21 +4711,15 @@
     {
       "file": "src/pages/public/Cart.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/CertificateVerify.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4581,21 +4735,15 @@
     {
       "file": "src/pages/public/Checkout.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": true,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/CourseDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4611,6 +4759,7 @@
     {
       "file": "src/pages/public/CoursePlayer.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -4626,6 +4775,7 @@
     {
       "file": "src/pages/public/CoursesCatalog.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4641,9 +4791,10 @@
     {
       "file": "src/pages/public/Education.tsx",
       "hub": "public",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": false,
@@ -4651,11 +4802,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 0
+      "feature_score": 1
     },
     {
       "file": "src/pages/public/EducationArticles.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4671,24 +4823,26 @@
     {
       "file": "src/pages/public/Events.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
         "crud": false,
-        "export": false
+        "export": true
       },
-      "feature_score": 1
+      "feature_score": 6
     },
     {
       "file": "src/pages/public/FAQ.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -4696,11 +4850,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/ForBrands.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4716,9 +4871,10 @@
     {
       "file": "src/pages/public/ForMedspas.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -4726,14 +4882,15 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/ForSalons.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -4741,29 +4898,23 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/ForgotPassword.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": true,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "auth",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/HelpCenter.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
@@ -4771,11 +4922,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/public/Home.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4791,9 +4943,10 @@
     {
       "file": "src/pages/public/HowItWorks.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
@@ -4801,11 +4954,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 3
     },
     {
       "file": "src/pages/public/IngredientCollection.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4821,6 +4975,7 @@
     {
       "file": "src/pages/public/IngredientDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4836,6 +4991,7 @@
     {
       "file": "src/pages/public/Ingredients.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4851,9 +5007,10 @@
     {
       "file": "src/pages/public/Insights.tsx",
       "hub": "public",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": false,
@@ -4861,11 +5018,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/Intelligence.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4881,6 +5039,7 @@
     {
       "file": "src/pages/public/IntelligenceBriefDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4896,6 +5055,7 @@
     {
       "file": "src/pages/public/IntelligenceBriefs.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4911,6 +5071,7 @@
     {
       "file": "src/pages/public/IntelligenceCommerce.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4926,6 +5087,7 @@
     {
       "file": "src/pages/public/JobDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4941,6 +5103,7 @@
     {
       "file": "src/pages/public/Jobs.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -4956,6 +5119,7 @@
     {
       "file": "src/pages/public/MyCertificates.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -4971,39 +5135,26 @@
     {
       "file": "src/pages/public/OrderDetail.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/OrderHistory.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 2
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/Plans.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
@@ -5011,11 +5162,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 3
     },
     {
       "file": "src/pages/public/PrelaunchQuiz.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5031,6 +5183,7 @@
     {
       "file": "src/pages/public/Pricing.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5046,9 +5199,10 @@
     {
       "file": "src/pages/public/Privacy.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -5056,26 +5210,20 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/ProductDetail.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/ProfessionalDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5091,6 +5239,7 @@
     {
       "file": "src/pages/public/Professionals.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5106,6 +5255,7 @@
     {
       "file": "src/pages/public/ProtocolDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5121,9 +5271,10 @@
     {
       "file": "src/pages/public/Protocols.tsx",
       "hub": "public",
-      "classification": "SHELL",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": false,
@@ -5131,11 +5282,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 0
+      "feature_score": 1
     },
     {
       "file": "src/pages/public/RequestAccess.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5151,21 +5303,31 @@
     {
       "file": "src/pages/public/ResetPassword.tsx",
       "hub": "public",
-      "classification": "SHELL",
+      "page_type": "auth",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/public/SearchPage.tsx",
+      "hub": "public",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
-        "empty_state": false,
+        "empty_state": true,
         "error_state": true,
         "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 5
     },
     {
       "file": "src/pages/public/Shop.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5181,21 +5343,15 @@
     {
       "file": "src/pages/public/ShopCart.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/ShopCategory.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5211,84 +5367,50 @@
     {
       "file": "src/pages/public/ShopCheckout.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": true,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 2
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/ShopOrderDetail.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/ShopOrders.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": true,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/ShopProduct.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 2
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/ShopWishlist.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/Stories.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
@@ -5296,11 +5418,12 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/public/StoriesIndex.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5316,6 +5439,7 @@
     {
       "file": "src/pages/public/StoryDetail.tsx",
       "hub": "public",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5331,9 +5455,10 @@
     {
       "file": "src/pages/public/Terms.tsx",
       "hub": "public",
-      "classification": "DEMO",
+      "page_type": "content",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -5341,26 +5466,20 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/WishlistPage.tsx",
       "hub": "public",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "commerce",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/sales/CommissionDashboard.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5376,6 +5495,7 @@
     {
       "file": "src/pages/sales/DealDetail.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5391,6 +5511,7 @@
     {
       "file": "src/pages/sales/DealEditor.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5406,6 +5527,7 @@
     {
       "file": "src/pages/sales/OpportunityFinder.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5421,6 +5543,7 @@
     {
       "file": "src/pages/sales/PipelineBoard.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5436,6 +5559,7 @@
     {
       "file": "src/pages/sales/ProposalBuilder.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "SHELL",
       "features": {
         "live_data": false,
@@ -5451,6 +5575,7 @@
     {
       "file": "src/pages/sales/ProposalView.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "LIVE",
       "features": {
         "live_data": true,
@@ -5466,6 +5591,7 @@
     {
       "file": "src/pages/sales/RevenueAnalytics.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,
@@ -5481,6 +5607,7 @@
     {
       "file": "src/pages/sales/SalesDashboard.tsx",
       "hub": "sales",
+      "page_type": "content",
       "classification": "DEMO",
       "features": {
         "live_data": false,

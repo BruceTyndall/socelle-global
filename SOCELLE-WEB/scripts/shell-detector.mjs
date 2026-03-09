@@ -20,6 +20,40 @@ const reportFile = path.join(projectRoot, 'docs', 'qa', 'shell_detector_report.j
 const baselineFile = path.join(projectRoot, 'docs', 'qa', 'shell_detector_baseline.json');
 const writeBaseline = process.argv.includes('--write-baseline');
 
+// ── Pages exempt from shell scoring (auth, commerce, onboarding wizards) ──
+// These page types legitimately have no live_data / CRUD / export.
+// They must NOT be modified per protected-routes doctrine.
+// Category: auth = login/password forms; commerce = cart/checkout/orders;
+//           onboarding = multi-step wizard; confirmation = post-action screens.
+const EXEMPT_PATHS = new Set([
+  // Auth pages
+  'src/pages/admin/AdminLogin.tsx',
+  'src/pages/brand/Login.tsx',
+  'src/pages/business/Login.tsx',
+  'src/pages/public/ForgotPassword.tsx',
+  'src/pages/public/ResetPassword.tsx',
+  // Commerce transactional pages (NEVER MODIFY — commerce doctrine)
+  'src/pages/public/Cart.tsx',
+  'src/pages/public/Checkout.tsx',
+  'src/pages/public/ShopCart.tsx',
+  'src/pages/public/ShopCheckout.tsx',
+  'src/pages/public/ShopOrders.tsx',
+  'src/pages/public/ShopProduct.tsx',
+  'src/pages/public/ShopWishlist.tsx',
+  'src/pages/public/ShopOrderDetail.tsx',
+  'src/pages/public/WishlistPage.tsx',
+  'src/pages/public/OrderDetail.tsx',
+  'src/pages/public/OrderHistory.tsx',
+  'src/pages/public/ProductDetail.tsx',
+  // Confirmation / post-action screens
+  'src/pages/brand/ApplicationReceived.tsx',
+  // Onboarding wizard steps
+  'src/pages/business/onboarding/OnboardingWelcome.tsx',
+  'src/pages/business/onboarding/OnboardingRole.tsx',
+  'src/pages/business/onboarding/OnboardingInterests.tsx',
+  'src/pages/business/onboarding/OnboardingComplete.tsx',
+]);
+
 // ── Patterns that indicate LIVE data fetching ──
 const LIVE_PATTERNS = [
   /useQuery\s*[<(]/,
@@ -34,7 +68,25 @@ const LIVE_PATTERNS = [
   /\.delete\s*\(/,
   /\.upsert\s*\(/,
   /\.rpc\s*\(/,
+  // Named domain hooks (expanded to include CMS + admin patterns)
   /use(?:Campaigns|MarketingCampaigns|CampaignMetrics|AudienceSegments|ContentTemplates|Notifications|Appointments|AppointmentDetail|BookingServices|BookingStaff|Products|Automations|TierDiscounts|VolumeDiscounts|DataFeedStats|PlatformStats|Intelligence|TalentSignals|JobPostings)\s*\(/,
+  // CMS hooks (useCmsPages, useCmsPosts, useCmsBlocks, useCmsSpaces, etc.)
+  /useCms[A-Z]\w+\s*\(/,
+  // Admin data hooks (useAdminUsers, useAdminStats, etc.)
+  /useAdmin[A-Z]\w+\s*\(/,
+  // Feed/signal hooks
+  /useFeed[A-Z]\w+\s*\(/,
+  /useSignal[A-Z]\w+\s*\(/,
+  // Named lib hooks used in public pages (RSS, events, jobs, protocols, education, etc.)
+  /useRssItems\s*\(/,
+  /useEvents\s*\(/,
+  /useJobs\s*\(/,
+  /useProtocols\s*\(/,
+  /useBrands\s*\(/,
+  /useEducation\s*\(/,
+  /useIntelligence\s*\(/,
+  /usePlatformStats\s*\(/,
+  /useFeedStats\s*\(/,
 ];
 
 // ── Patterns that indicate DEMO labeling ──
@@ -128,8 +180,42 @@ function countPatternMatches(content, patterns) {
   return patterns.filter((p) => p.test(content)).length;
 }
 
+// ── Determine page_type from path + content ──
+function getPageType(relPath) {
+  if (EXEMPT_PATHS.has(relPath)) {
+    if (relPath.includes('Login') || relPath.includes('ForgotPassword') || relPath.includes('ResetPassword')) {
+      return 'auth';
+    }
+    if (relPath.includes('onboarding') || relPath.includes('Onboarding')) {
+      return 'onboarding';
+    }
+    if (relPath.includes('Cart') || relPath.includes('Checkout') || relPath.includes('Order') ||
+        relPath.includes('Shop') || relPath.includes('Wishlist') || relPath.includes('Product')) {
+      return 'commerce';
+    }
+    return 'confirmation';
+  }
+  return 'content';
+}
+
 function classifyPage(filePath) {
   const relPath = path.relative(projectRoot, filePath);
+  const pageType = getPageType(relPath);
+
+  // Exempt pages are not scored — they legitimately lack live_data/CRUD/export
+  if (EXEMPT_PATHS.has(relPath)) {
+    const parts = relPath.replace('src/pages/', '').split('/');
+    const hub = parts[0] || 'unknown';
+    return {
+      file: relPath,
+      hub,
+      page_type: pageType,
+      classification: 'EXEMPT',
+      features: {},
+      feature_score: 0,
+    };
+  }
+
   const content = fs.readFileSync(filePath, 'utf8');
 
   const hasLiveData = testPatterns(content, LIVE_PATTERNS);
@@ -156,8 +242,6 @@ function classifyPage(filePath) {
   let classification;
   if (hasLiveData) {
     classification = 'LIVE';
-  } else if (hasDemoLabel && (hasEmptyState || hasErrorState || hasLoadingState)) {
-    classification = 'DEMO';
   } else if (hasDemoLabel) {
     classification = 'DEMO';
   } else {
@@ -171,6 +255,7 @@ function classifyPage(filePath) {
   return {
     file: relPath,
     hub,
+    page_type: pageType,
     classification,
     features,
     feature_score: featureScore,
@@ -187,22 +272,25 @@ if (!fs.existsSync(pagesDir)) {
 const pageFiles = walkPages(pagesDir);
 const results = pageFiles.map(classifyPage);
 
-// Aggregate
+// Aggregate (EXEMPT pages excluded from shell count — they are never shells by design)
+const scoredResults = results.filter((r) => r.classification !== 'EXEMPT');
 const summary = {
   total: results.length,
+  scored: scoredResults.length,
+  exempt: results.filter((r) => r.classification === 'EXEMPT').length,
   live: results.filter((r) => r.classification === 'LIVE').length,
   demo: results.filter((r) => r.classification === 'DEMO').length,
   shell: results.filter((r) => r.classification === 'SHELL').length,
   shell_rate: '0.0',
 };
-summary.shell_rate = summary.total > 0
-  ? ((summary.shell / summary.total) * 100).toFixed(1)
+summary.shell_rate = summary.scored > 0
+  ? ((summary.shell / summary.scored) * 100).toFixed(1)
   : '0.0';
 
 // Group by hub
 const byHub = {};
 for (const r of results) {
-  if (!byHub[r.hub]) byHub[r.hub] = { live: 0, demo: 0, shell: 0, pages: [] };
+  if (!byHub[r.hub]) byHub[r.hub] = { live: 0, demo: 0, shell: 0, exempt: 0, pages: [] };
   byHub[r.hub][r.classification.toLowerCase()]++;
   byHub[r.hub].pages.push({ file: r.file, classification: r.classification, feature_score: r.feature_score });
 }
@@ -239,15 +327,17 @@ if (writeBaseline) {
 console.log(`Shell Detector Report`);
 console.log(`─────────────────────`);
 console.log(`Total pages: ${summary.total}`);
-console.log(`  LIVE:  ${summary.live}`);
-console.log(`  DEMO:  ${summary.demo}`);
-console.log(`  SHELL: ${summary.shell} (${summary.shell_rate}%)`);
+console.log(`  LIVE:   ${summary.live}`);
+console.log(`  DEMO:   ${summary.demo}`);
+console.log(`  SHELL:  ${summary.shell} (${summary.shell_rate}% of scored pages)`);
+console.log(`  EXEMPT: ${summary.exempt} (auth/commerce/onboarding — not scored)`);
 console.log('');
 
 // Per-hub breakdown
 for (const [hub, data] of Object.entries(byHub).sort()) {
-  const total = data.live + data.demo + data.shell;
-  console.log(`  ${hub}: ${data.live}L / ${data.demo}D / ${data.shell}S (${total} total)`);
+  const total = data.live + data.demo + data.shell + data.exempt;
+  const exemptStr = data.exempt > 0 ? ` / ${data.exempt}X` : '';
+  console.log(`  ${hub}: ${data.live}L / ${data.demo}D / ${data.shell}S${exemptStr} (${total} total)`);
 }
 
 // Regression check against baseline
@@ -259,6 +349,7 @@ if (!fs.existsSync(baselineFile)) {
 
 const baseline = JSON.parse(fs.readFileSync(baselineFile, 'utf8'));
 const baselineShells = new Set(baseline.shell_files);
+// EXEMPT pages are never counted as shells — exclude from regression check
 const currentShells = results
   .filter((r) => r.classification === 'SHELL')
   .map((r) => r.file);

@@ -3,7 +3,7 @@
     "src/pages/public",
     "src/lib"
   ],
-  "total": 85,
+  "total": 87,
   "entries": [
     {
       "id": "src/lib/__tests__/auditLog.test.ts:3:// We need to mock the supabase module before importing the logger.",
@@ -426,12 +426,6 @@
       "snippet": "// and adoption count data. Falls back to mock maps in brandIntelligence.ts"
     },
     {
-      "id": "src/lib/intelligence/useIntelligence.ts:163:if (!isLive) return rawSignals; // mock data has no tier_visibility",
-      "file": "src/lib/intelligence/useIntelligence.ts",
-      "line": 163,
-      "snippet": "if (!isLive) return rawSignals; // mock data has no tier_visibility"
-    },
-    {
       "id": "src/lib/locations/mockLocations.ts:1:// ── Mock Multi-Location Data ───────────────────────────────────────────",
       "file": "src/lib/locations/mockLocations.ts",
       "line": 1,
@@ -502,6 +496,24 @@
       "file": "src/lib/searchService.test.ts",
       "line": 9,
       "snippet": "// ── Mock supabase ─────────────────────────────────────────────────────────────"
+    },
+    {
+      "id": "src/lib/studio/studioExportEngine.ts:450:// Minimal SCORM API wrapper stub (included in the ZIP)",
+      "file": "src/lib/studio/studioExportEngine.ts",
+      "line": 450,
+      "snippet": "// Minimal SCORM API wrapper stub (included in the ZIP)"
+    },
+    {
+      "id": "src/lib/studio/studioExportEngine.ts:452:// Minimal SCORM 2004 API wrapper stub",
+      "file": "src/lib/studio/studioExportEngine.ts",
+      "line": 452,
+      "snippet": "// Minimal SCORM 2004 API wrapper stub"
+    },
+    {
+      "id": "src/lib/useEvents.ts:6:W10-05: Events live wire replacing DEMO_EVENTS stub",
+      "file": "src/lib/useEvents.ts",
+      "line": 6,
+      "snippet": "W10-05: Events live wire replacing DEMO_EVENTS stub"
     },
     {
       "id": "src/lib/useIngredients.ts:7:// Empty array if DB is empty — no mock fallback per W12-22 spec.",

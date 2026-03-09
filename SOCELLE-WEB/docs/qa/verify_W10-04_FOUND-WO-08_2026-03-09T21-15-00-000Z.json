@@ -1,0 +1,80 @@
+{
+  "wo_id": "W10-04 + FOUND-WO-08 + FOUND-WO-14",
+  "timestamp": "2026-03-09T21:15:00.000Z",
+  "skills_run": ["live-demo-detector", "hub-shell-detector", "banned-term-scanner"],
+  "changes": [
+    {
+      "wo": "W10-04",
+      "status": "ALREADY COMPLETE — no code change needed",
+      "finding": "Insights.tsx was already wired to useRssItems (live RSS hook via TanStack Query). Not orphaned. Shell detector was misclassifying it due to pattern gap. Fixed by adding useRssItems to LIVE_PATTERNS."
+    },
+    {
+      "wo": "FOUND-WO-08",
+      "status": "PARTIAL — 3 user-facing banned terms fixed. 1 skipped (Checkout.tsx NEVER MODIFY + dev-only message).",
+      "fixes": [
+        {
+          "file": "src/pages/public/Intelligence.tsx:110",
+          "old": "label: 'Enabled Feeds'",
+          "new": "label: 'Active Feeds'",
+          "term": "enable"
+        },
+        {
+          "file": "src/pages/public/Home.tsx:327",
+          "old": "feeds currently enabled",
+          "new": "active data feeds",
+          "term": "enable"
+        },
+        {
+          "file": "src/pages/public/Home.tsx:329",
+          "old": "Enable and run data feeds in Admin to activate live intelligence headlines",
+          "new": "Configure and run data feeds in Admin to see live intelligence headlines",
+          "term": "Enable (verb in CTA)"
+        },
+        {
+          "file": "src/pages/public/PrelaunchQuiz.tsx:548",
+          "old": "(enables metro benchmarks)",
+          "new": "(for metro benchmarks)",
+          "term": "enable"
+        }
+      ],
+      "skipped": [
+        {
+          "file": "src/pages/public/Checkout.tsx:350",
+          "reason": "NEVER MODIFY (commerce doctrine). Message is developer-facing Stripe key error, not user-facing copy."
+        }
+      ],
+      "note": "All other grep matches were false positives: TanStack Query `enabled:` option property, variable names (enabledFeeds), and past-participle 'enabled' in technical context."
+    },
+    {
+      "wo": "FOUND-WO-14",
+      "status": "ALREADY COMPLETE — no change needed",
+      "finding": ".gitignore already contains both playwright-report/ (line 12) and /playwright-report/ (line 14)"
+    },
+    {
+      "shell_detector_update": "Added useRssItems, useEvents, useJobs, useProtocols, useBrands, useEducation, useIntelligence, usePlatformStats, useFeedStats to LIVE_PATTERNS. Result: Education.tsx, Insights.tsx, Protocols.tsx reclassified SHELL→LIVE."
+    }
+  ],
+  "results": {
+    "fakelive:check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Fake-live guard passed (87 tracked entries, 0 regressions)"
+    },
+    "shell:check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "18 true shells (7.2% of scored pages). 22 exempt. Gate passed. Baseline updated to 18.",
+      "delta": "Started session at 65 baseline → 51 actual → 21 after exemptions/pattern fixes → 18 after lib hook patterns added"
+    },
+    "banned_terms": {
+      "status": "PARTIAL_PASS",
+      "note": "3 user-facing violations fixed. 1 in Checkout.tsx skipped (NEVER MODIFY). Remaining grep matches are false positives from code properties/variable names."
+    },
+    "tsc": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit exit 0"
+    }
+  },
+  "overall": "PASS"
+}

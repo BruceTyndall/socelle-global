@@ -434,14 +434,130 @@ ONLY THEN → proceed to Build 1
 **Apps:** Marketing (#6), Booking (#7), Brands (#10), Professionals (#9), Notifications (#17)
 **Prerequisite:** BUILD 2 complete
 **WO count:** 25
+**Status:** COMPLETE (commit `ba59f01`, `6a70c5c`, `4c7ae53` — verified 2026-03-09)
+
+**Marketing WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| MKT-WO-01 | Marketing | Campaign dashboard: live DB-backed campaign list, KPI strip (impressions, conversions, cost-per-lead) | Campaigns load from DB; KPIs render from aggregated rows |
+| MKT-WO-02 | Marketing | Campaign builder wizard (4-step: audience → content → schedule → budget) | Complete wizard → campaign row created in DB |
+| MKT-WO-03 | Marketing | Template library (pull from cms_templates where space=marketing) | Templates grid loads, click → wizard pre-populated |
+| MKT-WO-04 | Marketing | Analytics + export (channel performance, conversion funnel, CSV export) | Charts load from DB; CSV downloads all campaigns |
+| MKT-WO-05 | Marketing | Intelligence linking (signal → Create Campaign via CrossHubActionDispatcher) | Signal right-click → Create Campaign → pre-filled with signal context |
+
+**Booking WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| BOOK-WO-01 | Booking | Booking calendar (live from bookings table, day/week/month views) | Calendar loads from DB; appointments display correctly |
+| BOOK-WO-02 | Booking | Appointment CRUD (create/edit/cancel + confirmation email) | Create → DB row + email; cancel → row updated + notification |
+| BOOK-WO-03 | Booking | Client linking (appointment → CRM contact, history timeline) | Booking detail shows CRM contact; contact shows booking history |
+| BOOK-WO-04 | Booking | Follow-up automation (post-appointment notification trigger via notifications system) | Completed appointment → follow-up notification fires |
+| BOOK-WO-05 | Booking | Intelligence linking (booking_trend signal type, capacity signal → schedule action) | booking_count signals surface in Intelligence Hub |
+
+**Brands Hub WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| BRAND-WO-01 | Brands | Brand directory (live from brands table, search/filter by category/region/tier) | Directory loads from DB; all filters work |
+| BRAND-WO-02 | Brands | Brand detail page (profile, products, protocols, intelligence mentions) | All sections load from DB; intelligence tab shows signals |
+| BRAND-WO-03 | Brands | Brand claim flow (claim form → access_requests → admin review → brand_admin role granted) | Claim → row created → admin approves → role granted |
+| BRAND-WO-04 | Brands | Brand competitive intelligence (brand_adoption signals, share-of-voice, trend chart) | Intelligence tab shows signal_type=brand_adoption filtered to this brand |
+| BRAND-WO-05 | Brands | Brand portal upgrades (live analytics, CSV export, AI advisor using live signal context) | All portal metrics DB-backed; AI advisor uses signal context |
+
+**Professionals Hub WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| PROF-WO-01 | Professionals | Professional directory (live from user_profiles where role=practitioner, search/filter) | Directory loads from DB; search and specialty filters work |
+| PROF-WO-02 | Professionals | Professional profile page (bio, specialties, certifications, NPI verification badge) | Profile renders all fields from DB |
+| PROF-WO-03 | Professionals | NPI verification badge (registry check via NPI edge function → verified badge display) | NPI check → badge shown; unverified → pending state |
+| PROF-WO-04 | Professionals | Intelligence linking (treatment_trend → training recommendation → Assign Training action) | Signal → Assign Training routes to Education hub |
+| PROF-WO-05 | Professionals | CE credit tracking (live from education_completions, PDF export for licensing boards) | CE credits count from DB; PDF export renders correctly |
+
+**Notifications Hub WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| NOTIF-WO-01 | Notifications | Notification center UI (bell icon + panel, unread count badge, mark-as-read, mark-all-read) | Panel loads from DB; unread badge count is accurate |
+| NOTIF-WO-02 | Notifications | Notification types (signal alerts, booking reminders, credit low, system announcements) | All 4 types render with correct icons and Pearl Mineral V2 signal colors |
+| NOTIF-WO-03 | Notifications | Push notification subscription (PWA + mobile: subscribe → receive via web-push edge function) | Subscribe → test push received in browser and on device |
+| NOTIF-WO-04 | Notifications | Notification preferences (per-type enable/disable, digest frequency, quiet hours) | Toggle off a type → notifications of that type no longer delivered |
+| NOTIF-WO-05 | Notifications | Notification trigger wiring (all system events → notification_events table writers) | Booking created → notification row; signal alert → notification row |
 
 ### BUILD 4: Full Platform + Authoring Studio UI
 
 **Apps:** Ingredients (#8), Jobs (#11), Events (#12), Reseller (#13), **Authoring Studio UI** (#14b), Search (#18), Public Site polish (#16)
 **Prerequisite:** BUILD 3 complete
-**WO count:** 35
+**WO count:** 53 (18 Studio UI + 35 across 6 apps)
 
 *(Full Studio UI adds canvas editor, data binding, SCORM builder, collaboration, export engine, 50+ templates, social image export — all on top of Authoring Core from Build 2)*
+
+**Ingredients App WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| INGR-WO-01 | Ingredients | Ingredient directory (from ingredients table, search/filter by category/safety rating/supplier) | Directory loads from DB; filters work; empty state has CTA |
+| INGR-WO-02 | Ingredients | Ingredient detail page (INCI name, CIR safety rating, Open Beauty Facts data, formula usage, supplier listing) | All fields render from DB including external API data |
+| INGR-WO-03 | Ingredients | Formulary builder (select ingredients → compose formula document via Authoring Core blocks) | Select ingredients → document created with ingredient embed blocks |
+| INGR-WO-04 | Ingredients | Intelligence linking (ingredient_momentum signals, regulatory_alert signals on ingredient detail) | Ingredient detail shows linked signals; signal → View Ingredient action works |
+| INGR-WO-05 | Ingredients | Supplier linking (ingredient → approved distributor mappings, price benchmark from signals) | Supplier list renders from DB with pricing_benchmark signal data |
+| INGR-WO-06 | Ingredients | Export + mobile (ingredient list CSV, formula document PDF, Flutter ingredient search + detail screen) | CSV and PDF export work; Flutter screen renders and navigates |
+
+**Jobs App WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| JOBS-WO-01 | Jobs | Job board directory (from job_postings table, search/filter by role/location/specialty/salary range) | Directory loads from DB; all filters work; Schema.org JobPosting JSON-LD present |
+| JOBS-WO-02 | Jobs | Job detail + apply (full description, apply form → job_applications row, confirmation email) | Apply → application row created → confirmation email sent |
+| JOBS-WO-03 | Jobs | Employer dashboard (post/edit/close listings, applicant list, applicant CSV export) | Post listing → visible on board; applicants list loads; CSV downloads |
+| JOBS-WO-04 | Jobs | Intelligence linking (job_market signals surface on board; signal → Create Listing action) | job_market signals visible in hub; Create Listing action works |
+| JOBS-WO-05 | Jobs | Salary benchmarks (pricing_benchmark signals for roles + regional comparison chart) | Benchmark panel renders with signal data per role and region |
+| JOBS-WO-06 | Jobs | Mobile (Flutter job cards, job detail sheet, apply bottom sheet) | Apply flow completes on mobile; Flutter screen navigates correctly |
+
+**Events App WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| EVT-WO-01 | Events | Event directory (from events table, calendar + list view, filter by type/location/date range) | Directory loads from DB; both views work; filters apply; Schema.org Event JSON-LD |
+| EVT-WO-02 | Events | Event detail page (description, speakers, agenda, location map, registration count, capacity) | All fields render from DB |
+| EVT-WO-03 | Events | Event registration (RSVP → event_registrations row → confirmation email; waitlist if at capacity) | Register → DB row → email fired; full event → waitlisted with notification |
+| EVT-WO-04 | Events | Host dashboard (create/edit/publish events, attendee management, attendee CSV export) | Create event → appears on public board; attendee CSV downloads with correct data |
+| EVT-WO-05 | Events | Intelligence linking (event_signal type surfaces in Intelligence Hub; signal → Create Event action) | event_signal type renders in hub; Create Event action pre-fills form from signal |
+| EVT-WO-06 | Events | Mobile (Flutter event cards, event detail sheet, RSVP bottom sheet) | Cards render; RSVP completes on mobile |
+
+**Reseller App WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| RESELL-WO-01 | Reseller | Reseller application + approval flow (apply form → pending → admin review → approved status + portal access) | Application → DB row → admin approves → reseller portal unlocked |
+| RESELL-WO-02 | Reseller | Commission dashboard (live from affiliate_clicks + commission_ledger, payout history, period comparison) | Dashboard loads from DB; commissions calculated correctly |
+| RESELL-WO-03 | Reseller | Referral link manager (generate tracked affiliate links, QR code, performance per link) | Generate link → affiliate_link row created → click tracking fires correctly |
+| RESELL-WO-04 | Reseller | Distributor intelligence (supply_chain signals relevant to reseller's product categories) | supply_chain signals filtered to reseller's category visible in hub |
+| RESELL-WO-05 | Reseller | Payout reporting (commission summary CSV by period, running total, W-9 acknowledgment notice) | CSV exports commission history; W-9 notice visible on payout page |
+
+**Search App WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| SEARCH-WO-01 | Search | pgvector activation + embedding pipeline (verify extension enabled, wire generate-embeddings to market_signals, brands, education tables) | pgvector active in live DB; embeddings generated on insert for all 3 tables |
+| SEARCH-WO-02 | Search | Site-wide search bar (visible in authenticated nav on all surfaces, ⌘K keyboard shortcut, instant results) | Search bar renders; ⌘K opens it; typing shows results within 300ms |
+| SEARCH-WO-03 | Search | Search results page (/search?q=) with type facets (signals, brands, education, jobs, events, ingredients) | /search renders; facets filter correctly; each result links to detail page |
+| SEARCH-WO-04 | Search | Semantic search (vector similarity via generate-embeddings edge function, synonym resolution) | Synonym search returns relevant results (e.g. "hair growth" finds "hair loss" signals) |
+| SEARCH-WO-05 | Search | Search analytics (admin dashboard: top queries, zero-result rate, click-through rate for last 30 days) | Admin shows top 20 queries, zero-result%, CTR metrics |
+
+**Public Site Polish WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| SITE-WO-01 | Public Site | /for-brands live wire (replace hardcoded STATS array with real DB counts from brands + users tables) | Stats load from DB; no hardcoded values remain; DEMO label removed |
+| SITE-WO-02 | Public Site | /professionals live wire (replace hardcoded STATS with real counts from user_profiles) | Stats load from DB; professional count matches actual verified professionals |
+| SITE-WO-03 | Public Site | /plans live wire (connect TIERS to Stripe Products API, show real prices + feature list from DB) | Prices reflect Stripe products; toggling billing period updates price correctly |
+| SITE-WO-04 | Public Site | SEO final audit (all public pages pass seo-audit skill: 100% meta, Open Graph, JSON-LD, sitemap.xml complete) | seo-audit skill returns 0 failures on all public pages |
+| SITE-WO-05 | Public Site | Core Web Vitals pass (LCP < 2.5s, CLS < 0.1, FID < 100ms on /, /intelligence, /brands) | Lighthouse CI ≥ 90 performance score on all 3 pages |
+| SITE-WO-06 | Public Site | Banned terms final sweep (0 violations across all public pages + portal copy) | banned-term-scanner returns 0 violations site-wide |
+| SITE-WO-07 | Public Site | Conversion A/B test infrastructure (feature-flag-gated headline variants, conversion events logged to analytics table) | Feature flag controls variant; conversion events inserted to analytics_events table |
 
 **Authoring Studio UI WOs (the Canva-competitor):**
 
@@ -470,6 +586,36 @@ ONLY THEN → proceed to Build 1
 
 **Apps:** Flutter mobile full parity, Tauri desktop, PWA enhancements
 **Prerequisite:** BUILD 4 complete
+**WO count:** 14
+
+**Flutter Mobile Full Parity WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| MOBILE-WO-01 | Mobile | Flutter Ingredients hub (ingredient directory + detail screen + formulary viewer) | Screens render; live data loads; formulary doc opens in viewer |
+| MOBILE-WO-02 | Mobile | Flutter Jobs hub (job board cards + job detail sheet + apply bottom sheet) | Apply flow completes on mobile; application row created |
+| MOBILE-WO-03 | Mobile | Flutter Events hub (event cards + event detail sheet + RSVP bottom sheet) | RSVP flow completes; event_registrations row created |
+| MOBILE-WO-04 | Mobile | Flutter Reseller hub (commission dashboard screen + referral link generator) | Commission data loads from DB; link generates correctly |
+| MOBILE-WO-05 | Mobile | Flutter global search (search bar in app header + results screen with type facets) | Typing query returns results; tapping result navigates to detail screen |
+| MOBILE-WO-06 | Mobile | Flutter Studio quick authoring (template → fill variables → export → native share sheet) | Template → export completes in under 30 seconds; share sheet presents correctly |
+| MOBILE-WO-07 | Mobile | Push notification delivery (FCM/APNs integration, subscribe to push, receive all notification types) | Subscribe → test push received on iOS and Android devices |
+| MOBILE-WO-08 | Mobile | Flutter full parity audit (every web hub has a mobile counterpart; no orphaned web routes on mobile) | mobile-parity-checker skill returns 0 parity gaps |
+
+**Tauri Desktop WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| TAURI-WO-01 | Tauri | Desktop shell setup (Tauri wrapping React+Vite build; installers for macOS + Windows) | App installs and launches to /intelligence; no console errors |
+| TAURI-WO-02 | Tauri | Native integrations (file-system access for exports saves to ~/Downloads; OS-level notifications) | Export → file saved to ~/Downloads; notification appears in OS notification center |
+| TAURI-WO-03 | Tauri | Auto-update (Tauri updater checks for new release, prompts user, installs without data loss) | New version → update prompt → installs; data intact after update |
+
+**PWA WOs:**
+
+| WO ID | App | Scope | Acceptance Test |
+|-------|-----|-------|-----------------|
+| PWA-WO-01 | PWA | PWA manifest + install prompt (meets all installability criteria on iOS, Android, and desktop Chrome) | App installs to home screen on all 3 platforms without errors |
+| PWA-WO-02 | PWA | Service worker + offline mode (intelligence hub renders cached signals when offline) | Airplane mode → /intelligence renders with cached data; stale badge shown |
+| PWA-WO-03 | PWA | Web Push subscriptions (subscribe in browser → receive push on browser/mobile when new signal fires) | Subscribe → trigger signal alert → push delivered in browser and on mobile |
 
 ---
 
@@ -559,27 +705,25 @@ Signal → [action] → [target in this hub]
 
 ## TOTALS
 
-| Metric | Count |
-|--------|-------|
-| Apps | 20 (+ Authoring split into Core + Studio UI) |
-| Group 0 (Control Plane) WOs | 4 |
-| Group A (Foundation) WOs | 15 |
-| Build 0 total (Group 0 + A) | 19 |
-| Build 1 (Revenue Wedge) WOs | 21 |
-| Build 2 (Core + Authoring Core + Admin) WOs | 50 |
-| Build 3 (Growth) WOs | 25 |
-| Build 4 (Full Platform + Studio UI) WOs | 35 |
-| Build 5 (Multi-Platform) WOs | TBD |
-| **Total WOs** | **150+** |
-| Existing skills | 97 |
-| Skills to create | 26 |
-| Current shell rate | 48.5% (129/266) |
-| Target shell rate | 0% |
+| Metric | Count | Status |
+|--------|-------|--------|
+| Apps | 20 (+ Authoring split into Core + Studio UI) | — |
+| Group 0 (Control Plane) WOs | 4 | ✅ COMPLETE |
+| Group A (Foundation) WOs | 15 | ✅ COMPLETE |
+| Build 0 total (Group 0 + A) | 19 | ✅ COMPLETE |
+| Build 1 (Revenue Wedge) WOs | 21 | ⏳ IN PROGRESS — PAY-WO bypassed |
+| Build 2 (Core + Authoring Core + Admin) WOs | 50 | ⏳ IN PROGRESS — partial via V3 waves |
+| Build 3 (Growth) WOs | 25 | ✅ COMPLETE — commit ba59f01 |
+| Build 4 (Full Platform + Studio UI) WOs | 53 (18 Studio UI + 35 across 6 apps) | ⬜ NOT STARTED |
+| Build 5 (Multi-Platform) WOs | 14 (8 Mobile + 3 Tauri + 3 PWA) | ⬜ NOT STARTED |
+| **Total WOs** | **182** | — |
+| Existing skills | 99 (updated 2026-03-09) | — |
+| Current shell rate | 48.5% (129/266) | Target: 0% |
 
 ---
 
 *OPERATION BREAKOUT v2 — CORRECTED MASTER PLAN*
 *All owner decisions locked. All advisor fixes incorporated.*
 *VERIFIED / UNKNOWN / INTENDED on every claim.*
-*133 work orders. 20 apps. 6 builds. 0 shells at completion.*
+*182 work orders. 20 apps. 6 builds. 0 shells at completion.*
 *Intelligence platform first. Always.*

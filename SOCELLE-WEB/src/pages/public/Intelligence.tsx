@@ -107,7 +107,7 @@ export default function Intelligence() {
       { id: 'ik1', value: feedsLive ? totalSignals : '--', label: 'Signals Ingested' },
       { id: 'ik2', value: feedsLive ? totalFeeds : '--', label: 'Verified Sources' },
       { id: 'ik3', value: confidenceDisplay, label: 'Avg Confidence' },
-      { id: 'ik4', value: feedsLive ? enabledFeeds : '--', label: 'Enabled Feeds' },
+      { id: 'ik4', value: feedsLive ? enabledFeeds : '--', label: 'Active Feeds' },
     ],
     [feedsLive, totalSignals, totalFeeds, enabledFeeds, confidenceDisplay]
   );

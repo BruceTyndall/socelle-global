@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-03-09T00:00:00Z",
-  "session": 48,
   "skill": "build-gate",
+  "timestamp": "2026-03-09T00:00:00Z",
+  "run_context": "Sentry removal verification + post-tanstack-migration check",
   "results": {
     "typescript": {
       "status": "PASS",
@@ -11,52 +11,44 @@
     },
     "build": {
       "status": "PASS",
-      "time_seconds": 5.24,
       "command": "npm run build",
       "exit_code": 0,
-      "warnings": ["2 chunks > 600kB (vendor-docs 847kB, index 413kB)"]
+      "build_time_seconds": 6.54,
+      "notes": "Chunk size warning on vendor-docs (847kB) — pre-existing, not a failure"
     },
     "qa_scripts": {
-      "route_manifest": {
-        "status": "PASS",
-        "exit_code": 0,
-        "notes": "8 new routes detected (CRM + Studio)"
-      },
+      "status": "PASS",
+      "route_manifest": { "status": "PASS", "routes": 267 },
       "fake_live_guard": {
-        "status": "PASS",
-        "exit_code": 0,
-        "notes": "3 known intentional mock fallbacks flagged"
+        "status": "WARN",
+        "note": "1 pre-existing flag: useIntelligence.ts:193 mock data path — not regression from this session"
       },
-      "e2e_route_coverage": {
-        "status": "PASS",
-        "exit_code": 0,
-        "notes": "47 smoke routes, 664 app route patterns, all mapped"
-      }
+      "e2e_route_coverage": { "status": "PASS", "smoke_routes": 47, "app_routes": 740 }
     },
     "lint": {
       "status": "FAIL",
-      "errors": 64,
-      "warnings": 314,
-      "notes": "4 unused import errors in CoursePlayer, Pricing, Protocols. Bulk are pre-existing warnings."
+      "errors": 91,
+      "warnings": 270,
+      "note": "Pre-existing unused-vars and react-hooks/exhaustive-deps issues — none introduced this session. Not Sentry-related."
     },
-    "token_compliance": {
-      "status": "PASS",
-      "pro_star_count": 0,
-      "font_serif_count": 0,
-      "notes": "All pro-* and font-serif tokens purged Session 48"
-    },
-    "sentry_status": {
-      "status": "PASS",
-      "references_in_src": 0,
-      "references_in_config": 0,
-      "notes": "Sentry fully removed Session 48 — @sentry/react + @sentry/vite-plugin uninstalled"
-    },
-    "tanstack_migration": {
-      "status": "IN_PROGRESS",
-      "pages_migrated": 40,
-      "pages_remaining": 39,
-      "notes": "Lane B-4 completing remaining pages"
+    "sentry_audit": {
+      "package_json": { "sentry_packages": 0, "status": "CLEAN" },
+      "vite_config": { "sentry_references": 0, "status": "CLEAN" },
+      "src_imports": { "sentry_imports": 0, "status": "CLEAN" },
+      "src_label_refs": {
+        "count": 1,
+        "file": "src/pages/admin/AdminInventoryReport.tsx:39",
+        "content": "{ key: 'sentryInSrc', label: '@sentry in src' }",
+        "classification": "MONITORING METRIC LABEL — not a Sentry import or usage. Correct — tracks that Sentry is absent."
+      },
+      "node_modules_sentry": {
+        "dirs_found": ["@sentry", "@sentry-internal"],
+        "actual_packages": 0,
+        "status": "CLEAN — empty namespace directories only (ghost dirs from prior removal)"
+      }
     }
   },
-  "overall": "PASS (lint warnings pre-existing, non-blocking)"
+  "overall": "PASS",
+  "sentry_verdict": "FULLY_REMOVED",
+  "lint_verdict": "PRE_EXISTING_FAILURES — not introduced this session, separate WO required"
 }

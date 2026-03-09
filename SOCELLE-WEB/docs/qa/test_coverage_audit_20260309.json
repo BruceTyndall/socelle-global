@@ -1,0 +1,130 @@
+{
+  "skill": "test-coverage-audit",
+  "timestamp": "2026-03-09T00:00:00Z",
+  "summary": {
+    "total_page_files": 271,
+    "pages_with_unit_tests": 0,
+    "pages_with_e2e_functional_coverage": 14,
+    "pages_with_crash_only_e2e": 47,
+    "pages_with_zero_coverage": 224,
+    "unit_test_files": 17,
+    "unit_tests_total": 129,
+    "unit_tests_passing": 100,
+    "unit_tests_failing": 29,
+    "e2e_specs": 4,
+    "e2e_routes_in_crawl_table": 47
+  },
+  "unit_test_failures": {
+    "root_cause": "React.act is not a function — @testing-library/react@16.3.2 uses react-dom/test-utils which removed act export in React 19",
+    "fix": "Upgrade @testing-library/react to ^17.x (React 19 compatible)",
+    "failing_suites": [
+      "src/hooks/__tests__/useTier.test.ts (4 tests)",
+      "src/lib/__tests__/entitlements.test.ts (8 tests)",
+      "src/components/gates/__tests__/TierGate.test.tsx (4 tests)",
+      "src/lib/credits/__tests__/useCreditBalance.test.ts (2 tests)",
+      "src/modules/_core/components/__tests__/ModuleRoute.test.tsx (2 tests)"
+    ],
+    "passing_suites": [
+      "src/lib/mappingEngine.test.ts",
+      "src/lib/searchService.test.ts",
+      "src/lib/__tests__/logger.test.ts",
+      "src/lib/analysis/guardrails.test.ts",
+      "src/lib/errors.test.ts",
+      "src/lib/cms/__tests__/useCmsPosts.test.ts",
+      "src/lib/__tests__/useFeatureFlag.test.ts",
+      "src/lib/__tests__/useEdgeFunctionControls.test.ts",
+      "src/lib/analysis/__tests__/creditGate.test.ts",
+      "src/lib/__tests__/auditLog.test.ts",
+      "src/lib/__tests__/csvExport.test.ts",
+      "src/lib/cms/__tests__/useCmsPages.test.ts"
+    ]
+  },
+  "e2e_coverage": {
+    "smoke_spec": {
+      "file": "e2e/smoke.spec.ts",
+      "routes_covered": ["/", "/intelligence", "/brands", "/education", "/request-access", "/portal/dashboard (auth gate)", "/admin/dashboard (auth gate)", "/brand/dashboard (auth gate)"],
+      "assertion_depth": "page load + body visible + auth gate redirect + SEO title/meta + font-serif"
+    },
+    "auth_spec": {
+      "file": "e2e/auth.spec.ts",
+      "routes_covered": ["/portal/login", "/forgot-password", "/admin/login", "/brand/login", "/admin/dashboard (auth gate)", "/admin/brands (post-login)", "/brand/leads (post-login)"],
+      "assertion_depth": "login flow, session restore, role-based redirect, wrong password error"
+    },
+    "routes_spec": {
+      "file": "e2e/routes.spec.ts",
+      "routes_covered": "47 routes from routeTable — all anonymous crawl",
+      "assertion_depth": "no crash, no console errors, no page errors, no 'Configuration Required' text"
+    },
+    "ai_flow_spec": {
+      "file": "e2e/ai-flow.spec.ts",
+      "routes_covered": ["/portal/login", "/portal/plans/new"],
+      "assertion_depth": "AI plan wizard steps, Analyze Menu button, success/failure surface",
+      "requires_env": "E2E_BUSINESS_EMAIL + E2E_BUSINESS_PASSWORD"
+    }
+  },
+  "zero_coverage_pages_by_priority": {
+    "P1_auth_payments": {
+      "risk": "CRITICAL — auth breakage or payment data loss",
+      "pages": [
+        "src/pages/public/ResetPassword.tsx — password reset token flow, no functional test",
+        "src/pages/business/Signup.tsx — user creation flow, only crash-tested",
+        "src/pages/business/credits/CreditPurchase.tsx — Stripe payment, zero tests",
+        "src/pages/business/SubscriptionManagement.tsx — subscription lifecycle, zero tests",
+        "src/pages/public/ShopCheckout.tsx — commerce checkout, zero tests",
+        "src/pages/public/Checkout.tsx — commerce checkout alt, zero tests",
+        "src/pages/public/Cart.tsx — cart ops, zero tests",
+        "src/pages/public/ShopCart.tsx — shop cart, zero tests"
+      ]
+    },
+    "P2_rls_gated_portals": {
+      "risk": "HIGH — RLS bypass or data leakage untestable without coverage",
+      "pages": [
+        "src/pages/business/Dashboard.tsx — business portal main, auth gate only",
+        "src/pages/business/ContactDetail.tsx — CRM record with RLS, zero tests",
+        "src/pages/business/DealDetail.tsx — CRM deal with RLS, zero tests",
+        "src/pages/business/IntelligenceHub.tsx — AI briefs + credit deduction, zero tests",
+        "src/pages/business/CrmDashboard.tsx — full CRM, zero tests",
+        "src/pages/brand/Dashboard.tsx — brand portal, auth gate only",
+        "src/pages/brand/Products.tsx — product catalog with tiered pricing, zero tests",
+        "src/pages/brand/Leads.tsx — brand leads with RLS, zero tests",
+        "src/pages/admin/AdminUsers.tsx — user management, zero tests",
+        "src/pages/admin/AdminDashboard.tsx — admin hub, auth gate only",
+        "src/pages/admin/AdminMarketSignals.tsx — signal management, zero tests",
+        "src/pages/admin/AdminFeatureFlags.tsx — feature flags, zero tests"
+      ]
+    },
+    "P3_ai_intelligence": {
+      "risk": "HIGH — AI safety guardrails and credit deduction",
+      "pages": [
+        "src/pages/business/AIAdvisor.tsx — AI advisor + guardrails, zero tests",
+        "src/pages/brand/BrandAIAdvisor.tsx — brand AI advisor, zero tests",
+        "src/pages/brand/IntelligenceReport.tsx — brand intelligence report, zero tests",
+        "src/pages/business/BenchmarkDashboard.tsx — benchmarks, zero tests"
+      ]
+    },
+    "P4_high_traffic_public": {
+      "risk": "MEDIUM — conversion funnel and public data correctness",
+      "pages": [
+        "src/pages/public/Protocols.tsx — live DB data, only crash-tested",
+        "src/pages/public/BrandStorefront.tsx — public brand store, only crash-tested",
+        "src/pages/public/Intelligence.tsx — main intelligence feed, only crash-tested",
+        "src/pages/public/RequestAccess.tsx — conversion funnel + DB write, only basic smoke",
+        "src/pages/public/ForBrands.tsx — acquisition page, zero functional tests",
+        "src/pages/public/Pricing.tsx — pricing page, zero functional tests"
+      ]
+    }
+  },
+  "recommended_wos": [
+    "TEST-01: Fix @testing-library/react React 19 compat — upgrade to v17+ (unblocks 29 failing unit tests)",
+    "TEST-02: Auth flow tests — ResetPassword token validation, Signup user creation, session persistence",
+    "TEST-03: Payment flow tests — CreditPurchase, SubscriptionManagement, Checkout (Stripe mock)",
+    "TEST-04: RLS boundary tests — ContactDetail, DealDetail, AdminUsers (verify role enforcement)",
+    "TEST-05: AI safety tests — AIAdvisor guardrails, credit deduction on action, error states",
+    "TEST-06: E2E routeTable expansion — add 200+ missing routes to crawl coverage"
+  ],
+  "launch_gate_status": {
+    "requirement_20": "≥20 unit tests passing — CURRENT: 100 passing ✅",
+    "requirement_22": "≥10 E2E Playwright tests — CURRENT: 47-route crawl + smoke + auth (~20+ tests) ✅",
+    "blocker": "29 unit tests FAILING due to React.act compat — must fix before launch"
+  }
+}

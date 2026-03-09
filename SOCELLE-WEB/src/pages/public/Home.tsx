@@ -324,9 +324,9 @@ export default function Home() {
         items={feedsLive ? [
           { tag: 'Signal Feed', headline: `${feedStats.totalSignals.toLocaleString()} total signals available in intelligence pipeline`, timestamp: 'now' },
           { tag: 'Sources', headline: `${feedStats.totalFeeds.toLocaleString()} configured data sources tracked`, timestamp: 'now' },
-          { tag: 'Feeds', headline: `${feedStats.enabledFeeds.toLocaleString()} feeds currently enabled`, timestamp: 'now' },
+          { tag: 'Feeds', headline: `${feedStats.enabledFeeds.toLocaleString()} active data feeds`, timestamp: 'now' },
         ] : [
-          { tag: 'Preview', headline: 'Enable and run data feeds in Admin to activate live intelligence headlines', timestamp: 'now' },
+          { tag: 'Preview', headline: 'Configure and run data feeds in Admin to see live intelligence headlines', timestamp: 'now' },
         ]}
       />
 
