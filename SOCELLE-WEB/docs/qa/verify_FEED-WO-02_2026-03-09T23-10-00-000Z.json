@@ -1,0 +1,32 @@
+{
+  "wo_id": "FEED-WO-02",
+  "timestamp": "2026-03-09T23:10:00.000Z",
+  "skills_run": ["feed-pipeline-checker"],
+  "results": {
+    "feed-pipeline-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "39 feeds seeded in public.data_feeds. rss-to-signals invoked live: promoted=20 signals from public.rss_items (375 items, 375 with guid). market_signals now has 30 total rows, 20 fresh within last hour. Source: rss_items via rss_sources join. Signal types: ingredient_momentum, brand_adoption. Confidence threshold: 0.5."
+    }
+  },
+  "db_state": {
+    "data_feeds_count": 39,
+    "rss_sources_count": 10,
+    "rss_items_count": 375,
+    "market_signals_total": 30,
+    "market_signals_fresh_1h": 20,
+    "market_signals_rss_type": 20
+  },
+  "feed_categories": [
+    "trade_pub", "regulatory", "academic", "social", "jobs",
+    "events", "ingredients", "brand_news", "press_release",
+    "association", "market_data"
+  ],
+  "live_invocation": {
+    "function": "rss-to-signals",
+    "result": {"promoted": 20, "skipped": 0, "threshold": 0.5, "isLive": true},
+    "status": "PASS"
+  },
+  "overall": "PASS",
+  "notes": "39 feeds seeded (exceeds 37 minimum). rss-to-signals pipeline live and promoting from rss_items. feed-orchestrator requires admin to enable feeds; it correctly dispatches enabled feeds only. Signal freshness confirmed: 20 signals created within past hour."
+}

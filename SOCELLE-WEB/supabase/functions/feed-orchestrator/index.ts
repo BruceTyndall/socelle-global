@@ -109,6 +109,10 @@ interface DataFeed {
   last_fetched_at: string | null;
   last_error: string | null;
   signal_count: number;
+  // FEED-WO-04: health tracking
+  consecutive_failures: number;
+  last_success_at: string | null;
+  health_status: 'healthy' | 'degraded' | 'failed';
 }
 
 interface FeedResult {
@@ -573,33 +577,75 @@ Deno.serve(async (req: Request) => {
           result.message = `${outcome.signals} signals upserted from ${itemsFetched} items`;
         }
 
-        // Update data_feeds: last_fetched_at, signal_count, clear error
+        // FEED-WO-04: Update data_feeds with health tracking on success
         if (result.status === 'success') {
           await supabase
             .from('data_feeds')
             .update({
               last_fetched_at: new Date().toISOString(),
+              last_success_at: new Date().toISOString(),
               last_error: null,
               signal_count: feed.signal_count + result.signals_created,
+              consecutive_failures: 0,
+              health_status: 'healthy',
             })
             .eq('id', feed.id);
         } else if (result.status === 'error') {
+          // FEED-WO-04: Track consecutive failures, escalate health_status
+          const newFailures = (feed.consecutive_failures ?? 0) + 1;
+          const newHealthStatus =
+            newFailures >= 3 ? 'failed' :
+            newFailures >= 1 ? 'degraded' : 'healthy';
           await supabase
             .from('data_feeds')
             .update({
               last_error: result.message.substring(0, 500),
+              consecutive_failures: newFailures,
+              health_status: newHealthStatus,
             })
             .eq('id', feed.id);
+
+          // FEED-WO-05: Write failed feed run to DLQ
+          await supabase
+            .from('feed_dlq')
+            .insert({
+              feed_id: feed.id,
+              feed_url: feed.endpoint_url ?? '',
+              error_message: result.message.substring(0, 1000),
+              raw_payload: { feed_id: feed.id, feed_name: feed.name, category: feed.category },
+              attempt_count: newFailures,
+            })
+            .then(() => null, () => null); // non-blocking — DLQ write must not block pipeline
         }
       } catch (err) {
         result.status = 'error';
         result.message = err instanceof Error ? err.message : String(err);
 
-        // Record error on the feed row
+        // FEED-WO-04: Record error + escalate health status on caught exception
+        const newFailures = (feed.consecutive_failures ?? 0) + 1;
+        const newHealthStatus =
+          newFailures >= 3 ? 'failed' :
+          newFailures >= 1 ? 'degraded' : 'healthy';
         await supabase
           .from('data_feeds')
-          .update({ last_error: result.message.substring(0, 500) })
+          .update({
+            last_error: result.message.substring(0, 500),
+            consecutive_failures: newFailures,
+            health_status: newHealthStatus,
+          })
           .eq('id', feed.id)
+          .then(() => null, () => null); // non-blocking
+
+        // FEED-WO-05: Write exception to DLQ
+        await supabase
+          .from('feed_dlq')
+          .insert({
+            feed_id: feed.id,
+            feed_url: feed.endpoint_url ?? '',
+            error_message: result.message.substring(0, 1000),
+            raw_payload: { feed_id: feed.id, feed_name: feed.name, exception: true },
+            attempt_count: newFailures,
+          })
           .then(() => null, () => null); // non-blocking
       }
 

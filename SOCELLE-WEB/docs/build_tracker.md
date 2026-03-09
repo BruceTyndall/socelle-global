@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-09 (Ultra Drive LANE A audit: pro-* tokens = 0 across all portals; Sentry = 0 in live code; font-serif = 0 public; tsc=0. Verification: docs/qa/verify_UD-A-ALL_20260309T210000Z.json)
+Last Updated: 2026-03-09 (BUILD 1 FEED PIPELINE: FEED-WO-01..05 COMPLETE — data_feeds(39 feeds), feed_run_log, feed_dlq tables live; pg_cron hourly wired; fingerprint dedup active; 20 fresh signals promoted; tsc=0, build=0)
 
 ---
 
@@ -7,6 +7,11 @@ Last Updated: 2026-03-09 (Ultra Drive LANE A audit: pro-* tokens = 0 across all 
 
 | WO | Scope | Status | Commit | Verification JSON |
 |---|---|---|---|---|
+| FEED-WO-01 | data_feeds table (39 feeds, 11 categories) + feed_run_log + pg_cron hourly schedule | COMPLETE | pending | `docs/qa/verify_FEED-WO-01_2026-03-09T23-10-00-000Z.json` |
+| FEED-WO-02 | 39 feeds seeded, rss-to-signals live (20 signals promoted from 375 rss_items) | COMPLETE | pending | `docs/qa/verify_FEED-WO-02_2026-03-09T23-10-00-000Z.json` |
+| FEED-WO-03 | Dedup: fingerprint column + non-partial unique index + rss-to-signals fingerprint population | COMPLETE | pending | `docs/qa/verify_FEED-WO-03_2026-03-09T23-10-00-000Z.json` |
+| FEED-WO-04 | Feed health monitoring: consecutive_failures, health_status, last_success_at on data_feeds; feed_run_log per-run records | COMPLETE | pending | `docs/qa/verify_FEED-WO-04_2026-03-09T23-10-00-000Z.json` |
+| FEED-WO-05 | Dead letter queue: feed_dlq table + RLS + feed-orchestrator DLQ writes on error | COMPLETE | pending | `docs/qa/verify_FEED-WO-05_2026-03-09T23-10-00-000Z.json` |
 | CTRL-WO-01 | Feature flags table + hook + edge helper | COMPLETE | `cfa6f74` | `docs/qa/verify_CTRL-WO-01_2026-03-09T04-04-39Z.json` |
 | CTRL-WO-02 | Edge-function kill switch enforcement | COMPLETE | `6da673f` | `docs/qa/verify_CTRL-WO-02_2026-03-09T04-10-55Z.json` |
 | CTRL-WO-03 | Audit log table + writers (admin + AI + entitlements) | COMPLETE | `8556d86` | `docs/qa/verify_CTRL-WO-03_2026-03-09T04-14-51Z.json` |

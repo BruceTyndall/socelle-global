@@ -1,0 +1,30 @@
+{
+  "wo_id": "FEED-WO-05",
+  "timestamp": "2026-03-09T23:10:00.000Z",
+  "skills_run": ["dlq-system-checker", "feed-pipeline-checker"],
+  "results": {
+    "dlq-system-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "public.feed_dlq table created via migration 20260312170006. Schema: id, feed_id (FK data_feeds), feed_url, error_message, raw_payload (jsonb), attempt_count, created_at, resolved_at, resolved_by (FK auth.users). RLS: admin_full_access_feed_dlq (FOR ALL, role IN platform_admin,admin). Indexes: feed_dlq_feed_id_idx, feed_dlq_created_at_idx, feed_dlq_resolved_idx (WHERE resolved_at IS NULL for unresolved items). feed-orchestrator writes DLQ row on both outcome.error and caught exceptions — non-blocking (does not halt pipeline on DLQ write failure)."
+    }
+  },
+  "db_state": {
+    "feed_dlq_exists": true,
+    "feed_dlq_rls": "admin_full_access_feed_dlq",
+    "feed_dlq_indexes": [
+      "feed_dlq_feed_id_idx",
+      "feed_dlq_created_at_idx",
+      "feed_dlq_resolved_idx (partial: WHERE resolved_at IS NULL)"
+    ],
+    "feed_dlq_rows": 0,
+    "dlq_write_blocking": false
+  },
+  "migrations_applied": [
+    "20260312170006_feed_wo05_create_feed_dlq.sql"
+  ],
+  "functions_updated": ["feed-orchestrator"],
+  "dlq_write_trigger": "feed-orchestrator on any feed error/exception — inserts feed_id, feed_url, error_message, raw_payload, attempt_count",
+  "admin_resolution": "Admin sets resolved_at + resolved_by on feed_dlq rows from Admin Hub",
+  "overall": "PASS"
+}

@@ -97,6 +97,9 @@ interface MarketSignalUpsert {
   data_source:      string;
   confidence_score: number;
   active:           boolean;
+  // FEED-WO-03: dedup fingerprint
+  fingerprint:      string | null;
+  is_duplicate:     boolean;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -138,6 +141,21 @@ function buildDescription(item: RssItemRow): string {
 function buildMagnitude(item: RssItemRow): number {
   const raw = item.relevance_score ?? item.confidence_score;
   return Math.min(Math.max(raw, 0), 1);
+}
+
+/**
+ * FEED-WO-03: Build a content fingerprint for dedup.
+ * Hash = btoa(title|source|published_at) truncated to 64 chars.
+ * Used as a unique key to detect duplicate ingestion across pipeline runs.
+ * Falls back to null if btoa is unavailable (should never happen in Deno).
+ */
+function buildFingerprint(item: RssItemRow): string | null {
+  try {
+    const raw = `${item.title}|${item.attribution_text ?? item.source_name ?? ''}|${item.published_at ?? ''}`;
+    return btoa(encodeURIComponent(raw)).substring(0, 64);
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -270,6 +288,9 @@ serve(async (req) => {
         data_source:      item.id,
         confidence_score: item.confidence_score,
         active:           true,
+        // FEED-WO-03: dedup fingerprint
+        fingerprint:      buildFingerprint(item),
+        is_duplicate:     false,
       };
     });
 

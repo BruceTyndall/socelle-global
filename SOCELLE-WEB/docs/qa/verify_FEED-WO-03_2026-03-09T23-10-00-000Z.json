@@ -1,0 +1,32 @@
+{
+  "wo_id": "FEED-WO-03",
+  "timestamp": "2026-03-09T23:10:00.000Z",
+  "skills_run": ["feed-pipeline-checker", "deduplication-logic-checker"],
+  "results": {
+    "deduplication-logic-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Three-layer dedup verified: (1) fingerprint column added to market_signals with UNIQUE index market_signals_fingerprint_idx (partial, WHERE fingerprint IS NOT NULL). (2) Non-partial unique index market_signals_source_external_uniq added on (source_type, external_id) — replaces broken partial index that blocked ON CONFLICT resolution. (3) rss-to-signals now populates fingerprint = btoa(encodeURIComponent(title|source|published_at)).slice(0,64). (4) Dedup test: second rss-to-signals run against same 20 items returned total_signals=30 (unchanged) — no new rows inserted."
+    }
+  },
+  "db_state": {
+    "fingerprint_column": "EXISTS on public.market_signals",
+    "source_feed_id_column": "EXISTS on public.market_signals",
+    "is_duplicate_column": "EXISTS on public.market_signals",
+    "market_signals_fingerprint_idx": "UNIQUE partial index (fingerprint IS NOT NULL)",
+    "market_signals_source_external_uniq": "UNIQUE non-partial index (source_type, external_id)",
+    "signals_with_fingerprint": 20,
+    "total_signals_after_double_run": 30
+  },
+  "migrations_applied": [
+    "20260312170004_feed_wo03_add_dedup_columns_to_market_signals.sql",
+    "20260312170010_feed_wo03_market_signals_dedup_index.sql"
+  ],
+  "functions_updated": ["rss-to-signals"],
+  "dedup_strategy": {
+    "rss_to_signals": "ON CONFLICT (source_type, external_id) DO UPDATE — upserts existing rows, no duplicates inserted",
+    "feed_orchestrator": "ON CONFLICT (source_type, external_id) DO UPDATE with source_feed_id and is_duplicate=false",
+    "fingerprint": "btoa(encodeURIComponent(title|source|published_at)) truncated to 64 chars"
+  },
+  "overall": "PASS"
+}
