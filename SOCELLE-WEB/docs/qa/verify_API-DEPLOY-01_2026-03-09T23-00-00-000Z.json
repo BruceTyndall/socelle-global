@@ -1,13 +1,15 @@
 {
   "wo_id": "API-DEPLOY-01",
   "timestamp": "2026-03-09T23:00:00.000Z",
+  "verified_at": "2026-03-09T23:30:00.000Z",
   "skills_run": ["edge-fn-health", "api-logic-mapper"],
   "steps_completed": {
     "STEP_1_migrations": {
       "status": "PASS",
       "evidence": "Migrations applied: create_api_registry_and_route_map + add_route_method_unique_and_seed_route_map",
       "tables_created": ["api_registry", "api_route_map"],
-      "rls_fix": "user_profiles (not profiles), roles: admin + platform_admin"
+      "rls_fix": "user_profiles (not profiles), roles: admin + platform_admin",
+      "placeholder_count": 0
     },
     "STEP_2_seed_registry": {
       "status": "PASS",
@@ -15,13 +17,24 @@
       "registry_rows": 31,
       "edge_functions_registered": 20,
       "external_apis_registered": 11,
-      "placeholders_fixed": "All YOUR_PROJECT replaced with real URLs (rumdmulxzmjtsplsjngi.supabase.co)"
+      "placeholders_fixed": "0 YOUR_PROJECT placeholders remain — confirmed by SQL"
     },
     "STEP_3_4_route_map": {
       "status": "PASS",
-      "evidence": "20 api_route_map rows seeded, all linked to api_registry via api_registry_id",
-      "routes_wired": 20,
-      "unique_constraint": "api_route_map_route_method_key added"
+      "evidence": "28 api_route_map rows seeded (20 original + 8 added in final verification pass), all linked to api_registry via api_registry_id",
+      "routes_wired": 28,
+      "unlinked_routes": 0,
+      "unique_constraint": "api_route_map_route_method_key added",
+      "routes_added_in_verification": [
+        "/functions/v1/test-api-connection",
+        "/functions/v1/create-checkout",
+        "/functions/v1/stripe-webhook",
+        "/functions/v1/generate-embeddings",
+        "/functions/v1/ingredient-search",
+        "/functions/v1/verify-certificate",
+        "/functions/v1/refresh-live-data",
+        "/functions/v1/feed-orchestrator"
+      ]
     },
     "STEP_5_deploy_function": {
       "status": "PASS",
@@ -40,25 +53,29 @@
         "pass": 24,
         "timeout": 3,
         "fail": 0,
-        "total_tested": 27,
-        "untested": 0
+        "active_untested": 0,
+        "total_active": 27
       },
       "timeouts": [
-        "Ingest Google Trends (slow external API)",
-        "Ingest NPI Registry (slow external API)",
-        "Ingest OpenFDA (slow external API)"
+        "Ingest Google Trends (slow external endpoint > 5s)",
+        "Ingest NPI Registry (slow external endpoint > 5s)",
+        "Ingest OpenFDA (slow external endpoint > 5s)"
       ],
-      "note": "Timeouts are slow external endpoints, not errors. All Supabase-hosted edge functions returned 401 (auth required = deployed and reachable)."
+      "inactive_untested": 4,
+      "inactive_note": "Google Gemini, Ingest Social, Google Calendar OAuth, Microsoft Calendar OAuth are is_active=false — intentionally not pinged"
     },
     "STEP_7_verification": {
       "status": "PASS",
-      "tsc_noEmit": "0 errors",
+      "tsc_exit_code": 0,
+      "build_exit_code": 0,
       "db_summary": {
         "api_registry_total": 31,
         "api_registry_pass": 24,
         "api_registry_timeout": 3,
         "api_registry_fail": 0,
-        "api_route_map_total": 20
+        "api_registry_placeholder_count": 0,
+        "api_route_map_total": 28,
+        "api_route_map_unlinked": 0
       }
     }
   },
@@ -66,15 +83,22 @@
     "edge-fn-health": {
       "status": "PASS",
       "failures": [],
-      "evidence": "test-api-connection ACTIVE (Supabase dashboard confirmed). 20 edge function routes in api_route_map. All edge function endpoints respond 401 (deployed + auth enforced)."
+      "evidence": "test-api-connection ACTIVE (deployed). 28 edge function routes in api_route_map, all linked. All active Supabase-hosted edge functions respond 401 (deployed + auth enforced). 0 unlinked routes."
     },
     "api-logic-mapper": {
       "status": "PASS",
       "failures": [],
-      "evidence": "31 api_registry rows. 20 api_route_map rows. All registry entries have last_test_status populated. No YOUR_PROJECT placeholders remain."
+      "evidence": "31 api_registry rows. 28 api_route_map rows, 0 unlinked. All active entries have last_test_status populated. 0 YOUR_PROJECT placeholders."
     }
   },
   "overall": "PASS",
+  "prohibited_checks": {
+    "auth_tsx_touched": false,
+    "useCart_touched": false,
+    "create_checkout_modified": false,
+    "stripe_webhook_modified": false,
+    "api_key_encrypted_read": false
+  },
   "owner_actions_required": [
     "Set OPENAI_API_KEY in Supabase Dashboard > Project Settings > Edge Functions secrets (required for ai-orchestrator embeddings + GPT-4o)",
     "Set VITE_STRIPE_PUBLISHABLE_KEY in SOCELLE-WEB/.env for Stripe checkout UI",
@@ -84,6 +108,7 @@
   ],
   "notes": [
     "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are auto-injected by Supabase runtime into all edge functions — no manual secret configuration needed",
-    "supabase/.env SUPABASE_SERVICE_ROLE_KEY=PLACEHOLDER is only for local CLI usage; Supabase cloud handles this automatically"
+    "supabase/.env SUPABASE_SERVICE_ROLE_KEY=PLACEHOLDER is only for local CLI usage; Supabase cloud handles this automatically",
+    "All owner credential setup tracked under OWNER-CREDS-01 in build_tracker.md Phase 7"
   ]
 }
