@@ -9,6 +9,8 @@ dist/
 .cursor/
 supabase/.temp/
 SOCELLE-WEB/
+playwright-report/
+test-results/
 
 # Local Netlify folder
 .netlify
