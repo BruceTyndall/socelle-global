@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Check, ChevronRight, ChevronLeft, Calendar as CalIcon, Clock, User, Scissors } from 'lucide-react';
 import { usePublicBookingServices, usePublicBookingStaff, type BookingService, type BookingStaff } from '../../lib/useBooking';
 import { supabase } from '../../lib/supabase';
+import { upsertBookingContact } from '../../lib/crmContactLinking';
 
 const STEPS = ['Service', 'Provider', 'Date & Time', 'Your Info', 'Confirm'] as const;
 type Step = typeof STEPS[number];
@@ -58,10 +59,27 @@ export default function BookingWidget() {
       const start = new Date(`${selectedDate}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`);
       const end = new Date(start.getTime() + selectedService.duration_minutes * 60000);
 
-      const { error: dbErr } = await supabase.from('appointments').insert({
+      const contactId =
+        (await upsertBookingContact({
+          businessId,
+          firstName: clientInfo.first_name.trim(),
+          lastName: clientInfo.last_name.trim(),
+          email: clientInfo.email.trim() || null,
+          phone: clientInfo.phone.trim() || null,
+          source: 'booking_widget',
+          notes: `Public booking from ${slug ?? 'business page'}`,
+        })) ?? null;
+
+      const servicePriceCents =
+        typeof (selectedService as BookingService & { price_cents?: number }).price_cents === 'number'
+          ? (selectedService as BookingService & { price_cents?: number }).price_cents!
+          : Math.round((selectedService.price ?? 0) * 100);
+
+      const legacyInsert = await supabase.from('appointments').insert({
         business_id: businessId,
         service_id: selectedService.id,
         staff_id: selectedStaff?.id ?? null,
+        contact_id: contactId,
         client_first_name: clientInfo.first_name.trim(),
         client_last_name: clientInfo.last_name.trim(),
         client_email: clientInfo.email.trim() || null,
@@ -69,8 +87,25 @@ export default function BookingWidget() {
         start_time: start.toISOString(),
         end_time: end.toISOString(),
         status: 'scheduled',
+        notes: `Public booking widget submission (${slug ?? 'unknown slug'})`,
       });
-      if (dbErr) throw dbErr;
+
+      if (legacyInsert.error) {
+        const normalizedInsert = await supabase.from('appointments').insert({
+          business_id: businessId,
+          service_id: selectedService.id,
+          staff_id: selectedStaff?.id ?? null,
+          client_id: contactId,
+          start_time: start.toISOString(),
+          end_time: end.toISOString(),
+          status: 'confirmed',
+          price_cents: servicePriceCents,
+          notes_client: `Public booking widget submission (${slug ?? 'unknown slug'})`,
+          source: 'online',
+        });
+        if (normalizedInsert.error) throw normalizedInsert.error;
+      }
+
       setConfirmed(true);
     } catch (e: unknown) {
       setSubmitError(e instanceof Error ? e.message : 'Booking failed');

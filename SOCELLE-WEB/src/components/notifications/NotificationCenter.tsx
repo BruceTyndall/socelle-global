@@ -58,7 +58,15 @@ interface NotificationCenterProps {
 export default function NotificationCenter({
   preferencesUrl = '/portal/notifications',
 }: NotificationCenterProps) {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const {
+    notifications,
+    unreadCount,
+    loading,
+    error,
+    markAsRead,
+    markAllAsRead,
+    refresh,
+  } = useNotifications();
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -95,8 +103,8 @@ export default function NotificationCenter({
     return () => document.removeEventListener('keydown', handleEsc);
   }, [open]);
 
-  const handleNotificationClick = (notif: typeof notifications[0]) => {
-    markAsRead(notif.id);
+  const handleNotificationClick = async (notif: typeof notifications[0]) => {
+    await markAsRead(notif.id);
     if (notif.actionUrl) {
       navigate(notif.actionUrl);
       setOpen(false);
@@ -129,9 +137,13 @@ export default function NotificationCenter({
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-accent-soft flex-shrink-0">
             <h3 className="font-sans font-semibold text-sm text-graphite">Notifications</h3>
-            {unreadCount > 0 && (
+            {loading ? (
+              <span className="text-[10px] text-graphite/50">Syncing...</span>
+            ) : unreadCount > 0 && (
               <button
-                onClick={markAllAsRead}
+                onClick={() => {
+                  void markAllAsRead();
+                }}
                 className="flex items-center gap-1.5 text-xs font-medium text-graphite hover:text-accent transition-colors font-sans"
               >
                 <Check className="w-3.5 h-3.5" />
@@ -142,7 +154,28 @@ export default function NotificationCenter({
 
           {/* Notification list */}
           <div className="flex-1 overflow-y-auto divide-y divide-accent-soft/50">
-            {notifications.length === 0 ? (
+            {error ? (
+              <div className="px-4 py-6 text-center space-y-2">
+                <p className="text-sm text-signal-down font-sans">{error}</p>
+                <button
+                  onClick={() => {
+                    void refresh();
+                  }}
+                  className="text-xs text-accent hover:text-accent-hover font-medium"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : loading ? (
+              <div className="px-4 py-4 space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="animate-pulse space-y-2">
+                    <div className="h-3 bg-accent-soft/40 rounded w-2/3" />
+                    <div className="h-3 bg-accent-soft/30 rounded w-full" />
+                  </div>
+                ))}
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="px-4 py-10 text-center">
                 <Bell className="w-8 h-8 text-accent-soft mx-auto mb-2" />
                 <p className="text-sm text-graphite/60 font-sans">No notifications yet</p>
@@ -154,7 +187,9 @@ export default function NotificationCenter({
                 return (
                   <button
                     key={notif.id}
-                    onClick={() => handleNotificationClick(notif)}
+                    onClick={() => {
+                      void handleNotificationClick(notif);
+                    }}
                     className={`w-full text-left px-4 py-3 hover:bg-accent-soft/50 transition-colors flex gap-3 ${
                       !notif.read ? 'border-l-[3px] border-l-accent bg-background/30' : 'border-l-[3px] border-l-transparent'
                     }`}
@@ -169,7 +204,7 @@ export default function NotificationCenter({
                       <p className="text-xs text-graphite/60 font-sans mt-0.5 line-clamp-2">
                         {notif.body}
                       </p>
-                      <p className="text-[10px] text-graphite/60/70 font-sans mt-1">
+                      <p className="text-[10px] text-graphite/50 font-sans mt-1">
                         {timeAgo(notif.sentAt)}
                       </p>
                     </div>

@@ -1,5 +1,5 @@
 {
-  "scan_date": "2026-03-09T06:12:07.644Z",
+  "scan_date": "2026-03-09T07:10:20.027Z",
   "summary": {
     "total": 269,
     "live": 111,
@@ -433,7 +433,7 @@
         {
           "file": "src/pages/brand/BrandNotificationPreferences.tsx",
           "classification": "SHELL",
-          "feature_score": 0
+          "feature_score": 1
         },
         {
           "file": "src/pages/brand/CampaignBuilder.tsx",
@@ -725,7 +725,7 @@
         {
           "file": "src/pages/business/NotificationPreferences.tsx",
           "classification": "SHELL",
-          "feature_score": 0
+          "feature_score": 1
         },
         {
           "file": "src/pages/business/OrderDetail.tsx",
@@ -2656,12 +2656,12 @@
         "live_data": false,
         "demo_labeled": false,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": false,
         "crud": false,
         "export": false
       },
-      "feature_score": 0
+      "feature_score": 1
     },
     {
       "file": "src/pages/brand/CampaignBuilder.tsx",
@@ -3511,12 +3511,12 @@
         "live_data": false,
         "demo_labeled": false,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": false,
         "crud": false,
         "export": false
       },
-      "feature_score": 0
+      "feature_score": 1
     },
     {
       "file": "src/pages/business/OrderDetail.tsx",

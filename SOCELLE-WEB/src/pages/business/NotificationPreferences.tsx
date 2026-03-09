@@ -3,6 +3,7 @@
 
 import { Helmet } from 'react-helmet-async';
 import { Bell, Mail, Info } from 'lucide-react';
+import { useState } from 'react';
 import { useNotifications } from '../../lib/notifications/useNotifications';
 import type { EmailFrequency } from '../../lib/notifications/types';
 
@@ -23,7 +24,27 @@ const FREQUENCY_OPTIONS: { value: EmailFrequency; label: string }[] = [
 ];
 
 export default function NotificationPreferences() {
-  const { preferences, updatePreferences } = useNotifications();
+  const { preferences, loading, error, updatePreferences, refresh } = useNotifications();
+  const [savingKey, setSavingKey] = useState<string | null>(null);
+
+  const handleToggle = async (key: keyof typeof preferences) => {
+    if (key === 'email_frequency') return;
+    setSavingKey(key);
+    try {
+      await updatePreferences({ [key]: !preferences[key] });
+    } finally {
+      setSavingKey(null);
+    }
+  };
+
+  const handleFrequencyChange = async (value: EmailFrequency) => {
+    setSavingKey('email_frequency');
+    try {
+      await updatePreferences({ email_frequency: value });
+    } finally {
+      setSavingKey(null);
+    }
+  };
 
   return (
     <>
@@ -58,7 +79,10 @@ export default function NotificationPreferences() {
                   <p className="font-sans text-xs text-graphite/60 mt-0.5">{item.desc}</p>
                 </div>
                 <button
-                  onClick={() => updatePreferences({ [item.key]: !preferences[item.key] })}
+                  onClick={() => {
+                    void handleToggle(item.key);
+                  }}
+                  disabled={loading || savingKey === item.key}
                   className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
                     preferences[item.key] ? 'bg-graphite' : 'bg-accent-soft'
                   }`}
@@ -88,7 +112,10 @@ export default function NotificationPreferences() {
           <div className="px-6 py-4">
             <select
               value={preferences.email_frequency}
-              onChange={(e) => updatePreferences({ email_frequency: e.target.value as EmailFrequency })}
+              onChange={(e) => {
+                void handleFrequencyChange(e.target.value as EmailFrequency);
+              }}
+              disabled={loading || savingKey === 'email_frequency'}
               className="w-full max-w-xs px-3 py-2 border border-accent-soft rounded-lg text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-graphite/20 focus:border-graphite"
             >
               {FREQUENCY_OPTIONS.map((opt) => (
@@ -96,18 +123,32 @@ export default function NotificationPreferences() {
               ))}
             </select>
             <p className="text-xs text-graphite/60 font-sans mt-2">
-              Choose how often you receive email digests of your notifications.
+              Choose how often your transactional digest email is generated.
             </p>
           </div>
         </div>
 
         {/* Info banner */}
+        {error && (
+          <div className="flex items-start justify-between gap-3 bg-signal-down/5 border border-signal-down/20 rounded-xl px-5 py-4 mb-6">
+            <p className="text-sm font-sans text-signal-down">{error}</p>
+            <button
+              onClick={() => {
+                void refresh();
+              }}
+              className="text-xs font-medium text-accent hover:text-accent-hover"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-5 py-4">
           <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-sans font-medium text-blue-900">Email delivery is being configured</p>
+            <p className="text-sm font-sans font-medium text-blue-900">Notification preferences are saved live</p>
             <p className="text-xs font-sans text-blue-700 mt-0.5">
-              In-app notifications are active. Email notifications will be enabled once our delivery service is connected.
+              In-app notification delivery is active through the notifications ledger. Use frequency settings to control digest cadence.
             </p>
           </div>
         </div>

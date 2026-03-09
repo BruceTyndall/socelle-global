@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-09 (Command Center — CRM Unified Timeline + Cross-Hub Reinforcement)
+Last Updated: 2026-03-09 (Command Center — Build 3 Growth cross-hub hardening in progress)
 
 ---
 
@@ -13,6 +13,7 @@ Last Updated: 2026-03-09 (Command Center — CRM Unified Timeline + Cross-Hub Re
 | CTRL-WO-04 | Entitlements chain verification (ModuleRoute -> UpgradePrompt) | COMPLETE | `eee5ffc` | `docs/qa/verify_CTRL-WO-04_2026-03-09T04-17-09Z.json` |
 | CRM-WO-calendar-oauth-sync | CRM Tasks Google/Microsoft OAuth connections + server-side event creation | COMPLETE | `ea341c6` | `docs/qa/verify_CRM-WO-calendar-oauth-sync_2026-03-09T06-25-39Z.json` |
 | CRM-WO-unified-timeline | Contact-level unified timeline + CRM dashboard commerce/sales reinforcement | COMPLETE | `176a01d` | `docs/qa/verify_CRM-WO-unified-timeline_2026-03-09T06-38-37Z.json` |
+| BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS | Notifications live ledger + booking CRM linking + growth hook schema hardening | IN PROGRESS (verification blockers) | `PENDING` | `docs/qa/verify_BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS_2026-03-09T07-11-29Z.json` |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|

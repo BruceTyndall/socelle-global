@@ -1,0 +1,79 @@
+{
+  "wo_id": "BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS",
+  "timestamp": "2026-03-09T07:11:29Z",
+  "scope": [
+    "DB-backed notifications ledger + preferences hooks",
+    "Brand/business notification preference live save + retry states",
+    "Booking -> CRM auto-contact linking",
+    "Schema-resilient booking and marketing hooks"
+  ],
+  "skills_run": [
+    "hub-shell-detector",
+    "design-audit-suite",
+    "rls-auditor",
+    "entitlement-validator",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "evidence": [
+        "npm run shell:check",
+        "Current shells: 61, baseline: 65",
+        "No new shells introduced"
+      ]
+    },
+    "design-audit-suite": {
+      "status": "FAIL",
+      "evidence": [
+        "Required docs missing: docs/command/SOCELLE_FIGMA_TO_CODE_HANDOFF.md (exit=1)",
+        "Required docs missing: docs/command/SOCELLE_CANONICAL_DOCTRINE.md (exit=1)",
+        "Token grep count: 1358",
+        "font-serif grep count in src: 1 (label string in AdminInventoryReport.tsx)"
+      ]
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "evidence": [
+        "ENABLE ROW LEVEL SECURITY count: 179",
+        "CREATE POLICY count: 514",
+        "notifications migration includes 9 explicit policies"
+      ]
+    },
+    "entitlement-validator": {
+      "status": "FAIL",
+      "evidence": [
+        "PAYMENT_BYPASS defaults to env-gated false",
+        "Entitlement-related references count: 165",
+        "Ungated portal/brand/admin page heuristic count: 71 (grep-based, needs route-level review)"
+      ]
+    },
+    "build-gate": {
+      "status": "FAIL",
+      "evidence": [
+        "npx tsc --noEmit EXIT=0",
+        "npm run build EXIT=0",
+        "route-manifest EXIT=1",
+        "fake-live-guard EXIT=1",
+        "e2e-route-coverage EXIT=0",
+        "eslint src --max-warnings=0 EXIT=1"
+      ]
+    }
+  },
+  "commands": [
+    "npm run typecheck",
+    "npm run build",
+    "npm run shell:check",
+    "npx tsc --noEmit",
+    "node scripts/route-manifest.mjs",
+    "node scripts/fake-live-guard.mjs",
+    "node scripts/e2e-route-coverage.mjs",
+    "npx eslint src/ --max-warnings=0"
+  ],
+  "overall": "FAIL",
+  "notes": [
+    "Build passes for this change set.",
+    "Repo has significant pre-existing typecheck/lint debt outside this scope.",
+    "Further Build 3 rollout should proceed after baseline governance scripts are green."
+  ]
+}
