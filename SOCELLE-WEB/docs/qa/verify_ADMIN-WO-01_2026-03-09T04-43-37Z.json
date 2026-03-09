@@ -1,0 +1,54 @@
+{
+  "wo_id": "ADMIN-WO-01",
+  "timestamp_utc": "2026-03-09T04:43:37Z",
+  "branch": "main",
+  "description": "System health dashboard now wired to live feeds, AI costs, active users, and error rates",
+  "skills_run": [
+    "hub-shell-detector",
+    "system-health-dashboard-validator",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "checks": {
+        "shell_gate_exit_code": 0,
+        "new_shells_introduced": 0,
+        "admin_dashboard_classification": "LIVE"
+      },
+      "evidence": [
+        "npm run shell:check",
+        "docs/qa/shell_detector_report.json"
+      ]
+    },
+    "system-health-dashboard-validator": {
+      "status": "PASS",
+      "checks": {
+        "feeds_status_query_present": true,
+        "feed_error_rate_query_present": true,
+        "active_users_query_present": true,
+        "ai_cost_query_present": true,
+        "ai_error_rate_query_present": true
+      },
+      "evidence": [
+        "src/pages/admin/AdminDashboard.tsx:116",
+        "src/pages/admin/AdminDashboard.tsx:117",
+        "src/pages/admin/AdminDashboard.tsx:120",
+        "src/pages/admin/AdminDashboard.tsx:121",
+        "src/pages/admin/AdminDashboard.tsx:123"
+      ]
+    },
+    "build-gate": {
+      "status": "PASS",
+      "checks": {
+        "tsc_no_emit_exit_code": 0,
+        "build_exit_code": 0
+      },
+      "notes": [
+        "existing duplicate onClick warning remains in src/pages/admin/EditorialHub.tsx",
+        "production build completed successfully"
+      ]
+    }
+  },
+  "overall": "PASS"
+}
