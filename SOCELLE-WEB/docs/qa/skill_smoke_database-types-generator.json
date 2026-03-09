@@ -1,0 +1,9 @@
+{
+  "skill": "database-types-generator",
+  "status": "PASS",
+  "started_at": "2026-03-09T03:42:16.437Z",
+  "completed_at": "2026-03-09T03:42:16.447Z",
+  "exit_code": 0,
+  "command": "cd SOCELLE-WEB && ls supabase/migrations | wc -l && rg -n \"feature_flags|audit_logs|edge_function_controls|ai_rate_limits\" src/lib/database.types.ts",
+  "evidence": "     160\n1913:      feature_flags: {\n"
+}

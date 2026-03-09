@@ -1,0 +1,9 @@
+{
+  "skill": "signal-color-doctrine-checker",
+  "status": "PASS",
+  "started_at": "2026-03-09T03:42:16.494Z",
+  "completed_at": "2026-03-09T03:42:16.506Z",
+  "exit_code": 0,
+  "command": "cd SOCELLE-MOBILE-main && rg -n \"5F8A72|A97A4C|8E6464|signal-up|signal-warn|signal-down\" apps/mobile/lib",
+  "evidence": "apps/mobile/lib/core/theme/socelle_design_system.dart:101:  // ── Leakage — signal-down ─────────────────────────────────────────────\napps/mobile/lib/core/theme/socelle_design_system.dart:102:  static const leakage = Color(0xFF8E6464);        // signal-down — leakage numbers\napps/mobile/lib/core/theme/socelle_design_system.dart:103:  static const leakageMuted = Color(0xFFA88080);   // lighter (derived from signal-down)\napps/mobile/lib/core/theme/socelle_design_system.dart:106:  // ── Recovery — signal-up ──────────────────────────────────────────────\napps/mobile/lib/core/theme/socelle_design_system.dart:107:  static const recovery = Color(0xFF5F8A72);       // signal-up — recovery numbers\napps/mobile/lib/core/theme/socelle_design_system.dart:130:  static const recoveredGreenDark = Color(0xFF4A7260);  // darker signal-up\napps/mobile/lib/core/theme/socelle_design_system.dart:131:  static const intentionalAmber = Color(0xFFA97A4C);  // signal-warn\napps/mobile/lib/core/theme/socelle_theme.dart:19:  // Synced with web: signal.up=#5F8A72, signal.down=#8E6464, signal.warn=#A97A4C\napps/mobile/lib/core/theme/socelle_theme.dart:20:  static const signalUp = Color(0xFF5F8A72);\napps/mobile/lib/core/theme/socelle_theme.dart:21:  static const signalDown = Color(0xFF8E6464);\napps/mobile/lib/core/theme/socelle_theme.dart:22:  static const signalWarn = Color(0xFFA97A4C);\n"
+}

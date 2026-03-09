@@ -1,0 +1,9 @@
+{
+  "skill": "dlq-system-checker",
+  "status": "PASS",
+  "started_at": "2026-03-09T03:42:16.658Z",
+  "completed_at": "2026-03-09T03:42:16.673Z",
+  "exit_code": 0,
+  "command": "cd SOCELLE-WEB && rg -n \"dead letter|dlq|failed_items|failed feed|retry\" supabase/migrations/ supabase/functions/ src/pages/admin src/lib",
+  "evidence": "src/lib/credits/__tests__/useCreditBalance.test.ts:24:    defaultOptions: { queries: { retry: false } },\nsrc/lib/platformConfig.ts:9:  /** Delay after profile fetch failure before retry (ms) */\nsrc/lib/platformConfig.ts:13:  /** Delay after critical error before retry (ms) */\nsrc/lib/errors.ts:155: * Type guard for checking if error is retryable.\nsupabase/migrations/20260224000003_modify_businesses_add_profile_fields.sql:132:  -- Check uniqueness; on conflict append a random 4-char hex suffix and retry\nsrc/lib/cms/__tests__/useCmsPosts.test.ts:37:    defaultOptions: { queries: { retry: false } },\nsrc/lib/errors.test.ts:66:  it('returns true for retryable AppError', () => {\nsrc/lib/errors.test.ts:71:  it('returns false for non-retryable AppError', () => {\nsrc/lib/cms/__tests__/useCmsPages.test.ts:44:    defaultOptions: { queries: { retry: false } },\nsrc/lib/__tests__/entitlements.test.ts:55:    defaultOptions: { queries: { retry: false } },\n"
+}

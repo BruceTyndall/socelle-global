@@ -1,0 +1,139 @@
+{
+  "suite": "new-skills-smoke-pass",
+  "timestamp": "2026-03-09T03:40:54.927Z",
+  "total": 26,
+  "pass": 25,
+  "fail": 1,
+  "results": [
+    {
+      "skill": "feature-flag-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "audit-log-auditor",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "api-kill-switch-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "entitlement-chain-verifier",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "shell-detector-ci",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "rate-limiter-tester",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "inventory-report-generator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "credit-deduction-integration-tester",
+      "status": "FAIL",
+      "exit_code": 1
+    },
+    {
+      "skill": "cross-hub-dispatcher-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "css-variable-font-system-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "database-types-generator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "live-demo-component-enforcer",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "mobile-module-key-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "signal-color-doctrine-checker",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "pg-cron-scheduler-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "empty-state-enforcer",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "error-state-enforcer",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "loading-skeleton-enforcer",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "shared-state-components-auditor",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "banned-terms-purger",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "deduplication-logic-checker",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "dlq-system-checker",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "feed-health-monitor-auditor",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "affiliate-link-tracker-auditor",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "system-health-dashboard-validator",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "skill": "authoring-core-schema-validator",
+      "status": "PASS",
+      "exit_code": 0
+    }
+  ]
+}

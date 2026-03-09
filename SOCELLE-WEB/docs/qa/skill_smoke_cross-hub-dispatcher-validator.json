@@ -1,0 +1,9 @@
+{
+  "skill": "cross-hub-dispatcher-validator",
+  "status": "PASS",
+  "started_at": "2026-03-09T03:42:16.371Z",
+  "completed_at": "2026-03-09T03:42:16.382Z",
+  "exit_code": 0,
+  "command": "cd SOCELLE-WEB && rg -n \"interface SignalAction|action_type|target_hub|CrossHubActionDispatcher\" src/components/CrossHubActionDispatcher.tsx && rg -n \"create_deal|add_to_crm|create_campaign|assign_training|price_alert|create_brief|create_alert|add_to_note|create_protocol\" src/components/CrossHubActionDispatcher.tsx",
+  "evidence": "2: * CrossHubActionDispatcher — FOUND-WO-05\n8: *   <CrossHubActionDispatcher signal={signal} />\n33:export interface SignalAction {\n40:  action_type: SignalActionType;\n41:  target_hub: string;\n153:interface CrossHubActionDispatcherProps {\n160:export function CrossHubActionDispatcher({\n165:}: CrossHubActionDispatcherProps) {\n178:        action_type: def.type,\n179:        target_hub: def.targetHub,\n182:          source_component: 'CrossHubActionDispatcher',\n268:export default CrossHubActionDispatcher;\n46:  | 'create_deal'\n47:  | 'add_to_crm'\n48:  | 'create_campaign'\n49:  | 'assign_training'\n50:  | 'price_alert'\n51:  | 'create_brief'\n52:  | 'create_alert'\n53:  | 'add_to_note'\n54:  | 'create_protocol';\n69:    type: 'create_deal',\n77:    type: 'add_to_crm',\n85:    type: 'create_campaign',\n93:    type: 'assign_training',\n101:    type: 'price_alert',\n109:    type: 'create_brief',\n117:    type: 'create_alert',\n125:    type: 'add_to_note',\n133:    type: 'create_protocol',\n"
+}

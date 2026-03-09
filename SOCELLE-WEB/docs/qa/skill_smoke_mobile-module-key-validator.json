@@ -1,0 +1,9 @@
+{
+  "skill": "mobile-module-key-validator",
+  "status": "PASS",
+  "started_at": "2026-03-09T03:42:16.480Z",
+  "completed_at": "2026-03-09T03:42:16.494Z",
+  "exit_code": 0,
+  "command": "cd SOCELLE-MOBILE-main && rg -n \"MODULE_BOOKING|MODULE_BRANDS|MODULE_JOBS|MODULE_EVENTS|MODULE_STUDIO\" apps/mobile/lib",
+  "evidence": "apps/mobile/lib/features/_core/models/module_access.dart:8://   MODULE_BOOKING, MODULE_BRANDS, MODULE_JOBS, MODULE_EVENTS, MODULE_STUDIO\napps/mobile/lib/features/_core/models/module_access.dart:274:    'MODULE_BOOKING': ModuleInfo(\napps/mobile/lib/features/_core/models/module_access.dart:275:      key: 'MODULE_BOOKING',\napps/mobile/lib/features/_core/models/module_access.dart:281:    'MODULE_BRANDS': ModuleInfo(\napps/mobile/lib/features/_core/models/module_access.dart:282:      key: 'MODULE_BRANDS',\napps/mobile/lib/features/_core/models/module_access.dart:288:    'MODULE_JOBS': ModuleInfo(\napps/mobile/lib/features/_core/models/module_access.dart:289:      key: 'MODULE_JOBS',\napps/mobile/lib/features/_core/models/module_access.dart:295:    'MODULE_EVENTS': ModuleInfo(\napps/mobile/lib/features/_core/models/module_access.dart:296:      key: 'MODULE_EVENTS',\napps/mobile/lib/features/_core/models/module_access.dart:302:    'MODULE_STUDIO': ModuleInfo(\napps/mobile/lib/features/_core/models/module_access.dart:303:      key: 'MODULE_STUDIO',\n"
+}
