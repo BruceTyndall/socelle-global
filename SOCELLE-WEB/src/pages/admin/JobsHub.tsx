@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
+import { PageLoadingSkeleton } from '../../components/ui';
 
 // ── W12-11: Jobs Hub — Admin Control Center ───────────────────────────────
 // Data source: job_postings table (LIVE)
@@ -184,7 +185,7 @@ export default function JobsHub() {
 
       {/* Content */}
       {loading ? (
-        <LoadingSkeleton />
+        <PageLoadingSkeleton />
       ) : !isLive ? (
         <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
           <Briefcase className="w-12 h-12 text-accent-soft mx-auto mb-4" />
@@ -275,21 +276,3 @@ export default function JobsHub() {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className="space-y-3">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="bg-white border border-accent-soft rounded-xl p-5 animate-pulse">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-accent-soft flex-shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-accent-soft rounded w-1/3" />
-              <div className="h-3 bg-accent-soft rounded w-1/2" />
-              <div className="h-3 bg-accent-soft rounded w-2/3" />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}

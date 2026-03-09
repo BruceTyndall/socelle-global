@@ -19,6 +19,7 @@ import { useDeals, type Deal } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
 import { useCommissions } from '../../lib/useCommissions';
 import ErrorState from '../../components/ErrorState';
+import { PageLoadingSkeleton } from '../../components/ui';
 
 // ── WO-OVERHAUL-14: Admin Sales Hub — expanded with deals, pipeline config,
 //    commission rules, and payout approvals ─────────────────────────────────
@@ -204,7 +205,7 @@ export default function SalesHub() {
           </div>
 
           {ordersLoading ? (
-            <LoadingSkeleton />
+            <PageLoadingSkeleton />
           ) : !ordersLive ? (
             <PlaceholderCard title="Orders" message="Orders table not available. Connect Supabase to activate." />
           ) : orders.length === 0 ? (
@@ -261,7 +262,7 @@ export default function SalesHub() {
           </div>
 
           {dealsLoading ? (
-            <LoadingSkeleton />
+            <PageLoadingSkeleton />
           ) : !dealsLive ? (
             <PlaceholderCard title="Deals" message="Deals table not available. Connect Supabase to activate." />
           ) : deals.length === 0 ? (
@@ -303,7 +304,7 @@ export default function SalesHub() {
       {tab === 'pipeline' && (
         <>
           {pipelinesLoading ? (
-            <LoadingSkeleton />
+            <PageLoadingSkeleton />
           ) : !pipelinesLive ? (
             <PlaceholderCard title="Pipeline Configuration" message="Pipeline tables not available. Connect Supabase to activate." />
           ) : pipelines.length === 0 ? (
@@ -341,7 +342,7 @@ export default function SalesHub() {
       {tab === 'commissions' && (
         <>
           {commissionsLoading ? (
-            <LoadingSkeleton />
+            <PageLoadingSkeleton />
           ) : !commissionsLive ? (
             <PlaceholderCard title="Commissions" message="Commission tables not available. Connect Supabase to activate." />
           ) : (
@@ -441,22 +442,6 @@ function DealStatusBadge({ status }: { status: string }) {
     <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${colors[status] ?? 'bg-accent-soft text-graphite'}`}>
       {status}
     </span>
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="bg-white border border-accent-soft rounded-xl p-5 space-y-3">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex items-center gap-4 animate-pulse">
-          <div className="w-20 h-4 bg-accent-soft rounded flex-shrink-0" />
-          <div className="w-16 h-5 bg-accent-soft rounded-full" />
-          <div className="flex-1" />
-          <div className="w-16 h-4 bg-accent-soft rounded" />
-          <div className="w-20 h-4 bg-accent-soft rounded" />
-        </div>
-      ))}
-    </div>
   );
 }
 

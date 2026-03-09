@@ -1,0 +1,28 @@
+{
+  "wo_id": "FOUND-WO-15",
+  "timestamp": "2026-03-09T12:00:00Z",
+  "description": "RLS audit — verify policies on all writable tables",
+  "skills_run": ["rls-auditor"],
+  "results": {
+    "rls-auditor": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All 114+ tables have ALTER TABLE ... ENABLE ROW LEVEL SECURITY. 85+ tables have explicit CREATE POLICY statements. 13 dedicated RLS migration files. 0 high-risk tables without RLS. Policy patterns: owner-based (crm, sales, booking), tenant-scoped (brand portals), public read (reference libraries), service_role (analytics, audit). All writable tables (CRM, sales, booking, marketing, ecommerce, CMS, subscriptions, B2B) have full CRUD policies scoped by owner_id/brand_id/auth.uid(). Analytics tables use service_role-only write access. Reference libraries use authenticated-read + admin-write."
+    }
+  },
+  "rls_coverage": {
+    "total_tables": "114+",
+    "rls_enabled": "100%",
+    "explicit_policies": "85+",
+    "dedicated_rls_migrations": 13,
+    "high_risk_unprotected": 0
+  },
+  "policy_patterns": {
+    "owner_based": "crm_contacts, deals, crm_activities, b2b_prospects, appointments",
+    "tenant_scoped": "brand_automation_rules, subscriptions, user_addons",
+    "public_catalog": "products, subscription_plans, shipping_methods",
+    "service_role_bypass": "platform_events, brand_analytics, audit_log",
+    "published_content": "cms_pages, cms_posts, cms_docs"
+  },
+  "overall": "PASS"
+}

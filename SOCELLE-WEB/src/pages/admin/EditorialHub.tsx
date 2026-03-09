@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
+import { PageLoadingSkeleton } from '../../components/ui';
 
 // ── W12-11: Editorial Hub — Admin Control Center ──────────────────────────
 // Data source: rss_items + rss_sources tables (LIVE)
@@ -134,7 +135,7 @@ export default function EditorialHub() {
 
       {/* Content */}
       {loading ? (
-        <LoadingSkeleton />
+        <PageLoadingSkeleton />
       ) : !isLive ? (
         <div className="bg-white border border-accent-soft rounded-xl p-12 text-center">
           <Newspaper className="w-12 h-12 text-accent-soft mx-auto mb-4" />
@@ -215,18 +216,3 @@ export default function EditorialHub() {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className="space-y-3">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="bg-white border border-accent-soft rounded-xl p-5 animate-pulse">
-          <div className="space-y-2">
-            <div className="h-4 bg-accent-soft rounded w-2/3" />
-            <div className="h-3 bg-accent-soft rounded w-full" />
-            <div className="h-3 bg-accent-soft rounded w-1/3" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}

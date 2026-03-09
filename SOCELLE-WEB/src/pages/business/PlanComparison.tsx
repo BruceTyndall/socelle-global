@@ -4,7 +4,7 @@ import { ArrowLeft, GitCompare, TrendingUp, DollarSign, ChevronDown } from 'luci
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import BusinessNav from '../../components/BusinessNav';
-import { Skeleton } from '../../components/Skeleton';
+import { Skeleton } from '../../components/ui';
 import { useQuery } from '@tanstack/react-query';
 
 interface PlanSummary {

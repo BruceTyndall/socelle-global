@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { Package, ShoppingBag, Users, DollarSign, ArrowRight, CheckCircle, Clock, AlertCircle, Sparkles, Brain, TrendingUp, TrendingDown } from 'lucide-react';
-import { StatCardSkeleton, Skeleton } from '../../components/Skeleton';
+import { StatCardSkeleton, Skeleton } from '../../components/ui';
 import { getBrandMarketPosition, getBrandTopSignals, getBrandPerformanceMetrics } from '../../lib/intelligence/brandPortalIntelligence';
 
 interface DashboardStats {

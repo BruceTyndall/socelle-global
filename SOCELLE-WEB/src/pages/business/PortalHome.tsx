@@ -4,7 +4,7 @@ import { Search, AlertCircle, Upload, ArrowRight } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import BusinessNav from '../../components/BusinessNav';
-import { BrandCardSkeleton } from '../../components/Skeleton';
+import { BrandCardSkeleton } from '../../components/ui';
 import BrandCard from '../../components/BrandCard';
 import { getDemandSignal, getGrowthOpportunity } from '../../lib/intelligence/businessIntelligence';
 import { TrendingUp, Zap, Brain } from 'lucide-react';

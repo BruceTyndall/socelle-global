@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import ErrorState from '../../components/ErrorState';
+import { PageLoadingSkeleton } from '../../components/ui';
 
 // ── W12-11: CRM Hub — Admin Control Center ────────────────────────────────
 // Data source: access_requests table (LIVE)
@@ -156,7 +157,7 @@ export default function CrmHub() {
 
       {/* Table */}
       {loading ? (
-        <LoadingSkeleton />
+        <PageLoadingSkeleton />
       ) : !isLive ? (
         <ComingSoonCard
           title="CRM Hub"
@@ -226,23 +227,6 @@ export default function CrmHub() {
 }
 
 // ── Shared sub-components ──────────────────────────────────────────────────
-
-function LoadingSkeleton() {
-  return (
-    <div className="bg-white border border-accent-soft rounded-xl p-5 space-y-3">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex items-center gap-4 animate-pulse">
-          <div className="w-8 h-8 rounded-lg bg-accent-soft flex-shrink-0" />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 bg-accent-soft rounded w-1/3" />
-            <div className="h-3 bg-accent-soft rounded w-1/2" />
-          </div>
-          <div className="w-16 h-5 bg-accent-soft rounded-full" />
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function EmptyState({ label }: { label: string }) {
   return (

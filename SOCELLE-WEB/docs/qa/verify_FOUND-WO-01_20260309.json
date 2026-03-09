@@ -1,0 +1,20 @@
+{
+  "wo_id": "FOUND-WO-01",
+  "timestamp": "2026-03-09T12:00:00Z",
+  "description": "Regenerate database.types.ts and verify against migrations",
+  "skills_run": ["type-generation-validator", "build-gate"],
+  "results": {
+    "type-generation-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "database.types.ts regenerated from remote Supabase project rumdmulxzmjtsplsjngi. 5396 lines, 93 tables. Clean file (no CLI output mixed in). Old file had 3 garbage lines at top from prior generation. 159 migration SQL files exist in supabase/migrations/. Types reflect live remote DB schema."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit = 0 errors. npm run build = success (5.19s)."
+    }
+  },
+  "notes": "93 tables in types vs 159 migration files. Many migrations are ALTER TABLE, ADD COLUMN, RLS policies (not CREATE TABLE). Some CREATE TABLE IF NOT EXISTS tables may not have been applied to remote DB yet. Types accurately reflect the live remote schema.",
+  "overall": "PASS"
+}

@@ -4,7 +4,7 @@ import { FileText, Trash2, Eye, Loader2, Search, GitCompare, X, Upload } from 'l
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import BusinessNav from '../../components/BusinessNav';
-import { TableRowSkeleton, Skeleton } from '../../components/Skeleton';
+import { TableRowSkeleton, Skeleton } from '../../components/ui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Plan {

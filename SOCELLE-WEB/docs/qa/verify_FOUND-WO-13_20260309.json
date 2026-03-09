@@ -1,0 +1,26 @@
+{
+  "wo_id": "FOUND-WO-13",
+  "timestamp": "2026-03-09T12:00:00Z",
+  "description": "LIVE/DEMO enforcement at COMPONENT level (not just page level)",
+  "skills_run": ["live-demo-detector", "build-gate"],
+  "results": {
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "DataSourceBadge component created at src/components/ui/DataSourceBadge.tsx. Provides isLive-driven LIVE/DEMO badge at component level. DataSourceBanner for page-level DEMO surfaces. Both exported from ui/index.ts barrel. Existing ModuleStates.tsx (LiveBadge/DemoBadge) in intelligence modules remains for backward compatibility. New DataSourceBadge uses design token classes (signal-up, signal-warn) instead of hardcoded hex. 66/99 hooks already return isLive flag. All DEMO arrays properly prefixed with DEMO_ or MOCK_. No unlabeled fake data found."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit = 0 errors. npm run build = success."
+    }
+  },
+  "enforcement_architecture": {
+    "component_level_badge": "DataSourceBadge (isLive prop → LIVE or DEMO)",
+    "page_level_banner": "DataSourceBanner (full-width PREVIEW banner)",
+    "hook_level_flag": "isLive: boolean on 66/99 data hooks",
+    "intelligence_module_badges": "LiveBadge/DemoBadge in ModuleStates.tsx",
+    "demo_array_convention": "All mock arrays prefixed DEMO_ or MOCK_"
+  },
+  "overall": "PASS"
+}

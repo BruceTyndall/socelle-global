@@ -6,7 +6,7 @@ import {
   FileText, Calendar, AlertCircle, ChevronDown, ChevronUp, Save
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { Skeleton } from '../../components/Skeleton';
+import { Skeleton } from '../../components/ui';
 
 interface Submission {
   id: string;
