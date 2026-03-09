@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Save } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../lib/auth';
@@ -12,7 +13,11 @@ const CONTACT_METHODS = ['email', 'phone', 'sms', 'in_person'];
 export default function AddContact() {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { createContact } = useCrmContacts(profile?.business_id);
+  const createContactMutation = useMutation({
+    mutationFn: async (payload: NewContact) => createContact(payload),
+  });
 
   const [form, setForm] = useState({
     type: 'client',
@@ -31,8 +36,26 @@ export default function AddContact() {
     gdpr_consent: false,
   });
 
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const firstName = searchParams.get('first_name');
+    const lastName = searchParams.get('last_name');
+    const email = searchParams.get('email');
+    const phone = searchParams.get('phone');
+    const source = searchParams.get('source');
+
+    if (!firstName && !lastName && !email && !phone && !source) return;
+
+    setForm((prev) => ({
+      ...prev,
+      first_name: firstName ?? prev.first_name,
+      last_name: lastName ?? prev.last_name,
+      email: email ?? prev.email,
+      phone: phone ?? prev.phone,
+      source: source ?? prev.source,
+    }));
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +64,6 @@ export default function AddContact() {
       setError('First and last name are required');
       return;
     }
-    setSaving(true);
     setError(null);
     try {
       const payload: NewContact = {
@@ -61,12 +83,10 @@ export default function AddContact() {
         preferred_contact_method: form.preferred_contact_method,
         gdpr_consent: form.gdpr_consent,
       };
-      await createContact(payload);
+      await createContactMutation.mutateAsync(payload);
       navigate('/portal/crm/contacts');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to create contact');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -181,9 +201,9 @@ export default function AddContact() {
         {/* Submit */}
         <div className="flex justify-end gap-3 pt-2">
           <Link to="/portal/crm/contacts" className="h-10 px-5 text-sm text-graphite/60 hover:text-graphite inline-flex items-center">Cancel</Link>
-          <button type="submit" disabled={saving} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
+          <button type="submit" disabled={createContactMutation.isPending} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Contact'}
+            {createContactMutation.isPending ? 'Saving...' : 'Save Contact'}
           </button>
         </div>
       </form>

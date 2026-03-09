@@ -989,6 +989,10 @@ function App() {
                     <Route path="promotions" element={<BrandPromotions />} />
                     <Route path="customers" element={<BrandCustomers />} />
                     <Route path="pipeline" element={<BrandPipeline />} />
+                    <Route path="crm" element={<BrandCustomers />} />
+                    <Route path="crm/leads" element={<BrandLeads />} />
+                    <Route path="crm/pipeline" element={<BrandPipeline />} />
+                    <Route path="crm/messages" element={<BrandMessages />} />
                     <Route path="storefront" element={<BrandStorefront />} />
                     <Route path="intelligence" element={<BrandIntelligenceHub />} />
                     <Route path="advisor" element={<BrandAIAdvisor />} />

@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, User, Scissors, CheckCircle, XCircle, AlertTriangle, ClipboardList } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, User, Scissors, CheckCircle, XCircle, AlertTriangle, ClipboardList, UserPlus } from 'lucide-react';
 import { useAppointmentDetail, useAppointments } from '../../lib/useBooking';
 import { useAuth } from '../../lib/auth';
 import { useState } from 'react';
@@ -80,6 +80,22 @@ export default function AppointmentDetail() {
               <p className="text-sm font-medium text-graphite">{appointment.client_first_name} {appointment.client_last_name}</p>
               {appointment.client_email && <p className="text-xs text-graphite/60">{appointment.client_email}</p>}
               {appointment.client_phone && <p className="text-xs text-graphite/60">{appointment.client_phone}</p>}
+              {appointment.contact_id ? (
+                <Link
+                  to={`/portal/crm/contacts/${appointment.contact_id}`}
+                  className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-accent hover:text-accent-hover"
+                >
+                  Open CRM profile
+                </Link>
+              ) : (
+                <Link
+                  to={`/portal/crm/contacts/new?first_name=${encodeURIComponent(appointment.client_first_name)}&last_name=${encodeURIComponent(appointment.client_last_name)}&email=${encodeURIComponent(appointment.client_email ?? '')}&phone=${encodeURIComponent(appointment.client_phone ?? '')}&source=booking`}
+                  className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-accent hover:text-accent-hover"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  Create CRM contact
+                </Link>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">

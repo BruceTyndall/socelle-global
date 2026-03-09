@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useCrmCompanyDetail, useCrmCompanies, type NewCompany } from '../../lib/useCrmCompanies';
@@ -12,6 +13,13 @@ export default function EditCompany() {
   const navigate = useNavigate();
   const { company, loading: detailLoading } = useCrmCompanyDetail(id);
   const { updateCompany, deleteCompany } = useCrmCompanies(profile?.business_id);
+  const updateCompanyMutation = useMutation({
+    mutationFn: async ({ companyId, updates }: { companyId: string; updates: Partial<NewCompany> }) =>
+      updateCompany(companyId, updates),
+  });
+  const deleteCompanyMutation = useMutation({
+    mutationFn: async (companyId: string) => deleteCompany(companyId),
+  });
 
   const [form, setForm] = useState({
     name: '',
@@ -31,8 +39,6 @@ export default function EditCompany() {
     employee_count: '',
   });
 
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,7 +70,6 @@ export default function EditCompany() {
       setError('Company name is required');
       return;
     }
-    setSaving(true);
     setError(null);
     try {
       const updates: Partial<NewCompany> = {
@@ -84,24 +89,20 @@ export default function EditCompany() {
         annual_revenue: form.annual_revenue ? parseFloat(form.annual_revenue) : undefined,
         employee_count: form.employee_count ? parseInt(form.employee_count, 10) : undefined,
       };
-      await updateCompany(id, updates);
+      await updateCompanyMutation.mutateAsync({ companyId: id, updates });
       navigate(`/portal/crm/companies/${id}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to update company');
-    } finally {
-      setSaving(false);
     }
   };
 
   const handleDelete = async () => {
     if (!id) return;
-    setDeleting(true);
     try {
-      await deleteCompany(id);
+      await deleteCompanyMutation.mutateAsync(id);
       navigate('/portal/crm/companies');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to delete company');
-      setDeleting(false);
     }
   };
 
@@ -153,8 +154,8 @@ export default function EditCompany() {
           <p className="text-xs text-graphite/60 mb-4">This will permanently remove {company.name}. Contacts linked to this company will not be deleted but will lose their company association.</p>
           <div className="flex gap-2">
             <button onClick={() => setShowDeleteConfirm(false)} className="h-8 px-4 text-xs text-graphite/60 hover:text-graphite">Cancel</button>
-            <button onClick={handleDelete} disabled={deleting} className="h-8 px-4 bg-signal-down text-white text-xs font-medium rounded-full hover:bg-signal-down/90 disabled:opacity-50">
-              {deleting ? 'Deleting...' : 'Confirm Delete'}
+            <button onClick={handleDelete} disabled={deleteCompanyMutation.isPending} className="h-8 px-4 bg-signal-down text-white text-xs font-medium rounded-full hover:bg-signal-down/90 disabled:opacity-50">
+              {deleteCompanyMutation.isPending ? 'Deleting...' : 'Confirm Delete'}
             </button>
           </div>
         </div>
@@ -229,9 +230,9 @@ export default function EditCompany() {
 
         <div className="flex justify-end gap-3 pt-2">
           <Link to={`/portal/crm/companies/${id}`} className="h-10 px-5 text-sm text-graphite/60 hover:text-graphite inline-flex items-center">Cancel</Link>
-          <button type="submit" disabled={saving} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
+          <button type="submit" disabled={updateCompanyMutation.isPending} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Changes'}
+            {updateCompanyMutation.isPending ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>

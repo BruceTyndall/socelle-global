@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useCrmContactDetail, useCrmContacts, type NewContact } from '../../lib/useCrmContacts';
@@ -14,6 +15,13 @@ export default function EditContact() {
   const navigate = useNavigate();
   const { contact, loading: detailLoading } = useCrmContactDetail(id);
   const { updateContact, deleteContact } = useCrmContacts(profile?.business_id);
+  const updateContactMutation = useMutation({
+    mutationFn: async ({ contactId, updates }: { contactId: string; updates: Partial<NewContact> }) =>
+      updateContact(contactId, updates),
+  });
+  const deleteContactMutation = useMutation({
+    mutationFn: async (contactId: string) => deleteContact(contactId),
+  });
 
   const [form, setForm] = useState({
     type: 'client',
@@ -32,8 +40,6 @@ export default function EditContact() {
     gdpr_consent: false,
   });
 
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,7 +70,6 @@ export default function EditContact() {
       setError('First and last name are required');
       return;
     }
-    setSaving(true);
     setError(null);
     try {
       const updates: Partial<NewContact> = {
@@ -83,24 +88,20 @@ export default function EditContact() {
         preferred_contact_method: form.preferred_contact_method,
         gdpr_consent: form.gdpr_consent,
       };
-      await updateContact(id, updates);
+      await updateContactMutation.mutateAsync({ contactId: id, updates });
       navigate(`/portal/crm/contacts/${id}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to update contact');
-    } finally {
-      setSaving(false);
     }
   };
 
   const handleDelete = async () => {
     if (!id) return;
-    setDeleting(true);
     try {
-      await deleteContact(id);
+      await deleteContactMutation.mutateAsync(id);
       navigate('/portal/crm/contacts');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to delete contact');
-      setDeleting(false);
     }
   };
 
@@ -152,8 +153,8 @@ export default function EditContact() {
           <p className="text-xs text-graphite/60 mb-4">This will permanently remove {contact.first_name} {contact.last_name} and all associated interactions. This action cannot be undone.</p>
           <div className="flex gap-2">
             <button onClick={() => setShowDeleteConfirm(false)} className="h-8 px-4 text-xs text-graphite/60 hover:text-graphite">Cancel</button>
-            <button onClick={handleDelete} disabled={deleting} className="h-8 px-4 bg-signal-down text-white text-xs font-medium rounded-full hover:bg-signal-down/90 disabled:opacity-50">
-              {deleting ? 'Deleting...' : 'Confirm Delete'}
+            <button onClick={handleDelete} disabled={deleteContactMutation.isPending} className="h-8 px-4 bg-signal-down text-white text-xs font-medium rounded-full hover:bg-signal-down/90 disabled:opacity-50">
+              {deleteContactMutation.isPending ? 'Deleting...' : 'Confirm Delete'}
             </button>
           </div>
         </div>
@@ -246,9 +247,9 @@ export default function EditContact() {
 
         <div className="flex justify-end gap-3 pt-2">
           <Link to={`/portal/crm/contacts/${id}`} className="h-10 px-5 text-sm text-graphite/60 hover:text-graphite inline-flex items-center">Cancel</Link>
-          <button type="submit" disabled={saving} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
+          <button type="submit" disabled={updateContactMutation.isPending} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Changes'}
+            {updateContactMutation.isPending ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>

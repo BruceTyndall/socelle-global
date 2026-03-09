@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Users, Scissors, ArrowRight, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, Users, Scissors, ArrowRight, CheckCircle, XCircle, AlertTriangle, UserPlus } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useAppointments, useBookingServices, useBookingStaff } from '../../lib/useBooking';
 
@@ -78,25 +78,43 @@ export default function BookingDashboard() {
         ) : (
           <div className="space-y-2">
             {appointments.map(appt => (
-              <Link key={appt.id} to={`/portal/booking/appointments/${appt.id}`} className="flex items-center gap-4 p-3 rounded-lg border border-accent-soft/20 hover:border-accent/30 transition-colors">
-                <div className="text-center min-w-[60px]">
-                  <p className="text-sm font-semibold text-graphite">{new Date(appt.start_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</p>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-graphite">{appt.client_first_name} {appt.client_last_name}</p>
-                  <p className="text-xs text-graphite/60">{appt.service_name ?? 'Service'}{appt.staff_first_name ? ` · ${appt.staff_first_name} ${appt.staff_last_name}` : ''}</p>
-                </div>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[appt.status] ?? 'bg-accent-soft/20 text-graphite/60'}`}>
-                  {appt.status.replace('_', ' ')}
-                </span>
-              </Link>
+              <div key={appt.id} className="flex items-center gap-2">
+                <Link to={`/portal/booking/appointments/${appt.id}`} className="flex items-center gap-4 p-3 rounded-lg border border-accent-soft/20 hover:border-accent/30 transition-colors flex-1 min-w-0">
+                  <div className="text-center min-w-[60px]">
+                    <p className="text-sm font-semibold text-graphite">{new Date(appt.start_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</p>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-graphite">{appt.client_first_name} {appt.client_last_name}</p>
+                    <p className="text-xs text-graphite/60">{appt.service_name ?? 'Service'}{appt.staff_first_name ? ` · ${appt.staff_first_name} ${appt.staff_last_name}` : ''}</p>
+                  </div>
+                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[appt.status] ?? 'bg-accent-soft/20 text-graphite/60'}`}>
+                    {appt.status.replace('_', ' ')}
+                  </span>
+                </Link>
+                {appt.contact_id ? (
+                  <Link
+                    to={`/portal/crm/contacts/${appt.contact_id}`}
+                    className="h-9 px-3 rounded-lg border border-accent/30 text-accent text-xs font-medium hover:bg-accent/5 transition-colors inline-flex items-center"
+                  >
+                    CRM
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/portal/crm/contacts/new?first_name=${encodeURIComponent(appt.client_first_name)}&last_name=${encodeURIComponent(appt.client_last_name)}&email=${encodeURIComponent(appt.client_email ?? '')}&phone=${encodeURIComponent(appt.client_phone ?? '')}&source=booking`}
+                    className="h-9 px-3 rounded-lg border border-accent/30 text-accent text-xs font-medium hover:bg-accent/5 transition-colors inline-flex items-center gap-1"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    Add to CRM
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
         )}
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <Link to="/portal/booking/services" className="bg-white rounded-xl border border-accent-soft/30 p-5 hover:border-accent/30 transition-colors group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"><Scissors className="w-5 h-5 text-accent" /></div>
@@ -113,6 +131,26 @@ export default function BookingDashboard() {
             <div className="flex-1">
               <p className="text-sm font-medium text-graphite">Staff</p>
               <p className="text-xs text-graphite/60">{staff.length} team members</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-accent transition-colors" />
+          </div>
+        </Link>
+        <Link to="/portal/crm/contacts" className="bg-white rounded-xl border border-accent-soft/30 p-5 hover:border-accent/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"><Users className="w-5 h-5 text-accent" /></div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-graphite">CRM Contacts</p>
+              <p className="text-xs text-graphite/60">View profiles, notes, and lifecycle stage</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-accent transition-colors" />
+          </div>
+        </Link>
+        <Link to="/portal/crm/tasks" className="bg-white rounded-xl border border-accent-soft/30 p-5 hover:border-accent/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"><CheckCircle className="w-5 h-5 text-accent" /></div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-graphite">Follow-up Tasks</p>
+              <p className="text-xs text-graphite/60">Create post-appointment actions in CRM</p>
             </div>
             <ArrowRight className="w-4 h-4 text-graphite/60 group-hover:text-accent transition-colors" />
           </div>

@@ -1,15 +1,15 @@
 {
-  "scan_date": "2026-03-09T03:42:15.448Z",
+  "scan_date": "2026-03-09T05:48:28.622Z",
   "summary": {
-    "total": 267,
-    "live": 104,
+    "total": 269,
+    "live": 110,
     "demo": 98,
-    "shell": 65,
-    "shell_rate": "24.3"
+    "shell": 61,
+    "shell_rate": "22.7"
   },
   "by_hub": {
     "admin": {
-      "live": 52,
+      "live": 54,
       "demo": 10,
       "shell": 13,
       "pages": [
@@ -61,7 +61,7 @@
         {
           "file": "src/pages/admin/AdminDashboard.tsx",
           "classification": "LIVE",
-          "feature_score": 5
+          "feature_score": 3
         },
         {
           "file": "src/pages/admin/AdminEducationHub.tsx",
@@ -97,6 +97,11 @@
           "file": "src/pages/admin/AdminIngredientsHub.tsx",
           "classification": "LIVE",
           "feature_score": 6
+        },
+        {
+          "file": "src/pages/admin/AdminInventoryReport.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
         },
         {
           "file": "src/pages/admin/AdminLiveDataHub.tsx",
@@ -167,6 +172,11 @@
           "file": "src/pages/admin/AdminSettingsHub.tsx",
           "classification": "DEMO",
           "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/AdminShellDetection.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/admin/AdminShopCategories.tsx",
@@ -523,9 +533,9 @@
       ]
     },
     "business": {
-      "live": 20,
+      "live": 24,
       "demo": 36,
-      "shell": 18,
+      "shell": 14,
       "pages": [
         {
           "file": "src/pages/business/AIAdvisor.tsx",
@@ -539,13 +549,13 @@
         },
         {
           "file": "src/pages/business/AddCompany.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/AddContact.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/AddServiceRecord.tsx",
@@ -645,7 +655,7 @@
         {
           "file": "src/pages/business/CrmDashboard.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/CrmSegments.tsx",
@@ -669,13 +679,13 @@
         },
         {
           "file": "src/pages/business/EditCompany.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/EditContact.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/IntelligenceHub.tsx",
@@ -1549,14 +1559,14 @@
       "classification": "LIVE",
       "features": {
         "live_data": true,
-        "demo_labeled": true,
-        "empty_state": true,
+        "demo_labeled": false,
+        "empty_state": false,
         "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 5
+      "feature_score": 3
     },
     {
       "file": "src/pages/admin/AdminEducationHub.tsx",
@@ -1662,6 +1672,21 @@
         "export": false
       },
       "feature_score": 6
+    },
+    {
+      "file": "src/pages/admin/AdminInventoryReport.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
     },
     {
       "file": "src/pages/admin/AdminLiveDataHub.tsx",
@@ -1872,6 +1897,21 @@
         "export": false
       },
       "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/AdminShellDetection.tsx",
+      "hub": "admin",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
     },
     {
       "file": "src/pages/admin/AdminShopCategories.tsx",
@@ -2941,32 +2981,32 @@
     {
       "file": "src/pages/business/AddCompany.tsx",
       "hub": "business",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": true,
-        "loading_state": false,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/AddContact.tsx",
       "hub": "business",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": true,
-        "loading_state": false,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/AddServiceRecord.tsx",
@@ -3263,10 +3303,10 @@
         "empty_state": true,
         "error_state": true,
         "loading_state": true,
-        "crud": false,
+        "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/CrmSegments.tsx",
@@ -3331,32 +3371,32 @@
     {
       "file": "src/pages/business/EditCompany.tsx",
       "hub": "business",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": true,
-        "loading_state": false,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/EditContact.tsx",
       "hub": "business",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": true,
-        "loading_state": false,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/IntelligenceHub.tsx",

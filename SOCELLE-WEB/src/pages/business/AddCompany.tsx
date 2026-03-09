@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useCrmCompanies, type NewCompany } from '../../lib/useCrmCompanies';
@@ -10,6 +11,9 @@ export default function AddCompany() {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const { createCompany } = useCrmCompanies(profile?.business_id);
+  const createCompanyMutation = useMutation({
+    mutationFn: async (payload: NewCompany) => createCompany(payload),
+  });
 
   const [form, setForm] = useState({
     name: '',
@@ -29,7 +33,6 @@ export default function AddCompany() {
     employee_count: '',
   });
 
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +42,6 @@ export default function AddCompany() {
       setError('Company name is required');
       return;
     }
-    setSaving(true);
     setError(null);
     try {
       const payload: NewCompany = {
@@ -60,12 +62,10 @@ export default function AddCompany() {
         annual_revenue: form.annual_revenue ? parseFloat(form.annual_revenue) : undefined,
         employee_count: form.employee_count ? parseInt(form.employee_count, 10) : undefined,
       };
-      await createCompany(payload);
+      await createCompanyMutation.mutateAsync(payload);
       navigate('/portal/crm/companies');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to create company');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -170,9 +170,9 @@ export default function AddCompany() {
 
         <div className="flex justify-end gap-3 pt-2">
           <Link to="/portal/crm/companies" className="h-10 px-5 text-sm text-graphite/60 hover:text-graphite inline-flex items-center">Cancel</Link>
-          <button type="submit" disabled={saving} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
+          <button type="submit" disabled={createCompanyMutation.isPending} className="h-10 px-6 bg-mn-dark text-white text-sm font-medium rounded-full hover:bg-mn-dark/90 disabled:opacity-50 transition-colors inline-flex items-center gap-2">
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Company'}
+            {createCompanyMutation.isPending ? 'Saving...' : 'Save Company'}
           </button>
         </div>
       </form>

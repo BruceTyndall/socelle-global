@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Package, AlertCircle, Truck, ExternalLink, RotateCcw, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Package, AlertCircle, Truck, ExternalLink, RotateCcw, MessageSquare, CheckSquare } from 'lucide-react';
 import { Badge } from '../../components/ui';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
@@ -49,11 +49,12 @@ const STATUS_STEPS = ['submitted', 'reviewing', 'sent_to_brand', 'confirmed', 'f
 
 export default function BusinessOrderDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const queryClient = useQueryClient();
   const [returnReason, setReturnReason] = useState('');
   const [showReturnForm, setShowReturnForm] = useState(false);
   const [messageError, setMessageError] = useState<string | null>(null);
+  const [crmTaskNotice, setCrmTaskNotice] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const { data: order = null, isLoading: loading, error: queryError } = useQuery({
@@ -137,6 +138,26 @@ export default function BusinessOrderDetail() {
     setMessageError(null);
     messageMutation.mutate(order.id);
   };
+
+  const crmTaskMutation = useMutation({
+    mutationFn: async () => {
+      if (!profile?.business_id || !order) throw new Error('CRM context unavailable for this account.');
+      const { error } = await supabase.from('crm_tasks').insert({
+        business_id: profile.business_id,
+        title: `Order follow-up: ${order.order_number}`,
+        description: `Brand: ${order.brand_name} | Subtotal: $${order.subtotal.toFixed(2)} | Status: ${order.status}`,
+        priority: 'medium',
+        status: 'open',
+      });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      setCrmTaskNotice('CRM follow-up task created from this order.');
+    },
+    onError: (err: unknown) => {
+      setCrmTaskNotice(err instanceof Error ? err.message : 'Could not create CRM follow-up task.');
+    },
+  });
 
   const returnMutation = useMutation({
     mutationFn: async ({ orderId, reason }: { orderId: string; reason: string }) => {
@@ -357,17 +378,31 @@ export default function BusinessOrderDetail() {
               <p className="text-sm text-graphite/60 font-sans mb-3">
                 Need help with this order? Start a conversation with the brand.
               </p>
-              <button
-                type="button"
-                onClick={handleMessageOrder}
-                disabled={messageMutation.isPending}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-medium bg-graphite text-white hover:bg-graphite disabled:opacity-60 transition-colors"
-              >
-                <MessageSquare className="w-4 h-4" />
-                {messageMutation.isPending ? 'Opening…' : 'Message about this order'}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={handleMessageOrder}
+                  disabled={messageMutation.isPending}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-medium bg-graphite text-white hover:bg-graphite disabled:opacity-60 transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  {messageMutation.isPending ? 'Opening…' : 'Message about this order'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => crmTaskMutation.mutate()}
+                  disabled={crmTaskMutation.isPending}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-sans font-medium border border-accent/30 text-accent hover:bg-accent/5 disabled:opacity-60 transition-colors"
+                >
+                  <CheckSquare className="w-4 h-4" />
+                  {crmTaskMutation.isPending ? 'Creating…' : 'Create CRM follow-up'}
+                </button>
+              </div>
               {messageError && (
                 <p className="text-sm text-red-600 font-sans mt-2">{messageError}</p>
+              )}
+              {crmTaskNotice && (
+                <p className={`text-sm font-sans mt-2 ${crmTaskNotice.includes('created') ? 'text-signal-up' : 'text-red-600'}`}>{crmTaskNotice}</p>
               )}
             </div>
 

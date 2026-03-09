@@ -54,6 +54,7 @@ const NAV_SECTIONS = [
     label: 'Growth',
     items: [
       { path: '/brand/performance', label: 'Performance', icon: BarChart2 },
+      { path: '/brand/crm', label: 'CRM', icon: Users },
       { path: '/brand/campaigns', label: 'Campaigns', icon: Megaphone },
       { path: '/brand/automations', label: 'Automations', icon: Zap },
       { path: '/brand/promotions', label: 'Promotions', icon: Tag },

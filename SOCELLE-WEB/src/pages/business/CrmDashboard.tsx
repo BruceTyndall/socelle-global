@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   Users, Calendar, ArrowRight, CheckSquare, Layers,
   AlertTriangle, TrendingUp, Clock, DollarSign, Zap,
-  Plus, RefreshCw,
+  Plus, RefreshCw, MessageSquare, Megaphone,
 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -74,6 +74,7 @@ interface DashboardData {
 
 export default function CrmDashboard() {
   const { profile, user } = useAuth();
+  const navigate = useNavigate();
   const businessId = profile?.business_id;
   const { tasks: overdueTasks } = useOverdueTasks(businessId);
 
@@ -110,9 +111,26 @@ export default function CrmDashboard() {
       if (!businessId) return;
       if (action.action_type === 'add_to_crm' || action.action_type === 'add_to_note') {
         signalTaskMutation.mutate(action);
+        return;
+      }
+
+      if (
+        action.action_type === 'create_campaign' ||
+        action.action_type === 'create_brief' ||
+        action.action_type === 'create_alert'
+      ) {
+        const prompt = [
+          `Turn this signal into a lead generation plan: "${action.signal_title}".`,
+          `Category: ${action.signal_category}.`,
+          `Delta: ${action.signal_delta}.`,
+          `Confidence: ${action.signal_confidence}.`,
+          `Source: ${action.signal_source}.`,
+          'Output: campaign concept, target segment, follow-up sequence, and KPI goals.',
+        ].join(' ');
+        navigate(`/portal/advisor?prompt=${encodeURIComponent(prompt)}`);
       }
     },
-    [businessId, signalTaskMutation],
+    [businessId, navigate, signalTaskMutation],
   );
 
   const firstName = useMemo(() => {
@@ -441,7 +459,7 @@ export default function CrmDashboard() {
       </div>
 
       {/* ── Quick Links ──────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link to="/portal/crm/tasks" className="bg-white rounded-xl border border-graphite/5 p-5 hover:border-accent/30 transition-colors group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
@@ -462,6 +480,30 @@ export default function CrmDashboard() {
             <div className="flex-1">
               <p className="text-sm font-medium text-graphite">Segments</p>
               <p className="text-xs text-graphite/50">Group contacts by criteria</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-graphite/30 group-hover:text-accent transition-colors" />
+          </div>
+        </Link>
+        <Link to="/portal/marketing/campaigns/new?source=crm" className="bg-white rounded-xl border border-graphite/5 p-5 hover:border-accent/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+              <Megaphone className="w-5 h-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-graphite">Launch Campaign</p>
+              <p className="text-xs text-graphite/50">Turn CRM segments into lead-gen flows</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-graphite/30 group-hover:text-accent transition-colors" />
+          </div>
+        </Link>
+        <Link to="/portal/messages" className="bg-white rounded-xl border border-graphite/5 p-5 hover:border-accent/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+              <MessageSquare className="w-5 h-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-graphite">AI Messenger</p>
+              <p className="text-xs text-graphite/50">Draft and send intelligent follow-ups</p>
             </div>
             <ArrowRight className="w-4 h-4 text-graphite/30 group-hover:text-accent transition-colors" />
           </div>

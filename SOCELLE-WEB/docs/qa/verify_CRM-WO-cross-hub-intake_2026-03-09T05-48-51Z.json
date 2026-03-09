@@ -1,0 +1,22 @@
+{
+  "wo_id": "CRM-WO-cross-hub-intake",
+  "timestamp_utc": "2026-03-09T05-48-51Z",
+  "scope": [
+    "CRM create/edit flows upgraded with TanStack mutations",
+    "Booking and order surfaces wired to CRM intake and follow-up",
+    "Cross-hub CRM action routing expanded to marketing/advisor flows",
+    "Brand routes include CRM aliases"
+  ],
+  "commands": [
+    {"cmd": "npx tsc --noEmit", "status": "PASS"},
+    {"cmd": "npm run build", "status": "PASS", "notes": ["Known pre-existing duplicate onClick warning in src/pages/admin/EditorialHub.tsx"]},
+    {"cmd": "npm run shell:check", "status": "PASS", "notes": ["No new shells introduced", "Shell count improved to 61 from baseline 65"]}
+  ],
+  "checks": [
+    {"name": "booking_to_crm_prefill", "status": "PASS"},
+    {"name": "order_to_crm_followup_task", "status": "PASS"},
+    {"name": "signal_action_marketing_routes", "status": "PASS"},
+    {"name": "brand_crm_route_aliases", "status": "PASS"}
+  ],
+  "definition_of_done": "PASS"
+}
