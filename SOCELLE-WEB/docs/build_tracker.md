@@ -15,7 +15,7 @@ Last Updated: 2026-03-09 (Command Center — Build 3 growth wave 2 hardening + s
 | CRM-WO-unified-timeline | Contact-level unified timeline + CRM dashboard commerce/sales reinforcement | COMPLETE | `176a01d` | `docs/qa/verify_CRM-WO-unified-timeline_2026-03-09T06-38-37Z.json` |
 | BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS | Notifications live ledger + booking CRM linking + growth hook schema hardening | IN PROGRESS (verification blockers) | `4c7ae53` | `docs/qa/verify_BUILD3-GROWTH-CRM-MARKETING-BOOKING-NOTIFICATIONS_2026-03-09T07-11-29Z.json` |
 | BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION | Booking follow-up automation + CRM task/notification fan-out + Google/Teams calendar actions | COMPLETE | `6a70c5c` | `docs/qa/verify_BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION_2026-03-09T07-15-27Z.json` |
-| BUILD3-GROWTH-HARDENING-WAVE2 | Shell-detector live-pattern upgrades + signal-action dispatcher on marketing/booking + notification ledger + brand CSV exports | IN PROGRESS (global tsc baseline failures) | `PENDING` | `docs/qa/verify_BUILD3-GROWTH-HARDENING-WAVE2_2026-03-09T16-00-18Z.json` |
+| BUILD3-GROWTH-HARDENING-WAVE2 | Shell-detector live-pattern upgrades + signal-action dispatcher on marketing/booking + notification ledger + brand CSV exports | IN PROGRESS (global tsc baseline failures) | `ba59f01` | `docs/qa/verify_BUILD3-GROWTH-HARDENING-WAVE2_2026-03-09T16-00-18Z.json` |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|
