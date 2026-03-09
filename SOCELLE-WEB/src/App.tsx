@@ -169,6 +169,7 @@ const WhiteLabelConfig = lazy(() => import('./pages/business/WhiteLabelConfig'))
 const Events = lazy(() => import('./pages/public/Events'));
 const Jobs = lazy(() => import('./pages/public/Jobs'));
 const JobDetail = lazy(() => import('./pages/public/JobDetail'));
+const SearchPage = lazy(() => import('./pages/public/SearchPage'));
 
 // ── CMS public pages (WO-CMS-04)
 const BlogListPage = lazy(() => import('./pages/public/BlogListPage'));
@@ -481,6 +482,7 @@ function App() {
                   <Route path="/events" element={<Events />} />
                   <Route path="/jobs" element={<Jobs />} />
                   <Route path="/jobs/:slug" element={<JobDetail />} />
+                  <Route path="/search" element={<SearchPage />} />
 
                   {/* ── Blog + CMS pages (WO-CMS-04) ── */}
                   <Route path="/blog" element={<BlogListPage />} />
