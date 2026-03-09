@@ -23,6 +23,7 @@
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { checkFlag } from '../_shared/featureFlags.ts';
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 
@@ -378,6 +379,25 @@ Deno.serve(async (req: Request) => {
     .single();
 
   const userTier = profileData?.subscription_tier ?? 'starter';
+
+  // Server-side feature toggle (CTRL-WO-01).
+  const aiOrchestratorEnabled = await checkFlag({
+    supabaseAdmin,
+    userId: user.id,
+    flagKey: 'AI_ORCHESTRATOR_ENABLED',
+    userTier,
+  });
+  if (!aiOrchestratorEnabled) {
+    return jsonResponse(
+      {
+        error: 'AI service is currently disabled by feature flag.',
+        code: 'feature_disabled',
+        flag_key: 'AI_ORCHESTRATOR_ENABLED',
+      },
+      503,
+    );
+  }
+
   const tierLimit = getTierLimit(userTier);
 
   const { data: rateLimitResult, error: rateLimitError } = await supabaseAdmin

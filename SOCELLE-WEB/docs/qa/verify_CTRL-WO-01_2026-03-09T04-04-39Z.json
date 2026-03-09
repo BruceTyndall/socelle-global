@@ -1,0 +1,67 @@
+{
+  "wo_id": "CTRL-WO-01",
+  "timestamp_utc": "2026-03-09T04:04:39Z",
+  "branch": "main",
+  "description": "Feature flag system: schema normalization + admin UI + useFeatureFlag + edge check_flag integration",
+  "skills_run": [
+    "schema-db-suite",
+    "rls-auditor",
+    "build-gate"
+  ],
+  "results": {
+    "schema-db-suite": {
+      "status": "PASS",
+      "checks": {
+        "migration_count": 161,
+        "feature_flags_schema_unification_migration_present": true,
+        "check_flag_rpc_present": true,
+        "feature_flags_rls_migrations_present": true,
+        "type_file_present": "src/lib/database.types.ts"
+      },
+      "evidence": [
+        "supabase/migrations/20260310120001_unify_feature_flags_and_add_check_flag.sql",
+        "supabase/migrations/20260309210001_create_feature_flags.sql",
+        "supabase/migrations/20260308100002_subscriptions_rls.sql",
+        "supabase/migrations/20260308100001_subscriptions.sql"
+      ]
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "checks": {
+        "rls_enable_statements": 179,
+        "policy_statements": 508,
+        "feature_flags_rls_enabled": true,
+        "feature_flags_admin_policy_present": true
+      },
+      "evidence": [
+        "supabase/migrations/20260310120001_unify_feature_flags_and_add_check_flag.sql:92",
+        "supabase/migrations/20260310120001_unify_feature_flags_and_add_check_flag.sql:103",
+        "supabase/migrations/20260310120001_unify_feature_flags_and_add_check_flag.sql:117"
+      ]
+    },
+    "build-gate": {
+      "status": "PASS",
+      "checks": {
+        "tsc_no_emit_exit_code": 0,
+        "build_exit_code": 0,
+        "vitest_useFeatureFlag_exit_code": 0,
+        "qa_scripts_executed": [
+          "scripts/route-manifest.mjs",
+          "scripts/fake-live-guard.mjs",
+          "scripts/e2e-route-coverage.mjs"
+        ]
+      },
+      "notes": [
+        "route-manifest and fake-live scripts reported existing repo drift, but exited 0",
+        "No TypeScript or production build failures"
+      ]
+    }
+  },
+  "implementation_evidence": {
+    "admin_ui": "src/pages/admin/AdminFeatureFlags.tsx",
+    "client_hook": "src/lib/useFeatureFlag.ts",
+    "edge_helper": "supabase/functions/_shared/featureFlags.ts",
+    "edge_integration": "supabase/functions/ai-orchestrator/index.ts"
+  },
+  "overall": "PASS"
+}
