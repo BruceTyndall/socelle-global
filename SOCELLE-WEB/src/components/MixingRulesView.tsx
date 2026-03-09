@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, Edit2, Save, X, AlertTriangle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -6,7 +7,7 @@ import type { Database } from '../lib/database.types';
 type MixingRule = Database['public']['Tables']['mixing_rules']['Row'];
 
 export default function MixingRulesView() {
-  const [rules, setRules] = useState<MixingRule[]>([]);
+  const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -16,20 +17,17 @@ export default function MixingRulesView() {
     severity: 'mandatory',
   });
 
-  useEffect(() => {
-    loadRules();
-  }, []);
-
-  const loadRules = async () => {
-    const { data, error } = await supabase
-      .from('mixing_rules')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setRules(data);
-    }
-  };
+  const { data: rules = [] } = useQuery<MixingRule[]>({
+    queryKey: ['mixing_rules'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('mixing_rules')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +48,7 @@ export default function MixingRulesView() {
       if (!error) {
         setEditingId(null);
         resetForm();
-        loadRules();
+        queryClient.invalidateQueries({ queryKey: ['mixing_rules'] });
       }
     } else {
       const { error } = await supabase
@@ -60,7 +58,7 @@ export default function MixingRulesView() {
       if (!error) {
         setIsAdding(false);
         resetForm();
-        loadRules();
+        queryClient.invalidateQueries({ queryKey: ['mixing_rules'] });
       }
     }
   };
@@ -78,7 +76,7 @@ export default function MixingRulesView() {
   const handleDelete = async (id: string) => {
     if (confirm('Delete this rule?')) {
       await supabase.from('mixing_rules').delete().eq('id', id);
-      loadRules();
+      queryClient.invalidateQueries({ queryKey: ['mixing_rules'] });
     }
   };
 

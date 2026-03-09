@@ -3,7 +3,7 @@ import {
   Search, Plus, Package, Star, Edit2, AlertCircle,
   RefreshCw, DollarSign, Layers,
 } from 'lucide-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, skipToken } from '@tanstack/react-query';
 import {
   StatCard, Badge, Input, Button, EmptyState,
   Modal, ModalBody, ModalFooter,
@@ -95,10 +95,47 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
 
   // UI state
   const [saving, setSaving]               = useState(false);
-  const [loadingPricing, setLoadingPricing] = useState(false);
   const [error, setError]                 = useState<string | null>(null);
 
-  // Populate / reset form when modal opens
+  // Tiered pricing via TanStack Query — enabled only when editing an existing product
+  const pricingQueryKey = editProduct
+    ? ['product-tiered-pricing', editProduct.id, editProduct.type === 'PRO' ? 'pro' : 'retail'] as const
+    : null;
+
+  const { data: tieredPricingData, isLoading: loadingPricing } = useQuery({
+    queryKey: pricingQueryKey ?? ['product-tiered-pricing-disabled'],
+    queryFn: pricingQueryKey
+      ? async () => {
+          const { data, error: qErr } = await supabase
+            .from('product_pricing')
+            .select('tier, price, min_qty')
+            .eq('product_id', editProduct!.id)
+            .eq('product_type', editProduct!.type === 'PRO' ? 'pro' : 'retail')
+            .eq('is_active', true);
+          if (qErr) throw qErr;
+          return data ?? [];
+        }
+      : skipToken,
+    enabled: !!editProduct?.id && open,
+    staleTime: 60_000,
+  });
+
+  // Sync tiered form state when query data arrives
+  useEffect(() => {
+    if (!tieredPricingData) return;
+    const map: Record<string, { price: number; min_qty: number }> = {};
+    tieredPricingData.forEach(r => { map[r.tier] = { price: r.price, min_qty: r.min_qty }; });
+    setTiered({
+      activeTierPrice:  map['active']?.price?.toString()   ?? '',
+      activeTierMinQty: map['active']?.min_qty?.toString() ?? '1',
+      eliteTierPrice:   map['elite']?.price?.toString()    ?? '',
+      eliteTierMinQty:  map['elite']?.min_qty?.toString()  ?? '1',
+      masterTierPrice:  map['master']?.price?.toString()   ?? '',
+      masterTierMinQty: map['master']?.min_qty?.toString() ?? '1',
+    });
+  }, [tieredPricingData]);
+
+  // Populate / reset form fields when modal opens
   useEffect(() => {
     if (!open) return;
     setError(null);
@@ -116,7 +153,7 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
       setStockCount(editProduct.stock?.toString() ?? '0');
       setIsActive(editProduct.active);
       setIsBestseller(editProduct.bestseller);
-      fetchTieredPricing(editProduct.id, editProduct.type);
+      setTiered(EMPTY_TIERED); // Reset until query populates
     } else {
       setType('PRO');
       setName(''); setSku(''); setCategory(''); setSize('');
@@ -126,34 +163,6 @@ function ProductFormModal({ open, onClose, onSaved, editProduct, brandId }: Prod
       setTiered(EMPTY_TIERED);
     }
   }, [open, editProduct]);
-
-  const fetchTieredPricing = async (productId: string, productType: ProductType) => {
-    setLoadingPricing(true);
-    setTiered(EMPTY_TIERED);
-    try {
-      const { data } = await supabase
-        .from('product_pricing')
-        .select('tier, price, min_qty')
-        .eq('product_id', productId)
-        .eq('product_type', productType === 'PRO' ? 'pro' : 'retail')
-        .eq('is_active', true);
-
-      if (data) {
-        const map: Record<string, { price: number; min_qty: number }> = {};
-        data.forEach(r => { map[r.tier] = { price: r.price, min_qty: r.min_qty }; });
-        setTiered({
-          activeTierPrice: map['active']?.price?.toString()   ?? '',
-          activeTierMinQty: map['active']?.min_qty?.toString() ?? '1',
-          eliteTierPrice:  map['elite']?.price?.toString()    ?? '',
-          eliteTierMinQty: map['elite']?.min_qty?.toString()  ?? '1',
-          masterTierPrice: map['master']?.price?.toString()   ?? '',
-          masterTierMinQty: map['master']?.min_qty?.toString() ?? '1',
-        });
-      }
-    } finally {
-      setLoadingPricing(false);
-    }
-  };
 
   const handleSave = async () => {
     if (!name.trim())    { setError('Product name is required.');                return; }

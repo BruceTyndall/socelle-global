@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, FileText, CheckCircle, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -6,7 +7,7 @@ import type { Database } from '../lib/database.types';
 type SpaMenu = Database['public']['Tables']['spa_menus']['Row'];
 
 export default function SpaMenusView() {
-  const [menus, setMenus] = useState<SpaMenu[]>([]);
+  const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
     spa_name: '',
@@ -15,20 +16,17 @@ export default function SpaMenusView() {
     raw_menu_data: '',
   });
 
-  useEffect(() => {
-    loadMenus();
-  }, []);
-
-  const loadMenus = async () => {
-    const { data, error } = await supabase
-      .from('spa_menus')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setMenus(data);
-    }
-  };
+  const { data: menus = [] } = useQuery<SpaMenu[]>({
+    queryKey: ['spa_menus'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('spa_menus')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,14 +47,14 @@ export default function SpaMenusView() {
     if (!error) {
       setIsAdding(false);
       resetForm();
-      loadMenus();
+      queryClient.invalidateQueries({ queryKey: ['spa_menus'] });
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm('Delete this spa menu? All associated services and mappings will be removed.')) {
       await supabase.from('spa_menus').delete().eq('id', id);
-      loadMenus();
+      queryClient.invalidateQueries({ queryKey: ['spa_menus'] });
     }
   };
 

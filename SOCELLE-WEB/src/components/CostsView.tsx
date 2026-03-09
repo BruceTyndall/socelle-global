@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -6,7 +7,7 @@ import type { Database } from '../lib/database.types';
 type TreatmentCost = Database['public']['Tables']['treatment_costs']['Row'];
 
 export default function CostsView() {
-  const [costs, setCosts] = useState<TreatmentCost[]>([]);
+  const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -18,20 +19,17 @@ export default function CostsView() {
     notes: '',
   });
 
-  useEffect(() => {
-    loadCosts();
-  }, []);
-
-  const loadCosts = async () => {
-    const { data, error } = await supabase
-      .from('treatment_costs')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setCosts(data);
-    }
-  };
+  const { data: costs = [] } = useQuery<TreatmentCost[]>({
+    queryKey: ['treatment_costs'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('treatment_costs')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +52,7 @@ export default function CostsView() {
       if (!error) {
         setEditingId(null);
         resetForm();
-        loadCosts();
+        queryClient.invalidateQueries({ queryKey: ['treatment_costs'] });
       }
     } else {
       const { error } = await supabase
@@ -64,7 +62,7 @@ export default function CostsView() {
       if (!error) {
         setIsAdding(false);
         resetForm();
-        loadCosts();
+        queryClient.invalidateQueries({ queryKey: ['treatment_costs'] });
       }
     }
   };
@@ -84,7 +82,7 @@ export default function CostsView() {
   const handleDelete = async (id: string) => {
     if (confirm('Delete this cost entry?')) {
       await supabase.from('treatment_costs').delete().eq('id', id);
-      loadCosts();
+      queryClient.invalidateQueries({ queryKey: ['treatment_costs'] });
     }
   };
 

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -6,7 +7,7 @@ import type { Database } from '../lib/database.types';
 type ProProduct = Database['public']['Tables']['pro_products']['Row'];
 
 export default function ProProductsView() {
-  const [products, setProducts] = useState<ProProduct[]>([]);
+  const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -17,20 +18,17 @@ export default function ProProductsView() {
     contraindications: '',
   });
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  const loadProducts = async () => {
-    const { data, error } = await supabase
-      .from('pro_products')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setProducts(data);
-    }
-  };
+  const { data: products = [] } = useQuery<ProProduct[]>({
+    queryKey: ['pro_products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pro_products')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +50,7 @@ export default function ProProductsView() {
       if (!error) {
         setEditingId(null);
         resetForm();
-        loadProducts();
+        queryClient.invalidateQueries({ queryKey: ['pro_products'] });
       }
     } else {
       const { error } = await supabase
@@ -62,7 +60,7 @@ export default function ProProductsView() {
       if (!error) {
         setIsAdding(false);
         resetForm();
-        loadProducts();
+        queryClient.invalidateQueries({ queryKey: ['pro_products'] });
       }
     }
   };
@@ -81,7 +79,7 @@ export default function ProProductsView() {
   const handleDelete = async (id: string) => {
     if (confirm('Delete this product?')) {
       await supabase.from('pro_products').delete().eq('id', id);
-      loadProducts();
+      queryClient.invalidateQueries({ queryKey: ['pro_products'] });
     }
   };
 
