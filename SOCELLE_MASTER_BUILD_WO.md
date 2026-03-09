@@ -6,9 +6,82 @@
 ---
 
 **Authority:** `CLAUDE.md` §A–§Z
-**Date:** March 8, 2026
-**Status:** V2-TECH FROZEN | V3 CMS BUILD ACTIVE
+**Date:** March 9, 2026 (last consolidated from build_tracker.md)
+**Status:** V2-TECH FROZEN | CMS COMPLETE | Intelligence Cloud COMPLETE | All Hubs COMPLETE (most) | Multi-Platform PARTIAL
 **Observability:** Admin Hub dashboards + CMS publish health. No external Sentry.
+
+---
+
+## 0.1 ACTUAL COMPLETION STATE (2026-03-09 audit from build_tracker.md)
+
+> This section reflects verified execution records from `SOCELLE-WEB/docs/build_tracker.md`.
+> It supersedes §12 status wherever they conflict. `build_tracker.md` is always authoritative.
+
+### COMPLETE (shipped, committed, verified)
+
+| WO | Evidence |
+|----|---------|
+| WO-CMS-01 | Prerequisite for WO-CMS-03 (COMPLETE, d9dfa82) — inferred complete |
+| WO-CMS-02 | Prerequisite for WO-CMS-03 (COMPLETE, d9dfa82) — inferred complete |
+| WO-CMS-03 | Session 48 Wave 1, `d9dfa82` — 7 admin routes, full CRUD |
+| WO-CMS-04 | Session 48 Wave 1, `d9dfa82` — PageRenderer + 12 block types + blog routes |
+| WO-CMS-05 | Session 48 Wave 1.5, `14362ac` — StudioHome + StudioEditor 3-panel + CourseBuilder 5-step |
+| WO-CMS-06 | Session 48 Wave 2, `fb228d6` — 6 space-specific hooks wired (intelligence, education, marketing, sales, jobs, brands) |
+| V2-INTEL-01 | Session 48 Wave 3, `7cc667a` — 10 Intelligence Cloud modules under `components/intelligence/cloud/` |
+| V2-INTEL-03 | Session 48 Wave 3, `7cc667a` — 6 AI tools under `components/intelligence/tools/` |
+| V2-HUBS-01 | Session 48 Wave 2, `fb228d6` — Intelligence Hub: dashboard, KPI strip, signal table, detail panel, AI toolbar |
+| V2-HUBS-02 | Session 48 Wave 2, `fb228d6` — Jobs Hub: live TanStack Query, filters, Schema.org JSON-LD |
+| V2-HUBS-03 | Session 48 Wave 2, `fb228d6` — Brands Hub: competitive intelligence tab, signal mentions, CSV export |
+| V2-HUBS-04 | Session 48 Wave 2, `fb228d6` — Professionals Hub: live directory from user_profiles, search/filter |
+| V2-HUBS-05 | Session 48 Wave 3, `7cc667a` — AdminUsers, AdminAuditLog, AdminFeatureFlags, AdminPlatformSettings + 4 routes |
+| V2-HUBS-06 | Session 48 Wave 1, `d9dfa82` — CRM Hub: tasks, segments, CSV export, edit flows |
+| V2-HUBS-08 | Session 48 Wave 2, `fb228d6` — Marketing Hub: dashboard, 4-step campaign builder, CMS templates |
+| V2-HUBS-09 | Session 48 Wave 1, `d9dfa82` — Sales Hub: deals, opportunities, revenue analytics |
+| V2-HUBS-10 | Session 48 Wave 1, `d9dfa82` — Commerce Hub: intelligence-first shop, trending, affiliate badges |
+| V2-HUBS-11 | STUDIO-UI-01..05, commit pending — StudioEditor fully wired: DragCanvas, TemplatePickerModal, ExportModal |
+| V2-HUBS-12 | Session 48 Wave 2, `fb228d6` — Credit Economy Hub: ledger, usage history, tier allocation |
+| V2-HUBS-14 | Session 48 Wave 4, `b6daca0` — IntelligenceBriefs, EducationArticles, HelpCenter, Stories + 5 routes |
+| V2-MULTI-01 | `ae03c98` — PWA: sw.js push handlers, PWAInstallPrompt, VAPID opt-in, App.tsx integration |
+| V2-MULTI-02 | `ae03c98` — Tauri: tauri.conf.json, Cargo.toml, main.rs + lib.rs scaffold, npm scripts |
+| CTRL-WO-01 | `cfa6f74` — Feature flags table + hook + edge helper |
+| CTRL-WO-02 | `6da673f` — Edge-function kill switch enforcement |
+| CTRL-WO-03 | `8556d86` — Audit log table + writers |
+| CTRL-WO-04 | `eee5ffc` — Entitlements chain verification |
+
+### PARTIAL (real work done, acceptance criteria not fully met)
+
+| WO | What's done | What's missing |
+|----|------------|---------------|
+| V2-INTEL-02 | 7 AI engine guardrails + credit gates wired (Wave 1) | Live signal integration in each engine, structured JSON output |
+| V2-INTEL-04 | feed-orchestrator edge function live (`W13-02`, `W13-05`), 202 feeds seeded, RSS pipeline active | Verify ≥5 signals < 24h, DLQ confirmed, Admin Hub feeds dashboard full coverage |
+| V2-INTEL-05 | Credit Economy schema (`tenant_balances`, `credit_transactions`) exists; V2-HUBS-12 UI done | Server-side deduction per AI action, overage blocking, webhook tier update |
+| V2-INTEL-06 | Affiliate Engine Hub UI (`fb228d6`) — dashboard, FTC badges, link manager | `affiliate-link-wrapper` edge function, click tracking in `affiliate_clicks`, distributor mapping |
+| V2-HUBS-07 | Education Hub: CE credits + staff training (Wave 1), intelligence recommendations + CSV + skeletons (Wave 1.5) | Quizzes + assessments, certificates via edge function, brand-sponsored academies, competency scorecards |
+| V2-HUBS-13 | Affiliate Engine Hub UI (`fb228d6`) | Real affiliate click tracking, commission calculation, distributor URL wrapping |
+| V2-PLAT-01 | `/search` page added: brand+product search, tabbed results, TanStack Query (SEARCH-WO-02/03 partial) | Faceted search across all hubs, semantic search via pgvector, save-to-alert |
+| V2-PLAT-02 | Notification live ledger + booking CRM linking (BUILD3, `4c7ae53`) | Preferences center, quiet hours, rate limiting, full channel support |
+| V2-PLAT-03 | SEO audit: 61 public pages → 100% meta coverage, 28 files fixed (Wave 4) | Auto-generated ingredient/protocol/trend/city pages, city-level market views |
+| V2-MULTI-03 | Flutter: brands_hub, jobs_hub, events_hub, studio_hub screens + MODULE gates + app_router (`ae03c98`) | Push notifications via FCM, offline caching, bottom tab nav parity |
+
+### TODO (not started or no build_tracker evidence)
+
+| WO | Blocking reason |
+|----|----------------|
+| V2-PLAT-04 | Onboarding 4-screen flow (Identity Scan → Shadow Menu → Signal Match → Gate) |
+| V2-PLAT-05 | Paywall + tier gating UX — tier surface definitions per §5 |
+| V2-LAUNCH-01 | Launch non-negotiables (24 items from CLAUDE.md §16) |
+| V2-LAUNCH-02 | Launch comms — 72-hour window plan |
+
+### OPEN DEBT (must resolve before V2-LAUNCH-01)
+
+| Item | Count | Files | Notes |
+|------|-------|-------|-------|
+| `pro-*` token usages | 2,027 | admin (748), business (587), brand (288), components (377), layouts (26) | Lane A — ULTRA_DRIVE |
+| Sentry references | Multiple | `main.tsx`, `App.tsx`, `ErrorBoundary.tsx`, `vite.config.ts`, `package.json` | Lane C — full removal |
+| useEffect+supabase violations | 6 | `BusinessRulesView`, `ReportsView`, `MappingView`, `PlanOutputView`, `ServiceIntelligenceView`, `MarketingCalendarView` | DEBT-TANSTACK-REAL-6 PENDING |
+| Unit tests | 2 of ≥20 | — | Lane D — need 18+ more |
+| E2E Playwright tests | 4 of ≥10 | — | Lane D — need 6+ more |
+| True shells | 18 | admin (5), business (6), public (3), brand (2), edu (1), sales (1) | FOUND-WO-04 resolved detection; stubs remain |
 
 ---
 
@@ -613,44 +686,49 @@ Valid technologies, deferred until revenue trigger:
 
 ## 12. COMPLETE WO INDEX (36 total)
 
-| WO ID | Title | Phase | Owner | Status |
-|-------|-------|-------|-------|--------|
-| WO-CMS-01 | CMS Schema + RLS | 1 | Data Architect | ACTIVE |
-| WO-CMS-02 | CMS Client + Hooks | 2 | Platform Engineer | TODO |
-| WO-CMS-03 | CMS Hub Admin UI | 3 | Admin Agent | TODO |
-| WO-CMS-04 | PageRenderer + Public | 2-3 | Web Agent | TODO |
-| WO-CMS-05 | Authoring Studio + CMS | 3 | Authoring Agent | TODO |
-| WO-CMS-06 | Hub CMS Integrations | 4 | All Agents | TODO |
-| V2-INTEL-01 | 10 Intel Modules | 5 | Intel Architect | TODO |
-| V2-INTEL-02 | 7 AI Engines | 5 | Intel Architect | TODO |
-| V2-INTEL-03 | 6 AI Tools | 5 | Intel Architect | TODO |
-| V2-INTEL-04 | Live Feed Pipeline | 5 | Intel Architect | TODO |
-| V2-INTEL-05 | Credit Economy | 5 | Monetization | TODO |
-| V2-INTEL-06 | Affiliate Engine | 5 | Monetization | TODO |
-| V2-HUBS-01 | Intelligence Hub | 6 | Intel Architect | TODO |
-| V2-HUBS-02 | Jobs Hub | 6 | Platform Eng | TODO |
-| V2-HUBS-03 | Brands Hub | 6 | Marketing | TODO |
-| V2-HUBS-04 | Professionals Hub | 6 | CRM Agent | TODO |
-| V2-HUBS-05 | Admin Hub | 6 | Command | TODO |
-| V2-HUBS-06 | CRM Hub | 6 | CRM Agent | TODO |
-| V2-HUBS-07 | Education Hub | 6 | Education | TODO |
-| V2-HUBS-08 | Marketing Hub | 6 | Marketing | TODO |
-| V2-HUBS-09 | Sales Hub | 6 | Sales Agent | TODO |
-| V2-HUBS-10 | Commerce Hub | 6 | Ecommerce | TODO |
-| V2-HUBS-11 | Authoring Studio | 6 | Authoring | TODO |
-| V2-HUBS-12 | Credit Economy Hub | 6 | Monetization | TODO |
-| V2-HUBS-13 | Affiliate Engine Hub | 6 | Monetization | TODO |
-| V2-HUBS-14 | CMS Content Surfaces | 6 | Authoring | TODO |
-| V2-PLAT-01 | Unified Search | 7 | Platform Eng | TODO |
-| V2-PLAT-02 | Notification Engine | 7 | Platform Eng | TODO |
-| V2-PLAT-03 | SEO Evergreen Pages | 7 | Platform + Intel | TODO |
-| V2-PLAT-04 | Onboarding Flow | 7 | Monetization + Intel | TODO |
-| V2-PLAT-05 | Paywall + Tier UX | 7 | Monetization | TODO |
-| V2-MULTI-01 | PWA Baseline | 8 | Platform Eng | TODO |
-| V2-MULTI-02 | Tauri Desktop | 8 | Multi-Platform | TODO |
-| V2-MULTI-03 | Flutter Mobile | 8 | Multi-Platform | TODO |
-| V2-LAUNCH-01 | Launch Non-Negotiables | 9 | QA + Command | TODO |
-| V2-LAUNCH-02 | Launch Comms | 9 | Marketing + Copy | TODO |
+> Status as of 2026-03-09. Source: `SOCELLE-WEB/docs/build_tracker.md`.
+> COMPLETE = committed + verified. PARTIAL = real work done, acceptance not fully met. TODO = not started.
+
+| WO ID | Title | Phase | Owner | Status | Commit |
+|-------|-------|-------|-------|--------|--------|
+| WO-CMS-01 | CMS Schema + RLS | 1 | Data Architect | COMPLETE | (pre-Wave 1) |
+| WO-CMS-02 | CMS Client + Hooks | 2 | Platform Engineer | COMPLETE | (pre-Wave 1) |
+| WO-CMS-03 | CMS Hub Admin UI | 3 | Admin Agent | COMPLETE | `d9dfa82` |
+| WO-CMS-04 | PageRenderer + Public | 2-3 | Web Agent | COMPLETE | `d9dfa82` |
+| WO-CMS-05 | Authoring Studio + CMS | 3 | Authoring Agent | COMPLETE | `14362ac` |
+| WO-CMS-06 | Hub CMS Integrations | 4 | All Agents | COMPLETE | `fb228d6` |
+| V2-INTEL-01 | 10 Intel Modules | 5 | Intel Architect | COMPLETE | `7cc667a` |
+| V2-INTEL-02 | 7 AI Engines | 5 | Intel Architect | PARTIAL | `d9dfa82` |
+| V2-INTEL-03 | 6 AI Tools | 5 | Intel Architect | COMPLETE | `7cc667a` |
+| V2-INTEL-04 | Live Feed Pipeline | 5 | Intel Architect | PARTIAL | `ba59f01` |
+| V2-INTEL-05 | Credit Economy | 5 | Monetization | PARTIAL | `fb228d6` |
+| V2-INTEL-06 | Affiliate Engine | 5 | Monetization | PARTIAL | `fb228d6` |
+| V2-HUBS-01 | Intelligence Hub | 6 | Intel Architect | COMPLETE | `fb228d6` |
+| V2-HUBS-02 | Jobs Hub | 6 | Platform Eng | COMPLETE | `fb228d6` |
+| V2-HUBS-03 | Brands Hub | 6 | Marketing | COMPLETE | `fb228d6` |
+| V2-HUBS-04 | Professionals Hub | 6 | CRM Agent | COMPLETE | `fb228d6` |
+| V2-HUBS-05 | Admin Hub | 6 | Command | COMPLETE | `7cc667a` |
+| V2-HUBS-06 | CRM Hub | 6 | CRM Agent | COMPLETE | `d9dfa82` |
+| V2-HUBS-07 | Education Hub | 6 | Education | PARTIAL | `d9dfa82` |
+| V2-HUBS-08 | Marketing Hub | 6 | Marketing | COMPLETE | `fb228d6` |
+| V2-HUBS-09 | Sales Hub | 6 | Sales Agent | COMPLETE | `d9dfa82` |
+| V2-HUBS-10 | Commerce Hub | 6 | Ecommerce | COMPLETE | `d9dfa82` |
+| V2-HUBS-11 | Authoring Studio | 6 | Authoring | COMPLETE | pending commit |
+| V2-HUBS-12 | Credit Economy Hub | 6 | Monetization | COMPLETE | `fb228d6` |
+| V2-HUBS-13 | Affiliate Engine Hub | 6 | Monetization | PARTIAL | `fb228d6` |
+| V2-HUBS-14 | CMS Content Surfaces | 6 | Authoring | COMPLETE | `b6daca0` |
+| V2-PLAT-01 | Unified Search | 7 | Platform Eng | PARTIAL | `076cb12` |
+| V2-PLAT-02 | Notification Engine | 7 | Platform Eng | PARTIAL | `4c7ae53` |
+| V2-PLAT-03 | SEO Evergreen Pages | 7 | Platform + Intel | PARTIAL | `b6daca0` |
+| V2-PLAT-04 | Onboarding Flow | 7 | Monetization + Intel | TODO | — |
+| V2-PLAT-05 | Paywall + Tier UX | 7 | Monetization | TODO | — |
+| V2-MULTI-01 | PWA Baseline | 8 | Platform Eng | COMPLETE | `ae03c98` |
+| V2-MULTI-02 | Tauri Desktop | 8 | Multi-Platform | COMPLETE | `ae03c98` |
+| V2-MULTI-03 | Flutter Mobile | 8 | Multi-Platform | PARTIAL | `ae03c98` |
+| V2-LAUNCH-01 | Launch Non-Negotiables | 9 | QA + Command | TODO | — |
+| V2-LAUNCH-02 | Launch Comms | 9 | Marketing + Copy | TODO | — |
+
+**Summary: 22 COMPLETE | 10 PARTIAL | 4 TODO** (as of 2026-03-09)
 
 ---
 
