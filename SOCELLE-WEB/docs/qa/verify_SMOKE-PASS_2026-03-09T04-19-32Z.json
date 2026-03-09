@@ -1,0 +1,13 @@
+{
+  "check_id": "SMOKE-PASS",
+  "timestamp_utc": "2026-03-09T04:19:32Z",
+  "branch": "main",
+  "command": "npm run e2e -- e2e/smoke.spec.ts",
+  "result": "PASS",
+  "summary": {
+    "spec_file": "e2e/smoke.spec.ts",
+    "tests_passed": 12,
+    "tests_failed": 0,
+    "duration_seconds": 21.2
+  }
+}
