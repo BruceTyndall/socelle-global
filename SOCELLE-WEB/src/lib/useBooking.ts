@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import { upsertBookingContact } from './crmContactLinking';
+import { useAuth } from './auth';
 
 // ── Booking Hook: services, staff, schedules, appointments ──────────────
 // Data source: booking_services, booking_staff, booking_schedules, appointments (LIVE when DB-connected)
@@ -276,6 +277,43 @@ async function fetchServicePriceCents(serviceId: string): Promise<number> {
 
   const fallbackRow = (fallback.data ?? {}) as AnyRow;
   return toPriceCents(asNumber(fallbackRow.price, 0));
+}
+
+async function runAppointmentAutomation(params: {
+  userId: string | null;
+  businessId: string;
+  contactId: string | null;
+  appointmentId: string;
+  startTime: string;
+  clientName: string;
+}): Promise<void> {
+  if (!params.userId) return;
+
+  const followUpDueAt = new Date(new Date(params.startTime).getTime() + 24 * 60 * 60 * 1000);
+  const followUpIso = followUpDueAt.toISOString();
+
+  await Promise.allSettled([
+    supabase.from('crm_tasks').insert({
+      business_id: params.businessId,
+      contact_id: params.contactId,
+      title: `Follow up with ${params.clientName}`,
+      description:
+        'Automated booking follow-up task. Confirm visit outcomes, recommend next service, and schedule repeat booking.',
+      due_date: followUpIso,
+      priority: 'medium',
+      status: 'open',
+      assignee_id: params.userId,
+    }),
+    supabase.from('notifications').insert({
+      user_id: params.userId,
+      business_id: params.businessId,
+      type: 'system',
+      channel: 'in_app',
+      title: `Appointment scheduled: ${params.clientName}`,
+      body: `A follow-up task was created for ${new Date(followUpIso).toLocaleDateString()}.`,
+      action_url: `/portal/booking/appointments/${params.appointmentId}`,
+    }),
+  ]);
 }
 
 function mapAppointmentRow(row: Record<string, unknown>): Appointment {
@@ -640,6 +678,7 @@ export function useStaffServices(staffId?: string) {
 
 export function useAppointments(businessId?: string | null, dateRange?: { start: string; end: string }) {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const queryKey = ['appointments', businessId, dateRange?.start, dateRange?.end];
 
   const { data: appointments = [], isLoading: loading, error: queryError } = useQuery({
@@ -711,7 +750,16 @@ export function useAppointments(businessId?: string | null, dateRange?: { start:
         .single();
 
       if (!legacyInsert.error && legacyInsert.data) {
-        return mapAppointmentRow(legacyInsert.data as AnyRow);
+        const created = mapAppointmentRow(legacyInsert.data as AnyRow);
+        await runAppointmentAutomation({
+          userId: user?.id ?? null,
+          businessId: appt.business_id,
+          contactId: resolvedContactId ?? created.contact_id ?? null,
+          appointmentId: created.id,
+          startTime: appt.start_time,
+          clientName: `${appt.client_first_name} ${appt.client_last_name}`.trim(),
+        });
+        return created;
       }
       if (legacyInsert.error && !isSchemaMismatch(legacyInsert.error)) {
         throw new Error(legacyInsert.error.message);
@@ -734,7 +782,16 @@ export function useAppointments(businessId?: string | null, dateRange?: { start:
         .select()
         .single();
       if (normalizedInsert.error) throw new Error(normalizedInsert.error.message);
-      return mapAppointmentRow(normalizedInsert.data as AnyRow);
+      const created = mapAppointmentRow(normalizedInsert.data as AnyRow);
+      await runAppointmentAutomation({
+        userId: user?.id ?? null,
+        businessId: appt.business_id,
+        contactId: resolvedContactId ?? created.contact_id ?? null,
+        appointmentId: created.id,
+        startTime: appt.start_time,
+        clientName: `${appt.client_first_name} ${appt.client_last_name}`.trim(),
+      });
+      return created;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey }); },
   });

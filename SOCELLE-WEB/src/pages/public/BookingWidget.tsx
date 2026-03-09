@@ -26,6 +26,42 @@ const TIME_SLOTS = (() => {
   return slots;
 })();
 
+function toCalendarStamp(isoDate: string): string {
+  return isoDate.replace(/[-:]/g, '').replace('.000', '');
+}
+
+function buildGoogleCalendarUrl(params: {
+  title: string;
+  details: string;
+  startIso: string;
+  endIso: string;
+  location: string;
+}): string {
+  const start = toCalendarStamp(params.startIso);
+  const end = toCalendarStamp(params.endIso);
+  const url = new URL('https://calendar.google.com/calendar/render');
+  url.searchParams.set('action', 'TEMPLATE');
+  url.searchParams.set('text', params.title);
+  url.searchParams.set('details', params.details);
+  url.searchParams.set('location', params.location);
+  url.searchParams.set('dates', `${start}/${end}`);
+  return url.toString();
+}
+
+function buildTeamsMeetingUrl(params: {
+  title: string;
+  details: string;
+  startIso: string;
+  endIso: string;
+}): string {
+  const url = new URL('https://teams.microsoft.com/l/meeting/new');
+  url.searchParams.set('subject', params.title);
+  url.searchParams.set('startTime', params.startIso);
+  url.searchParams.set('endTime', params.endIso);
+  url.searchParams.set('content', params.details);
+  return url.toString();
+}
+
 export default function BookingWidget() {
   const { slug } = useParams<{ slug: string }>();
   const { services, businessId, businessName, loading, error } = usePublicBookingServices(slug);
@@ -119,6 +155,26 @@ export default function BookingWidget() {
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDayOfWeek(year, month);
   const todayStr = new Date().toISOString().split('T')[0];
+  const confirmedStartIso =
+    selectedDate && selectedTime
+      ? new Date(`${selectedDate}T${selectedTime}:00`).toISOString()
+      : null;
+  const confirmedEndIso =
+    confirmedStartIso && selectedService
+      ? new Date(
+          new Date(confirmedStartIso).getTime() + selectedService.duration_minutes * 60000,
+        ).toISOString()
+      : null;
+  const calendarTitle =
+    selectedService && businessName
+      ? `${selectedService.name} at ${businessName}`
+      : 'Socelle appointment';
+  const calendarDetails =
+    selectedService && selectedStaff
+      ? `${selectedService.name} with ${selectedStaff.first_name} ${selectedStaff.last_name}.`
+      : selectedService
+        ? `${selectedService.name} appointment.`
+        : 'Appointment booked via Socelle.';
 
   if (loading) {
     return (
@@ -153,6 +209,37 @@ export default function BookingWidget() {
             Your appointment at {businessName} has been scheduled for {new Date(`${selectedDate}T${selectedTime}`).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} at {selectedTime}.
           </p>
           <p className="text-sm text-graphite/60">{selectedService?.name}{selectedStaff ? ` with ${selectedStaff.first_name} ${selectedStaff.last_name}` : ''}</p>
+          {confirmedStartIso && confirmedEndIso && (
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2">
+              <a
+                href={buildGoogleCalendarUrl({
+                  title: calendarTitle,
+                  details: calendarDetails,
+                  startIso: confirmedStartIso,
+                  endIso: confirmedEndIso,
+                  location: businessName || 'Socelle booking',
+                })}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-accent/30 text-sm text-graphite hover:bg-accent-soft transition-colors"
+              >
+                Add to Google Calendar
+              </a>
+              <a
+                href={buildTeamsMeetingUrl({
+                  title: calendarTitle,
+                  details: calendarDetails,
+                  startIso: confirmedStartIso,
+                  endIso: confirmedEndIso,
+                })}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center h-9 px-4 rounded-lg border border-accent/30 text-sm text-graphite hover:bg-accent-soft transition-colors"
+              >
+                Create Teams Invite
+              </a>
+            </div>
+          )}
         </div>
       </div>
     );

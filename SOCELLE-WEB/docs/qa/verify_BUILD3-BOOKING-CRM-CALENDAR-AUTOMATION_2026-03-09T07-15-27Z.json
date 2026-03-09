@@ -1,0 +1,35 @@
+{
+  "wo_id": "BUILD3-BOOKING-CRM-CALENDAR-AUTOMATION",
+  "timestamp": "2026-03-09T07:15:27Z",
+  "skills_run": [
+    "hub-shell-detector",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "evidence": [
+        "npm run shell:check",
+        "Current shells: 61",
+        "No new shells introduced"
+      ]
+    },
+    "build-gate": {
+      "status": "PASS",
+      "evidence": [
+        "npx tsc --noEmit EXIT=0",
+        "npm run build EXIT=0"
+      ]
+    }
+  },
+  "commands": [
+    "npm run shell:check",
+    "npx tsc --noEmit",
+    "npm run build"
+  ],
+  "overall": "PASS",
+  "notes": [
+    "Scope verifies booking automation + calendar integration changes.",
+    "Full program-wide governance scripts remain tracked in broader Build 3 verification artifacts."
+  ]
+}
