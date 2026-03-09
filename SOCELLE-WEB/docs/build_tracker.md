@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-09 (Session — STUDIO-UI-01..05 complete; DEBT audit found 6 real useEffect+supabase violations in admin components — PENDING migration)
+Last Updated: 2026-03-09 (Ultra Drive LANE A audit: pro-* tokens = 0 across all portals; Sentry = 0 in live code; font-serif = 0 public; tsc=0. Verification: docs/qa/verify_UD-A-ALL_20260309T210000Z.json)
 
 ---
 
@@ -22,6 +22,9 @@ Last Updated: 2026-03-09 (Session — STUDIO-UI-01..05 complete; DEBT audit foun
 | FOUND-WO-04 | Shell detector overhaul: 22 exempt paths, extended live patterns (useCms*, useAdmin*, etc.), page_type classification — 18 true shells (down from 65 baseline) | COMPLETE | `8c58be8` | `docs/qa/shell_detector_report.json` |
 | FOUND-WO-08 (partial) | Banned terms: 4 user-facing fixes (Intelligence.tsx, Home.tsx x2, PrelaunchQuiz.tsx) | PARTIAL | `8c58be8` | — |
 | W10-04 | Insights.tsx confirmed live (useRssItems → TanStack Query) — orphan resolved | COMPLETE | `8c58be8` | — |
+| UD-A-01..06 | Ultra Drive LANE A: pro-* token purge audit — 0 usages found across admin/business/brand/components/layouts + tailwind.config.js pro: block already removed in prior sessions | AUDIT-CLEAN | `8c58be8`+ | `docs/qa/verify_UD-A-ALL_20260309T210000Z.json` |
+| UD-C-01..08 | Ultra Drive LANE C: Sentry removal audit — 0 references in main.tsx/App.tsx/components/vite.config.ts/package.json; SentryUserContext.tsx deleted; 1 false-positive string label in AdminInventoryReport.tsx (intentional metric tracker) | AUDIT-CLEAN | prior sessions | `docs/qa/verify_UD-A-ALL_20260309T210000Z.json` |
+| STUDIO-UI-01..05 | Studio UI: StudioEditor.tsx wired with DragCanvas (drag/resize/rotate), TemplatePickerModal (52 templates × 10 categories), ExportModal (PNG/JPG/PDF/SVG/SCORM), Doc/Canvas mode toggle, grid toggle, canvas_blocks saved in metadata | WIRED | `00fa3a7` | — |
 | STUDIO-UI-17 | Share pack export: generateStudioSharePack + downloadStudioSharePack wired to StudioEditor top bar | COMPLETE | `c039a8e` | — |
 | EVT-WO-01 (partial) | Events.tsx wired to live DB via useEvents.ts hook (TanStack Query v5); LIVE/DEMO badge, skeleton shimmer, error/empty states, CSV export | PARTIAL | `076cb12` | — |
 | SEARCH-WO-02/03 (partial) | /search page added (SearchPage.tsx): brand+product search via searchService, tabbed results, TanStack Query v5, skeleton shimmer | PARTIAL | `076cb12` | — |
@@ -30,6 +33,31 @@ Last Updated: 2026-03-09 (Session — STUDIO-UI-01..05 complete; DEBT audit foun
 | PWA-WO-01/02/03 | PWA: sw.js push/notificationclick/pushsubscriptionchange handlers; PWAInstallPrompt.tsx (14-day snooze, VAPID opt-in); wired in App.tsx | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | STUDIO-UI-01..05 | StudioEditor fully wired: DragCanvas + TemplatePickerModal + ExportModal (PNG/JPG/PDF/SVG/SCORM) + mode toggle + grid overlay | COMPLETE | pending | — |
 | DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | PENDING | — | — |
+| SITE-WIDE-AUDIT-2026-03-09 | Full 5-agent site audit complete. See artifact. Results: tsc=PASS, build=PASS, 18 shells remain, 19 raw market_signals queries, 1 missing isLive (IntelligenceCommerce.tsx), Sentry=RESOLVED, pro-* tokens=0, brand-*=19, intel-*=30, useEffect+supabase=1 (useEnrichment.ts), 29 unit tests failing (React 19 compat), SEO=40.1%, Cart.tsx 'Shop Now' STOP CONDITION, database.types.ts drift 116/165 tables | COMPLETE | — | `docs/qa/verify_site_wide_audit_2026-03-09T22-00-00-000Z.json` |
+
+## ⚡ P0 QUEUE — FIX BEFORE ANY NEW WO (from 2026-03-09 audit)
+
+| ID | Task | File | Effort | Blocks |
+|----|------|------|--------|--------|
+| P0-1 | Cart.tsx:84 — replace 'Shop Now' (§9 STOP CONDITION) | src/pages/public/Cart.tsx | 2 min | §16.8 |
+| P0-2 | IntelligenceCommerce.tsx — add isLive LIVE/DEMO badge | src/pages/public/IntelligenceCommerce.tsx | 10 min | §8 |
+| P0-3 | useEnrichment.ts — migrate useEffect+supabase to useQuery | src/lib/enrichment/useEnrichment.ts | 15 min | §16.23 |
+| P0-4 | 8x 'AI-powered' copy — replace with approved vocab | see audit JSON | 20 min | §16.8 |
+| P0-5 | supabase gen types — regenerate database.types.ts | src/lib/database.types.ts | 5 min | §16.13 |
+
+## 🎨 P1 QUEUE — DESIGN TOKEN MIGRATION
+
+| ID | Task | Effort |
+|----|------|--------|
+| P1-1 | Migrate 19 brand-* usages → Pearl Mineral V2 (StatCard, Button, EmptyState, UpgradeGate, index.css) | 1-2h |
+| P1-2 | Migrate 30 intel-* usages → signal-*/accent (GlowBadge, DarkPanel, 5 business pages) | 1-2h |
+| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min |
+
+## 🧪 P2 QUEUE — TEST FIXES
+
+| ID | Task | Effort |
+|----|------|--------|
+| P2-1 | Upgrade @testing-library/react to ^17.x (fixes 29 failing unit tests — React 19 compat) | 30 min |
 
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|
