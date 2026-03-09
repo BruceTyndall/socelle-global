@@ -309,7 +309,11 @@ export default function PrelaunchQuiz() {
           ══════════════════════════════════════════════════════════ */}
       {step === 'landing' && (
         <div className="min-h-screen bg-mn-bg font-sans">
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-md focus:text-sm font-medium">
+            Skip to main content
+          </a>
           <MainNav noSpacer />
+          <main id="main-content">
 
           {/* ── Hero ──────────────────────────────────────────── */}
           <section className="relative overflow-hidden bg-graphite pt-28 pb-24 lg:pt-40 lg:pb-32">
@@ -462,6 +466,7 @@ export default function PrelaunchQuiz() {
             </div>
           </section>
 
+          </main>
           <SiteFooter />
         </div>
       )}
@@ -471,7 +476,11 @@ export default function PrelaunchQuiz() {
           ══════════════════════════════════════════════════════════ */}
       {step !== 'landing' && (
         <div className="min-h-screen bg-mn-bg font-sans flex flex-col">
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-md focus:text-sm font-medium">
+            Skip to main content
+          </a>
           <MainNav noSpacer />
+          <main id="main-content" className="flex-1 flex flex-col">
 
           {/* Progress bar */}
           {step === 'quiz' && (
@@ -483,7 +492,7 @@ export default function PrelaunchQuiz() {
             </div>
           )}
 
-          <div className="flex-1 flex items-center justify-center px-4 py-12">
+          <div className="flex items-center justify-center px-4 py-12" style={{ flex: '1 1 auto' }}>
             <div className="w-full max-w-lg">
 
               {/* Back button */}
@@ -669,6 +678,7 @@ export default function PrelaunchQuiz() {
 
             </div>
           </div>
+          </main>
 
           <SiteFooter />
         </div>
