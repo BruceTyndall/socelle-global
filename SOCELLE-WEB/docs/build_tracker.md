@@ -143,8 +143,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | WO ID | Title | Team | Status | Depends On | Proof Pack |
 |-------|-------|------|--------|------------|------------|
 | MERCH-INTEL-03-DB | Apply migration 000027: dedup, impact_score, display_order, fingerprint backfill | Team 1 | DONE | none | `docs/qa/verify_MERCH-INTEL-03-DB.json` |
-| NEWSAPI-INGEST-01 | Wire GNews + Currents + Reddit (×3) + confirm NewsAPI; run first live ingest | Team 1 | OPEN | none | `docs/qa/verify_NEWSAPI-INGEST-01.json` |
-| DB-TYPES-02 | Regen database.types.ts; tsc=0 | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_DB-TYPES-02.json` |
+| NEWSAPI-INGEST-01 | GNews + NewsAPI ingestion live (Reddit on hold, Currents disabled-timeout); 74 signals added (47→121); source_domain=0 nulls; signal_type_enum fixed; tsc=0 | Team 1 | DONE | none | `docs/qa/verify_NEWSAPI-INGEST-01.json` commit 6a43a75 |
+| DB-TYPES-02 | Regen database.types.ts from live schema (migrations 000027–000031); tsc=0 | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_DB-TYPES-02.json` commit fbe7a60 |
 
 ### P1 GATE — CMS + Editorial (starts when P0 PASS; Team 2 + Team 3 + Team 4 run in parallel)
 
