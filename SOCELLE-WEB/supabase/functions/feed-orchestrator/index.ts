@@ -104,43 +104,44 @@ const CATEGORY_TIER_VISIBILITY: Record<string, string> = {
  * Keyword-based topic classifier. Safety/recall signals take highest priority.
  * Returns one of the topic values allowed by the market_signals.topic CHECK constraint.
  */
+// MERCH-INTEL-02: expanded topic classifier — medspa procedures + salon + beauty brand
 function classifyTopic(title: string, description: string): string {
   const text = `${title} ${description}`.toLowerCase();
   // Safety/recall first — highest priority
-  if (/recall|adverse event|warning letter|safety alert|fda action|banned|prohibited/.test(text))
+  if (/recall|adverse event|warning letter|safety alert|fda action|banned|prohibited|class i recall|class ii recall|market withdrawal/.test(text))
     return 'safety';
   // Regulation
-  if (/fda|regulation|compliance|legislation|law|bill|act |guidance|ruling|cfr |cpsc/.test(text))
+  if (/\bfda\b|regulation|compliance|legislation|law|bill\b|act \b|guidance|ruling|cfr \b|cpsc|gmp|iso 22716|cosmetics act|modernization act/.test(text))
     return 'regulation';
   // Science / research
-  if (/clinical trial|study|journal|research|pubmed|randomized|efficacy|peer.reviewed|meta.analysis/.test(text))
+  if (/clinical trial|study|journal|research|pubmed|randomized|efficacy|peer.reviewed|meta.analysis|double.blind|in vitro|in vivo|histology/.test(text))
     return 'science';
-  // Ingredient
-  if (/ingredient|formulation|inci|peptide|retinol|hyaluronic|niacinamide|vitamin c|spf|preservative|compound/.test(text))
+  // Ingredient — expanded for medspa + cosmetics
+  if (/ingredient|formulation|inci|peptide|retinol|hyaluronic|niacinamide|vitamin c|spf|preservative|compound|active ingredient|retinoid|azelaic|bakuchiol|ceramide|growth factor|stem cell extract|collagen stimulat/.test(text))
     return 'ingredient';
-  // Treatment trends (medspa procedures)
-  if (/botox|filler|laser|microneedling|rf |prp|exosome|peel|dermaplaning|hydrafacial|ultherapy|coolsculpting|kybella|sculptra/.test(text))
+  // Treatment trends — medspa procedures, salon treatments, aesthetic services
+  if (/botox|filler|laser|microneedling|rf \b|radiofrequency|prp|exosome|peel|dermaplaning|hydrafacial|ultherapy|coolsculpting|kybella|sculptra|neuromodulator|thread lift|pdo thread|morpheus|sylfirm|vivace|profhilo|polynucleotide|biostimulator|fat dissolv|body contouring|lip augment|jawline|brow lift|eyelid|rhinoplasty|facelift|co2 laser|erbium|fractional|ipl|photofacial|hair removal|electrolysis|waxing|sugaring|lash lift|lash extension|brow lamination|microblading|permanent makeup|spray tan|facial treatment|chemical exfoliat|enzyme treatment|oxygen facial|led therapy|cryotherapy|cupping|gua sha|lymphatic drainage|lymphatic massage|swedish massage|deep tissue|hot stone|aromatherapy|prenatal massage|sports massage|reflexology|acupuncture/.test(text))
     return 'treatment_trend';
-  // Consumer trend / social
-  if (/trend|tiktok|viral|gen z|millennial|consumer|skincare routine|clean beauty|wellness/.test(text))
+  // Consumer trend / social — extended for wellness + beauty
+  if (/trend|tiktok|viral|gen z|millennial|gen alpha|consumer|skincare routine|clean beauty|wellness|self.care|beauty standard|skin barrier|glass skin|slugging|skin cycling|tretinoin|holistic|mindfulness|biohacking|longevity|beauty tech|retail trend/.test(text))
     return 'consumer_trend';
   // Pricing / market economics
-  if (/price|pricing|revenue|cost|profitability|margin|fee|rate increase|inflation|market size|forecast/.test(text))
+  if (/price|pricing|revenue|cost|profitability|margin|fee|rate increase|inflation|market size|forecast|cagr|market value|spend|expenditure|reimbursement|insurance coverage/.test(text))
     return 'pricing';
   // Technology
-  if (/ai |artificial intelligence|software|platform|app |digital|crm|emr|telemedicine|wearable|device/.test(text))
+  if (/\bai\b|artificial intelligence|software|platform|\bapp\b|digital|crm|emr|telemedicine|wearable|device|medtech|aesthetech|booking system|point.of.sale|pos system/.test(text))
     return 'technology';
   // Jobs / workforce
-  if (/job|hiring|workforce|esthetician|employment|staff|career|salary|wage/.test(text))
+  if (/\bjob\b|hiring|workforce|esthetician|employment|staff|career|salary|wage|nurse practitioner|pa |physician assistant|injector|aesthetic nurse|medical director/.test(text))
     return 'jobs';
   // Events
-  if (/conference|expo|trade show|summit|webinar|event|congress|symposium/.test(text))
+  if (/conference|expo|trade show|summit|webinar|event|congress|symposium|convention|show 20|aesthetics show|beauty expo|spa conference/.test(text))
     return 'events';
   // Market data
-  if (/market report|industry data|statistics|growth rate|cagr|market share/.test(text))
+  if (/market report|industry data|statistics|growth rate|cagr|market share|market analysis|industry report|market research|beauty industry/.test(text))
     return 'market_data';
   // Brand news
-  if (/launch|brand|product line|partnership|acquisition|merger|funding|investment|ipo/.test(text))
+  if (/launch|brand|\bpartnership\b|acquisition|merger|funding|investment|\bipo\b|series [a-c]|raised |rebranding|collaboration|celebrity brand|brand extension/.test(text))
     return 'brand_news';
   return 'other';
 }
