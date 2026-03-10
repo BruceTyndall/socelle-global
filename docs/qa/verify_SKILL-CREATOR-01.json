@@ -1,0 +1,129 @@
+{
+  "wo_id": "MERCH-SKILL-01",
+  "skill": "skill-creator",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "description": "Agent registry + skill library governance correction — P0 and P1 fixes applied",
+  "fixes_applied": [
+    {
+      "priority": "P0",
+      "fix_id": "P0-1",
+      "description": "Removed Sentry contradiction from AGENT_SCOPE_REGISTRY.md Anti-Shell Rule #10",
+      "detail": "Changed 'Errors and slow paths visible in Sentry / logs' → 'Errors and slow paths visible in Admin Hub dashboards and logs'",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P0",
+      "fix_id": "P0-2",
+      "description": "Added Forbidden Paths to 4 supporting agents that had none",
+      "detail": "Doc Gate QA Agent, Events Pipeline Agent, Analytics/Attribution Agent, Infra/DevOps Agent — all received explicit frozen file prohibitions and read-only audit scope",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-1",
+      "description": "Added Required Skills / Assigned Skills field to all 17 agent definitions",
+      "detail": "Each agent now lists its assigned .claude/skills/ tools. Agents 2+3 received a separate 'Assigned Skills' field to preserve their existing 'Required Skills' technical prerequisites.",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-2",
+      "description": "Added Hub ownership N/A to cross-cutting agents 4, 5, 6, 7, 9",
+      "detail": "Design Guardian, Security Agent, QA Agent, Copy Agent, Data Architect — all now declare 'Hub ownership: N/A — cross-cutting'",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-3",
+      "description": "Fixed agent numbering order — Agent 16 (Multi-Platform) now appears before Agent 17 (Intelligence Merchandiser)",
+      "detail": "Document ordering corrected by replacing the combined two-agent block with properly sequenced sections",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-4",
+      "description": "Booking Hub absorbed into CRM Agent (#10) — no new agent created",
+      "detail": "Agent #10 hub ownership extended to include Booking; Allowed Paths extended to include booking edge functions; Hub-to-Agent table updated with Booking row",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-5",
+      "description": "Updated skill directory count from 97 → 119 in AGENT_SCOPE_REGISTRY.md",
+      "detail": "22 new skills added since last registry update; count corrected with note that 4 Intelligence Merchandiser skill files pending (this WO)",
+      "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+      "commit": "163762b"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-6",
+      "description": "Added Agent #17 row to SKILLS_DEFINITION_SPEC.md §7.3 Agent Category × Skill Coverage Matrix",
+      "detail": "Row: Intelligence Merchandiser (Agent #17) | feed-value-ranker, topic-distribution-checker | intelligence-merchandiser, signal-title-rewriter | 4",
+      "file": "docs/SKILLS_DEFINITION_SPEC.md",
+      "commit": "c241d94"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-7",
+      "description": "Added MERCH-SKILL-01 WO to build_tracker.md execution table",
+      "detail": "WO row added with status COMPLETE and reference to this verification artifact",
+      "file": "SOCELLE-WEB/docs/build_tracker.md",
+      "commit": "927b1dc"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-8",
+      "description": "Created .claude/skills/intelligence-merchandiser/SKILL.md",
+      "detail": "Full 12-rule FEED-MERCH audit skill with SQL verification steps, JSON output format, stop conditions, and Double-Agent Rule enforcement",
+      "file": ".claude/skills/intelligence-merchandiser/SKILL.md",
+      "commit": "3a7ecdb"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-9",
+      "description": "Created .claude/skills/feed-value-ranker/SKILL.md",
+      "detail": "EVS diagnostic skill: impact(0.40) + freshness(0.30) + tier_depth(0.20) + vertical_specificity(0.10). Top-50 ranked inventory + bottom-quartile identification + free-tier check.",
+      "file": ".claude/skills/feed-value-ranker/SKILL.md",
+      "commit": "bb5986e"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-10",
+      "description": "Created .claude/skills/topic-distribution-checker/SKILL.md",
+      "detail": "FEED-MERCH-09 enforcement: no topic exceeds 40% per vertical. 4-step SQL audit with FAIL/WARN/PASS determination, coverage gap detection, and remediation guidance.",
+      "file": ".claude/skills/topic-distribution-checker/SKILL.md",
+      "commit": "0135b74"
+    },
+    {
+      "priority": "P1",
+      "fix_id": "P1-11",
+      "description": "Created .claude/skills/signal-title-rewriter/SKILL.md",
+      "detail": "FEED-MERCH-08 enforcement: identifies vague/non-compliant titles and proposes rewrites with owner-approved SQL UPDATEs. 7 rewrite rules covering all banned patterns.",
+      "file": ".claude/skills/signal-title-rewriter/SKILL.md",
+      "commit": "c791908"
+    }
+  ],
+  "commits": [
+    { "step": 1, "file": "SOCELLE-WEB/docs/build_tracker.md", "sha": "927b1dc", "message": "chore(tracker): MERCH-SKILL-01 — add WO to build tracker" },
+    { "step": 2, "file": "docs/command/AGENT_SCOPE_REGISTRY.md", "sha": "163762b", "message": "fix(registry): MERCH-SKILL-01 — P0+P1 governance corrections" },
+    { "step": 3, "file": "docs/SKILLS_DEFINITION_SPEC.md", "sha": "c241d94", "message": "fix(skills-spec): MERCH-SKILL-01 — add Agent #17 to §7.3 coverage matrix" },
+    { "step": 4, "file": ".claude/skills/intelligence-merchandiser/SKILL.md", "sha": "3a7ecdb", "message": "feat(skills): MERCH-SKILL-01 step 4 — intelligence-merchandiser SKILL.md" },
+    { "step": 5, "file": ".claude/skills/feed-value-ranker/SKILL.md", "sha": "bb5986e", "message": "feat(skills): MERCH-SKILL-01 step 5 — feed-value-ranker SKILL.md" },
+    { "step": 6, "file": ".claude/skills/topic-distribution-checker/SKILL.md", "sha": "0135b74", "message": "feat(skills): MERCH-SKILL-01 step 6 — topic-distribution-checker SKILL.md" },
+    { "step": 7, "file": ".claude/skills/signal-title-rewriter/SKILL.md", "sha": "c791908", "message": "feat(skills): MERCH-SKILL-01 step 7 — signal-title-rewriter SKILL.md" }
+  ],
+  "deferred": [
+    {
+      "priority": "P2",
+      "description": "Expand hub coverage gap detection — identify verticals with no agent owner in AGENT_SCOPE_REGISTRY.md",
+      "deferred_by": "Owner instruction — P2 fixes deferred this session"
+    }
+  ],
+  "overall": "PASS"
+}
