@@ -22,10 +22,11 @@ import { SpotlightPanel } from '../../components/modules/SpotlightPanel';
 import { ImageMosaic } from '../../components/modules/ImageMosaic';
 import { CTASection } from '../../components/modules/CTASection';
 import { StickyConversionBar } from '../../components/modules/StickyConversionBar';
-import IntelligenceFeedSection from '../../components/intelligence/IntelligenceFeedSection';
+import IntelligenceFeedSection, { FEED_FILTERS } from '../../components/intelligence/IntelligenceFeedSection';
 import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
+import type { SignalType } from '../../lib/intelligence/types';
 import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
 import { useStories } from '../../lib/editorial/useStories';
 import { useAuth } from '../../lib/auth';
@@ -73,10 +74,19 @@ const VERTICAL_TABS: { key: VerticalFilter; label: string }[] = [
 
 export default function Intelligence() {
   const [activeVertical, setActiveVertical] = useState<VerticalFilter>('all');
+  // INTEL-UI-REMEDIATION-01: lifted filter state — controls server-side signal_type filter
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
-  const { signals, isLive, loading, marketPulse } = useIntelligence(
-    activeVertical === 'all' ? undefined : { vertical: activeVertical as 'medspa' | 'salon' | 'beauty_brand' }
-  );
+  // Derive signalTypes from activeFilter to pass as server-side DB filter
+  const activeSignalTypes = useMemo<SignalType[] | undefined>(() => {
+    const def = FEED_FILTERS.find((f) => f.key === activeFilter);
+    return def?.types && def.types.length > 0 ? def.types : undefined;
+  }, [activeFilter]);
+
+  const { signals, isLive, loading, marketPulse } = useIntelligence({
+    ...(activeVertical !== 'all' ? { vertical: activeVertical as 'medspa' | 'salon' | 'beauty_brand' } : {}),
+    ...(activeSignalTypes ? { signalTypes: activeSignalTypes } : {}),
+  });
   const {
     totalFeeds,
     totalSignals,
@@ -141,7 +151,7 @@ export default function Intelligence() {
     if (signals.length === 0) {
       return [{ label: 'No live trend data', value: '--', trend: 'stable' as const }];
     }
-    return signals.slice(0, 3).map((signal) => ({
+    return signals.slice(0, 5).map((signal) => ({
       label: signal.title.length > 26 ? `${signal.title.slice(0, 26)}...` : signal.title,
       value: signal.direction === 'stable' ? '0%' : `${signal.direction === 'up' ? '+' : '-'}${Math.abs(signal.magnitude)}%`,
       trend: signal.direction as 'up' | 'down' | 'stable',
@@ -274,6 +284,8 @@ export default function Intelligence() {
         marketPulse={marketPulse}
         avgConfidence={avgConfidence}
         lastRunAt={lastOrchestratorRun}
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
       />
 
       {/* ═══ EDITORIAL SCROLL ═════════════════════════════════════ */}
