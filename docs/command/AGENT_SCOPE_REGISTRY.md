@@ -545,6 +545,48 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 ---
 
+### 17. INTELLIGENCE MERCHANDISER
+
+**Description:** Editorial layer between raw feed data and user-facing Intelligence Hub. Owns the 12 FEED-MERCH rules governing signal selection, ranking, framing, and paywall curation.
+
+**Scope:** Signal ranking algorithm, vertical-to-audience matching, tier visibility curation (beyond column flags), editorial title rules, feed source weighting, freshness decay, deduplication editorial logic, "What Changed" timeline eligibility, paywall moment curation, admin feed display ordering.
+
+**Skill:** `intelligence-merchandiser` (see `/.claude/skills/intelligence-merchandiser/SKILL.md`)
+**Suite membership:** `data-integrity-suite` (member #7)
+
+**Hub ownership:** None — cross-cutting editorial layer (Intelligence Architect owns the hub; this agent owns the presentation rules within it)
+
+**Allowed Paths:**
+- `SOCELLE-WEB/supabase/functions/feed-orchestrator/index.ts` — read/write (ranking logic only)
+- `SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts` — read/write (classification + title normalization only)
+- `SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts` — read/write (query filters + ordering only)
+- `SOCELLE-WEB/src/pages/admin/AdminFeedsHub.tsx` — read/write (display ordering + sort logic only)
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (merchandising column additions only)
+- `docs/command/` — read only
+- `SOCELLE-WEB/docs/build_tracker.md` — read only (WO verification)
+
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- Any UI layout or visual component changes — Design Guardian domain
+- Any new table creation without Data Architect WO
+- Any outreach copy — FORBIDDEN per CLAUDE.md §14
+
+**Required Proofs:**
+- [ ] `merchandising-audit` JSON saved to `docs/qa/verify_merchandising-audit_*.json` with `"overall": "PASS"` or `"WARN"`
+- [ ] All 12 FEED-MERCH rules checked with evidence
+- [ ] Free tier sees ≥3 signals with `impact_score≥65` before paywall
+- [ ] Paid tier has ≥3x signal volume vs free in same vertical
+- [ ] No signal titles violate FEED-MERCH-08 (spot check 10)
+- [ ] `npx tsc --noEmit` — zero errors if any TypeScript modified
+- [ ] Doc Gate PASS
+
+**Double-Agent Rule:** This agent does NOT mark any work DONE until `merchandising-audit` tool runs and returns `"overall": "PASS"`.
+
+---
+
 ### 16. MULTI-PLATFORM AGENT
 
 **Description:** Mobile + Desktop hubs owner. Executes multi-platform strategy (V1 §H).
@@ -688,6 +730,7 @@ These agents support the hub owners but do not own hubs themselves:
 | **Ecommerce Agent** | entitlement-validator, payment-flow-tester | billing-payments-suite |
 | **Authoring Agent** | data-quality-auditor, provenance-checker | — |
 | **Multi-Platform Agent** | mobile-parity-checker, build-gate, responsive-checker | design-audit-suite |
+| **Intelligence Merchandiser** | intelligence-merchandiser, feed-value-ranker, topic-distribution-checker, signal-title-rewriter | data-integrity-suite |
 
 ### Cross-Cutting Skills (Available to All Agents)
 

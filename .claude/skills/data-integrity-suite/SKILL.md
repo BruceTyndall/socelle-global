@@ -1,11 +1,11 @@
 ---
 name: data-integrity-suite
-description: End-to-end data pipeline validation suite — runs feed-source-auditor, feed-pipeline-checker, signal-data-validator, confidence-scorer, provenance-checker, and data-quality-auditor in sequence with consolidated output.
+description: End-to-end data pipeline validation suite — runs feed-source-auditor, feed-pipeline-checker, signal-data-validator, confidence-scorer, provenance-checker, data-quality-auditor, and intelligence-merchandiser in sequence with consolidated output.
 ---
 
 # data-integrity-suite
 
-Coordinated execution of 6 data integrity skills in pipeline order. Produces a single unified report covering all SOCELLE data provenance, freshness, and quality rules.
+Coordinated execution of 7 data integrity skills in pipeline order. Produces a single unified report covering all SOCELLE data provenance, freshness, quality rules, and signal merchandising compliance.
 
 ## Member Skills (Execution Order)
 
@@ -15,6 +15,7 @@ Coordinated execution of 6 data integrity skills in pipeline order. Produces a s
 4. `confidence-scorer` — Confidence tier on every signal
 5. `provenance-checker` — Source citation display verification
 6. `data-quality-auditor` — Coverage and completeness audit
+7. `intelligence-merchandiser` — 12 FEED-MERCH editorial + ranking rules
 
 ## Inputs
 
@@ -73,19 +74,29 @@ Verify source citation is displayed on every intelligence surface where data is 
 
 Audit data completeness: null rates, coverage gaps, stale records, and schema compliance.
 
-### Step 7 — Consolidate Results
+### Step 7 — Run intelligence-merchandiser
+
+```bash
+grep -n "order\|ORDER\|provenance_tier\|impact_score\|decay\|vertical\|tier_min" \
+  SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts | head -20
+```
+
+Run the merchandising-audit tool from the `intelligence-merchandiser` skill. Check all 12 FEED-MERCH rules (signal ranking, freshness decay, free tier curation, safety pinning, editorial titles, topic distribution, timeline eligibility, admin feed ordering, paywall moment placement). Record the overall status and any FAIL rules.
+
+### Step 8 — Consolidate Results
 
 ```json
 {
   "suite": "data-integrity-suite",
   "timestamp": "YYYY-MM-DDTHH:MM:SSZ",
-  "members_run": ["feed-source-auditor", "feed-pipeline-checker", "signal-data-validator", "confidence-scorer", "provenance-checker", "data-quality-auditor"],
+  "members_run": ["feed-source-auditor", "feed-pipeline-checker", "signal-data-validator", "confidence-scorer", "provenance-checker", "data-quality-auditor", "intelligence-merchandiser"],
   "disallowed_sources": 0,
   "broken_pipelines": 0,
   "stale_signals": 0,
   "missing_confidence": 0,
   "missing_provenance": 0,
   "data_quality_score": "95%",
+  "merchandising_rules_failed": 0,
   "overall": "PASS",
   "findings": []
 }

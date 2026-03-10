@@ -195,6 +195,9 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
 
   // ── Realtime: prepend new signals to top of feed with slide-in animation ──────
   const queryClient = useQueryClient();
+  // Capture the exact queryKey used by this hook instance so the realtime
+  // handler updates the same cache entry (not a bare ['market_signals'] ghost).
+  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit];
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
@@ -206,7 +209,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         (payload) => {
           const newSignal = rowToSignal(payload.new as MarketSignalRow);
           queryClient.setQueryData(
-            ['market_signals'],
+            queryKey,
             (old: IntelligenceSignal[] | undefined) => {
               if (!old) return [newSignal];
               return [newSignal, ...old].slice(0, 50);
@@ -219,7 +222,8 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [queryClient]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryClient, effectiveTierMin, options?.vertical, options?.limit]);
 
   const isLive = rawSignals.length > 0;
 

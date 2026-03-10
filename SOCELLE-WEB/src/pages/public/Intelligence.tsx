@@ -72,7 +72,7 @@ const VERTICAL_TABS: { key: VerticalFilter; label: string }[] = [
 ];
 
 export default function Intelligence() {
-  const [activeVertical, setActiveVertical] = useState<VerticalFilter>('medspa');
+  const [activeVertical, setActiveVertical] = useState<VerticalFilter>('all');
 
   const { signals, isLive, loading, marketPulse } = useIntelligence(
     activeVertical === 'all' ? undefined : { vertical: activeVertical as 'medspa' | 'salon' | 'beauty_brand' }
