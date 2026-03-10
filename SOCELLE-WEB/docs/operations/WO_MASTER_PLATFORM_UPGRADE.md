@@ -30,6 +30,26 @@ CMS becomes:
 - Mobile/Tauri/PWA (BUILD 5 separate pack)
 - Admin portal stub completion beyond what is required for CMS editorial flow
 
+### CMS Schema Authorization (PATCH 7)
+The following schema changes are **explicitly authorized** by this pack. No additional WO required for these objects:
+
+| Object | Operation | Authorized By |
+|--------|-----------|---------------|
+| `story_drafts` | CREATE TABLE + RLS | CMS-WO-07 |
+| `content_placements` | CREATE TABLE + RLS | CMS-WO-10 |
+| `sitemap_cache` | CREATE TABLE | CMS-WO-09 |
+| `cms_posts.scheduled_at` | ADD COLUMN | CMS-WO-09 |
+| `cms_posts.space_id` | existing — no change | — |
+| `cms_versions` | existing — no change | — |
+| `data_feeds.display_order` | ADD COLUMN | MERCH-INTEL-03-DB |
+
+**Schema change rule:** Any table or column NOT in the list above requires a NEW explicitly named WO before implementation. This includes:
+- Any new `cms_*` table not listed here
+- Any ALTER on `market_signals`, `user_profiles`, `auth.users`, or any portal table
+- Any new edge function that writes to tables outside its WO scope
+
+**Migration naming rule:** All migrations from this pack use the prefix `20260313000031` through `20260313000039`. Migrations outside this range require Team 0 approval.
+
 ---
 
 ## §2 — NON-NEGOTIABLES
