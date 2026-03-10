@@ -142,7 +142,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 
 | WO ID | Title | Team | Status | Depends On | Proof Pack |
 |-------|-------|------|--------|------------|------------|
-| MERCH-INTEL-03-DB | Apply migration 000027: dedup, impact_score, display_order, fingerprint backfill | Team 1 | OPEN | none | `docs/qa/verify_MERCH-INTEL-03-DB.json` |
+| MERCH-INTEL-03-DB | Apply migration 000027: dedup, impact_score, display_order, fingerprint backfill | Team 1 | DONE | none | `docs/qa/verify_MERCH-INTEL-03-DB.json` |
 | NEWSAPI-INGEST-01 | Wire GNews + Currents + Reddit (×3) + confirm NewsAPI; run first live ingest | Team 1 | OPEN | none | `docs/qa/verify_NEWSAPI-INGEST-01.json` |
 | DB-TYPES-02 | Regen database.types.ts; tsc=0 | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_DB-TYPES-02.json` |
 
