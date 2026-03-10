@@ -1,0 +1,49 @@
+{
+  "wo_id": "IDEA-MINING-01",
+  "timestamp": "2026-03-13T00:00:00.000Z",
+  "skills_run": ["idea-mining"],
+  "scope": "Research + documentation only. No code changes. Pattern library from 10 comparable intelligence/feed/benchmark platforms.",
+  "platforms_completed": 10,
+  "platforms_direct": 9,
+  "platforms_substituted": 1,
+  "substitution_note": "Platform 10 (ampagency.com) is a digital marketing agency without a benchmark product. Substituted: Dash Social 2025 Beauty Industry Benchmarks — a directly comparable beauty-sector intelligence benchmark tool. Substitution documented in deliverable.",
+  "platforms_list": [
+    "Inoreader",
+    "New Sloth",
+    "NewsData.io",
+    "PeakMetrics",
+    "Pulsar",
+    "Sprinklr / Talkwalker",
+    "Listrak Benchmarks",
+    "AMP (Lifetimely) Beauty Benchmarks",
+    "Benchmarkit.ai",
+    "Dash Social Beauty Benchmarks (substituted for ampagency.com)"
+  ],
+  "evidence_links_count": 38,
+  "patterns_per_platform_min": 3,
+  "patterns_total_count": 45,
+  "top10_patterns_count": 10,
+  "anti_patterns_count": 7,
+  "implementation_phases": 3,
+  "top10_patterns": [
+    "Snapshot / Today View as Intelligence Hub Entry",
+    "Narrative Clustering (Smart Clusters / Story Grouping)",
+    "Impact Score + Threat Badge on Every List Item",
+    "Multi-Dimensional Peer Benchmark KPI Strip",
+    "List / Card / Map View Switcher",
+    "Sentiment Aggregate Banner Above Signal List",
+    "Spot → Understand → Act Arc on Every Signal",
+    "Entity Recognition Chips on Signal Cards",
+    "Filter Panel with Grouped Dimensions + More Filters Expansion",
+    "AI Brief Builder (Bulk Select → Prompt → Synthetic Signal)"
+  ],
+  "deliverable": "SOCELLE-WEB/docs/research/IDEA-MINING-01-comparables.md",
+  "results": {
+    "idea-mining": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "docs/research/IDEA-MINING-01-comparables.md — 775 lines, 10 platforms, 45 patterns, 10 top patterns, 7 anti-patterns, 3 implementation phases"
+    }
+  },
+  "overall": "PASS"
+}
