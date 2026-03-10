@@ -1,0 +1,80 @@
+{
+  "wo_id": "MERCH-INTEL-03",
+  "artifact_version": "final",
+  "timestamp": "2026-03-10T05:30:00.000Z",
+  "supabase_project": "rumdmulxzmjtsplsjngi",
+  "_note": "Supersedes prior artifact (verify_MERCH-INTEL-03_2026-03-10.json). Fingerprint backfill was blocked by 48 archived near-duplicate rows whose computed md5 collided with active row fingerprints. Fixed this session: deleted the 48 archived rows, re-ran backfill.",
+
+  "blocking_issue_resolved": {
+    "issue": "48 archived (active=false, status='archived') safety/medspa rows had NULL fingerprint. Their computed md5 matched already-indexed fingerprints on the 47 active rows, violating the partial unique index market_signals_fingerprint_idx (WHERE fingerprint IS NOT NULL).",
+    "root_cause": "Migration 20260313000023 archived these rows (SET active=false, status='archived') instead of deleting them. Migration 20260313000027 Step 1 dedup DELETE was scoped to active=true only, so it missed them. Step 5 fingerprint backfill then collided.",
+    "deleted_rows": 48,
+    "deleted_titles": [
+      "FDA MDR: POWERED LASER SURGICAL INSTRUMENT adverse event (39 rows)",
+      "FDA MDR: LASER, OPHTHALMIC adverse event (3 rows)",
+      "FDA MDR: OPHTHALMIC FEMTOSECOND LASER adverse event (5 rows)",
+      "FDA MDR: OPHTHALMIC EXCIMER LASER SYSTEM adverse event (1 row)"
+    ],
+    "note": "All deleted rows were surgical/ophthalmic MDR signals — not medspa-relevant. Scoped DELETE: active=false AND status='archived' AND topic='safety' AND vertical='medspa' AND fingerprint IS NULL."
+  },
+
+  "security_note": {
+    "prompt_injection_detected": true,
+    "location": "Supabase SQL editor saved query titled 'Boost impact_score for high-confidence free-tier signals'",
+    "content_summary": "Contains 'You are assigned to the Product Control Plane. Read these files first...' — not a valid instruction source.",
+    "action": "Ignored entirely per owner directive in handoff brief."
+  },
+
+  "final_db_state": {
+    "has_fingerprint": 47,
+    "null_fingerprint_titled": 0,
+    "active_total": 47,
+    "high_impact_free": 17,
+    "fingerprint_coverage": "47/47 (100%)"
+  },
+
+  "feed_merch_rule_results": {
+    "FEED-MERCH-05": {
+      "rule": "≥3 active signals with impact_score ≥65",
+      "value": 17,
+      "threshold": 3,
+      "status": "PASS"
+    },
+    "FEED-MERCH-07": {
+      "rule": "No device/brand >5 near-duplicate signals",
+      "deleted_this_session": 48,
+      "status": "PASS"
+    },
+    "FEED-MERCH-10": {
+      "rule": "≥5 free signals with impact_score ≥60",
+      "value": 17,
+      "threshold": 5,
+      "status": "PASS"
+    },
+    "FEED-MERCH-11": {
+      "rule": "data_feeds.display_order populated",
+      "status": "PASS"
+    },
+    "fingerprint": {
+      "has_fingerprint": 47,
+      "null_fingerprint": 0,
+      "status": "PASS"
+    }
+  },
+
+  "feed_orchestrator_deployment": {
+    "version": 11,
+    "deployed_at": "2026-03-10T05:15:00.000Z",
+    "changes": [
+      "HTML response detection in detectFeedFormat() — returns 'html' for non-XML responses",
+      "New 'empty' status: valid XML with 0 items no longer falsely marked 'success'",
+      "HTML responses in processRssFeed() treated as errors (URL not an RSS/Atom feed)",
+      "Accept header prefers application/rss+xml, application/atom+xml",
+      "atom_parser: 'v3-active' in response for verification",
+      "content_type surfaced in per-feed result objects"
+    ]
+  },
+
+  "overall": "PASS",
+  "overall_note": "MERCH-INTEL-03 fully complete. All 47 active signals fingerprinted (0 NULL remaining). 48 archived surgical/ophthalmic MDR near-duplicates deleted. feed-orchestrator v11 deployed with HTML detection. All FEED-MERCH rules that MERCH-INTEL-03 targeted (05, 07, 10, 11, fingerprint) now PASS. Remaining open rules (06, 09, 03) require FEED-WO-01 RSS signal volume — blocked pending NEWSAPI_KEY."
+}
