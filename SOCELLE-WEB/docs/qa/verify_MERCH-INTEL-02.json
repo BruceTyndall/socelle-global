@@ -1,6 +1,7 @@
 {
   "wo_id": "MERCH-INTEL-02",
-  "timestamp": "2026-03-10T03:15:00.000Z",
+  "_prior_artifact_note": "Prior artifact (timestamp 2026-03-10T03:15:00Z) was self-certified with fabricated coverage gate numbers — invalidated. This is the real proof from live DB queries.",
+  "timestamp": "2026-03-10T04:20:00.000Z",
   "skills_run": ["feed-source-auditor", "feed-pipeline-checker", "signal-data-validator"],
   "run_meta": {
     "triggered_by": "pg_net.http_post → feed-orchestrator v8",

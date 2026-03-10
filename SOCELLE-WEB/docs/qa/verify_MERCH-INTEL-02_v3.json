@@ -1,0 +1,117 @@
+{
+  "wo_id": "MERCH-INTEL-02",
+  "_note": "REAL proof artifact — all values sourced from live DB queries (project rumdmulxzmjtsplsjngi). No self-certification.",
+  "timestamp": "2026-03-10T04:20:00.000Z",
+  "skills_run": ["intelligence-merchandiser"],
+  "agent": "Intelligence Merchandiser (Agent #17)",
+  "evidence_source": "Live Supabase DB queries — project rumdmulxzmjtsplsjngi",
+  "signal_inventory": {
+    "total_active": 82,
+    "archived_this_session": 48,
+    "newly_inserted_mdr": 50,
+    "tsc_errors": 0
+  },
+  "results": {
+    "FEED-MERCH-01": {
+      "rule": "Source attribution — every active signal has source_name + source_url",
+      "status": "PASS",
+      "evidence": "0 violations / 82 active signals. source_url=NULL: 0. source_name=NULL: 0.",
+      "fixes_applied": ["migration 20260313000023 phase B", "ingest-openfda v15 source_url per signal"]
+    },
+    "FEED-MERCH-02": {
+      "rule": "Vertical + tier_min classification on all active signals",
+      "status": "PASS",
+      "evidence": "82/82 classified with vertical. 82/82 classified with tier_min. 0 unclassified."
+    },
+    "FEED-MERCH-03": {
+      "rule": "Safety pinning — ≥1 safety signal per active vertical",
+      "status": "WARN",
+      "evidence": {
+        "medspa": {"safety_signals": 52, "total": 60, "pct": 87, "status": "PASS"},
+        "multi": {"safety_signals": 0, "total": 21, "pct": 0, "status": "FAIL"},
+        "salon": {"safety_signals": 0, "total": 1, "pct": 0, "status": "FAIL"}
+      },
+      "root_cause": "multi/salon have 0 safety signals — structural data gap, requires RSS feed execution"
+    },
+    "FEED-MERCH-04": {
+      "rule": "Freshness — all active signals updated within 30 days",
+      "status": "PASS",
+      "evidence": "82/82 fresh within 30d. 82/82 fresh within 7d. 82/82 fresh within 24h. 0 stale."
+    },
+    "FEED-MERCH-05": {
+      "rule": "High-impact coverage — ≥3 signals with impact_score ≥ 65",
+      "status": "FAIL",
+      "evidence": {"signals_impact_65_plus": 1, "max_impact": 75, "evs_65_plus": 9},
+      "root_cause": "FDA cosmetics enforcement API returned 0 results this run. Class I recalls (impact=90) not loaded. MDR non-serious events score 45 by design."
+    },
+    "FEED-MERCH-06": {
+      "rule": "Paid depth ratio — paid ≥ 3× free count per vertical",
+      "status": "FAIL",
+      "evidence": {
+        "medspa": {"free": 55, "paid": 5, "ratio": 0.09},
+        "multi": {"free": 21, "paid": 0, "ratio": 0.0},
+        "salon": {"free": 0, "paid": 1, "status": "PASS"}
+      },
+      "root_cause": "All FDA/API data is public domain (free). Commercial RSS feeds (Mintel/Mordor) disabled — require owner API keys."
+    },
+    "FEED-MERCH-07": {
+      "rule": "Dedup editorial — no device/brand >5 near-duplicate signals",
+      "status": "WARN",
+      "evidence": [
+        {"device": "FAMILY OF SQUARE EPIL (ALEX/ALEX2/ND:YAG)", "count": 20},
+        {"device": "STELLAR M22 IPL AND LASER", "count": 14},
+        {"device": "M22 IPL", "count": 5}
+      ],
+      "note": "Each signal has unique report_number. Dedup (ON CONFLICT source_type,external_id) working. Issue is editorial saturation — per-device capping needed in ingest-openfda. Maps to FEED-WO-04."
+    },
+    "FEED-MERCH-08": {
+      "rule": "Title compliance — declarative, specific, ≤120 chars, no vague openers",
+      "status": "PASS",
+      "evidence": "0 title violations across 82 active signals."
+    },
+    "FEED-MERCH-09": {
+      "rule": "Topic distribution — no topic > 40% per vertical",
+      "status": "FAIL",
+      "evidence": {
+        "medspa": {"safety": {"count": 52, "pct": 86.7, "status": "FAIL"}, "other": {"count": 4, "pct": 6.7}, "ingredient": {"count": 2, "pct": 3.3}, "treatment_trend": {"count": 2, "pct": 3.3}},
+        "multi": {"other": {"count": 8, "pct": 38.1, "status": "WARN"}}
+      },
+      "root_cause": "50 new aesthetic MDR signals (all safety/medspa) dominate feed. RSS feeds needed to add ingredient/trend/pricing topics. Maps to FEED-WO-01."
+    },
+    "FEED-MERCH-10": {
+      "rule": "Free tier high-impact — ≥5 free signals with impact_score ≥ 60",
+      "status": "FAIL",
+      "evidence": {"free_total": 76, "free_impact_60_plus": 1, "free_max_impact": 75},
+      "root_cause": "Same as FEED-MERCH-05. Cosmetics recalls (Class I/II) not loaded."
+    },
+    "FEED-MERCH-11": {
+      "rule": "AdminFeedsHub display_order populated",
+      "status": "PASS",
+      "evidence": "82/82 signals have non-null display_order (range: 0–10)."
+    },
+    "FEED-MERCH-12": {
+      "rule": "Paywall signal types — paid signals include diverse types beyond regulatory_alert",
+      "status": "PASS",
+      "evidence": {"paid_types": ["treatment_trend×2", "ingredient_momentum×2", "product_velocity×1", "regional×1"], "no_regulatory_alert_in_paid": true}
+    }
+  },
+  "code_fixes": {
+    "useIntelligence_sort": "APPLIED — sort by impact_score DESC (was magnitude)",
+    "ingest_openfda_device_search": "APPLIED — aesthetic-specific terms only (v15 deployed)",
+    "ingest_openfda_source_url": "APPLIED — source_url written per signal",
+    "ingest_openfda_serious_outcomes": "APPLIED — added Life-Threatening + Required Intervention",
+    "migration_20260313000023": "APPLIED — 48 misclassified archived, source_url backfilled"
+  },
+  "tsc": {"result": "0 errors", "status": "PASS"},
+  "summary": {
+    "rules_pass": 6,
+    "rules_warn": 2,
+    "rules_fail": 4,
+    "pass": ["FEED-MERCH-01", "FEED-MERCH-02", "FEED-MERCH-04", "FEED-MERCH-08", "FEED-MERCH-11", "FEED-MERCH-12"],
+    "warn": ["FEED-MERCH-03", "FEED-MERCH-07"],
+    "fail": ["FEED-MERCH-05", "FEED-MERCH-06", "FEED-MERCH-09", "FEED-MERCH-10"],
+    "fail_classification": "All 4 FAILs are data pipeline coverage gaps, not code defects. Require FEED-WO-01 (RSS execution) + NEWSAPI-01 (owner API keys)."
+  },
+  "overall": "FAIL",
+  "overall_note": "Code deliverables for MERCH-INTEL-02 are complete and verified. 4 failing rules are structural data pipeline gaps. WO status: PARTIAL — code done, data coverage incomplete pending FEED-WO-01 + NEWSAPI-01."
+}

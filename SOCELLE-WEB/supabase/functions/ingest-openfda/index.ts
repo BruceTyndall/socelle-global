@@ -193,7 +193,8 @@ Deno.serve(async (req: Request) => {
         signal_key:        `openfda_recall_${r.recall_number}`,
         external_id:       r.recall_number,
         source_type:       'api',
-        source_name:       'FDA OpenFDA',
+        source_name:       'FDA OpenFDA Enforcement',
+        source_url:        `https://api.fda.gov/drug/enforcement.json?search=recall_number:"${r.recall_number}"`,
         title,
         description,
         vertical:          'medspa',
@@ -231,8 +232,10 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── 2. Aesthetic Device Adverse Events ──────────────────────────────────────
-  // MDR reports for laser, IPL, RF, and ultrasound aesthetic devices.
-  const deviceUrl = `${FDA_BASE}/device/event.json?search=device.generic_name:(laser+OR+"intense+pulsed+light"+OR+radiofrequency+OR+microneedling)&sort=date_received:desc&limit=50`;
+  // MDR reports for aesthetic laser, IPL, RF, and microneedling devices.
+  // Uses specific aesthetic device terms to exclude ophthalmic (LASIK/PRK/femtosecond)
+  // and general surgical laser devices that are not medspa-relevant.
+  const deviceUrl = `${FDA_BASE}/device/event.json?search=device.generic_name:("diode+laser"+OR+"intense+pulsed+light"+OR+"fractional+laser"+OR+"alexandrite+laser"+OR+"Nd:YAG"+OR+"CO2+laser"+OR+"fractional+CO2"+OR+"RF+microneedling"+OR+"radiofrequency+skin")&sort=date_received:desc&limit=50`;
   const deviceData = await fdaFetch<FdaDeviceEventResult>(deviceUrl);
 
   if (deviceData?.results?.length) {
@@ -244,7 +247,10 @@ Deno.serve(async (req: Request) => {
         const deviceName = device?.generic_name ?? device?.brand_name ?? 'Aesthetic device';
         const narrative = r.mdr_text?.find(t => t.text_type_code === 'Description of Event or Problem')?.text;
         const outcomes = r.patient?.[0]?.sequence_number_outcome ?? [];
-        const serious = outcomes.some(o => ['Death', 'Hospitalization', 'Disability'].includes(o));
+        const serious = outcomes.some(o => [
+          'Death', 'Hospitalization', 'Disability',
+          'Life-Threatening', 'Required Intervention To Prevent Permanent Impairment',
+        ].includes(o));
 
         const title = `FDA MDR: ${deviceName.slice(0, 80)} adverse event`;
         const description = [
@@ -259,6 +265,7 @@ Deno.serve(async (req: Request) => {
           external_id:       r.report_number,
           source_type:       'api',
           source_name:       'FDA OpenFDA MDR',
+          source_url:        `https://api.fda.gov/device/event.json?search=report_number:"${r.report_number}"`,
           title,
           description,
           vertical:          'medspa',

@@ -294,8 +294,8 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     } else {
       filtered = tieredSignals.filter((s) => s.signal_type === activeFilter);
     }
-    // Sort by magnitude descending (highest impact first)
-    filtered.sort((a, b) => Math.abs(b.magnitude) - Math.abs(a.magnitude));
+    // Sort by impact_score descending (highest editorial value first)
+    filtered.sort((a, b) => (b.impact_score ?? 0) - (a.impact_score ?? 0));
     return filtered;
   }, [tieredSignals, activeFilter]);
 
