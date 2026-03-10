@@ -12,6 +12,7 @@ import {
   Filter,
   ArrowRight,
   Lightbulb,
+  RefreshCw,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
@@ -69,7 +70,7 @@ export default function OpportunityFinder() {
   const [creating, setCreating] = useState<string | null>(null);
 
   // Fetch high-value signals from market_signals
-  const { data: signals = [], isLoading: loading, error: queryError } = useQuery({
+  const { data: signals = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
     queryKey: ['opportunity_signals', directionFilter],
     queryFn: async () => {
       let query = supabase
@@ -116,7 +117,7 @@ export default function OpportunityFinder() {
     });
   }, [signals, searchTerm, categoryFilter]);
 
-  // Create deal from signal
+  // Create deal from signal — includes signal attribution
   const handleCreateDeal = useCallback(async (signal: MarketSignal) => {
     if (!defaultPipeline || !firstStage) return;
     setCreating(signal.id);
@@ -127,6 +128,8 @@ export default function OpportunityFinder() {
         title: `[Signal] ${signal.title}`,
         value: estimateRevenue(signal.magnitude),
         probability: Math.min(Math.round(signal.magnitude * 3), 90),
+        signal_id: signal.id,
+        attributed_at: new Date().toISOString(),
       };
       const created = await createDeal(deal);
       navigate(`/sales/deals/${created.id}`);
@@ -137,10 +140,71 @@ export default function OpportunityFinder() {
     }
   }, [defaultPipeline, firstStage, createDeal, navigate]);
 
+  const error = queryError instanceof Error ? queryError.message : (queryError ? String(queryError) : null);
+
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Header skeleton */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="h-8 w-60 bg-graphite/8 rounded-lg animate-pulse" />
+            <div className="h-4 w-96 bg-graphite/5 rounded-lg animate-pulse mt-2" />
+          </div>
+          <div className="h-10 w-40 bg-graphite/8 rounded-full animate-pulse" />
+        </div>
+        {/* Filters skeleton */}
+        <div className="flex gap-3">
+          <div className="h-10 flex-1 max-w-md bg-graphite/8 rounded-xl animate-pulse" />
+          <div className="h-10 w-36 bg-graphite/8 rounded-xl animate-pulse" />
+          <div className="h-10 w-36 bg-graphite/8 rounded-xl animate-pulse" />
+        </div>
+        {/* Summary cards skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-graphite/8 p-5">
+              <div className="h-3 w-24 bg-graphite/8 rounded animate-pulse mb-2" />
+              <div className="h-7 w-20 bg-graphite/5 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+        {/* Signal cards skeleton */}
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-graphite/8 p-5">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-graphite/8 rounded-xl animate-pulse flex-shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 w-3/4 bg-graphite/8 rounded animate-pulse" />
+                  <div className="h-4 w-full bg-graphite/5 rounded animate-pulse" />
+                  <div className="flex gap-2">
+                    <div className="h-5 w-12 bg-graphite/8 rounded-full animate-pulse" />
+                    <div className="h-5 w-20 bg-graphite/5 rounded-full animate-pulse" />
+                  </div>
+                </div>
+                <div className="h-9 w-28 bg-graphite/8 rounded-full animate-pulse flex-shrink-0" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-6 text-center">
+          <AlertCircle className="w-8 h-8 text-signal-down mx-auto mb-2" />
+          <p className="text-graphite font-medium font-sans">Could not load signals</p>
+          <p className="text-graphite/60 text-sm mt-1 font-sans">{error}</p>
+          <button
+            onClick={() => reload()}
+            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm font-sans"
+          >
+            <RefreshCw className="w-4 h-4" /> Try again
+          </button>
+        </div>
       </div>
     );
   }

@@ -21,6 +21,8 @@ export interface Deal {
   status: string;
   won_reason: string | null;
   lost_reason: string | null;
+  signal_id: string | null;
+  attributed_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -36,6 +38,8 @@ export interface NewDeal {
   company_name?: string;
   probability?: number;
   expected_close_date?: string;
+  signal_id?: string;
+  attributed_at?: string;
 }
 
 export function useDeals(pipelineId?: string) {

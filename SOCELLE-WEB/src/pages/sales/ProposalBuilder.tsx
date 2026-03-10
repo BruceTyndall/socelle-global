@@ -9,6 +9,8 @@ import {
   Loader2,
   FileText,
   X,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
 import { useProposals, type ProposalBlock, type ProposalLineItem, type NewProposal } from '../../lib/useProposals';
 import { useDeals } from '../../lib/useDeals';
@@ -39,7 +41,7 @@ export default function ProposalBuilder() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const dealIdParam = searchParams.get('deal') ?? '';
-  const { deals } = useDeals();
+  const { deals, loading: dealsLoading, error: dealsError, reload: dealsReload } = useDeals();
   const { createProposal, updateProposal } = useProposals();
 
   const [dealId, setDealId] = useState(dealIdParam);
@@ -53,6 +55,7 @@ export default function ProposalBuilder() {
     emptyBlock('signature'),
   ]);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
 
   const totalValue = blocks
@@ -108,6 +111,7 @@ export default function ProposalBuilder() {
   const handleSave = useCallback(async (status: 'draft' | 'sent') => {
     if (!dealId || !title.trim()) return;
     setSaving(true);
+    setSaveError(null);
     try {
       const proposal: NewProposal = {
         deal_id: dealId,
@@ -120,8 +124,8 @@ export default function ProposalBuilder() {
         await updateProposal(created.id, { status: 'sent' });
       }
       navigate(`/sales/proposals/${created.id}/view`);
-    } catch {
-      // silent
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save proposal. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -129,6 +133,84 @@ export default function ProposalBuilder() {
 
   const formatCurrency = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+
+  // Loading state — skeleton shimmer while deals load
+  if (dealsLoading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <div className="h-5 w-16 bg-graphite/8 rounded animate-pulse" />
+        <div className="h-8 w-48 bg-graphite/8 rounded-lg animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="h-10 bg-graphite/8 rounded-xl animate-pulse" />
+          <div className="h-10 bg-graphite/8 rounded-xl animate-pulse" />
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-graphite/8 p-5 space-y-3">
+              <div className="h-4 w-20 bg-graphite/8 rounded animate-pulse" />
+              <div className="h-9 bg-graphite/5 rounded-lg animate-pulse" />
+              <div className="h-16 bg-graphite/5 rounded-lg animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Error state — deal list failed to load
+  if (dealsError) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-sm font-sans text-graphite/50 hover:text-accent mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
+        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-8 text-center">
+          <AlertCircle className="w-10 h-10 text-signal-down mx-auto mb-3" />
+          <p className="text-graphite font-sans font-medium">Could not load deals</p>
+          <p className="text-graphite/60 font-sans text-sm mt-1">{dealsError}</p>
+          <button
+            onClick={() => dealsReload()}
+            className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm font-sans"
+          >
+            <RefreshCw className="w-4 h-4" /> Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state — no open deals exist to attach a proposal to
+  const openDeals = deals.filter((d) => d.status === 'open');
+  if (openDeals.length === 0 && !dealIdParam) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-sm font-sans text-graphite/50 hover:text-accent mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
+        <div className="text-center py-24">
+          <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-8 h-8 text-accent" />
+          </div>
+          <h2 className="text-xl font-sans font-semibold text-graphite mb-2">No open deals</h2>
+          <p className="text-graphite/60 font-sans text-sm max-w-sm mx-auto mb-6">
+            Proposals must be linked to an open deal. Create a deal in your pipeline first, then return here to build a proposal.
+          </p>
+          <button
+            onClick={() => navigate('/sales/pipeline')}
+            className="inline-flex items-center gap-2 h-10 px-6 bg-graphite text-white text-sm font-sans font-semibold rounded-full hover:bg-graphite/90 transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Go to Pipeline
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (preview) {
     return (
@@ -183,6 +265,20 @@ export default function ProposalBuilder() {
 
       <h1 className="text-3xl font-sans font-semibold text-graphite">New Proposal</h1>
 
+      {/* Save error banner */}
+      {saveError && (
+        <div className="flex items-start gap-3 bg-signal-down/5 border border-signal-down/20 rounded-xl px-4 py-3">
+          <AlertCircle className="w-4 h-4 text-signal-down flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-sans font-medium text-signal-down">Save failed</p>
+            <p className="text-xs font-sans text-graphite/60 mt-0.5">{saveError}</p>
+          </div>
+          <button onClick={() => setSaveError(null)} className="text-graphite/30 hover:text-graphite transition-colors">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Meta */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -193,7 +289,7 @@ export default function ProposalBuilder() {
             className="w-full h-10 px-3 border border-graphite/15 rounded-xl text-sm font-sans text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
           >
             <option value="">Select deal...</option>
-            {deals.filter((d) => d.status === 'open').map((d) => (
+            {openDeals.map((d) => (
               <option key={d.id} value={d.id}>{d.title}</option>
             ))}
           </select>

@@ -68,8 +68,10 @@ export default function RevenueAnalytics() {
     const avgDealSize = wonDeals.length > 0
       ? wonDeals.reduce((s, d) => s + d.value, 0) / wonDeals.length : 0;
 
-    const intellDeals = wonDeals.filter((d) => d.title.includes('[Signal]'));
-    const intellRevenue = intellDeals.reduce((s, d) => s + d.value, 0);
+    // Signal attribution: prefer signal_id FK (SALES-WO-05), fall back to title pattern
+    const signalAttributedWon = wonDeals.filter((d) => d.signal_id != null || d.title.includes('[Signal]'));
+    const signalAttributedAll = deals.filter((d) => d.signal_id != null || d.title.includes('[Signal]'));
+    const intellRevenue = signalAttributedWon.reduce((s, d) => s + d.value, 0);
     const intellPct = totalRevenue > 0 ? Math.round((intellRevenue / totalRevenue) * 100) : 0;
 
     return {
@@ -82,7 +84,7 @@ export default function RevenueAnalytics() {
       wonCount: wonDeals.length,
       lostCount: lostDeals.length,
       openCount: openDeals.length,
-      intellDeals: intellDeals.length,
+      intellDeals: signalAttributedAll.length,
       intellRevenue,
       intellPct,
     };
@@ -300,24 +302,29 @@ export default function RevenueAnalytics() {
         ))}
       </div>
 
-      {/* Intelligence Attribution */}
+      {/* Intelligence Attribution — SALES-WO-05 */}
       <div className="bg-accent/5 rounded-2xl border border-accent/15 p-6">
         <div className="flex items-center gap-2 mb-3">
           <Zap className="w-5 h-5 text-accent" />
           <h2 className="text-lg font-sans font-semibold text-graphite">Intelligence Attribution</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
           <div>
-            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">Deals from Signals</p>
+            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">Signal-Influenced Deals</p>
             <p className="text-2xl font-sans font-semibold text-graphite mt-1">{metrics.intellDeals}</p>
+            <p className="text-[10px] font-sans text-graphite/30 mt-0.5">signal_id linked or [Signal] tagged</p>
           </div>
           <div>
-            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">Revenue from Signals</p>
+            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">Signal-Influenced Revenue</p>
             <p className="text-2xl font-sans font-semibold text-graphite mt-1">{formatCurrency(metrics.intellRevenue)}</p>
           </div>
           <div>
-            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">% Revenue from Intelligence</p>
+            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">% Revenue from Signals</p>
             <p className="text-2xl font-sans font-semibold text-graphite mt-1">{metrics.intellPct}%</p>
+          </div>
+          <div>
+            <p className="text-xs font-sans text-graphite/50 uppercase tracking-wider">Total Won</p>
+            <p className="text-2xl font-sans font-semibold text-graphite mt-1">{metrics.wonCount}</p>
           </div>
         </div>
       </div>
