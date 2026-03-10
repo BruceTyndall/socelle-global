@@ -1,0 +1,39 @@
+{
+  "wo_id": "DELIVERABLE-B",
+  "tracker_path": "SOCELLE-WEB/docs/build_tracker.md",
+  "timestamp": "2026-03-10T01:05:00.000Z",
+  "team": "Team 0",
+  "wo_count": 21,
+  "registry_tables": {
+    "P0_GATE": {
+      "count": 3,
+      "wo_ids": ["MERCH-INTEL-03-DB", "NEWSAPI-INGEST-01", "DB-TYPES-02"]
+    },
+    "P1_GATE": {
+      "count": 15,
+      "wo_ids": [
+        "CMS-SEED-01", "CMS-WO-07", "CMS-WO-08", "CMS-WO-09", "CMS-WO-10",
+        "CMS-WO-11", "CMS-WO-12", "DATA-PRESS-PROOF",
+        "EVT-WO-02", "ROUTE-CLEANUP-WO", "BRAND-SIGNAL-WO", "PAY-UPGRADE-WO",
+        "DEBT-TANSTACK-REAL-6", "MERCH-INTEL-03-FINAL", "P1-3", "STATE-AUDIT-01"
+      ]
+    },
+    "P2_GATE": {
+      "count": 2,
+      "wo_ids": ["P2-1", "P2-STRIPE"]
+    }
+  },
+  "blocked_list": ["PAY-UPGRADE-WO"],
+  "blocked_reasons": {
+    "PAY-UPGRADE-WO": "Owner Stripe dashboard price config prerequisite — stripe_price_id must be set before TierGate→Checkout Session wiring"
+  },
+  "fields_check": {
+    "wo_id": "PASS — all 21 WOs have canonical IDs",
+    "status_open": "PASS — 20 OPEN, 1 BLOCKED (PAY-UPGRADE-WO)",
+    "team_assignment": "PASS — all 21 WOs assigned to Team 1–5",
+    "dependency_chain": "PASS — all 21 WOs have explicit predecessor WO IDs or 'none'/'P0 GATE'",
+    "proof_pack_path": "PASS — all 21 WOs have docs/qa/verify_<WO_ID>.json paths",
+    "cms_wo_12_added": "PASS — CMS-WO-12 added to P1 table; was in WO doc (PATCH 8) but missing from tracker"
+  },
+  "overall": "PASS"
+}
