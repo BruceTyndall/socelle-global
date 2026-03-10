@@ -180,6 +180,12 @@ SELECT COUNT(*) FROM market_signals WHERE signal_type='regulatory_alert' AND imp
 - File: `docs/qa/verify_MERCH-INTEL-03-DB.json`
 - Required fields: wo_id, timestamp, sql_results (all 3 queries), row_counts_before_after, overall: PASS|FAIL
 
+**Skills Required (PATCH 3)**
+- `feed-pipeline-checker` — verifies feed data integrity
+- `signal-data-validator` — verifies fingerprint coverage, confidence, freshness
+- `provenance-checker` — verifies source attribution on all signals
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - Migration fails with constraint violation → diagnose, do not retry blindly, escalate to Team 0
 - DELETE step on FDA MDR dupes: only execute if owner previously approved (confirmed in session notes)
@@ -248,6 +254,16 @@ SELECT COUNT(*) FROM market_signals WHERE source_domain IS NULL AND created_at >
 - File: `docs/qa/verify_NEWSAPI-INGEST-01.json`
 - Required: wo_id, timestamp, feeds_added, signals_before, signals_after, signals_by_source, reddit_oauth_status, overall: PASS|FAIL
 
+**Skills Required (PATCH 3)**
+- `feed-pipeline-checker` — verifies full pipeline wiring feed→signal
+- `feed-source-auditor` — verifies all new sources comply with provenance tier rules
+- `deduplication-logic-checker` — verifies fingerprint dedup is applied on all ingest paths
+- `dlq-system-checker` — verifies DLQ writes on failure paths
+- `signal-data-validator` — verifies confidence, vertical, topic populated on new signals
+- `provenance-checker` — verifies source_domain, source_url, attribution populated
+- `pg-cron-scheduler-validator` — verifies feed-orchestrator cron schedule active
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - Reddit OAuth2 fails → log to feed_dlq, mark feed health_status=degraded, do not block other feeds
 - GNews/Currents returns 429 rate limit → set poll_interval_minutes=1440, log, continue
@@ -284,6 +300,11 @@ npx tsc --noEmit                                  # expected: exit 0
 **Proof pack**
 - File: `docs/qa/verify_DB-TYPES-02.json`
 - Required: column_checks (all 4 columns found: true/false), tsc_exit_code: 0, overall: PASS|FAIL
+
+**Skills Required (PATCH 3)**
+- `database-types-generator` — regenerates and validates database.types.ts freshness
+- `schema-drift-detector` — confirms no drift between types and migrations
+- `build-gate` — tsc + build
 
 **Stop conditions**
 - tsc errors after regen → fix type errors before marking DONE (do not suppress)
@@ -335,6 +356,12 @@ SELECT COUNT(*) FROM cms_posts WHERE status='published' AND slug IS NOT NULL AND
 **Proof pack**
 - File: `docs/qa/verify_CMS-SEED-01.json`
 - Required: rows_inserted, featured_count, slugs_valid, editorial_rail_live: true/false, overall: PASS|FAIL
+
+**Skills Required (PATCH 3)**
+- `live-demo-detector` — confirms editorial rail is LIVE (not DEMO fallback)
+- `cms-status` — verifies cms_posts row counts, RLS, status=published gate
+- `banned-term-scanner` — all seeded titles/excerpts pass banned term check
+- `build-gate` — tsc + build
 
 **Stop conditions**
 - Duplicate slug constraint violation → fix slug, do not suppress
@@ -418,6 +445,13 @@ SELECT COUNT(*) FROM story_drafts WHERE status='draft';
 - File: `docs/qa/verify_CMS-WO-07.json`
 - Required: table_created, rls_enabled, columns_verified, story_drafts_count_after_ingest, duplicate_detection_test: PASS|FAIL, overall: PASS|FAIL
 
+**Skills Required (PATCH 3)**
+- `cms-status` — verifies story_drafts table, RLS, row counts
+- `rls-auditor` — confirms RLS policies on story_drafts (no public read)
+- `deduplication-logic-checker` — verifies raw_url dedup fires correctly
+- `live-demo-detector` — editorial rail still LIVE after pipeline wired
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - source_citation is empty on any INSERT → block at DB level (NOT NULL constraint enforces)
 - Story draft duplicates cms_posts slug → set duplicate_of and status=rejected, do not insert to cms_posts
@@ -472,6 +506,13 @@ Owner can open any story draft, edit headline/summary/key takeaways, add reviewe
 - File: `docs/qa/verify_CMS-WO-08.json`
 - Required: state_machine_tests (approve/reject/publish all tested), source_citation_readonly: true, tsc_exit: 0, overall: PASS|FAIL
 
+**Skills Required (PATCH 3)**
+- `cms-status` — verifies state machine transitions, promoted post created
+- `authoring-core-schema-validator` — confirms cms_versions audit trail intact
+- `live-demo-detector` — confirms published post appears on editorial rail
+- `banned-term-scanner` — promoted content passes banned term gate
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - Publish without source_citation → STOP, block at application level before DB write
 
@@ -515,6 +556,12 @@ Blog/editorial posts have WordPress-grade SEO, OG/Twitter cards, schema.org Arti
 **Proof pack**
 - File: `docs/qa/verify_CMS-WO-09.json`
 - Required: seo_tags_verified, jsonld_present, calendar_route_live, newsletter_export_works, sitemap_cache_populated, overall: PASS|FAIL
+
+**Skills Required (PATCH 3)**
+- `seo-audit` — confirms og:title, og:description, og:image, JSON-LD Article on /blog/:slug
+- `pg-cron-scheduler-validator` — verifies publish-scheduled-posts job registered
+- `cms-status` — confirms sitemap_cache populated on publish
+- `build-gate` — tsc + build
 
 **Stop conditions**
 - JSON-LD contains incorrect @type or missing required fields → fix before marking DONE
@@ -589,6 +636,12 @@ SELECT segment FROM content_placements WHERE placement_key='intel_hub_editorial_
 - File: `docs/qa/verify_CMS-WO-10.json`
 - Required: table_created, rls_verified, placement_keys_defined, console_route_live, editorial_rail_reads_placements: true, overall: PASS|FAIL
 
+**Skills Required (PATCH 3)**
+- `rls-auditor` — confirms content_placements RLS (admin write, authenticated read)
+- `live-demo-detector` — editorial rail reads from placements when they exist
+- `cms-status` — confirms placement_keys seeded
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - Drag/drop reorder fails to persist → fix mutation before marking DONE
 - Editorial rail reverts to DEMO when placements exist → STOP, debug useContentPlacements
@@ -646,6 +699,12 @@ SELECT COUNT(*) FROM story_drafts WHERE auto_classified_category='daily-brief';
 - File: `docs/qa/verify_CMS-WO-11.json`
 - Required: cron_jobs_registered, brief_edge_fn_deployed, memo_edge_fn_deployed, manual_invoke_result, draft_created: true, overall: PASS|FAIL
 
+**Skills Required (PATCH 3)**
+- `pg-cron-scheduler-validator` — verifies daily-brief + weekly-memo cron jobs registered
+- `edge-fn-health` — confirms daily-brief + weekly-memo edge functions deployed and healthy
+- `cms-status` — confirms story_drafts rows created by edge function invocation
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - pg_cron not available → document blocker, use alternative scheduler, escalate to Team 0
 - Edge function produces empty body → fix before deploying cron schedule
@@ -686,6 +745,13 @@ Generate `docs/qa/verify_DATA_PRESS_VALUE.json` containing:
 
 **Proof pack**
 - File: `docs/qa/verify_DATA_PRESS_VALUE.json` (IS the proof pack)
+
+**Skills Required (PATCH 3)**
+- `intelligence-merchandiser` — runs all 12 MERCH rules, produces PASS/WARN/FAIL per rule
+- `data-integrity-suite` — end-to-end pipeline validation
+- `feed-source-auditor` — source layer coverage check
+- `topic-distribution-checker` — confirms no topic > 40%
+- `signal-data-validator` — confidence, freshness, provenance per signal
 
 **Stop conditions**
 - Any source layer missing → identify gap, add feed, re-run after 1 ingest cycle before marking FAIL
@@ -730,6 +796,13 @@ Event listing → event detail → registration funnel is complete. No dead ends
 **Proof pack**
 - File: `docs/qa/verify_EVT-WO-02.json`
 
+**Skills Required (PATCH 3)**
+- `hub-shell-detector` — confirms EventDetail has all required states (loading/error/empty)
+- `live-demo-detector` — LIVE badge when events in DB, DEMO banner when empty
+- `seo-audit` — EventDetail has meta tags
+- `route-mapper` — /events/:slug route registered in App.tsx
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - events table has no slug column → add column in migration before building UI
 
@@ -766,6 +839,11 @@ Orphaned routes removed or redirected. Dual-path confusion eliminated. User neve
 - GET /home → redirects to /intelligence
 - No duplicate marketing hub routes (one canonical, one redirect)
 
+**Skills Required (PATCH 3)**
+- `route-mapper` — confirms all redirects registered, no orphaned routes
+- `smoke-test-suite` — /pricing /home /for-medspas all redirect correctly
+- `build-gate` — tsc + build
+
 **Proof pack**
 - File: `docs/qa/verify_ROUTE-CLEANUP-WO.json`
 
@@ -799,6 +877,11 @@ Brand portal users can act on intelligence signals → create campaigns directly
 - Click → navigates to campaign creation with signal context
 - audit_log has entry for action_type='create_campaign'
 - tsc=0
+
+**Skills Required (PATCH 3)**
+- `cross-hub-dispatcher-validator` — confirms create_campaign action registered and fires correctly
+- `audit-log-auditor` — audit_log entry confirmed for action_type='create_campaign'
+- `build-gate` — tsc + build
 
 **Proof pack**
 - File: `docs/qa/verify_BRAND-SIGNAL-WO.json`
@@ -839,6 +922,11 @@ TierGate upgrade CTA → real Stripe Checkout (not DEMO /plans page). User can a
 **Proof pack**
 - File: `docs/qa/verify_PAY-UPGRADE-WO.json`
 
+**Skills Required (PATCH 3)**
+- `stripe-integration-tester` — confirms checkout session creation, webhook processing
+- `payment-flow-tester` — tests full upgrade flow end-to-end
+- `build-gate` — tsc + build
+
 **Stop conditions**
 - stripe_price_id not configured in Stripe → STOP, cannot proceed, note blocker in build_tracker
 
@@ -872,6 +960,13 @@ grep -r "useEffect" src/ --include="*.tsx" | grep "supabase.from"
 npx tsc --noEmit
 # Expected: exit 0
 ```
+
+**Skills Required (PATCH 3)**
+- `dev-best-practice-checker` — confirms 0 raw useEffect+supabase.from() violations
+- `loading-skeleton-enforcer` — confirms skeleton shimmers present (not Loader2)
+- `empty-state-enforcer` — confirms empty states with CTA
+- `error-state-enforcer` — confirms error states with retry
+- `build-gate` — tsc + build
 
 **Proof pack**
 - File: `docs/qa/verify_DEBT-TANSTACK-REAL-6.json`
@@ -910,6 +1005,11 @@ SELECT COUNT(*) FROM cron.job WHERE jobname='archive-old-signals';
 ```
 - Run intelligence-merchandiser skill: MERCH-01 PASS, MERCH-06 PASS (or WARN if insufficient feed volume), MERCH-10 PASS
 
+**Skills Required (PATCH 3)**
+- `intelligence-merchandiser` — full 12-rule audit; must reach ≥ 10/12 PASS (MERCH-06 allowed WARN if feed volume insufficient)
+- `pg-cron-scheduler-validator` — archive-old-signals cron job verified
+- `provenance-checker` — source_url MAUDE permalink format confirmed on FDA signals
+
 **Proof pack**
 - File: `docs/qa/verify_MERCH-INTEL-03-FINAL.json`
 - Required: merch_rules_1_12 (each: PASS|WARN|FAIL), overall: PASS|FAIL
@@ -945,6 +1045,11 @@ grep "brand-" tailwind.config.js  # 0 results (or only in comments)
 grep "intel-" tailwind.config.js  # 0 results
 ```
 
+**Skills Required (PATCH 3)**
+- `token-drift-scanner` — confirms brand-*/intel-* zero usages in src/
+- `design-audit-suite` — full Pearl Mineral V2 compliance after removal
+- `build-gate` — tsc + build + confirm 0 Tailwind class errors
+
 **Proof pack**
 - File: `docs/qa/verify_P1-3.json`
 
@@ -978,6 +1083,14 @@ grep "intel-" tailwind.config.js  # 0 results
 - Run `hub-shell-detector` skill after each batch — score must improve
 - Run `shared-state-components-auditor` skill — 0 missing error/empty states on touched pages
 
+**Skills Required (PATCH 3)**
+- `hub-shell-detector` — run before + after; score must improve per batch
+- `shared-state-components-auditor` — confirms EmptyState/ErrorState/LoadingSkeleton on all touched pages
+- `loading-skeleton-enforcer` — no Loader2 spinners on touched pages
+- `empty-state-enforcer` — illustrated empty states with CTA
+- `error-state-enforcer` — retry buttons + fallback data
+- `build-gate` — tsc + build
+
 **Proof pack**
 - File: `docs/qa/verify_STATE-AUDIT-01.json`
 - Required: pages_audited, pages_fixed, shell_detector_before, shell_detector_after, overall: PASS|FAIL
@@ -1008,6 +1121,10 @@ npm run test
 # Expected: >= 163 passing, 0 failing due to React 19 compat
 ```
 
+**Skills Required (PATCH 3)**
+- `test-runner-suite` — runs smoke-test-suite + e2e-test-runner + playwright-crawler after upgrade
+- `build-gate` — tsc + build
+
 **Proof pack**
 - File: `docs/qa/verify_P2-1.json`
 - Required: tests_before (163 pass/29 fail), tests_after, overall: PASS|FAIL
@@ -1036,8 +1153,25 @@ Confirm exactly one Stripe webhook handler is registered and processing events. 
 - grep `checkout.session.completed` in supabase/functions/ → exactly 1 handler
 - Test webhook delivery → 200 response, single DB write
 
+**Skills Required (PATCH 3)**
+- `stripe-integration-tester` — confirms single handler, no double-write
+- `billing-payments-suite` — full billing pipeline audit
+
 **Proof pack**
 - File: `docs/qa/verify_P2-STRIPE.json`
+
+### Skill Creation Queue (MISSING skills — PATCH 3)
+The following skills are referenced above but do not yet exist in `/.claude/skills/`. Create before executing the WOs that require them:
+
+| Missing Skill | Needed By | Purpose |
+|---------------|-----------|---------|
+| `cms-status` | CMS-SEED-01, CMS-WO-07, CMS-WO-08, CMS-WO-10, CMS-WO-11 | Check CMS: list cms_* tables, count rows, RLS, status=published gate |
+| `database-types-generator` | DB-TYPES-02 | Regenerates database.types.ts and validates freshness |
+| `schema-drift-detector` | DB-TYPES-02 | Detects drift between database.types.ts and migrations |
+| `cross-hub-dispatcher-validator` | BRAND-SIGNAL-WO | Validates CrossHubActionDispatcher action wiring |
+| `payment-flow-tester` | PAY-UPGRADE-WO | Tests Stripe checkout session creation + redirect |
+
+> Note: `cms-status`, `cross-hub-dispatcher-validator` already appear in skill list — verify before creating.
 
 ---
 
