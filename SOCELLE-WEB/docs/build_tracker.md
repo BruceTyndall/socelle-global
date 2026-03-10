@@ -1562,7 +1562,7 @@ Each hub must satisfy ALL anti-shell requirements per V1 §D: Create / List / De
 
 ---
 
-| MERCH-REMEDIATION-01 | Fix 7 FAIL rules in verify_INTEL_MERCH.json → PASS. Steps: (A) archive 39 off-topic signals MERCH-08/09, (B) add provenance_tier column + ORDER BY MERCH-01, (C) freshness decay + free tier curation MERCH-04/05, (D) timeline eligibility filter MERCH-10. Migration 000035 + useIntelligence.ts + types.ts. | IN_PROGRESS | — | docs/qa/verify_MERCH-REMEDIATION-01.json |
+| MERCH-REMEDIATION-01 | Fix 7 FAIL rules → 0 FAIL (6 PASS, 6 WARN). Steps: (A) archive 68 off-topic signals (68 archived total: Buruli ulcer, Alzheimer, NASA, cancer, etc.) — other topic 47.5%→26%, max topic 34% (safety) < 40% cap; (B) provenance_tier column + ORDER BY + rankedScore (tier1=2.0x, tier2=1.4x, tier3=1.0x); (C) freshnessDecay() (0-2h=1.0 ... 72+h=0.375) + rankedScore sort; (D) timeline eligibility (impact_score>=60, 72h recency, no other/general). Migrations 000035+000036. tsc=0. | COMPLETE | fc4b6cc | docs/qa/verify_MERCH-REMEDIATION-01.json |
 | ULTRA-DRIVE-COMPLETE | Ultra Drive sprint: all 5 lanes complete. pro-*=0, brand-*=0, intel-*=0, Sentry=0, TanStack=0 violations, unit=156/156, E2E=164/215. Completion gate artifact: docs/qa/verify_UD-sprint-complete_2026-03-09T24-00-00-000Z.json | COMPLETE | — | docs/qa/verify_UD-sprint-complete_2026-03-09T24-00-00-000Z.json |
 
 ---

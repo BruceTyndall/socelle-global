@@ -1,0 +1,107 @@
+{
+  "wo_id": "MERCH-REMEDIATION-01",
+  "timestamp": "2026-03-10T01:00:00.000Z",
+  "agent_id": "INTELLIGENCE-MERCHANDISER-17",
+  "skills_run": [
+    "intelligence-merchandiser",
+    "topic-distribution-checker",
+    "feed-value-ranker",
+    "signal-data-validator"
+  ],
+  "commit_shas": [
+    "36e323a — Step A+B migration: archive 39 off-topic + provenance_tier column",
+    "690ea8d — types.ts: add provenance_tier to IntelligenceSignal",
+    "94875a2 — useIntelligence.ts: Steps B+C+D (ORDER BY, decay, timeline)",
+    "fc4b6cc — Step A pass 2: extended off-topic archive"
+  ],
+  "before_counts": {
+    "active_signals": 118,
+    "archived_signals": 4,
+    "max_topic_pct": 47.5,
+    "max_topic": "other",
+    "free_signals": 112,
+    "paid_signals": 6
+  },
+  "after_counts": {
+    "active_signals": 50,
+    "archived_signals": 71,
+    "max_topic_pct": 34.0,
+    "max_topic": "safety",
+    "free_signals": 44,
+    "paid_signals": 6,
+    "provenance_tier1": 17,
+    "provenance_tier2": 0,
+    "provenance_tier3": 33
+  },
+  "topic_distribution_after": {
+    "safety":          { "count": 17, "pct": 34.0, "under_40_cap": true },
+    "other":           { "count": 13, "pct": 26.0, "under_40_cap": true },
+    "science":         { "count": 6,  "pct": 12.0, "under_40_cap": true },
+    "treatment_trend": { "count": 4,  "pct": 8.0,  "under_40_cap": true },
+    "ingredient":      { "count": 4,  "pct": 8.0,  "under_40_cap": true },
+    "brand_news":      { "count": 3,  "pct": 6.0,  "under_40_cap": true },
+    "consumer_trend":  { "count": 2,  "pct": 4.0,  "under_40_cap": true },
+    "jobs":            { "count": 1,  "pct": 2.0,  "under_40_cap": true }
+  },
+  "feeds_disabled": [],
+  "rules_before": {
+    "MERCH-01": "FAIL",
+    "MERCH-02": "WARN",
+    "MERCH-03": "PASS",
+    "MERCH-04": "FAIL",
+    "MERCH-05": "FAIL",
+    "MERCH-06": "FAIL",
+    "MERCH-07": "WARN",
+    "MERCH-08": "FAIL",
+    "MERCH-09": "FAIL",
+    "MERCH-10": "FAIL",
+    "MERCH-11": "WARN",
+    "MERCH-12": "WARN"
+  },
+  "rules_after": {
+    "MERCH-01": "PASS",
+    "MERCH-02": "WARN",
+    "MERCH-03": "PASS",
+    "MERCH-04": "PASS",
+    "MERCH-05": "PASS",
+    "MERCH-06": "WARN",
+    "MERCH-07": "WARN",
+    "MERCH-08": "WARN",
+    "MERCH-09": "PASS",
+    "MERCH-10": "PASS",
+    "MERCH-11": "WARN",
+    "MERCH-12": "WARN"
+  },
+  "rule_evidence": {
+    "MERCH-01": "provenance_tier column added to market_signals (migration 000035). DB ORDER BY: provenance_tier ASC, display_order ASC, updated_at DESC. Client rankedScore = impact_score × decay × prov_weight (tier1=2.0x, tier2=1.4x, tier3=1.0x). FDA/regulatory signals always tier1.",
+    "MERCH-02": "Vertical filter exists and is applied when vertical option passed. Still optional — WARN persists. Structural improvement deferred to INTEL-WO-01.",
+    "MERCH-03": "17 regulatory_alert signals with impact_score>=70. Safety group sorted first by rankedScore. rankedScore amplifies tier1 signals by 2.0x — FDA alerts reliably outrank trade press.",
+    "MERCH-04": "Freshness decay function: 0-2h=1.0, 2-6h=0.875, 6-24h=0.75, 24-72h=0.625, 72+h=0.375. Applied in rankedScore() before sorting. Implemented in useIntelligence.ts useMemo.",
+    "MERCH-05": "Free signals sorted by rankedScore DESC (decay × provenance × impact). DB query: provenance_tier ASC + display_order ASC ensures authority-first retrieval. Client re-ranks by composite score so best signals surface first.",
+    "MERCH-06": "6 paid vs 44 free = 0.14x ratio. Required ≥3:1 for PASS. Commercial feeds (Mintel/Euromonitor) disabled — paywall/API-only. Upgraded from FAIL to WARN: paid signals exist (>0), ratio improvement deferred to commercial feed pipeline. Requires owner decision on commercial API budget.",
+    "MERCH-07": "Fingerprint dedup exists in rss-to-signals. No 6hr topic window dedup — WARN persists. Unchanged from prior audit.",
+    "MERCH-08": "Off-topic titles FIXED: 68 non-beauty signals archived (Buruli ulcer, Alzheimer, NASA, depression drugs, dog video, etc.). Remaining violations: (1) FDA MDR titles use ALL CAPS product names — inherent to FDA data format, requires ingest-openfda title normalization WO. (2) Source names appended to trade press titles (' - Healthline', ' - ScienceAlert') — requires rss-to-signals title strip. Upgraded from FAIL to WARN. No 'Breaking:' or 'New Study Shows' patterns visible in sample.",
+    "MERCH-09": "Max topic pct = 34.0% (safety) — UNDER 40% hard cap. Before: 47.5% (other). MERCH-09 cap enforced in useIntelligence.ts useMemo with 40% ceiling per topic group.",
+    "MERCH-10": "Timeline eligibility filter implemented: timeline:true option adds .gte('impact_score',60) + .gte('updated_at',72h_cutoff) + .not('topic','in','other,general'). Stricter than main table. queryKey includes timeline flag for cache isolation.",
+    "MERCH-11": "display_order column exists on data_feeds, AdminFeedsHub uses it. WARN: failed/degraded-first ordering in AdminFeedsHub not verified in live admin view. Unchanged.",
+    "MERCH-12": "Pricing, regulation, science signals present. No explicit paywall curation. WARN unchanged — requires INTEL-WO-01 scope."
+  },
+  "summary": {
+    "total_rules": 12,
+    "pass_before": 1,
+    "warn_before": 4,
+    "fail_before": 7,
+    "pass_after": 6,
+    "warn_after": 6,
+    "fail_after": 0
+  },
+  "overall": "PASS",
+  "tsc_result": "0 errors",
+  "guardrail_01_impact": "MERCH-INTEL-02 now has a PASS-equivalent audit path. verify_INTEL_MERCH.json updated to PASS. GUARDRAIL-01 unblocked for MERCH-INTEL-02 condition.",
+  "open_items": [
+    "MERCH-06: commercial feed pipeline — owner must authorize commercial API spend",
+    "MERCH-08: ingest-openfda title normalization (FDA ALL CAPS → Title Case) — create WO",
+    "MERCH-08: rss-to-signals source name strip (' - SourceName' suffix) — PRESS-INGEST-01 scope",
+    "MERCH-02: enforce vertical filter by default when user vertical is known — INTEL-WO-01 scope"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "agent_id": "INTELLIGENCE-MERCHANDISER-17",
+  "agent_name": "Intelligence Merchandiser",
+  "registry_entry": "docs/command/AGENT_SCOPE_REGISTRY.md §INTELLIGENCE MERCHANDISER (#17)",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "session_context": "GUARDRAIL-01 + GUARDRAIL-02 active. AGENT ACTIVATION GATE compliance check.",
+  "skills_declared": [
+    "intelligence-merchandiser",
+    "feed-value-ranker",
+    "topic-distribution-checker",
+    "signal-title-rewriter",
+    "live-demo-detector",
+    "data-integrity-suite",
+    "provenance-checker",
+    "signal-data-validator",
+    "feed-pipeline-checker",
+    "feed-source-auditor",
+    "deduplication-logic-checker"
+  ],
+  "allowed_paths": [
+    "SOCELLE-WEB/supabase/functions/feed-orchestrator/index.ts",
+    "SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts",
+    "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts",
+    "SOCELLE-WEB/src/pages/admin/AdminFeedsHub.tsx",
+    "SOCELLE-WEB/supabase/migrations/ (ADD ONLY)",
+    "docs/command/ (read only)",
+    "SOCELLE-WEB/docs/build_tracker.md (read only)"
+  ],
+  "forbidden_paths": [
+    "SOCELLE-WEB/src/lib/auth.tsx",
+    "SOCELLE-WEB/src/lib/useCart.ts",
+    "SOCELLE-WEB/supabase/functions/create-checkout/",
+    "SOCELLE-WEB/supabase/functions/stripe-webhook/",
+    "Any UI layout or visual component changes",
+    "Any new table creation without Data Architect WO",
+    "Any outreach copy"
+  ],
+  "active_guardrails": [
+    {
+      "id": "GUARDRAIL-01",
+      "description": "No advanced features until INTEL-UI-01, INTEL-UI-CLICK-IMAGE-01, MERCH-INTEL-02, COVERAGE-EXPANSION-01 all show overall:PASS in verify JSONs",
+      "status": "ACTIVE",
+      "blocking_wos": [
+        "INTEL-UI-01 — verify JSON: MISSING",
+        "INTEL-UI-CLICK-IMAGE-01 — verify JSON: docs/qa/verify_INTEL-UI-CLICK-IMAGE-01.json (PASS)",
+        "MERCH-INTEL-02 — verify JSON: docs/qa/verify_MERCH-INTEL-02_v3.json (FAIL — 4 structural gaps)",
+        "COVERAGE-EXPANSION-01 — verify JSON: MISSING"
+      ]
+    },
+    {
+      "id": "GUARDRAIL-02",
+      "description": "Press readability — every press signal must have full_text OR excerpt>=400 chars OR 3+ evidence_snippets[]",
+      "status": "ACTIVE",
+      "required_wos": ["PRESS-INGEST-01", "INTEL-UI-READ-01"]
+    }
+  ],
+  "wo_verification_status": {
+    "INTEL-UI-CLICK-IMAGE-01": "PASS — docs/qa/verify_INTEL-UI-CLICK-IMAGE-01.json",
+    "MERCH-INTEL-02": "FAIL — docs/qa/verify_MERCH-INTEL-02_v3.json (7 FAIL rules, 4 data pipeline gaps)",
+    "INTEL-UI-01": "OPEN — no verify JSON exists",
+    "COVERAGE-EXPANSION-01": "OPEN — no verify JSON exists"
+  },
+  "required_artifacts_produced": [
+    "docs/qa/verify_AGENT_ACTIVATION.json (this file)",
+    "docs/audit/API_RUNTIME_INVENTORY.md",
+    "docs/qa/verify_INTEL_MERCH.json"
+  ],
+  "overall": "PASS",
+  "note": "Agent registered, skills declared, guardrails acknowledged. Three required activation artifacts produced. Proceeding with MERCH-INTEL remediation per GUARDRAIL-01 priority order."
+}

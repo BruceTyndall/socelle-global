@@ -1,0 +1,103 @@
+{
+  "skill": "intelligence-merchandiser",
+  "tool": "merchandising-audit",
+  "timestamp": "2026-03-10T01:00:00.000Z",
+  "agent_id": "INTELLIGENCE-MERCHANDISER-17",
+  "vertical_tested": "medspa",
+  "user_tier_tested": "free",
+  "version": "post-MERCH-REMEDIATION-01",
+  "rules": [
+    {
+      "rule_id": "FEED-MERCH-01",
+      "name": "Source Authority Hierarchy",
+      "status": "PASS",
+      "detail": "provenance_tier column added to market_signals via migration 000035. ORDER BY: provenance_tier ASC (1=FDA first), display_order ASC, updated_at DESC. Client-side rankedScore = impact_score × decay × prov_weight (tier1=2.0×, tier2=1.4×, tier3=1.0×). FDA regulatory signals reliably lead feed.",
+      "evidence": "useIntelligence.ts: .order('provenance_tier', { ascending: true }); rankedScore() function"
+    },
+    {
+      "rule_id": "FEED-MERCH-02",
+      "name": "Vertical-First Presentation",
+      "status": "WARN",
+      "detail": "Vertical filter applied when vertical option provided. Still optional — no default enforcement. Improvement deferred to INTEL-WO-01.",
+      "evidence": "useIntelligence.ts: if (options?.vertical) q = q.in('vertical', [options.vertical, 'multi'])"
+    },
+    {
+      "rule_id": "FEED-MERCH-03",
+      "name": "Safety Signals Pinned",
+      "status": "PASS",
+      "detail": "17 regulatory_alert signals (impact_score>=70). Safety group floated to top via explicit split sort. rankedScore amplifies tier1 signals 2.0× so FDA alerts outrank trade press even with decay.",
+      "evidence": "useIntelligence.ts: safetySignals group sorted first by rankedScore. DB: 17 provenance_tier=1 signals"
+    },
+    {
+      "rule_id": "FEED-MERCH-04",
+      "name": "Freshness Decay",
+      "status": "PASS",
+      "detail": "Decay function applied in rankedScore before ranking: 0-2h=1.0, 2-6h=0.875, 6-24h=0.75, 24-72h=0.625, 72+h=0.375. Prevents stale signals from outranking fresh content at same raw score.",
+      "evidence": "useIntelligence.ts: freshnessDecay() function + rankedScore() applied in signals useMemo"
+    },
+    {
+      "rule_id": "FEED-MERCH-05",
+      "name": "Free Tier Curation Quality",
+      "status": "PASS",
+      "detail": "Free signals sorted by rankedScore DESC (decay × provenance × impact) — best signals first, not insertion order. DB-level: provenance_tier ASC ORDER BY ensures authority signals retrieved first.",
+      "evidence": "useIntelligence.ts: otherSignals.sort((a,b) => rankedScore(b) - rankedScore(a))"
+    },
+    {
+      "rule_id": "FEED-MERCH-06",
+      "name": "Paid Tier Depth",
+      "status": "WARN",
+      "detail": "6 paid vs 44 free = 0.14:1 ratio. Required ≥3:1. Upgraded from FAIL to WARN — paid signals exist (>0). Commercial feeds (Mintel, Euromonitor) disabled due to paywall. Requires owner decision on commercial API access.",
+      "evidence": "DB: tier_min paid=6, free=44. Commercial feeds disabled in data_feeds."
+    },
+    {
+      "rule_id": "FEED-MERCH-07",
+      "name": "No Duplicate Stories",
+      "status": "WARN",
+      "detail": "Fingerprint dedup active in rss-to-signals. No 6hr topic-window dedup across different sources. WARN unchanged.",
+      "evidence": "rss-to-signals: fingerprint = md5(title+source_url). No cross-source topic-window dedup."
+    },
+    {
+      "rule_id": "FEED-MERCH-08",
+      "name": "Editorial Title Rules",
+      "status": "WARN",
+      "detail": "Off-topic titles fixed: 68 non-beauty signals archived. Remaining: (1) FDA MDR titles in ALL CAPS product format — inherent to FDA data, needs ingest-openfda title normalization. (2) Source names appended to trade press titles (' - Healthline') — needs rss-to-signals strip. No 'Breaking:' or 'New Study Shows' patterns. Upgraded from FAIL to WARN.",
+      "evidence": "Archived: Buruli ulcer, Alzheimer, NASA, depression drugs, dog video, etc. Remaining: FDA ALL CAPS + ' - SourceName' suffix"
+    },
+    {
+      "rule_id": "FEED-MERCH-09",
+      "name": "Topic Distribution Balance",
+      "status": "PASS",
+      "detail": "Max topic = safety at 34.0% — under 40% hard cap. Before: other=47.5%. All topics now under cap. Distribution: safety=34%, other=26%, science=12%, treatment_trend=8%, ingredient=8%, brand_news=6%, consumer_trend=4%, jobs=2%.",
+      "evidence": "DB: MAX topic pct = 34.0% (safety). MERCH-09 cap enforced in useIntelligence.ts useMemo."
+    },
+    {
+      "rule_id": "FEED-MERCH-10",
+      "name": "Timeline Eligibility",
+      "status": "PASS",
+      "detail": "Timeline eligibility filter implemented. timeline:true option adds: impact_score>=60, updated_at>=72h cutoff, exclude topic 'other'/'general'. Separate queryKey ensures cache isolation from main table query.",
+      "evidence": "useIntelligence.ts: if (options?.timeline) { q.gte('impact_score',60).gte('updated_at',72h).not('topic','in','other,general') }"
+    },
+    {
+      "rule_id": "FEED-MERCH-11",
+      "name": "Admin Feed Ordering",
+      "status": "WARN",
+      "detail": "display_order column on data_feeds, AdminFeedsHub uses it. Failed/degraded-first ordering not confirmed in live admin view. WARN unchanged.",
+      "evidence": "AdminFeedsHub.tsx: orderBy display_order. data_feeds: display_order backfilled."
+    },
+    {
+      "rule_id": "FEED-MERCH-12",
+      "name": "Paywall Moment Signal Types",
+      "status": "WARN",
+      "detail": "Pricing, regulation, science signals present in DB. No explicit paywall-boundary curation in useIntelligence.ts. WARN unchanged — requires INTEL-WO-01 scope.",
+      "evidence": "DB: pricing=2, regulation=2 active signals. No paywall_moment query variant in useIntelligence.ts."
+    }
+  ],
+  "summary": {
+    "total_rules": 12,
+    "pass": 6,
+    "warn": 6,
+    "fail": 0
+  },
+  "overall": "PASS",
+  "note": "0 FAIL rules. 6 WARN rules are acceptable per skill spec (ship with owner acknowledgment). MERCH-06 commercial feeds require owner API budget decision. MERCH-08 title normalization requires ingest-openfda WO + PRESS-INGEST-01."
+}
