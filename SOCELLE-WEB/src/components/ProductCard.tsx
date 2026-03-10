@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Star, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../lib/auth';
+import AffiliateBadge from './commerce/AffiliateBadge';
 
 export interface ProductCardProps {
   id: string;
@@ -13,6 +14,8 @@ export interface ProductCardProps {
   isBestseller?: boolean;
   isNew?: boolean;
   isProtocolMatch?: boolean;
+  /** FTC compliance: true when SOCELLE earns a commission on this product */
+  isAffiliated?: boolean;
   href?: string;
   onAddToCart?: () => void;
 }
@@ -27,6 +30,7 @@ export default function ProductCard({
   isBestseller = false,
   isNew = false,
   isProtocolMatch = false,
+  isAffiliated = false,
   href,
   onAddToCart,
 }: ProductCardProps) {
@@ -94,9 +98,16 @@ export default function ProductCard({
           </p>
         )}
 
-        <h3 className="text-sm font-sans font-medium text-graphite line-clamp-2 leading-snug mb-2">
+        <h3 className="text-sm font-sans font-medium text-graphite line-clamp-2 leading-snug mb-1">
           {name}
         </h3>
+
+        {/* FTC affiliate disclosure badge */}
+        {isAffiliated && (
+          <div className="mb-1.5">
+            <AffiliateBadge size="sm" />
+          </div>
+        )}
 
         {/* Star rating */}
         {reviewCount > 0 && (

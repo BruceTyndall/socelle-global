@@ -279,10 +279,19 @@ export default function ProductDetail() {
                 <p className="text-xs font-mono text-graphite/30 mt-4">SKU: {product.sku}</p>
               )}
 
-              {/* FTC Affiliate Badge */}
-              {!!(product as Record<string, unknown>).affiliate_url && (
-                <div className="mt-4">
+              {/* FTC Affiliate Badge + Disclosure */}
+              {(!!(product as Record<string, unknown>).is_affiliated ||
+                !!(product as Record<string, unknown>).affiliate_url) && (
+                <div className="mt-4 space-y-1.5">
                   <AffiliateBadge size="md" />
+                  <p className="text-[11px] font-sans text-graphite/45 leading-relaxed">
+                    * Socelle may receive a commission on purchases through this link.
+                    Recommendations are based on intelligence data and professional relevance,
+                    not commission rates.{' '}
+                    {(product as Record<string, unknown>).affiliate_disclosure
+                      ? String((product as Record<string, unknown>).affiliate_disclosure)
+                      : ''}
+                  </p>
                 </div>
               )}
 

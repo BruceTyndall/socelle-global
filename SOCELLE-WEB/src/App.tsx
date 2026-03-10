@@ -124,6 +124,7 @@ const PlansList = lazy(() => import('./pages/business/PlansList'));
 const BrandDetail = lazy(() => import('./pages/business/BrandDetail'));
 const BusinessOrders = lazy(() => import('./pages/business/Orders'));
 const BusinessOrderDetail = lazy(() => import('./pages/business/OrderDetail'));
+const ProcurementDashboard = lazy(() => import('./pages/business/ProcurementDashboard'));
 const BusinessAccount = lazy(() => import('./pages/business/Account'));
 const BusinessMarketingCalendar = lazy(() => import('./pages/business/MarketingCalendar'));
 const BusinessMessages = lazy(() => import('./pages/business/Messages'));
@@ -664,6 +665,11 @@ function App() {
                     <Route path="orders/:id" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <BusinessOrderDetail />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="procurement" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_SHOP"><ProcurementDashboard /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="account" element={

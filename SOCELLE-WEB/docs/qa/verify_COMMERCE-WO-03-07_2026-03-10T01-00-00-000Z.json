@@ -1,0 +1,47 @@
+{
+  "wo_id": "COMMERCE-WO-03 + COMMERCE-WO-07",
+  "timestamp": "2026-03-10T01:00:00.000Z",
+  "agent": "Lane E — COMMERCE",
+  "skills_run": ["affiliate-link-checker", "hub-shell-detector", "build-gate"],
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit → EXIT:0. npm run build → built in 5.88s, EXIT:0."
+    },
+    "affiliate-link-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "AffiliateBadge component exists at src/components/commerce/AffiliateBadge.tsx. FTC badge added to ProductCard.tsx (isAffiliated prop → badge below product name). ProductDetail.tsx enhanced: is_affiliated || affiliate_url check → AffiliateBadge size=md + disclosure text. Migration 20260310000040_products_affiliate_flag.sql adds is_affiliated BOOLEAN + affiliate_url TEXT + affiliate_disclosure TEXT to products table with RLS-compatible ADD COLUMN IF NOT EXISTS."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "ProcurementDashboard.tsx: useQuery (TanStack Query v5) from orders+order_items joined with products. 4-card KPI strip (total spend, avg spend/product, top category, reorder alerts). Table with sort, category filter, date-range filter. CSV export. Skeleton shimmer loading state. Empty state with Pearl Mineral illustration+headline+body. Error state with retry button."
+    },
+    "commerce-boundary": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Commerce is a MODULE — no MainNav changes made. ProcurementDashboard route added at /portal/procurement inside business portal ProtectedRoute gated by MODULE_SHOP. No 'Shop Now' or 'Buy Now' primary CTAs introduced."
+    }
+  },
+  "files_created": [
+    "SOCELLE-WEB/supabase/migrations/20260310000040_products_affiliate_flag.sql",
+    "SOCELLE-WEB/src/pages/business/ProcurementDashboard.tsx"
+  ],
+  "files_modified": [
+    "SOCELLE-WEB/src/components/ProductCard.tsx",
+    "SOCELLE-WEB/src/pages/public/ProductDetail.tsx",
+    "SOCELLE-WEB/src/App.tsx"
+  ],
+  "migrations_added": [
+    "20260310000040_products_affiliate_flag.sql — adds is_affiliated BOOLEAN DEFAULT false, affiliate_url TEXT, affiliate_disclosure TEXT to products"
+  ],
+  "ftc_badge_product_card": true,
+  "ftc_badge_product_detail": true,
+  "procurement_dashboard_route": "/portal/procurement",
+  "affiliate_clicks_table": "Confirmed in database.types.ts (live DB) — exists in public schema, no migration needed",
+  "tsc": "PASS",
+  "build": "PASS",
+  "overall": "PASS"
+}
