@@ -1393,6 +1393,65 @@ Every WO proof pack MUST be saved at the exact path `docs/qa/verify_<WO_ID>.json
 
 ---
 
+## §6.4 — TEAM 0 MERGE AUTHORITY + END-OF-WO GATE COMMAND (PATCH 10)
+
+### Team 0 Merge Authority
+
+Team 0 is the **sole authority** for marking any WO DONE in `build_tracker.md`. No other team may write `COMPLETE` or `DONE` next to a WO ID.
+
+**Team 0 merge process (must execute in this order):**
+
+1. Receive claim from executing team: "WO-ID is ready for review"
+2. Verify proof JSON exists at `docs/qa/verify_<WO_ID>.json`
+3. Verify proof JSON has all required fields (§6.1)
+4. Verify `overall: PASS` (not FAIL, not missing)
+5. Verify `commit_sha` is a real, reachable commit in `main`
+6. Run the **End-of-WO Gate Command** (see below) — Team 0 runs it independently
+7. If gate passes → update `build_tracker.md` row: `status = COMPLETE`, add commit SHA + proof pack path
+8. If gate fails → return to executing team with specific failure, do NOT mark DONE
+
+**Team 0 authority is non-delegable.** If Team 0 is not available, WOs queue — they do not self-certify.
+
+### End-of-WO Gate Command
+
+Every WO must pass this exact command sequence before Team 0 marks it DONE.
+Run from `SOCELLE-WEB/` directory:
+
+```bash
+# SOCELLE END-OF-WO GATE — run after every WO implementation
+# All 5 steps must exit 0 or return 0 violations
+
+# Step 1: TypeScript type check
+npx tsc --noEmit
+# Expected: exit 0, 0 errors
+
+# Step 2: Production build
+npm run build
+# Expected: exit 0
+
+# Step 3: Banned term scan (user-facing copy)
+grep -r --include="*.tsx" --include="*.ts" \
+  "unlock\|all-in-one\|seamless\|powerful platform\|next-generation\|leverage\|streamline\|optimize\|end-to-end\|synergy\|game-changer\|revolutionary\|cutting-edge\|robust\|disruptive\|transformative\|innovative\|best-in-class\|empower\|enable\|facilitate\|AI-powered\|real-time analytics\|actionable insights" \
+  src/pages/public/ src/components/
+# Expected: 0 results
+
+# Step 4: Raw useEffect+supabase check (new code must be clean)
+grep -r --include="*.tsx" --include="*.ts" "useEffect" src/ | grep "supabase\.from"
+# Expected: 0 results (or same count as before WO — no new violations)
+
+# Step 5: Shell check (no new shells added)
+node scripts/shell-detector.mjs
+# Expected: shell count same or lower than before WO
+
+echo "GATE COMPLETE"
+```
+
+**Shorthand:** `npm run gate` (if configured in package.json — add if not present)
+
+**Gate failure is a STOP CONDITION.** Do not ship, do not mark DONE, fix the failure.
+
+---
+
 ## §7 — P0 LAUNCH GATE CHECKLIST
 
 Before Build 1 is complete and Build 2 can start, ALL of the following must be GREEN:
