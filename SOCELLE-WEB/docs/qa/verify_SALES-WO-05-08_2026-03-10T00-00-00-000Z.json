@@ -1,0 +1,29 @@
+{
+  "wo_id": "SALES-WO-05/08 + ProposalBuilder-states",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "skills_run": ["build-gate"],
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc --noEmit: 0 errors | npm run build: ✓ built in 5.88s"
+    }
+  },
+  "files_modified": [
+    "SOCELLE-WEB/src/lib/useDeals.ts",
+    "SOCELLE-WEB/src/pages/sales/OpportunityFinder.tsx",
+    "SOCELLE-WEB/src/pages/sales/ProposalBuilder.tsx",
+    "SOCELLE-WEB/src/pages/sales/RevenueAnalytics.tsx"
+  ],
+  "migrations_added": [
+    "SOCELLE-WEB/supabase/migrations/20260310000030_sales_signal_attribution.sql"
+  ],
+  "changes": {
+    "migration": "ALTER TABLE deals ADD COLUMN signal_id UUID REFERENCES market_signals(id) ON DELETE SET NULL, ADD COLUMN attributed_at TIMESTAMPTZ",
+    "useDeals": "signal_id + attributed_at added to Deal interface and NewDeal interface",
+    "OpportunityFinder": "signal_id + attributed_at passed to createDeal; skeleton shimmer loading state; error state with retry",
+    "RevenueAnalytics": "Signal-Influenced Deals uses signal_id IS NOT NULL (+ [Signal] title fallback); panel expanded to 4 metrics",
+    "ProposalBuilder": "loading skeleton shimmer; error state with retry; empty state when no open deals; save error banner with dismiss"
+  },
+  "overall": "PASS"
+}
