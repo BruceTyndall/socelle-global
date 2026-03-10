@@ -11,6 +11,10 @@ export { useCmsAssets, getAssetPublicUrl } from './useCmsAssets';
 export { useCmsDocs, useCmsDocBySlug } from './useCmsDocs';
 export { useCmsTemplates, useCmsTemplate } from './useCmsTemplates';
 
+// ── Authoring Core — AUTH-CORE-05 ────────────────────────────────────
+export { resolveBindings, resolveBindingsSync } from './DataBindingEngine';
+export type { DataBinding, DataSource } from './DataBindingEngine';
+
 // ── Hub Integration Hooks — WO-CMS-06 ────────────────────────────────
 export { useIntelligencePosts, useIntelligenceBriefBySlug } from './useIntelligencePosts';
 export { useEducationContent, useEducationArticleBySlug } from './useEducationContent';

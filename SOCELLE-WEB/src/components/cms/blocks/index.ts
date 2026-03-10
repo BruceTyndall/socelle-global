@@ -11,3 +11,4 @@ export { SplitFeatureBlock } from './SplitFeatureBlock';
 export { EvidenceStripBlock } from './EvidenceStripBlock';
 export { EmbedBlock } from './EmbedBlock';
 export { CodeBlock } from './CodeBlock';
+export { EmbedIntelligenceBlock } from './EmbedIntelligenceBlock';
