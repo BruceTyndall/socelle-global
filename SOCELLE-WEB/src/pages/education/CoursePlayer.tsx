@@ -417,14 +417,21 @@ export default function CoursePlayer() {
                       <CheckCircle className="w-4 h-4" /> Mark Complete
                     </button>
                   )}
-                  {nextLesson && (
+                  {nextLesson ? (
                     <button
                       onClick={() => selectLesson(nextLesson.id)}
                       className="flex items-center gap-2 px-5 py-2.5 bg-mn-dark text-mn-bg text-sm font-semibold rounded-full hover:bg-graphite/80 transition-colors"
                     >
                       Next <ChevronRight className="w-4 h-4" />
                     </button>
-                  )}
+                  ) : overallProgress === 100 ? (
+                    <Link
+                      to="/education/certificates"
+                      className="flex items-center gap-2 px-5 py-2.5 bg-signal-up text-white text-sm font-semibold rounded-full hover:bg-signal-up/90 transition-colors"
+                    >
+                      <Award className="w-4 h-4" /> View Certificate
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             </div>

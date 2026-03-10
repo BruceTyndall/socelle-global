@@ -1,0 +1,256 @@
+{
+  "lane": "A",
+  "audit_type": "site_map_and_user_journey",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "source_file": "src/App.tsx",
+  "total_routes": 228,
+  "routes_by_hub": {
+    "auth_utility_unguarded": 8,
+    "public_prelaunchguard": 62,
+    "business_portal": 46,
+    "brand_portal": 29,
+    "admin_portal": 55,
+    "marketing_hub": 8,
+    "sales_module_toplevel": 10,
+    "legacy_spa_redirects": 9,
+    "dev_tools": 1
+  },
+  "data_status_summary": {
+    "LIVE": 142,
+    "DEMO": 14,
+    "SHELL": 18,
+    "STATIC": 5,
+    "REDIRECT": 10,
+    "DEV_ONLY": 3
+  },
+  "journey_results": [
+    {
+      "id": 1,
+      "name": "Visitor to Intelligence Preview to Signup to Free Tier",
+      "verdict": "FAIL",
+      "steps": [
+        { "step": 1, "route": "/", "status": "LIVE", "note": "PrelaunchQuiz — primary landing" },
+        { "step": 2, "route": "/intelligence", "status": "BLOCKED", "note": "PrelaunchGuard blocks unauthenticated visitors" },
+        { "step": 3, "route": "/request-access", "status": "LIVE", "note": "Accessible but not linked from PrelaunchQuiz" },
+        { "step": 4, "route": "/portal/signup", "status": "LIVE", "note": "Text link in RequestAccess success state" },
+        { "step": 5, "route": "/portal/dashboard", "status": "LIVE", "note": "Free tier dashboard" }
+      ],
+      "dead_ends": [
+        "PrelaunchGuard intercepts /intelligence for unauthenticated visitors — primary value proposition invisible",
+        "PrelaunchQuiz has no CTA linking to intelligence preview or /request-access"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Free Tier to Paywall Moment to Upgrade to Paid Intelligence",
+      "verdict": "FAIL",
+      "steps": [
+        { "step": 1, "route": "/portal/login", "status": "LIVE", "note": "" },
+        { "step": 2, "route": "/portal/intelligence", "status": "LIVE", "note": "useIntelligence with tier filter" },
+        { "step": 3, "route": "/portal/intelligence (TierGate)", "status": "LIVE", "note": "PaywallOverlay + UpgradePrompt renders" },
+        { "step": 4, "route": "/pricing", "status": "DEMO", "note": "UpgradePrompt links here — DEMO hardcoded page, no Stripe" },
+        { "step": 5, "route": "checkout", "status": "MISSING", "note": "No Stripe checkout reached from TierGate path" }
+      ],
+      "dead_ends": [
+        "TierGate UpgradePrompt links to /pricing (DEMO static page), not to startCheckout()",
+        "No payment can be initiated from the paywall moment — upgrade journey is broken"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Operator to CRM to Contact Detail to Rebooking",
+      "verdict": "PASS",
+      "steps": [
+        { "step": 1, "route": "/portal/crm", "status": "LIVE", "note": "" },
+        { "step": 2, "route": "/portal/crm/contacts", "status": "LIVE", "note": "" },
+        { "step": 3, "route": "/portal/crm/contacts/:id", "status": "LIVE", "note": "ContactDetail with rebooking risk panel (CRM-WO-09)" },
+        { "step": 4, "route": "/portal/booking/calendar", "status": "LIVE", "note": "Book Appointment CTA confirmed in ContactDetail" }
+      ],
+      "dead_ends": []
+    },
+    {
+      "id": 4,
+      "name": "Operator to Intelligence Signal to Create CRM Note",
+      "verdict": "PASS",
+      "steps": [
+        { "step": 1, "route": "/portal/intelligence", "status": "LIVE", "note": "Signal selection via handleSelectSignal" },
+        { "step": 2, "route": "/portal/intelligence (signal panel)", "status": "PARTIAL", "note": "Signal panel exists; no confirmed save-to-CRM CTA from IntelligenceHub" },
+        { "step": 3, "route": "/portal/crm/contacts/:id (Intelligence tab)", "status": "LIVE", "note": "handleLinkSignal confirmed; creates signal_link note on contact" },
+        { "step": 4, "route": "/portal/crm/contacts/:id (timeline)", "status": "LIVE", "note": "signal_link entries appear in contact timeline" }
+      ],
+      "dead_ends": [],
+      "notes": "Cross-hub action works contact-to-signal direction only. Signal-to-contact from IntelligenceHub not confirmed."
+    },
+    {
+      "id": 5,
+      "name": "Brand Admin to Intelligence Signal to Campaign",
+      "verdict": "FAIL",
+      "steps": [
+        { "step": 1, "route": "/brand/intelligence", "status": "LIVE", "note": "BrandIntelligenceHub with signals" },
+        { "step": 2, "route": "/brand/intelligence (signal action)", "status": "PARTIAL", "note": "Signal selected but no campaign CTA found" },
+        { "step": 3, "route": "/brand/intelligence-pricing", "status": "SHELL", "note": "Hub links here instead of to campaign creation" },
+        { "step": 4, "route": "/brand/campaigns/new", "status": "LIVE", "note": "Exists but not linked from signal action surface" }
+      ],
+      "dead_ends": [
+        "BrandIntelligenceHub has no direct CTA from signal to /brand/campaigns/new",
+        "/brand/intelligence-pricing (link destination from intelligence hub) is a SHELL page"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Admin to Feed Management to Feed Health to Edit Feed",
+      "verdict": "PASS",
+      "steps": [
+        { "step": 1, "route": "/admin/feeds", "status": "LIVE", "note": "AdminFeedsHub with feed list and inline health" },
+        { "step": 2, "route": "/admin/feeds (health inline)", "status": "LIVE", "note": "Feed health metrics shown inline — no separate route needed" },
+        { "step": 3, "route": "/admin/feeds (edit modal)", "status": "LIVE", "note": "Inline modal editing confirmed" }
+      ],
+      "dead_ends": []
+    },
+    {
+      "id": 7,
+      "name": "User to Education to Course to Quiz to Certificate",
+      "verdict": "FAIL",
+      "steps": [
+        { "step": 1, "route": "/education", "status": "SHELL", "note": "Hardcoded static page; no live course list; CTA goes to /portal/signup not /courses" },
+        { "step": 2, "route": "/courses", "status": "LIVE", "note": "CoursesCatalog — MODULE_EDUCATION gated" },
+        { "step": 3, "route": "/courses/:slug", "status": "LIVE", "note": "" },
+        { "step": 4, "route": "/courses/:slug/learn", "status": "LIVE", "note": "Protected; useCourse + useLessonProgress" },
+        { "step": 5, "route": "/courses/:slug/learn (quiz embedded)", "status": "LIVE", "note": "QuizLesson embedded; handleQuizComplete -> markComplete" },
+        { "step": 6, "route": "/my-certificates", "status": "MISSING_CTA", "note": "Page exists but CoursePlayer has no link to it after completion" }
+      ],
+      "dead_ends": [
+        "/education landing is a shell — no live course listings, misleading entry point",
+        "CoursePlayer has no completion screen or certificate CTA after all lessons complete"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "User to Jobs to Job Detail to Apply",
+      "verdict": "PASS",
+      "steps": [
+        { "step": 1, "route": "/jobs", "status": "LIVE", "note": "useQuery, job_postings table" },
+        { "step": 2, "route": "/jobs/:slug", "status": "LIVE", "note": "" },
+        { "step": 3, "route": "/portal/signup", "status": "LIVE", "note": "JobDetail Apply Now links to /portal/signup for unauthenticated" },
+        { "step": 4, "route": "/portal/apply", "status": "LIVE", "note": "Portal apply route for authenticated users" }
+      ],
+      "dead_ends": []
+    },
+    {
+      "id": 9,
+      "name": "User to Events to Event Detail to Register",
+      "verdict": "FAIL",
+      "steps": [
+        { "step": 1, "route": "/events", "status": "LIVE", "note": "useEvents, events table" },
+        { "step": 2, "route": "/events/:slug", "status": "MISSING", "note": "Route not registered in App.tsx" },
+        { "step": 3, "route": "event registration", "status": "MISSING", "note": "No registration route exists" },
+        { "step": 4, "route": "registration confirmation", "status": "MISSING", "note": "No confirmation route exists" }
+      ],
+      "dead_ends": [
+        "No /events/:slug or /events/:id route registered — events listing is a dead end",
+        "No event registration flow exists anywhere in the route tree"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Visitor to For Brands to Request Access to Signup",
+      "verdict": "PASS",
+      "steps": [
+        { "step": 1, "route": "/for-brands", "status": "DEMO", "note": "Hardcoded STATS but CTA present" },
+        { "step": 2, "route": "/request-access", "status": "LIVE", "note": "ForBrands links to /request-access" },
+        { "step": 3, "route": "/request-access (success)", "status": "LIVE", "note": "Inserts to access_requests; shows /portal/signup link" },
+        { "step": 4, "route": "/portal/signup", "status": "LIVE", "note": "" },
+        { "step": 5, "route": "/portal/dashboard", "status": "LIVE", "note": "" }
+      ],
+      "dead_ends": []
+    }
+  ],
+  "dead_ends": [
+    {
+      "route": "/events",
+      "severity": "P0",
+      "description": "Events listing is LIVE but no event detail route exists. No registration flow anywhere."
+    },
+    {
+      "route": "/courses/:slug/learn",
+      "severity": "P0",
+      "description": "CoursePlayer has no completion screen or certificate CTA after all lessons and quizzes complete."
+    },
+    {
+      "route": "/intelligence (public)",
+      "severity": "P0",
+      "description": "PrelaunchGuard blocks /intelligence for unauthenticated visitors. Primary value proposition invisible pre-signup."
+    },
+    {
+      "route": "/portal/intelligence (TierGate)",
+      "severity": "P0",
+      "description": "TierGate upgrade path leads to DEMO /pricing page. No Stripe checkout reachable. Paywall cannot convert."
+    },
+    {
+      "route": "/brand/intelligence (signal action)",
+      "severity": "P1",
+      "description": "BrandIntelligenceHub has no cross-hub CTA from signal to /brand/campaigns/new."
+    },
+    {
+      "route": "/education",
+      "severity": "P1",
+      "description": "Education landing is a shell with no live course listings. Entry point for education journey is misleading."
+    },
+    {
+      "route": "/request-access (success state)",
+      "severity": "P3",
+      "description": "Signup CTA in success state is a text link, not a button. Minor conversion friction."
+    }
+  ],
+  "orphaned_routes": [
+    "/home — not in MainNav; MainNav links /intelligence which is a different component",
+    "/for-medspas — not in MainNav; direct URL only",
+    "/for-salons — not in MainNav; direct URL only",
+    "/api/docs — not in MainNav; developer audience only",
+    "/api/pricing — not in MainNav; developer audience only",
+    "/case-studies — not in MainNav; footer status unverified",
+    "/stories and /stories/:slug — not in MainNav",
+    "/how-it-works — not in MainNav",
+    "/marketing/* — MarketingLayout hub with no confirmed nav entry point from main site",
+    "/sales/* (top-level) — parallel to /portal/sales/*; not in main nav; potential duplicate",
+    "/portal/marketing-hub/* — separate from /portal/marketing/*; potential duplicate hub within portal",
+    "/pricing — separate from /plans; no canonical preference; both unreachable from main nav concurrently",
+    "/education/articles — not linked from /education landing or education navigation",
+    "/help — separate from /help/:slug CMS route; not in MainNav"
+  ],
+  "nav_compliance": {
+    "main_nav_links_confirmed": [
+      "/intelligence",
+      "/brands",
+      "/education",
+      "/events",
+      "/jobs",
+      "/professionals",
+      "/for-brands",
+      "/plans"
+    ],
+    "intelligence_is_position_1": true,
+    "commerce_not_in_main_nav": true,
+    "auth_pill_present": true
+  },
+  "overall": "FAIL",
+  "pass_count": 5,
+  "fail_count": 5,
+  "failures": [
+    "Journey 1: PrelaunchGuard blocks intelligence for unauthenticated visitors — primary value proposition invisible",
+    "Journey 2: TierGate upgrade path terminates at DEMO pricing page; no checkout reachable",
+    "Journey 5: BrandIntelligenceHub has no signal-to-campaign cross-hub CTA",
+    "Journey 7: /education is a shell; CoursePlayer has no certificate CTA post-completion",
+    "Journey 9: No event detail route registered; entire events registration flow missing"
+  ],
+  "recommended_fixes_by_priority": [
+    { "priority": "P0", "fix": "Register /events/:slug (EventDetail) and /events/:slug/register routes" },
+    { "priority": "P0", "fix": "Add completion screen to CoursePlayer with CTA to /my-certificates" },
+    { "priority": "P0", "fix": "Wire TierGate UpgradePrompt to startCheckout() instead of /pricing" },
+    { "priority": "P0", "fix": "Add public intelligence preview path — either remove PrelaunchGuard from /intelligence or create a dedicated preview route" },
+    { "priority": "P1", "fix": "Add signal-to-campaign CTA in BrandIntelligenceHub pointing to /brand/campaigns/new" },
+    { "priority": "P1", "fix": "Replace /education shell with live course listings or redirect to /courses" },
+    { "priority": "P2", "fix": "Consolidate /portal/marketing/* and /portal/marketing-hub/* to eliminate duplicate hub" },
+    { "priority": "P2", "fix": "Establish canonical pricing page between /plans and /pricing" }
+  ]
+}
