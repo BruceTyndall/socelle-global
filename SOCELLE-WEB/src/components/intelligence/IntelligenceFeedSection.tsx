@@ -9,6 +9,7 @@
    Feed:   featured card (lead) + 2-col standard card grid
    ═══════════════════════════════════════════════════════════════ */
 import { useMemo, useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import type {
   IntelligenceSignal,
@@ -28,7 +29,9 @@ interface FilterDef {
   types?: SignalType[];
 }
 
-const FEED_FILTERS: FilterDef[] = [
+// INTEL-UI-REMEDIATION-01: exported so Intelligence.tsx can derive signalTypes
+// from the active filter key and pass them to useIntelligence() for server-side filtering.
+export const FEED_FILTERS: FilterDef[] = [
   { key: 'all',        label: 'All Signals' },
   { key: 'treatment',  label: 'Treatment',  types: ['treatment_trend'] },
   { key: 'ingredient', label: 'Ingredients', types: ['ingredient_momentum', 'ingredient_trend'] },
@@ -40,12 +43,15 @@ const FEED_FILTERS: FilterDef[] = [
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface IntelligenceFeedSectionProps {
-  signals:       IntelligenceSignal[];
-  loading:       boolean;
-  isLive:        boolean;
-  marketPulse:   MarketPulse;
-  avgConfidence: number | null | undefined;
-  lastRunAt:     string | null | undefined;
+  signals:        IntelligenceSignal[];
+  loading:        boolean;
+  isLive:         boolean;
+  marketPulse:    MarketPulse;
+  avgConfidence:  number | null | undefined;
+  lastRunAt:      string | null | undefined;
+  /** INTEL-UI-REMEDIATION-01: controlled filter state (lifted to Intelligence.tsx) */
+  activeFilter:   string;
+  onFilterChange: (key: string) => void;
 }
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
@@ -78,9 +84,10 @@ export default function IntelligenceFeedSection({
   marketPulse,
   avgConfidence,
   lastRunAt,
+  activeFilter,
+  onFilterChange,
 }: IntelligenceFeedSectionProps) {
-  const [activeFilter, setActiveFilter] = useState<string>('all');
-  const [searchQuery,  setSearchQuery]  = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const searchRef = useRef<HTMLInputElement>(null);
 
   // ── Keyboard shortcut: "/" focuses search ─────────────────────
@@ -99,41 +106,29 @@ export default function IntelligenceFeedSection({
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  // ── Filter + search logic ─────────────────────────────────────
+  // ── Search logic ──────────────────────────────────────────────
+  // INTEL-UI-REMEDIATION-01: type filtering is now server-side (via useIntelligence signalTypes).
+  // This memo only applies client-side full-text search on the already-filtered signal set.
   const filteredSignals = useMemo<IntelligenceSignal[]>(() => {
-    const def  = FEED_FILTERS.find((f) => f.key === activeFilter);
-    const q    = searchQuery.trim().toLowerCase();
-
-    let result = signals;
-
-    // Type filter
-    if (def?.types && def.types.length > 0) {
-      const allowed = new Set<string>(def.types);
-      result = result.filter((s) => allowed.has(s.signal_type));
-    }
-
-    // Full-text search across key fields
-    if (q) {
-      result = result.filter((s) => {
-        const haystack = [
-          s.title,
-          s.description,
-          s.signal_type,
-          s.category,
-          s.source,
-          s.source_name,
-          ...(s.related_brands   ?? []),
-          ...(s.related_products ?? []),
-        ]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase();
-        return haystack.includes(q);
-      });
-    }
-
-    return result;
-  }, [signals, activeFilter, searchQuery]);
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return signals;
+    return signals.filter((s) => {
+      const haystack = [
+        s.title,
+        s.description,
+        s.signal_type,
+        s.category,
+        s.source,
+        s.source_name,
+        ...(s.related_brands   ?? []),
+        ...(s.related_products ?? []),
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [signals, searchQuery]);
 
   const featured    = filteredSignals[0]  ?? null;
   const gridSignals = filteredSignals.slice(1);
@@ -178,7 +173,7 @@ export default function IntelligenceFeedSection({
                   key={f.key}
                   role="tab"
                   aria-selected={isActive}
-                  onClick={() => setActiveFilter(f.key)}
+                  onClick={() => onFilterChange(f.key)}
                   className={[
                     'px-4 py-3 text-sm font-medium whitespace-nowrap transition-all duration-200',
                     'border-b-2 -mb-px relative',
@@ -267,7 +262,13 @@ export default function IntelligenceFeedSection({
                   {/* Featured lead card — slide-in if arrived in last 2 min */}
                   {featured && (
                     <div className={new Date(featured.updated_at).getTime() > Date.now() - 2 * 60 * 1000 ? 'signal-new-item' : undefined}>
-                      <SignalCardFeatured signal={featured} index={0} />
+                      <Link
+                        to={`/intelligence/signals/${featured.id}`}
+                        className="block focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none rounded-card"
+                        aria-label={`Read signal: ${featured.title}`}
+                      >
+                        <SignalCardFeatured signal={featured} index={0} />
+                      </Link>
                     </div>
                   )}
 
@@ -287,7 +288,13 @@ export default function IntelligenceFeedSection({
                           const isNew = new Date(signal.updated_at).getTime() > Date.now() - 2 * 60 * 1000;
                           return (
                             <div key={signal.id} className={isNew ? 'signal-new-item' : undefined}>
-                              <SignalCardStandard signal={signal} index={i} />
+                              <Link
+                                to={`/intelligence/signals/${signal.id}`}
+                                className="block h-full focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none rounded-card"
+                                aria-label={`Read signal: ${signal.title}`}
+                              >
+                                <SignalCardStandard signal={signal} index={i} />
+                              </Link>
                             </div>
                           );
                         })}
