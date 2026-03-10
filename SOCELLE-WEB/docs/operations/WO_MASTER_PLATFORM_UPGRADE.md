@@ -141,7 +141,7 @@ P2 GATE (starts when P1 PASS; PAY-UPGRADE-WO requires owner Stripe config)
 |------|------|------|--------|
 | **Team 0** | Command / QA Gatekeeping | build_tracker accuracy, proof pack validation, blocks any WO without proof | — (oversight) |
 | **Team 1** | Data + Feeds + Press Ingestion | Feed pipeline, API wiring, signal quality | MERCH-INTEL-03-DB, NEWSAPI-INGEST-01, DB-TYPES-02, MERCH-INTEL-03-FINAL |
-| **Team 2** | CMS + Editorial + Merchandising | CMS build, editorial pipeline, placements | CMS-SEED-01, CMS-WO-07, CMS-WO-08, CMS-WO-09, CMS-WO-10, CMS-WO-11, DATA-PRESS-PROOF |
+| **Team 2** | CMS + Editorial + Merchandising | CMS build, editorial pipeline, placements, block editing | CMS-SEED-01, CMS-WO-07, CMS-WO-08, CMS-WO-09, CMS-WO-10, CMS-WO-11, CMS-WO-12, DATA-PRESS-PROOF |
 | **Team 3** | Routes + Journey Dead-Ends | User journey completion, route hygiene | EVT-WO-02, ROUTE-CLEANUP-WO, BRAND-SIGNAL-WO, PAY-UPGRADE-WO |
 | **Team 4** | Code Debt + State Completion | TanStack migration, token cleanup, state coverage | DEBT-TANSTACK-REAL-6, P1-3, STATE-AUDIT-01 |
 | **Team 5** | Testing / CI | Test infrastructure, webhook audit | P2-1, P2-STRIPE |
@@ -770,6 +770,66 @@ SELECT COUNT(*) FROM story_drafts WHERE auto_classified_category='daily-brief';
 **Stop conditions**
 - pg_cron not available → document blocker, use alternative scheduler, escalate to Team 0
 - Edge function produces empty body → fix before deploying cron schedule
+
+---
+
+---
+
+### WO: CMS-WO-12
+**Team:** 2 — CMS + Editorial
+**Priority:** P1
+**Depends on:** CMS-WO-07, CMS-WO-10
+**Note:** Added by PATCH 8 — CMS must be editable at block/layout/grid level, not just placement level.
+
+**Owner goal / KPI**
+Owner can add, remove, reorder, and configure blocks on any CMS-backed page without touching code. PageRenderer is block-extensible: new block types can be added to the block library without rewriting PageRenderer. Grid and rail layouts are configurable via the block system, not hardcoded.
+
+**Exact requirements (PATCH 8)**
+1. **Block editability**: Every block on a CMS-backed page must be:
+   - Addable from block library (admin panel drag-from-library or click-to-add)
+   - Removable (delete with confirmation)
+   - Reorderable (drag/drop within page)
+   - Configurable (block-level props editable inline, e.g. headline, CTA label, image, layout variant)
+2. **Layout editability**: Grid and rail layouts must be selectable via block type, not hardcoded in PageRenderer. Example: `{ type: 'grid', columns: 3, gap: 'md' }` block wraps child blocks.
+3. **Block library extensibility**: Adding a new block type requires:
+   - Add to `BLOCK_REGISTRY` constant (new `{ type, label, defaultProps, component }` entry)
+   - Add corresponding React component in `/src/components/cms/blocks/`
+   - PageRenderer auto-picks it up via registry lookup — no PageRenderer changes needed
+4. **Block registry** must exist at `src/lib/cms/blockRegistry.ts` as the single source of truth for all block types.
+5. Current 12 block types (from AUTH-CORE-01..06) must all be registered in the registry.
+6. Admin UI in CmsPageEdit: block palette sidebar + drag-onto-canvas (or click-to-append at bottom)
+7. Each placed block shows: type label, edit button (inline props panel), move up/down handles, delete button
+
+**Files / areas touched**
+- `src/lib/cms/blockRegistry.ts` (new — block registry)
+- `src/components/cms/PageRenderer.tsx` (refactor to use registry lookup)
+- `src/pages/admin/cms/CmsPageEdit.tsx` (add block palette + reorder UI)
+- `src/components/cms/blocks/` (existing block components — no changes if already exist)
+
+**DB objects**
+- `cms_posts.blocks` JSONB column (existing) — block data stored here as ordered array
+
+**Acceptance tests**
+- Block registry has >= 12 entries (all current block types)
+- Adding new block type: add entry to BLOCK_REGISTRY → block appears in admin palette without PageRenderer edit
+- Dragging block to new position → cms_posts.blocks JSONB array updated, page renders in new order
+- Removing block → JSONB array updated, block no longer renders
+- Editing block prop → JSONB updated, page renders updated value
+- tsc=0
+
+**Skills Required (PATCH 3)**
+- `authoring-core-schema-validator` — block types coverage + registry completeness
+- `cms-status` — confirms block JSONB structure valid on cms_posts
+- `hub-shell-detector` — CmsPageEdit has all required states (loading/error/empty)
+- `build-gate` — tsc + build
+
+**Proof pack**
+- File: `docs/qa/verify_CMS-WO-12.json`
+- Required: block_registry_count, new_block_extensibility_test: PASS|FAIL, reorder_persists: true, tsc_exit: 0, overall: PASS|FAIL
+
+**Stop conditions**
+- PageRenderer requires edit to support new block types → STOP, fix registry pattern first
+- Block reorder does not persist to DB → STOP, fix useMutation before marking DONE
 
 ---
 
