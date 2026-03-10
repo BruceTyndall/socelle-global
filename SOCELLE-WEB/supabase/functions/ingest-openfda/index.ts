@@ -121,6 +121,13 @@ function recallClassToMagnitude(classification: string): number {
   }
 }
 
+/** Safe date parser — returns ISO string or falls back to now() */
+function safeIso(raw: string | null | undefined): string {
+  if (!raw) return new Date().toISOString();
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+}
+
 /** Simple fetch wrapper with timeout */
 async function fdaFetch<T>(url: string): Promise<FdaApiResponse<T> | null> {
   try {
@@ -141,6 +148,7 @@ async function fdaFetch<T>(url: string): Promise<FdaApiResponse<T> | null> {
 // ── Main Handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
+  try {
   const edgeControlResponse = await enforceEdgeFunctionEnabled('ingest-openfda', req);
   if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
@@ -201,23 +209,23 @@ Deno.serve(async (req: Request) => {
         confidence_tier:   'high',
         active:            true,
         status:            'active',
-        created_at:        reportedAt ? new Date(reportedAt).toISOString() : new Date().toISOString(),
+        created_at:        safeIso(reportedAt),
         updated_at:        new Date().toISOString(),
       };
     });
 
     for (let i = 0; i < rows.length; i += 50) {
       const chunk = rows.slice(i, i + 50);
-      const { error, count } = await supabase
+      const { data: inserted, error } = await supabase
         .from('market_signals')
         .upsert(chunk, { onConflict: 'source_type,external_id', ignoreDuplicates: true })
-        .select('id', { count: 'exact', head: true });
+        .select('id');
 
       if (error) {
         stats.errors.push(`cosmetics upsert chunk ${i}: ${error.message}`);
       } else {
-        stats.signals_inserted += count ?? 0;
-        stats.signals_skipped += chunk.length - (count ?? 0);
+        stats.signals_inserted += inserted?.length ?? 0;
+        stats.signals_skipped += chunk.length - (inserted?.length ?? 0);
       }
     }
   }
@@ -266,7 +274,7 @@ Deno.serve(async (req: Request) => {
           confidence_tier:   'high',
           active:            true,
           status:            'active',
-          created_at:        r.date_received ? new Date(r.date_received).toISOString() : new Date().toISOString(),
+          created_at:        safeIso(r.date_received),
           updated_at:        new Date().toISOString(),
         };
       });
@@ -274,16 +282,16 @@ Deno.serve(async (req: Request) => {
     if (rows.length) {
       for (let i = 0; i < rows.length; i += 50) {
         const chunk = rows.slice(i, i + 50);
-        const { error, count } = await supabase
+        const { data: inserted, error } = await supabase
           .from('market_signals')
           .upsert(chunk, { onConflict: 'source_type,external_id', ignoreDuplicates: true })
-          .select('id', { count: 'exact', head: true });
+          .select('id');
 
         if (error) {
           stats.errors.push(`device events upsert chunk ${i}: ${error.message}`);
         } else {
-          stats.signals_inserted += count ?? 0;
-          stats.signals_skipped += chunk.length - (count ?? 0);
+          stats.signals_inserted += inserted?.length ?? 0;
+          stats.signals_skipped += chunk.length - (inserted?.length ?? 0);
         }
       }
     }
@@ -298,4 +306,12 @@ Deno.serve(async (req: Request) => {
     JSON.stringify({ ok: true, ...stats }),
     { headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } },
   );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[ingest-openfda] unhandled error:', msg);
+    return new Response(
+      JSON.stringify({ ok: false, error: msg }),
+      { status: 500, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } },
+    );
+  }
 });

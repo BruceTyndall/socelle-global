@@ -150,6 +150,7 @@ const AddCompany = lazy(() => import('./pages/business/AddCompany'));
 const EditCompany = lazy(() => import('./pages/business/EditCompany'));
 const CrmTasks = lazy(() => import('./pages/business/CrmTasks'));
 const CrmSegments = lazy(() => import('./pages/business/CrmSegments'));
+const CrmConsent = lazy(() => import('./pages/business/CrmConsent'));
 const BookingDashboard = lazy(() => import('./pages/business/BookingDashboard'));
 const AppointmentCalendar = lazy(() => import('./pages/business/AppointmentCalendar'));
 const AppointmentDetail = lazy(() => import('./pages/business/AppointmentDetail'));
@@ -849,6 +850,11 @@ function App() {
                     <Route path="crm/segments" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <ModuleRoute moduleKey="MODULE_CRM"><CrmSegments /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="crm/consent" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_CRM"><CrmConsent /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="booking" element={

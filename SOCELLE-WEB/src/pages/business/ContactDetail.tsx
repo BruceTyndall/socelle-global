@@ -1326,6 +1326,92 @@ export default function ContactDetail() {
           </div>
         </div>
       )}
+
+      {/* ── CRM-WO-07: Link Signal Modal ─────────────────────────────────── */}
+      {showLinkSignal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-graphite/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl border border-accent-soft/30 shadow-xl w-full max-w-lg p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-semibold text-graphite flex items-center gap-2">
+                <Link2 className="w-4 h-4 text-accent" /> Link Market Signal to Contact
+              </h3>
+              <button
+                onClick={() => { setShowLinkSignal(false); setSignalSearch(''); setLinkError(null); setLinkSuccess(null); setLinkingSignalId(null); }}
+                className="w-7 h-7 rounded-full hover:bg-graphite/10 flex items-center justify-center"
+              >
+                <X className="w-4 h-4 text-graphite/60" />
+              </button>
+            </div>
+
+            {/* Search input */}
+            <div className="relative">
+              <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphite/40" />
+              <input
+                type="text"
+                placeholder="Search signals by title or category..."
+                value={signalSearch}
+                onChange={e => setSignalSearch(e.target.value)}
+                className="w-full h-9 pl-9 pr-3 rounded-full border border-accent-soft/30 text-sm text-graphite placeholder:text-graphite/40 focus:outline-none focus:border-accent/40 bg-background"
+                autoFocus
+              />
+            </div>
+
+            {/* Success feedback */}
+            {linkSuccess && (
+              <div className="flex items-center gap-2 bg-signal-up/10 border border-signal-up/20 rounded-lg px-3 py-2 text-sm text-signal-up font-medium">
+                <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                Signal linked: {linkSuccess}
+              </div>
+            )}
+
+            {/* Error feedback */}
+            {linkError && (
+              <div className="flex items-center gap-2 bg-signal-down/10 border border-signal-down/20 rounded-lg px-3 py-2 text-sm text-signal-down">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                {linkError}
+              </div>
+            )}
+
+            {/* Signal list */}
+            <div className="max-h-72 overflow-y-auto space-y-2">
+              {filteredSearchSignals.length === 0 ? (
+                <p className="text-sm text-graphite/50 py-4 text-center">No signals match your search.</p>
+              ) : (
+                filteredSearchSignals.map(signal => (
+                  <div
+                    key={signal.id}
+                    className="flex items-start justify-between gap-3 p-3 rounded-lg border border-accent-soft/20 hover:border-accent/20 hover:bg-accent-soft/20 transition-colors"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <TrendingUp className={`w-3 h-3 flex-shrink-0 ${signal.direction === 'up' ? 'text-signal-up' : signal.direction === 'down' ? 'text-signal-down' : 'text-signal-warn'}`} />
+                        <span className="text-[10px] text-graphite/40 uppercase">{signal.category ?? 'Market'}</span>
+                      </div>
+                      <p className="text-sm font-medium text-graphite line-clamp-1">{signal.title}</p>
+                      <p className="text-xs text-graphite/50 mt-0.5 line-clamp-1">{signal.description}</p>
+                    </div>
+                    <button
+                      onClick={() => handleLinkSignal(signal)}
+                      disabled={!!linkingSignalId || !!linkSuccess}
+                      className="h-7 px-3 rounded-full bg-accent text-white text-[11px] font-medium hover:bg-accent-hover disabled:opacity-40 transition-colors flex-shrink-0 inline-flex items-center gap-1"
+                    >
+                      {linkingSignalId === signal.id ? (
+                        <><Clock className="w-3 h-3 animate-spin" /> Linking...</>
+                      ) : (
+                        <><Link2 className="w-3 h-3" /> Link</>
+                      )}
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <p className="text-xs text-graphite/40 text-center">
+              Linking a signal adds it as an interaction in the contact's timeline.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
