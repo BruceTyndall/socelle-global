@@ -140,36 +140,37 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 
 ### P0 GATE — must be 100% PASS before P1 starts
 
-| WO ID | Title | Team | Status | Depends On | Proof Pack |
-|-------|-------|------|--------|------------|------------|
-| MERCH-INTEL-03-DB | Apply migration 000027: dedup, impact_score, display_order, fingerprint backfill | Team 1 | DONE | none | `docs/qa/verify_MERCH-INTEL-03-DB.json` |
-| NEWSAPI-INGEST-01 | GNews + NewsAPI ingestion live (Reddit on hold, Currents disabled-timeout); 74 signals added (47→121); source_domain=0 nulls; signal_type_enum fixed; tsc=0 | Team 1 | DONE | none | `docs/qa/verify_NEWSAPI-INGEST-01.json` commit 6a43a75 |
-| DB-TYPES-02 | Regen database.types.ts from live schema (migrations 000027–000031); tsc=0 | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_DB-TYPES-02.json` commit fbe7a60 |
+| WO ID | Title | Team | Status | Depends On | Proof Pack | Impl SHA | Scope |
+|-------|-------|------|--------|------------|------------|----------|-------|
+| MERCH-INTEL-03-DB | Apply migration 000027: dedup, impact_score, display_order, fingerprint backfill | Team 1 | DONE | none | `docs/qa/verify_MERCH-INTEL-03-DB.json` | `2f005fe` | db+docs |
+| NEWSAPI-INGEST-01 | GNews + NewsAPI ingestion live (Reddit on hold, Currents disabled-timeout); 74 signals added (47→121); source_domain=0 nulls; signal_type_enum fixed; tsc=0 | Team 1 | DONE | none | `docs/qa/verify_NEWSAPI-INGEST-01.json` | `6a43a75` | edge+docs |
+| DB-TYPES-02 | Regen database.types.ts from live schema (migrations 000027–000031); tsc=0 | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_DB-TYPES-02.json` | `fbe7a60` | code+docs |
 
 ### P1 GATE — CMS + Editorial (starts when P0 PASS; Team 2 + Team 3 + Team 4 run in parallel)
 
-| WO ID | Title | Team | Status | Depends On | Proof Pack |
-|-------|-------|------|--------|------------|------------|
-| CMS-SEED-01 | Seed 6 published cms_posts → editorial rail LIVE; 6 rows inserted (2 featured), migration 000033 applied, useStories confirmed LIVE | Team 2 | DONE | DB-TYPES-02 | `docs/qa/verify_CMS-SEED-01.json` |
-| CMS-WO-07 | story_drafts table + RLS + auto-ingest pipeline (feeds→drafts, not direct publish) | Team 2 | OPEN | CMS-SEED-01 | `docs/qa/verify_CMS-WO-07.json` |
-| CMS-WO-08 | Editorial approval workflow (draft→review→approve→publish, admin UI) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-08.json` |
-| CMS-WO-09 | WordPress-grade blog (scheduled_at, editorial calendar, OG/Twitter cards, schema.org Article, newsletter export, auto-sitemap) | Team 2 | OPEN | CMS-WO-08 | `docs/qa/verify_CMS-WO-09.json` |
-| CMS-WO-10 | content_placements table + Merchandising Console (owner changes any placement without code deploy) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-10.json` |
-| CMS-WO-11 | Daily Brief + Weekly Market Memo edge fns + pg_cron → story_drafts (not auto-publish) | Team 2 | OPEN | CMS-WO-07, CMS-WO-10 | `docs/qa/verify_CMS-WO-11.json` |
-| CMS-WO-12 | Layout Builder + Block Placement Editing (owner edits any block/layout/grid placement without code deploy) | Team 2 | OPEN | CMS-WO-10 | `docs/qa/verify_CMS-WO-12.json` |
-| DATA-PRESS-PROOF | Proof pack: 5 source layers, topic cap, dup rate, 30 signal sample, MERCH 1–12 | Team 2 | OPEN | NEWSAPI-INGEST-01, CMS-WO-07 | `docs/qa/verify_DATA_PRESS_VALUE.json` |
-| EVT-WO-02 | /events/:slug EventDetail + registration CTA + related signals | Team 3 | OPEN | P0 GATE | `docs/qa/verify_EVT-WO-02.json` |
-| ROUTE-CLEANUP-WO | Redirect orphaned routes: /home→/intelligence, /pricing→/plans, /for-medspas→/professionals, dual hubs | Team 3 | OPEN | P0 GATE | `docs/qa/verify_ROUTE-CLEANUP-WO.json` |
-| BRAND-SIGNAL-WO | BrandIntelligenceHub → signal → create_campaign CrossHubActionDispatcher | Team 3 | OPEN | P0 GATE | `docs/qa/verify_BRAND-SIGNAL-WO.json` |
-| PAY-UPGRADE-WO | TierGate → Stripe Checkout Session (BLOCKED: owner must configure stripe_price_id in Stripe dashboard) | Team 3 | BLOCKED | Owner prereq | `docs/qa/verify_PAY-UPGRADE-WO.json` |
-| DEBT-TANSTACK-REAL-6 | Migrate 6 raw useEffect+supabase violations to useQuery | Team 4 | OPEN | P0 GATE | `docs/qa/verify_DEBT-TANSTACK-REAL-6.json` |
-| MERCH-INTEL-03-FINAL | MERCH-01 (openfda source_url), MERCH-06 (paid signal volume), MERCH-10 (30d archive cron) | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_MERCH-INTEL-03-FINAL.json` |
-| P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | OPEN | P0 GATE | `docs/qa/verify_P1-3.json` |
-| STATE-AUDIT-01 | Skeleton/error/empty states on 23 priority shell pages | Team 4 | OPEN | P0 GATE | `docs/qa/verify_STATE-AUDIT-01.json` |
-| COVERAGE-EXPANSION-01 | Domain coverage expansion: 53 candidate feeds (nails, makeup, fragrance, bodycare, education_training, spa_hospitality hotel), 18 heroes enabled, 15/15 domains covered, dedup migration 000033 | Team 1 | DONE | none (parallel push-ahead) | `docs/qa/verify_COVERAGE_EXPANSION.json` |
-| MERCH-REMEDIATION-01 | Archive 68 off-topic signals (NASA/dog/depression topics); add provenance_tier column to market_signals; backfill from data_feeds; freshness decay + rankedScore in useIntelligence; timeline eligibility filter. Migrations 000035+000036 applied. MERCH 1–12 audit: 6 PASS, 6 WARN, 0 FAIL → overall PASS | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_INTEL_MERCH.json` |
-| MERCH-INTEL-IMAGE-CLICKS | Signal cards clickable → /intelligence/signals/:id; IntelligenceSignalDetail page (TanStack Query v5); getSignalImage() hook deployed; images on all signal cards. tsc=0, build=6.42s | Team 1 | DONE | MERCH-REMEDIATION-01 | `docs/qa/verify_INTEL-UI-CLICK-IMAGE-01.json` |
-| IDEA-MINING-01 | Pattern library from 10 comparable intelligence/feed/benchmark platforms (Inoreader, New Sloth, NewsData.io, PeakMetrics, Pulsar, Sprinklr, Listrak, AMP/Lifetimely, Benchmarkit.ai, Dash Social). 45 patterns, 10 top patterns, 7 anti-patterns, 3 implementation phases. Research + documentation only. Deliverable: docs/research/IDEA-MINING-01-comparables.md | Team 1 | DONE | MERCH-INTEL-IMAGE-CLICKS | `docs/qa/verify_IDEA-MINING-01.json` |
+| WO ID | Title | Team | Status | Depends On | Proof Pack | Impl SHA | Scope |
+|-------|-------|------|--------|------------|------------|----------|-------|
+| CMS-SEED-01 | Seed 6 published cms_posts → editorial rail LIVE; 6 rows inserted (2 featured), migration 000033 applied, useStories confirmed LIVE | Team 2 | DONE | DB-TYPES-02 | `docs/qa/verify_CMS-SEED-01.json` | `fe64d8e` | db+docs |
+| CMS-WO-07 | story_drafts table + RLS + auto-ingest pipeline (feeds→drafts, not direct publish) | Team 2 | OPEN | CMS-SEED-01 | `docs/qa/verify_CMS-WO-07.json` | — | — |
+| CMS-WO-08 | Editorial approval workflow (draft→review→approve→publish, admin UI) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-08.json` | — | — |
+| CMS-WO-09 | WordPress-grade blog (scheduled_at, editorial calendar, OG/Twitter cards, schema.org Article, newsletter export, auto-sitemap) | Team 2 | OPEN | CMS-WO-08 | `docs/qa/verify_CMS-WO-09.json` | — | — |
+| CMS-WO-10 | content_placements table + Merchandising Console (owner changes any placement without code deploy) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-10.json` | — | — |
+| CMS-WO-11 | Daily Brief + Weekly Market Memo edge fns + pg_cron → story_drafts (not auto-publish) | Team 2 | OPEN | CMS-WO-07, CMS-WO-10 | `docs/qa/verify_CMS-WO-11.json` | — | — |
+| CMS-WO-12 | Layout Builder + Block Placement Editing (owner edits any block/layout/grid placement without code deploy) | Team 2 | OPEN | CMS-WO-10 | `docs/qa/verify_CMS-WO-12.json` | — | — |
+| DATA-PRESS-PROOF | Proof pack: 5 source layers, topic cap, dup rate, 30 signal sample, MERCH 1–12 | Team 2 | OPEN | NEWSAPI-INGEST-01, CMS-WO-07 | `docs/qa/verify_DATA_PRESS_VALUE.json` | — | — |
+| EVT-WO-02 | /events/:slug EventDetail + registration CTA + related signals | Team 3 | OPEN | P0 GATE | `docs/qa/verify_EVT-WO-02.json` | — | — |
+| ROUTE-CLEANUP-WO | Redirect orphaned routes: /home→/intelligence, /pricing→/plans, /for-medspas→/professionals, dual hubs | Team 3 | OPEN | P0 GATE | `docs/qa/verify_ROUTE-CLEANUP-WO.json` | — | — |
+| BRAND-SIGNAL-WO | BrandIntelligenceHub → signal → create_campaign CrossHubActionDispatcher | Team 3 | OPEN | P0 GATE | `docs/qa/verify_BRAND-SIGNAL-WO.json` | — | — |
+| PAY-UPGRADE-WO | TierGate → Stripe Checkout Session (BLOCKED: owner must configure stripe_price_id in Stripe dashboard) | Team 3 | BLOCKED | Owner prereq | `docs/qa/verify_PAY-UPGRADE-WO.json` | — | — |
+| DEBT-TANSTACK-REAL-6 | Migrate 6 raw useEffect+supabase violations to useQuery | Team 4 | OPEN | P0 GATE | `docs/qa/verify_DEBT-TANSTACK-REAL-6.json` | — | — |
+| MERCH-INTEL-03-FINAL | MERCH-01 (openfda source_url), MERCH-06 (paid signal volume), MERCH-10 (30d archive cron) | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_MERCH-INTEL-03-FINAL.json` | — | — |
+| P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | OPEN | P0 GATE | `docs/qa/verify_P1-3.json` | — | — |
+| STATE-AUDIT-01 | Skeleton/error/empty states on 23 priority shell pages | Team 4 | OPEN | P0 GATE | `docs/qa/verify_STATE-AUDIT-01.json` | — | — |
+| COVERAGE-EXPANSION-01 | Domain coverage expansion: 53 candidate feeds (nails, makeup, fragrance, bodycare, education_training, spa_hospitality hotel), 18 heroes enabled, 15/15 domains covered, dedup migration 000033 | Team 1 | DONE | none (parallel push-ahead) | `docs/qa/verify_COVERAGE_EXPANSION.json` | pre-`2f005fe` | db+docs |
+| MERCH-REMEDIATION-01 | Archive 68 off-topic signals (NASA/dog/depression topics); add provenance_tier column to market_signals; backfill from data_feeds; freshness decay + rankedScore in useIntelligence; timeline eligibility filter. Migrations 000035+000036 applied. MERCH 1–12 audit: 6 PASS, 6 WARN, 0 FAIL → overall PASS | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_INTEL_MERCH.json` + `verify_MERCH-REMEDIATION-01.json` | `36e323a`+`690ea8d`+`94875a2`+`fc4b6cc`+`1722d1f` | db+code+docs |
+| MERCH-INTEL-IMAGE-CLICKS | Signal cards clickable → /intelligence/signals/:id; IntelligenceSignalDetail page (TanStack Query v5); getSignalImage() hook deployed; images on all signal cards. tsc=0, build=6.42s | Team 1 | DONE | MERCH-REMEDIATION-01 | `docs/qa/verify_INTEL-UI-CLICK-IMAGE-01.json` | pre-`2f005fe` | code+docs |
+| IDEA-MINING-01 | Pattern library from 10 comparable intelligence/feed/benchmark platforms (Inoreader, New Sloth, NewsData.io, PeakMetrics, Pulsar, Sprinklr, Listrak, AMP/Lifetimely, Benchmarkit.ai, Dash Social). 45 patterns, 10 top patterns, 7 anti-patterns, 3 implementation phases. Research + documentation only. Deliverable: docs/research/IDEA-MINING-01-comparables.md | Team 1 | DONE | MERCH-INTEL-IMAGE-CLICKS | `docs/qa/verify_IDEA-MINING-01.json` | `951fd5a` | docs |
+| INTEL-UI-REMEDIATION-01 | server-side category filtering (signalTypes? in useIntelligence), image diversity (ID-hash in useSignalImage), spotlightTrends 3→5. GUARDRAIL-01 cleared. | Team 1 | OPEN | IDEA-MINING-01 | `docs/qa/verify_INTEL-UI-REMEDIATION-01.json` | — | — |
 
 ### GUARDRAIL-01 STATUS (gate for all Intelligence UI + feed UX work)
 
