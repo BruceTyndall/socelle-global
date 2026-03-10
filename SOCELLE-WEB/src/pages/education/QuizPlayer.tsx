@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   RotateCcw,
 } from 'lucide-react';
+// Note: Loader2 is still used in the submit button spinner below
 import { useQuiz, type QuizResult } from '../../lib/education/useQuiz';
 
 interface QuizPlayerProps {
@@ -81,17 +82,64 @@ export default function QuizPlayer({ quizId, onComplete }: QuizPlayerProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-6 h-6 text-accent animate-spin" />
+      <div className="max-w-2xl mx-auto space-y-4" aria-busy="true" aria-label="Loading quiz">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="space-y-2">
+            <div className="h-5 w-48 bg-graphite/10 rounded animate-pulse" />
+            <div className="h-3.5 w-64 bg-graphite/8 rounded animate-pulse" />
+          </div>
+          <div className="h-5 w-14 bg-graphite/10 rounded animate-pulse" />
+        </div>
+        {/* Progress bar skeleton */}
+        <div className="h-1.5 bg-graphite/10 rounded-full animate-pulse mb-6" />
+        {/* Question skeletons */}
+        {[1, 2, 3].map(i => (
+          <div key={i} className="p-5 bg-mn-card rounded-xl border border-graphite/5 space-y-3">
+            <div className="h-4 bg-graphite/10 rounded animate-pulse" style={{ width: `${60 + i * 10}%` }} />
+            <div className="space-y-2">
+              {[1, 2, 3, 4].map(j => (
+                <div key={j} className="h-10 bg-graphite/6 rounded-lg animate-pulse" />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
-  if (error || !quiz) {
+  if (error) {
     return (
-      <div className="text-center py-12">
-        <AlertTriangle className="w-8 h-8 text-signal-warn mx-auto mb-3" />
-        <p className="text-graphite/60 text-sm">{error || 'Quiz not found'}</p>
+      <div className="text-center py-16">
+        <div className="w-16 h-16 bg-signal-warn/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <AlertTriangle className="w-8 h-8 text-signal-warn" />
+        </div>
+        <h3 className="text-base font-semibold text-graphite mb-2">Quiz unavailable</h3>
+        <p className="text-graphite/60 text-sm mb-5">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-mn-dark text-mn-bg text-sm font-semibold rounded-full hover:bg-graphite/80 transition-colors"
+        >
+          <RotateCcw className="w-4 h-4" /> Try again
+        </button>
+      </div>
+    );
+  }
+
+  if (!quiz) {
+    return (
+      <div className="text-center py-16">
+        <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <AlertTriangle className="w-8 h-8 text-accent" />
+        </div>
+        <h3 className="text-base font-semibold text-graphite mb-2">Quiz not found</h3>
+        <p className="text-graphite/60 text-sm mb-5">This quiz could not be loaded. It may have been removed or the link is incorrect.</p>
+        <button
+          onClick={() => window.history.back()}
+          className="inline-flex items-center gap-2 px-5 py-2.5 border border-graphite/20 text-graphite text-sm font-semibold rounded-full hover:bg-graphite/5 transition-colors"
+        >
+          Go back
+        </button>
       </div>
     );
   }
@@ -161,6 +209,25 @@ export default function QuizPlayer({ quizId, onComplete }: QuizPlayerProps) {
   // Quiz form
   const questions = quiz.quiz_questions || [];
   const answeredCount = Object.keys(answers).length;
+
+  // Empty state — quiz has no questions
+  if (questions.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <AlertTriangle className="w-8 h-8 text-accent" />
+        </div>
+        <h3 className="text-base font-semibold text-graphite mb-2">No questions in this quiz</h3>
+        <p className="text-graphite/60 text-sm mb-5">This quiz has no questions yet. Check back later or return to the course.</p>
+        <button
+          onClick={() => window.history.back()}
+          className="inline-flex items-center gap-2 px-5 py-2.5 border border-graphite/20 text-graphite text-sm font-semibold rounded-full hover:bg-graphite/5 transition-colors"
+        >
+          Back to course
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto">

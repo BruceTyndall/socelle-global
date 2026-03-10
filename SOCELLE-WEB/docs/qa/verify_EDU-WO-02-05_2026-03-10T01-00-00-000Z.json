@@ -1,0 +1,47 @@
+{
+  "wo_id": "EDU-WO-02/05 + QuizPlayer",
+  "timestamp": "2026-03-10T01:00:00.000Z",
+  "skills_run": ["build-gate", "dev-best-practice-checker", "hub-shell-detector"],
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit → exit 0; npm run build → exit 0 (built in 5.66s)"
+    },
+    "dev-best-practice-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "QuizPlayer.tsx: already using TanStack Query via useQuiz hook — no raw useEffect+supabase present. EducationDashboard.tsx: useQuery directly. CECredits (business): useCECredits hook (TanStack Query v5). No raw useEffect+supabase in any modified file."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "EducationDashboard.tsx: live data via useQuery (useMyEnrollments), skeleton shimmer, error state + retry, empty state with CTA, KPI strip, course list, certificates. CECredits.tsx: live data via useCECredits, skeleton shimmer, error state + retry, empty state, full table, CSV export. QuizPlayer.tsx: skeleton shimmer loading (3 question blocks), error state + retry, empty state (no questions) + back CTA."
+    }
+  },
+  "overall": "PASS",
+  "files_modified": [
+    "src/pages/education/QuizPlayer.tsx",
+    "src/pages/business/CECredits.tsx",
+    "src/pages/business/EducationDashboard.tsx (created)",
+    "src/App.tsx (route + lazy import added)"
+  ],
+  "live_data": {
+    "EducationDashboard": "LIVE — useQuery from course_enrollments joined with courses table",
+    "CECredits_business": "LIVE — useCECredits hook (certificates + course_enrollments, TanStack Query v5)",
+    "QuizPlayer": "N/A — states fix only; data already live via useQuiz (TanStack Query v5)"
+  },
+  "states_verified": {
+    "QuizPlayer_loading": "skeleton shimmer — 3 question-sized blocks + header + progress bar",
+    "QuizPlayer_error": "AlertTriangle icon + retry button (window.location.reload)",
+    "QuizPlayer_empty": "no-questions state + back button",
+    "EducationDashboard_loading": "KPI strip skeleton + 3 course row skeletons",
+    "EducationDashboard_error": "AlertTriangle + retry (refetch())",
+    "EducationDashboard_empty": "Pearl Mineral illustration + headline + body + Browse Courses CTA",
+    "CECredits_loading": "full skeleton shimmer (KPI card + category breakdown + table rows)",
+    "CECredits_error": "AlertTriangle + retry + error message",
+    "CECredits_empty": "GraduationCap illustration + headline + body + Browse CE Courses CTA"
+  },
+  "banned_terms_checked": true,
+  "mock_data_removed": "src/pages/business/CECredits.tsx: getCEProgress() + getProtocols() from mockProtocols removed; replaced with useCECredits (live DB)"
+}

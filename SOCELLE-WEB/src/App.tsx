@@ -135,6 +135,7 @@ const BusinessIntelligenceHub = lazy(() => import('./pages/business/Intelligence
 const AIAdvisor = lazy(() => import('./pages/business/AIAdvisor'));
 const NotificationPreferences = lazy(() => import('./pages/business/NotificationPreferences'));
 const BusinessCECredits = lazy(() => import('./pages/business/CECredits'));
+const BusinessEducationDashboard = lazy(() => import('./pages/business/EducationDashboard'));
 const LocationsDashboard = lazy(() => import('./pages/business/LocationsDashboard'));
 const BenchmarkDashboard = lazy(() => import('./pages/business/BenchmarkDashboard'));
 
@@ -706,6 +707,11 @@ function App() {
                     <Route path="ce-credits" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <BusinessCECredits />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="education" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <BusinessEducationDashboard />
                       </ProtectedRoute>
                     } />
                     <Route path="locations" element={
