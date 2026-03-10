@@ -1,0 +1,25 @@
+{
+  "wo_id": "DB-TYPES-02",
+  "timestamp": "2026-03-10T07:50:00.000Z",
+  "skills_run": ["schema-drift-detector", "type-generation-validator"],
+  "results": {
+    "command": "supabase gen types typescript --project-id rumdmulxzmjtsplsjngi > src/lib/database.types.ts",
+    "output_file": "SOCELLE-WEB/src/lib/database.types.ts",
+    "tsc_noEmit": "PASS — exit 0",
+    "key_columns_verified": [
+      "market_signals.display_order",
+      "market_signals.fingerprint",
+      "market_signals.source_domain",
+      "market_signals.thumbnail_url",
+      "market_signals.source_url",
+      "market_signals.impact_score",
+      "market_signals.vertical",
+      "market_signals.topic",
+      "market_signals.tier_min",
+      "data_feeds.display_order",
+      "data_feeds.vertical",
+      "data_feeds.tier_min"
+    ]
+  },
+  "overall": "PASS"
+}

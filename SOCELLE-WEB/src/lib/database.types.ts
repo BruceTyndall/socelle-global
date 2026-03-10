@@ -1,4 +1,3 @@
-Using workdir /Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL
 export type Json =
   | string
   | number
@@ -1279,6 +1278,9 @@ export type Database = {
           location: string | null
           longitude: number | null
           name: string
+          npi_number: string | null
+          npi_verified: boolean | null
+          npi_verified_at: string | null
           phone: string | null
           seeded_by: string | null
           slug: string | null
@@ -1310,6 +1312,9 @@ export type Database = {
           location?: string | null
           longitude?: number | null
           name: string
+          npi_number?: string | null
+          npi_verified?: boolean | null
+          npi_verified_at?: string | null
           phone?: string | null
           seeded_by?: string | null
           slug?: string | null
@@ -1341,6 +1346,9 @@ export type Database = {
           location?: string | null
           longitude?: number | null
           name?: string
+          npi_number?: string | null
+          npi_verified?: boolean | null
+          npi_verified_at?: string | null
           phone?: string | null
           seeded_by?: string | null
           slug?: string | null
@@ -1478,6 +1486,8 @@ export type Database = {
           completion_status: Database["public"]["Enums"]["protocol_completion_status"]
           contraindications: string[] | null
           created_at: string | null
+          embedding: string | null
+          embedding_updated_at: string | null
           estimated_training_hours: number | null
           id: string
           last_edited_at: string | null
@@ -1503,6 +1513,8 @@ export type Database = {
           completion_status?: Database["public"]["Enums"]["protocol_completion_status"]
           contraindications?: string[] | null
           created_at?: string | null
+          embedding?: string | null
+          embedding_updated_at?: string | null
           estimated_training_hours?: number | null
           id?: string
           last_edited_at?: string | null
@@ -1528,6 +1540,8 @@ export type Database = {
           completion_status?: Database["public"]["Enums"]["protocol_completion_status"]
           contraindications?: string[] | null
           created_at?: string | null
+          embedding?: string | null
+          embedding_updated_at?: string | null
           estimated_training_hours?: number | null
           id?: string
           last_edited_at?: string | null
@@ -2092,6 +2106,7 @@ export type Database = {
           category: string
           consecutive_failures: number | null
           created_at: string | null
+          display_order: number
           endpoint_url: string | null
           feed_type: string
           health_status: string | null
@@ -2102,9 +2117,12 @@ export type Database = {
           last_success_at: string | null
           name: string
           poll_interval_minutes: number | null
+          priority: number | null
           provenance_tier: number | null
           signal_count: number | null
+          tier_min: string | null
           updated_at: string | null
+          vertical: string | null
         }
         Insert: {
           api_key_env_var?: string | null
@@ -2112,6 +2130,7 @@ export type Database = {
           category: string
           consecutive_failures?: number | null
           created_at?: string | null
+          display_order?: number
           endpoint_url?: string | null
           feed_type: string
           health_status?: string | null
@@ -2122,9 +2141,12 @@ export type Database = {
           last_success_at?: string | null
           name: string
           poll_interval_minutes?: number | null
+          priority?: number | null
           provenance_tier?: number | null
           signal_count?: number | null
+          tier_min?: string | null
           updated_at?: string | null
+          vertical?: string | null
         }
         Update: {
           api_key_env_var?: string | null
@@ -2132,6 +2154,7 @@ export type Database = {
           category?: string
           consecutive_failures?: number | null
           created_at?: string | null
+          display_order?: number
           endpoint_url?: string | null
           feed_type?: string
           health_status?: string | null
@@ -2142,9 +2165,12 @@ export type Database = {
           last_success_at?: string | null
           name?: string
           poll_interval_minutes?: number | null
+          priority?: number | null
           provenance_tier?: number | null
           signal_count?: number | null
+          tier_min?: string | null
           updated_at?: string | null
+          vertical?: string | null
         }
         Relationships: []
       }
@@ -2223,6 +2249,36 @@ export type Database = {
           metadata?: Json | null
           source_file?: string
           status?: string
+        }
+        Relationships: []
+      }
+      embedding_queue: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: number
+          processed_at: string | null
+          row_id: string
+          status: string
+          table_name: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: number
+          processed_at?: string | null
+          row_id: string
+          status?: string
+          table_name: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: number
+          processed_at?: string | null
+          row_id?: string
+          status?: string
+          table_name?: string
         }
         Relationships: []
       }
@@ -2794,7 +2850,11 @@ export type Database = {
           expires_at: string | null
           external_id: string | null
           fingerprint: string | null
+          geo_country: string | null
+          geo_region: string | null
           id: string
+          image_url: string | null
+          impact_score: number | null
           is_duplicate: boolean
           magnitude: number
           region: string | null
@@ -2803,13 +2863,20 @@ export type Database = {
           signal_key: string
           signal_type: Database["public"]["Enums"]["signal_type_enum"]
           source: string | null
+          source_domain: string | null
           source_feed_id: string | null
           source_name: string | null
           source_type: string | null
+          source_url: string | null
           status: string | null
+          thumbnail_url: string | null
+          tier_min: string | null
           tier_visibility: string | null
           title: string
+          topic: string | null
           updated_at: string
+          vertical: string | null
+          why_it_matters: string | null
         }
         Insert: {
           active?: boolean
@@ -2825,7 +2892,11 @@ export type Database = {
           expires_at?: string | null
           external_id?: string | null
           fingerprint?: string | null
+          geo_country?: string | null
+          geo_region?: string | null
           id?: string
+          image_url?: string | null
+          impact_score?: number | null
           is_duplicate?: boolean
           magnitude: number
           region?: string | null
@@ -2834,13 +2905,20 @@ export type Database = {
           signal_key: string
           signal_type: Database["public"]["Enums"]["signal_type_enum"]
           source?: string | null
+          source_domain?: string | null
           source_feed_id?: string | null
           source_name?: string | null
           source_type?: string | null
+          source_url?: string | null
           status?: string | null
+          thumbnail_url?: string | null
+          tier_min?: string | null
           tier_visibility?: string | null
           title: string
+          topic?: string | null
           updated_at?: string
+          vertical?: string | null
+          why_it_matters?: string | null
         }
         Update: {
           active?: boolean
@@ -2856,7 +2934,11 @@ export type Database = {
           expires_at?: string | null
           external_id?: string | null
           fingerprint?: string | null
+          geo_country?: string | null
+          geo_region?: string | null
           id?: string
+          image_url?: string | null
+          impact_score?: number | null
           is_duplicate?: boolean
           magnitude?: number
           region?: string | null
@@ -2865,13 +2947,20 @@ export type Database = {
           signal_key?: string
           signal_type?: Database["public"]["Enums"]["signal_type_enum"]
           source?: string | null
+          source_domain?: string | null
           source_feed_id?: string | null
           source_name?: string | null
           source_type?: string | null
+          source_url?: string | null
           status?: string | null
+          thumbnail_url?: string | null
+          tier_min?: string | null
           tier_visibility?: string | null
           title?: string
+          topic?: string | null
           updated_at?: string
+          vertical?: string | null
+          why_it_matters?: string | null
         }
         Relationships: [
           {
@@ -4053,6 +4142,8 @@ export type Database = {
           category: string | null
           contraindications: string[] | null
           created_at: string | null
+          embedding: string | null
+          embedding_updated_at: string | null
           id: string
           in_service_usage_allowed: string | null
           key_ingredients: string[] | null
@@ -4068,6 +4159,8 @@ export type Database = {
           category?: string | null
           contraindications?: string[] | null
           created_at?: string | null
+          embedding?: string | null
+          embedding_updated_at?: string | null
           id?: string
           in_service_usage_allowed?: string | null
           key_ingredients?: string[] | null
@@ -4083,6 +4176,8 @@ export type Database = {
           category?: string | null
           contraindications?: string[] | null
           created_at?: string | null
+          embedding?: string | null
+          embedding_updated_at?: string | null
           id?: string
           in_service_usage_allowed?: string | null
           key_ingredients?: string[] | null
@@ -4557,6 +4652,8 @@ export type Database = {
           brand_id: string | null
           category: string | null
           created_at: string | null
+          embedding: string | null
+          embedding_updated_at: string | null
           id: string
           key_ingredients: string[] | null
           msrp: number | null
@@ -4572,6 +4669,8 @@ export type Database = {
           brand_id?: string | null
           category?: string | null
           created_at?: string | null
+          embedding?: string | null
+          embedding_updated_at?: string | null
           id?: string
           key_ingredients?: string[] | null
           msrp?: number | null
@@ -4587,6 +4686,8 @@ export type Database = {
           brand_id?: string | null
           category?: string | null
           created_at?: string | null
+          embedding?: string | null
+          embedding_updated_at?: string | null
           id?: string
           key_ingredients?: string[] | null
           msrp?: number | null
@@ -6015,6 +6116,17 @@ export type Database = {
         | "pricing_benchmark"
         | "regulatory_alert"
         | "education"
+        | "industry_news"
+        | "brand_update"
+        | "press_release"
+        | "social_trend"
+        | "job_market"
+        | "event_signal"
+        | "research_insight"
+        | "ingredient_trend"
+        | "market_data"
+        | "regional_market"
+        | "supply_chain"
       spa_type_enum: "medspa" | "spa" | "hybrid"
       submission_status:
         | "draft"
@@ -6188,6 +6300,17 @@ export const Constants = {
         "pricing_benchmark",
         "regulatory_alert",
         "education",
+        "industry_news",
+        "brand_update",
+        "press_release",
+        "social_trend",
+        "job_market",
+        "event_signal",
+        "research_insight",
+        "ingredient_trend",
+        "market_data",
+        "regional_market",
+        "supply_chain",
       ],
       spa_type_enum: ["medspa", "spa", "hybrid"],
       submission_status: [
