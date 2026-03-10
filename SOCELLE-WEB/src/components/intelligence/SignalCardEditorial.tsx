@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
+import EvidenceStrip from './EvidenceStrip';
 
 // ─── Editorial section labels ────────────────────────────────────────────────
 const TYPE_LABELS: Partial<Record<SignalType, string>> = {
@@ -197,8 +198,11 @@ export function SignalCardFeatured({
           </p>
         )}
 
+        {/* ── Evidence Strip ───────────────────────────────────── */}
+        <EvidenceStrip signal={signal} />
+
         {/* ── Footer ───────────────────────────────────────────── */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 mt-5">
           <div className="flex items-center gap-5">
             {signal.confidence_score != null && (
               <ConfidenceBar
@@ -206,9 +210,6 @@ export function SignalCardFeatured({
                 dir={signal.direction}
                 type={signal.signal_type}
               />
-            )}
-            {source && (
-              <span className="text-label text-graphite/28 truncate max-w-[180px]">{source}</span>
             )}
           </div>
 

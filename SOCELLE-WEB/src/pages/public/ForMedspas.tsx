@@ -11,8 +11,8 @@ import WordReveal from '../../components/motion/WordReveal';
 import GradientMark from '../../components/motion/GradientMark';
 import SplitPanel from '../../components/sections/SplitPanel';
 import SiteFooter from '../../components/sections/SiteFooter';
-import AnimatedCounter from '../../components/public/AnimatedCounter';
 import { useCmsPage } from '../../lib/useCmsPage';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 /* ══════════════════════════════════════════════════════════════════
    ForMedspas — Pearl Mineral V2
@@ -92,6 +92,7 @@ const jsonLd = {
 
 export default function ForMedspas() {
   const { isLive: _cmsLive } = useCmsPage('for-medspas');
+  const { signals, isLive: signalsLive, loading: signalsLoading } = useIntelligence({ vertical: 'medspa', limit: 3 });
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
@@ -378,28 +379,78 @@ export default function ForMedspas() {
         </div>
       </section>
 
-      {/* ── Metrics Row — DEMO ──────────────────────────────────────── */}
+      {/* ── Live Medspa Signal Preview ───────────────────────────── */}
       <section className="bg-mn-bg py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center mb-8">
-            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
-              DEMO
-            </span>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {METRICS.map((m, idx) => (
-              <BlockReveal key={m.label} delay={idx * 100}>
-                <div className="text-center">
-                  <p className="font-sans font-semibold text-[2.5rem] lg:text-[3rem] text-graphite leading-none mb-2">
-                    <AnimatedCounter value={m.value} />
-                  </p>
-                  <p className="text-sm text-graphite/50 font-sans">
-                    {m.label}
-                  </p>
+          <BlockReveal>
+            <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+              <div>
+                <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-2">
+                  MEDSPA INTELLIGENCE FEED
+                </p>
+                <h2 className="font-sans font-semibold text-xl text-graphite">
+                  Live Signals for Medical Aesthetics
+                </h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${signalsLive ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-warn/10 text-signal-warn'}`}>
+                  {signalsLive ? 'LIVE' : 'DEMO'}
+                </span>
+                <Link to="/intelligence" className="text-sm font-medium text-accent hover:text-accent/75 transition-colors">
+                  View Full Feed →
+                </Link>
+              </div>
+            </div>
+          </BlockReveal>
+
+          {signalsLoading ? (
+            <div className="grid sm:grid-cols-3 gap-5">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="bg-white rounded-2xl p-6 animate-pulse h-36">
+                  <div className="h-3 bg-graphite/8 rounded w-1/3 mb-3" />
+                  <div className="h-4 bg-graphite/8 rounded w-full mb-2" />
+                  <div className="h-4 bg-graphite/8 rounded w-4/5" />
                 </div>
-              </BlockReveal>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : signals.length > 0 ? (
+            <div className="grid sm:grid-cols-3 gap-5">
+              {signals.map((signal) => (
+                <BlockReveal key={signal.id}>
+                  <Link
+                    to="/intelligence"
+                    className="block bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-graphite/6 group"
+                  >
+                    <p className="text-[0.6875rem] tracking-[0.08em] font-semibold uppercase text-accent mb-2">
+                      {signal.category ?? signal.signal_type}
+                    </p>
+                    <p className="text-sm font-semibold text-graphite leading-snug line-clamp-3 group-hover:text-graphite/75 transition-colors">
+                      {signal.title}
+                    </p>
+                    {signal.magnitude !== 0 && (
+                      <p className={`text-xs font-mono font-semibold mt-2 ${signal.direction === 'up' ? 'text-signal-up' : signal.direction === 'down' ? 'text-signal-down' : 'text-graphite/40'}`}>
+                        {signal.direction === 'up' ? '+' : signal.direction === 'down' ? '−' : ''}{Math.abs(signal.magnitude)}%
+                      </p>
+                    )}
+                  </Link>
+                </BlockReveal>
+              ))}
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-3 gap-5">
+              {[
+                { category: 'Regulatory', title: 'California AB-1742 tightens nurse injector supervision ratios', trend: 'New' },
+                { category: 'Treatment Trend', title: 'Exosome therapy adoption gaining velocity in medspa practices', trend: '+34%' },
+                { category: 'Ingredient Intel', title: 'Peptide complex formulations seeing clinical adoption acceleration', trend: '+28%' },
+              ].map((item) => (
+                <Link key={item.category} to="/intelligence" className="block bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-graphite/6 group">
+                  <p className="text-[0.6875rem] tracking-[0.08em] font-semibold uppercase text-accent mb-2">{item.category}</p>
+                  <p className="text-sm font-semibold text-graphite leading-snug line-clamp-3 group-hover:text-graphite/75 transition-colors">{item.title}</p>
+                  <p className="text-xs font-mono font-semibold text-signal-up mt-2">{item.trend}</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

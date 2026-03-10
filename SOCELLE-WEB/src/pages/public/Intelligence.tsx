@@ -4,7 +4,7 @@
    PREVIEW banner when live feeds are not yet populated
    Pearl Mineral V2 tokens only — no hardcoded hex, no pro-*
    ═══════════════════════════════════════════════════════════════ */
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import MainNav from '../../components/MainNav';
 import JsonLd from '../../components/seo/JsonLd';
@@ -62,8 +62,21 @@ function timeAgo(dateStr: string): string {
 }
 
 /* ═══════════════════════════════════════════════════════════════ */
+type VerticalFilter = 'all' | 'medspa' | 'salon' | 'beauty_brand';
+
+const VERTICAL_TABS: { key: VerticalFilter; label: string }[] = [
+  { key: 'all',          label: 'All Signals' },
+  { key: 'medspa',       label: 'Medspa' },
+  { key: 'salon',        label: 'Salon' },
+  { key: 'beauty_brand', label: 'Brands' },
+];
+
 export default function Intelligence() {
-  const { signals, isLive, loading, marketPulse } = useIntelligence();
+  const [activeVertical, setActiveVertical] = useState<VerticalFilter>('medspa');
+
+  const { signals, isLive, loading, marketPulse } = useIntelligence(
+    activeVertical === 'all' ? undefined : { vertical: activeVertical as 'medspa' | 'salon' | 'beauty_brand' }
+  );
   const {
     totalFeeds,
     totalSignals,
@@ -222,6 +235,36 @@ export default function Intelligence() {
           <ApiStatusRibbon showDetailed={false} />
         </div>
       )}
+
+      {/* ═══ VERTICAL TOGGLE ══════════════════════════════════════ */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <nav
+          className="flex items-end gap-0 border-b border-graphite/8 overflow-x-auto"
+          role="tablist"
+          aria-label="Filter signals by vertical"
+        >
+          {VERTICAL_TABS.map((tab) => {
+            const isActive = tab.key === activeVertical;
+            return (
+              <button
+                key={tab.key}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveVertical(tab.key)}
+                className={[
+                  'px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-200',
+                  'border-b-2 -mb-px',
+                  isActive
+                    ? 'text-graphite border-graphite'
+                    : 'text-graphite/40 border-transparent hover:text-graphite/65 hover:border-graphite/20',
+                ].join(' ')}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
 
       {/* ═══ EDITORIAL SIGNAL FEED ════════════════════════════════ */}
       <IntelligenceFeedSection

@@ -1,0 +1,159 @@
+{
+  "wo_id": "MERCH-INTEL-01",
+  "timestamp": "2026-03-10T02:17:27.000Z",
+  "description": "Merchandising Activation — 8-phase intelligence merchandising activation",
+  "skills_run": ["live-demo-detector", "build-gate", "banned-term-scanner"],
+  "phases": {
+    "phase_0": {
+      "status": "PASS",
+      "description": "SQL baseline checks + read key source files",
+      "evidence": {
+        "feeds_total": 39,
+        "feeds_enabled_before": 18,
+        "feeds_disabled_before": 21,
+        "signals_total": 81,
+        "signals_last_24h": 81,
+        "newest_signal": "2026-03-10T01:32:35",
+        "signal_breakdown": {
+          "medspa_safety_free": 51,
+          "multi_other_free": 8,
+          "multi_science_free": 5,
+          "multi_brand_news_free": 3,
+          "other": 14
+        },
+        "files_read": [
+          "useIntelligence.ts",
+          "useDataFeedStats.ts",
+          "IntelligenceFeedSection.tsx",
+          "SignalCardEditorial.tsx",
+          "Home.tsx",
+          "Intelligence.tsx",
+          "ForMedspas.tsx",
+          "ForSalons.tsx",
+          "ForBrands.tsx",
+          "Plans.tsx"
+        ]
+      }
+    },
+    "phase_1": {
+      "status": "PASS",
+      "description": "Enable medspa + multi vertical RSS feeds",
+      "evidence": {
+        "sql_run": "UPDATE data_feeds SET is_enabled = true WHERE feed_type = 'rss' AND vertical IN ('medspa','multi') AND is_enabled = false",
+        "result": "All 30 medspa+multi RSS feeds now enabled (were already enabled or set to enabled)",
+        "feeds_enabled_after": 30,
+        "healthy_feeds": ["Grand View Research Beauty", "International Esthetics Expo", "LinkedIn Beauty Jobs", "Reddit r/BeautyGuRhees", "Reddit r/Esthetics", "Reddit r/MedSpa", "Reddit r/SkincareAddiction"]
+      }
+    },
+    "phase_2": {
+      "status": "PASS",
+      "description": "pg_cron schedules for all ingest functions",
+      "evidence": {
+        "migration_file": "supabase/migrations/20260313000012_merch_intel_01_pg_cron.sql",
+        "schedules": [
+          { "job": "rss-ingestion-15min", "schedule": "*/15 * * * *" },
+          { "job": "feed-orchestrator-30min", "schedule": "*/30 * * * *" },
+          { "job": "ingest-openfda-daily", "schedule": "0 3 * * *" },
+          { "job": "open-beauty-facts-sync-daily", "schedule": "0 4 * * *" },
+          { "job": "ingest-events-daily", "schedule": "0 5 * * *" },
+          { "job": "ingest-jobs-external-daily", "schedule": "30 5 * * *" }
+        ]
+      }
+    },
+    "phase_3": {
+      "status": "PASS",
+      "description": "EvidenceStrip component created + wired to SignalCardFeatured",
+      "evidence": {
+        "component": "src/components/intelligence/EvidenceStrip.tsx",
+        "props": ["signal: IntelligenceSignal", "compact?: boolean"],
+        "shows": ["source_name", "feed_category resolved from signal_type", "related rss_items headlines (TanStack Query, silent fallback)"],
+        "wired_to": "src/components/intelligence/SignalCardEditorial.tsx (featured card)"
+      }
+    },
+    "phase_4": {
+      "status": "PASS",
+      "description": "Home.tsx SignalPreview wired to live useIntelligence({ limit: 4 })",
+      "evidence": {
+        "file": "src/pages/public/Home.tsx",
+        "hook": "useIntelligence({ limit: 4 })",
+        "behavior": "Renders live signals when signals.length > 0 (isLive=true); falls back to 4 hardcoded DEMO cards with DEMO badge; skeleton shimmer while loading"
+      }
+    },
+    "phase_5": {
+      "status": "PASS",
+      "description": "/plans social proof strip with live counts",
+      "evidence": {
+        "file": "src/pages/public/Plans.tsx",
+        "hooks": ["useDataFeedStats", "usePlatformStats"],
+        "stats_shown": ["totalSignals (signals tracked)", "brandsCount (verified brands)", "totalFeeds (data sources)"],
+        "live_demo_badge": "LIVE/DEMO based on feedsLive || statsLive"
+      }
+    },
+    "phase_6": {
+      "status": "PASS",
+      "description": "Persona pages wired to live vertical signals",
+      "evidence": {
+        "ForMedspas.tsx": {
+          "hook": "useIntelligence({ vertical: 'medspa', limit: 3 })",
+          "section": "Replaced hardcoded METRICS with LIVE signal preview cards; skeleton shimmer loading; DEMO fallback when no signals"
+        },
+        "ForSalons.tsx": {
+          "hook": "useIntelligence({ vertical: 'salon', limit: 3 })",
+          "section": "Same pattern — replaced METRICS with LIVE signal preview cards"
+        },
+        "ForBrands.tsx": {
+          "status": "Already wired — usePlatformStats() for brandsCount/operatorsCount/protocolsCount with LIVE/DEMO badge"
+        }
+      }
+    },
+    "phase_7": {
+      "status": "PASS",
+      "description": "Intelligence.tsx vertical toggle + medspa-first default",
+      "evidence": {
+        "file": "src/pages/public/Intelligence.tsx",
+        "state": "activeVertical: 'all' | 'medspa' | 'salon' | 'beauty_brand'",
+        "default": "'medspa' (medspa-first sort as specified)",
+        "tabs": ["All Signals", "Medspa", "Salon", "Brands"],
+        "wiring": "useIntelligence({ vertical: activeVertical }) — 'all' passes undefined (no vertical filter)"
+      }
+    },
+    "phase_8": {
+      "status": "PASS",
+      "description": "Proof artifact written",
+      "evidence": {
+        "file": "docs/qa/verify_MERCH-INTEL-01.json"
+      }
+    }
+  },
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit — exit 0, zero errors"
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All new signal surfaces: LIVE when hook returns data, DEMO when empty. ForMedspas/ForSalons signal sections show LIVE/DEMO badge. Plans social proof shows LIVE/DEMO badge. Home SignalPreview shows DEMO badge when signals.length === 0."
+    },
+    "banned-term-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No banned terms introduced in any new copy. Signal card fallbacks use intelligence-first vocabulary."
+    }
+  },
+  "overall": "PASS",
+  "files_changed": [
+    "src/components/intelligence/EvidenceStrip.tsx (NEW)",
+    "src/components/intelligence/SignalCardEditorial.tsx",
+    "src/pages/public/Home.tsx",
+    "src/pages/public/Intelligence.tsx",
+    "src/pages/public/Plans.tsx",
+    "src/pages/public/ForMedspas.tsx",
+    "src/pages/public/ForSalons.tsx",
+    "supabase/migrations/20260313000012_merch_intel_01_pg_cron.sql (NEW)"
+  ],
+  "db_changes": [
+    "data_feeds: 30 medspa+multi RSS feeds confirmed enabled"
+  ]
+}

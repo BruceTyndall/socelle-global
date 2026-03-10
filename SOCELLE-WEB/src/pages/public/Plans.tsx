@@ -7,6 +7,8 @@ import WordReveal from '../../components/motion/WordReveal';
 import GlassAccordion from '../../components/sections/GlassAccordion';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useCmsPage } from '../../lib/useCmsPage';
+import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
+import { usePlatformStats } from '../../lib/usePlatformStats';
 
 /* ══════════════════════════════════════════════════════════════════
    Pricing — Liquid Glass Visual System
@@ -149,6 +151,9 @@ const FAQ_ITEMS = [
 
 export default function Pricing() {
   const { isLive: _cmsLive } = useCmsPage('plans');
+  const { totalSignals, totalFeeds, isLive: feedsLive } = useDataFeedStats();
+  const { stats, isLive: statsLive } = usePlatformStats();
+  const socialProofLive = feedsLive || statsLive;
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
@@ -258,6 +263,27 @@ export default function Pricing() {
                 </span>
               </div>
             </BlockReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Social Proof Strip ───────────────────────────────────── */}
+      <section className="border-y border-graphite/6 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
+            {[
+              { value: feedsLive ? totalSignals.toLocaleString() : '--', label: 'Signals tracked' },
+              { value: statsLive ? stats.brandsCount.toLocaleString() : '--', label: 'Verified brands' },
+              { value: feedsLive ? totalFeeds.toLocaleString() : '--', label: 'Data sources' },
+            ].map((item) => (
+              <div key={item.label} className="text-center">
+                <p className="font-sans font-semibold text-2xl text-graphite">{item.value}</p>
+                <p className="text-xs text-graphite/45 font-sans mt-0.5">{item.label}</p>
+              </div>
+            ))}
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${socialProofLive ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-warn/10 text-signal-warn'}`}>
+              {socialProofLive ? 'LIVE' : 'DEMO'}
+            </span>
           </div>
         </div>
       </section>

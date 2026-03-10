@@ -35,6 +35,7 @@ import { StickyConversionBar } from '../../components/modules/StickyConversionBa
 import { usePlatformStats } from '../../lib/usePlatformStats';
 import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
 import { useCmsPage } from '../../lib/useCmsPage';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 /* ── Brand Media Paths (local assets — Figma-exported SVGs + MP4s) ── */
 const BRAND_PHOTOS = Array.from({ length: 6 }, (_, i) => `/images/brand/photos/${i + 1}.svg`);
@@ -182,8 +183,23 @@ function BrandShowcase() {
   );
 }
 
-/* ── Signal Preview Strip (DEMO / LIVE based on hook) ── */
-function SignalPreview({ isLive }: { isLive: boolean }) {
+/* ── Signal Preview Strip (LIVE from useIntelligence) ── */
+interface SignalPreviewProps {
+  isLive: boolean;
+  signals: import('../../lib/intelligence/types').IntelligenceSignal[];
+  loading: boolean;
+}
+
+function SignalPreview({ isLive, signals, loading }: SignalPreviewProps) {
+  const DEMO_SIGNALS = [
+    { id: 'd1', category: 'Ingredient Intel', title: 'Peptide innovation wave: clinical-grade adoption up 28% across independent medspas', direction: 'up' as const, magnitude: 28 },
+    { id: 'd2', category: 'Market Signal', title: 'LED protocol expansion: near-infrared wavelength demand outpacing visible spectrum devices', direction: 'up' as const, magnitude: 41 },
+    { id: 'd3', category: 'Pricing Shift', title: 'Hyaluronic acid filler wholesale cost adjustment across three major distributors', direction: 'down' as const, magnitude: 8 },
+    { id: 'd4', category: 'Regulatory', title: 'California AB-1742 tightens nurse injector supervision ratios — compliance deadline Q3', direction: 'stable' as const, magnitude: 0 },
+  ];
+
+  const displaySignals = (isLive && signals.length > 0) ? signals.slice(0, 4) : DEMO_SIGNALS;
+
   return (
     <section className="bg-white py-16 lg:py-20 border-y border-graphite/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -193,8 +209,8 @@ function SignalPreview({ isLive }: { isLive: boolean }) {
             <h2 className="text-lg font-semibold text-graphite">Latest Market Signals</h2>
             {!isLive && <DemoBadge />}
             {isLive && (
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-signal-up bg-signal-up/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 bg-signal-up rounded-full animate-pulse" />
                 Live
               </span>
             )}
@@ -207,39 +223,43 @@ function SignalPreview({ isLive }: { isLive: boolean }) {
           </Link>
         </div>
 
-        {/* Preview banner when not live */}
-        {!isLive && (
-          <div className="bg-signal-warn/10 text-signal-warn text-xs font-medium px-4 py-2 text-center rounded-xl mb-6">
-            PREVIEW -- This data is for demonstration purposes. Sign in for live intelligence.
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="bg-mn-bg rounded-2xl p-5 animate-pulse h-28">
+                <div className="h-2.5 bg-graphite/8 rounded w-1/3 mb-3" />
+                <div className="h-3.5 bg-graphite/8 rounded w-full mb-2" />
+                <div className="h-3.5 bg-graphite/8 rounded w-4/5" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {displaySignals.map((item) => {
+              const trendColor = item.direction === 'up' ? 'text-signal-up' : item.direction === 'down' ? 'text-signal-down' : 'text-graphite/50';
+              const trendStr = item.magnitude === 0 ? 'New' : `${item.direction === 'up' ? '+' : '−'}${Math.abs(item.magnitude)}%`;
+              return (
+                <Link
+                  key={item.id}
+                  to="/intelligence"
+                  className="group bg-mn-bg rounded-2xl p-5 hover:shadow-sm transition-shadow"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-semibold text-accent uppercase tracking-wider">
+                      {item.category ?? (item as { signal_type?: string }).signal_type}
+                    </span>
+                    <span className={`text-xs font-mono font-semibold ${trendColor}`}>
+                      {trendStr}
+                    </span>
+                  </div>
+                  <p className="text-sm text-graphite/70 leading-relaxed line-clamp-3">
+                    {item.title}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { category: 'Ingredient Intel', signal: 'Peptide innovation wave: clinical-grade adoption up 28% across independent medspas', trend: '+28%' },
-            { category: 'Market Signal', signal: 'LED protocol expansion: near-infrared wavelength demand outpacing visible spectrum devices', trend: '+41%' },
-            { category: 'Pricing Shift', signal: 'Hyaluronic acid filler wholesale cost adjustment across three major distributors', trend: '-8%' },
-            { category: 'Regulatory', signal: 'California AB-1742 tightens nurse injector supervision ratios — compliance deadline Q3', trend: 'New' },
-          ].map((item) => (
-            <Link
-              key={item.category}
-              to="/intelligence"
-              className="group bg-mn-bg rounded-2xl p-5 hover:shadow-sm transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-semibold text-accent uppercase tracking-wider">
-                  {item.category}
-                </span>
-                <span className="text-xs font-mono font-semibold text-graphite/80">
-                  {item.trend}
-                </span>
-              </div>
-              <p className="text-sm text-graphite/70 leading-relaxed line-clamp-3">
-                {item.signal}
-              </p>
-            </Link>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -252,6 +272,7 @@ export default function Home() {
   const { stats, loading: statsLoading, isLive: statsLive } = usePlatformStats();
   const { stats: feedStats, loading: feedsLoading, isLive: feedsLive } = useDataFeedStats();
   const { isLive: cmsLive } = useCmsPage('home');
+  const { signals: previewSignals, isLive: signalsLive, loading: signalsLoading } = useIntelligence({ limit: 4 });
 
   /* KPI data — live when hooks connect, preview otherwise */
   const kpis = [
@@ -330,8 +351,8 @@ export default function Home() {
         ]}
       />
 
-      {/* ── Signal Preview: LIVE / DEMO based on hook ── */}
-      <SignalPreview isLive={isAnyLive} />
+      {/* ── Signal Preview: LIVE from useIntelligence, DEMO fallback ── */}
+      <SignalPreview isLive={signalsLive} signals={previewSignals} loading={signalsLoading} />
 
       {/* ── Spotlight: How It Works ── */}
       <SpotlightPanel
