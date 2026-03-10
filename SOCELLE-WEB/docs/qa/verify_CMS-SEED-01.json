@@ -1,0 +1,57 @@
+{
+  "wo_id": "CMS-SEED-01",
+  "timestamp": "2026-03-10T09:00:00.000Z",
+  "team": "Team 2",
+  "supabase_project_id": "rumdmulxzmjtsplsjngi",
+  "migration_file": "supabase/migrations/20260313000033_cms_seed_editorial_stories.sql",
+  "skills_run": ["live-demo-detector", "cms-status", "banned-term-scanner", "build-gate"],
+  "results": {
+    "rows_inserted": 6,
+    "featured_count": 2,
+    "slugs_valid": 6,
+    "hero_image_null": 6,
+    "source_type_automated": 6,
+    "space": "Intelligence (0076805d-b66b-4b1e-a658-3c29f8e423ed)",
+    "editorial_rail_live": true,
+    "acceptance_tests": {
+      "AT1_total_published": {
+        "query": "SELECT COUNT(*) FROM cms_posts WHERE status='published'",
+        "result": 6,
+        "expected": ">= 6",
+        "status": "PASS"
+      },
+      "AT2_featured_count": {
+        "query": "SELECT COUNT(*) FROM cms_posts WHERE status='published' AND featured=true",
+        "result": 2,
+        "expected": ">= 2",
+        "status": "PASS"
+      },
+      "AT3_slugs_valid": {
+        "query": "SELECT COUNT(*) FROM cms_posts WHERE status='published' AND slug IS NOT NULL AND slug != ''",
+        "result": 6,
+        "expected": "= total published count",
+        "status": "PASS"
+      },
+      "AT4_useStories_hook": {
+        "check": "useStories({ limit: 6 }) queries cms_posts WHERE status='published' ORDER BY published_at DESC",
+        "status": "PASS",
+        "note": "useStories.ts:131 confirmed — queries cms_posts.status='published'. 6 rows now present."
+      },
+      "AT5_tsc_noEmit": {
+        "status": "PASS",
+        "note": "exit 0 — no TypeScript errors"
+      }
+    },
+    "seeded_posts": [
+      {"slug": "fractional-laser-fda-adverse-events", "category": "regulatory", "featured": true},
+      {"slug": "ipl-fda-adverse-events-medspa-operators", "category": "regulatory", "featured": true},
+      {"slug": "rf-microneedling-adverse-events-protocol", "category": "regulatory", "featured": false},
+      {"slug": "collagen-supplement-clinical-evidence-review", "category": "clinical", "featured": false},
+      {"slug": "diode-laser-fda-safety-operator-protocol", "category": "medspa", "featured": false},
+      {"slug": "medspa-market-intelligence-brief-2026", "category": "market_intelligence", "featured": false}
+    ],
+    "banned_term_scan": "PASS — 0 violations in titles/excerpts",
+    "next_wo": "CMS-WO-07 (story_drafts table + auto-ingest pipeline)"
+  },
+  "overall": "PASS"
+}
