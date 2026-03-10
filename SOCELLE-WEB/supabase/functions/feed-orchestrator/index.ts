@@ -14,6 +14,11 @@
  *   - Priority-based scheduling via data_feeds.provenance_tier
  *   - Dedup detection via title+source similarity (sets is_duplicate flag)
  *
+ * INTEL-MEDSPA-01 enhancements:
+ *   - Reads vertical + tier_min from data_feeds row → writes to market_signals
+ *   - classifyTopic(): keyword-based NLP on title+description → topic column
+ *   - computeImpactScore(): 0-100 composite from authority+recency+topic urgency
+ *
  * POST /functions/v1/feed-orchestrator
  *   Body (optional JSON):
  *     { "category": "trade_pub" }   — filter to specific category
@@ -28,7 +33,7 @@
  *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (auto-injected)
  *   Feed-specific keys referenced via data_feeds.api_key_env_var
  *
- * Authority: build_tracker.md WO W13-02, W15-02
+ * Authority: build_tracker.md WO W13-02, W15-02, INTEL-MEDSPA-01
  * Allowed path: SOCELLE-WEB/supabase/functions/ (AGENT_SCOPE_REGISTRY §Backend Agent)
  */
 
@@ -93,6 +98,90 @@ const CATEGORY_TIER_VISIBILITY: Record<string, string> = {
   supplier: 'pro',
 };
 
+// ── INTEL-MEDSPA-01: Classification helpers ───────────────────────────────────
+
+/**
+ * Keyword-based topic classifier. Safety/recall signals take highest priority.
+ * Returns one of the topic values allowed by the market_signals.topic CHECK constraint.
+ */
+function classifyTopic(title: string, description: string): string {
+  const text = `${title} ${description}`.toLowerCase();
+  // Safety/recall first — highest priority
+  if (/recall|adverse event|warning letter|safety alert|fda action|banned|prohibited/.test(text))
+    return 'safety';
+  // Regulation
+  if (/fda|regulation|compliance|legislation|law|bill|act |guidance|ruling|cfr |cpsc/.test(text))
+    return 'regulation';
+  // Science / research
+  if (/clinical trial|study|journal|research|pubmed|randomized|efficacy|peer.reviewed|meta.analysis/.test(text))
+    return 'science';
+  // Ingredient
+  if (/ingredient|formulation|inci|peptide|retinol|hyaluronic|niacinamide|vitamin c|spf|preservative|compound/.test(text))
+    return 'ingredient';
+  // Treatment trends (medspa procedures)
+  if (/botox|filler|laser|microneedling|rf |prp|exosome|peel|dermaplaning|hydrafacial|ultherapy|coolsculpting|kybella|sculptra/.test(text))
+    return 'treatment_trend';
+  // Consumer trend / social
+  if (/trend|tiktok|viral|gen z|millennial|consumer|skincare routine|clean beauty|wellness/.test(text))
+    return 'consumer_trend';
+  // Pricing / market economics
+  if (/price|pricing|revenue|cost|profitability|margin|fee|rate increase|inflation|market size|forecast/.test(text))
+    return 'pricing';
+  // Technology
+  if (/ai |artificial intelligence|software|platform|app |digital|crm|emr|telemedicine|wearable|device/.test(text))
+    return 'technology';
+  // Jobs / workforce
+  if (/job|hiring|workforce|esthetician|employment|staff|career|salary|wage/.test(text))
+    return 'jobs';
+  // Events
+  if (/conference|expo|trade show|summit|webinar|event|congress|symposium/.test(text))
+    return 'events';
+  // Market data
+  if (/market report|industry data|statistics|growth rate|cagr|market share/.test(text))
+    return 'market_data';
+  // Brand news
+  if (/launch|brand|product line|partnership|acquisition|merger|funding|investment|ipo/.test(text))
+    return 'brand_news';
+  return 'other';
+}
+
+/**
+ * 0-100 composite impact score: source authority (0-40) + category bonus (0-20)
+ * + topic urgency (0-20) + recency (0-20).
+ */
+function computeImpactScore(
+  feed: { category: string; provenance_tier: number },
+  publishedAt: string | null,
+  topic: string,
+): number {
+  let score = 0;
+  // Source authority (0-40 points)
+  if (feed.provenance_tier === 1) score += 40;
+  else if (feed.provenance_tier === 2) score += 25;
+  else score += 10;
+  // Category authority bonus (0-20 points)
+  if (feed.category === 'academic') score += 20;
+  else if (feed.category === 'regulatory' || feed.category === 'government') score += 18;
+  else if (feed.category === 'association') score += 12;
+  else if (feed.category === 'trade_pub') score += 10;
+  else if (feed.category === 'brand_news') score += 6;
+  // Topic urgency bonus (0-20 points)
+  if (topic === 'safety') score += 20;
+  else if (topic === 'regulation') score += 15;
+  else if (topic === 'science') score += 12;
+  else if (topic === 'treatment_trend') score += 10;
+  else if (topic === 'pricing') score += 8;
+  // Recency bonus (0-20 points)
+  if (publishedAt) {
+    const hoursOld = (Date.now() - new Date(publishedAt).getTime()) / 3_600_000;
+    if (hoursOld < 2) score += 20;
+    else if (hoursOld < 6) score += 16;
+    else if (hoursOld < 24) score += 10;
+    else if (hoursOld < 72) score += 5;
+  }
+  return Math.min(100, Math.max(0, score));
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface DataFeed {
@@ -113,6 +202,9 @@ interface DataFeed {
   consecutive_failures: number;
   last_success_at: string | null;
   health_status: 'healthy' | 'degraded' | 'failed';
+  // INTEL-MEDSPA-01: classification
+  vertical: string | null;
+  tier_min: string | null;
 }
 
 interface FeedResult {
@@ -222,7 +314,7 @@ function parseRssItems(feedXml: string): ParsedRssItem[] {
 async function processRssFeed(
   feed: DataFeed,
   supabase: ReturnType<typeof createClient>,
-): Promise<{ signals: number; error?: string }> {
+): Promise<{ signals: number; error?: string; items_fetched?: number }> {
   if (!feed.endpoint_url) {
     return { signals: 0, error: 'No endpoint_url configured' };
   }
@@ -244,34 +336,47 @@ async function processRssFeed(
   }
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
-
   const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
   const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
+  // INTEL-MEDSPA-01: vertical and tier_min from data_feeds row (backfilled in Phase 2)
+  const signalVertical = feed.vertical ?? 'multi';
+  const signalTierMin = feed.tier_min ?? 'paid';
 
-  const signalRows = items.map((item) => ({
-    signal_type: signalType,
-    signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${item.guid.replace(/-/g, '').substring(0, 12)}`,
-    title: item.title,
-    description: item.description?.substring(0, 500) ?? item.title,
-    magnitude: confidence,
-    direction: 'stable' as const,
-    region: null,
-    category: feed.category,
-    related_brands: [] as string[],
-    related_products: [] as string[],
-    source: feed.attribution_label ?? feed.name,
-    source_type: 'data_feed',
-    source_name: feed.attribution_label ?? feed.name,
-    source_url: item.link,
-    external_id: `${feed.id}::${item.guid}`,
-    data_source: feed.id,
-    source_feed_id: feed.id,
-    confidence_score: confidence,
-    tier_visibility: tierVisibility,
-    image_url: null,
-    is_duplicate: false,
-    active: true,
-  }));
+  const signalRows = items.map((item) => {
+    // INTEL-MEDSPA-01: classify topic and compute impact score per item
+    const topic = classifyTopic(item.title, item.description ?? '');
+    const impactScore = computeImpactScore(feed, item.published_at, topic);
+
+    return {
+      signal_type: signalType,
+      signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${item.guid.replace(/-/g, '').substring(0, 12)}`,
+      title: item.title,
+      description: item.description?.substring(0, 500) ?? item.title,
+      magnitude: confidence,
+      direction: 'stable' as const,
+      region: null,
+      category: feed.category,
+      related_brands: [] as string[],
+      related_products: [] as string[],
+      source: feed.attribution_label ?? feed.name,
+      source_type: 'data_feed',
+      source_name: feed.attribution_label ?? feed.name,
+      source_url: item.link,
+      external_id: `${feed.id}::${item.guid}`,
+      data_source: feed.id,
+      source_feed_id: feed.id,
+      confidence_score: confidence,
+      tier_visibility: tierVisibility,
+      image_url: null,
+      is_duplicate: false,
+      active: true,
+      // INTEL-MEDSPA-01 classification fields:
+      vertical: signalVertical,
+      topic,
+      tier_min: signalTierMin,
+      impact_score: impactScore,
+    };
+  });
 
   const { data: upserted, error: upsertErr } = await supabase
     .from('market_signals')
@@ -293,7 +398,7 @@ async function processRssFeed(
 async function processApiFeed(
   feed: DataFeed,
   supabase: ReturnType<typeof createClient>,
-): Promise<{ signals: number; error?: string }> {
+): Promise<{ signals: number; error?: string; items_fetched?: number }> {
   if (!feed.endpoint_url) {
     return { signals: 0, error: 'No endpoint_url configured' };
   }
@@ -324,7 +429,6 @@ async function processApiFeed(
   const json = await response.json();
 
   // Generic JSON → signals mapping
-  // Handles: { results: [...] } or [...] or { data: [...] } or { articles: [...] }
   let items: any[] = [];
   if (Array.isArray(json)) {
     items = json;
@@ -343,17 +447,21 @@ async function processApiFeed(
   }
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
-
   const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
   const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
+  const signalVertical = feed.vertical ?? 'multi';
+  const signalTierMin = feed.tier_min ?? 'paid';
 
-  // Map each item to a market_signal row using common field patterns
   const signalRows = items.slice(0, 100).map((item: any, idx: number) => {
     const title = item.title || item.name || item.headline || `${feed.name} item ${idx + 1}`;
     const description =
       item.description || item.summary || item.abstract || item.content || title;
     const externalId = item.id || item.guid || item.url || item.link || `${feed.id}_${idx}`;
     const itemUrl = item.url || item.link || item.href || null;
+    const publishedAt = item.published_at || item.pubDate || item.date || null;
+
+    const topic = classifyTopic(String(title), String(description));
+    const impactScore = computeImpactScore(feed, publishedAt ? String(publishedAt) : null, topic);
 
     return {
       signal_type: signalType,
@@ -378,6 +486,11 @@ async function processApiFeed(
       image_url: item.image || item.image_url || item.thumbnail || null,
       is_duplicate: false,
       active: true,
+      // INTEL-MEDSPA-01 classification fields:
+      vertical: signalVertical,
+      topic,
+      tier_min: signalTierMin,
+      impact_score: impactScore,
     };
   });
 
@@ -506,6 +619,8 @@ Deno.serve(async (req: Request) => {
             name: f.name,
             feed_type: f.feed_type,
             category: f.category,
+            vertical: f.vertical,
+            tier_min: f.tier_min,
             last_fetched_at: f.last_fetched_at,
             poll_interval_minutes: f.poll_interval_minutes,
           })),

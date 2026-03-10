@@ -21,6 +21,12 @@
  *   confidence_score = rss_items.confidence_score
  *   source           = rss_items.attribution_text || rss_sources.name
  *
+ * INTEL-MEDSPA-01 enhancements:
+ *   vertical   = derived from rss_sources.category via CATEGORY_VERTICAL map
+ *   tier_min   = derived from rss_sources.category via CATEGORY_TIER_MIN map
+ *   topic      = classifyTopic() — keyword NLP on title+description
+ *   impact_score = computeImpactScore() — 0-100 composite
+ *
  * Data label: LIVE — rows derived from live rss_items table.
  * updated_at is a real DB column auto-updated on upsert (not simulated).
  *
@@ -30,7 +36,7 @@
  * Requires: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (auto-injected by Supabase)
  *
  * Allowed path: SOCELLE-WEB/supabase/functions/ (AGENT_SCOPE_REGISTRY §Backend Agent)
- * Authority: build_tracker.md WO W12-20
+ * Authority: build_tracker.md WO W12-20, INTEL-MEDSPA-01
  */
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
@@ -53,6 +59,148 @@ const CONFIDENCE_THRESHOLD = 0.50;
 // Batch cap per invocation
 const MAX_LIMIT = 500;
 const DEFAULT_LIMIT = 100;
+
+// ── INTEL-MEDSPA-01: Category → vertical mapping ──────────────────────────────
+
+const CATEGORY_VERTICAL: Record<string, string> = {
+  academic:      'medspa',
+  regulatory:    'medspa',
+  government:    'medspa',
+  association:   'salon',
+  trade_pub:     'multi',
+  brand_news:    'beauty_brand',
+  press_release: 'multi',
+  ingredients:   'multi',
+  market_data:   'multi',
+  social:        'multi',
+  jobs:          'multi',
+  events:        'multi',
+  supplier:      'multi',
+  regional:      'multi',
+};
+
+// ── INTEL-MEDSPA-01: Category → tier_min mapping ──────────────────────────────
+
+const CATEGORY_TIER_MIN: Record<string, string> = {
+  academic:      'paid',
+  regulatory:    'free',
+  government:    'free',
+  association:   'free',
+  trade_pub:     'free',
+  brand_news:    'paid',
+  press_release: 'free',
+  ingredients:   'paid',
+  market_data:   'paid',
+  social:        'free',
+  jobs:          'paid',
+  events:        'free',
+  supplier:      'paid',
+  regional:      'paid',
+};
+
+// ── INTEL-MEDSPA-01: Topic classifier ────────────────────────────────────────
+
+/**
+ * Keyword-based topic classifier. Safety/recall signals take highest priority.
+ * Returns one of the topic values allowed by market_signals.topic CHECK constraint.
+ */
+function classifyTopic(title: string, description: string): string {
+  const text = `${title} ${description}`.toLowerCase();
+  // Safety/recall — highest priority
+  if (/recall|adverse event|warning letter|safety alert|fda action|banned|prohibited/.test(text))
+    return 'safety';
+  // Regulation
+  if (/fda|regulation|compliance|legislation|law|bill|act |guidance|ruling|cfr |cpsc/.test(text))
+    return 'regulation';
+  // Science / research
+  if (/clinical trial|study|journal|research|pubmed|randomized|efficacy|peer.reviewed|meta.analysis/.test(text))
+    return 'science';
+  // Ingredient
+  if (/ingredient|formulation|inci|peptide|retinol|hyaluronic|niacinamide|vitamin c|spf|preservative|compound/.test(text))
+    return 'ingredient';
+  // Treatment trends (medspa procedures)
+  if (/botox|filler|laser|microneedling|rf |prp|exosome|peel|dermaplaning|hydrafacial|ultherapy|coolsculpting|kybella|sculptra/.test(text))
+    return 'treatment_trend';
+  // Consumer trend / social
+  if (/trend|tiktok|viral|gen z|millennial|consumer|skincare routine|clean beauty|wellness/.test(text))
+    return 'consumer_trend';
+  // Pricing / market economics
+  if (/price|pricing|revenue|cost|profitability|margin|fee|rate increase|inflation|market size|forecast/.test(text))
+    return 'pricing';
+  // Technology
+  if (/ai |artificial intelligence|software|platform|app |digital|crm|emr|telemedicine|wearable|device/.test(text))
+    return 'technology';
+  // Jobs / workforce
+  if (/job|hiring|workforce|esthetician|employment|staff|career|salary|wage/.test(text))
+    return 'jobs';
+  // Events
+  if (/conference|expo|trade show|summit|webinar|event|congress|symposium/.test(text))
+    return 'events';
+  // Market data
+  if (/market report|industry data|statistics|growth rate|cagr|market share/.test(text))
+    return 'market_data';
+  // Brand news
+  if (/launch|brand|product line|partnership|acquisition|merger|funding|investment|ipo/.test(text))
+    return 'brand_news';
+  return 'other';
+}
+
+// ── INTEL-MEDSPA-01: Impact score calculator ─────────────────────────────────
+
+// Category → provenance_tier equivalent for rss_sources (no direct provenance_tier column)
+const CATEGORY_AUTHORITY: Record<string, number> = {
+  academic:      1,  // Highest — peer-reviewed
+  regulatory:    1,  // Highest — government/regulatory
+  government:    1,
+  association:   2,  // Mid — professional bodies
+  trade_pub:     2,  // Mid — industry press
+  ingredients:   2,
+  market_data:   2,
+  brand_news:    3,  // Lower — brand-sourced
+  press_release: 3,
+  social:        3,
+  jobs:          3,
+  events:        3,
+  supplier:      3,
+};
+
+/**
+ * 0-100 composite impact score: source authority (0-40) + category bonus (0-20)
+ * + topic urgency (0-20) + recency (0-20).
+ */
+function computeImpactScore(
+  sourceCategory: string,
+  publishedAt: string | null,
+  topic: string,
+): number {
+  let score = 0;
+  const provenanceTier = CATEGORY_AUTHORITY[sourceCategory] ?? 2;
+  // Source authority (0-40 points)
+  if (provenanceTier === 1) score += 40;
+  else if (provenanceTier === 2) score += 25;
+  else score += 10;
+  // Category authority bonus (0-20 points)
+  if (sourceCategory === 'academic') score += 20;
+  else if (sourceCategory === 'regulatory' || sourceCategory === 'government') score += 18;
+  else if (sourceCategory === 'association') score += 12;
+  else if (sourceCategory === 'trade_pub') score += 10;
+  else if (sourceCategory === 'brand_news') score += 6;
+  // Topic urgency bonus (0-20 points)
+  if (topic === 'safety') score += 20;
+  else if (topic === 'regulation') score += 15;
+  else if (topic === 'science') score += 12;
+  else if (topic === 'treatment_trend') score += 10;
+  else if (topic === 'pricing') score += 8;
+  // Recency bonus (0-20 points)
+  if (publishedAt) {
+    const hoursOld = (Date.now() - new Date(publishedAt).getTime()) / 3_600_000;
+    if (hoursOld < 2) score += 20;
+    else if (hoursOld < 6) score += 16;
+    else if (hoursOld < 24) score += 10;
+    else if (hoursOld < 72) score += 5;
+  }
+  return Math.min(100, Math.max(0, score));
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -100,6 +248,11 @@ interface MarketSignalUpsert {
   // FEED-WO-03: dedup fingerprint
   fingerprint:      string | null;
   is_duplicate:     boolean;
+  // INTEL-MEDSPA-01: classification fields
+  vertical:         string;
+  topic:            string;
+  tier_min:         string;
+  impact_score:     number;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -270,6 +423,14 @@ serve(async (req) => {
         source_category: row.rss_sources?.category ?? null,
       };
 
+      const sourceCategory = item.source_category ?? 'trade_pub';
+
+      // INTEL-MEDSPA-01: derive vertical, tier_min, topic, impact_score
+      const signalVertical = CATEGORY_VERTICAL[sourceCategory] ?? 'multi';
+      const signalTierMin  = CATEGORY_TIER_MIN[sourceCategory]  ?? 'paid';
+      const topic          = classifyTopic(item.title, item.description ?? '');
+      const impactScore    = computeImpactScore(sourceCategory, item.published_at, topic);
+
       return {
         signal_type:      resolveSignalType(item),
         signal_key:       signalKey(item.id),
@@ -291,6 +452,11 @@ serve(async (req) => {
         // FEED-WO-03: dedup fingerprint
         fingerprint:      buildFingerprint(item),
         is_duplicate:     false,
+        // INTEL-MEDSPA-01: classification
+        vertical:         signalVertical,
+        topic,
+        tier_min:         signalTierMin,
+        impact_score:     impactScore,
       };
     });
 
