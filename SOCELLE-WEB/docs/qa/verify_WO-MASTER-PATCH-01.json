@@ -1,0 +1,113 @@
+{
+  "wo_id": "WO-MASTER-PATCH-01",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "team": "Team 0",
+  "doc_path": "SOCELLE-WEB/docs/operations/WO_MASTER_PLATFORM_UPGRADE.md",
+  "patches_applied": 10,
+  "commits": [
+    {
+      "patch": 1,
+      "sha": "41716a9",
+      "title": "PATCH 1 — Fix frozen-path contradiction in §2",
+      "summary": "Replaced blanket /portal /brand /admin freeze with precise rule. Only auth.tsx, useCart.ts, cart/checkout, migrations, and tailwind tokens are truly frozen. Portal/brand/admin directories allowed ONLY when a WO explicitly names the file."
+    },
+    {
+      "patch": 2,
+      "sha": "4e00af5",
+      "title": "PATCH 2 — Normalize P0/P1/P2/Launch Gate with single authority",
+      "summary": "Added §2.1 with three-tier gate definitions. P0 = MERCH-INTEL-03-DB, NEWSAPI-INGEST-01, DB-TYPES-02. P1 = 4 parallel lanes. P2 = after P1. Launch Gate aligned to /.claude/CLAUDE.md §16 (24 items)."
+    },
+    {
+      "patch": 3,
+      "sha": "5ac5fb4",
+      "title": "PATCH 3 — Add Skills Required to every WO",
+      "summary": "All 21 WOs now have explicit Skills Required list. Skill Creation Queue added: 5 missing skills identified (cms-status, database-types-generator, schema-drift-detector, cross-hub-dispatcher-validator, payment-flow-tester). MERCH-INTEL-03-FINAL threshold set at 10/12 PASS (MERCH-06 WARN allowed)."
+    },
+    {
+      "patch": 4,
+      "sha": "1ce7005",
+      "title": "PATCH 4 — Standardize Proof Pack format for every WO",
+      "summary": "§6 overhauled into 6.1 (required JSON schema), 6.2 (validation rules), 6.3 (prohibited patterns). All required fields now explicit: wo_id, skills_run, results, acceptance_tests, commit_sha, tsc_exit_code, build_exit_code, banned_terms_scan, overall."
+    },
+    {
+      "patch": 5,
+      "sha": "83e7e36",
+      "title": "PATCH 5 — NEWSAPI-INGEST-01 implementation contract",
+      "summary": "Added 13-field Implementation Contract table to NEWSAPI-INGEST-01. Defines required fields per market_signals row, dedup rule (SHA-256 fingerprint), feed_run_log requirements, DLQ write requirement. Confidence values by provenance tier (tier1=0.9, Reddit=0.45)."
+    },
+    {
+      "patch": 6,
+      "sha": "20a31e3",
+      "title": "PATCH 6 — Fix MERCH-INTEL-03-DB acceptance tests",
+      "summary": "All SQL acceptance tests scoped to WHERE status='active' AND created_at >= NOW()-90d. display_order check scoped to is_enabled=true. regulatory_alert boost returns WARN (not FAIL) if 0 rows in window. Before/after row counts added to proof pack."
+    },
+    {
+      "patch": 7,
+      "sha": "06e5719",
+      "title": "PATCH 7 — Explicitly authorize CMS schema changes",
+      "summary": "CMS Schema Authorization table added to §1 with 7 explicitly authorized objects (story_drafts, content_placements, sitemap_cache, cms_posts.scheduled_at, data_feeds.display_order). Schema change rule: anything not listed requires a new WO. Migration numbering rule: 000031-000039 range."
+    },
+    {
+      "patch": 8,
+      "sha": "6465b8a",
+      "title": "PATCH 8 — CMS block/layout/grid editability + add CMS-WO-12",
+      "summary": "CMS-WO-12 added: Layout Builder + Block Placement Editing. blockRegistry.ts as single source of truth. PageRenderer uses registry lookup — extensible without PageRenderer edits. Grid/rail layouts configurable via block type. Admin UI: block palette + drag-onto-canvas + inline prop editor. Team 2 updated."
+    },
+    {
+      "patch": 9,
+      "sha": "78314ca",
+      "title": "PATCH 9 — Numeric PASS criteria for DATA-PRESS-PROOF",
+      "summary": "14-metric numeric table with explicit PASS/WARN/FAIL thresholds. Total signals >= 50 PASS. Last 24h >= 5. Source layers = 5 (hard). Max topic % <= 40%. Fingerprint uniqueness >= 95%. Avg confidence >= 0.55. Paid-depth WARN only (not FAIL). 6 explicit PASS criteria for overall:PASS."
+    },
+    {
+      "patch": 10,
+      "sha": "59ab57d",
+      "title": "PATCH 10 — Team 0 merge authority + End-of-WO gate command",
+      "summary": "§6.4 added: 8-step Team 0 merge process (non-delegable). End-of-WO Gate Command: 5-step sequence (tsc, build, banned-term grep, useEffect+supabase grep, shell-detector). All steps must pass. Gate failure = STOP CONDITION. WOs queue if Team 0 unavailable — no self-certification."
+    }
+  ],
+  "patch_coverage": {
+    "frozen_paths_fixed": true,
+    "gate_tiers_normalized": true,
+    "skills_required_on_all_wos": true,
+    "proof_pack_standardized": true,
+    "newsapi_implementation_contract": true,
+    "acceptance_tests_scoped": true,
+    "cms_schema_authorized": true,
+    "cms_block_editing_explicit": true,
+    "numeric_pass_criteria": true,
+    "team0_authority_defined": true
+  },
+  "wo_count": {
+    "p0": 3,
+    "p1": 16,
+    "p2": 2,
+    "total": 21
+  },
+  "doc_version": "v2.0",
+  "skills_run": [],
+  "results": {
+    "manual_review": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All 10 patches applied as separate commits. Each patch targets exactly the requirement stated. No scope reduction applied. Doc reviewed against /.claude/CLAUDE.md, OPERATION_BREAKOUT.md, and AGENT_SCOPE_REGISTRY.md for consistency."
+    }
+  },
+  "acceptance_tests": {
+    "patch_1_frozen_paths": { "status": "PASS", "evidence": "§2 rule 4 now lists exact frozen items; portal/brand/admin classified as 'allowed with explicit WO file listing'" },
+    "patch_2_gate_normalization": { "status": "PASS", "evidence": "§2.1 added with 3-tier gate table; P0 = 3 WOs; 24-item launch gate references CLAUDE.md §16" },
+    "patch_3_skills_coverage": { "status": "PASS", "evidence": "21 WOs each have Skills Required section; 5 missing skills in Skill Creation Queue" },
+    "patch_4_proof_pack_schema": { "status": "PASS", "evidence": "§6.1 has 9 required fields; §6.2 has PASS/WARN/FAIL rules; §6.3 has prohibited patterns" },
+    "patch_5_implementation_contract": { "status": "PASS", "evidence": "13-field table in NEWSAPI-INGEST-01 with dedup, feed_run_log, DLQ rules" },
+    "patch_6_sql_scoped": { "status": "PASS", "evidence": "All 3 SQL tests scoped to status='active' and/or 90-day window; WARN not FAIL for empty result sets" },
+    "patch_7_cms_authorized": { "status": "PASS", "evidence": "7-object authorization table; schema change rule; migration numbering range" },
+    "patch_8_cms_wo12_added": { "status": "PASS", "evidence": "CMS-WO-12 full spec added; Team 2 WO list updated; blockRegistry.ts pattern defined" },
+    "patch_9_numeric_criteria": { "status": "PASS", "evidence": "14-metric table with numeric thresholds; 6 explicit overall:PASS criteria; baseline query included" },
+    "patch_10_team0_gate": { "status": "PASS", "evidence": "§6.4 added; 8-step merge process; 5-step gate command; npm run gate shorthand noted" }
+  },
+  "commit_sha": "59ab57d",
+  "tsc_exit_code": "N/A - doc-only patch",
+  "build_exit_code": "N/A - doc-only patch",
+  "banned_terms_scan": "N/A - doc-only patch",
+  "overall": "PASS"
+}
