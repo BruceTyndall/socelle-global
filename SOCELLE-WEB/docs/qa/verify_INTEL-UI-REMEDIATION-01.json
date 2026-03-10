@@ -1,0 +1,63 @@
+{
+  "wo_id": "INTEL-UI-REMEDIATION-01",
+  "timestamp": "2026-03-13T00:00:00.000Z",
+  "skills_run": ["live-demo-detector", "banned-term-scanner", "design-lock-enforcer", "build-gate"],
+  "idea_mining_patterns_cited": [
+    "Pattern 3 — Impact score badge (existing via rankedScore)",
+    "Pattern 5 — List/Card view toggle (filter state lifted; toggle UI deferred)",
+    "Pattern 9 — Filter panel Primary+More filters (server-side category filter wired)"
+  ],
+  "changes_implemented": {
+    "useSignalImage_ts": {
+      "change": "Deterministic ID-hash pool selection",
+      "detail": "hashId(id) % pool.length picks from 2-3 image pool per signal_type. Same signal = same image (stable). Different signals of same type = different images (variety). 19 SignalType values covered.",
+      "commit": "342f263"
+    },
+    "useIntelligence_ts": {
+      "change": "signalTypes server-side DB filter",
+      "detail": "Added signalTypes?: SignalType[] to UseIntelligenceOptions. .in('signal_type', signalTypes) applied to Supabase query when provided. queryKey updated to include signalTypes for cache isolation.",
+      "commit": "09e7161"
+    },
+    "IntelligenceFeedSection_tsx": {
+      "change": "Lift filter state to props + export FEED_FILTERS",
+      "detail": "FEED_FILTERS exported. Internal useState for activeFilter removed. Props: activeFilter + onFilterChange. filteredSignals memo now search-only (server handles type filter).",
+      "commit": "6b330e4"
+    },
+    "Intelligence_tsx": {
+      "change": "Wire server-side category filter + spotlightTrends 3→5",
+      "detail": "activeFilter state at page level. activeSignalTypes useMemo derives SignalType[] from filter key. useIntelligence receives signalTypes + vertical. IntelligenceFeedSection receives activeFilter/onFilterChange. spotlightTrends slice 0,3 → 0,5.",
+      "commit": "2e8b94a"
+    }
+  },
+  "skills_results": {
+    "build_gate": {
+      "status": "PASS",
+      "detail": "npx tsc --noEmit → 0 errors"
+    },
+    "live_demo_detector": {
+      "status": "PASS",
+      "detail": "No fake-live violations introduced. isLive guard unchanged. PREVIEW banner remains on IntelligenceFeedSection when !isLive.",
+      "evidence": "grep -r 'fake.live|hardcoded.*signal|signal.*DEMO' src/pages/public/Intelligence.tsx src/components/intelligence/IntelligenceFeedSection.tsx → 0 results"
+    },
+    "banned_term_scanner": {
+      "status": "PASS",
+      "detail": "0 banned terms in changed files.",
+      "evidence": "grep unlock|seamless|AI-powered|actionable insights src/pages/public/Intelligence.tsx → 0 results"
+    },
+    "design_lock_enforcer": {
+      "status": "PASS",
+      "detail": "0 pro-* token usage, 0 font-serif, 0 hardcoded hex in changed files.",
+      "evidence": "grep pro-*|font-serif|#1E252B src/pages/public/Intelligence.tsx src/components/intelligence/IntelligenceFeedSection.tsx → 0 violations (comment-only hit excluded)"
+    }
+  },
+  "commits": ["342f263", "09e7161", "6b330e4", "2e8b94a"],
+  "files_changed": [
+    "src/lib/intelligence/useSignalImage.ts",
+    "src/lib/intelligence/useIntelligence.ts",
+    "src/components/intelligence/IntelligenceFeedSection.tsx",
+    "src/pages/public/Intelligence.tsx"
+  ],
+  "db_objects_touched": "none",
+  "tsc_result": "PASS — 0 errors",
+  "overall": "PASS"
+}
