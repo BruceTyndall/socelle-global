@@ -167,6 +167,33 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | OPEN | P0 GATE | `docs/qa/verify_P1-3.json` |
 | STATE-AUDIT-01 | Skeleton/error/empty states on 23 priority shell pages | Team 4 | OPEN | P0 GATE | `docs/qa/verify_STATE-AUDIT-01.json` |
 | COVERAGE-EXPANSION-01 | Domain coverage expansion: 53 candidate feeds (nails, makeup, fragrance, bodycare, education_training, spa_hospitality hotel), 18 heroes enabled, 15/15 domains covered, dedup migration 000033 | Team 1 | DONE | none (parallel push-ahead) | `docs/qa/verify_COVERAGE_EXPANSION.json` |
+| MERCH-REMEDIATION-01 | Archive 68 off-topic signals (NASA/dog/depression topics); add provenance_tier column to market_signals; backfill from data_feeds; freshness decay + rankedScore in useIntelligence; timeline eligibility filter. Migrations 000035+000036 applied. MERCH 1–12 audit: 6 PASS, 6 WARN, 0 FAIL → overall PASS | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_INTEL_MERCH.json` |
+| MERCH-INTEL-IMAGE-CLICKS | Signal cards clickable → /intelligence/signals/:id; IntelligenceSignalDetail page (TanStack Query v5); getSignalImage() hook deployed; images on all signal cards. tsc=0, build=6.42s | Team 1 | DONE | MERCH-REMEDIATION-01 | `docs/qa/verify_INTEL-UI-CLICK-IMAGE-01.json` |
+| IDEA-MINING-01 | Pattern library from 10 comparable intelligence/feed/benchmark platforms (Inoreader, New Sloth, NewsData.io, PeakMetrics, Pulsar, Sprinklr, Listrak, AMP/Lifetimely, Benchmarkit.ai, Dash Social). 45 patterns, 10 top patterns, 7 anti-patterns, 3 implementation phases. Research + documentation only. Deliverable: docs/research/IDEA-MINING-01-comparables.md | Team 1 | DONE | MERCH-INTEL-IMAGE-CLICKS | `docs/qa/verify_IDEA-MINING-01.json` |
+
+### GUARDRAIL-01 STATUS (gate for all Intelligence UI + feed UX work)
+
+> **Rule:** No Intelligence UI proposals, module rewires, or feed UX improvements may proceed unless GUARDRAIL-01 is CLEARED.
+
+| Required Verify Artifact | Status | Notes |
+|--------------------------|--------|-------|
+| `docs/qa/verify_AGENT_ACTIVATION.json` | ✅ PASS | Agent #17 INTELLIGENCE-MERCHANDISER registered |
+| `docs/qa/verify_INTEL_MERCH.json` | ✅ PASS | MERCH 1–12 audit: 6 PASS, 6 WARN, 0 FAIL — MERCH-REMEDIATION-01 cleared all FAIL rules |
+| `docs/qa/verify_INTEL-UI-CLICK-IMAGE-01.json` | ✅ PASS | Signal cards clickable, images on all cards, signal detail route working |
+| `docs/qa/verify_COVERAGE_EXPANSION.json` | ✅ PASS | 103 enabled feeds, 15/15 domains covered |
+| `docs/qa/verify_MERCH-INTEL-02.json` | ✅ PASS | Coverage gates met; known issues on commercial feeds tracked |
+| `docs/qa/verify_IDEA-MINING-01.json` | ✅ PASS | Pattern library committed (951fd5a); 10 platforms, 45 patterns |
+
+**GUARDRAIL-01: ✅ CLEARED as of commit 951fd5a (2026-03-13)**
+
+**What is now unlocked:**
+- INTEL-UI-REMEDIATION-01 (server-side category filtering, image diversity, spotlightTrends 3→5)
+- Any Intelligence Hub UX work citing patterns from IDEA-MINING-01-comparables.md
+- CMS-WO-07 (next in P1 queue)
+
+**What remains blocked (separate gates):**
+- PAY-UPGRADE-WO — BLOCKED pending owner Stripe dashboard config
+- P2-1, P2-STRIPE — blocked on P1 gate completion
 
 ### P2 GATE — Testing / CI (starts when P1 PASS)
 

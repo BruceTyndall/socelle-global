@@ -688,6 +688,35 @@ Signal → [action] → [target in this hub]
 
 ---
 
+## PATTERN LIBRARY INPUTS — IDEA-MINING-01 (binding for all Intelligence Hub UI work)
+
+**Reference:** `docs/research/IDEA-MINING-01-comparables.md` (commit 951fd5a, 2026-03-13)
+**Proof:** `docs/qa/verify_IDEA-MINING-01.json` — overall: PASS
+
+### Mandatory Rules for Intelligence UI Work
+
+1. **UI changes must cite at least one pattern ID from IDEA-MINING-01.** If a proposed change cannot be traced to a pattern in `IDEA-MINING-01-comparables.md`, it must be deferred until a pattern is documented and approved.
+2. **No UI changes allowed if they reduce DATA density, PRESS credibility, or value/session.** Every change must demonstrate how it increases at least one of: signal count visible per session, source provenance visible per signal, or operator action rate per visit.
+3. **IDEA-MINING-01 completion does NOT override GUARDRAIL-01.** GUARDRAIL-01 is gated on verify artifact status (see `docs/build_tracker.md` § GUARDRAIL-01 STATUS). Idea mining is an input to design decisions, not a green light to ship.
+4. **Anti-patterns from IDEA-MINING-01 are binding prohibitions.** Any implementation that matches a documented anti-pattern (e.g., Boolean query as primary search, blank widget canvas, static PDF as primary delivery) is a STOP CONDITION.
+
+### Top 10 Patterns (mapped to SOCELLE surfaces)
+
+| # | Pattern | Source | SOCELLE Surface |
+|---|---------|--------|----------------|
+| 1 | Snapshot / Today View as hub entry | Pulsar | Intelligence Hub landing — summarize the day before showing raw feed |
+| 2 | Narrative clustering (Smart Clusters) | New Sloth, Sprinklr | Signal list — collapse same-story duplicates under one expandable row |
+| 3 | Impact score badge on every list item | PeakMetrics | `SignalCard.tsx` — color-coded badge using existing `impact_score` column |
+| 4 | Peer benchmark KPI strip (your/median/top quartile) | AMP, Benchmarkit, Listrak | Intelligence Hub KPI strip — benchmark operator metrics vs. vertical peers |
+| 5 | List / Card view toggle (persisted) | Inoreader | Signal list — List mode for power users, Card for operators |
+| 6 | Sentiment aggregate banner above signal list | NewsData.io, Sprinklr | Signal list header — "47 signals: 62% positive" bar for current filter |
+| 7 | Spot → Understand → Act arc on every signal | PeakMetrics, AMP | `SignalCard.tsx` — signal + "What this means" + cross-hub action link |
+| 8 | Entity recognition chips (brand/ingredient/regulator) | New Sloth, Sprinklr | Signal cards — filterable chips below headline |
+| 9 | Filter panel: Primary (6 visible) + "More filters" | Pulsar | Intelligence Hub filter sidebar — reduce cognitive load for non-analysts |
+| 10 | AI Brief Builder (bulk select → prompt → synthetic signal) | Inoreader, PeakMetrics | Intelligence Hub — maps to INTEL-WO-07 AI toolbar, future `signal_type='ai_brief'` |
+
+---
+
 ## EXECUTION RULES (non-negotiable)
 
 1. **BUILD 0 completes before ANY app work.** Foundation is the hard prerequisite.
