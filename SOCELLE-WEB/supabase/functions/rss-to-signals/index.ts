@@ -27,6 +27,19 @@
  *   topic      = classifyTopic() — keyword NLP on title+description
  *   impact_score = computeImpactScore() — 0-100 composite
  *
+ * MERCH-INTEL-02 v3 (OPEN-2):
+ *   Atom feed support added to direct XML parsing path.
+ *   detectFeedFormat() — inspects root element for <feed vs <rss/<channel
+ *   parseAtomItems()   — extracts <entry> elements, maps to ParsedFeedItem
+ *   parseRssItems()    — unchanged RSS 2.0 <item> parser (renamed for clarity)
+ *   parseFeedItems()   — dispatcher: routes to Atom or RSS parser by format
+ *   Atom field mapping:
+ *     <title>          → title (same)
+ *     <link href="..."/> → url (href attribute extraction)
+ *     <summary> | <content> | <content:encoded> → description
+ *     <updated> | <published> → published_at
+ *     <id>             → guid/fingerprint source
+ *
  * Data label: LIVE — rows derived from live rss_items table.
  * updated_at is a real DB column auto-updated on upsert (not simulated).
  *
@@ -36,12 +49,45 @@
  * Requires: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (auto-injected by Supabase)
  *
  * Allowed path: SOCELLE-WEB/supabase/functions/ (AGENT_SCOPE_REGISTRY §Backend Agent)
- * Authority: build_tracker.md WO W12-20, INTEL-MEDSPA-01
+ * Authority: build_tracker.md WO W12-20, INTEL-MEDSPA-01, MERCH-INTEL-02
  */
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
+
+// ── Inline edgeControl (cannot use ../ imports in Supabase MCP deployment) ────
+
+async function enforceEdgeFunctionEnabled(
+  functionName: string,
+  req: Request,
+): Promise<Response | null> {
+  if (req.method === 'OPTIONS') return null;
+  try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseUrl || !serviceKey) return null;
+    const client = createClient(supabaseUrl, serviceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { data, error } = await client
+      .from('edge_function_controls')
+      .select('is_enabled')
+      .eq('function_name', functionName)
+      .maybeSingle();
+    if (error || data === null) return null;
+    if (data.is_enabled === false) {
+      return new Response(
+        JSON.stringify({ error: `Edge function '${functionName}' is disabled via kill-switch.` }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -201,6 +247,219 @@ function computeImpactScore(
     else if (hoursOld < 72) score += 5;
   }
   return Math.min(100, Math.max(0, score));
+}
+
+// ── MERCH-INTEL-02 v3: Feed format detection + Atom parser ───────────────────
+
+/**
+ * Detects feed format by inspecting the raw XML string.
+ * Atom feeds have a root <feed> element (often with xmlns="http://www.w3.org/2005/Atom").
+ * RSS 2.0 feeds have a root <rss> or <channel> element.
+ * Returns 'atom' | 'rss'.
+ */
+function detectFeedFormat(xml: string): 'atom' | 'rss' {
+  // Check first 500 chars for the root element to avoid scanning entire feed
+  const head = xml.substring(0, 500).toLowerCase();
+  if (head.includes('<feed') && (head.includes('atom') || head.includes('<feed>'))) {
+    return 'atom';
+  }
+  return 'rss';
+}
+
+/**
+ * Extracts text content from within a specific XML tag (CDATA-aware).
+ * Used for both RSS and Atom text nodes.
+ */
+function extractText(xml: string, tag: string): string | null {
+  // CDATA-wrapped content
+  const cdata = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>`, 'i');
+  const cdataMatch = xml.match(cdata);
+  if (cdataMatch?.[1]) return cdataMatch[1].trim();
+
+  // Plain text content
+  const plain = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const plainMatch = xml.match(plain);
+  if (plainMatch?.[1]) {
+    return plainMatch[1]
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#\d+;/g, ' ')
+      .replace(/<[^>]+>/g, '')
+      .trim();
+  }
+  return null;
+}
+
+/**
+ * Extracts an attribute value from a self-closing or opening XML tag.
+ * Critical for Atom <link href="..."/> where the URL is in an attribute, not text content.
+ * Also handles rel="alternate" vs rel="self" disambiguation.
+ */
+function extractAttr(xml: string, tag: string, attr: string): string | null {
+  const pattern = new RegExp(`<${tag}[^>]*\\s${attr}="([^"]*)"`, 'i');
+  return xml.match(pattern)?.[1] ?? null;
+}
+
+/**
+ * Extracts the alternate link from an Atom <entry> block.
+ * Atom feeds use <link href="URL"/> (self-closing) or <link rel="alternate" href="URL"/>.
+ * RSS feeds use <link>URL</link> (text content).
+ *
+ * Priority order:
+ * 1. <link rel="alternate" href="..."/> — canonical article link
+ * 2. <link href="..."/> without rel or with rel="self" — still usable
+ * 3. <link>URL</link> — RSS fallback
+ */
+function extractAtomLink(block: string): string | null {
+  // Try rel="alternate" first (most reliable for article URL)
+  const altMatch = block.match(/<link[^>]+rel="alternate"[^>]+href="([^"]+)"/i)
+    ?? block.match(/<link[^>]+href="([^"]+)"[^>]+rel="alternate"/i);
+  if (altMatch?.[1]) return altMatch[1];
+
+  // Fall back to any <link href="..."/> that isn't rel="self"
+  const hrefMatch = block.match(/<link[^>]+href="([^"]+)"/i);
+  if (hrefMatch?.[1] && !block.match(/<link[^>]+rel="self"[^>]+href="[^"]*"/i)) {
+    return hrefMatch[1];
+  }
+
+  // Last resort: rel="self" href (at least gives us a URL)
+  const selfMatch = block.match(/<link[^>]+rel="self"[^>]+href="([^"]+)"/i)
+    ?? block.match(/<link[^>]+href="([^"]+)"[^>]+rel="self"/i);
+  if (selfMatch?.[1]) return selfMatch[1];
+
+  // RSS 2.0 fallback: <link>URL</link>
+  return extractText(block, 'link');
+}
+
+interface ParsedFeedItem {
+  guid: string;
+  title: string;
+  link: string | null;
+  description: string | null;
+  published_at: string | null;
+}
+
+/**
+ * Parse Atom feed <entry> elements into a normalized structure.
+ * Atom fields differ from RSS 2.0:
+ *   RSS <item>    → Atom <entry>
+ *   <link>URL</link>  → <link href="URL"/> (self-closing, attribute-based)
+ *   <description> → <summary> or <content>
+ *   <pubDate>     → <updated> or <published>
+ *   <guid>        → <id>
+ *
+ * MERCH-INTEL-02 v3: handles all Atom field variants.
+ */
+function parseAtomItems(feedXml: string): ParsedFeedItem[] {
+  const items: ParsedFeedItem[] = [];
+  // Match <entry>...</entry> blocks (Atom 1.0 spec)
+  const entryRegex = /<entry[\s>]([\s\S]*?)<\/entry>/gi;
+
+  let match: RegExpExecArray | null;
+  while ((match = entryRegex.exec(feedXml)) !== null) {
+    const block = match[1];
+
+    // guid: Atom uses <id> as the permanent identifier
+    const guid =
+      extractText(block, 'id') ??
+      extractAtomLink(block) ??
+      crypto.randomUUID();
+
+    const title = extractText(block, 'title') ?? '(no title)';
+
+    // link: Atom uses <link href="..."/> (self-closing attribute)
+    const link = extractAtomLink(block);
+
+    // description: Atom uses <summary> or <content> (prefer summary for brevity)
+    const description =
+      extractText(block, 'summary') ??
+      extractText(block, 'content') ??
+      extractText(block, 'content:encoded');
+
+    // published_at: Atom uses <updated> (most recent edit) or <published> (original post)
+    const rawDate =
+      extractText(block, 'published') ??
+      extractText(block, 'updated');
+
+    let published_at: string | null = null;
+    if (rawDate) {
+      const parsed = new Date(rawDate);
+      if (!isNaN(parsed.getTime())) published_at = parsed.toISOString();
+    }
+
+    if (title !== '(no title)' || link) {
+      items.push({
+        guid: guid.substring(0, 500),
+        title: title.substring(0, 500),
+        link: link?.substring(0, 2000) ?? null,
+        description: description?.substring(0, 2000) ?? null,
+        published_at,
+      });
+    }
+  }
+  return items;
+}
+
+/**
+ * Parse RSS 2.0 feed <item> elements into a normalized structure.
+ * Maintained intact from prior versions — no behavioral changes.
+ */
+function parseRss2Items(feedXml: string): ParsedFeedItem[] {
+  const items: ParsedFeedItem[] = [];
+  const itemRegex = /<item[\s>]([\s\S]*?)<\/item>/gi;
+
+  let match: RegExpExecArray | null;
+  while ((match = itemRegex.exec(feedXml)) !== null) {
+    const block = match[1];
+
+    const guid =
+      extractText(block, 'guid') ??
+      extractAttr(block, 'link', 'href') ??
+      extractText(block, 'link') ??
+      crypto.randomUUID();
+
+    const title = extractText(block, 'title') ?? '(no title)';
+    const link = extractAttr(block, 'link', 'href') ?? extractText(block, 'link');
+    const description =
+      extractText(block, 'description') ??
+      extractText(block, 'summary') ??
+      extractText(block, 'content:encoded');
+
+    const rawDate =
+      extractText(block, 'pubDate') ??
+      extractText(block, 'published') ??
+      extractText(block, 'updated');
+
+    let published_at: string | null = null;
+    if (rawDate) {
+      const parsed = new Date(rawDate);
+      if (!isNaN(parsed.getTime())) published_at = parsed.toISOString();
+    }
+
+    if (title !== '(no title)' || link) {
+      items.push({
+        guid: guid.substring(0, 500),
+        title: title.substring(0, 500),
+        link: link?.substring(0, 2000) ?? null,
+        description: description?.substring(0, 2000) ?? null,
+        published_at,
+      });
+    }
+  }
+  return items;
+}
+
+/**
+ * MERCH-INTEL-02 v3: Format-aware feed item dispatcher.
+ * Detects Atom vs RSS 2.0, routes to the correct parser.
+ * Returns 0 items only if the feed is truly empty — not because of a format mismatch.
+ */
+function parseFeedItems(feedXml: string): { items: ParsedFeedItem[]; format: 'atom' | 'rss' } {
+  const format = detectFeedFormat(feedXml);
+  const items = format === 'atom' ? parseAtomItems(feedXml) : parseRss2Items(feedXml);
+  return { items, format };
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -486,6 +745,7 @@ serve(async (req) => {
         skipped:     skippedCount,
         threshold:   CONFIDENCE_THRESHOLD,
         limit_used:  limit,
+        atom_parser: 'active',  // MERCH-INTEL-02 v3: Atom + RSS format dispatcher loaded
         sample:      (upserted ?? []).slice(0, 5).map((r: any) => ({
           id:               r.id,
           signal_key:       r.signal_key,
