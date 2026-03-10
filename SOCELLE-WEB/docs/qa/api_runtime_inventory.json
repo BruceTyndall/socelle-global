@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-03-10T07:50:00.000Z",
+  "summary": {
+    "total_api_feeds_enabled": 2,
+    "total_api_feeds_disabled": 4,
+    "total_rss_feeds_enabled": 18,
+    "total_feeds_enabled": 20
+  },
+  "api_feeds": [
+    {
+      "name": "GNews — Beauty & Wellness",
+      "id": "6143552f-1b3f-4c54-a502-f924300796bb",
+      "endpoint_url": "https://gnews.io/api/v4/top-headlines?topic=health&lang=en&max=100&token={API_KEY}",
+      "api_key_env_var": "GNEWS_KEY",
+      "poll_interval_minutes": 720,
+      "is_enabled": true,
+      "health_status": "healthy",
+      "last_run_status": "success",
+      "signals_created_last_run": 11
+    },
+    {
+      "name": "NewsAPI — Beauty & MedSpa Press",
+      "id": "013d29e4-2933-4dc2-beca-331eb23ea706",
+      "endpoint_url": "https://newsapi.org/v2/top-headlines?country=us&category=health&pageSize=100",
+      "api_key_env_var": "NEWSAPI_KEY",
+      "poll_interval_minutes": 720,
+      "is_enabled": true,
+      "health_status": "healthy",
+      "last_run_status": "success",
+      "signals_created_last_run": 63
+    },
+    {
+      "name": "Currents — Beauty & Aesthetics",
+      "id": "c9373115-4bd5-488e-af5a-3d10a245dee5",
+      "endpoint_url": "https://api.currentsapi.services/v1/latest-news?apiKey={API_KEY}&language=en",
+      "api_key_env_var": "CURRENTS_KEY",
+      "poll_interval_minutes": 720,
+      "is_enabled": false,
+      "health_status": "failed",
+      "last_run_status": "error",
+      "last_error": "API timeout >30s on every request — disabled pending investigation",
+      "signals_created_last_run": 0
+    },
+    {
+      "name": "Google Trends Beauty",
+      "id": "bcc7cff1-6535-423b-8c94-35dc6c9b1276",
+      "endpoint_url": "https://trends.google.com/trends/trendingsearches/daily/rss?geo=US",
+      "api_key_env_var": null,
+      "poll_interval_minutes": null,
+      "is_enabled": false,
+      "health_status": "healthy",
+      "note": "disabled — no API key required but throttled without auth"
+    },
+    {
+      "name": "Reddit — r/estheticians (API)",
+      "id": "283d3ef8-74e1-4ae1-b28a-81dd53fbc5bc",
+      "is_enabled": false,
+      "note": "disabled — Reddit on hold per owner directive"
+    },
+    {
+      "name": "Reddit — r/MedSpa (API)",
+      "id": "76e17895-9f12-48e0-b0a2-c8bdfa8850e6",
+      "is_enabled": false,
+      "note": "disabled — Reddit on hold per owner directive"
+    },
+    {
+      "name": "Reddit — r/SkincareAddiction (API)",
+      "id": "86fb9bbf-aeb2-4861-87eb-49dc2dda9717",
+      "is_enabled": false,
+      "note": "disabled — Reddit on hold per owner directive"
+    }
+  ]
+}

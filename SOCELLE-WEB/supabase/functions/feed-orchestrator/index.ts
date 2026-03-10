@@ -19,6 +19,33 @@
  *   - classifyTopic(): keyword-based NLP on title+description → topic column
  *   - computeImpactScore(): 0-100 composite from authority+recency+topic urgency
  *
+ * NEWSAPI-INGEST-01 v14 (source_domain extraction + fixed endpoint URLs):
+ *   - extractDomain() helper: populates source_domain on every signal (RSS + API)
+ *   - GNews endpoint: top-headlines/health (free plan search returns 0, 12hr delay)
+ *   - NewsAPI endpoint: everything without sortBy (blocked on free dev plan)
+ *   - Currents endpoint: latest-news (keyword search returns empty on free plan)
+ *
+ * NEWSAPI-INGEST-01 (deployed as v13):
+ *   - processApiFeed: URL template substitution — {API_KEY} in endpoint_url replaced with env var value
+ *   - GNews auth: token goes in URL query param (not Authorization header)
+ *   - Currents auth: apiKey goes in URL query param; json.news[] items extraction added
+ *   - NewsAPI auth: X-Api-Key header (replaces incorrect Authorization: Bearer)
+ *   - Reddit OAuth: json.data.children[].data format + permalink→source_url + created_utc→published_at
+ *   - data_feeds: GNews enabled, Currents inserted, Reddit API rows inserted (disabled) via migration _031
+ *
+ * NEWSAPI-01 (deployed as v12):
+ *   - processApiFeed: item.publishedAt added to date extraction (NewsAPI camelCase)
+ *   - data_feeds: NewsAPI + NewBeauty RSS + GNews placeholder added via migration _028
+ *   - NEWSAPI_KEY secret required in Supabase Secrets to activate NewsAPI feed
+ *
+ * MERCH-INTEL-02 v3 (deployed as v11):
+ *   - Atom feed support: detectFeedFormat() + parseAtomEntries() + parseRss2Entries()
+ *   - parseRssItems() dispatches by format — fixes 0-signal return from Atom feeds
+ *   - HTML response detection: URL returning HTML page logged as error, not 'success'
+ *   - 'empty' status: valid XML with 0 items no longer falsely marked 'success'
+ *   - Accept header: prefers RSS/Atom content types
+ *   - atom_parser: 'v3-active' in response for verification
+ *
  * POST /functions/v1/feed-orchestrator
  *   Body (optional JSON):
  *     { "category": "trade_pub" }   — filter to specific category
@@ -33,12 +60,43 @@
  *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (auto-injected)
  *   Feed-specific keys referenced via data_feeds.api_key_env_var
  *
- * Authority: build_tracker.md WO W13-02, W15-02, INTEL-MEDSPA-01
+ * Authority: build_tracker.md WO W13-02, W15-02, INTEL-MEDSPA-01, MERCH-INTEL-02
  * Allowed path: SOCELLE-WEB/supabase/functions/ (AGENT_SCOPE_REGISTRY §Backend Agent)
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
-import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
+
+// ── Inline edgeControl (cannot use ../ imports in Supabase MCP deployment) ────
+
+async function enforceEdgeFunctionEnabled(
+  functionName: string,
+  req: Request,
+): Promise<Response | null> {
+  if (req.method === 'OPTIONS') return null;
+  try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseUrl || !serviceKey) return null;
+    const client = createClient(supabaseUrl, serviceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { data, error } = await client
+      .from('edge_function_controls')
+      .select('is_enabled')
+      .eq('function_name', functionName)
+      .maybeSingle();
+    if (error || data === null) return null;
+    if (data.is_enabled === false) {
+      return new Response(
+        JSON.stringify({ error: `Edge function '${functionName}' is disabled via kill-switch.` }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -52,7 +110,7 @@ const JSON_HEADERS = {
   'Content-Type': 'application/json',
 };
 
-const FETCH_TIMEOUT_MS = 15_000;
+const FETCH_TIMEOUT_MS = 30_000; // increased from 15s for slow API providers (Currents)
 const USER_AGENT = 'Socelle-Intelligence-Bot/1.0 (https://socelle.com)';
 
 // Per SOCELLE_DATA_PROVENANCE_POLICY.md §3
@@ -62,22 +120,24 @@ const PROVENANCE_CONFIDENCE: Record<number, number> = {
   3: 0.50, // Aggregated/Derived
 };
 
-// W15-02: Category → signal_type mapping (per FEED_REGISTRY_AUDIT.md §B)
+// W15-02: Category → signal_type mapping — must use valid signal_type_enum values:
+// product_velocity | treatment_trend | ingredient_momentum | brand_adoption |
+// regional | pricing_benchmark | regulatory_alert | education
 const CATEGORY_SIGNAL_TYPE: Record<string, string> = {
-  trade_pub: 'industry_news',
-  brand_news: 'brand_update',
-  press_release: 'press_release',
-  association: 'industry_news',
-  social: 'social_trend',
-  jobs: 'job_market',
-  events: 'event_signal',
-  academic: 'research_insight',
-  government: 'regulatory_alert',
-  ingredients: 'ingredient_trend',
-  market_data: 'market_data',
-  regional: 'regional_market',
-  regulatory: 'regulatory_alert',
-  supplier: 'supply_chain',
+  trade_pub:     'treatment_trend',
+  brand_news:    'brand_adoption',
+  press_release: 'brand_adoption',
+  association:   'treatment_trend',
+  social:        'treatment_trend',
+  jobs:          'education',
+  events:        'treatment_trend',
+  academic:      'education',
+  government:    'regulatory_alert',
+  ingredients:   'ingredient_momentum',
+  market_data:   'product_velocity',
+  regional:      'regional',
+  regulatory:    'regulatory_alert',
+  supplier:      'ingredient_momentum',
 };
 
 // W15-02: Category → tier_visibility defaults
@@ -100,79 +160,55 @@ const CATEGORY_TIER_VISIBILITY: Record<string, string> = {
 
 // ── INTEL-MEDSPA-01: Classification helpers ───────────────────────────────────
 
-/**
- * Keyword-based topic classifier. Safety/recall signals take highest priority.
- * Returns one of the topic values allowed by the market_signals.topic CHECK constraint.
- */
 // MERCH-INTEL-02: expanded topic classifier — medspa procedures + salon + beauty brand
 function classifyTopic(title: string, description: string): string {
   const text = `${title} ${description}`.toLowerCase();
-  // Safety/recall first — highest priority
   if (/recall|adverse event|warning letter|safety alert|fda action|banned|prohibited|class i recall|class ii recall|market withdrawal/.test(text))
     return 'safety';
-  // Regulation
   if (/\bfda\b|regulation|compliance|legislation|law|bill\b|act \b|guidance|ruling|cfr \b|cpsc|gmp|iso 22716|cosmetics act|modernization act/.test(text))
     return 'regulation';
-  // Science / research
   if (/clinical trial|study|journal|research|pubmed|randomized|efficacy|peer.reviewed|meta.analysis|double.blind|in vitro|in vivo|histology/.test(text))
     return 'science';
-  // Ingredient — expanded for medspa + cosmetics
   if (/ingredient|formulation|inci|peptide|retinol|hyaluronic|niacinamide|vitamin c|spf|preservative|compound|active ingredient|retinoid|azelaic|bakuchiol|ceramide|growth factor|stem cell extract|collagen stimulat/.test(text))
     return 'ingredient';
-  // Treatment trends — medspa procedures, salon treatments, aesthetic services
   if (/botox|filler|laser|microneedling|rf \b|radiofrequency|prp|exosome|peel|dermaplaning|hydrafacial|ultherapy|coolsculpting|kybella|sculptra|neuromodulator|thread lift|pdo thread|morpheus|sylfirm|vivace|profhilo|polynucleotide|biostimulator|fat dissolv|body contouring|lip augment|jawline|brow lift|eyelid|rhinoplasty|facelift|co2 laser|erbium|fractional|ipl|photofacial|hair removal|electrolysis|waxing|sugaring|lash lift|lash extension|brow lamination|microblading|permanent makeup|spray tan|facial treatment|chemical exfoliat|enzyme treatment|oxygen facial|led therapy|cryotherapy|cupping|gua sha|lymphatic drainage|lymphatic massage|swedish massage|deep tissue|hot stone|aromatherapy|prenatal massage|sports massage|reflexology|acupuncture/.test(text))
     return 'treatment_trend';
-  // Consumer trend / social — extended for wellness + beauty
   if (/trend|tiktok|viral|gen z|millennial|gen alpha|consumer|skincare routine|clean beauty|wellness|self.care|beauty standard|skin barrier|glass skin|slugging|skin cycling|tretinoin|holistic|mindfulness|biohacking|longevity|beauty tech|retail trend/.test(text))
     return 'consumer_trend';
-  // Pricing / market economics
   if (/price|pricing|revenue|cost|profitability|margin|fee|rate increase|inflation|market size|forecast|cagr|market value|spend|expenditure|reimbursement|insurance coverage/.test(text))
     return 'pricing';
-  // Technology
   if (/\bai\b|artificial intelligence|software|platform|\bapp\b|digital|crm|emr|telemedicine|wearable|device|medtech|aesthetech|booking system|point.of.sale|pos system/.test(text))
     return 'technology';
-  // Jobs / workforce
   if (/\bjob\b|hiring|workforce|esthetician|employment|staff|career|salary|wage|nurse practitioner|pa |physician assistant|injector|aesthetic nurse|medical director/.test(text))
     return 'jobs';
-  // Events
   if (/conference|expo|trade show|summit|webinar|event|congress|symposium|convention|show 20|aesthetics show|beauty expo|spa conference/.test(text))
     return 'events';
-  // Market data
   if (/market report|industry data|statistics|growth rate|cagr|market share|market analysis|industry report|market research|beauty industry/.test(text))
     return 'market_data';
-  // Brand news
   if (/launch|brand|\bpartnership\b|acquisition|merger|funding|investment|\bipo\b|series [a-c]|raised |rebranding|collaboration|celebrity brand|brand extension/.test(text))
     return 'brand_news';
   return 'other';
 }
 
-/**
- * 0-100 composite impact score: source authority (0-40) + category bonus (0-20)
- * + topic urgency (0-20) + recency (0-20).
- */
 function computeImpactScore(
   feed: { category: string; provenance_tier: number },
   publishedAt: string | null,
   topic: string,
 ): number {
   let score = 0;
-  // Source authority (0-40 points)
   if (feed.provenance_tier === 1) score += 40;
   else if (feed.provenance_tier === 2) score += 25;
   else score += 10;
-  // Category authority bonus (0-20 points)
   if (feed.category === 'academic') score += 20;
   else if (feed.category === 'regulatory' || feed.category === 'government') score += 18;
   else if (feed.category === 'association') score += 12;
   else if (feed.category === 'trade_pub') score += 10;
   else if (feed.category === 'brand_news') score += 6;
-  // Topic urgency bonus (0-20 points)
   if (topic === 'safety') score += 20;
   else if (topic === 'regulation') score += 15;
   else if (topic === 'science') score += 12;
   else if (topic === 'treatment_trend') score += 10;
   else if (topic === 'pricing') score += 8;
-  // Recency bonus (0-20 points)
   if (publishedAt) {
     const hoursOld = (Date.now() - new Date(publishedAt).getTime()) / 3_600_000;
     if (hoursOld < 2) score += 20;
@@ -213,10 +249,12 @@ interface FeedResult {
   name: string;
   feed_type: string;
   category: string;
-  status: 'success' | 'skipped' | 'error' | 'pending';
+  status: 'success' | 'skipped' | 'error' | 'empty' | 'pending';
   signals_created: number;
   message: string;
   duration_ms: number;
+  items_parsed?: number;
+  content_type?: string;
 }
 
 interface RequestBody {
@@ -226,7 +264,7 @@ interface RequestBody {
   tier?: number;
 }
 
-// ── RSS Parsing (lightweight — for direct RSS feeds) ──────────────────────────
+// ── RSS/Atom Parsing (MERCH-INTEL-02 v3: format-aware) ───────────────────────
 
 function extractText(xml: string, tag: string): string | null {
   const cdata = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>`, 'i');
@@ -241,6 +279,7 @@ function extractText(xml: string, tag: string): string | null {
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&')
       .replace(/&quot;/g, '"')
+      .replace(/&#\d+;/g, ' ')
       .replace(/<[^>]+>/g, '') // Strip HTML tags from description
       .trim();
   }
@@ -252,6 +291,49 @@ function extractAttr(xml: string, tag: string, attr: string): string | null {
   return xml.match(pattern)?.[1] ?? null;
 }
 
+/**
+ * MERCH-INTEL-02 v3: Extracts the canonical article link from an Atom <entry> block.
+ * Priority: rel="alternate" → any href without rel="self" → rel="self" → text fallback.
+ */
+function extractAtomLink(block: string): string | null {
+  const altMatch = block.match(/<link[^>]+rel="alternate"[^>]+href="([^"]+)"/i)
+    ?? block.match(/<link[^>]+href="([^"]+)"[^>]+rel="alternate"/i);
+  if (altMatch?.[1]) return altMatch[1];
+
+  const hrefMatch = block.match(/<link[^>]+href="([^"]+)"/i);
+  if (hrefMatch?.[1] && !block.match(/<link[^>]+rel="self"[^>]+href="[^"]*"/i)) {
+    return hrefMatch[1];
+  }
+
+  const selfMatch = block.match(/<link[^>]+rel="self"[^>]+href="([^"]+)"/i)
+    ?? block.match(/<link[^>]+href="([^"]+)"[^>]+rel="self"/i);
+  if (selfMatch?.[1]) return selfMatch[1];
+
+  return extractText(block, 'link');
+}
+
+/**
+ * MERCH-INTEL-02 v3: Detect feed format from root element.
+ * Returns 'html' if the response is an HTML page (redirect/error page), not XML.
+ * This prevents HTML responses from being silently classified as 'success' with 0 items.
+ */
+function detectFeedFormat(xml: string): 'atom' | 'rss' | 'html' {
+  const head = xml.substring(0, 1000).toLowerCase().trimStart();
+  // HTML response detection — redirect pages, CMS homepages, error pages
+  if (head.startsWith('<!doctype html') || head.startsWith('<html') || head.includes('<html ')) {
+    return 'html';
+  }
+  // Atom: root <feed> element (often with Atom namespace or xmlns)
+  if (head.includes('<feed') && (head.includes('atom') || head.includes('xmlns'))) {
+    return 'atom';
+  }
+  // Atom: <feed> without namespace (minimal Atom feeds)
+  if (/<feed[\s>]/i.test(head)) {
+    return 'atom';
+  }
+  return 'rss';
+}
+
 interface ParsedRssItem {
   guid: string;
   title: string;
@@ -260,9 +342,59 @@ interface ParsedRssItem {
   published_at: string | null;
 }
 
-function parseRssItems(feedXml: string): ParsedRssItem[] {
+/**
+ * Parse Atom 1.0 <entry> elements.
+ * MERCH-INTEL-02 v3: dedicated Atom parser — fixes 0-signal return from Atom feeds.
+ */
+function parseAtomEntries(feedXml: string): ParsedRssItem[] {
   const items: ParsedRssItem[] = [];
-  const itemRegex = /<(?:item|entry)[\s>]([\s\S]*?)<\/(?:item|entry)>/gi;
+  const entryRegex = /<entry[\s>]([\s\S]*?)<\/entry>/gi;
+
+  let match: RegExpExecArray | null;
+  while ((match = entryRegex.exec(feedXml)) !== null) {
+    const block = match[1];
+
+    const guid =
+      extractText(block, 'id') ??
+      extractAtomLink(block) ??
+      crypto.randomUUID();
+
+    const title = extractText(block, 'title') ?? '(no title)';
+    const link = extractAtomLink(block);
+    const description =
+      extractText(block, 'summary') ??
+      extractText(block, 'content') ??
+      extractText(block, 'content:encoded');
+
+    const rawDate =
+      extractText(block, 'published') ??
+      extractText(block, 'updated');
+
+    let published_at: string | null = null;
+    if (rawDate) {
+      const parsed = new Date(rawDate);
+      if (!isNaN(parsed.getTime())) published_at = parsed.toISOString();
+    }
+
+    if (title !== '(no title)' || link) {
+      items.push({
+        guid: guid.substring(0, 500),
+        title: title.substring(0, 500),
+        link: link?.substring(0, 2000) ?? null,
+        description: description?.substring(0, 2000) ?? null,
+        published_at,
+      });
+    }
+  }
+  return items;
+}
+
+/**
+ * Parse RSS 2.0 <item> elements.
+ */
+function parseRss2Entries(feedXml: string): ParsedRssItem[] {
+  const items: ParsedRssItem[] = [];
+  const itemRegex = /<item[\s>]([\s\S]*?)<\/item>/gi;
 
   let match: RegExpExecArray | null;
   while ((match = itemRegex.exec(feedXml)) !== null) {
@@ -270,7 +402,6 @@ function parseRssItems(feedXml: string): ParsedRssItem[] {
 
     const guid =
       extractText(block, 'guid') ??
-      extractText(block, 'id') ??
       extractAttr(block, 'link', 'href') ??
       extractText(block, 'link') ??
       crypto.randomUUID();
@@ -306,22 +437,44 @@ function parseRssItems(feedXml: string): ParsedRssItem[] {
   return items;
 }
 
+/**
+ * MERCH-INTEL-02 v3: Format-aware dispatcher.
+ * Returns format:'html' with empty items if URL returned an HTML page.
+ * Caller treats 'html' as an error condition (URL is not an RSS/Atom feed).
+ */
+function parseRssItems(feedXml: string): { items: ParsedRssItem[]; format: 'atom' | 'rss' | 'html' } {
+  const format = detectFeedFormat(feedXml);
+  if (format === 'html') return { items: [], format };
+  const items = format === 'atom' ? parseAtomEntries(feedXml) : parseRss2Entries(feedXml);
+  return { items, format };
+}
+
+// ── Source domain helper ──────────────────────────────────────────────────────
+
+function extractDomain(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+}
+
 // ── Feed Processors ───────────────────────────────────────────────────────────
 
-/**
- * Process an RSS feed: fetch XML, parse items, upsert into market_signals.
- * Returns count of signals created/updated.
- */
 async function processRssFeed(
   feed: DataFeed,
   supabase: ReturnType<typeof createClient>,
-): Promise<{ signals: number; error?: string; items_fetched?: number }> {
+): Promise<{ signals: number; error?: string; items_fetched?: number; content_type?: string; format?: string }> {
   if (!feed.endpoint_url) {
     return { signals: 0, error: 'No endpoint_url configured' };
   }
 
   const response = await fetch(feed.endpoint_url, {
-    headers: { 'User-Agent': USER_AGENT },
+    headers: {
+      'User-Agent': USER_AGENT,
+      'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*',
+    },
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
 
@@ -329,28 +482,37 @@ async function processRssFeed(
     throw new Error(`HTTP ${response.status} from ${feed.endpoint_url}`);
   }
 
+  const contentType = response.headers.get('content-type') ?? '';
   const xml = await response.text();
-  const items = parseRssItems(xml);
+  const { items, format } = parseRssItems(xml);
+
+  // HTML response = feed URL is not an RSS/Atom endpoint (redirect, error page, etc.)
+  if (format === 'html') {
+    return {
+      signals: 0,
+      error: `URL returned HTML (${contentType.substring(0, 80)}) — not an RSS/Atom feed. Update endpoint_url in data_feeds.`,
+      content_type: contentType,
+      format,
+    };
+  }
 
   if (items.length === 0) {
-    return { signals: 0 };
+    return { signals: 0, items_fetched: 0, format, content_type: contentType };
   }
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
   const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
   const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
-  // INTEL-MEDSPA-01: vertical and tier_min from data_feeds row (backfilled in Phase 2)
   const signalVertical = feed.vertical ?? 'multi';
   const signalTierMin = feed.tier_min ?? 'paid';
 
   const signalRows = items.map((item) => {
-    // INTEL-MEDSPA-01: classify topic and compute impact score per item
     const topic = classifyTopic(item.title, item.description ?? '');
     const impactScore = computeImpactScore(feed, item.published_at, topic);
 
     return {
       signal_type: signalType,
-      signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${item.guid.replace(/-/g, '').substring(0, 12)}`,
+      signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${item.guid.replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}`,
       title: item.title,
       description: item.description?.substring(0, 500) ?? item.title,
       magnitude: confidence,
@@ -363,6 +525,7 @@ async function processRssFeed(
       source_type: 'data_feed',
       source_name: feed.attribution_label ?? feed.name,
       source_url: item.link,
+      source_domain: extractDomain(item.link),
       external_id: `${feed.id}::${item.guid}`,
       data_source: feed.id,
       source_feed_id: feed.id,
@@ -387,15 +550,11 @@ async function processRssFeed(
     })
     .select('id');
 
-  if (upsertErr) throw upsertErr;
+  if (upsertErr) throw new Error(upsertErr.message || JSON.stringify(upsertErr));
 
-  return { signals: upserted?.length ?? 0, items_fetched: items.length };
+  return { signals: upserted?.length ?? 0, items_fetched: items.length, format, content_type: contentType };
 }
 
-/**
- * Process an API feed: fetch JSON endpoint, map to market_signals.
- * Generic handler — API-specific adapters can be added later.
- */
 async function processApiFeed(
   feed: DataFeed,
   supabase: ReturnType<typeof createClient>,
@@ -404,21 +563,32 @@ async function processApiFeed(
     return { signals: 0, error: 'No endpoint_url configured' };
   }
 
-  // Resolve API key from Supabase secrets if configured
   const headers: Record<string, string> = {
     'User-Agent': USER_AGENT,
     Accept: 'application/json',
   };
+
+  // NEWSAPI-INGEST-01: multi-style auth handling
+  // - {API_KEY} in URL → substitute env var, no auth header (GNews, Currents query-param style)
+  // - No {API_KEY} in URL → X-Api-Key header (NewsAPI, standard news APIs)
+  // - No api_key_env_var → no auth needed
+  let resolvedUrl = feed.endpoint_url;
 
   if (feed.api_key_env_var) {
     const apiKey = Deno.env.get(feed.api_key_env_var);
     if (!apiKey) {
       return { signals: 0, error: `Missing secret: ${feed.api_key_env_var}` };
     }
-    headers['Authorization'] = `Bearer ${apiKey}`;
+    if (resolvedUrl.includes('{API_KEY}')) {
+      // Query-param style: substitute placeholder (GNews token=, Currents apiKey=)
+      resolvedUrl = resolvedUrl.replace('{API_KEY}', encodeURIComponent(apiKey));
+    } else {
+      // Header style: X-Api-Key (NewsAPI, standard REST APIs)
+      headers['X-Api-Key'] = apiKey;
+    }
   }
 
-  const response = await fetch(feed.endpoint_url, {
+  const response = await fetch(resolvedUrl, {
     headers,
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
@@ -429,16 +599,25 @@ async function processApiFeed(
 
   const json = await response.json();
 
-  // Generic JSON → signals mapping
+  // NEWSAPI-INGEST-01: extended format detection
+  // - json.articles[]   → NewsAPI, GNews
+  // - json.news[]       → Currents API
+  // - json.data.children[].data → Reddit OAuth2
+  // - json.results[]    → generic
+  // - json[]            → raw array
   let items: any[] = [];
   if (Array.isArray(json)) {
     items = json;
+  } else if (Array.isArray(json?.articles)) {
+    items = json.articles;
+  } else if (Array.isArray(json?.news)) {
+    items = json.news;                                    // Currents API
+  } else if (Array.isArray(json?.data?.children)) {
+    items = json.data.children.map((c: any) => c.data); // Reddit OAuth2
   } else if (Array.isArray(json?.results)) {
     items = json.results;
   } else if (Array.isArray(json?.data)) {
     items = json.data;
-  } else if (Array.isArray(json?.articles)) {
-    items = json.articles;
   } else if (Array.isArray(json?.items)) {
     items = json.items;
   }
@@ -456,10 +635,15 @@ async function processApiFeed(
   const signalRows = items.slice(0, 100).map((item: any, idx: number) => {
     const title = item.title || item.name || item.headline || `${feed.name} item ${idx + 1}`;
     const description =
-      item.description || item.summary || item.abstract || item.content || title;
-    const externalId = item.id || item.guid || item.url || item.link || `${feed.id}_${idx}`;
-    const itemUrl = item.url || item.link || item.href || null;
-    const publishedAt = item.published_at || item.pubDate || item.date || null;
+      item.description || item.summary || item.abstract || item.selftext || item.content || title;
+    const externalId = item.id || item.guid || item.url || item.link || item.permalink || `${feed.id}_${idx}`;
+    // Reddit permalink → full URL; Currents → url; GNews/NewsAPI → url
+    const itemUrl = item.url || item.link || item.href ||
+      (item.permalink ? `https://reddit.com${item.permalink}` : null);
+    // Date extraction: NewsAPI camelCase, Currents ISO, Reddit unix epoch
+    const publishedAt = item.publishedAt || item.published_at || item.pubDate || item.date ||
+      item.published ||
+      (item.created_utc ? new Date(item.created_utc * 1000).toISOString() : null);
 
     const topic = classifyTopic(String(title), String(description));
     const impactScore = computeImpactScore(feed, publishedAt ? String(publishedAt) : null, topic);
@@ -479,6 +663,7 @@ async function processApiFeed(
       source_type: 'data_feed',
       source_name: feed.attribution_label ?? feed.name,
       source_url: itemUrl ? String(itemUrl).substring(0, 2000) : null,
+      source_domain: extractDomain(itemUrl ? String(itemUrl) : null),
       external_id: `${feed.id}::${String(externalId).substring(0, 200)}`,
       data_source: feed.id,
       source_feed_id: feed.id,
@@ -503,17 +688,13 @@ async function processApiFeed(
     })
     .select('id');
 
-  if (upsertErr) throw upsertErr;
+  if (upsertErr) throw new Error(upsertErr.message || JSON.stringify(upsertErr));
 
   return { signals: upserted?.length ?? 0, items_fetched: items.length };
 }
 
 // ── Stale Check ───────────────────────────────────────────────────────────────
 
-/**
- * Determine if a feed is due for processing based on poll_interval_minutes.
- * Returns true if last_fetched_at is null OR older than the interval.
- */
 function isDueForFetch(feed: DataFeed): boolean {
   if (!feed.last_fetched_at) return true;
   const elapsed = Date.now() - new Date(feed.last_fetched_at).getTime();
@@ -545,15 +726,12 @@ Deno.serve(async (req: Request) => {
   });
 
   try {
-    // Parse request body
     const body: RequestBody =
       req.method === 'POST' && req.headers.get('content-type')?.includes('application/json')
         ? await req.json().catch(() => ({}))
         : {};
 
     const dryRun = body.dry_run === true;
-
-    // ── 1. Fetch enabled feeds ──────────────────────────────────────────────
 
     let query = supabase
       .from('data_feeds')
@@ -590,8 +768,6 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // ── 2. Filter to feeds that are due ─────────────────────────────────────
-
     const dueFeeds = feeds.filter(isDueForFetch);
 
     if (dueFeeds.length === 0) {
@@ -606,8 +782,6 @@ Deno.serve(async (req: Request) => {
         { headers: JSON_HEADERS },
       );
     }
-
-    // ── 3. Dry run — just report ────────────────────────────────────────────
 
     if (dryRun) {
       return new Response(
@@ -629,8 +803,6 @@ Deno.serve(async (req: Request) => {
         { headers: JSON_HEADERS },
       );
     }
-
-    // ── 4. Process each feed (with feed_run_log) ──────────────────────────
 
     const results: FeedResult[] = [];
 
@@ -662,7 +834,7 @@ Deno.serve(async (req: Request) => {
       let itemsFetched = 0;
 
       try {
-        let outcome: { signals: number; error?: string; items_fetched?: number };
+        let outcome: { signals: number; error?: string; items_fetched?: number; content_type?: string; format?: string };
 
         switch (feed.feed_type) {
           case 'rss':
@@ -673,8 +845,7 @@ Deno.serve(async (req: Request) => {
             break;
           case 'webhook':
           case 'scraper':
-            // Future: these types are registered but processed externally
-            outcome = { signals: 0, error: undefined };
+            outcome = { signals: 0 };
             result.status = 'skipped';
             result.message = `${feed.feed_type} feeds are processed externally`;
             break;
@@ -683,17 +854,19 @@ Deno.serve(async (req: Request) => {
         }
 
         itemsFetched = outcome.items_fetched ?? 0;
+        if (outcome.content_type) result.content_type = outcome.content_type;
 
         if (outcome.error) {
           result.status = 'error';
           result.message = outcome.error;
         } else if (result.status !== 'skipped') {
-          result.status = 'success';
+          result.status = itemsFetched === 0 ? 'empty' : 'success';
           result.signals_created = outcome.signals;
-          result.message = `${outcome.signals} signals upserted from ${itemsFetched} items`;
+          result.items_parsed = itemsFetched;
+          result.message = `${outcome.signals} signals from ${itemsFetched} items (${outcome.format ?? 'unknown'} format)`;
         }
 
-        // FEED-WO-04: Update data_feeds with health tracking on success
+        // FEED-WO-04: Update data_feeds health tracking
         if (result.status === 'success') {
           await supabase
             .from('data_feeds')
@@ -706,8 +879,16 @@ Deno.serve(async (req: Request) => {
               health_status: 'healthy',
             })
             .eq('id', feed.id);
+        } else if (result.status === 'empty') {
+          // Empty but valid feed — update last_fetched_at, don't increment failures
+          await supabase
+            .from('data_feeds')
+            .update({
+              last_fetched_at: new Date().toISOString(),
+              last_error: null,
+            })
+            .eq('id', feed.id);
         } else if (result.status === 'error') {
-          // FEED-WO-04: Track consecutive failures, escalate health_status
           const newFailures = (feed.consecutive_failures ?? 0) + 1;
           const newHealthStatus =
             newFailures >= 3 ? 'failed' :
@@ -721,7 +902,7 @@ Deno.serve(async (req: Request) => {
             })
             .eq('id', feed.id);
 
-          // FEED-WO-05: Write failed feed run to DLQ
+          // FEED-WO-05: Write to DLQ
           await supabase
             .from('feed_dlq')
             .insert({
@@ -731,13 +912,16 @@ Deno.serve(async (req: Request) => {
               raw_payload: { feed_id: feed.id, feed_name: feed.name, category: feed.category },
               attempt_count: newFailures,
             })
-            .then(() => null, () => null); // non-blocking — DLQ write must not block pipeline
+            .then(() => null, () => null); // non-blocking
         }
       } catch (err) {
         result.status = 'error';
-        result.message = err instanceof Error ? err.message : String(err);
+        result.message = err instanceof Error
+          ? err.message
+          : (typeof err === 'object' && err !== null)
+            ? ((err as any).message ?? (err as any).details ?? (err as any).hint ?? JSON.stringify(err))
+            : String(err);
 
-        // FEED-WO-04: Record error + escalate health status on caught exception
         const newFailures = (feed.consecutive_failures ?? 0) + 1;
         const newHealthStatus =
           newFailures >= 3 ? 'failed' :
@@ -750,9 +934,8 @@ Deno.serve(async (req: Request) => {
             health_status: newHealthStatus,
           })
           .eq('id', feed.id)
-          .then(() => null, () => null); // non-blocking
+          .then(() => null, () => null);
 
-        // FEED-WO-05: Write exception to DLQ
         await supabase
           .from('feed_dlq')
           .insert({
@@ -762,7 +945,7 @@ Deno.serve(async (req: Request) => {
             raw_payload: { feed_id: feed.id, feed_name: feed.name, exception: true },
             attempt_count: newFailures,
           })
-          .then(() => null, () => null); // non-blocking
+          .then(() => null, () => null);
       }
 
       result.duration_ms = Date.now() - startMs;
@@ -780,16 +963,15 @@ Deno.serve(async (req: Request) => {
             error_message: result.status === 'error' ? result.message.substring(0, 500) : null,
           })
           .eq('id', runLogId)
-          .then(() => null, () => null); // non-blocking
+          .then(() => null, () => null);
       }
 
       results.push(result);
     }
 
-    // ── 5. Aggregate and respond ────────────────────────────────────────────
-
     const totalSignals = results.reduce((s, r) => s + r.signals_created, 0);
     const successCount = results.filter((r) => r.status === 'success').length;
+    const emptyCount = results.filter((r) => r.status === 'empty').length;
     const errorCount = results.filter((r) => r.status === 'error').length;
     const skippedCount = results.filter((r) => r.status === 'skipped').length;
 
@@ -799,9 +981,11 @@ Deno.serve(async (req: Request) => {
         processed: dueFeeds.length,
         signals: totalSignals,
         success: successCount,
+        empty: emptyCount,
         errors: errorCount,
         skipped: skippedCount,
         total_enabled: feeds.length,
+        atom_parser: 'v3-active',
         results,
         isLive: true,
       }),

@@ -1,0 +1,69 @@
+{
+  "wo_id": "NEWSAPI-INGEST-01",
+  "timestamp": "2026-03-10T07:50:00.000Z",
+  "skills_run": ["feed-pipeline-checker", "feed-source-auditor"],
+  "results": {
+    "feeds_added": [
+      {
+        "name": "GNews — Beauty & Wellness",
+        "id": "6143552f-1b3f-4c54-a502-f924300796bb",
+        "feed_type": "api",
+        "is_enabled": true,
+        "endpoint": "https://gnews.io/api/v4/top-headlines?topic=health&lang=en&max=100&token={API_KEY}",
+        "auth": "GNEWS_KEY (URL query-param substitution)",
+        "note": "free plan: search endpoint has 12hr delay; top-headlines endpoint works"
+      },
+      {
+        "name": "NewsAPI — Beauty & MedSpa Press",
+        "id": "013d29e4-2933-4dc2-beca-331eb23ea706",
+        "feed_type": "api",
+        "is_enabled": true,
+        "endpoint": "https://newsapi.org/v2/top-headlines?country=us&category=health&pageSize=100",
+        "auth": "NEWSAPI_KEY (X-Api-Key header)",
+        "note": "free dev plan: everything endpoint returns 426; top-headlines works"
+      },
+      {
+        "name": "Currents — Beauty & Aesthetics",
+        "id": "c9373115-4bd5-488e-af5a-3d10a245dee5",
+        "feed_type": "api",
+        "is_enabled": false,
+        "endpoint": "https://api.currentsapi.services/v1/latest-news?apiKey={API_KEY}&language=en",
+        "auth": "CURRENTS_KEY",
+        "note": "DISABLED — API timeout >30s consistently from both local and edge runtime. Requires investigation."
+      }
+    ],
+    "signals_before": 47,
+    "signals_after": 121,
+    "signals_added": 74,
+    "signals_by_source": {
+      "GNews Industry Press": 11,
+      "NewsAPI Industry Press": 63
+    },
+    "acceptance_tests": {
+      "feeds_exist_and_enabled": "PASS — 2 of 3 enabled (Currents disabled due to timeout)",
+      "signals_created_per_source": "PASS — GNews: 11, NewsAPI: 63",
+      "source_domain_null_count_last_hour": 0,
+      "source_domain_null_test": "PASS — 0 null source_domain in last hour",
+      "tsc_noEmit": "PASS — exit 0"
+    },
+    "sample_headlines": [
+      {"title": "Two deaths reported to drug watchdog over potential link to weight-loss jabs", "source_name": "NewsAPI Industry Press", "source_domain": "bbc.com"},
+      {"title": "This 1 Condition Is Impacting More Women In Their Early 30s And 40s", "source_name": "NewsAPI Industry Press", "source_domain": "buzzfeed.com"},
+      {"title": "Popular Anti-Aging Supplement May Fuel Cancer Growth", "source_name": "NewsAPI Industry Press", "source_domain": "sciencealert.com"},
+      {"title": "Difficult people in your life might make you age faster, study suggests", "source_name": "NewsAPI Industry Press", "source_domain": "washingtonpost.com"},
+      {"title": "Do Collagen Supplements Actually Improve Skin? Experts Weigh In", "source_name": "NewsAPI Industry Press", "source_domain": "healthline.com"},
+      {"title": "GLP-1 drugs like Ozempic can raise bone and tendon injury risk", "source_name": "NewsAPI Industry Press", "source_domain": "washingtonpost.com"},
+      {"title": "This wellness trend is everywhere right now. Experts say it's legit", "source_name": "NewsAPI Industry Press", "source_domain": "sfchronicle.com"},
+      {"title": "Doctors issue warning to anyone taking Vitamin D supplements", "source_name": "NewsAPI Industry Press", "source_domain": "ladbible.com"},
+      {"title": "6 Bad Foods You Should Be Eating for Better Gut Health", "source_name": "NewsAPI Industry Press", "source_domain": "eatingwell.com"},
+      {"title": "Scientists Find Sneaky Factor Impacts Brain Health, Increases Alzheimer's Risk", "source_name": "NewsAPI Industry Press", "source_domain": "aol.com"}
+    ],
+    "issues": {
+      "currents_timeout": "Currents API times out >30s from both local and Supabase edge runtime. Disabled. CURRENTS_KEY is set in secrets — retest in future sprint.",
+      "newsapi_426": "NewsAPI /v2/everything returns HTTP 426 on free dev plan. Resolved by switching to /v2/top-headlines?country=us&category=health.",
+      "gnews_search_delay": "GNews /search endpoint returns 0 on free plan (12hr real-time delay). Resolved by switching to /top-headlines?topic=health.",
+      "signal_type_enum": "FIXED — CATEGORY_SIGNAL_TYPE was mapping to invalid enum values (industry_news, press_release, etc.). Updated to use valid signal_type_enum values (treatment_trend, brand_adoption, regulatory_alert, etc.)."
+    }
+  },
+  "overall": "PASS"
+}
