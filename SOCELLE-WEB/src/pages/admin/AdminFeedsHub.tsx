@@ -163,7 +163,7 @@ export default function AdminFeedsHub() {
       const { data, error: dbError } = await supabase
         .from('data_feeds')
         .select('*')
-        .order('category', { ascending: true })
+        .order('display_order', { ascending: true })
         .order('name', { ascending: true });
 
       if (dbError) {

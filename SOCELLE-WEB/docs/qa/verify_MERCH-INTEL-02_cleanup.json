@@ -1,0 +1,51 @@
+{
+  "wo_id": "MERCH-INTEL-02",
+  "stage": "feed-master-cleanup",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "migration": "20260313000025_merch_intel_02_feed_master_cleanup.sql",
+  "applied_live": true,
+  "project_id": "rumdmulxzmjtsplsjngi",
+  "bugs_fixed": [
+    {
+      "bug": "20260313000022 used column name 'feed_url' — actual column is 'endpoint_url'",
+      "impact": "ALL URL fix UPDATEs in that migration matched 0 rows silently",
+      "fix": "Re-applied URL fixes with correct column name endpoint_url"
+    },
+    {
+      "bug": "20260313000022 used vertical='academic_regulatory' — not a valid enum value",
+      "impact": "All WHERE clauses with that vertical matched 0 rows",
+      "fix": "Vertical updates re-applied with valid enum values"
+    },
+    {
+      "bug": "20260313000024 used feed_type='atom' — violates CHECK constraint (rss|api|webhook|scraper)",
+      "impact": "Any feed inserted with feed_type='atom' would fail",
+      "fix": "All atom-format feeds now use feed_type='rss' (parser handles both formats)"
+    },
+    {
+      "bug": "health_status='disabled' used in cleanup attempt — violates CHECK constraint (healthy|degraded|failed)",
+      "impact": "First apply_migration attempt failed",
+      "fix": "Changed all 'disabled' to 'failed' with appropriate last_error message"
+    }
+  ],
+  "feed_state_after": {
+    "total_enabled": 75,
+    "medspa_enabled": 30,
+    "salon_enabled": 20,
+    "beauty_brand_enabled": 11,
+    "multi_enabled": 14
+  },
+  "gate_requirements": {
+    "medspa_min_30": { "required": 30, "actual": 30, "status": "PASS" },
+    "salon_min_10": { "required": 10, "actual": 20, "status": "PASS" },
+    "beauty_brand_min_5": { "required": 5, "actual": 11, "status": "PASS" }
+  },
+  "changes_applied": {
+    "urls_fixed": ["FTC Press Releases", "FDA Cosmetics Guidance", "American Spa channels (8)"],
+    "feeds_disabled": ["Skin Inc Magazine", "Day Spa Magazine", "The Aesthetic Guide", "Dermatology Times", "ISAPS", "Practical Dermatology", "Beauty Matter", "Mordor Intelligence", "Mintel", "Euromonitor", "Grand View Research", "CIR", "Cosmetics Design", "Cosmetics & Toiletries", "GlobeNewswire variants", "SCC News"],
+    "feeds_inserted": ["Modern Salon", "American Salon", "Salon Today", "Behind the Chair", "Spa Executive", "Well + Good", "Spa Business — News", "Global Cosmetic Industry (GCI)", "Cosmetics Business", "Premium Beauty News", "CEW – Cosmetic Executive Women", "AAD News", "RealSelf News", "FDA Recalls — Medical Devices", "JAMA Dermatology (New URL)", "Aesthetic Surgery Journal", "JAAD", "International Journal of Cosmetic Science", "American Spa — Spas"],
+    "priority_column_added": true,
+    "hero_priorities_set": { "priority_10": 12, "priority_20": 8, "priority_30": 10 }
+  },
+  "open_issues": [],
+  "overall": "PASS"
+}
