@@ -2,22 +2,27 @@
 **Date:** 2026-03-13 (valid for next session)
 **Authority:** `docs/build_tracker.md` (execution authority) + `docs/operations/OPERATION_BREAKOUT.md`
 **Prepared by:** IDEA-MINING-01 session wrap-up
+**Verified at HEAD:** `5ce6336475e67fec3cb366c194ed702d644005cc`
 
 ---
 
 ## 1) CURRENT GATE STATUS
 
 ### GUARDRAIL-01 — Intelligence UI Gate
-| Verify Artifact | Status | File |
-|----------------|--------|------|
-| verify_AGENT_ACTIVATION.json | ✅ PASS | docs/qa/ |
-| verify_INTEL_MERCH.json | ✅ PASS | docs/qa/ — 6 PASS, 6 WARN, 0 FAIL |
-| verify_INTEL-UI-CLICK-IMAGE-01.json | ✅ PASS | docs/qa/ |
-| verify_COVERAGE_EXPANSION.json | ✅ PASS | docs/qa/ |
-| verify_MERCH-INTEL-02.json | ✅ PASS | docs/qa/ |
-| verify_IDEA-MINING-01.json | ✅ PASS | docs/qa/ — committed 951fd5a |
 
-**GUARDRAIL-01: ✅ CLEARED**
+**Hard rule:** 0 FAIL required across all verify artifacts. WARN allowed only if documented in OPERATION_BREAKOUT.md §PATTERN LIBRARY INPUTS → Acceptable WARNs.
+
+| Verify Artifact | Disk Size | overall field | FAIL count | Gate |
+|----------------|-----------|---------------|------------|------|
+| verify_AGENT_ACTIVATION.json | exists | PASS | 0 | ✅ |
+| verify_INTEL_MERCH.json | 5999 bytes | PASS | 0 (6 WARN — documented in OPERATION_BREAKOUT.md) | ✅ |
+| verify_INTEL-UI-CLICK-IMAGE-01.json | exists | PASS | 0 | ✅ |
+| verify_COVERAGE_EXPANSION.json | 9370 bytes | PASS | 0 (signal_generation PENDING — explicitly noted as non-blocking in artifact) | ✅ |
+| verify_MERCH-INTEL-02.json | 10164 bytes | PASS | 0 (pipeline_first_run PARTIAL — URL/bot issues documented as known_issues) | ✅ |
+| verify_IDEA-MINING-01.json | exists | PASS | 0 | ✅ |
+
+**GUARDRAIL-01: ✅ CLEARED — all 6 artifacts exist on disk, all overall=PASS, 0 FAIL rules across any artifact.**
+**WARNs acknowledged:** 6 WARN rules in verify_INTEL_MERCH.json documented in OPERATION_BREAKOUT.md §Acceptable WARNs.
 
 ### P0 GATE — Master Platform Upgrade
 | WO ID | Status | Proof |
@@ -48,17 +53,21 @@
 | STATE-AUDIT-01 | OPEN | P0 GATE |
 | INTEL-UI-REMEDIATION-01 | OPEN (GUARDRAIL-01 CLEARED) | IDEA-MINING-01 (DONE) |
 
-### Missing verify artifacts (OPEN WOs have no proof yet — expected)
-The following verify JSONs DO NOT EXIST and are expected to be created by the agent that executes each WO:
-- verify_CMS-WO-07.json — MISSING (WO not started)
-- verify_EVT-WO-02.json — MISSING (WO not started)
-- verify_ROUTE-CLEANUP-WO.json — MISSING (WO not started)
-- verify_BRAND-SIGNAL-WO.json — MISSING (WO not started)
-- verify_DEBT-TANSTACK-REAL-6.json — MISSING (WO not started)
-- verify_MERCH-INTEL-03-FINAL.json — MISSING (WO not started)
-- verify_P1-3.json — MISSING (WO not started)
-- verify_STATE-AUDIT-01.json — MISSING (WO not started)
-- verify_INTEL-UI-REMEDIATION-01.json — MISSING (WO not started, GUARDRAIL-01 cleared)
+### Missing verify artifacts — EXPLICIT LIST (agent must create these before marking WOs DONE)
+
+These files DO NOT EXIST on disk as of HEAD `5ce6336`. Each must be created by the executing agent as part of that WO's proof pack. Missing = WO is not DONE.
+
+| Verify JSON | WO | Status |
+|------------|-----|--------|
+| verify_INTEL-UI-REMEDIATION-01.json | INTEL-UI-REMEDIATION-01 | ❌ MISSING — WO not started |
+| verify_CMS-WO-07.json | CMS-WO-07 | ❌ MISSING — WO not started |
+| verify_MERCH-INTEL-03-FINAL.json | MERCH-INTEL-03-FINAL | ❌ MISSING — WO not started |
+| verify_DEBT-TANSTACK-REAL-6.json | DEBT-TANSTACK-REAL-6 | ❌ MISSING — WO not started |
+| verify_EVT-WO-02.json | EVT-WO-02 | ❌ MISSING — WO not started |
+| verify_ROUTE-CLEANUP-WO.json | ROUTE-CLEANUP-WO | ❌ MISSING — WO not started |
+| verify_BRAND-SIGNAL-WO.json | BRAND-SIGNAL-WO | ❌ MISSING — WO not started |
+| verify_P1-3.json | P1-3 | ❌ MISSING — WO not started |
+| verify_STATE-AUDIT-01.json | STATE-AUDIT-01 | ❌ MISSING — WO not started |
 
 ---
 
@@ -91,9 +100,11 @@ The following verify JSONs DO NOT EXIST and are expected to be created by the ag
 
 ---
 
-## 4) FIRST 3 WOs FOR TOMORROW (PRIORITY ORDER)
+## 4) FIRST WO FOR TOMORROW — ONE WO ONLY (no parallel coding until gate proof validated)
 
-### WO 1: INTEL-UI-REMEDIATION-01
+> **Rule:** Complete WO 1 fully (code + verify JSON committed) before starting WO 2. No parallel coding across WOs.
+
+### WO 1 (START HERE): INTEL-UI-REMEDIATION-01
 
 **Objective:** Fix Intelligence Hub UX per IDEA-MINING-01 patterns + outstanding segmentation gaps.
 

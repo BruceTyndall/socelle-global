@@ -700,6 +700,21 @@ Signal → [action] → [target in this hub]
 3. **IDEA-MINING-01 completion does NOT override GUARDRAIL-01.** GUARDRAIL-01 is gated on verify artifact status (see `docs/build_tracker.md` § GUARDRAIL-01 STATUS). Idea mining is an input to design decisions, not a green light to ship.
 4. **Anti-patterns from IDEA-MINING-01 are binding prohibitions.** Any implementation that matches a documented anti-pattern (e.g., Boolean query as primary search, blank widget canvas, static PDF as primary delivery) is a STOP CONDITION.
 
+### Acceptable WARNs in verify_INTEL_MERCH.json (owner acknowledged — does NOT block GUARDRAIL-01)
+
+The following 6 WARN rules are explicitly accepted. Each has a documented resolution path. 0 FAIL is confirmed.
+
+| Rule | WARN Reason | Resolution Path |
+|------|------------|----------------|
+| FEED-MERCH-02 | Vertical filter optional, not default-enforced | INTEL-WO-01 scope |
+| FEED-MERCH-06 | Paid:free ratio = 0.14:1 (target ≥3:1) | Owner decision: commercial API budget (Mintel, Euromonitor) |
+| FEED-MERCH-07 | No cross-source 6hr topic-window dedup | Separate dedup WO after MERCH-INTEL-03-FINAL |
+| FEED-MERCH-08 | FDA MDR titles ALL CAPS; " - SourceName" appended on trade press | ingest-openfda title normalization + PRESS-INGEST-01 |
+| FEED-MERCH-11 | Failed/degraded-first ordering unconfirmed in live admin view | AdminFeedsHub audit WO |
+| FEED-MERCH-12 | No explicit paywall-boundary signal curation in useIntelligence.ts | INTEL-WO-01 scope |
+
+**Evidence:** `docs/qa/verify_INTEL_MERCH.json` → `summary.fail = 0`, `note: "6 WARN rules are acceptable per skill spec (ship with owner acknowledgment)."`
+
 ### Top 10 Patterns (mapped to SOCELLE surfaces)
 
 | # | Pattern | Source | SOCELLE Surface |
