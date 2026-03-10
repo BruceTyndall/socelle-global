@@ -49,7 +49,7 @@ This registry defines the boundary, skills, allowed paths, forbidden paths, and 
 | 7 | Proof/metrics | Dashboard with real aggregated metrics (and `updated_at`) |
 | 8 | Export | CSV minimum; PDF for Pro+ |
 | 9 | Error/empty/loading | Premium states implemented and tested |
-| 10 | Observability | Errors and slow paths visible in Sentry / logs |
+| 10 | Observability | Errors and slow paths visible in Admin Hub dashboards and logs |
 
 If an agent detects a shell, they HALT and raise a WO to fix it.
 
@@ -86,6 +86,7 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 | Professionals | CRM Agent | Required | 5 |
 | Admin | Command Agent | Required | 5 |
 | CRM | CRM Agent | Required | 5 |
+| Booking | CRM Agent | Required | 5 |
 | Education | Education Agent | Required | 5 |
 | Marketing | Marketing Agent | Required | 5 |
 | Sales | Sales Agent | Required | 5 |
@@ -109,6 +110,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 **Scope:** Program-level coordination, command doc maintenance, gate enforcement, cross-agent sequencing.
 
 **Hub ownership:** Admin
+
+**Assigned Skills:** doc-gate-enforcer, proof-pack, repo-auditor, changelog-generator | Suites: ALL suites (audit-only)
 
 **Allowed Paths:**
 - `docs/command/` — full read/write (change control process applies)
@@ -145,6 +148,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 - Deno edge function authoring
 - Supabase Realtime (for streaming AI responses)
 - React hooks for AI state
+
+**Assigned Skills:** ai-output-quality-checker, ai-service-menu-validator, confidence-scorer, feed-source-auditor, feed-pipeline-checker, signal-data-validator, provenance-checker | Suite: data-integrity-suite
 
 **Allowed Paths:**
 - `SOCELLE-WEB/supabase/functions/ai-orchestrator/` — read/write
@@ -190,6 +195,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 - TanStack Query v5
 - Sentry (web + edge)
 
+**Assigned Skills:** build-gate, db-inspector, migration-validator, rls-auditor, edge-fn-health, type-generation-validator, route-mapper, dependency-scanner | Suites: schema-db-suite, test-runner-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
 - `SOCELLE-WEB/supabase/functions/` — ADD ONLY for new; update non-commerce with WO
@@ -230,6 +237,10 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Scope:** Tailwind token system, Figma-to-code handoff, design parity across web and mobile, banned color/font enforcement, responsive design audits.
 
+**Hub ownership:** N/A — cross-cutting
+
+**Assigned Skills:** design-lock-enforcer, design-standard-enforcer, token-drift-scanner, figma-parity-checker | Suite: design-audit-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/tailwind.config.js` — parity/compliance fixes ONLY
 - `SOCELLE-WEB/src/index.css` — token updates ONLY
@@ -256,6 +267,10 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Scope:** Row-Level Security audits, secrets scanning, AI safety guardrails (V1 §O), FTC compliance for affiliate/commission disclosures, data provenance enforcement.
 
+**Hub ownership:** N/A — cross-cutting
+
+**Assigned Skills:** secrets-scanner, rls-auditor, legal-compliance-checker, risk-gatekeeper
+
 **Allowed Paths:**
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (RLS policies)
 - `docs/command/` — security-related docs only
@@ -281,6 +296,10 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Scope:** Playwright E2E, Vitest unit, route crawl, auth/paywall smoke tests, visual regression, LIVE/DEMO surface labeling enforcement.
 
+**Hub ownership:** N/A — cross-cutting
+
+**Assigned Skills:** smoke-test-suite, e2e-test-runner, playwright-crawler, live-demo-detector, hub-shell-detector | Suite: test-runner-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/tests/` — full read/write
 - `SOCELLE-WEB/playwright.config.ts` — read/write
@@ -304,6 +323,10 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 **Description:** Voice, banned terms, paywall/onboarding/empties, launch comms.
 
 **Scope:** Brand voice enforcement (per `BRAND_VOICE_GUIDELINES.md`), banned term scanning, copy for paywall/onboarding/empty states, launch comms playbook execution.
+
+**Hub ownership:** N/A — cross-cutting
+
+**Assigned Skills:** voice-enforcer, tone-voice-auditor, banned-term-scanner, copy-system-enforcer, language-linter | Suite: copy-quality-suite
 
 **Allowed Paths:**
 - Copy-only changes in `SOCELLE-WEB/src/pages/` — text/string changes only, with WO
@@ -330,6 +353,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 **Scope:** Tier gating (Free/Starter/Pro/Enterprise per V1 §A), credit system (deduct_credits/top_up_credits RPCs), affiliate tracking and commission logic, FTC disclosure, onboarding flows.
 
 **Hub ownership:** Credit Economy, Affiliate/Wholesale Engine
+
+**Assigned Skills:** credit-economy-validator, billing-scenario-simulator, payment-flow-tester, stripe-integration-tester, affiliate-link-checker, entitlement-validator | Suite: billing-payments-suite
 
 **Allowed Paths:**
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (credit + affiliate schema)
@@ -358,6 +383,10 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Scope:** Supabase schema design, `database.types.ts` generation, materialized views for intelligence modules, first-party event tracking schema, pg_cron jobs, pgvector configuration.
 
+**Hub ownership:** N/A — cross-cutting
+
+**Assigned Skills:** db-inspector, migration-validator, schema-drift-detector, type-generation-validator, materialized-view-checker | Suite: schema-db-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
 - `supabase/migrations/` (monorepo root) — ADD ONLY
@@ -385,12 +414,15 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Scope:** Customer relationship management — operator CRM, brand CRM, pipeline management, contact database, interaction history, professional profile management.
 
-**Hub ownership:** CRM, Professionals
+**Hub ownership:** CRM, Professionals, Booking
+
+**Assigned Skills:** rls-auditor, entitlement-validator
 
 **Allowed Paths:**
-- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (CRM + professionals schema)
-- `SOCELLE-WEB/src/pages/business/` — CRM + professional features only, with WO
+- `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (CRM + professionals + booking schema)
+- `SOCELLE-WEB/src/pages/business/` — CRM + professional + booking features only, with WO
 - `SOCELLE-WEB/src/pages/brand/` — CRM features only, with WO
+- `SOCELLE-WEB/supabase/functions/` — ADD ONLY (booking + CRM edge functions, with WO)
 
 **Forbidden Paths:**
 - Cross-tenant CRM data access — NEVER (RLS must prevent)
@@ -413,6 +445,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 **Scope:** Course builder, protocol library, CE credits system, training scheduler, CMS content for education articles and learning paths.
 
 **Hub ownership:** Education
+
+**Assigned Skills:** education-content-optimizer, education-module-creator, education-preference-alignor
 
 **Allowed Paths:**
 - `SOCELLE-WEB/src/pages/public/Education.tsx` — read/write
@@ -443,6 +477,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Hub ownership:** Marketing, Brands
 
+**Assigned Skills:** marketing-alignment-checker, marketing-analytics-forecaster, marketing-campaign-builder, marketing-content-generator, cta-validator | Suite: copy-quality-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/src/pages/business/` — marketing features only, with WO
 - `SOCELLE-WEB/src/pages/brand/` — campaign + brand features only, with WO
@@ -472,6 +508,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Hub ownership:** Sales
 
+**Assigned Skills:** sales-pipeline-optimizer, sales-output-refiner, sales-script-generator | Suite: billing-payments-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/src/pages/business/` — sales features only, with WO
 - `SOCELLE-WEB/src/pages/brand/` — brand leads/pipeline features only, with WO
@@ -500,6 +538,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Hub ownership:** Commerce
 
+**Assigned Skills:** entitlement-validator, payment-flow-tester | Suite: billing-payments-suite
+
 **Allowed Paths:**
 - `SOCELLE-WEB/src/pages/` — commerce surfaces only, with WO
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY (commerce schema, non-checkout)
@@ -527,6 +567,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 **Hub ownership:** Authoring Studio
 
+**Assigned Skills:** data-quality-auditor, provenance-checker
+
 **Allowed Paths:**
 - `SOCELLE-WEB/src/pages/` — authoring surfaces only, with WO
 - `SOCELLE-WEB/src/pages/admin/` — CMS admin surfaces, ADD ONLY
@@ -545,6 +587,42 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 
 ---
 
+### 16. MULTI-PLATFORM AGENT
+
+**Description:** Mobile + Desktop hubs owner. Executes multi-platform strategy (V1 §H).
+
+**Scope:**
+- **Desktop:** Tauri shell wrapping the same React+Vite app. No re-implementation of business logic in Rust; only IPC plumbing. Desktop-only features: notifications, file export, auto-update, secure storage.
+- **Mobile:** Flutter app using same Supabase API contracts and edge functions. No FFI of TypeScript logic into Dart. Shares: schemas, entitlement rules, credit system, AI endpoints.
+
+**Hub ownership:** Mobile App, Desktop App
+
+**Assigned Skills:** mobile-parity-checker, build-gate, responsive-checker | Suite: design-audit-suite
+
+**Allowed Paths:**
+- `SOCELLE-MOBILE-main/apps/mobile/lib/` — full read/write
+- `SOCELLE-MOBILE-main/apps/mobile/pubspec.yaml` — read/write
+- `SOCELLE-MOBILE-main/apps/mobile/ios/` — read/write
+- `SOCELLE-MOBILE-main/apps/mobile/android/` — read/write
+- `src-tauri/` — Tauri desktop config and IPC (when created)
+- `packages/` — shared type definitions (read only)
+
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/` — Web/Platform Engineer domain (except Tauri wrapper of built output)
+- `supabase/migrations/` — Data Architect/Platform Engineer domain
+- `supabase/functions/` — Intelligence Architect/Platform Engineer domain
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- Commerce flow — FROZEN
+
+**Required Proofs:**
+- [ ] `flutter analyze` — zero errors (mobile)
+- [ ] Tauri build compiles (desktop)
+- [ ] Design tokens in parity with web spec
+- [ ] No hardcoded data without DEMO label
+- [ ] Doc Gate PASS
+
+---
+
 ### 17. INTELLIGENCE MERCHANDISER
 
 **Description:** Editorial layer between raw feed data and user-facing Intelligence Hub. Owns the 12 FEED-MERCH rules governing signal selection, ranking, framing, and paywall curation.
@@ -555,6 +633,8 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 **Suite membership:** `data-integrity-suite` (member #7)
 
 **Hub ownership:** None — cross-cutting editorial layer (Intelligence Architect owns the hub; this agent owns the presentation rules within it)
+
+**Assigned Skills:** intelligence-merchandiser, feed-value-ranker, topic-distribution-checker, signal-title-rewriter | Suite: data-integrity-suite
 
 **Allowed Paths:**
 - `SOCELLE-WEB/supabase/functions/feed-orchestrator/index.ts` — read/write (ranking logic only)
@@ -584,40 +664,6 @@ Every hub has exactly one primary owner agent. **NO SHELLS.** Each hub must sati
 - [ ] Doc Gate PASS
 
 **Double-Agent Rule:** This agent does NOT mark any work DONE until `merchandising-audit` tool runs and returns `"overall": "PASS"`.
-
----
-
-### 16. MULTI-PLATFORM AGENT
-
-**Description:** Mobile + Desktop hubs owner. Executes multi-platform strategy (V1 §H).
-
-**Scope:**
-- **Desktop:** Tauri shell wrapping the same React+Vite app. No re-implementation of business logic in Rust; only IPC plumbing. Desktop-only features: notifications, file export, auto-update, secure storage.
-- **Mobile:** Flutter app using same Supabase API contracts and edge functions. No FFI of TypeScript logic into Dart. Shares: schemas, entitlement rules, credit system, AI endpoints.
-
-**Hub ownership:** Mobile App, Desktop App
-
-**Allowed Paths:**
-- `SOCELLE-MOBILE-main/apps/mobile/lib/` — full read/write
-- `SOCELLE-MOBILE-main/apps/mobile/pubspec.yaml` — read/write
-- `SOCELLE-MOBILE-main/apps/mobile/ios/` — read/write
-- `SOCELLE-MOBILE-main/apps/mobile/android/` — read/write
-- `src-tauri/` — Tauri desktop config and IPC (when created)
-- `packages/` — shared type definitions (read only)
-
-**Forbidden Paths:**
-- `SOCELLE-WEB/src/` — Web/Platform Engineer domain (except Tauri wrapper of built output)
-- `supabase/migrations/` — Data Architect/Platform Engineer domain
-- `supabase/functions/` — Intelligence Architect/Platform Engineer domain
-- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
-- Commerce flow — FROZEN
-
-**Required Proofs:**
-- [ ] `flutter analyze` — zero errors (mobile)
-- [ ] Tauri build compiles (desktop)
-- [ ] Design tokens in parity with web spec
-- [ ] No hardcoded data without DEMO label
-- [ ] Doc Gate PASS
 
 ---
 
@@ -651,6 +697,14 @@ These agents support the hub owners but do not own hubs themselves:
 - `docs/command/HARD_CODED_SURFACES.md` — write with WO only
 - ALL other paths: READ-ONLY
 
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- Commerce flow — FROZEN
+- ALL `src/` write operations — read-only audit only
+
 ---
 
 #### Events Pipeline Agent
@@ -662,6 +716,13 @@ These agents support the hub owners but do not own hubs themselves:
 - `SOCELLE-WEB/supabase/migrations/` — ADD ONLY
 - `SOCELLE-WEB/supabase/functions/` — ADD ONLY (event ingestion)
 
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- Commerce flow — FROZEN
+
 ---
 
 #### Analytics / Attribution Agent
@@ -672,6 +733,13 @@ These agents support the hub owners but do not own hubs themselves:
 - `SOCELLE-WEB/src/lib/analytics/` — full read/write
 - `SOCELLE-WEB/src/lib/tracking.ts` — read/write
 
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- Commerce flow — FROZEN
+
 ---
 
 #### Infra / DevOps Agent
@@ -681,6 +749,14 @@ These agents support the hub owners but do not own hubs themselves:
 **Allowed Paths:**
 - `.github/workflows/` — full read/write
 - `wrangler.toml`, `turbo.json`, `package.json` — read/write
+
+**Forbidden Paths:**
+- `SOCELLE-WEB/src/lib/auth.tsx` — NEVER MODIFY
+- `SOCELLE-WEB/src/lib/useCart.ts` — NEVER MODIFY
+- `SOCELLE-WEB/supabase/functions/create-checkout/` — FROZEN
+- `SOCELLE-WEB/supabase/functions/stripe-webhook/` — FROZEN
+- Commerce flow — FROZEN
+- All `src/` application code — read-only
 
 ---
 
@@ -760,9 +836,9 @@ These agents support the hub owners but do not own hubs themselves:
 
 ### Skill Library Governance
 
-- **Location:** `/.claude/skills/` (97 directories, auto-discovered)
+- **Location:** `/.claude/skills/` (119 directories, auto-discovered; 4 Intelligence Merchandiser skill files pending — see MERCH-SKILL-01)
 - **Authority:** Skills Master vNext (`SOCELLE_SKILLS_MASTER_vNEXT.docx`)
-- **Certification:** 97/97 PASS (March 8, 2026 re-certification)
+- **Certification:** 97/97 PASS (March 8, 2026 re-certification); count updated to 119 post MERCH-SKILL-01 + prior additions
 - **Re-certification cadence:** Quarterly (next: June 2026)
 - **Suite definitions:** Suites are execution wrappers; member skills remain individually invocable
 - **New skills:** Must be created via `skill-creator` and added to Skills Master
