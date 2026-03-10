@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
+import { useTier } from '../../hooks/useTier';
 import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
 
 // ── useIntelligence — resilient live signal hook ──
@@ -14,6 +15,21 @@ import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, Tier
 interface UseIntelligenceOptions {
   /** User's plan tier — controls which signals are visible. Default: 'free' */
   userTier?: TierVisibility;
+  /**
+   * INTEL-MEDSPA-01: Optional vertical filter.
+   * 'medspa' | 'salon' | 'beauty_brand' | 'multi'
+   * When set, only signals matching this vertical (or 'multi') are returned.
+   */
+  vertical?: 'medspa' | 'salon' | 'beauty_brand' | 'multi';
+  /**
+   * INTEL-MEDSPA-01: Explicit tier_min override for DB-level filtering.
+   * 'free' = only tier_min='free' signals + 14-day window.
+   * 'paid' = all signals, full history.
+   * When omitted, derived from useTier() subscription state.
+   */
+  tierOverride?: 'free' | 'paid';
+  /** INTEL-MEDSPA-01: Max signals to return (default 50). */
+  limit?: number;
 }
 
 interface UseIntelligenceReturn {
@@ -46,6 +62,11 @@ interface MarketSignalRow {
   source_type: string | null;
   data_source: string | null;
   confidence_score: number | null;
+  // INTEL-MEDSPA-01: classification columns
+  vertical: string | null;
+  topic: string | null;
+  tier_min: string | null;
+  impact_score: number | null;
 }
 
 const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
@@ -127,18 +148,39 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const userTier = options?.userTier ?? 'free';
   const [activeFilter, setActiveFilter] = useState<SignalFilterKey>('all');
 
+  // INTEL-MEDSPA-01: resolve effective tier for tier_min DB filtering
+  const { tier: subscriptionTier } = useTier();
+  // Map subscription tier to tier_min gate: 'free' tier sees only free-labelled signals; any paid tier sees all
+  const effectiveTierMin: 'free' | 'paid' = options?.tierOverride ?? (subscriptionTier === 'free' ? 'free' : 'paid');
+
   const { data: rawSignals = [], isLoading: loading } = useQuery({
-    queryKey: ['market_signals'],
+    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let q = supabase
         .from('market_signals')
         .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, data_source, confidence_score'
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, data_source, confidence_score, vertical, topic, tier_min, impact_score'
         )
         .eq('active', true)
         .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
         .order('display_order', { ascending: true })
-        .order('updated_at', { ascending: false });
+        .order('updated_at', { ascending: false })
+        .limit(options?.limit ?? 50);
+
+      // INTEL-MEDSPA-01: tier_min gate — free tier sees only free-labelled signals, 14-day window
+      if (effectiveTierMin === 'free') {
+        q = q.eq('tier_min', 'free');
+        const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+        q = q.gte('updated_at', cutoff);
+      }
+      // Paid tier: no tier_min filter, full history
+
+      // INTEL-MEDSPA-01: optional vertical filter (also includes 'multi' cross-vertical signals)
+      if (options?.vertical) {
+        q = (q as any).in('vertical', [options.vertical, 'multi']);
+      }
+
+      const { data, error } = await q;
 
       if (error) {
         console.warn('[useIntelligence] fetch error:', error.message);
@@ -148,6 +190,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       return (data as MarketSignalRow[]).map(rowToSignal);
     },
     enabled: isSupabaseConfigured,
+    staleTime: 60_000,
   });
 
   // ── Realtime: prepend new signals to top of feed with slide-in animation ──────
