@@ -30,6 +30,15 @@ interface UseIntelligenceOptions {
   tierOverride?: 'free' | 'paid';
   /** INTEL-MEDSPA-01: Max signals to return (default 50). */
   limit?: number;
+  /**
+   * MERCH-REMEDIATION-01 MERCH-10: Timeline eligibility mode.
+   * When true, applies stricter filter vs main table:
+   * - impact_score >= 60 only
+   * - signals updated within 72 hours
+   * - excludes 'other' / 'general' topics
+   * Used for "What Changed" feed.
+   */
+  timeline?: boolean;
 }
 
 interface UseIntelligenceReturn {
@@ -70,6 +79,11 @@ interface MarketSignalRow {
   // provenance columns (added by migrations — may be null in older rows)
   source_name: string | null;
   source_url: string | null;
+  image_url: string | null;
+  // original tier gate column — client-side gating (DB-level uses tier_min)
+  tier_visibility: string | null;
+  // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
+  provenance_tier: number | null;
 }
 
 const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
@@ -126,16 +140,20 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
     // Use DB source_name column first; fall back to derived value for older rows
     source_name: row.source_name ?? row.data_source ?? row.source_type ?? row.source ?? undefined,
     source_url: row.source_url ?? undefined,
+    image_url: row.image_url ?? undefined,
     confidence_score: row.confidence_score ?? undefined,
-    // Older/leaner environments may not have tier/provenance columns; default
-    // to free visibility and non-duplicate for downstream UI compatibility.
-    tier_visibility: 'free' as TierVisibility,
+    // Read tier_visibility from DB; fall back to tier_min mapping; finally 'free' for older rows.
+    tier_visibility: (row.tier_visibility === 'pro' || row.tier_visibility === 'admin'
+      ? row.tier_visibility
+      : row.tier_min === 'paid' ? 'pro' : 'free') as TierVisibility,
     is_duplicate: false,
     // INTEL-MEDSPA-01: classification + scoring — previously computed at ingest but dropped here
     impact_score: row.impact_score ?? undefined,
     vertical: row.vertical ?? undefined,
     topic: row.topic ?? undefined,
     tier_min: row.tier_min ?? undefined,
+    // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
+    provenance_tier: row.provenance_tier ?? 3,
   };
 }
 
@@ -164,15 +182,19 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const effectiveTierMin: 'free' | 'paid' = options?.tierOverride ?? (subscriptionTier === 'free' ? 'free' : 'paid');
 
   const { data: rawSignals = [], isLoading: loading } = useQuery({
-    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit],
+    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false],
     queryFn: async () => {
       let q = supabase
         .from('market_signals')
         .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, data_source, confidence_score, vertical, topic, tier_min, impact_score'
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier'
         )
         .eq('active', true)
         .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
+        // MERCH-01: provenance authority first (tier 1=regulatory > tier 3=trade),
+        // then display_order for editorial overrides, then recency.
+        // Decayed impact score re-ranking happens client-side (MERCH-04/05).
+        .order('provenance_tier', { ascending: true })
         .order('display_order', { ascending: true })
         .order('updated_at', { ascending: false })
         .limit(options?.limit ?? 50);
@@ -188,6 +210,15 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       // INTEL-MEDSPA-01: optional vertical filter (also includes 'multi' cross-vertical signals)
       if (options?.vertical) {
         q = (q as any).in('vertical', [options.vertical, 'multi']);
+      }
+
+      // MERCH-10: Timeline eligibility — stricter filter for "What Changed" feed
+      if (options?.timeline) {
+        const cutoff72h = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
+        q = q
+          .gte('impact_score', 60)
+          .gte('updated_at', cutoff72h)
+          .not('topic', 'in', '("other","general")');
       }
 
       const { data, error } = await q;
@@ -207,7 +238,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const queryClient = useQueryClient();
   // Capture the exact queryKey used by this hook instance so the realtime
   // handler updates the same cache entry (not a bare ['market_signals'] ghost).
-  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit];
+  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false];
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
@@ -273,11 +304,10 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   }, [isLive, rawSignals]);
 
   // ── Tier gating ────────────────────────────────────────────────────
-  // Always filter by tier regardless of isLive. rowToSignal defaults
-  // tier_visibility to 'free' for DB rows missing the column, so live
-  // signals without the column pass correctly. Applying the filter to
-  // all paths prevents tier bypass if signals are ever injected from
-  // outside the DB query path.
+  // Belt-and-suspenders client-side gate. DB already filters by tier_min.
+  // rowToSignal now reads tier_visibility from DB; falls back to tier_min
+  // mapping (paid→pro); finally 'free' for rows predating the column.
+  // This prevents bypass if signals are injected outside the DB query path.
   const allowedTiers = TIER_ACCESS[userTier];
   const tieredSignals = useMemo(() => {
     return rawSignals.filter((s) => {
@@ -286,7 +316,35 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     });
   }, [rawSignals, allowedTiers]);
 
-  // ── Filter + sort ──────────────────────────────────────────────────
+  // ── MERCH-04: Freshness decay multipliers ──────────────────────────
+  // Applied to impact_score before ranking. Keeps recent signals competitive
+  // against high-scoring but stale content.
+  function freshnessDecay(updatedAt: string): number {
+    const hoursOld = (Date.now() - new Date(updatedAt).getTime()) / 3_600_000;
+    if (hoursOld < 2)  return 1.0;
+    if (hoursOld < 6)  return 0.875;
+    if (hoursOld < 24) return 0.75;
+    if (hoursOld < 72) return 0.625;
+    return 0.375;
+  }
+
+  // ── MERCH-01: Provenance authority weights ──────────────────────────
+  // Tier 1 (regulatory/FDA) gets highest multiplier; trade press gets 1×.
+  const PROVENANCE_WEIGHTS: Record<number, number> = {
+    1: 2.0,   // regulatory authority (FDA, FTC, EPA)
+    2: 1.4,   // academic/clinical
+    3: 1.0,   // trade press / brand news (default)
+  };
+
+  // ── MERCH-05: Compute ranked score (decay × provenance × impact) ─────
+  function rankedScore(s: IntelligenceSignal): number {
+    const base   = s.impact_score ?? 50;
+    const decay  = freshnessDecay(s.updated_at);
+    const prov   = PROVENANCE_WEIGHTS[s.provenance_tier ?? 3] ?? 1.0;
+    return base * decay * prov;
+  }
+
+  // ── Filter + sort + MERCH-03 safety pin + MERCH-09 topic cap ──────
   const signals = useMemo(() => {
     let filtered: IntelligenceSignal[];
     if (activeFilter === 'all') {
@@ -294,9 +352,35 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     } else {
       filtered = tieredSignals.filter((s) => s.signal_type === activeFilter);
     }
-    // Sort by impact_score descending (highest editorial value first)
-    filtered.sort((a, b) => (b.impact_score ?? 0) - (a.impact_score ?? 0));
-    return filtered;
+
+    // MERCH-03: Safety pinning — regulatory_alert signals float to top.
+    // Within each group, sort by rankedScore (MERCH-01 + MERCH-04 + MERCH-05).
+    const safetySignals = filtered
+      .filter((s) => s.signal_type === 'regulatory_alert')
+      .sort((a, b) => rankedScore(b) - rankedScore(a));
+
+    const otherSignals = filtered
+      .filter((s) => s.signal_type !== 'regulatory_alert')
+      .sort((a, b) => rankedScore(b) - rankedScore(a));
+
+    const sorted = [...safetySignals, ...otherSignals];
+
+    // MERCH-09: Topic distribution cap — no single topic exceeds 40% of feed.
+    // Applied after safety pinning so safety signals still lead.
+    const total = sorted.length;
+    if (total === 0) return sorted;
+    const cap = Math.ceil(total * 0.4);
+    const topicCounts: Record<string, number> = {};
+    const capped: IntelligenceSignal[] = [];
+    for (const s of sorted) {
+      const topic = s.topic ?? 'general';
+      const count = topicCounts[topic] ?? 0;
+      if (count < cap) {
+        capped.push(s);
+        topicCounts[topic] = count + 1;
+      }
+    }
+    return capped;
   }, [tieredSignals, activeFilter]);
 
   return { signals, totalSignalCount: rawSignals.length, marketPulse, loading, isLive, activeFilter, setActiveFilter };
