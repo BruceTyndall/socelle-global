@@ -1,0 +1,61 @@
+{
+  "wo_id": "MERCH-INTEL-IMAGE-CLICKS",
+  "timestamp": "2026-03-13T00:00:00.000Z",
+  "skills_run": ["live-demo-detector", "hub-shell-detector"],
+  "results": {
+    "cards_clickable": {
+      "status": "PASS",
+      "evidence": "SignalCardFeatured and SignalCardStandard wrapped with <Link to=/intelligence/signals/:id> in IntelligenceFeedSection.tsx. Both variants have focus-visible ring for keyboard accessibility and aria-label on the Link.",
+      "files_changed": [
+        "src/components/intelligence/IntelligenceFeedSection.tsx — Link import + wrap featured + wrap grid cards",
+        "src/App.tsx — added lazy import IntelligenceSignalDetail + Route /intelligence/signals/:id"
+      ]
+    },
+    "detail_route": "/intelligence/signals/:id",
+    "detail_page": {
+      "status": "PASS",
+      "file": "src/pages/public/IntelligenceSignalDetail.tsx",
+      "evidence": "TanStack Query fetches market_signals WHERE id=:id. Loading=skeleton, error=retry+back link, 404=handled by error throw from supabase .single(). Renders: hero image, type label, direction glyph, title, description, confidence bar, impact score, related brands, topic, source + external link, AI provenance note."
+    },
+    "cards_with_images": {
+      "status": "PASS",
+      "evidence": "getSignalImage() applied to all SignalCardFeatured and SignalCardStandard renders. Priority: signal.image_url → signal_type map → vertical map → default SVG. All cards render with image — never blank. Image is lazy-loaded.",
+      "image_placement": {
+        "featured": "Full-width h-36 image strip above card content",
+        "standard": "h-24 image strip with accent bar overlay at bottom edge"
+      },
+      "fallback_map": {
+        "regulatory_alert": "/images/brand/photos/11.svg",
+        "ingredient_momentum": "/images/brand/photos/13.svg",
+        "research_insight": "/images/brand/photos/15.svg",
+        "pricing_benchmark": "/images/brand/photos/17.svg",
+        "treatment_trend": "/images/brand/photos/3.svg",
+        "product_velocity": "/images/brand/photos/7.svg",
+        "brand_adoption": "/images/brand/photos/9.svg",
+        "vertical_medspa": "/images/brand/photos/3.svg",
+        "vertical_salon": "/images/brand/photos/5.svg",
+        "vertical_beauty_brand": "/images/brand/photos/7.svg",
+        "default": "/images/brand/photos/1.svg"
+      },
+      "cards_with_images_sample": "all (100% — every card gets an image, no card is left blank)"
+    },
+    "image_hook": {
+      "file": "src/lib/intelligence/useSignalImage.ts",
+      "status": "PASS",
+      "note": "Phase 1 implementation — static fallback. Phase 2 (IMAGE-INTEL-01): upgrade to query images table with signal.image_url FK when that WO runs."
+    },
+    "layout_regression": {
+      "status": "PASS",
+      "evidence": "No existing layout rules changed. Card className unchanged. Image containers use overflow-hidden to prevent layout bleed. If image fails to load, card still renders with background color fallback (bg-graphite/5)."
+    }
+  },
+  "tsc_exit_code": 0,
+  "build_exit_code": 0,
+  "build_time_s": 6.42,
+  "overall": "PASS",
+  "notes": [
+    "Chunk warning (vendor-docs >600KB) is pre-existing — mammoth + pdfjs-dist. Not introduced by this WO.",
+    "Images use existing static SVGs from /images/brand/photos/. No new assets required.",
+    "When IMAGE-INTEL-01 seeds an images table + image_url on market_signals, getSignalImage() will use signal.image_url first — zero code change needed at that point."
+  ]
+}

@@ -182,6 +182,7 @@ const BlogPostPage = lazy(() => import('./pages/public/BlogPostPage'));
 // ── CMS content surfaces (V2-HUBS-14)
 const IntelligenceBriefs = lazy(() => import('./pages/public/IntelligenceBriefs'));
 const IntelligenceBriefDetail = lazy(() => import('./pages/public/IntelligenceBriefDetail'));
+const IntelligenceSignalDetail = lazy(() => import('./pages/public/IntelligenceSignalDetail'));
 const EducationArticles = lazy(() => import('./pages/public/EducationArticles'));
 const HelpCenter = lazy(() => import('./pages/public/HelpCenter'));
 const CaseStudies = lazy(() => import('./pages/public/Stories'));
@@ -324,6 +325,7 @@ const CmsBlockLibrary = lazy(() => import('./pages/admin/cms/CmsBlockLibrary'));
 const CmsMediaLibrary = lazy(() => import('./pages/admin/cms/CmsMediaLibrary'));
 const CmsTemplatesList = lazy(() => import('./pages/admin/cms/CmsTemplatesList'));
 const CmsSpacesConfig = lazy(() => import('./pages/admin/cms/CmsSpacesConfig'));
+const AdminStoryDrafts = lazy(() => import('./pages/admin/cms/AdminStoryDrafts'));
 
 // ── Brand Hub (brand-centric admin)
 const BrandHub = lazy(() => import('./pages/admin/BrandHub'));
@@ -495,6 +497,7 @@ function App() {
                   <Route path="/help/:slug" element={<CmsHelpRoute />} />
 
                   {/* ── CMS content surfaces (V2-HUBS-14) ── */}
+                  <Route path="/intelligence/signals/:id" element={<IntelligenceSignalDetail />} />
                   <Route path="/intelligence/briefs" element={<IntelligenceBriefs />} />
                   <Route path="/intelligence/briefs/:slug" element={<IntelligenceBriefDetail />} />
                   <Route path="/education/articles" element={<EducationArticles />} />
@@ -1188,6 +1191,7 @@ function App() {
                     <Route path="cms/media" element={<CmsMediaLibrary />} />
                     <Route path="cms/templates" element={<CmsTemplatesList />} />
                     <Route path="cms/spaces" element={<CmsSpacesConfig />} />
+                    <Route path="cms/story-drafts" element={<AdminStoryDrafts />} />
 
                     {/* ── Shop Admin (WO-OVERHAUL-11) ── */}
                     <Route path="shop" element={<AdminShopHub />} />

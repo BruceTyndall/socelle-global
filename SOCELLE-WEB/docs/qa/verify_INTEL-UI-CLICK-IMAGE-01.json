@@ -1,0 +1,44 @@
+{
+  "wo_id": "INTEL-UI-CLICK-IMAGE-01",
+  "timestamp": "2026-03-13T00:00:00.000Z",
+  "skills_run": ["live-demo-detector", "hub-shell-detector"],
+  "results": {
+    "cards_clickable": {
+      "status": "PASS",
+      "evidence": "IntelligenceFeedSection.tsx wraps SignalCardFeatured and SignalCardStandard with <Link to=/intelligence/signals/:id>. focus-visible ring on Link for keyboard nav. aria-label='Read signal: {title}' on each Link.",
+      "files": [
+        "src/components/intelligence/IntelligenceFeedSection.tsx — Link import + wrap featured + wrap all grid cards",
+        "src/App.tsx — lazy IntelligenceSignalDetail + Route /intelligence/signals/:id registered"
+      ]
+    },
+    "detail_route": "/intelligence/signals/:id",
+    "detail_page": {
+      "status": "PASS",
+      "file": "src/pages/public/IntelligenceSignalDetail.tsx",
+      "evidence": "SELECT * from market_signals WHERE id=:id via TanStack Query. Loading=skeleton, error=retry+back, 404 handled. Renders: hero image (getSignalImage), type label, direction glyph, title, description, confidence bar, impact score, related brands, topic, source + external link, AI provenance note."
+    },
+    "cards_with_images": {
+      "status": "PASS",
+      "evidence": "getSignalImage() applied to all SignalCardFeatured and SignalCardStandard. Priority: signal.image_url (11/121 signals carry real RSS image URLs) → signal_type map (7 types mapped to distinct SVGs) → vertical map → default. Cards never blank.",
+      "all_cards_use_same_image": false,
+      "sample_cards_with_images": 11,
+      "note": "image_url was missing from SELECT query (root cause). Fixed: added image_url to MarketSignalRow interface + SELECT column list + rowToSignal mapping in useIntelligence.ts. RSS-ingested signals now render their own images; openfda/organic signals use type-differentiated SVG fallbacks."
+    },
+    "image_url_wire": {
+      "status": "PASS",
+      "file": "src/lib/intelligence/useIntelligence.ts",
+      "change": "Added image_url to MarketSignalRow interface (line 73), SELECT list (line 175), and rowToSignal() mapping (line 131). No extra DB round-trip — image_url is stored directly on market_signals rows by the RSS ingest pipeline.",
+      "db_coverage": "11/121 active signals have image_url populated (RSS feeds). 110 use signal_type/vertical SVG fallbacks which vary by type — not a single shared placeholder."
+    }
+  },
+  "tsc_exit_code": 0,
+  "build_exit_code": 0,
+  "build_time_s": 6.34,
+  "overall": "PASS",
+  "notes": [
+    "Root cause of original image issue: image_url column existed in DB and was populated by RSS ingest, but was omitted from the SELECT query — so signal.image_url was always undefined, causing 100% SVG fallback.",
+    "Fix is minimal: 3 lines in useIntelligence.ts. No new files, no extra queries.",
+    "The images table approach (IMAGE-INTEL-01 spec) is not needed — image_url is already a direct URL column on market_signals populated at ingest time.",
+    "Chunk warning (vendor-docs >600KB) is pre-existing — mammoth + pdfjs-dist. Not introduced by this WO."
+  ]
+}

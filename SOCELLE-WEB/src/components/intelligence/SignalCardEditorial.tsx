@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
+import { getSignalImage } from '../../lib/intelligence/useSignalImage';
 import EvidenceStrip from './EvidenceStrip';
 
 // ─── Editorial section labels ────────────────────────────────────────────────
@@ -145,6 +146,7 @@ export function SignalCardFeatured({
   const barClass   = getBarClass(signal.direction, signal.signal_type);
   const borderL    = getBorderLClass(signal.direction, signal.signal_type);
   const source     = signal.source_name ?? signal.source;
+  const img        = getSignalImage(signal);
 
   return (
     <article
@@ -159,6 +161,16 @@ export function SignalCardFeatured({
       ].join(' ')}
       style={{ transitionTimingFunction: 'cubic-bezier(0.25,0.46,0.45,0.94)' }}
     >
+      {/* Signal image — top strip, full width */}
+      <div className="w-full h-36 overflow-hidden bg-graphite/5">
+        <img
+          src={img.url}
+          alt={img.alt}
+          className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity duration-300"
+          loading="lazy"
+        />
+      </div>
+
       <div className="px-8 py-8 lg:px-10 lg:py-9">
 
         {/* ── Eyebrow row ──────────────────────────────────────── */}
@@ -245,6 +257,7 @@ export function SignalCardStandard({
   const textClass = getTextClass(signal.direction, signal.signal_type);
   const barClass  = getBarClass(signal.direction, signal.signal_type);
   const source    = signal.source_name ?? signal.source;
+  const img       = getSignalImage(signal);
 
   return (
     <article
@@ -258,8 +271,16 @@ export function SignalCardStandard({
       ].join(' ')}
       style={{ transitionTimingFunction: 'cubic-bezier(0.25,0.46,0.45,0.94)' }}
     >
-      {/* Top accent strip */}
-      <div className={`h-[3px] w-full ${barClass} opacity-55 shrink-0`} aria-hidden />
+      {/* Signal image with accent bar overlay */}
+      <div className="relative w-full h-24 overflow-hidden bg-graphite/5 shrink-0">
+        <img
+          src={img.url}
+          alt={img.alt}
+          className="w-full h-full object-cover opacity-75 group-hover:opacity-85 transition-opacity duration-300"
+          loading="lazy"
+        />
+        <div className={`absolute bottom-0 left-0 right-0 h-[3px] ${barClass} opacity-60`} aria-hidden />
+      </div>
 
       <div className="px-6 pt-5 pb-6 flex flex-col flex-1">
 
