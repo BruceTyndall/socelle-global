@@ -50,6 +50,11 @@ export interface IntelligenceSignal {
   tier_visibility?: TierVisibility;
   image_url?: string;
   is_duplicate?: boolean;
+  // INTEL-MEDSPA-01: classification + scoring (were computed at ingest but missing from type)
+  impact_score?: number;
+  vertical?: string;
+  topic?: string;
+  tier_min?: string;
 }
 
 export interface MarketPulse {

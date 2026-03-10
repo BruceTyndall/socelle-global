@@ -67,6 +67,9 @@ interface MarketSignalRow {
   topic: string | null;
   tier_min: string | null;
   impact_score: number | null;
+  // provenance columns (added by migrations — may be null in older rows)
+  source_name: string | null;
+  source_url: string | null;
 }
 
 const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
@@ -120,12 +123,19 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
     related_products: row.related_products ?? [],
     updated_at: row.updated_at ?? new Date().toISOString(),
     source: resolvedSource,
-    source_name: row.data_source ?? row.source_type ?? row.source ?? undefined,
+    // Use DB source_name column first; fall back to derived value for older rows
+    source_name: row.source_name ?? row.data_source ?? row.source_type ?? row.source ?? undefined,
+    source_url: row.source_url ?? undefined,
     confidence_score: row.confidence_score ?? undefined,
     // Older/leaner environments may not have tier/provenance columns; default
     // to free visibility and non-duplicate for downstream UI compatibility.
     tier_visibility: 'free' as TierVisibility,
     is_duplicate: false,
+    // INTEL-MEDSPA-01: classification + scoring — previously computed at ingest but dropped here
+    impact_score: row.impact_score ?? undefined,
+    vertical: row.vertical ?? undefined,
+    topic: row.topic ?? undefined,
+    tier_min: row.tier_min ?? undefined,
   };
 }
 
@@ -159,7 +169,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       let q = supabase
         .from('market_signals')
         .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, data_source, confidence_score, vertical, topic, tier_min, impact_score'
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, data_source, confidence_score, vertical, topic, tier_min, impact_score'
         )
         .eq('active', true)
         .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())

@@ -1,0 +1,144 @@
+{
+  "wo_id": "MERCH-INTEL-02",
+  "version": "v2 — corrected from v1 (v1 had false coverage counts; broken feeds were counted as enabled)",
+  "timestamp": "2026-03-10T04:30:00.000Z",
+  "agent": "Intelligence Merchandiser Agent #17",
+  "skills_run": ["feed-source-auditor", "signal-data-validator", "data-integrity-suite"],
+
+  "phase0_findings": {
+    "total_signals_before": 81,
+    "test_record_found": true,
+    "test_record_deleted": true,
+    "near_duplicate_count": 44,
+    "near_duplicate_explanation": "39 × 'FDA MDR: POWERED LASER SURGICAL INSTRUMENT' — different MDR report numbers, same device type. Dedup key (source_type, external_id) is technically correct; the problem is display-layer aggregation in ingest-openfda. NOT deleted — legitimate FDA data. Needs display-layer dedup in future WO.",
+    "impact_score_bug_confirmed": true,
+    "impact_score_bug_detail": "impact_score, vertical, topic, tier_min all absent from IntelligenceSignal type (types.ts) and absent from rowToSignal() return object in useIntelligence.ts. DB selects them correctly but they were silently dropped before reaching UI sort/filter logic.",
+    "pipeline_producing_zero_signals": true,
+    "pipeline_zero_signal_cause": "feed-orchestrator runs hourly via pg_cron but produces 0 signals from data_feed path. Root cause: 33 feeds with HTTP 404 (stale URLs), 19 feeds with HTTP 403 (bot-blocked), 29 timeout/network errors. 11 feeds return HTTP 200 but 0 parseable items (Atom format or sparse publication schedule).",
+    "source_url_bug_was_already_fixed": true,
+    "source_url_note": "Migration 20260313000020 added source_url column in prior session. Bug was real but was already applied to DB."
+  },
+
+  "fixes_applied": {
+    "1_test_record_deleted": {
+      "status": "FIXED",
+      "evidence": "DELETE WHERE id = '3d8a096d-9fed-430f-9bbb-5ba31ec0afe8' returned 1 row deleted. test_records_remaining=0 confirmed by post-delete query."
+    },
+    "2_impact_score_type_fix": {
+      "status": "FIXED",
+      "file": "src/lib/intelligence/types.ts",
+      "change": "Added impact_score, vertical, topic, tier_min to IntelligenceSignal interface"
+    },
+    "3_rowToSignal_fix": {
+      "status": "FIXED",
+      "file": "src/lib/intelligence/useIntelligence.ts",
+      "changes": [
+        "Added source_name, source_url to MarketSignalRow interface",
+        "Extended SELECT query to include source_name, source_url",
+        "rowToSignal() now maps: impact_score, vertical, topic, tier_min, source_url, source_name (with DB column priority over derived fallback)"
+      ]
+    },
+    "4_feed_url_fixes": {
+      "status": "APPLIED",
+      "migration": "merch_intel_02_feed_url_fixes",
+      "url_corrections": [
+        "FTC Consumer News → correct press-releases RSS path",
+        "FDA Cosmetics Updates → FDA MedWatch safety alerts path",
+        "PubMed Dermatology → valid search RSS URL",
+        "Medscape Dermatology → corrected URL",
+        "American Spa Magazine → main RSS (americanspa.com/rss.xml) replacing broken tag-specific URL"
+      ],
+      "feeds_disabled_403": ["Skin Inc Magazine", "Dermatology Times", "Day Spa Magazine", "The Aesthetic Guide"],
+      "feeds_disabled_404": ["ISAPS – Aesthetic Surgery News", "JAMA Dermatology", "Practical Dermatology", "Beauty Matter", "American Spa – Business", "American Spa – Skincare", "American Spa – Treatments", "American Spa – News", "American Spa – People"]
+    },
+    "5_build_gate": {
+      "status": "PASS",
+      "tsc": "0 errors",
+      "build": "5.79s — PASS",
+      "evidence": "npx tsc --noEmit: no output (clean). npm run build: ✓ built in 5.79s"
+    }
+  },
+
+  "coverage_gates_post_fix": {
+    "note": "Disabling 13 broken feeds (bot-blocked + confirmed 404) dropped medspa count below threshold. This is the correct trade-off — 12 medspa feeds that were registered but never produced a single signal in any run do not count as coverage.",
+    "medspa_enabled": { "value": 21, "threshold": 30, "pass": false, "delta_from_prior_v1": "was 33 (12 broken feeds counted); now 21 after removing permanently broken" },
+    "salon_enabled": { "value": 20, "threshold": 20, "pass": true },
+    "beauty_brand_multi_enabled": { "value": 25, "threshold": 20, "pass": true },
+    "academic_regulatory_enabled": { "value": 14, "threshold": 10, "pass": true },
+    "total_enabled": 66,
+    "overall": "FAIL — medspa gate not met (21 vs ≥30). Prior v1 proof JSON counted 33 but 12 of those were broken from day 1 and never produced a signal."
+  },
+
+  "signal_state_post_fix": {
+    "total_signals": 80,
+    "signals_last_24h": 70,
+    "test_records": 0,
+    "from_api_fda": 51,
+    "from_rss_path": 20,
+    "from_data_feed_path": 0,
+    "topic_distribution": {
+      "safety": 51,
+      "other": 13,
+      "science": 5,
+      "treatment_trend": 4,
+      "ingredient": 3,
+      "brand_news": 3,
+      "consumer_trend": 2
+    },
+    "safety_dominance_note": "63.8% of signals are topic=safety (FDA MDR records). This will rebalance as working RSS feeds begin producing signals across other topics."
+  },
+
+  "feed_health_post_fix": {
+    "healthy": 16,
+    "degraded": 42,
+    "failed": 35,
+    "disabled": 27,
+    "healthy_feeds_with_zero_signals": 10,
+    "zero_signal_root_cause": "10 healthy feeds (200 OK) return 0 parseable items per run. Likely causes: Atom-format-only feeds, gzip encoding not handled by regex parser, or very sparse publication schedules. Requires manual inspection of raw XML from each feed."
+  },
+
+  "open_issues": [
+    {
+      "id": "OPEN-1",
+      "severity": "P0",
+      "issue": "medspa coverage gate: 21 enabled, needs ≥30",
+      "fix": "Add 9+ working medspa RSS feeds. Candidates: ASPS (plasticsurgery.org/rss), Aesthetic Society, MedPage Today Dermatology, JCAD (jcadonline.com/feed), NIH News, realself.com feed, Modern Aesthetics."
+    },
+    {
+      "id": "OPEN-2",
+      "severity": "P0",
+      "issue": "feed-orchestrator producing 0 signals from data_feed path",
+      "fix": "10 healthy feeds return 200 OK but 0 items. Requires manual curl inspection of each feed's XML to determine if Atom namespace, gzip, or empty feed. Fix parser to handle Atom namespace prefixes (<atom:entry>)."
+    },
+    {
+      "id": "OPEN-3",
+      "severity": "P1",
+      "issue": "44 near-duplicate FDA MDR records (39 × same device type)",
+      "fix": "Display-layer dedup in ingest-openfda: group by device_name before inserting, keep only most recent MDR event per device. Requires changes to ingest-openfda edge function."
+    },
+    {
+      "id": "OPEN-4",
+      "severity": "P1",
+      "issue": "63.8% of signals are topic=safety — no topic diversity",
+      "fix": "Will self-resolve as working RSS feeds produce signals across treatment_trend, ingredient, pricing, consumer_trend. Blocked on OPEN-2."
+    },
+    {
+      "id": "OPEN-5",
+      "severity": "P2",
+      "issue": "42 feeds in degraded state — pipeline generates noise in feed_run_log every hour",
+      "fix": "After OPEN-1 (new feeds), run URL verification pass and disable any feed that has failed ≥5 consecutive times with no correctable URL."
+    }
+  ],
+
+  "results": {
+    "test_record_deleted": { "status": "PASS", "failures": [] },
+    "impact_score_bug_fixed": { "status": "PASS", "failures": [] },
+    "rowToSignal_mapping": { "status": "PASS", "failures": [] },
+    "build_gate": { "status": "PASS", "failures": [] },
+    "feed_url_fixes": { "status": "PASS", "failures": [] },
+    "medspa_coverage_gate": { "status": "FAIL", "failures": ["21 enabled medspa feeds vs ≥30 threshold. Gap: 9 feeds needed."] },
+    "pipeline_signals_from_rss_feeds": { "status": "FAIL", "failures": ["0 signals created from data_feed path in any of the last 4 hourly pg_cron runs."] }
+  },
+
+  "overall": "FAIL — medspa coverage gate (21 vs ≥30) and data_feed signal production (0) are blocking PASS. Structural fixes (impact_score bug, rowToSignal, test record deletion, type system) are confirmed PASS. Requires: (1) 9 additional working medspa feeds, (2) Atom parser fix or feed-by-feed URL investigation to unblock the 10 healthy-but-zero-item feeds."
+}
