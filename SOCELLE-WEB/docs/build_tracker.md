@@ -1,5 +1,5 @@
 Claude Code updates this at the end of every session
-Last Updated: 2026-03-10 (MERCH-INTEL-02 v2 re-verified — PARTIAL/FAIL. Structural fixes PASS: impact_score/vertical/topic/tier_min added to IntelligenceSignal + rowToSignal(); source_name/source_url wired; test record deleted; tsc=0, build PASS. Coverage gate FAIL: medspa=21 enabled (≥30 needed) — 12 broken feeds disabled from prior 33 count. data_feed signal path=0 (parser gap: Atom feeds). Open issues: OPEN-1 need 9 more medspa feeds, OPEN-2 Atom parser fix. Proof: docs/qa/verify_MERCH-INTEL-02_v2.json)
+Last Updated: 2026-03-10 (MERCH-INTEL-03 PARTIAL: useIntelligence safety-pin sort (MERCH-03) + topic 40% cap (MERCH-09) LIVE. Migration 000027 written (dedup MERCH-07-STOP, impact_score boost MERCH-05-STOP, display_order MERCH-11, fingerprint backfill) — DB PENDING manual apply (Supabase MCP permission error this session). tsc=0. Proof: docs/qa/verify_MERCH-INTEL-03_2026-03-10.json. Previous: LANE-A: CoursePlayer completion CTA added — "View Certificate" button (signal-up) shown when overallProgress=100 and no nextLesson; links to /education/certificates. tsc=0. Lane A audit: 228 routes mapped, 5/10 journeys pass, 4 P0 dead ends documented. Proof: docs/qa/verify_LANE-A.json. Previous: LANE-B FIXES: rowToSignal tier_visibility now reads from DB (P1 gate was no-op); BrandIntelligenceHub DEMO labels on Position Banner + 3 tab panels; IntelligencePricing DEMO banner + 3x font-playfair→font-sans. tsc=0. Proof: docs/qa/verify_LANE-B-fixes_2026-03-10.json. Previous: LANE-C P0 TIER-BYPASS FIXED — OpportunityFinder.tsx + CECreditDashboard.tsx replaced raw supabase.from('market_signals') with useIntelligence() tier-gated hook; direction/magnitude filters moved client-side. tsc=0. Proof: docs/qa/verify_TIER-BYPASS-FIX_2026-03-10.json. Previous: LANE-E BANNED TERMS FIXED — 11 violations resolved: Unlock→Access (UpgradeGate.tsx ×5, PaywallGate.tsx, Education.tsx, BrandStorefront.tsx, BrandDetail.tsx, ProductCard.tsx), optimized→calibrated (PlanResults.tsx). tsc=0. Proof: docs/qa/verify_LANE-E-fixes_2026-03-10.json.)
 Previously: EDU-WO-02/05 + QuizPlayer states COMPLETE — EducationDashboard.tsx created (business portal, live course_enrollments via TanStack Query, KPI strip, skeleton/error/empty); CECredits.tsx (business) migrated from mockProtocols to useCECredits live hook (certificates + course_enrollments); QuizPlayer.tsx: spinner→skeleton shimmer, error state + retry, empty state (no questions); route /portal/education added; tsc=0, build=5.66s. Proof: docs/qa/verify_EDU-WO-02-05_2026-03-10T01-00-00-000Z.json)
 Previously: SALES-WO-05/08 + ProposalBuilder states COMPLETE — signal_id FK + attributed_at migration on deals; OpportunityFinder wires signal attribution to createDeal; OpportunityFinder skeleton shimmer + error state; RevenueAnalytics Signal-Influenced Deals uses signal_id IS NOT NULL; ProposalBuilder loading/error/empty/save-error states added; tsc=0, build=PASS. Proof: docs/qa/verify_SALES-WO-05-08_2026-03-10T00-00-00-000Z.json)
 Previously: AUTH-CORE-01..06 COMPLETE — cms_versions migration + block_data_bindings migration + VersionHistory.tsx (TanStack Query, timeline, restore) + EmbedIntelligenceBlock.tsx (live market_signals CMS block) + DataBindingEngine.ts ({{variable}} substitution); tsc=0, build=6.26s. Proof: docs/qa/verify_AUTH-CORE-01-06_2026-03-13T00-00-00-000Z.json)
@@ -56,8 +56,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | EDU-WO-05 | business/CECredits.tsx migrated from mockProtocols (getCEProgress/getProtocols) to useCECredits hook (live certificates + course_enrollments via TanStack Query); CSV export; skeleton shimmer/error/empty states; expiring soon warnings; live/no-data badge | COMPLETE | — | `docs/qa/verify_EDU-WO-02-05_2026-03-10T01-00-00-000Z.json` |
 | QuizPlayer-states | QuizPlayer.tsx: Loader2 spinner → 3-block skeleton shimmer; error state with retry; empty state (no questions) with back CTA | COMPLETE | — | `docs/qa/verify_EDU-WO-02-05_2026-03-10T01-00-00-000Z.json` |
 | BUILD-2-GATE | BUILD 2 global gate: AUTH-CORE-01..06 + CRM-WO-07/08/09 + SALES-WO-05/08 + COMMERCE-WO-03/07 + EDU-WO-02/05 all COMPLETE. tsc=0, build=PASS. 5 new migrations (consent log, churn risk, affiliate flag, signal attribution, cms versions). Routes added: /portal/crm/consent, /portal/procurement, /portal/education. | COMPLETE | `01ed653` | — |
-| MERCH-INTEL-02 | Feed quality + coverage expansion: impact_score/vertical/topic/tier_min type+rowToSignal bug fixed; source_name/source_url wired; test record deleted; URL fixes (migration 20260313000022); feed-orchestrator v8 + rss-to-signals v9 deployed. OPEN: medspa=21 (≥30 needed — gap: 9 feeds); data_feed signals=0 (Atom parser gap). | PARTIAL | OPEN-1 (9 medspa feeds), OPEN-2 (Atom parser) | `docs/qa/verify_MERCH-INTEL-02_v2.json` |
-| FOUND-WO-08 (partial) | Banned terms: 4 user-facing fixes (Intelligence.tsx, Home.tsx x2, PrelaunchQuiz.tsx) | PARTIAL | `8c58be8` | — |
+| MERCH-INTEL-02 | Feed quality + coverage expansion COMPLETE: impact_score/vertical/topic/tier_min type+rowToSignal bug fixed; URL fixes (000022+000025); Atom parser (rss-to-signals v9+); feed-orchestrator v8+; American Spa 8-channel set (000024); master cleanup migration 000025 applied live (URL re-fixes, bot-blocked disabled, priority col added, hero feeds enabled, 19 feeds inserted, health_status constraint honored); final state: medspa=30✅ salon=20✅ beauty_brand=11✅ total_enabled=75. P0 fake-live violations fixed: Education.tsx DEMO badge on stats+CE progress; BrandAIAdvisor.tsx DEMO badges on Brand Profile+Market Signals panels. | COMPLETE | — | `docs/qa/verify_MERCH-INTEL-02_cleanup.json` |
+| FOUND-WO-08 | Banned terms sweep COMPLETE — Wave 1: 4 fixes (Intelligence.tsx, Home.tsx ×2, PrelaunchQuiz.tsx). Lane E Wave 2: 11 fixes — Unlock→Access (UpgradeGate.tsx ×5, PaywallGate.tsx, Education.tsx, BrandStorefront.tsx, BrandDetail.tsx, ProductCard.tsx); optimized→calibrated (PlanResults.tsx). Post-fix grep: 0 user-facing violations. tsc=0. | COMPLETE | `8c58be8` | `docs/qa/verify_LANE-E-fixes_2026-03-10.json` |
 | W10-04 | Insights.tsx confirmed live (useRssItems → TanStack Query) — orphan resolved | COMPLETE | `8c58be8` | — |
 | UD-A-01..06 | Ultra Drive LANE A: pro-* token purge audit — 0 usages found across admin/business/brand/components/layouts + tailwind.config.js pro: block already removed in prior sessions | AUDIT-CLEAN | `8c58be8`+ | `docs/qa/verify_UD-A-ALL_20260309T210000Z.json` |
 | UD-C-01..08 | Ultra Drive LANE C: Sentry removal audit — 0 references in main.tsx/App.tsx/components/vite.config.ts/package.json; SentryUserContext.tsx deleted; 1 false-positive string label in AdminInventoryReport.tsx (intentional metric tracker) | AUDIT-CLEAN | prior sessions | `docs/qa/verify_UD-A-ALL_20260309T210000Z.json` |
@@ -70,6 +70,12 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | PWA-WO-01/02/03 | PWA: sw.js push/notificationclick/pushsubscriptionchange handlers; PWAInstallPrompt.tsx (14-day snooze, VAPID opt-in); wired in App.tsx | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | STUDIO-UI-01..05 | StudioEditor fully wired: DragCanvas + TemplatePickerModal + ExportModal (PNG/JPG/PDF/SVG/SCORM) + mode toggle + grid overlay | COMPLETE | pending | — |
 | DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | PENDING | — | — |
+| LANE-A-EDU-01 | CoursePlayer completion screen: added "View Certificate" CTA (signal-up button, links /education/certificates) when overallProgress=100 and no nextLesson. tsc=0. | COMPLETE | — | — |
+| LANE-A-DEBT-01 | Dead end: /events/:slug route missing — event listing has no detail funnel. EVT-WO-02 scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
+| LANE-A-DEBT-02 | Dead end: TierGate upgrade CTA leads to DEMO /pricing page, not Stripe checkout. PAY-WO scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
+| LANE-A-DEBT-03 | Orphaned routes: /home (not in nav), /for-medspas, /for-salons, dual marketing hubs (/portal/marketing/* + /portal/marketing-hub/*), dual pricing pages (/plans vs /pricing). Cleanup WO needed. | OPEN | — | `docs/qa/verify_LANE-A.json` |
+| LANE-A-DEBT-04 | Brand→Signal→Campaign journey broken: no signal-to-campaign CTA in BrandIntelligenceHub. BRAND-WO scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
+| MERCH-INTEL-03 (partial) | Lane F audit fixes: useIntelligence safety-pin sort (MERCH-03 PASS) + 40% topic cap (MERCH-09 PASS). Migration 000027 written: dedup FDA MDR dupes (MERCH-07-STOP), impact_score boost (MERCH-05-STOP), display_order on data_feeds (MERCH-11), fingerprint backfill. DB apply PENDING (Supabase MCP permission error this session). Remaining: MERCH-01 (ingest-openfda source_url), MERCH-06 (run RSS pipeline for paid-tier signals), MERCH-10 (timeline eligibility). | PARTIAL | — | `docs/qa/verify_MERCH-INTEL-03_2026-03-10.json` |
 | UD-E (Lane E) | Audit doc corrections: CODE_AUDIT_REPORT §3b/3d/3e updated; DESIGN_AUDIT line 311 false exemption replaced; build_tracker.md line 126 self-granted exemption deleted; build_gate_results.json: token_compliance + tanstack_migration + sentry_status fields added | COMPLETE | — | `docs/qa/verify_UD-E_2026-03-09T21-00-00-000Z.json` |
 | UD-D (Lane D) | Test coverage sprint: 26 new unit tests (useIntelligence×9, PaywallGate×9, ErrorBoundary×8) + 16 new E2E tests (paywall-and-entitlements.spec.ts) + IS_REACT_ACT_ENVIRONMENT fix → 150 passing (was 100) | COMPLETE | — | `docs/qa/verify_UD-D_2026-03-09T21-00-00-000Z.json` |
 | SITE-WIDE-AUDIT-2026-03-09 | Full 5-agent site audit complete. See artifact. Results: tsc=PASS, build=PASS, 18 shells remain, 19 raw market_signals queries, 1 missing isLive (IntelligenceCommerce.tsx), Sentry=RESOLVED, pro-* tokens=0, brand-*=19, intel-*=30, useEffect+supabase=1 (useEnrichment.ts), 29 unit tests failing (React 19 compat), SEO=40.1%, Cart.tsx 'Shop Now' STOP CONDITION, database.types.ts drift 116/165 tables | COMPLETE | — | `docs/qa/verify_site_wide_audit_2026-03-09T22-00-00-000Z.json` |
@@ -124,6 +130,47 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | Build 1 Payments | Owner Directive |
 |---|---|
 | PAY-WO-01..PAY-WO-05 | BYPASSED FOR TODAY (no execution) |
+
+---
+
+## 🔄 MASTER PLATFORM UPGRADE — WO REGISTRY (2026-03-10)
+
+> **Authority:** Owner directive Command Mode 2026-03-10. Full specs in `docs/operations/WO_MASTER_PLATFORM_UPGRADE.md`. This table is co-authoritative.
+
+### P0 GATE — must be 100% PASS before P1 starts
+
+| WO ID | Title | Team | Status | Depends On | Proof Pack |
+|-------|-------|------|--------|------------|------------|
+| MERCH-INTEL-03-DB | Apply migration 000027: dedup, impact_score, display_order, fingerprint backfill | Team 1 | OPEN | none | `docs/qa/verify_MERCH-INTEL-03-DB.json` |
+| NEWSAPI-INGEST-01 | Wire GNews + Currents + Reddit (×3) + confirm NewsAPI; run first live ingest | Team 1 | OPEN | none | `docs/qa/verify_NEWSAPI-INGEST-01.json` |
+| DB-TYPES-02 | Regen database.types.ts; tsc=0 | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_DB-TYPES-02.json` |
+
+### P1 GATE — CMS + Editorial (starts when P0 PASS; Team 2 + Team 3 + Team 4 run in parallel)
+
+| WO ID | Title | Team | Status | Depends On | Proof Pack |
+|-------|-------|------|--------|------------|------------|
+| CMS-SEED-01 | Seed 6 published cms_posts → editorial rail LIVE | Team 2 | OPEN | DB-TYPES-02 | `docs/qa/verify_CMS-SEED-01.json` |
+| CMS-WO-07 | story_drafts table + RLS + auto-ingest pipeline (feeds→drafts, not direct publish) | Team 2 | OPEN | CMS-SEED-01 | `docs/qa/verify_CMS-WO-07.json` |
+| CMS-WO-08 | Editorial approval workflow (draft→review→approve→publish, admin UI) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-08.json` |
+| CMS-WO-09 | WordPress-grade blog (scheduled_at, editorial calendar, OG/Twitter cards, schema.org Article, newsletter export, auto-sitemap) | Team 2 | OPEN | CMS-WO-08 | `docs/qa/verify_CMS-WO-09.json` |
+| CMS-WO-10 | content_placements table + Merchandising Console (owner changes any placement without code deploy) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-10.json` |
+| CMS-WO-11 | Daily Brief + Weekly Market Memo edge fns + pg_cron → story_drafts (not auto-publish) | Team 2 | OPEN | CMS-WO-07, CMS-WO-10 | `docs/qa/verify_CMS-WO-11.json` |
+| DATA-PRESS-PROOF | Proof pack: 5 source layers, topic cap, dup rate, 30 signal sample, MERCH 1–12 | Team 2 | OPEN | NEWSAPI-INGEST-01, CMS-WO-07 | `docs/qa/verify_DATA_PRESS_VALUE.json` |
+| EVT-WO-02 | /events/:slug EventDetail + registration CTA + related signals | Team 3 | OPEN | P0 GATE | `docs/qa/verify_EVT-WO-02.json` |
+| ROUTE-CLEANUP-WO | Redirect orphaned routes: /home→/intelligence, /pricing→/plans, /for-medspas→/professionals, dual hubs | Team 3 | OPEN | P0 GATE | `docs/qa/verify_ROUTE-CLEANUP-WO.json` |
+| BRAND-SIGNAL-WO | BrandIntelligenceHub → signal → create_campaign CrossHubActionDispatcher | Team 3 | OPEN | P0 GATE | `docs/qa/verify_BRAND-SIGNAL-WO.json` |
+| PAY-UPGRADE-WO | TierGate → Stripe Checkout Session (BLOCKED: owner must configure stripe_price_id in Stripe dashboard) | Team 3 | BLOCKED | Owner prereq | `docs/qa/verify_PAY-UPGRADE-WO.json` |
+| DEBT-TANSTACK-REAL-6 | Migrate 6 raw useEffect+supabase violations to useQuery | Team 4 | OPEN | P0 GATE | `docs/qa/verify_DEBT-TANSTACK-REAL-6.json` |
+| MERCH-INTEL-03-FINAL | MERCH-01 (openfda source_url), MERCH-06 (paid signal volume), MERCH-10 (30d archive cron) | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_MERCH-INTEL-03-FINAL.json` |
+| P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | OPEN | P0 GATE | `docs/qa/verify_P1-3.json` |
+| STATE-AUDIT-01 | Skeleton/error/empty states on 23 priority shell pages | Team 4 | OPEN | P0 GATE | `docs/qa/verify_STATE-AUDIT-01.json` |
+
+### P2 GATE — Testing / CI (starts when P1 PASS)
+
+| WO ID | Title | Team | Status | Depends On | Proof Pack |
+|-------|-------|------|--------|------------|------------|
+| P2-1 | Upgrade @testing-library/react →^17.x; fix 29 failing tests | Team 5 | OPEN | P0 GATE | `docs/qa/verify_P2-1.json` |
+| P2-STRIPE | Confirm single Stripe webhook handler; no double-write | Team 5 | OPEN | P0 GATE | `docs/qa/verify_P2-STRIPE.json` |
 
 ---
 
