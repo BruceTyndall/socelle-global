@@ -7,6 +7,8 @@
 
 ## §0 — MANDATORY READING ORDER (EVERY SESSION)
 
+> **SESSION ENTRYPOINT:** Read **`docs/command/SESSION_START.md`** first — it is the single-page reference containing the reading order, standup template, proof requirements, and stop conditions for every session. Updated 2026-03-13 by Audit Sprint.
+
 **Before writing ANY code, running ANY command, or making ANY decision, read these files in this exact order:**
 
 1. **`SOCELLE-WEB/docs/build_tracker.md`** — lines 1-50 only (current phase, active WOs, freeze directives)
