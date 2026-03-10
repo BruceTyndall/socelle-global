@@ -53,6 +53,36 @@ CMS becomes:
 
 ---
 
+## §2.1 — AUTHORITATIVE GATE DEFINITIONS (PATCH 2)
+
+**Three gate tiers — no ambiguity:**
+
+### LAUNCH GATE WOs (= P0 — hard blockers; nothing ships without these)
+These WOs block all P1 work AND block production launch. They run in parallel where no dependency exists:
+
+| WO ID | Why it's a launch gate |
+|-------|----------------------|
+| MERCH-INTEL-03-DB | Signal fingerprint integrity required for dedup correctness |
+| NEWSAPI-INGEST-01 | >= 5 live API sources required before launch gate §16 item 10 |
+| DB-TYPES-02 | tsc=0 impossible if database.types.ts is stale (§16 items 1+13) |
+
+**Rule:** P1 work may not begin until ALL 3 P0 WOs have `overall: PASS` proof JSONs in `docs/qa/`.
+
+### P1 WOs (start after P0 PASS — parallel lanes)
+CMS lane (Team 2): CMS-SEED-01 → CMS-WO-07 → CMS-WO-08 → CMS-WO-09 → CMS-WO-10 → CMS-WO-11 → DATA-PRESS-PROOF
+Routes lane (Team 3): EVT-WO-02, ROUTE-CLEANUP-WO, BRAND-SIGNAL-WO (all parallel)
+Debt lane (Team 4): DEBT-TANSTACK-REAL-6, P1-3, STATE-AUDIT-01 (all parallel)
+Feed lane (Team 1): MERCH-INTEL-03-FINAL (after MERCH-INTEL-03-DB)
+
+### P2 WOs (start after P1 PASS)
+Team 5: P2-1, P2-STRIPE (both parallel)
+Team 3: PAY-UPGRADE-WO (after owner Stripe config)
+
+### LAUNCH GATE CHECKLIST (§16 alignment)
+Before production deploy, ALL 24 items in `/.claude/CLAUDE.md §16` must be GREEN. The proof packs from all WOs in this document are the evidence. Team 0 owns the launch gate review.
+
+---
+
 ## §3 — DEPENDENCY GRAPH
 
 ```
