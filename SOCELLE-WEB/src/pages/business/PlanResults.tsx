@@ -404,7 +404,7 @@ function OverviewTab({ data, brand }: { data: any; brand?: { name: string; slug:
             <div className="h-px bg-white/10 mb-4" />
             <p className="text-sm font-sans text-accent-soft/80 max-w-lg leading-relaxed">
               {data.gapOpportunities} unmatched protocol {data.gapOpportunities === 1 ? 'opportunity' : 'opportunities'} detected across your service menu.
-              Each represents recoverable revenue through optimized brand-protocol alignment.
+              Each represents recoverable revenue through calibrated brand-protocol alignment.
             </p>
             {brand?.slug && (
               <div className="mt-5 flex items-center gap-3">

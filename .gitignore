@@ -10,5 +10,4 @@ out
 .archive/
 
 # Local nested worktree repos (do not track in parent repo)
-.claude/worktrees/gifted-saha/
-.claude/worktrees/silly-feynman/
+.claude/worktrees/

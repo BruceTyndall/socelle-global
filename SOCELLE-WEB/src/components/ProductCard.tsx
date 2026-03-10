@@ -141,7 +141,7 @@ export default function ProductCard({
             onClick={(e) => e.stopPropagation()}
             className="text-xs font-medium font-sans text-accent hover:text-accent-light transition-colors"
           >
-            Unlock price →
+            View price →
           </Link>
         )}
       </div>

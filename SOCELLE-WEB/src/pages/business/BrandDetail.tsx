@@ -439,7 +439,7 @@ export default function BrandDetail() {
       {!user && (
         <div className="bg-graphite-dark text-white py-3 px-4 text-center font-sans text-sm">
           <Lock className="w-4 h-4 inline-block mr-1.5 text-accent" />
-          <span className="text-white/80">Unlock wholesale pricing and ordering — </span>
+          <span className="text-white/80">Access wholesale pricing and ordering — </span>
           <Link
             to="/portal/login"
             className="text-accent font-semibold hover:text-accent-light transition-colors underline underline-offset-2"

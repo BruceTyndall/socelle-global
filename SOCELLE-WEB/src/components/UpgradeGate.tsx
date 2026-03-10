@@ -26,7 +26,7 @@ interface UpgradeGateProps {
 
 const FEATURE_MESSAGES: Record<string, { title: string; bullets: string[] }> = {
   gap_detail: {
-    title: 'Unlock Full Gap Analysis',
+    title: 'Access Full Gap Analysis',
     bullets: [
       'See every revenue gap with dollar estimates',
       'Get protocol-specific recommendations',
@@ -34,7 +34,7 @@ const FEATURE_MESSAGES: Record<string, { title: string; bullets: string[] }> = {
     ],
   },
   protocol_matches: {
-    title: 'Unlock Protocol Matching',
+    title: 'Access Protocol Matching',
     bullets: [
       'See all matched protocols with confidence scores',
       'Get implementation guides for each match',
@@ -42,7 +42,7 @@ const FEATURE_MESSAGES: Record<string, { title: string; bullets: string[] }> = {
     ],
   },
   retail_attach: {
-    title: 'Unlock Retail Recommendations',
+    title: 'Access Retail Recommendations',
     bullets: [
       'See product-to-service pairings',
       'Get estimated retail uplift per chair',
@@ -50,7 +50,7 @@ const FEATURE_MESSAGES: Record<string, { title: string; bullets: string[] }> = {
     ],
   },
   activation_assets: {
-    title: 'Unlock Activation Kit',
+    title: 'Access Activation Kit',
     bullets: [
       'Access marketing materials and training guides',
       'Download implementation roadmap',
@@ -150,7 +150,7 @@ export default function UpgradeGate({
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  Unlock for $29/mo
+                  Go Pro — $29/mo
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

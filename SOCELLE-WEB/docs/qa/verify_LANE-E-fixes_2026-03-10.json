@@ -1,0 +1,25 @@
+{
+  "wo_id": "LANE-E-BANNED-TERMS-FIX",
+  "timestamp": "2026-03-10T03:00:00.000Z",
+  "source_audit": "docs/qa/verify_LANE-E.json",
+  "violations_fixed": [
+    { "file": "src/components/UpgradeGate.tsx:29", "before": "Unlock Full Gap Analysis", "after": "Access Full Gap Analysis" },
+    { "file": "src/components/UpgradeGate.tsx:37", "before": "Unlock Protocol Matching", "after": "Access Protocol Matching" },
+    { "file": "src/components/UpgradeGate.tsx:45", "before": "Unlock Retail Recommendations", "after": "Access Retail Recommendations" },
+    { "file": "src/components/UpgradeGate.tsx:53", "before": "Unlock Activation Kit", "after": "Access Activation Kit" },
+    { "file": "src/components/UpgradeGate.tsx:153", "before": "Unlock for $29/mo", "after": "Go Pro — $29/mo" },
+    { "file": "src/components/PaywallGate.tsx:226", "before": "Unlock unlimited analyses", "after": "Access unlimited analyses" },
+    { "file": "src/pages/public/Education.tsx:420", "before": "Unlock all CE-eligible courses", "after": "Access all CE-eligible courses" },
+    { "file": "src/pages/public/BrandStorefront.tsx:543", "before": "Unlock verified wholesale pricing", "after": "Access verified wholesale pricing" },
+    { "file": "src/pages/business/BrandDetail.tsx:442", "before": "Unlock wholesale pricing and ordering", "after": "Access wholesale pricing and ordering" },
+    { "file": "src/components/ProductCard.tsx:144", "before": "Unlock price →", "after": "View price →" },
+    { "file": "src/pages/business/PlanResults.tsx:407", "before": "optimized brand-protocol alignment", "after": "calibrated brand-protocol alignment" }
+  ],
+  "false_positives_confirmed": [
+    "BrandDetail.tsx:438 — JSX comment, not user-facing",
+    "DragCanvas.tsx — Lucide Unlock icon import + lock-toggle title attr (functional UI, not copy)"
+  ],
+  "post_fix_grep": "0 user-facing Unlock or optimized violations remain",
+  "tsc_result": "PASS — 0 errors",
+  "overall": "PASS"
+}

@@ -1,0 +1,21 @@
+{
+  "wo_id": "P0-FAKE-LIVE",
+  "stage": "p0-fake-live-fix",
+  "timestamp": "2026-03-10T02:00:00.000Z",
+  "violations_fixed": [
+    {
+      "file": "src/pages/public/Education.tsx",
+      "violation": "useEducation() returns mockEducationContent + mockEducationProgress; stats row (totalCourses, totalCeCreditsAvailable, totalCategories) and CEProgressBar (ceCreditsEarned) displayed without DEMO label",
+      "fix": "Added DEMO badge below stats row and below CE progress bar",
+      "severity": "P0 — CLAUDE.md §8 MOCK (unlabeled) FORBIDDEN in user-facing surface"
+    },
+    {
+      "file": "src/pages/brand/BrandAIAdvisor.tsx",
+      "violation": "RECENT_SIGNALS (hardcoded array) and Brand Profile panel (hardcoded SKU/retailer/reorder/market-position numbers) displayed in 'Market Signals' and 'Brand Profile' context panels without DEMO label",
+      "fix": "Added DEMO badge to header of both Brand Profile and Market Signals panels",
+      "severity": "P0 — CLAUDE.md §8 MOCK (unlabeled) FORBIDDEN in user-facing surface"
+    }
+  ],
+  "tsc_result": "PASS — 0 errors",
+  "overall": "PASS"
+}

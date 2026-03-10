@@ -540,7 +540,7 @@ function BrandCTA({
       </h3>
       <p className="font-sans text-sm text-graphite/60 mt-2 max-w-[480px] mx-auto leading-relaxed">
         {isVerified
-          ? 'Apply to become an authorized reseller. Unlock verified wholesale pricing, education, and implementation support.'
+          ? 'Apply to become an authorized reseller. Access verified wholesale pricing, education, and implementation support.'
           : `Let us know and we'll notify you when they join Socelle and access wholesale ordering.`
         }
       </p>

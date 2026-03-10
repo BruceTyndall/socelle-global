@@ -209,6 +209,11 @@ export default function Education() {
                 <p className="mn-eyebrow mt-1">Categories</p>
               </div>
             </div>
+            <div className="flex justify-center mt-5">
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                DEMO — Sample catalog. Sign in for the full library.
+              </span>
+            </div>
           </BlockReveal>
         </div>
       </section>
@@ -352,6 +357,11 @@ export default function Education() {
             <p className="text-center text-sm text-graphite/40 font-sans mt-6">
               Track your progress, earn certificates, stay licensed.
             </p>
+            <div className="flex justify-center mt-3">
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                DEMO — Sign in to track your real CE progress.
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -407,7 +417,7 @@ export default function Education() {
                   Full education access requires a professional account
                 </h2>
                 <p className="text-graphite/60 font-sans text-base max-w-xl mx-auto mb-8 leading-relaxed">
-                  Unlock all CE-eligible courses, treatment protocols, and compliance training.
+                  Access all CE-eligible courses, treatment protocols, and compliance training.
                   Track your progress, earn certificates, and stay licensed -- all in one place.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">

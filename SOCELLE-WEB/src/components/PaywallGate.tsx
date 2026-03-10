@@ -223,7 +223,7 @@ function UpgradeCard({ reason, gapCount, gMax, onUpgrade }: UpgradeCardProps) {
     pro_only: {
       icon: '🚀',
       headline: 'Pro feature',
-      sub: 'This feature requires an active Pro subscription. Unlock unlimited analyses, retail attach, and opening order generation.',
+      sub: 'This feature requires an active Pro subscription. Access unlimited analyses, retail attach, and opening order generation.',
       cta: 'Start 7-Day Free Trial',
     },
     no_subscription: {

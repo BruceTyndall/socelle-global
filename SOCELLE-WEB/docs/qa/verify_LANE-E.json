@@ -1,0 +1,207 @@
+{
+  "lane": "E",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "scope": "src/**/*.tsx, src/**/*.ts, public/",
+  "banned_terms_found": [
+    {
+      "term": "optimize (user-facing copy)",
+      "file": "src/pages/business/PlanResults.tsx",
+      "line": 407,
+      "context": "Each represents recoverable revenue through optimized brand-protocol alignment.",
+      "surface": "business portal — authenticated users",
+      "severity": "P2",
+      "fix": "Replace 'optimized' with 'aligned': 'Each represents recoverable revenue through aligned brand-protocol matching.'"
+    },
+    {
+      "term": "Unlock (public page — marketing verb)",
+      "file": "src/pages/public/Education.tsx",
+      "line": 410,
+      "context": "Unlock all CE-eligible courses, treatment protocols, and compliance training.",
+      "surface": "public — unauthenticated visitors",
+      "severity": "P1",
+      "fix": "Replace 'Unlock all' with 'Access all'"
+    },
+    {
+      "term": "Unlock (public page — marketing verb)",
+      "file": "src/pages/public/HelpCenter.tsx",
+      "line": 35,
+      "context": "Pro and Enterprise unlock local and historical data",
+      "surface": "public — unauthenticated visitors",
+      "severity": "P1",
+      "fix": "Replace 'unlock' with 'include': 'Pro and Enterprise plans include local and historical data'"
+    },
+    {
+      "term": "Unlock (public page — marketing verb)",
+      "file": "src/pages/public/BrandStorefront.tsx",
+      "line": 543,
+      "context": "Unlock verified wholesale pricing, education, and implementation support.",
+      "surface": "public — unauthenticated visitors",
+      "severity": "P1",
+      "fix": "Replace 'Unlock' with 'Get': 'Get verified wholesale pricing, education, and implementation support.'"
+    },
+    {
+      "term": "Unlock (paywall CTA button)",
+      "file": "src/components/UpgradeGate.tsx",
+      "line": 153,
+      "context": "Unlock for $29/mo",
+      "surface": "business portal — paywall overlay",
+      "severity": "P1",
+      "fix": "Replace with 'Get Full Access — $29/mo' or 'Start Pro — $29/mo'"
+    },
+    {
+      "term": "Unlock (paywall feature titles)",
+      "file": "src/components/UpgradeGate.tsx",
+      "lines": [29, 37, 45, 53],
+      "context": "Unlock Full Gap Analysis, Unlock Protocol Matching, Unlock Retail Recommendations, Unlock Activation Kit",
+      "surface": "business portal — paywall overlay",
+      "severity": "P2",
+      "fix": "Remove 'Unlock' prefix from feature titles: 'Full Gap Analysis', 'Protocol Matching', etc."
+    },
+    {
+      "term": "Unlock (paywall sub-text)",
+      "file": "src/components/PaywallGate.tsx",
+      "line": 226,
+      "context": "Unlock unlimited analyses, retail attach, and opening order generation.",
+      "surface": "business portal — pro_only paywall card",
+      "severity": "P2",
+      "fix": "Replace 'Unlock' with 'Get': 'Get unlimited analyses, retail attach, and opening order generation.'"
+    }
+  ],
+  "terms_in_comments_only": [
+    {
+      "term": "AI-powered",
+      "file": "src/components/PaywallGate.tsx",
+      "line": 15,
+      "context": "* Wrap any AI-powered feature (plan wizard, protocol matches, retail attach)",
+      "surface": "JSDoc comment — not rendered to users",
+      "severity": "P3",
+      "fix": "Update comment to 'Wrap any intelligence-gated feature'"
+    }
+  ],
+  "paywall_copy_audit": [
+    {
+      "component": "src/components/gates/UpgradePrompt.tsx",
+      "intelligence_first": true,
+      "banned_language_detected": false,
+      "cta_clear": true,
+      "verdict": "PASS",
+      "notes": "Model paywall copy. Feature lists use intelligence-first vocabulary throughout. CTA 'View Plans' is direct and appropriate."
+    },
+    {
+      "component": "src/components/gates/PaywallOverlay.tsx",
+      "intelligence_first": "N/A — wrapper only",
+      "banned_language_detected": false,
+      "cta_clear": "N/A",
+      "verdict": "PASS",
+      "notes": "Wrapper component with no independent copy."
+    },
+    {
+      "component": "src/components/UpgradeGate.tsx",
+      "intelligence_first": "partial",
+      "banned_language_detected": true,
+      "violations": ["Unlock Full Gap Analysis", "Unlock Protocol Matching", "Unlock Retail Recommendations", "Unlock Activation Kit", "Unlock for $29/mo"],
+      "cta_clear": true,
+      "verdict": "PARTIAL FAIL",
+      "notes": "Feature content is acceptable. CTA button 'Unlock for $29/mo' is the primary violation. Emoji icons are informal for a professional intelligence platform."
+    },
+    {
+      "component": "src/components/PaywallGate.tsx (UpgradeCard)",
+      "intelligence_first": true,
+      "banned_language_detected": true,
+      "violations": ["Unlock unlimited analyses, retail attach, and opening order generation."],
+      "cta_clear": true,
+      "verdict": "PARTIAL FAIL",
+      "notes": "limit_reached and no_subscription content are clean. pro_only sub-text uses 'Unlock' as marketing verb."
+    }
+  ],
+  "onboarding_copy_audit": [
+    {
+      "component": "src/pages/business/onboarding/OnboardingWelcome.tsx",
+      "banned_language_detected": false,
+      "intelligence_first": true,
+      "verdict": "PASS",
+      "notes": "Model copy. Uses 'Market signals, treatment trends, and revenue intelligence — built for licensed pros.' No violations."
+    },
+    {
+      "component": "src/pages/business/onboarding/OnboardingRole.tsx",
+      "banned_language_detected": false,
+      "intelligence_first": true,
+      "verdict": "PASS",
+      "notes": "Precise role descriptions. 'This helps us tailor your intelligence experience.' uses platform vocabulary correctly."
+    },
+    {
+      "component": "src/pages/business/onboarding/OnboardingInterests.tsx",
+      "banned_language_detected": false,
+      "intelligence_first": true,
+      "verdict": "PASS",
+      "notes": "Interest labels are domain-accurate. 'Revenue Optimization' is a user-stated interest category, not a platform promise — acceptable."
+    },
+    {
+      "component": "src/pages/business/onboarding/OnboardingComplete.tsx",
+      "banned_language_detected": false,
+      "intelligence_first": true,
+      "verdict": "PASS",
+      "notes": "'Your intelligence feed is ready.' — correct activation framing. Primary CTA 'Go to Intelligence Hub' routes to core value. Best copy in onboarding sequence."
+    }
+  ],
+  "empty_state_copy_audit": [
+    {
+      "component": "src/components/ui/EmptyState.tsx",
+      "structure_complete": true,
+      "verdict": "PASS",
+      "notes": "Base component has icon + title + optional description + optional action. Pearl Mineral V2 styled correctly."
+    },
+    {
+      "component": "src/components/intelligence/IntelligenceFeedSection.tsx (EmptyState)",
+      "headline_present": true,
+      "body_present": true,
+      "cta_present": false,
+      "intelligence_framing": true,
+      "verdict": "PASS",
+      "notes": "Custom Pearl Mineral concentric-ring illustration. 'No matching signals' / 'No signals in this category' are specific and domain-accurate. No CTA is appropriate here."
+    },
+    {
+      "component": "src/pages/admin/brand-hub/HubOrders.tsx, HubRetailers.tsx, HubProducts.tsx",
+      "headline_present": true,
+      "body_present": true,
+      "cta_present": false,
+      "verdict": "PASS",
+      "notes": "Admin view-only pages. Accurate, informative titles and descriptions. No action button is appropriate for these surfaces."
+    },
+    {
+      "component": "src/pages/business/PlanResults.tsx (local EmptyState, line 688)",
+      "headline_present": false,
+      "body_present": false,
+      "cta_present": false,
+      "verdict": "FAIL",
+      "notes": "Local EmptyState renders with zero props. No icon, no title, no body, no action. Does not meet Hub Feature Spec. Fix: use base EmptyState with icon, title, description, and action pointing to plan wizard."
+    },
+    {
+      "component": "src/pages/admin/SalesHub.tsx, AdminFeedsHub.tsx, CrmHub.tsx (label-only EmptyState)",
+      "headline_present": "label only",
+      "body_present": false,
+      "cta_present": false,
+      "verdict": "PARTIAL",
+      "notes": "Admin-internal tools. Single-line label is minimal but acceptable at current stage. Upgrade to base EmptyState before launch gate."
+    }
+  ],
+  "launch_comms_produced": ["waitlist_email", "linkedin_posts_3", "press_pitch", "trade_newsletter"],
+  "launch_comms_compliance": {
+    "uses_intelligence_vocabulary": true,
+    "contains_banned_terms": false,
+    "targets_correct_audience": true,
+    "avoids_cold_outreach": true,
+    "on_platform_acquisition_only": true
+  },
+  "overall": "FAIL",
+  "failures": [
+    "FAIL-1: 'optimized' in user-facing copy — PlanResults.tsx:407",
+    "FAIL-2: 'Unlock' as marketing verb on public pages — Education.tsx:410, HelpCenter.tsx:35, BrandStorefront.tsx:543",
+    "FAIL-3: 'Unlock' as CTA verb in paywall components — UpgradeGate.tsx:153, PaywallGate.tsx:226",
+    "FAIL-4: PlanResults.tsx blank EmptyState — no title, body, or action",
+    "WARN-1: UpgradeGate feature title copy uses 'Unlock' prefix across 4 variants",
+    "WARN-2: Admin tool EmptyStates use label-only pattern — upgrade before launch gate"
+  ],
+  "required_fixes_count": 8,
+  "pass_threshold": "PASS requires 0 user-facing banned term violations per §9 STOP CONDITION"
+}
