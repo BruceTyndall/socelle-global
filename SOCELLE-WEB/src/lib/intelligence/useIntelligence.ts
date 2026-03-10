@@ -39,6 +39,13 @@ interface UseIntelligenceOptions {
    * Used for "What Changed" feed.
    */
   timeline?: boolean;
+  /**
+   * INTEL-UI-REMEDIATION-01: Server-side signal_type filter.
+   * When provided, only signals whose signal_type is in this array are returned.
+   * Maps to the active editorial filter tab in IntelligenceFeedSection.
+   * When undefined/empty, all signal types are returned.
+   */
+  signalTypes?: SignalType[];
 }
 
 interface UseIntelligenceReturn {
@@ -182,7 +189,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const effectiveTierMin: 'free' | 'paid' = options?.tierOverride ?? (subscriptionTier === 'free' ? 'free' : 'paid');
 
   const { data: rawSignals = [], isLoading: loading } = useQuery({
-    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false],
+    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null],
     queryFn: async () => {
       let q = supabase
         .from('market_signals')
@@ -212,6 +219,11 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         q = (q as any).in('vertical', [options.vertical, 'multi']);
       }
 
+      // INTEL-UI-REMEDIATION-01: Server-side signal_type filter (category tab → DB filter)
+      if (options?.signalTypes && options.signalTypes.length > 0) {
+        q = (q as any).in('signal_type', options.signalTypes);
+      }
+
       // MERCH-10: Timeline eligibility — stricter filter for "What Changed" feed
       if (options?.timeline) {
         const cutoff72h = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
@@ -238,7 +250,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const queryClient = useQueryClient();
   // Capture the exact queryKey used by this hook instance so the realtime
   // handler updates the same cache entry (not a bare ['market_signals'] ghost).
-  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false];
+  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null];
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
