@@ -1,0 +1,31 @@
+{
+  "wo_id": "CRM-WO-07,CRM-WO-08,CRM-WO-09",
+  "timestamp": "2026-03-10T01:00:00.000Z",
+  "skills_run": ["build-gate"],
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit: 0 errors. npm run build: ✓ built in 5.97s. 0 TypeScript errors."
+    }
+  },
+  "files_created": [
+    "SOCELLE-WEB/src/pages/business/CrmConsent.tsx",
+    "SOCELLE-WEB/supabase/migrations/20260310000020_crm_consent_log.sql",
+    "SOCELLE-WEB/supabase/migrations/20260310000021_crm_churn_risk.sql"
+  ],
+  "files_modified": [
+    "SOCELLE-WEB/src/pages/business/ContactDetail.tsx",
+    "SOCELLE-WEB/src/lib/useCrmContacts.ts",
+    "SOCELLE-WEB/src/App.tsx"
+  ],
+  "routes_added": ["/portal/crm/consent"],
+  "wo_scope": {
+    "CRM-WO-07": "Signal→CRM cross-hub action: Link Signal modal on Intelligence tab in ContactDetail, inserts crm_interactions row with type=signal_link, invalidates query on success",
+    "CRM-WO-08": "Consent audit log page at /portal/crm/consent: crm_consent_log table + RLS migrations, TanStack Query, filter by contact/status/date, CSV export, skeleton/empty/error states",
+    "CRM-WO-09": "Rebooking engine UI: churn_risk_score bar (0-100, color-coded) + days-since-last-visit metric + Schedule Follow-up modal (creates crm_tasks row) in Intelligence tab"
+  },
+  "design_tokens": "Pearl Mineral V2 throughout — signal-up/warn/down, accent, graphite, background, accent-soft",
+  "tanstack_query": "All data fetching via useQuery/useMutation — 0 raw useEffect+supabase violations",
+  "overall": "PASS"
+}
