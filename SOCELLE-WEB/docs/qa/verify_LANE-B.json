@@ -1,0 +1,389 @@
+{
+  "lane": "B",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "surfaces_audited": 10,
+  "scorecard": [
+    {
+      "surface": "Public Intelligence Feed",
+      "route": "/intelligence",
+      "file": "src/pages/public/Intelligence.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "WARN",
+      "PROVENANCE": "PASS",
+      "ACTIONABILITY": "WARN",
+      "notes": "Fetches from market_signals via useIntelligence() TanStack Query v5. useDataFeedStats() and useStories() also wired. isLive flag controls PREVIEW banner. Vertical tab filters wired. No export/save (expected for public surface)."
+    },
+    {
+      "surface": "Public Intelligence Home",
+      "route": "/home",
+      "file": "src/pages/public/IntelligenceHome.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "PASS",
+      "PROVENANCE": "WARN",
+      "ACTIONABILITY": "WARN",
+      "notes": "useIntelligence() + useDataFeedStats(). DEMO banner when !isLive. Confidence per card, freshness via updated_at. No source_name displayed inline — provenance WARN."
+    },
+    {
+      "surface": "Public Intelligence Briefs",
+      "route": "/intelligence/briefs",
+      "file": "src/pages/public/IntelligenceBriefs.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "PASS",
+      "PROVENANCE": "WARN",
+      "ACTIONABILITY": "WARN",
+      "notes": "cms_posts table queried via useIntelligencePosts. isLive flag. Search, category filter, pagination, skeleton, error retry, empty state all present. No author attribution."
+    },
+    {
+      "surface": "Public Intelligence Commerce",
+      "route": "/shop/intelligence",
+      "file": "src/pages/public/IntelligenceCommerce.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "WARN",
+      "PROVENANCE": "WARN",
+      "ACTIONABILITY": "WARN",
+      "notes": "useProducts(), useProductSignals(), useIntelligence() all TanStack Query. isLive guard EXISTS at lines 94-103 — CLAUDE.md §4 item 9 is INCORRECT. Landing Cost Calculator correctly labeled DEMO. No source_name per signal card."
+    },
+    {
+      "surface": "Business Portal Intelligence Hub",
+      "route": "/portal/intelligence",
+      "file": "src/pages/business/IntelligenceHub.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "PASS",
+      "PROVENANCE": "PASS",
+      "ACTIONABILITY": "PASS",
+      "notes": "useIntelligence() for all 10 cloud modules. 6 AI tools with TierGate + CreditGate. CrossHubActionDispatcher in SignalDetailPanel. Dedicated Provenance tab. Skeleton loading. Most complete surface."
+    },
+    {
+      "surface": "Brand Portal Intelligence Hub",
+      "route": "/brand/intelligence",
+      "file": "src/pages/brand/BrandIntelligenceHub.tsx",
+      "DATA": "FAIL",
+      "PRESS": "WARN",
+      "VALUE": "WARN",
+      "PROVENANCE": "FAIL",
+      "ACTIONABILITY": "WARN",
+      "notes": "CRITICAL: getBrandMarketPosition(), getBrandPerformanceMetrics(), getResellerIntelligence(), getBrandCategoryPosition() all call pure mock data from brandPortalIntelligence.ts (seeded hash functions, no DB queries). Only topSignals uses live useIntelligence(). SKU table, operator network, revenue trend, category rankings are synthetic. Header says 'Live Signals + Demo Metrics' but per-section DEMO labels are absent. deriveOperatorEnrichment() presents computed synthetic data as provenance. CSV export missing on all tabs."
+    },
+    {
+      "surface": "Brand Portal Intelligence Report",
+      "route": "/brand/intelligence-report",
+      "file": "src/pages/brand/IntelligenceReport.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "PASS",
+      "PROVENANCE": "PASS",
+      "ACTIONABILITY": "PASS",
+      "notes": "Queries market_signals (active, non-duplicate, limit 300), brands, brand_intelligence_report_jobs via TanStack Query. Report sections derived from live signals grouped by month. PDF/email queue writes to DB. DEMO badge hardcoded at line 471 — should be conditional."
+    },
+    {
+      "surface": "Brand Portal Intelligence Pricing",
+      "route": "/brand/intelligence-pricing",
+      "file": "src/pages/brand/IntelligencePricing.tsx",
+      "DATA": "FAIL",
+      "PRESS": "FAIL",
+      "VALUE": "PASS",
+      "PROVENANCE": "FAIL",
+      "ACTIONABILITY": "WARN",
+      "notes": "CRITICAL: getTierPricing() and getTierFeatures() from mockTierData — entirely static mock. No Supabase query. No isLive flag. No DEMO/PREVIEW label anywhere on page. Violates CLAUDE.md §8. Uses font-playfair class (lines 104, 201). Upgrade button calls alert() — no Stripe integration."
+    },
+    {
+      "surface": "Admin Intelligence Dashboard",
+      "route": "/admin/intelligence",
+      "file": "src/pages/admin/IntelligenceDashboard.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "PASS",
+      "PROVENANCE": "PASS",
+      "ACTIONABILITY": "PASS",
+      "notes": "useAdminIntelligence() fetches from market_signals, businesses, brands, account_subscriptions, api_registry, data_feeds. Realtime subscription on INSERT. Full CRUD (create/archive/delete signals). API health + feed status panels. LIVE/DEMO badge driven by isLive."
+    },
+    {
+      "surface": "SignalDetailPanel (cross-hub component)",
+      "route": "slide-out panel",
+      "file": "src/components/intelligence/SignalDetailPanel.tsx",
+      "DATA": "PASS",
+      "PRESS": "PASS",
+      "VALUE": "PASS",
+      "PROVENANCE": "PASS",
+      "ACTIONABILITY": "PASS",
+      "notes": "Best provenance implementation in codebase. Dedicated provenance block with source_name, source_url (external link), region, confidence score (HIGH/MODERATE/LOW). CrossHubActionDispatcher wired. ESC key closes panel."
+    }
+  ],
+  "hook_table_map": [
+    {
+      "hook": "useIntelligence()",
+      "tables": ["market_signals"],
+      "columns": ["id", "signal_type", "title", "description", "magnitude", "direction", "region", "category", "related_brands", "related_products", "updated_at", "source", "source_name", "source_url", "confidence_score", "vertical", "topic", "tier_min", "impact_score"],
+      "edge_function": null,
+      "realtime": "intelligence-hub-signals channel",
+      "surfaces": ["Public Intelligence Feed", "IntelligenceHome", "Business Portal Intel Hub", "Brand Portal Intel Hub (signals section only)", "Intelligence Commerce"]
+    },
+    {
+      "hook": "useAdminIntelligence()",
+      "tables": ["market_signals", "businesses", "brands", "account_subscriptions", "api_registry", "data_feeds"],
+      "columns": ["various — count, status, health, confidence, source_name, signal_count, last_fetched_at, last_error, is_enabled, last_test_status, last_test_latency_ms"],
+      "edge_function": null,
+      "realtime": "admin-intelligence-realtime channel",
+      "surfaces": ["Admin Intelligence Dashboard"]
+    },
+    {
+      "hook": "useDataFeedStats()",
+      "tables": ["data_feeds"],
+      "columns": ["count", "is_enabled", "signal_count", "avg_confidence", "last_orchestrator_run"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Public Intelligence Feed", "IntelligenceHome"]
+    },
+    {
+      "hook": "useStories()",
+      "tables": ["stories"],
+      "columns": ["title", "category", "hero_image_url"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Public Intelligence Feed (editorial scroll)"]
+    },
+    {
+      "hook": "useIntelligencePosts()",
+      "tables": ["cms_posts"],
+      "columns": ["title", "excerpt", "category", "published_at", "hero_image", "reading_time", "slug", "body"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Intelligence Briefs"]
+    },
+    {
+      "hook": "useProducts()",
+      "tables": ["retail_products"],
+      "columns": ["name", "price_cents", "compare_at_price_cents", "images", "slug", "is_featured", "affiliate_url"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Intelligence Commerce"]
+    },
+    {
+      "hook": "useProductSignals()",
+      "tables": ["derived: retail_products x market_signals"],
+      "columns": ["magnitude", "direction", "signalTitle"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Intelligence Commerce"]
+    },
+    {
+      "hook": "useBrandIntelligence()",
+      "tables": ["brands", "orders", "order_items"],
+      "columns": ["id", "name", "slug", "brand_id", "subtotal", "business_id", "status", "created_at"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Brand Storefront pages (not Intel Hub directly)"],
+      "note": "Falls back to mock data from brandIntelligence.ts when orders.length < 1"
+    },
+    {
+      "hook": "brandPortalIntelligence.ts (pure mock, not a hook)",
+      "tables": [],
+      "columns": [],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Brand Portal Intel Hub — ALL three tabs (Brand Performance, Reseller Intelligence, Market Position)"],
+      "note": "PURE MOCK — deterministic seeded hash functions. NO DB queries. Labeled V1 in file comment."
+    },
+    {
+      "hook": "businessIntelligence.ts (pure mock, not a hook)",
+      "tables": [],
+      "columns": [],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Business Portal intelligence insight components"],
+      "note": "PURE MOCK — imports mockSignals. All operator insights, growth opportunities, demand signals, reorder risks are static mock data."
+    },
+    {
+      "hook": "IntelligenceReport inline TanStack Query",
+      "tables": ["market_signals", "brands", "brand_intelligence_report_jobs"],
+      "columns": ["id", "title", "description", "signal_type", "magnitude", "direction", "updated_at", "source", "source_name", "related_brands", "region", "name", "report_month", "output_format", "delivery_email", "status", "status_message", "artifact_url"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Brand Portal Intelligence Report"]
+    },
+    {
+      "hook": "Admin CRUD (inline supabase calls)",
+      "tables": ["market_signals (write)"],
+      "columns": ["title", "summary", "signal_type", "direction", "confidence", "status", "tier_visibility"],
+      "edge_function": null,
+      "realtime": null,
+      "surfaces": ["Admin Intelligence Dashboard — create/archive/delete"]
+    }
+  ],
+  "gaps": {
+    "demo_to_live": [
+      {
+        "surface": "Brand Portal Intel Hub — Brand Performance tab",
+        "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+        "function": "getBrandPerformanceMetrics()",
+        "gap": "Seeded mock data. Required live source: orders + order_items aggregated by brand_id.",
+        "priority": "P0"
+      },
+      {
+        "surface": "Brand Portal Intel Hub — Reseller Intelligence tab",
+        "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+        "function": "getResellerIntelligence()",
+        "gap": "12 hardcoded operator names with seeded values. Required live source: orders + businesses joined by brand_id.",
+        "priority": "P0"
+      },
+      {
+        "surface": "Brand Portal Intel Hub — Market Position tab",
+        "file": "src/lib/intelligence/brandPortalIntelligence.ts",
+        "function": "getBrandCategoryPosition()",
+        "gap": "Seeded category rankings. Requires platform-wide adoption analytics — dedicated edge function or materialized view.",
+        "priority": "P1"
+      },
+      {
+        "surface": "Brand Portal Intelligence Pricing",
+        "file": "src/lib/brandTiers/mockTierData.ts",
+        "function": "getTierPricing(), getTierFeatures()",
+        "gap": "Entirely static mock arrays. Must be labeled DEMO or wired to Stripe Products API / pricing table.",
+        "priority": "P0"
+      },
+      {
+        "surface": "Business Portal Intelligence insights",
+        "file": "src/lib/intelligence/businessIntelligence.ts",
+        "function": "multiple — operator insights, growth opportunities, demand signals, reorder risks",
+        "gap": "Imports mockSignals. All business portal intelligence is mock data. No live Supabase queries.",
+        "priority": "P0"
+      },
+      {
+        "surface": "Brand Intelligence Storefront",
+        "file": "src/lib/intelligence/brandIntelligence.ts + useBrandIntelligence.ts",
+        "function": "getBrandPeerData(), getBrandAdoptionCount(), getProfessionalsAlsoBought()",
+        "gap": "Falls back to mock maps when orders.length < 1. Until real order volume exists, shows mock data.",
+        "priority": "P2"
+      }
+    ],
+    "missing_exports": [
+      { "surface": "Business Portal Intel Hub — SignalTable", "export_type": "CSV", "priority": "P2" },
+      { "surface": "Brand Portal Intel Hub — SKU Performance table", "export_type": "CSV", "priority": "P2" },
+      { "surface": "Brand Portal Intel Hub — Operator Network table", "export_type": "CSV", "priority": "P2" },
+      { "surface": "Brand Portal Intel Report", "export_type": "PDF live generation via edge function", "priority": "P1", "note": "Queue exists but no edge function generates actual PDF artifact." },
+      { "surface": "Admin Intelligence Dashboard — Signal table", "export_type": "CSV", "priority": "P3" },
+      { "surface": "Public Intelligence Feed (signed-in users)", "export_type": "Signal brief export", "priority": "P3" }
+    ],
+    "missing_tier_gates": [
+      {
+        "surface": "Business Portal Intel Hub — WhatChangedTimeline",
+        "feature": "Timeline of signal changes",
+        "suggested_tier": "pro",
+        "current_state": "No tier gate — shown to all users",
+        "priority": "P2"
+      },
+      {
+        "surface": "Business Portal Intel Hub — OpportunitySignals",
+        "feature": "Opportunity scoring from signals",
+        "suggested_tier": "starter",
+        "current_state": "No tier gate — shown to all users",
+        "priority": "P2"
+      },
+      {
+        "surface": "Brand Portal Intel Hub — Reseller Intelligence tab",
+        "feature": "Full operator network view",
+        "suggested_tier": "enterprise",
+        "current_state": "No tier gate (only Market Position tab is gated)",
+        "priority": "P2"
+      }
+    ],
+    "missing_cross_hub_actions": [
+      { "from": "Brand Portal Intel Hub — Signals section", "action": "Create CRM note from signal", "target_hub": "CRM Hub", "priority": "P1" },
+      { "from": "Brand Portal Intel Hub — SKU Performance", "action": "Flag at-risk SKU to sales pipeline", "target_hub": "Sales Hub", "priority": "P2" },
+      { "from": "Brand Portal Intel Hub — Operator table", "action": "Open operator in CRM", "target_hub": "CRM Hub", "priority": "P1" },
+      { "from": "Brand Portal Intel Report — Recommendations", "action": "Create action plan from recommendation", "target_hub": "Sales Hub / AI Tools", "priority": "P2" },
+      { "from": "Public Intelligence Feed (signed-in users)", "action": "Save signal / Add to watchlist", "target_hub": "Notifications Hub", "priority": "P2" },
+      { "from": "Intelligence Commerce", "action": "Request procurement proposal from signal", "target_hub": "Sales Hub", "priority": "P3" },
+      { "from": "IntelligenceBriefs", "action": "Share brief to team / Add to briefing book", "target_hub": "CRM / Education Hub", "priority": "P3" },
+      { "from": "IntelligenceHome", "action": "Subscribe to category alerts", "target_hub": "Notifications Hub", "priority": "P3" }
+    ]
+  },
+  "additional_findings": [
+    {
+      "id": "FINDING-01",
+      "priority": "P0",
+      "surface": "Brand Portal Intelligence Hub",
+      "finding": "Per-section DEMO labels missing on Brand Performance, Reseller Intelligence, and Market Position tabs despite all data being synthetic. Header badge says 'Live Signals + Demo Metrics' but individual sections are unlabeled.",
+      "file": "src/pages/brand/BrandIntelligenceHub.tsx",
+      "violates": "CLAUDE.md §8"
+    },
+    {
+      "id": "FINDING-02",
+      "priority": "P0",
+      "surface": "Brand Portal Intelligence Pricing",
+      "finding": "No DEMO label anywhere on page. Static pricing presented as if real. Uses font-playfair class (lines 104, 201). Upgrade button calls alert() with no Stripe integration.",
+      "file": "src/pages/brand/IntelligencePricing.tsx",
+      "violates": "CLAUDE.md §8"
+    },
+    {
+      "id": "FINDING-03",
+      "priority": "P0",
+      "surface": "Business Portal Intelligence",
+      "finding": "businessIntelligence.ts imports mockSignals. All business portal intelligence insights (OperatorInsights, GrowthOpportunities, DemandSignals, ReorderRisks) are generated from static mock data. Data origin is not surfaced to the user.",
+      "file": "src/lib/intelligence/businessIntelligence.ts",
+      "violates": "CLAUDE.md §8"
+    },
+    {
+      "id": "FINDING-04",
+      "priority": "P1",
+      "surface": "Brand Portal Intelligence Report",
+      "finding": "DEMO badge hardcoded at line 471 regardless of whether signals are live. Since buildReports() uses real market_signals data, the DEMO label is misleading when signals are populated.",
+      "file": "src/pages/brand/IntelligenceReport.tsx"
+    },
+    {
+      "id": "FINDING-05",
+      "priority": "P1",
+      "surface": "useIntelligence() hook",
+      "finding": "In rowToSignal() at line 132, tier_visibility is hardcoded to 'free' for all DB rows. Client-side tieredSignals filter is therefore a no-op. If signals with tier_visibility='pro' are ever inserted, they will not be gated client-side.",
+      "file": "src/lib/intelligence/useIntelligence.ts",
+      "line": 132,
+      "fix": "Change to: tier_visibility: (row.tier_visibility as TierVisibility) ?? 'free'"
+    },
+    {
+      "id": "FINDING-06",
+      "priority": "P2",
+      "surface": "Business Portal Intelligence Hub",
+      "finding": "HubError component (lines 117-135) uses hardcoded hex colors (#8E6464, #6E879B) instead of design tokens (text-signal-down, bg-accent). Minor token drift.",
+      "file": "src/pages/business/IntelligenceHub.tsx"
+    },
+    {
+      "id": "FINDING-07",
+      "priority": "INFO",
+      "surface": "Public Intelligence Commerce",
+      "finding": "CLAUDE.md §4 item 9 ('IntelligenceCommerce.tsx missing isLive guard') is INCORRECT per current code. The isLive guard EXISTS at lines 94-103 with correct LIVE/DEMO banner behavior.",
+      "file": "src/pages/public/IntelligenceCommerce.tsx"
+    }
+  ],
+  "overall": "FAIL",
+  "failures": [
+    {
+      "surface": "Brand Portal Intelligence Hub",
+      "dimension": "DATA",
+      "reason": "getBrandMarketPosition(), getBrandPerformanceMetrics(), getResellerIntelligence(), getBrandCategoryPosition() all call pure mock data functions. SKU performance, operator network, revenue trend, category rankings are all synthetic seeded values — no DB queries."
+    },
+    {
+      "surface": "Brand Portal Intelligence Hub",
+      "dimension": "PROVENANCE",
+      "reason": "deriveOperatorEnrichment() presents computed synthetic data as verified enrichment. Provenance array shows status: 'degraded' and endpoint: null. No DEMO label on operator enrichment badges."
+    },
+    {
+      "surface": "Brand Portal Intelligence Pricing",
+      "dimension": "DATA",
+      "reason": "getTierPricing() and getTierFeatures() from mockTierData — entirely static mock arrays with no Supabase query and no isLive flag."
+    },
+    {
+      "surface": "Brand Portal Intelligence Pricing",
+      "dimension": "PRESS",
+      "reason": "No DEMO/PREVIEW label anywhere on the page. Static pricing and feature data presented to authenticated brand portal users without disclosure. Violates CLAUDE.md §8."
+    },
+    {
+      "surface": "Brand Portal Intelligence Pricing",
+      "dimension": "PROVENANCE",
+      "reason": "Pricing claims (dollar amounts, feature inclusions) are hardcoded mock with no audit trail, no DB source, and no disclosure to the user."
+    }
+  ]
+}

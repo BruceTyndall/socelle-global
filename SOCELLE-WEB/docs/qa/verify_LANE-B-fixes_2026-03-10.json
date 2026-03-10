@@ -1,0 +1,47 @@
+{
+  "wo_id": "LANE-B-FIXES",
+  "timestamp": "2026-03-10T13:00:00.000Z",
+  "description": "Lane B Intelligence Hub audit P0/P1 fixes",
+  "fixes": [
+    {
+      "item": "rowToSignal() tier_visibility hardcoded to 'free' (P1)",
+      "file": "src/lib/intelligence/useIntelligence.ts",
+      "fix": "Added tier_visibility to MarketSignalRow interface + select query. rowToSignal now reads tier_visibility from DB; falls back to tier_min mapping (paid→pro); finally 'free' for older rows. Client-side belt-and-suspenders gate is now real.",
+      "status": "FIXED"
+    },
+    {
+      "item": "BrandIntelligenceHub.tsx — mock Position Summary Banner, 3 tabs show mock data without DEMO label (P0 fake-live)",
+      "file": "src/pages/brand/BrandIntelligenceHub.tsx",
+      "fix": "Added DEMO badge inside Position Summary Banner. Added DEMO badge at top of Brand Performance, Reseller Intelligence, and Market Position tab panels.",
+      "status": "FIXED"
+    },
+    {
+      "item": "IntelligencePricing.tsx — mockTierData with no DEMO label, 3x font-playfair (banned token) (P0 fake-live + design violation)",
+      "file": "src/pages/brand/IntelligencePricing.tsx",
+      "fix": "Added DEMO banner at top of pricing page. Replaced all 3 instances of font-playfair with font-sans.",
+      "status": "FIXED"
+    }
+  ],
+  "deferred": [
+    {
+      "item": "businessIntelligence.ts imports mockSignals (P0) — all Business Portal operator insights are mock",
+      "reason": "Requires real data wiring (new DB queries + hooks). Deferred to INTEL-WO-01 scope.",
+      "status": "OPEN"
+    },
+    {
+      "item": "IntelligencePricing.tsx upgrade button calls alert() — needs real Stripe integration",
+      "reason": "Requires Stripe product/price ID configuration. Deferred to PAY-WO-01 scope.",
+      "status": "OPEN"
+    },
+    {
+      "item": "BrandIntelligenceHub.tsx — deriveOperatorEnrichment() presents computed synthetic enrichment with no explicit DEMO label per-operator",
+      "reason": "Page-level DEMO labels added. Per-operator enrichment label is a UX enhancement — deferred.",
+      "status": "OPEN"
+    }
+  ],
+  "skills_run": ["tsc --noEmit"],
+  "results": {
+    "tsc": { "status": "PASS", "failures": [], "evidence": "Exit 0, zero errors" }
+  },
+  "overall": "PASS"
+}

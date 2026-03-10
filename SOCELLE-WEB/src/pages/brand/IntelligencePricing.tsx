@@ -99,9 +99,14 @@ export default function IntelligencePricing() {
       </Helmet>
 
       <div className="max-w-6xl mx-auto space-y-12">
+        {/* DEMO banner — pricing backed by mockTierData, not Stripe */}
+        <div className="bg-signal-warn/10 text-signal-warn text-xs font-medium px-4 py-2 text-center rounded-lg">
+          DEMO — Pricing plans shown for illustration. Stripe integration pending.
+        </div>
+
         {/* ── Header ──────────────────────────────────────────── */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold font-playfair text-graphite">
+          <h1 className="text-3xl font-bold font-sans text-graphite">
             Intelligence Plans
           </h1>
           <p className="mt-2 text-graphite/60 max-w-2xl mx-auto">
@@ -198,7 +203,7 @@ export default function IntelligencePricing() {
 
         {/* ── Feature Comparison Table ────────────────────────── */}
         <div>
-          <h2 className="text-2xl font-bold font-playfair text-graphite text-center mb-8">
+          <h2 className="text-2xl font-bold font-sans text-graphite text-center mb-8">
             Full Feature Comparison
           </h2>
           <div className="overflow-x-auto">
@@ -261,7 +266,7 @@ export default function IntelligencePricing() {
 
         {/* ── FAQ Section ─────────────────────────────────────── */}
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold font-playfair text-graphite text-center mb-8">
+          <h2 className="text-2xl font-bold font-sans text-graphite text-center mb-8">
             Frequently Asked Questions
           </h2>
           <div className="space-y-3">

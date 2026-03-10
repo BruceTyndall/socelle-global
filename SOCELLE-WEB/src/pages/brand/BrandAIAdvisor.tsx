@@ -223,7 +223,10 @@ export default function BrandAIAdvisor() {
           <div className={`space-y-4 overflow-y-auto ${contextOpen ? '' : 'hidden lg:block'}`}>
             {/* Brand Profile */}
             <div className="bg-white rounded-xl border border-accent-soft p-5">
-              <h3 className="font-sans text-sm text-graphite mb-3">Brand Profile</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-sans text-sm text-graphite">Brand Profile</h3>
+                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
+              </div>
               <div className="space-y-2 text-xs font-sans">
                 <div className="flex justify-between">
                   <span className="text-graphite/60">Category</span>
@@ -250,7 +253,10 @@ export default function BrandAIAdvisor() {
 
             {/* Recent Signals */}
             <div className="bg-white rounded-xl border border-accent-soft p-5">
-              <h3 className="font-sans text-sm text-graphite mb-3">Market Signals</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-sans text-sm text-graphite">Market Signals</h3>
+                <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">DEMO</span>
+              </div>
               <div className="space-y-3">
                 {RECENT_SIGNALS.map((signal, i) => {
                   const Icon = signal.icon;

@@ -161,6 +161,11 @@ export default function BrandIntelligenceHub() {
 
         {/* Position Summary Banner */}
         <div className="bg-graphite rounded-xl p-5 text-white">
+          <div className="flex justify-end mb-2">
+            <span className="text-[10px] font-semibold bg-signal-warn/20 text-signal-warn px-2 py-0.5 rounded-full">
+              DEMO — Sample metrics. Live data in next release.
+            </span>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <SummaryCell
               label="Category Rank"
@@ -207,6 +212,11 @@ export default function BrandIntelligenceHub() {
 
           {/* ── Tab 1: Brand Performance ─────────────────────── */}
           <TabPanel id="performance" className="space-y-6">
+            <div className="flex justify-end">
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                DEMO — Sample performance data
+              </span>
+            </div>
             {/* KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {metrics.kpiCards.map((kpi) => (
@@ -372,6 +382,11 @@ export default function BrandIntelligenceHub() {
 
           {/* ── Tab 2: Reseller Intelligence ──────────────────── */}
           <TabPanel id="resellers" className="space-y-6">
+            <div className="flex justify-end">
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                DEMO — Sample reseller data
+              </span>
+            </div>
             {/* Summary Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <SummaryStatCard icon={Users} label="Total Operators" value={resellers.totalOperators} />
@@ -517,6 +532,11 @@ export default function BrandIntelligenceHub() {
 
           {/* ── Tab 3: Market Position ────────────────────────── */}
           <TabPanel id="market" className="space-y-6">
+            <div className="flex justify-end">
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                DEMO — Sample category data
+              </span>
+            </div>
             {/* WO-24: Enterprise tier gate overlay */}
             {marketPositionLocked && (
               <div className="relative">
