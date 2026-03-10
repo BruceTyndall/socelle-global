@@ -37,7 +37,15 @@ CMS becomes:
 1. **No shells ship.** Every page touched must have error state, empty state, loading skeleton.
 2. **No self-certification.** Agent that builds cannot write PASS. Verification skill must run.
 3. **Proof pack required per WO.** `docs/qa/verify_<WO_ID>.json` with PASS/FAIL + evidence + commit SHA.
-4. **Frozen paths respected.** auth.tsx, useCart.ts, /portal/*, /brand/*, /admin/* untouched without explicit WO.
+4. **Frozen paths — precise definition (PATCH 1).** The following are FROZEN and may NEVER be modified without explicit owner instruction:
+   - `src/lib/auth.tsx` — AuthContext, NEVER MODIFY
+   - `src/lib/useCart.ts` — cart state, NEVER MODIFY
+   - Cart/checkout components: `CartDrawer`, `/portal/orders`, `/brand/orders`, checkout flows
+   - Supabase migrations: ADD ONLY — never modify or delete existing migration files
+   - `tailwind.config.js`: EXTEND ONLY — add tokens, do not remove or redefine existing Pearl Mineral V2 tokens
+   - V2-TECH-01..07, V2-COMMAND-01..03, BUILD 0 Control Plane, BUILD 3 Growth: FROZEN — do not re-open
+   - `/portal/*`, `/brand/*`, `/admin/*` are **NOT blanket frozen**. These routes may be touched ONLY when a WO in this pack explicitly names the file(s). If a WO does not name a file in these directories, that file is off-limits for that WO.
+   - Authority source: `/.claude/CLAUDE.md §2`
 5. **No raw useEffect + supabase.from() in new code.** TanStack Query v5 only.
 6. **No banned terms in user-facing copy.** Run banned-term-scanner before marking any WO DONE.
 7. **No invented WO IDs.** All IDs below are the canonical set. Do not create sub-IDs without owner approval.
