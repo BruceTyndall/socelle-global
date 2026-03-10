@@ -1,0 +1,24 @@
+{
+  "wo_id": "LANE-C-TIER-BYPASS-FIX",
+  "timestamp": "2026-03-10T12:00:00.000Z",
+  "description": "Fix 2 P0 tier-bypass violations: OpportunityFinder.tsx and CECreditDashboard.tsx both queried market_signals directly, bypassing useIntelligence() tier/isLive contract. Free-tier users could see paid-tier signals.",
+  "violations_fixed": [
+    {
+      "file": "src/pages/sales/OpportunityFinder.tsx",
+      "violation": "Raw useQuery + supabase.from('market_signals') — bypassed tier gating entirely",
+      "fix": "Replaced with useIntelligence({ limit: 100 }). Direction filter moved to client-side filteredSignals computation.",
+      "status": "FIXED"
+    },
+    {
+      "file": "src/pages/education/CECreditDashboard.tsx",
+      "violation": "useTrendingSignals() hook called supabase.from('market_signals') directly — no tier gate, no isLive check",
+      "fix": "Replaced with useIntelligence({ limit: 6 }). direction='up' and magnitude sort applied client-side.",
+      "status": "FIXED"
+    }
+  ],
+  "skills_run": ["tsc --noEmit"],
+  "results": {
+    "tsc": { "status": "PASS", "failures": [], "evidence": "Exit 0, zero errors" }
+  },
+  "overall": "PASS"
+}

@@ -5,40 +5,24 @@ import {
   TrendingDown,
   Minus,
   AlertCircle,
-  Loader2,
   Plus,
   Zap,
   Search,
   Filter,
   ArrowRight,
   Lightbulb,
-  RefreshCw,
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../../lib/supabase';
 import { useDeals, type NewDeal } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
+import type { IntelligenceSignal } from '../../lib/intelligence/types';
 
 // ── V2-HUBS-09: Opportunity Finder ──────────────────────────────────────
-// Data source: market_signals (LIVE when DB-connected) + deals
+// Data source: market_signals via useIntelligence() (tier-gated, isLive-checked)
 // Intelligence-driven deal creation: signals → opportunities → deals.
 // NO outreach features (§P).
 
-interface MarketSignal {
-  id: string;
-  signal_type: string;
-  signal_key: string;
-  title: string;
-  description: string;
-  magnitude: number;
-  direction: 'up' | 'down' | 'stable';
-  region: string | null;
-  category: string | null;
-  related_brands: string[] | null;
-  updated_at: string;
-  source: string | null;
-  confidence_score: number | null;
-}
+type MarketSignal = IntelligenceSignal;
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
@@ -69,32 +53,8 @@ export default function OpportunityFinder() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [creating, setCreating] = useState<string | null>(null);
 
-  // Fetch high-value signals from market_signals
-  const { data: signals = [], isLoading: loading, error: queryError, refetch: reload } = useQuery({
-    queryKey: ['opportunity_signals', directionFilter],
-    queryFn: async () => {
-      let query = supabase
-        .from('market_signals')
-        .select('id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, updated_at, source, confidence_score')
-        .eq('is_active', true)
-        .order('magnitude', { ascending: false })
-        .limit(100);
-
-      if (directionFilter) {
-        query = query.eq('direction', directionFilter);
-      }
-
-      const { data, error } = await query;
-      if (error) {
-        const msg = error.message.toLowerCase();
-        if (msg.includes('does not exist') || error.code === '42P01') return [];
-        throw new Error(error.message);
-      }
-      return (data ?? []) as MarketSignal[];
-    },
-  });
-
-  const isLive = signals.length > 0 || !!queryError;
+  // Fetch signals via useIntelligence — tier-gated, isLive-checked (no raw supabase.from bypass)
+  const { signals, loading, isLive } = useIntelligence({ limit: 100 });
 
   // Get unique categories for filter
   const categories = useMemo(() => {
@@ -105,9 +65,10 @@ export default function OpportunityFinder() {
     return Array.from(cats).sort();
   }, [signals]);
 
-  // Apply client-side filters
+  // Apply client-side filters (direction is now client-side since tier contract lives in useIntelligence)
   const filteredSignals = useMemo(() => {
     return signals.filter((s) => {
+      if (directionFilter && s.direction !== directionFilter) return false;
       if (searchTerm) {
         const term = searchTerm.toLowerCase();
         if (!s.title.toLowerCase().includes(term) && !s.description.toLowerCase().includes(term)) return false;
@@ -115,7 +76,7 @@ export default function OpportunityFinder() {
       if (categoryFilter && s.category !== categoryFilter) return false;
       return true;
     });
-  }, [signals, searchTerm, categoryFilter]);
+  }, [signals, directionFilter, searchTerm, categoryFilter]);
 
   // Create deal from signal — includes signal attribution
   const handleCreateDeal = useCallback(async (signal: MarketSignal) => {
@@ -139,8 +100,6 @@ export default function OpportunityFinder() {
       setCreating(null);
     }
   }, [defaultPipeline, firstStage, createDeal, navigate]);
-
-  const error = queryError instanceof Error ? queryError.message : (queryError ? String(queryError) : null);
 
   if (loading) {
     return (
@@ -191,23 +150,6 @@ export default function OpportunityFinder() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="bg-signal-down/5 border border-signal-down/20 rounded-xl p-6 text-center">
-          <AlertCircle className="w-8 h-8 text-signal-down mx-auto mb-2" />
-          <p className="text-graphite font-medium font-sans">Could not load signals</p>
-          <p className="text-graphite/60 text-sm mt-1 font-sans">{error}</p>
-          <button
-            onClick={() => reload()}
-            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm font-sans"
-          >
-            <RefreshCw className="w-4 h-4" /> Try again
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">

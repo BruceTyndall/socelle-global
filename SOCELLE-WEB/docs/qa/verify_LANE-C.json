@@ -1,0 +1,212 @@
+{
+  "lane": "C",
+  "timestamp": "2026-03-10T08:00:00.000Z",
+  "audit_version": "v2 — full re-audit with line-level evidence",
+  "edge_functions_total": 34,
+  "edge_functions_active": 32,
+  "edge_functions_unwired": 4,
+  "edge_functions_blocked": 2,
+  "edge_functions_duplicate_handlers": 1,
+  "hooks_total": 95,
+  "hooks_using_tanstack_query": 88,
+  "hooks_stub_no_query": 7,
+  "raw_supabase_from_in_pages_total": 392,
+  "raw_supabase_from_in_pages_files": 100,
+  "external_apis": [
+    {
+      "provider": "OpenRouter",
+      "purpose": "Multi-model AI gateway — Claude, GPT-4o, Gemini, Llama",
+      "key_required": true,
+      "secret_name": "OPENROUTER_API_KEY",
+      "status": "active",
+      "consumers": ["ai-orchestrator", "ai-concierge"]
+    },
+    {
+      "provider": "OpenAI",
+      "purpose": "Text embeddings (text-embedding-ada-002, 1536-dim)",
+      "key_required": true,
+      "secret_name": "OPENAI_API_KEY",
+      "status": "active",
+      "consumers": ["generate-embeddings"]
+    },
+    {
+      "provider": "Stripe",
+      "purpose": "Subscription billing + product checkout + webhooks",
+      "key_required": true,
+      "secret_name": "STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET",
+      "status": "active (bypass mode in dev — VITE_PAYMENT_BYPASS)",
+      "consumers": ["create-checkout", "shop-checkout", "stripe-webhook", "shop-webhook", "manage-subscription", "subscription-webhook"]
+    },
+    {
+      "provider": "Resend",
+      "purpose": "Transactional email delivery",
+      "key_required": true,
+      "secret_name": "RESEND_API_KEY, FROM_EMAIL",
+      "status": "active",
+      "consumers": ["send-email"]
+    },
+    {
+      "provider": "CMS NPPES NPI Registry",
+      "purpose": "Operator NPI number verification",
+      "key_required": false,
+      "secret_name": null,
+      "status": "active — no frontend trigger wired",
+      "consumers": ["ingest-npi"]
+    },
+    {
+      "provider": "OpenFDA",
+      "purpose": "FDA cosmetics recalls + aesthetic device MDR signals",
+      "key_required": false,
+      "secret_name": null,
+      "status": "active — no pg_cron schedule confirmed",
+      "consumers": ["ingest-openfda"]
+    },
+    {
+      "provider": "Open Beauty Facts",
+      "purpose": "INCI ingredient data (2,950 rows; 647 pages remain)",
+      "key_required": false,
+      "secret_name": null,
+      "status": "active — manual trigger only from admin",
+      "consumers": ["open-beauty-facts-sync"]
+    },
+    {
+      "provider": "Google Calendar API",
+      "purpose": "Create calendar events for business users",
+      "key_required": true,
+      "secret_name": "GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET",
+      "status": "active",
+      "consumers": ["calendar-create-event", "calendar-oauth-callback"]
+    },
+    {
+      "provider": "Microsoft Graph API",
+      "purpose": "Create calendar events (Outlook/Teams)",
+      "key_required": true,
+      "secret_name": "MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET",
+      "status": "active",
+      "consumers": ["calendar-create-event", "calendar-oauth-callback"]
+    },
+    {
+      "provider": "Square Bookings API",
+      "purpose": "Sync appointment data from operator-consented Square accounts",
+      "key_required": true,
+      "secret_name": "SQUARE_APPLICATION_ID, SQUARE_APPLICATION_SECRET",
+      "status": "BLOCKED — W11-13; requires Supabase Vault",
+      "consumers": ["square-appointments-sync", "square-oauth-callback"]
+    },
+    {
+      "provider": "RSS feeds (18 healthy)",
+      "purpose": "Industry news ingestion for market_signals",
+      "key_required": false,
+      "secret_name": "per-feed via data_feeds.api_key_env_var",
+      "status": "active — 18 healthy, 17 disabled",
+      "consumers": ["ingest-rss", "feed-orchestrator"]
+    }
+  ],
+  "tables_without_hooks": [
+    "feed_dlq",
+    "feed_run_log",
+    "live_data_feeds",
+    "api_registry",
+    "brand_intelligence_report_jobs",
+    "brand_automation_rules",
+    "crm_consent_log",
+    "crm_churn_risk",
+    "sales_signal_attribution",
+    "cms_versions",
+    "block_data_bindings",
+    "market_stats",
+    "square_connections",
+    "square_appointments_cache"
+  ],
+  "unwired_edge_functions": [
+    {
+      "name": "intelligence-briefing",
+      "reason": "No supabase.functions.invoke call found in src/. Intelligence Hub uses useIntelligence.ts direct Supabase instead.",
+      "recommendation": "Wire to /intelligence or formally deprecate. Maps to INTEL-WO-01."
+    },
+    {
+      "name": "refresh-live-data",
+      "reason": "No supabase.functions.invoke call found in src/. live_data_feeds table has no consuming TanStack hook.",
+      "recommendation": "Wire to Admin Hub feeds dashboard or confirm as cron-only."
+    },
+    {
+      "name": "ingest-npi",
+      "reason": "No supabase.functions.invoke call found in src/. NPI verification requires explicit business_id POST body — no frontend trigger path exists.",
+      "recommendation": "Wire to business portal onboarding or settings NPI verification panel. HIGH priority for operator trust."
+    },
+    {
+      "name": "ingest-openfda",
+      "reason": "No supabase.functions.invoke call found in src/ and no pg_cron migration found for this function. Safety signals need ongoing refresh.",
+      "recommendation": "Add pg_cron schedule migration. Optionally add manual trigger in Admin Hub feeds page."
+    }
+  ],
+  "blocked_edge_functions": [
+    {
+      "name": "square-oauth-callback",
+      "block_reason": "W11-13 — tokens must use Supabase Vault before deployment"
+    },
+    {
+      "name": "square-appointments-sync",
+      "block_reason": "W11-13 — tokens must use Supabase Vault before deployment"
+    }
+  ],
+  "duplicate_webhook_handlers": [
+    {
+      "functions": ["stripe-webhook", "subscription-webhook"],
+      "risk": "Both handle Stripe subscription lifecycle events and write to subscriptions + user_profiles. If both registered in Stripe Dashboard, double-write on same event is possible.",
+      "recommendation": "Audit Stripe Dashboard Webhook registrations. Consolidate to one handler."
+    }
+  ],
+  "hook_duplicates": [
+    {"area": "shop orders", "hooks": ["src/lib/shop/useOrders.ts", "src/lib/useShopOrders.ts"]},
+    {"area": "shop products", "hooks": ["src/lib/shop/useProducts.ts", "src/lib/useShopProducts.ts"]},
+    {"area": "shop cart", "hooks": ["src/lib/shop/useShopCart.ts", "src/lib/useShopCart.ts"]},
+    {"area": "certificates", "hooks": ["src/lib/education/useCertificates.ts", "src/lib/useCertificates.ts"]},
+    {"area": "courses", "hooks": ["src/lib/education/useCourses.ts", "src/lib/useCourses.ts"]},
+    {"area": "campaigns", "hooks": ["src/lib/campaigns/useCampaigns.ts", "src/lib/useCampaigns.ts"]},
+    {"area": "wishlist", "hooks": ["src/lib/shop/useWishlist.ts", "src/lib/useWishlist.ts"]}
+  ],
+  "raw_useeffect_violations_in_lib": [],
+  "raw_useeffect_violations_notes": "useEnrichment.ts useEffect calls scheduleEnrichment() (not supabase.from() directly). The supabase.from() calls on lines 91-93 are inside a useQuery queryFn — fully compliant. useIngredients/useIngredientSearch useEffects are debounce timers only. useIntelligence/useSubscription/useShopCart useEffects are Realtime channel subscriptions — acceptable pattern. Net confirmed violations in lib/: 0.",
+  "raw_useeffect_violations_in_pages": [
+    "src/pages/sales/OpportunityFinder.tsx:77 — market_signals direct read (bypasses tier gate)",
+    "src/pages/education/CECreditDashboard.tsx:80 — market_signals direct read (bypasses tier gate)",
+    "src/pages/brand/Products.tsx:110-566 — product_pricing, pro_products, retail_products direct CRUD",
+    "src/pages/brand/Dashboard.tsx:174-192 — orders, pro_products, brands direct reads",
+    "src/pages/brand/IntelligenceReport.tsx:321-393 — brands, market_signals, brand_intelligence_report_jobs direct",
+    "src/pages/brand/Messages.tsx:167-256 — conversations, messages, user_profiles direct",
+    "src/pages/sales/ProposalView.tsx:43-65 — proposals direct (useProposals hook exists but not used here)",
+    "392 total instances across 100+ files — admin pages lower priority; brand/business pages P1; tier-bypass reads P0"
+  ],
+  "realtime_subscriptions": [
+    {"channel": "intelligence-hub-signals", "table": "market_signals", "consumer": "src/lib/intelligence/useIntelligence.ts:215"},
+    {"channel": "admin-intelligence-realtime", "table": "market_signals", "consumer": "src/lib/intelligence/useAdminIntelligence.ts:153"},
+    {"channel": "subscription-changes", "table": "subscriptions", "consumer": "src/lib/useSubscription.ts:69"},
+    {"channel": "module_access_{accountId}", "table": "account_module_access", "consumer": "src/modules/_core/context/ModuleAccessContext.tsx:77"},
+    {"channel": "brand-thread-{id}", "table": "messages", "consumer": "src/pages/brand/Messages.tsx:269"}
+  ],
+  "database_types_drift": {
+    "status": "OPEN — P0-5",
+    "description": "database.types.ts covers ~116 tables; 165+ migrations exist. New tables (feed_dlq, feed_run_log, crm_consent_log, signal_alerts, etc.) are untyped.",
+    "fix": "Run: supabase gen types typescript --project-id <id> > src/lib/database.types.ts"
+  },
+  "overall": "FAIL",
+  "failures": [
+    "GAP-01: intelligence-briefing edge function deployed but no frontend wiring (no invoke found in src/)",
+    "GAP-02: refresh-live-data edge function deployed but no frontend wiring and no confirmed cron",
+    "GAP-03: ingest-npi deployed but no frontend trigger — operators cannot trigger NPI verification",
+    "GAP-04: ingest-openfda deployed but no pg_cron schedule and no frontend trigger — safety signals not refreshing automatically",
+    "GAP-05: stripe-webhook and subscription-webhook are potential duplicate handlers — double-write risk on subscription events",
+    "GAP-06: 14 tables have no consuming TanStack hook (feed_dlq, feed_run_log, live_data_feeds, api_registry, brand_intelligence_report_jobs, brand_automation_rules, crm_consent_log, crm_churn_risk, sales_signal_attribution, cms_versions, block_data_bindings, market_stats, square_connections, square_appointments_cache)",
+    "GAP-07: 392 raw supabase.from() calls in pages/ — 2 confirmed tier-bypass reads (OpportunityFinder:77 market_signals, CECreditDashboard:80 market_signals); 100+ files need migration to TanStack hooks",
+    "GAP-08: 7 stub hooks with useQuery:0 (useSignalModules, useProtocols, useSignalCategories, useEducation, useEnrollments, useSalesPlaybooks, useShopOrders, useShopProducts, useShopReviews)",
+    "DEBT-P0-5: database.types.ts drift — ~116 tables typed vs 165+ migrations",
+    "DEBT-HOOKS: 7 duplicate hook pairs in src/lib/ — consolidation required (hook-consolidator skill)"
+  ],
+  "corrections_vs_v1": [
+    "CORRECTED: useEnrichment.ts was incorrectly flagged as raw useEffect + supabase.from() — the supabase.from() calls are inside a useQuery queryFn. Net lib/ violations = 0.",
+    "CORRECTED: edge_functions_total was 35 in v1 — actual count is 34 (test-api-connection was listed twice in prior inventory).",
+    "ADDED: 392 raw supabase.from() in pages/ — this is a large wiring gap not captured in v1.",
+    "CLARIFIED: Square functions are BLOCKED (not merely unwired) — W11-13 gate."
+  ]
+}

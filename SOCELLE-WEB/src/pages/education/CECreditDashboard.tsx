@@ -18,13 +18,12 @@ import {
   Sparkles,
   ArrowUpRight,
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useCECredits, type CECreditEntry } from '../../lib/education/useCECredits';
 import { useAuth } from '../../lib/auth';
-import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { exportToCSV } from '../../lib/csvExport';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 const CATEGORY_LABELS: Record<string, string> = {
   treatment_protocols: 'Treatment Protocols',
@@ -68,25 +67,7 @@ interface TrendingSignal {
   magnitude: number;
   direction: 'up' | 'down' | 'stable';
   signal_key: string;
-  category: string | null;
-}
-
-function useTrendingSignals() {
-  return useQuery<TrendingSignal[]>({
-    queryKey: ['education_trending_signals'],
-    queryFn: async () => {
-      if (!isSupabaseConfigured) return [];
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('id, title, magnitude, direction, signal_key, category')
-        .eq('direction', 'up')
-        .order('magnitude', { ascending: false })
-        .limit(6);
-      if (error) throw error;
-      return (data ?? []) as TrendingSignal[];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  category: string | null | undefined;
 }
 
 function matchSignalToCourse(signal: TrendingSignal): { course: string; path: string } | null {
@@ -101,7 +82,12 @@ function matchSignalToCourse(signal: TrendingSignal): { course: string; path: st
 export default function CECreditDashboard() {
   const { user } = useAuth();
   const { summary, allCredits, loading, error, isLive } = useCECredits();
-  const { data: trendingSignals = [] } = useTrendingSignals();
+  const { signals: allSignals } = useIntelligence({ limit: 6 });
+  // Use tier-gated signals (direction='up', sorted by magnitude) for course recommendations
+  const trendingSignals: TrendingSignal[] = allSignals
+    .filter(s => s.direction === 'up')
+    .sort((a, b) => b.magnitude - a.magnitude)
+    .slice(0, 6);
 
   const recommendations = trendingSignals
     .map(sig => ({ signal: sig, rec: matchSignalToCourse(sig) }))
