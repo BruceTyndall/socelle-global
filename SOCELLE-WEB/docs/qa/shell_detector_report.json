@@ -1,19 +1,19 @@
 {
-  "scan_date": "2026-03-09T21:26:38.950Z",
+  "scan_date": "2026-03-10T03:51:39.164Z",
   "summary": {
-    "total": 272,
-    "scored": 250,
+    "total": 276,
+    "scored": 254,
     "exempt": 22,
-    "live": 176,
+    "live": 181,
     "demo": 56,
-    "shell": 18,
-    "shell_rate": "7.2"
+    "shell": 17,
+    "shell_rate": "6.7"
   },
   "by_hub": {
     "admin": {
-      "live": 62,
+      "live": 63,
       "demo": 10,
-      "shell": 5,
+      "shell": 4,
       "exempt": 1,
       "pages": [
         {
@@ -298,8 +298,8 @@
         },
         {
           "file": "src/pages/admin/IntelligenceDashboard.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "LIVE",
+          "feature_score": 6
         },
         {
           "file": "src/pages/admin/JobsHub.tsx",
@@ -542,7 +542,7 @@
       ]
     },
     "business": {
-      "live": 43,
+      "live": 46,
       "demo": 20,
       "shell": 6,
       "exempt": 5,
@@ -610,7 +610,7 @@
         {
           "file": "src/pages/business/CECredits.tsx",
           "classification": "SHELL",
-          "feature_score": 0
+          "feature_score": 4
         },
         {
           "file": "src/pages/business/CampaignDetail.tsx",
@@ -663,6 +663,11 @@
           "feature_score": 4
         },
         {
+          "file": "src/pages/business/CrmConsent.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
+        },
+        {
           "file": "src/pages/business/CrmDashboard.tsx",
           "classification": "LIVE",
           "feature_score": 5
@@ -696,6 +701,11 @@
           "file": "src/pages/business/EditContact.tsx",
           "classification": "LIVE",
           "feature_score": 4
+        },
+        {
+          "file": "src/pages/business/EducationDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 6
         },
         {
           "file": "src/pages/business/IntelligenceHub.tsx",
@@ -776,6 +786,11 @@
           "file": "src/pages/business/PortalHome.tsx",
           "classification": "LIVE",
           "feature_score": 3
+        },
+        {
+          "file": "src/pages/business/ProcurementDashboard.tsx",
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/ProposalEditor.tsx",
@@ -994,7 +1009,7 @@
         {
           "file": "src/pages/education/QuizPlayer.tsx",
           "classification": "SHELL",
-          "feature_score": 1
+          "feature_score": 2
         },
         {
           "file": "src/pages/education/ScormPlayer.tsx",
@@ -1067,7 +1082,7 @@
       ]
     },
     "public": {
-      "live": 32,
+      "live": 33,
       "demo": 14,
       "shell": 3,
       "exempt": 14,
@@ -1170,12 +1185,12 @@
         {
           "file": "src/pages/public/ForMedspas.tsx",
           "classification": "LIVE",
-          "feature_score": 2
+          "feature_score": 3
         },
         {
           "file": "src/pages/public/ForSalons.tsx",
           "classification": "LIVE",
-          "feature_score": 2
+          "feature_score": 3
         },
         {
           "file": "src/pages/public/ForgotPassword.tsx",
@@ -1236,6 +1251,11 @@
           "file": "src/pages/public/IntelligenceCommerce.tsx",
           "classification": "LIVE",
           "feature_score": 3
+        },
+        {
+          "file": "src/pages/public/IntelligenceHome.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/public/JobDetail.tsx",
@@ -1423,7 +1443,7 @@
         {
           "file": "src/pages/sales/ProposalBuilder.tsx",
           "classification": "SHELL",
-          "feature_score": 1
+          "feature_score": 4
         },
         {
           "file": "src/pages/sales/ProposalView.tsx",
@@ -2336,17 +2356,17 @@
       "file": "src/pages/admin/IntelligenceDashboard.tsx",
       "hub": "admin",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 6
     },
     {
       "file": "src/pages/admin/JobsHub.tsx",
@@ -3268,13 +3288,13 @@
       "features": {
         "live_data": false,
         "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
         "crud": false,
-        "export": false
+        "export": true
       },
-      "feature_score": 0
+      "feature_score": 4
     },
     {
       "file": "src/pages/business/CampaignDetail.tsx",
@@ -3437,6 +3457,22 @@
       "feature_score": 4
     },
     {
+      "file": "src/pages/business/CrmConsent.tsx",
+      "hub": "business",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 6
+    },
+    {
       "file": "src/pages/business/CrmDashboard.tsx",
       "hub": "business",
       "page_type": "content",
@@ -3547,6 +3583,22 @@
         "export": false
       },
       "feature_score": 4
+    },
+    {
+      "file": "src/pages/business/EducationDashboard.tsx",
+      "hub": "business",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 6
     },
     {
       "file": "src/pages/business/IntelligenceHub.tsx",
@@ -3795,6 +3847,22 @@
         "export": false
       },
       "feature_score": 3
+    },
+    {
+      "file": "src/pages/business/ProcurementDashboard.tsx",
+      "hub": "business",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": true
+      },
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/ProposalEditor.tsx",
@@ -4380,13 +4448,13 @@
       "features": {
         "live_data": false,
         "demo_labeled": false,
-        "empty_state": false,
+        "empty_state": true,
         "error_state": false,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/education/ScormPlayer.tsx",
@@ -4878,11 +4946,11 @@
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
-        "loading_state": false,
+        "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 3
     },
     {
       "file": "src/pages/public/ForSalons.tsx",
@@ -4894,11 +4962,11 @@
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
-        "loading_state": false,
+        "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 3
     },
     {
       "file": "src/pages/public/ForgotPassword.tsx",
@@ -5083,6 +5151,22 @@
         "export": false
       },
       "feature_score": 3
+    },
+    {
+      "file": "src/pages/public/IntelligenceHome.tsx",
+      "hub": "public",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 4
     },
     {
       "file": "src/pages/public/JobDetail.tsx",
@@ -5564,13 +5648,13 @@
       "features": {
         "live_data": false,
         "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
+        "empty_state": true,
+        "error_state": true,
+        "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 4
     },
     {
       "file": "src/pages/sales/ProposalView.tsx",

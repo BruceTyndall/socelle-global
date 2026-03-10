@@ -1,0 +1,70 @@
+{
+  "step": "0A",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "agent_scope_registry": {
+    "agent_17_present": true,
+    "file": "docs/command/AGENT_SCOPE_REGISTRY.md",
+    "action": "already present",
+    "evidence": "Lines 626-667: Agent #17 — INTELLIGENCE MERCHANDISER fully defined with scope, allowed paths, forbidden paths, assigned skills, and required proofs"
+  },
+  "skills_definition_spec": {
+    "agent_17_row_present": true,
+    "file": "docs/SKILLS_DEFINITION_SPEC.md",
+    "action": "already present",
+    "evidence": "Line 1252: '| **Intelligence Merchandiser** (Agent #17 — added 2026-03-10) | feed-value-ranker, topic-distribution-checker | intelligence-merchandiser (merchandising-audit tool), signal-title-rewriter | 4 |'"
+  },
+  "skill_files": {
+    "intelligence-merchandiser": {
+      "status": "exists",
+      "path": ".claude/skills/intelligence-merchandiser/SKILL.md",
+      "content_verified": true,
+      "rules_count": 12,
+      "has_output_format": true,
+      "has_stop_conditions": true,
+      "has_governance": true
+    },
+    "feed-value-ranker": {
+      "status": "exists",
+      "path": ".claude/skills/feed-value-ranker/SKILL.md",
+      "content_verified": true,
+      "evs_formula_present": true,
+      "has_output_format": true,
+      "has_governance": true
+    },
+    "topic-distribution-checker": {
+      "status": "exists",
+      "path": ".claude/skills/topic-distribution-checker/SKILL.md",
+      "content_verified": true,
+      "rule_reference": "FEED-MERCH-09",
+      "threshold_40pct_defined": true,
+      "has_output_format": true
+    },
+    "signal-title-rewriter": {
+      "status": "exists",
+      "path": ".claude/skills/signal-title-rewriter/SKILL.md",
+      "content_verified": true,
+      "rule_reference": "FEED-MERCH-08",
+      "rewrite_rules_count": 7,
+      "propose_only_no_auto_execute": true,
+      "has_output_format": true
+    }
+  },
+  "agent_scope_registry_summary": {
+    "scope": "Signal ranking algorithm, vertical-to-audience matching, tier visibility curation, editorial title rules, feed source weighting, freshness decay, deduplication editorial logic, What Changed timeline eligibility, paywall moment curation, admin feed display ordering",
+    "hub_ownership": "None — cross-cutting editorial layer",
+    "suite_membership": "data-integrity-suite (member #7)",
+    "allowed_paths": [
+      "SOCELLE-WEB/supabase/functions/feed-orchestrator/index.ts",
+      "SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts",
+      "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts",
+      "SOCELLE-WEB/src/pages/admin/AdminFeedsHub.tsx",
+      "SOCELLE-WEB/supabase/migrations/ (ADD ONLY, merchandising columns only)",
+      "docs/command/ (read only)",
+      "SOCELLE-WEB/docs/build_tracker.md (read only)"
+    ],
+    "double_agent_rule": "Agent #17 may NOT mark any FEED-WO or INTEL-WO DONE until intelligence-merchandiser skill outputs overall: PASS or WARN"
+  },
+  "gate_status": "PASS",
+  "lanes_unblocked": true,
+  "notes": "All checks passed without modification. Agent #17 was fully registered in both AGENT_SCOPE_REGISTRY.md and SKILLS_DEFINITION_SPEC.md prior to this gate run. All 4 skill files (intelligence-merchandiser, feed-value-ranker, topic-distribution-checker, signal-title-rewriter) were already present and content-verified in .claude/skills/. No files needed to be created or modified."
+}
