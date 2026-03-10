@@ -1,0 +1,41 @@
+{
+  "wo_id": "EMBED-01",
+  "timestamp": "2026-03-10T02:30:00.000Z",
+  "function": "generate-embeddings",
+  "version": 1,
+  "status": "ACTIVE",
+  "model": "text-embedding-ada-002",
+  "dimensions": 1536,
+  "migration": "20260313000002_embedding_queue_and_vector_columns",
+  "schema_changes": {
+    "tables_created": ["public.embedding_queue"],
+    "columns_added": {
+      "canonical_protocols": ["embedding vector(1536)", "embedding_updated_at timestamptz"],
+      "retail_products": ["embedding vector(1536)", "embedding_updated_at timestamptz"],
+      "pro_products": ["embedding vector(1536)", "embedding_updated_at timestamptz"]
+    },
+    "indexes_created": [
+      "idx_canonical_protocols_embedding (hnsw cosine)",
+      "idx_retail_products_embedding (hnsw cosine)",
+      "idx_pro_products_embedding (hnsw cosine)",
+      "idx_embedding_queue_status"
+    ]
+  },
+  "backfill": {
+    "batch_1": { "processed": 50, "errors": 0 },
+    "batch_2": { "processed": 12, "errors": 0 },
+    "total_processed": 62,
+    "total_errors": 0
+  },
+  "verification": {
+    "queue_done": 62,
+    "queue_pending": 0,
+    "queue_error": 0,
+    "retail_products_embedded": 35,
+    "pro_products_embedded": 27,
+    "canonical_protocols_embedded": 0,
+    "protocols_note": "canonical_protocols table has 0 rows — nothing to embed yet. Embeddings will auto-queue when protocols are seeded."
+  },
+  "overall": "PASS",
+  "notes": "All 62 products (35 retail + 27 pro) now have 1536-dim vector embeddings. Protocol Mapping AI tool is now semantically aware for product similarity. ingredient-search gains vector-backed relevance. HNSW indexes enable sub-millisecond cosine similarity queries."
+}
