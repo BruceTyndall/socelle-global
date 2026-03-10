@@ -1175,35 +1175,70 @@ The following skills are referenced above but do not yet exist in `/.claude/skil
 
 ---
 
-## §6 — VERIFICATION PROTOCOL
+## §6 — VERIFICATION PROTOCOL (PATCH 4 — canonical standard)
 
-Every WO follows this exact protocol before Team 0 marks it DONE:
+Every WO follows this exact protocol before Team 0 marks it DONE.
+
+### 6.1 — Required Proof Pack JSON Schema
+
+Every WO proof pack MUST be saved at the exact path `docs/qa/verify_<WO_ID>.json` and contain ALL of the following fields:
 
 ```json
 {
-  "wo_id": "WO-ID",
-  "timestamp": "ISO-8601",
-  "team": "Team 0-5",
-  "skills_run": ["skill-name"],
+  "wo_id": "EXACT-WO-ID-FROM-THIS-DOC",
+  "timestamp": "2026-03-10T00:00:00.000Z",
+  "team": "Team 1|2|3|4|5",
+  "skills_run": ["skill-name-1", "skill-name-2"],
   "results": {
-    "skill-name": {
-      "status": "PASS|FAIL",
+    "skill-name-1": {
+      "status": "PASS|FAIL|WARN",
       "failures": [],
-      "evidence": "grep output / SQL result / build log excerpt"
+      "evidence": "exact grep output / SQL result / build log line — no summaries"
+    },
+    "skill-name-2": {
+      "status": "PASS|FAIL|WARN",
+      "failures": [],
+      "evidence": "..."
     }
   },
-  "commit_sha": "abc1234",
+  "acceptance_tests": {
+    "test_name_1": { "status": "PASS|FAIL", "evidence": "..." },
+    "test_name_2": { "status": "PASS|FAIL", "evidence": "..." }
+  },
+  "commit_sha": "7-char SHA of the commit that implemented this WO",
   "tsc_exit_code": 0,
   "build_exit_code": 0,
+  "banned_terms_scan": "PASS",
   "overall": "PASS|FAIL"
 }
 ```
 
-**Prohibited patterns (STOP CONDITIONS — §9 CLAUDE.md):**
-- Writing PASS without a proof JSON in docs/qa/
-- Narrowing scope to avoid a failure ("scoped to portals")
-- Fabricating SQL results (prior session violation — addressed)
-- Marking DONE without tsc=0
+**Fields that cannot be omitted:**
+- `wo_id` — must match WO ID exactly
+- `skills_run` — must list every skill from the WO's "Skills Required" section
+- `results` — must have one entry per skill in skills_run
+- `acceptance_tests` — must have one entry per acceptance test bullet in the WO
+- `commit_sha` — the implementing commit SHA (not the doc patch commit)
+- `tsc_exit_code` — must be 0
+- `build_exit_code` — must be 0
+- `overall` — `PASS` only when all skills PASS/WARN and tsc=0 and build=0
+
+### 6.2 — Proof Pack Validation Rules
+
+- `overall: PASS` requires: ALL skills PASS or WARN, tsc_exit_code=0, build_exit_code=0, banned_terms_scan=PASS
+- `overall: FAIL` if ANY skill returns FAIL (even if others pass)
+- `overall: FAIL` if tsc_exit_code ≠ 0
+- `overall: FAIL` if commit_sha is missing or invalid
+- WARN is allowed for MERCH-INTEL-03-FINAL MERCH-06 (insufficient feed volume) and DATA-PRESS-PROOF paid-depth ratio (needs RSS volume time)
+
+### 6.3 — Prohibited Patterns (STOP CONDITIONS per §9 CLAUDE.md)
+
+- Writing `overall: PASS` without running all skills in the WO's Skills Required list
+- Narrowing scope to avoid a failure ("scoped to portals" / "only applies to X")
+- Fabricating SQL results or evidence strings (prior session violation — permanently banned)
+- Marking DONE in build_tracker.md without a proof JSON in docs/qa/
+- `tsc_exit_code` ≠ 0 in a PASS proof pack
+- Missing `acceptance_tests` field — must be present even if empty object
 
 ---
 
