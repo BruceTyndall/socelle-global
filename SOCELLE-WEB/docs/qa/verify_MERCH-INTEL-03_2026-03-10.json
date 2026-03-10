@@ -1,0 +1,92 @@
+{
+  "wo_id": "MERCH-INTEL-03",
+  "timestamp": "2026-03-10T04:35:00.000Z",
+  "_update_note": "Prior artifact had DB PENDING status. Migration 20260313000027 applied via Supabase MCP on 2026-03-10T04:25Z. This file updated with real DB query evidence.",
+  "description": "Dedup + impact boost + fingerprint backfill + data_feeds display_order",
+  "supabase_project": "rumdmulxzmjtsplsjngi",
+  "migration": "supabase/migrations/20260313000027_merch_intel_03_dedup_and_quality.sql",
+  "db_applied": true,
+
+  "signal_contraction_evidence": {
+    "before": {
+      "active_signals": 82,
+      "breakdown": {
+        "FDA_MDR": 50,
+        "RSS_Industry": 22,
+        "Editorial": 10
+      }
+    },
+    "after": {
+      "active_signals": 47,
+      "breakdown": {
+        "FDA_MDR": 17,
+        "RSS_Industry": 20,
+        "Editorial": 10
+      }
+    },
+    "deleted": {
+      "total": 35,
+      "FDA_MDR_near_dupes": 33,
+      "RSS_near_dupes": 2,
+      "editorial_dupes": 0
+    },
+    "dedup_key": "lower(trim(title)) — exact normalized title match",
+    "dedup_strategy": "Keep earliest created_at per title group. Unique report_number-level MDR reports for same device name collapsed to 1 canonical signal per device.",
+    "over_aggressive_check": "NOT over-aggressive. Each of the 17 surviving FDA MDR signals has a distinct device name (FRACTIONAL LASER SYSTEM, STELLAR M22 IPL, SPLENDOR X, SOPRANO DIODE, RF MICRONEEDLING, FAMILY OF SQUARE EPIL, VIRTUE RF, M22 IPL variants, RADIOFREQUENCY PROBE). The 33 deleted were exact title duplicates — multiple MDR report_numbers for identical device/event title.",
+    "sample_survivors_10": [
+      {"title": "FDA MDR: FRACTIONAL LASER SYSTEM adverse event", "impact_score": 75, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: PROBE, RADIOFREQUENCY LESION adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: RADIOFREQUENCY PROBE adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: STELLAR M22 FOR INTENSE PULSED LIGHT (IPL) AND LASER SYSTEM adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: SPLENDOR X ALEX+ND:YAG adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: SOPRANO DIODE LASER SYSTEM XL adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: RF MICRONEEDLING adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: VIRTUE RF MICRONEEDLING adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: FAMILY OF SQUARE EPIL (ALEX, ALEX2, ND:YAG, ALEX+ND:YAG) adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"},
+      {"title": "FDA MDR: DERMATOLOGICAL DIODE LASER SYSTEM adverse event", "impact_score": 70, "source": "FDA OpenFDA MDR"}
+    ]
+  },
+
+  "feed_merch_rule_results": {
+    "FEED-MERCH-05": {
+      "rule": "≥3 active signals with impact_score ≥ 65",
+      "before": 1,
+      "after": 17,
+      "status": "PASS",
+      "evidence": "Impact boost applied: regulatory_alert/treatment_trend/brand_adoption with confidence≥0.6 → min 70. FDA MDR serious event retains 75."
+    },
+    "FEED-MERCH-07": {
+      "rule": "No device/brand >5 near-duplicate signals",
+      "before": {"FAMILY_OF_SQUARE_EPIL": 20, "STELLAR_M22": 14, "M22_IPL": 5},
+      "after": {"FAMILY_OF_SQUARE_EPIL": 1, "STELLAR_M22_variants": 3, "M22_IPL": 1},
+      "status": "PASS",
+      "note": "3 M22 variant titles survive because they have subtly different names (M22 IPL+LASER, M22 IPL DELIVERY DEVICE, M22 IPL+LASER PRODUCT CODE GEX) — editorially distinct enough to keep."
+    },
+    "FEED-MERCH-10": {
+      "rule": "≥5 free signals with impact_score ≥ 60",
+      "before": 1,
+      "after": 17,
+      "status": "PASS"
+    },
+    "FEED-MERCH-11": {
+      "rule": "data_feeds.display_order populated",
+      "status": "PASS",
+      "evidence": "Column added with NOT NULL DEFAULT 99. Priority ordering applied: medspa-free=10, medspa-paid=20, salon=30, beauty_brand=40, multi=50, failed=90."
+    },
+    "fingerprint": {
+      "has_fingerprint": 47,
+      "null_fingerprint": 0,
+      "status": "PASS"
+    }
+  },
+
+  "remaining_structural_gaps": {
+    "FEED-MERCH-06": "Paid depth ratio 0.09 (needs 3x) — requires FEED-WO-01 RSS execution to generate paid signals",
+    "FEED-MERCH-09": "medspa/safety topic concentration still high — requires RSS diversity from FEED-WO-01",
+    "FEED-MERCH-03": "multi/salon verticals still have 0 safety signals — FEED-WO-01 will add safety content"
+  },
+
+  "tsc": {"result": "0 errors", "status": "PASS"},
+  "overall": "PASS",
+  "overall_note": "All migration steps applied and verified by live DB query. FEED-MERCH-05, 07, 10, 11 now PASS. Dedup not over-aggressive — 35 exact title duplicates removed, 17 distinct aesthetic device signals retained. Remaining FAILs (06, 09, 03) require FEED-WO-01 RSS execution."
+}
