@@ -55,6 +55,8 @@ export interface IntelligenceSignal {
   vertical?: string;
   topic?: string;
   tier_min?: string;
+  // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
+  provenance_tier?: number;
 }
 
 export interface MarketPulse {
