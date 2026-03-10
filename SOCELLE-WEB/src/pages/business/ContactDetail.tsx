@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
   ArrowLeft,
@@ -24,6 +24,10 @@ import {
   Globe,
   ShoppingBag,
   RefreshCw,
+  Link2,
+  CheckCircle,
+  AlertCircle,
+  Clock,
 } from 'lucide-react';
 import { useCrmContactDetail, useCrmInteractions, type NewInteraction } from '../../lib/useCrmContacts';
 import { useAppointments } from '../../lib/useBooking';
@@ -82,6 +86,7 @@ export default function ContactDetail() {
   const { id } = useParams<{ id: string }>();
   const { profile } = useAuth();
   const businessId = profile?.business_id;
+  const queryClient = useQueryClient();
   const { contact, tags, loading, isLive, addTag, removeTag } = useCrmContactDetail(id);
   const {
     interactions,
@@ -129,6 +134,18 @@ export default function ContactDetail() {
     text: string;
   } | null>(null);
   const [timelineFilter, setTimelineFilter] = useState<'all' | TimelineSource>('all');
+
+  // ── CRM-WO-07: Link Signal modal state ─────────────────────────────────
+  const [showLinkSignal, setShowLinkSignal] = useState(false);
+  const [signalSearch, setSignalSearch] = useState('');
+  const [linkingSignalId, setLinkingSignalId] = useState<string | null>(null);
+  const [linkSuccess, setLinkSuccess] = useState<string | null>(null);
+  const [linkError, setLinkError] = useState<string | null>(null);
+
+  // ── CRM-WO-09: Schedule follow-up modal state ───────────────────────────
+  const [showScheduleFollowUp, setShowScheduleFollowUp] = useState(false);
+  const [followUpTask, setFollowUpTask] = useState({ title: '', due_date: '', notes: '' });
+  const [scheduleSubmitting, setScheduleSubmitting] = useState(false);
 
   const contactAppts = useMemo(() =>
     appointments.filter(a => a.contact_id === id), [appointments, id]
@@ -375,6 +392,109 @@ export default function ContactDetail() {
     },
     enabled: !!id && tab === 'Intelligence',
   });
+
+  /* ── CRM-WO-07: Signal search for Link Signal modal ──────────────────── */
+  const { data: searchableSignals = [] } = useQuery({
+    queryKey: ['crm_signal_search', signalSearch],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('market_signals')
+        .select('id, title, description, category, direction, magnitude, updated_at')
+        .order('magnitude', { ascending: false })
+        .limit(50);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as RelevantSignal[];
+    },
+    enabled: showLinkSignal,
+  });
+
+  const filteredSearchSignals = useMemo(() => {
+    if (!signalSearch.trim()) return searchableSignals.slice(0, 10);
+    const q = signalSearch.toLowerCase();
+    return searchableSignals
+      .filter(s => s.title.toLowerCase().includes(q) || (s.category ?? '').toLowerCase().includes(q))
+      .slice(0, 10);
+  }, [searchableSignals, signalSearch]);
+
+  const handleLinkSignal = async (signal: RelevantSignal) => {
+    if (!id || !businessId) return;
+    setLinkingSignalId(signal.id);
+    setLinkError(null);
+    try {
+      const payload: NewInteraction = {
+        contact_id: id,
+        business_id: businessId,
+        type: 'signal_link',
+        subject: signal.title,
+        notes: `Market signal linked: ${signal.title}. Category: ${signal.category ?? 'General'}. Direction: ${signal.direction}.`,
+      };
+      await addInteraction(payload);
+      // Invalidate interactions so Timeline updates
+      await queryClient.invalidateQueries({ queryKey: ['crm_interactions', id] });
+      setLinkSuccess(signal.title);
+      setTimeout(() => {
+        setLinkSuccess(null);
+        setShowLinkSignal(false);
+        setSignalSearch('');
+        setLinkingSignalId(null);
+      }, 1800);
+    } catch (err) {
+      setLinkError(err instanceof Error ? err.message : 'Failed to link signal.');
+    } finally {
+      if (!linkSuccess) setLinkingSignalId(null);
+    }
+  };
+
+  /* ── CRM-WO-09: Days since last visit + schedule follow-up ───────────── */
+  const daysSinceLastVisit = useMemo(() => {
+    // Use last_visit_at (rebooking col) from contact if available, else fall back to last_visit_date or last appointment
+    const lastVisitSource = (contact?.last_visit_at) ?? contact?.last_visit_date;
+    if (!lastVisitSource) {
+      // Fall back to latest appointment
+      if (pastAppts.length > 0) {
+        const latest = pastAppts.reduce((a, b) =>
+          new Date(a.start_time) > new Date(b.start_time) ? a : b,
+        );
+        return Math.floor((Date.now() - new Date(latest.start_time).getTime()) / (1000 * 60 * 60 * 24));
+      }
+      return null;
+    }
+    return Math.floor((Date.now() - new Date(lastVisitSource).getTime()) / (1000 * 60 * 60 * 24));
+  }, [contact, pastAppts]);
+
+  const churnRiskScore: number = contact?.churn_risk_score ?? 0;
+
+  const churnRiskColor = churnRiskScore <= 33
+    ? 'text-signal-up'
+    : churnRiskScore <= 66
+    ? 'text-signal-warn'
+    : 'text-signal-down';
+
+  const churnRiskBg = churnRiskScore <= 33
+    ? 'bg-signal-up'
+    : churnRiskScore <= 66
+    ? 'bg-signal-warn'
+    : 'bg-signal-down';
+
+  const handleScheduleFollowUp = async () => {
+    if (!businessId || !id || !followUpTask.title) return;
+    setScheduleSubmitting(true);
+    try {
+      await createTask({
+        business_id: businessId,
+        contact_id: id,
+        title: followUpTask.title,
+        description: followUpTask.notes || undefined,
+        due_date: followUpTask.due_date || undefined,
+        priority: churnRiskScore >= 67 ? 'high' : 'medium',
+        status: 'open',
+      });
+      setShowScheduleFollowUp(false);
+      setFollowUpTask({ title: '', due_date: '', notes: '' });
+    } finally {
+      setScheduleSubmitting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -967,12 +1087,151 @@ export default function ContactDetail() {
           </div>
 
           {/* Relevant Market Signals */}
+          {/* ── CRM-WO-09: Rebooking Risk Panel ───────────────────────── */}
+          <div className={`rounded-xl border p-5 ${churnRiskScore >= 67 ? 'border-signal-down/30 bg-signal-down/5' : churnRiskScore >= 34 ? 'border-signal-warn/30 bg-signal-warn/5' : 'border-signal-up/20 bg-white'}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 text-accent" /> Rebooking Risk
+              </h2>
+              <button
+                onClick={() => setShowScheduleFollowUp(true)}
+                className="h-8 px-3 rounded-full bg-accent text-white text-xs font-medium hover:bg-accent-hover transition-colors inline-flex items-center gap-1.5"
+              >
+                <Calendar className="w-3.5 h-3.5" /> Schedule Follow-up
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {/* Churn risk score */}
+              <div className="space-y-1.5">
+                <p className="text-xs text-graphite/50 uppercase tracking-wide">Churn Risk</p>
+                <div className="flex items-end gap-2">
+                  <p className={`text-2xl font-bold ${churnRiskColor}`}>{churnRiskScore}</p>
+                  <p className="text-xs text-graphite/40 mb-1">/100</p>
+                </div>
+                <div className="h-1.5 bg-graphite/10 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${churnRiskBg}`}
+                    style={{ width: `${churnRiskScore}%` }}
+                  />
+                </div>
+                <p className={`text-[10px] font-medium ${churnRiskColor}`}>
+                  {churnRiskScore <= 33 ? 'Low risk' : churnRiskScore <= 66 ? 'Moderate risk' : 'High risk — act now'}
+                </p>
+              </div>
+
+              {/* Days since last visit */}
+              <div className="space-y-1.5">
+                <p className="text-xs text-graphite/50 uppercase tracking-wide">Days Since Last Visit</p>
+                <div className="flex items-end gap-2">
+                  {daysSinceLastVisit !== null ? (
+                    <>
+                      <p className={`text-2xl font-bold ${daysSinceLastVisit > 90 ? 'text-signal-down' : daysSinceLastVisit > 45 ? 'text-signal-warn' : 'text-signal-up'}`}>
+                        {daysSinceLastVisit}
+                      </p>
+                      <p className="text-xs text-graphite/40 mb-1">days</p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-graphite/40 mt-1">No visits recorded</p>
+                  )}
+                </div>
+                {daysSinceLastVisit !== null && (
+                  <p className="text-[10px] text-graphite/50">
+                    {daysSinceLastVisit > 90 ? 'Overdue for rebooking' : daysSinceLastVisit > 45 ? 'Approaching rebooking window' : 'Recently visited'}
+                  </p>
+                )}
+              </div>
+
+              {/* Total visits */}
+              <div className="space-y-1.5">
+                <p className="text-xs text-graphite/50 uppercase tracking-wide">Total Visits</p>
+                <p className="text-2xl font-bold text-graphite">{contact.total_visits}</p>
+                <p className="text-[10px] text-graphite/50">Lifetime appointments</p>
+              </div>
+            </div>
+          </div>
+
+          {/* ── CRM-WO-09: Schedule Follow-up Modal ──────────────────── */}
+          {showScheduleFollowUp && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-graphite/40 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-2xl border border-accent-soft/30 shadow-xl w-full max-w-md p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-graphite flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-accent" /> Schedule Follow-up
+                  </h3>
+                  <button onClick={() => setShowScheduleFollowUp(false)} className="w-7 h-7 rounded-full hover:bg-graphite/10 flex items-center justify-center">
+                    <X className="w-4 h-4 text-graphite/60" />
+                  </button>
+                </div>
+                {churnRiskScore >= 67 && (
+                  <div className="bg-signal-down/10 border border-signal-down/20 rounded-lg p-3 text-xs text-signal-down font-medium flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    High churn risk — this contact needs urgent attention.
+                  </div>
+                )}
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-medium text-graphite/60 block mb-1">Task Title *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Rebooking call for Jane Smith"
+                      value={followUpTask.title}
+                      onChange={e => setFollowUpTask(prev => ({ ...prev, title: e.target.value }))}
+                      className="w-full h-9 px-3 rounded-lg border border-accent-soft/30 text-sm text-graphite placeholder:text-graphite/40 focus:outline-none focus:border-accent/40"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-graphite/60 block mb-1">Due Date</label>
+                    <input
+                      type="date"
+                      value={followUpTask.due_date}
+                      onChange={e => setFollowUpTask(prev => ({ ...prev, due_date: e.target.value }))}
+                      className="w-full h-9 px-3 rounded-lg border border-accent-soft/30 text-sm text-graphite focus:outline-none focus:border-accent/40"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-graphite/60 block mb-1">Notes</label>
+                    <textarea
+                      placeholder="Add context for this follow-up..."
+                      value={followUpTask.notes}
+                      onChange={e => setFollowUpTask(prev => ({ ...prev, notes: e.target.value }))}
+                      className="w-full h-20 px-3 py-2 rounded-lg border border-accent-soft/30 text-sm text-graphite placeholder:text-graphite/40 focus:outline-none focus:border-accent/40 resize-none"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    onClick={() => setShowScheduleFollowUp(false)}
+                    className="flex-1 h-9 rounded-full border border-accent-soft/30 text-sm text-graphite/60 hover:border-accent/30 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleScheduleFollowUp}
+                    disabled={scheduleSubmitting || !followUpTask.title.trim()}
+                    className="flex-1 h-9 rounded-full bg-accent text-white text-sm font-medium hover:bg-accent-hover disabled:opacity-50 transition-colors"
+                  >
+                    {scheduleSubmitting ? 'Creating...' : 'Create Task'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── CRM-WO-07: Relevant Market Signals + Link Signal ────── */}
           <div className="bg-white rounded-xl border border-accent/20 p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-accent" /> Relevant Market Signals
               </h2>
-              <Link to="/portal/intelligence" className="text-xs text-accent hover:text-accent-hover font-medium">View All Signals</Link>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { setShowLinkSignal(true); setSignalSearch(''); setLinkError(null); setLinkSuccess(null); }}
+                  className="h-7 px-3 rounded-full bg-accent/10 text-accent text-[11px] font-medium hover:bg-accent/20 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <Link2 className="w-3 h-3" /> Link Signal
+                </button>
+                <Link to="/portal/intelligence" className="text-xs text-accent hover:text-accent-hover font-medium">View All</Link>
+              </div>
             </div>
             {signalsLoading ? (
               <div className="animate-pulse space-y-3">

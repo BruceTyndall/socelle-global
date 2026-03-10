@@ -31,6 +31,9 @@ export interface CrmContact {
   metadata: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
+  // CRM-WO-09: rebooking risk columns (added by migration 20260310000021)
+  churn_risk_score?: number | null;
+  last_visit_at?: string | null;
 }
 
 export interface CrmContactTag {
