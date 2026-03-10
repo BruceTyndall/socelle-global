@@ -1249,6 +1249,7 @@ SOCELLE operates across 3 divisions with shared platform infrastructure:
 | **SEO/Editorial** | SEO scanner | Doc Gate, banned language, voice, ecommerce guard, asset validator, outreach guard | 7 |
 | **RevOps** | — | Doc Gate, subscription gate, outreach guard | 3 |
 | **Customer Ops** | — | Doc Gate, banned language, voice, outreach guard | 4 |
+| **Intelligence Merchandiser** (Agent #17 — added 2026-03-10) | feed-value-ranker, topic-distribution-checker | intelligence-merchandiser (merchandising-audit tool), signal-title-rewriter | 4 |
 
 ### 7.4 Encoded Preferences Summary
 
