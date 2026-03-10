@@ -264,6 +264,31 @@ SELECT COUNT(*) FROM market_signals WHERE source_domain IS NULL AND created_at >
 - `pg-cron-scheduler-validator` — verifies feed-orchestrator cron schedule active
 - `build-gate` — tsc + build
 
+**Implementation Contract (PATCH 5)**
+Every API ingest path — GNews, Currents, NewsAPI, Reddit — MUST populate ALL of the following fields on every market_signals row. No exceptions. Missing fields = DLQ the item and log why:
+
+| Field | Source | Rule |
+|-------|--------|------|
+| `title` | API response title | Truncate at 500 chars; must not be empty |
+| `source_url` | Article URL | Must be a valid HTTP/HTTPS URL |
+| `source_domain` | Extracted from source_url | Use regex `new URL(source_url).hostname` |
+| `source_name` | API response source name | Use feed attribution_label if API doesn't provide |
+| `published_at` | Article published date | Parse from item.publishedAt OR item.published OR item.created_utc |
+| `fetched_at` | Ingest timestamp | `new Date().toISOString()` at ingest time |
+| `confidence` | Computed from provenance_tier | tier1=0.9, tier2=0.7, tier3=0.5 (Reddit=0.45) |
+| `vertical` | Inherited from data_feeds.vertical | Must not be NULL; default 'all' |
+| `topic` | classifyTopic(title) | Must not be NULL; default 'general' |
+| `fingerprint` | SHA-256(source_url + title) | Dedup: skip INSERT if fingerprint already exists |
+| `thumbnail_url` | API response image/urlToImage | NULL if not provided; do not error |
+| `tier_min` | Inherited from data_feeds.tier_min | Must not be NULL |
+| `status` | Always 'active' on INSERT | Never 'draft' or 'archived' on initial ingest |
+
+**Dedup rule:** Before every INSERT, check `SELECT id FROM market_signals WHERE fingerprint = $fingerprint`. If found → skip (not an error). If not found → INSERT.
+
+**feed_run_log rule:** Every feed-orchestrator run MUST write a feed_run_log row: `{ feed_id, started_at, completed_at, items_fetched, items_inserted, items_skipped_dedup, items_failed, error_message }`.
+
+**DLQ rule:** Any item that fails validation (missing required field, parse error, invalid URL) MUST be written to feed_dlq: `{ feed_id, raw_payload, error_type, error_message, created_at }`. Never silently drop.
+
 **Stop conditions**
 - Reddit OAuth2 fails → log to feed_dlq, mark feed health_status=degraded, do not block other feeds
 - GNews/Currents returns 429 rate limit → set poll_interval_minutes=1440, log, continue
