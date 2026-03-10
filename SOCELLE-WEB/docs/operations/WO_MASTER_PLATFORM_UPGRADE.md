@@ -841,18 +841,46 @@ Owner can add, remove, reorder, and configure blocks on any CMS-backed page with
 **Owner goal / KPI**
 Single proof artifact confirming Intelligence Hub has reached DATA density + PRESS credibility + VALUE per session targets. This is the gate before marking the OVERDRIVE sprint complete.
 
-**Exact requirements**
-Generate `docs/qa/verify_DATA_PRESS_VALUE.json` containing:
-1. Feed counts by vertical/category/tier_min
-2. Last 24h signal volume (total + by source layer)
-3. Source layer coverage: all 5 layers must be represented (trade press, associations/regulators, academic/clinical, operator/business ops, market/pricing)
-4. Topic distribution: confirm no single topic > 40% (MERCH-09 compliance)
-5. Duplicate rate: fingerprint uniqueness rate > 95%
-6. Sample 30 signal headlines with source_name + confidence + freshness + why_it_matters (if populated)
-7. MERCH rules 1–12 status: PASS/WARN/FAIL per rule
-8. story_drafts: count by status (draft/review/approved/published)
-9. Editorial rail status: cms_posts published count + placements active count
-10. Overall PASS/FAIL: PASS only if all 5 source layers present + duplicate rate > 95% + no single topic > 40%
+**Exact requirements (PATCH 9 — all criteria numeric)**
+Generate `docs/qa/verify_DATA_PRESS_VALUE.json` containing — with numeric PASS thresholds:
+
+| Metric | Query | PASS Threshold | WARN Threshold | FAIL |
+|--------|-------|---------------|----------------|------|
+| Total active signals | `SELECT COUNT(*) FROM market_signals WHERE status='active'` | >= 50 | 20-49 | < 20 |
+| Signals last 24h | `SELECT COUNT(*) FROM market_signals WHERE status='active' AND created_at > NOW()-INTERVAL '24h'` | >= 5 | 1-4 | 0 |
+| Signals last 6h (freshness) | `SELECT COUNT(*) FROM market_signals WHERE status='active' AND created_at > NOW()-INTERVAL '6h'` | >= 2 | 1 | 0 |
+| Source layers covered | Count of distinct categories from: trade_pub, association, academic, operator_ops, market_pricing | = 5 | 4 | <= 3 |
+| medspa vertical signals | `SELECT COUNT(*) WHERE vertical='medspa' AND status='active'` | >= 15 | 5-14 | < 5 |
+| salon vertical signals | `SELECT COUNT(*) WHERE vertical='salon' AND status='active'` | >= 10 | 3-9 | < 3 |
+| beauty_brand vertical signals | `SELECT COUNT(*) WHERE vertical='beauty_brand' AND status='active'` | >= 5 | 1-4 | 0 |
+| Max single topic % | `SELECT topic, COUNT(*) * 100.0 / total FROM market_signals GROUP BY topic ORDER BY 2 DESC LIMIT 1` | <= 40% | 41-50% | > 50% |
+| Fingerprint uniqueness rate | `(signals_with_fingerprint / total_active) * 100` | >= 95% | 90-94% | < 90% |
+| Paid-depth ratio | paid_tier_signals / free_tier_signals per vertical per 7-day window | >= 1.0x (WARN if < 3x; FAIL not triggered — needs RSS volume) | < 3.0x | N/A (WARN only) |
+| story_drafts created | `SELECT COUNT(*) FROM story_drafts WHERE status='draft'` | >= 1 | — | 0 |
+| cms_posts published | `SELECT COUNT(*) FROM cms_posts WHERE status='published'` | >= 6 | 1-5 | 0 |
+| Active placements | `SELECT COUNT(*) FROM content_placements WHERE is_active=true` | >= 1 | — | 0 |
+| Avg confidence | `SELECT AVG(confidence) FROM market_signals WHERE status='active'` | >= 0.55 | 0.40-0.54 | < 0.40 |
+
+**Baseline queries (record for % improvement tracking):**
+```sql
+-- Baseline: signals before NEWSAPI-INGEST-01 ran (from verify_INTEL-MEDSPA-01.json: 30 signals)
+-- Record delta: current_total - 30 = improvement
+
+-- Source layer baseline: check which categories are represented
+SELECT category, COUNT(*) as signal_count, AVG(confidence) as avg_conf
+FROM market_signals
+WHERE status = 'active'
+GROUP BY category
+ORDER BY signal_count DESC;
+```
+
+**Overall PASS criteria (ALL must be true):**
+- All 5 source layers present (= 5, not >= 4)
+- Signals last 24h >= 5
+- Max single topic % <= 40%
+- Fingerprint uniqueness rate >= 95%
+- cms_posts published >= 6
+- story_drafts count >= 1
 
 **Files / areas touched**
 - `docs/qa/verify_DATA_PRESS_VALUE.json` (output artifact only)
@@ -860,10 +888,11 @@ Generate `docs/qa/verify_DATA_PRESS_VALUE.json` containing:
 **DB objects:** read-only queries
 
 **Acceptance tests**
-- 5 source layers present: true
-- Topic concentration < 40%: true
-- Duplicate rate > 95%: true
-- story_drafts count > 0: true
+- 5 source layers present: true (FAIL if any missing)
+- Signals last 24h >= 5 (FAIL if < 5)
+- Topic max % <= 40% (FAIL if > 40%)
+- Fingerprint uniqueness >= 95% (FAIL if < 95%)
+- cms_posts published >= 6 (FAIL if < 6)
 
 **Proof pack**
 - File: `docs/qa/verify_DATA_PRESS_VALUE.json` (IS the proof pack)
