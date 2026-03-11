@@ -292,6 +292,38 @@ function extractAttr(xml: string, tag: string, attr: string): string | null {
 }
 
 /**
+ * INTEL-PREMIUM-01: Extract raw content (preserving HTML) from a tag.
+ * Used for content:encoded to capture the full article HTML.
+ */
+function extractRawContent(xml: string, tag: string): string | null {
+  // Try CDATA first (most common for content:encoded)
+  const cdata = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>`, 'i');
+  const cdataMatch = xml.match(cdata);
+  if (cdataMatch?.[1]) return cdataMatch[1].trim();
+
+  // Fallback: plain tag content (with entity decoding but NO HTML stripping)
+  const plain = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const plainMatch = xml.match(plain);
+  if (plainMatch?.[1]) {
+    return plainMatch[1]
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .trim();
+  }
+  return null;
+}
+
+/**
+ * INTEL-PREMIUM-01: Extract first <img src="..."> from HTML content.
+ */
+function extractFirstImgSrc(html: string): string | null {
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1] ?? null;
+}
+
+/**
  * MERCH-INTEL-02 v3: Extracts the canonical article link from an Atom <entry> block.
  * Priority: rel="alternate" → any href without rel="self" → rel="self" → text fallback.
  */
@@ -340,6 +372,10 @@ interface ParsedRssItem {
   link: string | null;
   description: string | null;
   published_at: string | null;
+  // INTEL-PREMIUM-01: full content, image, author extraction
+  content_full: string | null;
+  image_url: string | null;
+  author: string | null;
 }
 
 /**
@@ -366,6 +402,26 @@ function parseAtomEntries(feedXml: string): ParsedRssItem[] {
       extractText(block, 'content') ??
       extractText(block, 'content:encoded');
 
+    // INTEL-PREMIUM-01: full content (HTML preserved, up to 50K chars)
+    const contentFull =
+      extractRawContent(block, 'content:encoded') ??
+      extractRawContent(block, 'content') ??
+      extractRawContent(block, 'summary');
+
+    // INTEL-PREMIUM-01: image extraction (priority order)
+    const imageUrl =
+      extractAttr(block, 'enclosure', 'url') ??
+      extractAttr(block, 'media:content', 'url') ??
+      extractAttr(block, 'media:thumbnail', 'url') ??
+      extractFirstImgSrc(contentFull ?? description ?? '') ??
+      null;
+
+    // INTEL-PREMIUM-01: author extraction
+    const author =
+      extractText(block, 'author') ??
+      extractText(block, 'name') ??
+      null;
+
     const rawDate =
       extractText(block, 'published') ??
       extractText(block, 'updated');
@@ -383,6 +439,9 @@ function parseAtomEntries(feedXml: string): ParsedRssItem[] {
         link: link?.substring(0, 2000) ?? null,
         description: description?.substring(0, 2000) ?? null,
         published_at,
+        content_full: contentFull?.substring(0, 50000) ?? null,
+        image_url: imageUrl,
+        author,
       });
     }
   }
@@ -413,6 +472,25 @@ function parseRss2Entries(feedXml: string): ParsedRssItem[] {
       extractText(block, 'summary') ??
       extractText(block, 'content:encoded');
 
+    // INTEL-PREMIUM-01: full content (HTML preserved, up to 50K chars)
+    const contentFull =
+      extractRawContent(block, 'content:encoded') ??
+      extractRawContent(block, 'description');
+
+    // INTEL-PREMIUM-01: image extraction (priority order)
+    const imageUrl =
+      extractAttr(block, 'enclosure', 'url') ??
+      extractAttr(block, 'media:content', 'url') ??
+      extractAttr(block, 'media:thumbnail', 'url') ??
+      extractFirstImgSrc(contentFull ?? description ?? '') ??
+      null;
+
+    // INTEL-PREMIUM-01: author extraction
+    const author =
+      extractText(block, 'dc:creator') ??
+      extractText(block, 'author') ??
+      null;
+
     const rawDate =
       extractText(block, 'pubDate') ??
       extractText(block, 'published') ??
@@ -431,6 +509,9 @@ function parseRss2Entries(feedXml: string): ParsedRssItem[] {
         link: link?.substring(0, 2000) ?? null,
         description: description?.substring(0, 2000) ?? null,
         published_at,
+        content_full: contentFull?.substring(0, 50000) ?? null,
+        image_url: imageUrl,
+        author,
       });
     }
   }
@@ -539,6 +620,22 @@ async function processRssFeed(
       topic,
       tier_min: signalTierMin,
       impact_score: impactScore,
+      // INTEL-PREMIUM-01: full content, images, metadata
+      hero_image_url: item.image_url,
+      image_urls: item.image_url ? [item.image_url] : [],
+      article_html: item.content_full?.substring(0, 50000) ?? null,
+      article_body: item.content_full
+        ? item.content_full.replace(/<[^>]+>/g, '').substring(0, 20000)
+        : null,
+      word_count: item.content_full
+        ? item.content_full.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length
+        : 0,
+      reading_time_minutes: item.content_full
+        ? Math.max(1, Math.ceil(item.content_full.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length / 200))
+        : 0,
+      author: item.author,
+      published_at: item.published_at,
+      is_enriched: false,
     };
   });
 
@@ -677,6 +774,17 @@ async function processApiFeed(
       topic,
       tier_min: signalTierMin,
       impact_score: impactScore,
+      // INTEL-PREMIUM-01: images, content metadata
+      hero_image_url: item.image || item.image_url || item.thumbnail || item.urlToImage || null,
+      image_urls: (item.image || item.image_url || item.thumbnail || item.urlToImage)
+        ? [String(item.image || item.image_url || item.thumbnail || item.urlToImage)]
+        : [],
+      article_body: String(description).substring(0, 20000),
+      word_count: String(description).split(/\s+/).filter(Boolean).length,
+      reading_time_minutes: Math.max(1, Math.ceil(String(description).split(/\s+/).filter(Boolean).length / 200)),
+      author: item.author || item.creator || null,
+      published_at: publishedAt ? new Date(String(publishedAt)).toISOString() : null,
+      is_enriched: false,
     };
   });
 

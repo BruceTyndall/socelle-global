@@ -57,6 +57,24 @@ export interface IntelligenceSignal {
   tier_min?: string;
   // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
   provenance_tier?: number;
+  // INTEL-PREMIUM-01: full article content, images, segmentation, quality scoring
+  article_body?: string;
+  article_html?: string;
+  hero_image_url?: string;
+  image_urls?: string[];
+  content_segment?: string;
+  topic_tags?: string[];
+  reading_time_minutes?: number;
+  word_count?: number;
+  quality_score?: number;
+  is_enriched?: boolean;
+  enriched_at?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  author?: string;
+  published_at?: string;
+  geo_source?: string;
 }
 
 export interface MarketPulse {
