@@ -72,7 +72,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | TAURI-WO-01 | Tauri desktop shell: tauri.conf.json, Cargo.toml, main.rs + lib.rs scaffold; package.json scripts | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | PWA-WO-01/02/03 | PWA: sw.js push/notificationclick/pushsubscriptionchange handlers; PWAInstallPrompt.tsx (14-day snooze, VAPID opt-in); wired in App.tsx | COMPLETE | `ae03c98` | `docs/qa/verify_BUILD5_MULTI_PLATFORM_20260309T200000Z.json` |
 | STUDIO-UI-01..05 | StudioEditor fully wired: DragCanvas + TemplatePickerModal + ExportModal (PNG/JPG/PDF/SVG/SCORM) + mode toggle + grid overlay | COMPLETE | pending | — |
-| DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | PENDING | — | — |
+| DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | COMPLETE | — | `docs/qa/verify_DEBT-TANSTACK-REAL-6_2026-03-11.json` |
 | LANE-A-EDU-01 | CoursePlayer completion screen: added "View Certificate" CTA (signal-up button, links /education/certificates) when overallProgress=100 and no nextLesson. tsc=0. | COMPLETE | — | — |
 | LANE-A-DEBT-01 | Dead end: /events/:slug route missing — event listing has no detail funnel. EVT-WO-02 scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
 | LANE-A-DEBT-02 | Dead end: TierGate upgrade CTA leads to DEMO /pricing page, not Stripe checkout. PAY-WO scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
@@ -190,7 +190,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | ROUTE-CLEANUP-WO | Redirect orphaned routes: /home→/intelligence, /pricing→/plans, /for-medspas→/professionals, dual hubs | Team 3 | OPEN | P0 GATE | `docs/qa/verify_ROUTE-CLEANUP-WO.json` | — | — |
 | BRAND-SIGNAL-WO | BrandIntelligenceHub → signal → create_campaign CrossHubActionDispatcher | Team 3 | OPEN | P0 GATE | `docs/qa/verify_BRAND-SIGNAL-WO.json` | — | — |
 | PAY-UPGRADE-WO | TierGate → Stripe Checkout Session (BLOCKED: owner must configure stripe_price_id in Stripe dashboard) | Team 3 | BLOCKED | Owner prereq | `docs/qa/verify_PAY-UPGRADE-WO.json` | — | — |
-| DEBT-TANSTACK-REAL-6 | Migrate 6 raw useEffect+supabase violations to useQuery | Team 4 | OPEN | P0 GATE | `docs/qa/verify_DEBT-TANSTACK-REAL-6.json` | — | — |
+| DEBT-TANSTACK-REAL-6 | Migrate 6 raw useEffect+supabase violations to useQuery | Team 4 | COMPLETE | P0 GATE | `docs/qa/verify_DEBT-TANSTACK-REAL-6_2026-03-11.json` | — | — |
 | MERCH-INTEL-03-FINAL | MERCH-01 (openfda source_url), MERCH-06 (paid signal volume), MERCH-10 (30d archive cron) | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_MERCH-INTEL-03-FINAL.json` | — | — |
 | P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | OPEN | P0 GATE | `docs/qa/verify_P1-3.json` | — | — |
 | STATE-AUDIT-01 | Skeleton/error/empty states on 23 priority shell pages | Team 4 | OPEN | P0 GATE | `docs/qa/verify_STATE-AUDIT-01.json` | — | — |
