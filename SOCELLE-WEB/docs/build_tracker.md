@@ -133,7 +133,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | EDU-POWER-01 | CE credits + course player states | OPEN | `docs/qa/verify_EDU-POWER-01_*.json` |
 | COMMERCE-POWER-01 | Affiliate compliance + product intelligence | OPEN | `docs/qa/verify_COMMERCE-POWER-01_*.json` |
 | ADMIN-POWER-01 | System health + feeds + audit log dashboard | OPEN | `docs/qa/verify_ADMIN-POWER-01_*.json` |
-| CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | OPEN | `docs/qa/verify_CMS-WO-07_*.json` |
+| CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | COMPLETE | `docs/qa/verify_CMS-WO-07_2026-03-11.json` |
 | SITE-POWER-01 | Route cleanup + persona CTA hierarchy | OPEN | `docs/qa/verify_SITE-POWER-01_*.json` |
 | MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | OPEN | `docs/qa/verify_MOBILE-POWER-01_*.json` |
 

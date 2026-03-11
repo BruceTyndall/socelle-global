@@ -121,6 +121,7 @@ const NAV_GROUPS = [
     label: 'Content',
     items: [
       { path: '/admin/pages', label: 'Pages', icon: FileEdit },
+      { path: '/admin/cms/story-drafts', label: 'Story Drafts', icon: FileText },
       { path: '/admin/blog', label: 'Blog', icon: BookOpen },
       { path: '/admin/media', label: 'Media', icon: Image },
       { path: '/admin/seo', label: 'SEO', icon: Search },
