@@ -8,7 +8,7 @@
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+    'authorization, x-client-info, apikey, content-type, x-request-id',
 };
 
 /** Pre-built CORS preflight response (HTTP 204). */

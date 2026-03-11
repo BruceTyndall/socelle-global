@@ -3,10 +3,11 @@ import {
   MessageCircle, X, Send, Minimize2, Compass, FlaskConical,
   ShoppingBag, BarChart2, LifeBuoy, CheckCircle, Info, AlertCircle,
 } from 'lucide-react';
-import { processQuestion, type ConciergeContext, type ConciergeResponse, type AIProvider } from '../lib/aiConciergeEngine';
+import { processQuestion, type ConciergeContext, type ConciergeResponse } from '../lib/aiConciergeEngine';
 import { getBrandConciergeConfig } from '../lib/platformConfig';
 import { createScopedLogger } from '../lib/logger';
 import type { BudgetProfile, ServiceMenuItem } from '../lib/types';
+import { supabase } from '../lib/supabase';
 
 const log = createScopedLogger('AIConcierge');
 
@@ -150,15 +151,50 @@ export default function AIConcierge({
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [activeMode, setActiveMode] = useState<ConciergeMode>('discovery');
-  const [provider, setProvider] = useState<AIProvider>('claude');
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>('');
+  const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const currentMode = MODES.find((m) => m.key === activeMode) ?? MODES[0];
+  const suggestionsToDisplay = dynamicSuggestions.length > 0 ? dynamicSuggestions : currentMode.suggestions;
   const unreadCount = messages.filter((m) => m.type === 'assistant').length;
+
+  useEffect(() => {
+    // Fetch user context for personalized prompts
+    async function loadDynamicPrompts() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('ai_context')
+          .eq('id', user.id)
+          .single();
+          
+        if (profile?.ai_context && Object.keys(profile.ai_context).length > 0) {
+           const contextValues = Object.values(profile.ai_context);
+           // Simple dynamic generation based on facts
+           const dynamic = [
+             `Based on my context (${contextValues[0]}), what do you recommend?`,
+             `Given my preferences, what are the top trends?`,
+             `How can I optimize my business based on my profile?`
+           ].slice(0, 3);
+           setDynamicSuggestions(dynamic);
+        } else {
+           setDynamicSuggestions([]);
+        }
+      } catch (err) {
+        log.warn('Failed to load dynamic prompts', { err });
+      }
+    }
+    if (isOpen) {
+      loadDynamicPrompts();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -169,6 +205,29 @@ export default function AIConcierge({
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen, isMinimized, activeMode]);
+
+  // ── Loading Messaging ─────────────────────────────────────────
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLoading) {
+      const waitMessages = [
+        "Analyzing platform data...",
+        "Scanning protocols...",
+        "Evaluating product matches...",
+        "Synthesizing recommendations...",
+        "Generating intelligence..."
+      ];
+      setLoadingMessage(waitMessages[0]);
+      let index = 1;
+      interval = setInterval(() => {
+        setLoadingMessage(waitMessages[index]);
+        index = (index + 1) % waitMessages.length;
+      }, 2500);
+    } else {
+      setLoadingMessage('');
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   const handleSendMessage = async (questionText?: string) => {
     const question = (questionText ?? inputValue).trim();
@@ -195,7 +254,7 @@ export default function AIConcierge({
         serviceMenu,
       };
 
-      const response = await processQuestion(question, context, provider);
+      const response = await processQuestion(question, context);
 
       setMessages((prev) => [
         ...prev,
@@ -270,9 +329,16 @@ export default function AIConcierge({
     );
   }
 
-  // ── Full panel ─────────────────────────────────────────────────
+  // ── Full panel (Omnipresent Sliding Drawer) ─────────────────────────────────────────────────
   return (
-    <div className="fixed bottom-6 right-6 w-[380px] h-[600px] bg-white rounded-2xl shadow-modal border border-accent-soft flex flex-col z-50 overflow-hidden">
+    <>
+      {/* Backdrop overlay for mobile/focus */}
+      <div 
+        className="fixed inset-0 bg-graphite/20 backdrop-blur-sm z-[90] transition-opacity"
+        onClick={() => setIsOpen(false)}
+      />
+
+      <div className="fixed top-0 right-0 h-full w-full sm:w-[440px] bg-white shadow-2xl flex flex-col z-[100] transform transition-transform duration-300 ease-out border-l border-accent-soft">
 
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="bg-graphite px-4 py-3 flex items-center justify-between flex-shrink-0">
@@ -304,28 +370,6 @@ export default function AIConcierge({
           >
             <X className="w-3.5 h-3.5" />
           </button>
-        </div>
-      </div>
-
-      {/* ── Provider toggle (Claude vs Gemini) ─────────────────────── */}
-      <div className="flex items-center justify-center gap-1 px-3 py-2 bg-accent-soft border-b border-accent-soft flex-shrink-0">
-        <span className="text-[10px] font-sans text-graphite/60 mr-1">AI:</span>
-        <div className="flex rounded-lg bg-white border border-accent-soft p-0.5 shadow-sm">
-          {(['claude', 'gemini'] as const).map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => setProvider(p)}
-              className={`
-                px-3 py-1 text-[11px] font-sans font-medium rounded-md transition-colors
-                ${provider === p
-                  ? 'bg-graphite text-white'
-                  : 'text-graphite/60 hover:text-graphite hover:bg-background'}
-              `}
-            >
-              {p === 'claude' ? 'Claude' : 'Gemini'}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -367,7 +411,7 @@ export default function AIConcierge({
               </p>
             </div>
             <p className="text-[11px] font-sans text-graphite/60 px-1">Try asking:</p>
-            {currentMode.suggestions.map((q) => (
+            {suggestionsToDisplay.map((q) => (
               <button
                 key={q}
                 onClick={() => handleSendMessage(q)}
@@ -441,12 +485,26 @@ export default function AIConcierge({
           </div>
         ))}
 
-        {isLoading && <TypingIndicator />}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-white border border-accent-soft rounded-2xl rounded-bl-sm p-3.5 flex flex-col gap-2">
+              <div className="flex gap-1.5 p-1">
+                <span className="w-1.5 h-1.5 bg-accent/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-1.5 h-1.5 bg-accent/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" />
+              </div>
+              {loadingMessage && (
+                <p className="text-[10px] text-accent font-medium px-1 animate-pulse tracking-wide">
+                  {loadingMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ── Input ────────────────────────────────────────────────── */}
-      <div className="p-3 border-t border-accent-soft bg-white flex-shrink-0">
+      <div className="p-4 border-t border-accent-soft bg-white flex-shrink-0">
         <form
           onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
           className="flex gap-2"
@@ -459,10 +517,10 @@ export default function AIConcierge({
             placeholder={currentMode.placeholder}
             disabled={isLoading}
             className="
-              flex-1 px-3 py-2.5 border border-accent-soft rounded-xl text-sm font-sans
-              text-graphite placeholder-accent-soft bg-background
-              focus:border-graphite focus:ring-2 focus:ring-graphite/10 outline-none
-              disabled:opacity-50 transition-colors
+              flex-1 px-4 py-3 border border-graphite/20 rounded-xl text-sm font-sans
+              text-graphite placeholder-graphite/40 bg-background
+              focus:border-graphite focus:ring-1 focus:ring-graphite outline-none
+              disabled:opacity-50 transition-all
             "
           />
           <button
@@ -470,18 +528,19 @@ export default function AIConcierge({
             disabled={!inputValue.trim() || isLoading}
             aria-label="Send"
             className="
-              w-10 h-10 bg-graphite text-white rounded-xl flex items-center justify-center
-              hover:bg-graphite-dark disabled:bg-accent-soft disabled:cursor-not-allowed
-              transition-colors flex-shrink-0
+              w-12 h-12 bg-graphite text-white rounded-xl flex items-center justify-center
+              hover:bg-graphite-dark disabled:bg-graphite/20 disabled:cursor-not-allowed
+              transition-colors flex-shrink-0 shadow-sm
             "
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-5 h-5" />
           </button>
         </form>
-        <p className="text-[10px] font-sans text-accent-soft text-center mt-2 leading-tight">
+        <p className="text-[10px] font-sans text-graphite/40 text-center mt-3 leading-tight tracking-wide">
           {brandConfig.disclaimer}
         </p>
       </div>
     </div>
+    </>
   );
 }

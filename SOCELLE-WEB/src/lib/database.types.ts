@@ -5873,6 +5873,7 @@ export type Database = {
           role: Database["public"]["Enums"]["user_role"]
           spa_name: string | null
           updated_at: string | null
+          ai_context: Json | null
         }
         Insert: {
           brand_id?: string | null
@@ -5889,6 +5890,7 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
           spa_name?: string | null
           updated_at?: string | null
+          ai_context?: Json | null
         }
         Update: {
           brand_id?: string | null
@@ -5905,6 +5907,7 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
           spa_name?: string | null
           updated_at?: string | null
+          ai_context?: Json | null
         }
         Relationships: [
           {

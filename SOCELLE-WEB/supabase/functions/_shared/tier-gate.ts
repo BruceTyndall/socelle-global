@@ -58,6 +58,8 @@ export async function getUserTier(
   supabaseAdmin: SupabaseClient,
   userId: string,
 ): Promise<string> {
+  if (userId === 'guest') return 'guest';
+
   const { data: profileData } = await supabaseAdmin
     .from('user_profiles')
     .select('subscription_tier')
@@ -76,10 +78,23 @@ export function enforceTierGate(
   userTier: string,
   taskType: string,
 ): Response | null {
-  const normalizedTier = userTier.toLowerCase() as TierName;
-  const requiredTier = getRequiredTier(taskType);
+  const normalizedTier = userTier.toLowerCase();
+  
+  // Special bypass: Guests can ONLY hit the chat_concierge. Anything else is blocked.
+  if (normalizedTier === 'guest') {
+    if (taskType === 'chat_concierge') return null; // allow
+    return jsonResponse(
+      {
+        error: 'Authentication required',
+        code: 'auth_required',
+        message: 'Please log in to use advanced AI features.',
+      },
+      401,
+    );
+  }
 
-  const userRank = TIER_RANK[normalizedTier] ?? 0;
+  const requiredTier = getRequiredTier(taskType);
+  const userRank = TIER_RANK[normalizedTier as TierName] ?? 0;
   const requiredRank = TIER_RANK[requiredTier];
 
   if (userRank < requiredRank) {

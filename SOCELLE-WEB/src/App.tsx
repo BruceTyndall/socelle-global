@@ -16,7 +16,7 @@ import BrandLayout from './layouts/BrandLayout';
 import MarketingLayout from './layouts/MarketingLayout';
 import { PageRenderer } from './components/cms/PageRenderer';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
-import { ShoppingAssistant } from './components/chat/ShoppingAssistant';
+import AIConcierge from './components/AIConcierge';
 
 // ── Dev Tools
 const DevMasterIndex = lazy(() => import('./pages/dev/MasterIndex'));
@@ -1230,7 +1230,7 @@ function App() {
                   } />
                 </Routes>
               </Suspense>
-              <ShoppingAssistant />
+              <AIConcierge contextPage="global" />
             </BrowserRouter>
             </ModuleAccessProvider>
           </AuthProvider>

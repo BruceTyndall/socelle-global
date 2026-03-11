@@ -47,8 +47,10 @@ const INJECTION_PATTERNS = [
 ];
 
 interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: 'user' | 'assistant' | 'system' | 'tool';
   content: string;
+  tool_calls?: any[];
+  tool_call_id?: string;
 }
 
 interface SanitizedInput {
@@ -103,7 +105,7 @@ export function sanitizeInput(body: {
       );
     }
 
-    if (!['user', 'assistant', 'system'].includes(msg.role)) {
+    if (!['user', 'assistant', 'system', 'tool'].includes(msg.role)) {
       return jsonResponse(
         { error: `Invalid message role: "${msg.role}"`, code: 'invalid_input' },
         400,

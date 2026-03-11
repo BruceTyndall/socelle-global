@@ -133,14 +133,9 @@ export function selectMode(question: string, context: ConciergeContext): Intelli
   return 'brand_expert';
 }
 
-/** @deprecated Provider selection is now handled server-side by ai-orchestrator. */
-export type AIProvider = 'claude' | 'gemini';
-
 export async function processQuestion(
   question: string,
-  context: ConciergeContext,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _provider?: AIProvider
+  context: ConciergeContext
 ): Promise<ConciergeResponse> {
   const mode = selectMode(question, context);
 
@@ -160,8 +155,10 @@ export async function processQuestion(
     // the user JWT — no raw fetch, no exposed API keys in the browser).
     // Falls back to rule-based engine if the orchestrator is unavailable.
     let aiAnswer: string | null = null;
+    let requestId = crypto.randomUUID();
+
     try {
-      const { data: orchData, error: orchError } = await supabase.functions.invoke(
+      const invokePromise = supabase.functions.invoke(
         'ai-orchestrator',
         {
           body: {
@@ -173,10 +170,20 @@ export async function processQuestion(
             user_role: context.userRole,
             context_page: context.contextPage,
           },
+          headers: {
+            'x-request-id': requestId
+          }
         },
       );
 
+      const timeoutPromise = new Promise<{data: any, error: any}>((_, reject) => {
+        setTimeout(() => reject(new Error('timeout_12s')), 12000);
+      });
+
+      const { data: orchData, error: orchError } = await Promise.race([invokePromise, timeoutPromise]);
+
       if (orchError) {
+        console.error("Orchestrator invocation error:", orchError);
         const errMsg = orchError.message ?? '';
         // 402 — insufficient credits: return a user-friendly response
         if (errMsg.includes('402') || errMsg.includes('insufficient')) {
@@ -199,14 +206,42 @@ export async function processQuestion(
             mode,
           );
         }
-        // Other orchestrator errors — fall through to rule-based engine
+        // New: Surface orchestrator errors so the user knows it's an AI connection issue, not a data issue
+        return createGuardrailResponse(
+          `AI Orchestrator Error: ${errMsg}. Please ensure the edge function is deployed and API keys are set.`,
+          mode
+        );
+      }
+
+      if (orchData?.error) {
+        console.error("Orchestrator returned 200 but contained backend error:", orchData.error);
+        
+        // Handle known error formats (like credits/tiers) if they still arrive this way
+        if (orchData.error.includes('credit') || orchData.error.includes('balance') || orchData.error.includes('402')) {
+          return createGuardrailResponse(
+            'Your credit balance is too low to use the AI concierge. Please top up your credits at /pricing to continue.',
+            mode,
+          );
+        }
+        
+        return createGuardrailResponse(
+          `AI Orchestrator Execution Error: ${orchData.error}.`,
+          mode
+        );
       }
 
       if (!orchError && orchData?.answer) {
         aiAnswer = orchData.answer as string;
       }
-    } catch {
-      // Orchestrator unavailable — fall through to rule-based engine
+    } catch (err: any) {
+      console.error(`[${requestId}] Failed to invoke ai-orchestrator:`, err);
+      if (err.message === 'timeout_12s') {
+        throw new Error(`Request timed out after 12s. Retry. Request ID: ${requestId}`);
+      }
+      return createGuardrailResponse(
+        `Failed to connect to the AI Orchestrator: ${err.message}.`,
+        mode
+      );
     }
 
     const response = await generateResponse(question, retrievedData, mode, context);
@@ -215,6 +250,8 @@ export async function processQuestion(
     if (aiAnswer) {
       response.directAnswer = aiAnswer;
       response.contextualExplanation = '';
+      response.missingDataFlags = []; // Clear rules-based missing flags since AI might have used web search
+      response.confidenceLevel = 'High';
     }
 
     await logInteraction(question, response, context);

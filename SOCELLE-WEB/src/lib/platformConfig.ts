@@ -121,10 +121,10 @@ export function getBrandConciergeConfig(brandSlug?: string): BrandConciergeConfi
   };
 
   return brandConfigs[brandSlug ?? ''] ?? {
-    displayName: 'Brand Concierge',
-    tagline: 'Your Brand & Product Expert',
-    description: 'I\'m your AI assistant. I can explain products, protocols, budgets, and implementation—all based on verified brand data.',
-    disclaimer: 'Responses based on verified brand data only',
+    displayName: 'Socelle Concierge',
+    tagline: 'Your AI Brand & Growth Expert',
+    description: 'I\'m your governed AI assistant. I can explain products, protocols, budgets, and implementation—all based on verified brand data.',
+    disclaimer: 'Responses based on verified Socelle and brand data only',
     accentColor: '#3b82f6',
     gradientFrom: 'from-graphite',
     gradientTo: 'to-graphite',
