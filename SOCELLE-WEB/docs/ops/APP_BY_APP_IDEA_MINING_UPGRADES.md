@@ -37,6 +37,10 @@
 
 - Impact badge on every signal card (list + detail); "N similar" dedup UI + expand; Today View / Snapshot as default entry; in-card "Take action" row (CrossHubActionDispatcher); sentiment aggregate banner + More filters.
 
+### 1.4b Completed global upgrades
+
+- **INTEL-GLOBAL-01 (2026-03-11):** Global Intelligence Expansion — activated 34 dormant feeds + inserted 49 new global sources across APAC (Korea/Japan/SEA/India/Australia), Europe (UK/France/EU regulatory/journals), AI+Beauty Tech (CosmeticsDesign/arXiv/VentureBeat/FDA), Reddit RSS (8 subreddits), PubMed/Google Trends/FTC. Total enabled feeds ~190. Migration: `20260311043000_global_intelligence_expansion.sql`.
+
 ### 1.5 Upgraded WOs
 
 | WO ID | Scope | Acceptance criteria | Proof pack | Dependencies | Est. effort |

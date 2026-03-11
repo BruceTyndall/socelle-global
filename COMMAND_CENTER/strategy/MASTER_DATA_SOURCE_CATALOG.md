@@ -1,5 +1,5 @@
 # SOCELLE — MASTER DATA SOURCE CATALOG
-Last Updated: 2026-03-06 (Session 37)
+Last Updated: 2026-03-11 (INTEL-GLOBAL-01 — Global Intelligence Expansion)
 Source Authority: `docs/API_COMPLIANCE_RESEARCH.md`, `docs/api_compliance_supplement_20260306.md`, `docs/command/SOCELLE_DATA_PROVENANCE_POLICY.md`, `SOCELLE-WEB/docs/build_tracker.md`
 
 > Every feed listed here routes through the Admin Feed Manager (`/admin/feeds`).
@@ -179,6 +179,129 @@ Source Authority: `docs/API_COMPLIANCE_RESEARCH.md`, `docs/api_compliance_supple
 | 109 | Spa Asia (SEA) | Southeast Asia | LOW |
 | 110 | Canadian Spa Magazine | Canada | LOW |
 
+### 2H-APAC: Asia-Pacific Sources (INTEL-GLOBAL-01 — 12 feeds)
+
+> Added 2026-03-11. All RSS, no API keys needed. Activated via migration `20260311043000_global_intelligence_expansion.sql`.
+
+**South Korea (K-Beauty):**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | Yonhap News Korea (EN) | en.yna.co.kr/RSS/news.xml | Trade pub | Tier 1 | 60m |
+| NEW | Fifty Shades of Snail | fiftyshadesofsnail.com/feed | Social | Tier 3 | 240m |
+| NEW | Snow White Asian Pear | snowwhiteandtheasianpear.com/feed | Social | Tier 3 | 240m |
+| NEW | Fanserviced-B K-Beauty | fanserviced-b.com/feed | Social | Tier 3 | 240m |
+| NEW | Christina Hello K-Beauty | christinahello.com/feed | Social | Tier 3 | 240m |
+
+**Japan (J-Beauty):**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | PMDA Japan Regulatory | pmda.go.jp/rss_008.xml | Regulatory | Tier 1 | 120m |
+| NEW | Tokyo Beauty Book | tokyobeautybook.com/feed | Trade pub | Tier 2 | 240m |
+| NEW | Laura Loukola J-Beauty | lauraloukola.net/blog?format=rss | Social | Tier 3 | 240m |
+
+**Southeast Asia:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | Daily Vanity Singapore | dailyvanity.sg/feed | Trade pub | Tier 2 | 120m |
+| NEW | Beauty Insider Singapore | beautyinsider.sg/feed | Trade pub | Tier 2 | 120m |
+
+**India:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | Skincare Villa India | skincarevilla.com/feed | Social | Tier 3 | 240m |
+
+**Australia:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | Nudie Glow AU Blog | nudieglow.com/blogs/nudieblog.atom | Brand news | Tier 2 | 240m |
+
+### 2H-EU: European Sources (INTEL-GLOBAL-01 — 10 feeds)
+
+> Added 2026-03-11. Covers UK, France, EU regulatory, pan-European journals.
+
+**UK:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | PBL Magazine UK | pblmagazine.co.uk/news?format=rss | Trade pub | Tier 1 | 60m |
+| NEW | Anti-Age Magazine EN | en.anti-age-magazine.com/feed | Trade pub | Tier 1 | 120m |
+| NEW | British Beauty Blogger | britishbeautyblogger.com/feed | Social | Tier 2 | 240m |
+
+**France:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | Premium Beauty News FR | premiumbeautynews.com/spip.php?page=backend | Trade pub | Tier 1 | 60m |
+| NEW | Anti-Age Magazine FR | anti-age-magazine.com/feed | Trade pub | Tier 1 | 120m |
+| NEW | Greentech Cosmetics | greentech.fr/en/feed | Brand news | Tier 2 | 240m |
+
+**EU Regulatory:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | EUR-Lex Cosmetics Reg | eur-lex.europa.eu/RSSF/eu-law-new-acts?locale=en | Regulatory | Tier 1 | 120m |
+
+**Pan-European Journals:**
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | JEADV Dermatology | onlinelibrary.wiley.com/feed/14683083/most-recent | Research | Tier 1 | 240m |
+| NEW | Intl J Cosmetic Science | onlinelibrary.wiley.com/feed/14682494/most-recent | Research | Tier 1 | 240m |
+| NEW | Global Cosmetics News | globalcosmeticsnews.com/feed/ | Trade pub | Tier 1 | 60m |
+
+### 2H-TECH: AI + Beauty Tech Sources (INTEL-GLOBAL-01 — 13 feeds)
+
+> Added 2026-03-11. Includes cosmetics industry, arXiv, VentureBeat, FDA RSS.
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | CosmeticsDesign USA | cosmeticsdesign.com/feed | Trade pub | Tier 1 | 60m |
+| NEW | CosmeticsDesign Europe | cosmeticsdesign-europe.com/feed | Trade pub | Tier 1 | 60m |
+| NEW | BeautyMatter | beautymatter.com/articles/feed | Trade pub | Tier 1 | 120m |
+| NEW | Glossy (Digiday) | glossy.co/feed | Trade pub | Tier 1 | 60m |
+| NEW | in-cosmetics Connect | connect.in-cosmetics.com/feed | Trade pub | Tier 1 | 120m |
+| NEW | arXiv Computer Vision | rss.arxiv.org/rss/cs.CV | Research | Tier 1 | 1440m |
+| NEW | arXiv AI | rss.arxiv.org/rss/cs.AI | Research | Tier 1 | 1440m |
+| NEW | VentureBeat AI | venturebeat.com/category/ai/feed/ | Trade pub | Tier 2 | 120m |
+| NEW | MIT Tech Review AI | technologyreview.com/feed/ | Trade pub | Tier 1 | 120m |
+| NEW | Happi Magazine | happi.com/rss.xml | Trade pub | Tier 1 | 120m |
+| NEW | CIO Dive Enterprise | ciodive.com/feeds/news/ | Trade pub | Tier 2 | 120m |
+| NEW | FDA Press Releases | fda.gov/.../press-releases/rss.xml | Regulatory | Tier 1 | 60m |
+| NEW | FDA MedWatch Safety | fda.gov/.../medwatch-safety-alerts/rss.xml | Regulatory | Tier 1 | 60m |
+
+### 2H-RESEARCH: Academic/Research Sources (INTEL-GLOBAL-01 — 6 feeds)
+
+> Added 2026-03-11. PubMed RSS search feeds + Google Trends + FTC.
+
+| # | Feed | URL | Category | Provenance | Poll |
+|---|------|-----|----------|------------|------|
+| NEW | PubMed Cosmeceuticals | pubmed.ncbi.nlm.nih.gov/rss/search/... | Research | Tier 1 | 720m |
+| NEW | PubMed Botulinum Aesthetic | pubmed.ncbi.nlm.nih.gov/rss/search/... | Research | Tier 1 | 720m |
+| NEW | PubMed AI Dermatology | pubmed.ncbi.nlm.nih.gov/rss/search/... | Research | Tier 1 | 720m |
+| NEW | PubMed Hyaluronic Filler | pubmed.ncbi.nlm.nih.gov/rss/search/... | Research | Tier 1 | 720m |
+| NEW | Google Trends US | trends.google.com/trending/rss?geo=US | Social | Tier 2 | 60m |
+| NEW | FTC Press Releases | ftc.gov/feeds/press-release-consumer-protection.xml | Regulatory | Tier 1 | 240m |
+
+### 2H-SOCIAL: Social Listening — Reddit Expansion (INTEL-GLOBAL-01 — 8 feeds)
+
+> Added 2026-03-11. RSS endpoints, no Reddit API auth needed.
+
+| # | Feed | Subreddit | Category | Provenance | Poll |
+|---|------|-----------|----------|------------|------|
+| NEW | Reddit r/AsianBeauty | /r/AsianBeauty/new.rss | Social | Tier 3 | 60m |
+| NEW | Reddit r/30PlusSkinCare | /r/30PlusSkinCare/new.rss | Social | Tier 3 | 120m |
+| NEW | Reddit r/MakeupAddiction | /r/MakeupAddiction/new.rss | Social | Tier 3 | 120m |
+| NEW | Reddit r/Dermatology | /r/Dermatology/new.rss | Social | Tier 3 | 120m |
+| NEW | Reddit r/PlasticSurgery | /r/PlasticSurgery/new.rss | Social | Tier 3 | 120m |
+| NEW | Reddit r/SkincareScience | /r/SkincareScience/new.rss | Social | Tier 3 | 240m |
+| NEW | Reddit r/BeautyGuruChatter | /r/BeautyGuruChatter/new.rss | Social | Tier 3 | 120m |
+| NEW | Reddit r/Botox | /r/Botox/new.rss | Social | Tier 3 | 120m |
+
 ### 2I: RSS Feeds — Spa Associations / Orgs
 
 | # | Feed | Organization | Priority |
@@ -322,10 +445,11 @@ Source Authority: `docs/API_COMPLIANCE_RESEARCH.md`, `docs/api_compliance_supple
 |----------|-------|------------|----------|
 | 1. Already wired | 16 | — | ✅ Done |
 | 2. Free / open APIs | 104 | NO | 🟢 Wire now |
+| 2-GLOBAL. Global expansion (INTEL-GLOBAL-01) | 49 | NO | ✅ Done |
 | 3. Need API keys | 21 | YES | 🔑 Owner provisions |
 | 4. Booking platforms | 22 | Per-merchant OAuth | 🔴 Last |
 | 5. E-commerce platforms | 5 | Per-merchant OAuth | 🔴 Last |
-| **TOTAL** | **168** | | |
+| **TOTAL** | **217** | | |
 
 ### What You Need To Provision (API Keys)
 
