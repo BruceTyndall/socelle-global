@@ -2,8 +2,9 @@
 
 # SOCELLE — MASTER STATUS DOCUMENT
 **Last Updated:** March 9, 2026 — Session 49 (Ultra Drive completion)
-**Purpose:** Single source of truth for all agents. Replaces PLATFORM_STATUS.md and SOCELLE_MASTER_WORK_ORDER.md for current-state tracking.
-**Authority:** `docs/command/V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md` (V1 wins if conflicts exist)
+**Purpose:** Build health snapshot for all agents. Replaces older PLATFORM_STATUS-style docs for current-state tracking.
+> **NON-EXECUTION DOCUMENT**
+> This is historical/context only. Execution authority is docs/build_tracker.md. Governance is /.claude/CLAUDE.md.
 **Wave Progress:** Waves 1–14 complete. V2-TECH FROZEN. V3 Wave 1.5 complete (CMS pipeline + hub upgrades + Authoring Studio + Admin Health + Media Library).
 
 ---

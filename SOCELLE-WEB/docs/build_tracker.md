@@ -4,6 +4,13 @@ Claude Code updates this at the end of every session
 > **Execution scope is ONLY the WOs within CURRENT_QUEUE_START/END.**
 > All other tables are historical/planning unless explicitly moved into CURRENT_QUEUE.
 > Sources of truth: this file + `docs/qa/verify_*.json`.
+> 
+> **Status Definitions (Active Queue):**
+> - `OPEN`: Available for pickup, blockers cleared (or no blockers).
+> - `IN_PROGRESS`: Currently being worked on by an agent/developer.
+> - `BLOCKED`: Cannot proceed due to unmet dependencies or missing owner input.
+> - `READY_FOR_REVIEW`: Work complete locally, PR open, or QA verification pending.
+> - `COMPLETE`: Merged, verified, and closed. (Synonymous with DONE).
 
 ---
 
@@ -204,6 +211,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | CMS-WO-09 | WordPress-grade blog (scheduled_at, editorial calendar, OG/Twitter cards, schema.org Article, newsletter export, auto-sitemap) | Team 2 | COMPLETE | CMS-WO-08 | `docs/qa/verify_CMS-WO-09_2026-03-11.json` | — | — |
 | CMS-WO-10 | content_placements table + Merchandising Console (owner changes any placement without code deploy) | Team 2 | COMPLETE | CMS-WO-07 | `docs/qa/verify_CMS-WO-10.json` | — | — |
 | CMS-WO-11 | Daily Brief + Weekly Market Memo edge fns + pg_cron → story_drafts (not auto-publish) | Team 2 | OPEN | CMS-WO-07, CMS-WO-10 | `docs/qa/verify_CMS-WO-11.json` | — | — |
+| INTEL-HUB-17 | Merchandising & Dispersion Overhaul: Fix data_feeds and api_registry mapping to market_signals. Update Edge Functions (feed-orchestrator, rss-to-signals, refresh-live-data) to ensure API & RSS dispersion routes correctly to tier_min, topic, and vertical. Add UI guards for edge-case signal types on Intelligence Hub. | Unassigned | READY FOR REVIEW | none | `docs/qa/verify_INTEL-HUB-17.json` | Implement dynamic edge classification | edge+ui |
+
 | CMS-WO-12 | Layout Builder + Block Placement Editing (owner edits any block/layout/grid placement without code deploy) | Team 2 | COMPLETE | CMS-WO-10 | `docs/qa/verify_CMS-WO-12.json` | — | — |
 | DATA-PRESS-PROOF | Proof pack: 5 source layers, topic cap, dup rate, 30 signal sample, MERCH 1–12 | Team 2 | OPEN | NEWSAPI-INGEST-01, CMS-WO-07 | `docs/qa/verify_DATA_PRESS_VALUE.json` | — | — |
 | EVT-WO-02 | /events/:slug EventDetail + registration CTA + related signals | Team 3 | OPEN | P0 GATE | `docs/qa/verify_EVT-WO-02.json` | — | — |

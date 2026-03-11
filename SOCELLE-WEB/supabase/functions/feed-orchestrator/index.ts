@@ -120,43 +120,8 @@ const PROVENANCE_CONFIDENCE: Record<number, number> = {
   3: 0.50, // Aggregated/Derived
 };
 
-// W15-02: Category → signal_type mapping — must use valid signal_type_enum values:
-// product_velocity | treatment_trend | ingredient_momentum | brand_adoption |
-// regional | pricing_benchmark | regulatory_alert | education
-const CATEGORY_SIGNAL_TYPE: Record<string, string> = {
-  trade_pub:     'treatment_trend',
-  brand_news:    'brand_adoption',
-  press_release: 'brand_adoption',
-  association:   'treatment_trend',
-  social:        'treatment_trend',
-  jobs:          'education',
-  events:        'treatment_trend',
-  academic:      'education',
-  government:    'regulatory_alert',
-  ingredients:   'ingredient_momentum',
-  market_data:   'product_velocity',
-  regional:      'regional',
-  regulatory:    'regulatory_alert',
-  supplier:      'ingredient_momentum',
-};
-
-// W15-02: Category → tier_visibility defaults
-const CATEGORY_TIER_VISIBILITY: Record<string, string> = {
-  trade_pub: 'free',
-  brand_news: 'free',
-  press_release: 'free',
-  association: 'free',
-  social: 'free',
-  jobs: 'free',
-  events: 'free',
-  academic: 'pro',
-  government: 'pro',
-  ingredients: 'pro',
-  market_data: 'pro',
-  regional: 'pro',
-  regulatory: 'pro',
-  supplier: 'pro',
-};
+// Categories now dynamically derived via topic heuristics instead of static mapping arrays.
+// This prevents niche signals from getting starved or over-saturated.
 
 // ── INTEL-MEDSPA-01: Classification helpers ───────────────────────────────────
 
@@ -316,11 +281,56 @@ function extractRawContent(xml: string, tag: string): string | null {
 }
 
 /**
- * INTEL-PREMIUM-01: Extract first <img src="..."> from HTML content.
+ * INTEL-HUB-17 (PR3): Extract first <img> src from arbitrary HTML content
  */
 function extractFirstImgSrc(html: string): string | null {
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
   return match?.[1] ?? null;
+}
+
+/**
+ * INTEL-HUB-17 (PR3): Clean and normalize image URLs, rejecting tracking pixels
+ */
+function cleanImageUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const clean = url.trim();
+  if (clean.startsWith('data:image/')) return null;
+  if (/pixel|tracker|1x1|clear\.gif|web-bug/i.test(clean)) return null;
+  
+  if (clean.startsWith('//')) return `https:${clean}`;
+  if (clean.startsWith('http:')) return clean.replace('http:', 'https:');
+  return clean;
+}
+
+/**
+ * INTEL-HUB-17 (PR3): Robustly identify the best available hero image per policy
+ */
+function extractHeroImage(block: string, contentHtml: string | null): string | null {
+  const url =
+    extractAttr(block, 'media:content', 'url') ??
+    extractAttr(block, 'enclosure', 'url') ??
+    extractAttr(block, 'media:thumbnail', 'url') ??
+    extractFirstImgSrc(contentHtml ?? '') ??
+    null;
+
+  return cleanImageUrl(url);
+}
+
+function extractHeroImageFromApi(item: any): string | null {
+  const url = item.image ?? item.image_url ?? item.thumbnail ?? item.urlToImage ?? extractFirstImgSrc(item.content ?? item.description ?? '') ?? null;
+  return cleanImageUrl(url);
+}
+
+/**
+ * INTEL-HUB-17 (PR3): Strip <script> and <iframe> tags to prevent XSS.
+ */
+function sanitizeHtml(html: string | null | undefined): string | null {
+  if (!html) return null;
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    // Also strip inline event handlers (on*="...")
+    .replace(/\s+on[a-z]+=(["'])(.*?)\1/gi, '');
 }
 
 /**
@@ -409,12 +419,7 @@ function parseAtomEntries(feedXml: string): ParsedRssItem[] {
       extractRawContent(block, 'summary');
 
     // INTEL-PREMIUM-01: image extraction (priority order)
-    const imageUrl =
-      extractAttr(block, 'enclosure', 'url') ??
-      extractAttr(block, 'media:content', 'url') ??
-      extractAttr(block, 'media:thumbnail', 'url') ??
-      extractFirstImgSrc(contentFull ?? description ?? '') ??
-      null;
+    const imageUrl = extractHeroImage(block, contentFull ?? description ?? '');
 
     // INTEL-PREMIUM-01: author extraction
     const author =
@@ -478,12 +483,7 @@ function parseRss2Entries(feedXml: string): ParsedRssItem[] {
       extractRawContent(block, 'description');
 
     // INTEL-PREMIUM-01: image extraction (priority order)
-    const imageUrl =
-      extractAttr(block, 'enclosure', 'url') ??
-      extractAttr(block, 'media:content', 'url') ??
-      extractAttr(block, 'media:thumbnail', 'url') ??
-      extractFirstImgSrc(contentFull ?? description ?? '') ??
-      null;
+    const imageUrl = extractHeroImage(block, contentFull ?? description ?? '');
 
     // INTEL-PREMIUM-01: author extraction
     const author =
@@ -582,17 +582,20 @@ async function processRssFeed(
   }
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
-  const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
-  const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
-  const signalVertical = feed.vertical ?? 'multi';
+  
+  // These specific tiers can still respect the feed's override if paid/free is hardcoded, but vertical and type are dynamic.
+  const tierVisibility = feed.tier_min === 'paid' ? 'pro' : 'free';
   const signalTierMin = feed.tier_min ?? 'paid';
 
   const signalRows = items.map((item) => {
     const topic = classifyTopic(item.title, item.description ?? '');
     const impactScore = computeImpactScore(feed, item.published_at, topic);
 
+    const dynamicSignalType = deriveSignalTypeFromTopic(topic, feed.category);
+    const dynamicVertical = deriveVerticalFromTopic(topic, feed.vertical);
+
     return {
-      signal_type: signalType,
+      signal_type: dynamicSignalType,
       signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${item.guid.replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}`,
       title: item.title,
       description: item.description?.substring(0, 500) ?? item.title,
@@ -615,8 +618,8 @@ async function processRssFeed(
       image_url: null,
       is_duplicate: false,
       active: true,
-      // INTEL-MEDSPA-01 classification fields:
-      vertical: signalVertical,
+      // INTEL-MEDSPA-01 classification fields (dynamically routed):
+      vertical: dynamicVertical,
       topic,
       tier_min: signalTierMin,
       impact_score: impactScore,
@@ -724,9 +727,9 @@ async function processApiFeed(
   }
 
   const confidence = PROVENANCE_CONFIDENCE[feed.provenance_tier] ?? 0.70;
-  const signalType = CATEGORY_SIGNAL_TYPE[feed.category] ?? 'industry_news';
-  const tierVisibility = CATEGORY_TIER_VISIBILITY[feed.category] ?? 'free';
-  const signalVertical = feed.vertical ?? 'multi';
+  
+  // These specific tiers can still respect the feed's override if paid/free is hardcoded, but vertical and type are dynamic.
+  const tierVisibility = feed.tier_min === 'paid' ? 'pro' : 'free';
   const signalTierMin = feed.tier_min ?? 'paid';
 
   const signalRows = items.slice(0, 100).map((item: any, idx: number) => {
@@ -745,8 +748,11 @@ async function processApiFeed(
     const topic = classifyTopic(String(title), String(description));
     const impactScore = computeImpactScore(feed, publishedAt ? String(publishedAt) : null, topic);
 
+    const dynamicSignalType = deriveSignalTypeFromTopic(topic, feed.category);
+    const dynamicVertical = deriveVerticalFromTopic(topic, feed.vertical);
+
     return {
-      signal_type: signalType,
+      signal_type: dynamicSignalType,
       signal_key: `feed_${feed.id.replace(/-/g, '').substring(0, 8)}_${String(externalId).replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}`,
       title: String(title).substring(0, 500),
       description: String(description).substring(0, 500),
@@ -769,13 +775,13 @@ async function processApiFeed(
       image_url: item.image || item.image_url || item.thumbnail || null,
       is_duplicate: false,
       active: true,
-      // INTEL-MEDSPA-01 classification fields:
-      vertical: signalVertical,
+      // INTEL-MEDSPA-01 classification fields (dynamically routed):
+      vertical: dynamicVertical,
       topic,
       tier_min: signalTierMin,
       impact_score: impactScore,
       // INTEL-PREMIUM-01: images, content metadata
-      hero_image_url: item.image || item.image_url || item.thumbnail || item.urlToImage || null,
+      hero_image_url: extractHeroImageFromApi(item),
       image_urls: (item.image || item.image_url || item.thumbnail || item.urlToImage)
         ? [String(item.image || item.image_url || item.thumbnail || item.urlToImage)]
         : [],

@@ -229,64 +229,98 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const { data: rawSignals = [], isLoading: loading } = useQuery({
     queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null, options?.contentSegment ?? null],
     queryFn: async () => {
-      let q = supabase
-        .from('market_signals')
-        .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source, fingerprint, is_duplicate'
-        )
-        .eq('active', true)
-        .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
-        // INTEL-PREMIUM-01: quality_score DESC surfaces premium content first,
-        // then provenance authority (tier 1=regulatory > tier 3=trade),
-        // then display_order for editorial overrides, then published_at for freshness.
-        // Decayed impact score re-ranking happens client-side (MERCH-04/05).
-        .order('quality_score', { ascending: false, nullsFirst: false })
-        .order('provenance_tier', { ascending: true })
-        .order('display_order', { ascending: true })
-        .order('published_at', { ascending: false, nullsFirst: false })
-        .order('updated_at', { ascending: false })
-        .limit(options?.limit ?? 50);
+      // Helper function to build the base query without vertical filters
+      const buildBaseQuery = () => {
+        let q = supabase
+          .from('market_signals')
+          .select(
+            'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source, fingerprint, is_duplicate'
+          )
+          .eq('active', true)
+          .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
+          // INTEL-PREMIUM-01: quality_score DESC surfaces premium content first,
+          // then provenance authority (tier 1=regulatory > tier 3=trade),
+          // then display_order for editorial overrides, then published_at for freshness.
+          // Decayed impact score re-ranking happens client-side (MERCH-04/05).
+          .order('quality_score', { ascending: false, nullsFirst: false })
+          .order('provenance_tier', { ascending: true })
+          .order('display_order', { ascending: true })
+          .order('published_at', { ascending: false, nullsFirst: false })
+          .order('updated_at', { ascending: false })
+          .limit(options?.limit ?? 50);
 
-      // INTEL-MEDSPA-01: tier_min gate — free tier sees only free-labelled signals, 14-day window
-      if (effectiveTierMin === 'free') {
-        q = q.eq('tier_min', 'free');
-        const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-        q = q.gte('updated_at', cutoff);
-      }
-      // Paid tier: no tier_min filter, full history
+        // INTEL-MEDSPA-01: tier_min gate — free tier sees only free-labelled signals, 14-day window
+        if (effectiveTierMin === 'free') {
+          q = q.eq('tier_min', 'free');
+          const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+          q = q.gte('updated_at', cutoff);
+        }
 
-      // INTEL-MEDSPA-01: optional vertical filter (also includes 'multi' cross-vertical signals)
+        // INTEL-UI-REMEDIATION-01: Server-side signal_type filter
+        if (options?.signalTypes && options.signalTypes.length > 0) {
+          q = (q as any).in('signal_type', options.signalTypes);
+        }
+
+        // INTEL-PREMIUM-01: Content segment filter
+        if (options?.contentSegment && options.contentSegment !== 'all') {
+          q = q.eq('content_segment', options.contentSegment);
+        }
+
+        // MERCH-10: Timeline eligibility — stricter filter for "What Changed" feed
+        if (options?.timeline) {
+          const cutoff72h = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
+          q = q
+            .gte('impact_score', 60)
+            .gte('updated_at', cutoff72h)
+            .not('topic', 'in', '("other","general")');
+        }
+
+        return q;
+      };
+
+      // PASS 1: Strict Match
+      // INTEL-MEDSPA-01: strict vertical filter (also includes 'multi' cross-vertical signals)
+      let strictQuery = buildBaseQuery();
       if (options?.vertical) {
-        q = (q as any).in('vertical', [options.vertical, 'multi']);
+        strictQuery = (strictQuery as any).in('vertical', [options.vertical, 'multi']);
       }
 
-      // INTEL-UI-REMEDIATION-01: Server-side signal_type filter (category tab → DB filter)
-      if (options?.signalTypes && options.signalTypes.length > 0) {
-        q = (q as any).in('signal_type', options.signalTypes);
-      }
+      const { data: strictData, error: strictError } = await strictQuery;
 
-      // INTEL-PREMIUM-01: Content segment filter
-      if (options?.contentSegment && options.contentSegment !== 'all') {
-        q = q.eq('content_segment', options.contentSegment);
-      }
-
-      // MERCH-10: Timeline eligibility — stricter filter for "What Changed" feed
-      if (options?.timeline) {
-        const cutoff72h = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
-        q = q
-          .gte('impact_score', 60)
-          .gte('updated_at', cutoff72h)
-          .not('topic', 'in', '("other","general")');
-      }
-
-      const { data, error } = await q;
-
-      if (error) {
-        console.warn('[useIntelligence] fetch error:', error.message);
+      if (strictError) {
+        console.warn('[useIntelligence] fetch error (strict):', strictError.message);
         return [];
       }
-      if (!data || data.length === 0) return [];
-      return (data as MarketSignalRow[]).map(rowToSignal);
+
+      let results: MarketSignalRow[] = (strictData as MarketSignalRow[]) || [];
+
+      // PASS 2: INTEL-HUB-17 (PR2b) Fault-tolerant UI fallback filtering.
+      // Widens queries via logical OR to prevent empty boards on narrow verticals,
+      // but only if strict matches return sparse data (< 8 items) to avoid relevance dilution.
+      const NARROW_VERTICALS = ['salon', 'medspa', 'beauty_brand'];
+      if (options?.vertical && NARROW_VERTICALS.includes(options.vertical) && results.length < 8) {
+        let fallbackQuery = buildBaseQuery();
+
+        if (options.vertical === 'salon') {
+          fallbackQuery = fallbackQuery.or('vertical.in.(salon,multi),topic.in.(skincare,consumer_trend,treatment_trend)');
+        } else if (options.vertical === 'medspa') {
+          fallbackQuery = fallbackQuery.or('vertical.in.(medspa,multi),topic.in.(safety,regulation,science,treatment_trend,technology)');
+        } else if (options.vertical === 'beauty_brand') {
+          fallbackQuery = fallbackQuery.or('vertical.in.(beauty_brand,multi),topic.in.(brand_growth,retail,pricing,market_data)');
+        }
+
+        const { data: fallbackData, error: fallbackError } = await fallbackQuery;
+
+        if (!fallbackError && fallbackData) {
+          // Merge logic: preserve strict matches first, then append top fallback matches
+          const existingIds = new Set(results.map(r => r.id));
+          const newItems = (fallbackData as MarketSignalRow[]).filter(r => !existingIds.has(r.id));
+          results = [...results, ...newItems].slice(0, options?.limit ?? 50);
+        }
+      }
+
+      if (!results || results.length === 0) return [];
+      return results.map(rowToSignal);
     },
     enabled: isSupabaseConfigured,
     staleTime: 60_000,

@@ -1,0 +1,27 @@
+{
+  "work_order": "INTEL-HUB-17",
+  "status": "READY FOR REVIEW",
+  "blockers": [
+    "Deno is not installed, blocking 'deno check'",
+    "Docker Daemon is not running locally, blocking 'supabase functions serve'"
+  ],
+  "blocked_files": [
+    "supabase/functions/feed-orchestrator/index.ts",
+    "supabase/functions/rss-to-signals/index.ts"
+  ],
+  "blocked_commands": [
+    "deno check supabase/functions/feed-orchestrator/index.ts",
+    "deno check supabase/functions/rss-to-signals/index.ts",
+    "supabase functions serve feed-orchestrator --no-verify-jwt",
+    "supabase functions serve rss-to-signals --no-verify-jwt"
+  ],
+  "blocked_tests": [
+    "Runtime extraction of article_html and hero_image_url",
+    "5 live signal ID proof (blocked due to no ingest pipeline)"
+  ],
+  "verification_follow_up": [
+    "To confirm the API Registry Count estimates: supabase db psql -c 'SELECT COUNT(*) FROM api_registry;'",
+    "To confirm the Data Feeds Count estimates: supabase db psql -c 'SELECT COUNT(*) FROM data_feeds;'"
+  ],
+  "date": "2026-03-11"
+}
