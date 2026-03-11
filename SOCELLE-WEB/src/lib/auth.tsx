@@ -57,7 +57,7 @@ interface AuthContextType {
   effectiveRole: UserRole | null;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const normalizeRole = (role: string) => (role === 'spa_user' ? 'business_user' : role);
 

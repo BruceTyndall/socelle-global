@@ -378,8 +378,8 @@ function TemplatePickerModal({
   const categories = ['All', ...TEMPLATE_CATEGORIES];
   const templates =
     activeCategory === 'All'
-      ? getTemplatesByCategory('All')
-      : getTemplatesByCategory(activeCategory);
+      ? TEMPLATE_CATEGORIES.flatMap((c) => getTemplatesByCategory(c))
+      : getTemplatesByCategory(activeCategory as any);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#141418]/40">
@@ -494,7 +494,7 @@ function ExportModal({
           y: b.y,
           w: b.w,
           h: b.h,
-          content: typeof b.content === 'string' ? b.content : String(b.content ?? ''),
+          content: typeof b.content === 'string' ? { body: b.content } : (b.content as Record<string, unknown>),
           bg: b.bg,
           color: b.color,
         })),
@@ -814,6 +814,8 @@ export default function StudioEditor() {
           slug: `doc-${Date.now()}`,
           space_id: '',
           status: 'draft',
+          scheduled_at: null,
+          seo_twitter_card: 'summary_large_image',
           category: 'document',
           body: null,
           metadata,

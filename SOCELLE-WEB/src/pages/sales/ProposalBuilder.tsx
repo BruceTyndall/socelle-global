@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useProposals, type ProposalBlock, type ProposalLineItem, type NewProposal } from '../../lib/useProposals';
 import { useDeals } from '../../lib/useDeals';
+import { useSignal } from '../../lib/intelligence/useIntelligence';
 
 // ── WO-OVERHAUL-14: Proposal Builder ────────────────────────────────────
 // Data source: proposals + deals (LIVE when DB-connected)
@@ -45,6 +46,9 @@ export default function ProposalBuilder() {
   const { createProposal, updateProposal } = useProposals();
 
   const [dealId, setDealId] = useState(dealIdParam);
+  const selectedDeal = useMemo(() => deals.find((d) => d.id === dealId), [deals, dealId]);
+  const { signal } = useSignal(selectedDeal?.signal_id ?? undefined);
+
   const [title, setTitle] = useState('');
   const [blocks, setBlocks] = useState<ProposalBlock[]>([
     emptyBlock('cover'),
@@ -57,6 +61,33 @@ export default function ProposalBuilder() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
+  const [autoFilled, setAutoFilled] = useState(false);
+
+  // SALES-POWER-01: Auto-fill proposal from signal context
+  useEffect(() => {
+    if (signal && selectedDeal && !autoFilled && !title) {
+      setTitle(`${selectedDeal.company_name || 'Client'} — Strategic Proposal`);
+      
+      setBlocks((prev) => prev.map((b) => {
+        if (b.type === 'cover' && !b.title) {
+          return {
+            ...b,
+            title: 'Executive Summary',
+            content: `Based on recent market intelligence regarding ${signal.title}, we have prepared this strategic proposal to help you capture the ${signal.direction === 'up' ? 'growing' : 'shifting'} opportunity in the ${signal.category || 'market'} space.`
+          };
+        }
+        if (b.type === 'solution' && !b.title) {
+          return {
+            ...b,
+            title: 'Proposed Solution',
+            content: `Market context:\n"${signal.description}"\n\nOur solution directly aligns with this signal. By implementing our strategy, we project you will effectively capitalize on this trend.`
+          };
+        }
+        return b;
+      }));
+      setAutoFilled(true);
+    }
+  }, [signal, selectedDeal, autoFilled, title]);
 
   const totalValue = blocks
     .filter((b) => b.type === 'pricing')

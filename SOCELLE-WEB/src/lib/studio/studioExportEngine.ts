@@ -259,7 +259,7 @@ function exportToSvg(opts: ExportOptions): Promise<void> {
 
   svgContent += '</svg>';
 
-  const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+  const blob = new Blob([svgContent] as any[], { type: 'image/svg+xml' });
   const url = URL.createObjectURL(blob);
   triggerDownload(url, `${slugify(title)}.svg`);
   URL.revokeObjectURL(url);
@@ -565,7 +565,7 @@ function buildZipBlob(files: Array<{ name: string; data: Uint8Array }>): Promise
   eocd.setUint16(20, 0, true);
 
   const allParts = [...fileData, ...centralDir, new Uint8Array(eocd.buffer)];
-  return Promise.resolve(new Blob(allParts, { type: 'application/zip' }));
+  return Promise.resolve(new Blob(allParts as any[], { type: 'application/zip' }));
 }
 
 function crc32(data: Uint8Array): number {

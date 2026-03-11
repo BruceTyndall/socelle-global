@@ -103,7 +103,7 @@ export function UpgradePrompt({ currentTier, requiredTier, contextMessage }: Upg
 
       {/* CTA */}
       <Link
-        to="/pricing"
+        to="/plans"
         className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-graphite text-white rounded-lg font-sans font-medium text-sm hover:bg-graphite/90 transition-colors duration-150"
       >
         View Plans

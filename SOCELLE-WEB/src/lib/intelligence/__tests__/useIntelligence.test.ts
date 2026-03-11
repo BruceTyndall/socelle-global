@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createElement, type ReactNode } from 'react';
+import { AuthContext } from '../../auth';
 
 // ── Mock dependencies ─────────────────────────────────────────────────────────
 const { mockSelect, mockIsSupabaseConfigured } = vi.hoisted(() => {
@@ -30,8 +31,22 @@ function createWrapper() {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
+  
+  const mockAuthContextValue = {
+    session: null,
+    user: null,
+    profile: null,
+    loading: false,
+    isAdmin: false,
+    signOut: vi.fn(),
+  };
+
   return ({ children }: { children: ReactNode }) =>
-    createElement(QueryClientProvider, { client: queryClient }, children);
+    createElement(
+      AuthContext.Provider,
+      { value: mockAuthContextValue as any },
+      createElement(QueryClientProvider, { client: queryClient }, children)
+    );
 }
 
 const mockSignalRow = {

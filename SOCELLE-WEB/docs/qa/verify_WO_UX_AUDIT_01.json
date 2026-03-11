@@ -1,0 +1,36 @@
+{
+  "wo_id": "WO_UX_AUDIT_01",
+  "timestamp": "",
+  "team": "Team 4",
+  "skills_run": [
+    "hub-shell-detector",
+    "build-gate"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "",
+      "failures": [],
+      "evidence": ""
+    },
+    "build-gate": {
+      "status": "",
+      "failures": [],
+      "evidence": ""
+    }
+  },
+  "acceptance_tests": {
+    "shell_detector_improved": {
+      "status": "",
+      "evidence": ""
+    },
+    "workflows_fixed": {
+      "status": "",
+      "evidence": ""
+    }
+  },
+  "commit_sha": "",
+  "tsc_exit_code": 0,
+  "build_exit_code": 0,
+  "banned_terms_scan": "PASS",
+  "overall": ""
+}

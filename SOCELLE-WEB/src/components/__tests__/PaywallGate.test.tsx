@@ -1,21 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createElement, type ReactNode } from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import React, { type ReactNode } from 'react';
 
 // ── Hoist mocks ───────────────────────────────────────────────────────────────
-const { mockUseAuth, mockUseSubscription } = vi.hoisted(() => {
+const { mockUseAuth, mockUseSubscription, mockUseTier } = vi.hoisted(() => {
   const mockUseAuth = vi.fn(() => ({ user: null }));
   const mockUseSubscription = vi.fn(() => ({
     isPro: false,
     loading: false,
     startCheckout: vi.fn(),
   }));
-  return { mockUseAuth, mockUseSubscription };
+  const mockUseTier = vi.fn(() => ({
+    tier: 'free',
+    meetsMinimumTier: vi.fn(() => false),
+    isLoading: false,
+    error: null,
+  }));
+  return { mockUseAuth, mockUseSubscription, mockUseTier };
 });
 
 vi.mock('../../lib/auth', () => ({ useAuth: mockUseAuth }));
 vi.mock('../../lib/useSubscription', () => ({ useSubscription: mockUseSubscription }));
+vi.mock('../../hooks/useTier', () => ({ useTier: mockUseTier }));
 // PAYMENT_BYPASS always false in these tests — testing gate logic
 vi.mock('../../lib/paymentBypass', () => ({ PAYMENT_BYPASS: false }));
 vi.mock('../../lib/supabase', () => ({
@@ -32,14 +40,18 @@ vi.mock('../../lib/supabase', () => ({
 }));
 vi.mock('../ui/Button', () => ({
   Button: ({ children, onClick, disabled }: any) =>
-    createElement('button', { onClick, disabled }, children),
+    <button onClick={onClick} disabled={disabled}>{children}</button>,
 }));
 
 import { PaywallGate } from '../PaywallGate';
 
 function wrap(children: ReactNode) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return createElement(QueryClientProvider, { client: qc }, children);
+  return (
+    <MemoryRouter>
+      <QueryClientProvider client={qc}>{children}</QueryClientProvider>
+    </MemoryRouter>
+  );
 }
 
 describe('PaywallGate', () => {
@@ -51,25 +63,31 @@ describe('PaywallGate', () => {
       loading: false,
       startCheckout: vi.fn(),
     });
+    mockUseTier.mockReturnValue({
+      tier: 'free',
+      meetsMinimumTier: vi.fn(() => false),
+      isLoading: false,
+      error: null,
+    });
   });
 
   it('renders children when isPro is true', () => {
     mockUseSubscription.mockReturnValue({ isPro: true, loading: false, startCheckout: vi.fn() });
-    render(wrap(createElement(PaywallGate, { feature: 'retail_attach' }, 'Pro Content')));
+    render(wrap(<PaywallGate feature="retail_attach">Pro Content</PaywallGate>));
     expect(screen.getByText('Pro Content')).toBeDefined();
   });
 
   it('calls onAllow when isPro is true', () => {
     mockUseSubscription.mockReturnValue({ isPro: true, loading: false, startCheckout: vi.fn() });
     const onAllow = vi.fn();
-    render(wrap(createElement(PaywallGate, { feature: 'gap_analysis', onAllow }, 'Content')));
+    render(wrap(<PaywallGate feature="gap_analysis" onAllow={onAllow}>Content</PaywallGate>));
     expect(onAllow).toHaveBeenCalled();
   });
 
   it('renders loading spinner when subscription is loading', () => {
     mockUseSubscription.mockReturnValue({ isPro: false, loading: true, startCheckout: vi.fn() });
     const { container } = render(
-      wrap(createElement(PaywallGate, { feature: 'gap_analysis' }, 'Content'))
+      wrap(<PaywallGate feature="gap_analysis">Content</PaywallGate>)
     );
     // Loading spinner should be rendered (no content visible, spinner present)
     expect(screen.queryByText('Content')).toBeNull();
@@ -79,7 +97,7 @@ describe('PaywallGate', () => {
 
   it('allows access for gap_analysis when user is anonymous (free, under limit)', async () => {
     mockUseAuth.mockReturnValue({ user: null });
-    render(wrap(createElement(PaywallGate, { feature: 'gap_analysis' }, 'Free Content')));
+    render(wrap(<PaywallGate feature="gap_analysis">Free Content</PaywallGate>));
     await waitFor(() => {
       expect(screen.getByText('Free Content')).toBeDefined();
     });
@@ -89,7 +107,7 @@ describe('PaywallGate', () => {
     mockUseAuth.mockReturnValue({ user: null });
     const onBlock = vi.fn();
     render(
-      wrap(createElement(PaywallGate, { feature: 'retail_attach', onBlock }, 'Gated'))
+      wrap(<PaywallGate feature="retail_attach" onBlock={onBlock}>Gated</PaywallGate>)
     );
     await waitFor(() => {
       expect(onBlock).toHaveBeenCalledWith('pro_only');
@@ -99,7 +117,7 @@ describe('PaywallGate', () => {
   it('hides children for pro-only feature when not subscribed', async () => {
     mockUseAuth.mockReturnValue({ user: null });
     render(
-      wrap(createElement(PaywallGate, { feature: 'retail_attach' }, 'Hidden Content'))
+      wrap(<PaywallGate feature="retail_attach">Hidden Content</PaywallGate>)
     );
     await waitFor(() => {
       expect(screen.queryByText('Hidden Content')).toBeNull();
@@ -110,14 +128,12 @@ describe('PaywallGate', () => {
     mockUseAuth.mockReturnValue({ user: null });
     render(
       wrap(
-        createElement(
-          PaywallGate,
-          {
-            feature: 'retail_attach',
-            fallback: createElement('div', { 'data-testid': 'custom-fallback' }, 'Custom Upgrade UI'),
-          },
-          'Hidden'
-        )
+        <PaywallGate
+          feature="retail_attach"
+          fallback={<div data-testid="custom-fallback">Custom Upgrade UI</div>}
+        >
+          Hidden
+        </PaywallGate>
       )
     );
     await waitFor(() => {
@@ -127,13 +143,13 @@ describe('PaywallGate', () => {
 
   it('renders children for gap_analysis when isPro is true (no limit check needed)', () => {
     mockUseSubscription.mockReturnValue({ isPro: true, loading: false, startCheckout: vi.fn() });
-    render(wrap(createElement(PaywallGate, { feature: 'gap_analysis' }, 'Pro Gap Content')));
+    render(wrap(<PaywallGate feature="gap_analysis">Pro Gap Content</PaywallGate>));
     expect(screen.getByText('Pro Gap Content')).toBeDefined();
   });
 
   it('upgrade card headline contains "Pro feature" for pro_only reason', async () => {
     mockUseAuth.mockReturnValue({ user: null });
-    render(wrap(createElement(PaywallGate, { feature: 'activation_assets' }, 'Hidden')));
+    render(wrap(<PaywallGate feature="activation_assets">Hidden</PaywallGate>));
     await waitFor(() => {
       expect(screen.getByText('Pro feature')).toBeDefined();
     });

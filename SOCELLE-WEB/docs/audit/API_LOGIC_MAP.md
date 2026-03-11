@@ -2,6 +2,9 @@
 **Lane:** C — API Logic Mapper
 **Generated:** 2026-03-10 (v2 — full re-audit with line-level evidence)
 **Source:** Read-only analysis of `supabase/functions/`, `src/lib/`, `src/pages/`, `supabase/migrations/`
+> **NON-EXECUTION DOCUMENT**
+> This is historical/context only. Execution authority is docs/build_tracker.md. Governance is /.claude/CLAUDE.md.
+
 **Edge functions total:** 34 | **Active:** 32 | **Blocked:** 2 (Square: W11-13)
 
 ---

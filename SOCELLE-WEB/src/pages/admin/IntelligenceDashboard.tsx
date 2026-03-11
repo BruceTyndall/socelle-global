@@ -145,7 +145,7 @@ export default function IntelligenceDashboard() {
     refetch,
   } = useAdminIntelligence();
 
-  const { showToast } = useToast();
+  const { addToast } = useToast();
 
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -186,7 +186,7 @@ export default function IntelligenceDashboard() {
         tier_visibility: 'free',
       });
       if (error) throw error;
-      showToast('Signal created as draft');
+      addToast('Signal created as draft');
       setNewTitle('');
       setNewDescription('');
       setNewType('product_velocity');
@@ -196,7 +196,7 @@ export default function IntelligenceDashboard() {
       refetch();
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to create signal';
-      showToast(msg);
+      addToast(msg);
     } finally {
       setIsSaving(false);
     }
@@ -209,11 +209,11 @@ export default function IntelligenceDashboard() {
         .update({ status: 'archived' })
         .eq('id', signal.id);
       if (error) throw error;
-      showToast(`"${signal.title}" archived`);
+      addToast(`"${signal.title}" archived`);
       refetch();
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to archive signal';
-      showToast(msg);
+      addToast(msg);
     }
   };
 
@@ -224,11 +224,11 @@ export default function IntelligenceDashboard() {
         .delete()
         .eq('id', signal.id);
       if (error) throw error;
-      showToast(`"${signal.title}" deleted`);
+      addToast(`"${signal.title}" deleted`);
       refetch();
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to delete signal';
-      showToast(msg);
+      addToast(msg);
     }
   };
 

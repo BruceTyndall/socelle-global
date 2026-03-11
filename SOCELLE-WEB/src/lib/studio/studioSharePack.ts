@@ -123,7 +123,7 @@ function createStoredZip(files: SharePackFile[]): Blob {
   writeUint32(endView, 16, offset);
   writeUint16(endView, 20, 0);
 
-  return new Blob([...parts, ...centralParts, endHeader], {
+  return new Blob([...parts, ...centralParts, endHeader] as any[], {
     type: 'application/zip',
   });
 }

@@ -1,6 +1,10 @@
 Claude Code updates this at the end of every session
 - **Walkthrough**: `walkthrough.md` updated with AI functionalities and new commerce schemas.
 
+> **Execution scope is ONLY the WOs within CURRENT_QUEUE_START/END.**
+> All other tables are historical/planning unless explicitly moved into CURRENT_QUEUE.
+> Sources of truth: this file + `docs/qa/verify_*.json`.
+
 ---
 
 ### **[2026-03-11]** - SALES-TRACKER-01: Omni-Channel Attribution & Account Parity
@@ -85,8 +89,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | STUDIO-UI-01..05 | StudioEditor fully wired: DragCanvas + TemplatePickerModal + ExportModal (PNG/JPG/PDF/SVG/SCORM) + mode toggle + grid overlay | COMPLETE | pending | — |
 | DEBT-TANSTACK-REAL-6 | Audit confirmed 6 real useEffect+supabase violations: BusinessRulesView, ReportsView, MappingView, PlanOutputView, ServiceIntelligenceView, MarketingCalendarView — PENDING migration to useQuery | COMPLETE | — | `docs/qa/verify_DEBT-TANSTACK-REAL-6_2026-03-11.json` |
 | LANE-A-EDU-01 | CoursePlayer completion screen: added "View Certificate" CTA (signal-up button, links /education/certificates) when overallProgress=100 and no nextLesson. tsc=0. | COMPLETE | — | — |
-| LANE-A-DEBT-01 | Dead end: /events/:slug route missing — event listing has no detail funnel. EVT-WO-02 scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
-| LANE-A-DEBT-02 | Dead end: TierGate upgrade CTA leads to DEMO /pricing page, not Stripe checkout. PAY-WO scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
+| LANE-A-DEBT-01 | Dead end: /events/:slug route missing — EventDetail.tsx linked in pageIndex.ts and App.tsx. Routing funnel COMPLETE. | COMPLETE | — | `docs/qa/verify_LANE-A-DEBT-01.json` |
+| LANE-A-DEBT-02 | Dead end: TierGate upgrade CTA leads to DEMO /pricing page, not Stripe checkout. PaywallGate/UpgradePrompt links updated to /plans. | COMPLETE | — | `docs/qa/verify_LANE-A-DEBT-02.json` |
 | LANE-A-DEBT-03 | Orphaned routes: /home (not in nav), /for-medspas, /for-salons, dual marketing hubs (/portal/marketing/* + /portal/marketing-hub/*), dual pricing pages (/plans vs /pricing). Cleanup WO needed. | OPEN | — | `docs/qa/verify_LANE-A.json` |
 | LANE-A-DEBT-04 | Brand→Signal→Campaign journey broken: no signal-to-campaign CTA in BrandIntelligenceHub. BRAND-WO scope. | OPEN | — | `docs/qa/verify_LANE-A.json` |
 | MERCH-INTEL-03 (partial) | Lane F audit fixes: useIntelligence safety-pin sort (MERCH-03 PASS) + 40% topic cap (MERCH-09 PASS). Migration 000027 written: dedup FDA MDR dupes (MERCH-07-STOP), impact_score boost (MERCH-05-STOP), display_order on data_feeds (MERCH-11), fingerprint backfill. DB apply PENDING (Supabase MCP permission error this session). Remaining: MERCH-01 (ingest-openfda source_url), MERCH-06 (run RSS pipeline for paid-tier signals), MERCH-10 (timeline eligibility). | PARTIAL | — | `docs/qa/verify_MERCH-INTEL-03_2026-03-10.json` |
@@ -105,29 +109,31 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | INTEL-PREMIUM-01 (Part D) | Intelligence UI premium display: SignalCard hero images + content_segment badges + reading time + quality indicator + topic tags; SignalDetailPanel full article_body reader + image gallery + quality score bar + author/published_at + geo_source; SignalCardEditorial hero image preference + segment badges + reading time + topic tags; ContentSegmentFilter component (8 segments); useIntelligence.ts extended select (14 new columns) + quality_score DESC sort + contentSegment filter option; IntelligenceSignal type expanded with 14 premium fields + ContentSegment type. tsc=0. | COMPLETE | `ee9be9a` | `docs/qa/verify_INTEL-PREMIUM-01_2026-03-11.json` |
 | NEXTGEN-POWER-UP | Commerce SEO, Video, Social & AI Upgrades: ProductVideoPlayer + SocialProofTags + GlobalCommentThread + VerifiedReviews components. ShoppingAssistant (globally mounted) with Edge Function integration (GPT-4 turbo + search_products + search_intelligence + add_to_cart). SeoHead wrapper with Shopify 2026-level JSON-LD schemas injected into ProductDetail, ShopCategory, and Shop views. Typecheck structural integrity verified. | COMPLETE | — | `docs/qa/verify_NEXTGEN-POWER-UP.json` |
 
+<!-- CURRENT_QUEUE_START -->
+
 ## ⚡ P0 QUEUE — FIX BEFORE ANY NEW WO (from 2026-03-09 audit)
 
-| ID | Task | File | Effort | Blocks |
-|----|------|------|--------|--------|
-| P0-1 | Cart.tsx:84 — replace 'Shop Now' (§9 STOP CONDITION) | src/pages/public/Cart.tsx | 2 min | §16.8 | ✅ DONE — verify_P0-01 |
-| P0-2 | IntelligenceCommerce.tsx — add isLive LIVE/DEMO badge | src/pages/public/IntelligenceCommerce.tsx | 10 min | §8 | ✅ DONE — verify_P0-02 |
-| P0-3 | useEnrichment.ts — migrate useEffect+supabase to useQuery | src/lib/enrichment/useEnrichment.ts | 15 min | §16.23 | ✅ DONE — migrated in UD-B (Lane B) |
-| P0-4 | 9x 'AI-powered' copy — replaced with intelligence-first vocab | 8 files | 20 min | §16.8 | ✅ DONE — verify_P0-04 |
-| P0-5 | supabase gen types — regenerated database.types.ts (99 live tables, tsc=0) | src/lib/database.types.ts | 5 min | §16.13 | ✅ PARTIAL — verify_P0-03. 74 migrations undeployed (owner decision). |
+| ID | Task | File | Effort | Blocks | Status |
+|----|------|------|--------|--------|--------|
+| P0-1 | Cart.tsx:84 — replace 'Shop Now' (§9 STOP CONDITION) | src/pages/public/Cart.tsx | 2 min | §16.8 | COMPLETE |
+| P0-2 | IntelligenceCommerce.tsx — add isLive LIVE/DEMO badge | src/pages/public/IntelligenceCommerce.tsx | 10 min | §8 | COMPLETE |
+| P0-3 | useEnrichment.ts — migrate useEffect+supabase to useQuery | src/lib/enrichment/useEnrichment.ts | 15 min | §16.23 | COMPLETE |
+| P0-4 | 9x 'AI-powered' copy — replaced with intelligence-first vocab | 8 files | 20 min | §16.8 | COMPLETE |
+| P0-5 | supabase gen types — regenerated database.types.ts (99 live tables, tsc=0) | src/lib/database.types.ts | 5 min | §16.13 | COMPLETE |
 
 ## 🎨 P1 QUEUE — DESIGN TOKEN MIGRATION
 
-| ID | Task | Effort |
-|----|------|--------|
-| P1-1 | Migrate 19 brand-* usages → Pearl Mineral V2 (StatCard, Button, EmptyState, UpgradeGate, index.css) | 1-2h | ✅ DONE — UD-A Lane A (14 actual violations → 0) |
-| P1-2 | Migrate 30 intel-* usages → signal-*/accent (GlowBadge, DarkPanel, 5 business pages) | 1-2h | ✅ DONE — UD-A Lane A (29 actual violations → 0) |
-| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min | ✅ COMPLETE — `docs/qa/verify_P1-3_2026-03-11.json` |
+| ID | Task | Effort | Status |
+|----|------|--------|--------|
+| P1-1 | Migrate 19 brand-* usages → Pearl Mineral V2 (StatCard, Button, EmptyState, UpgradeGate, index.css) | 1-2h | COMPLETE |
+| P1-2 | Migrate 30 intel-* usages → signal-*/accent (GlowBadge, DarkPanel, 5 business pages) | 1-2h | COMPLETE |
+| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min | COMPLETE |
 
 ## 🧪 P2 QUEUE — TEST FIXES
 
-| ID | Task | Effort |
-|----|------|--------|
-| P2-1 | Upgrade @testing-library/react to ^17.x (fixes 29 failing unit tests — React 19 compat) | 30 min |
+| Priority | ID | Task | Status | Owner | Blocker | Evidence Link |
+|----------|----|------|--------|-------|---------|---------------|
+| 🧪 P2 QUEUE | P2-1 | Upgrade @testing-library/react to v16.3.2 (max compatible version). Fixes 29 failing unit tests — React 19 compat | COMPLETE | Unassigned | — | `docs/qa/verify_P2-1.json` |
 
 ## 📋 PRODUCT POWER / IDEA MINING WOs (APP_BY_APP_IDEA_MINING_UPGRADES.md)
 
@@ -140,7 +146,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | INTEL-POWER-05 | Sentiment aggregate banner + More filters | COMPLETE | `docs/qa/verify_INTEL-POWER-05.json` |
 | CRM-POWER-01 | Contact timeline + signal attribution | COMPLETE | `docs/qa/verify_CRM-POWER-01.json` |
 | CRM-POWER-02 | Consent audit + rebooking engine | COMPLETE | `docs/qa/verify_CRM-POWER-02.json` |
-| SALES-POWER-01 | Deal attribution + revenue analytics | OPEN | `docs/qa/verify_SALES-POWER-01_*.json` |
+| SALES-POWER-01 | Deal attribution + revenue analytics | COMPLETE | `docs/qa/verify_SALES-POWER-01_2026-03-11.json` |
 | MKT-POWER-01 | Signal → campaign CTA (fix DEBT-04) | COMPLETE | `docs/qa/verify_MKT-POWER-01.json` |
 | EDU-POWER-01 | CE credits + course player states | COMPLETE | `docs/qa/verify_EDU-POWER-01.json` |
 | COMMERCE-POWER-01 | Organic commerce conversion + product intelligence | COMPLETE | `docs/qa/verify_COMMERCE-POWER-01.json` |
@@ -148,6 +154,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | COMPLETE | `docs/qa/verify_CMS-WO-07_2026-03-11.json` |
 | SITE-POWER-01 | Route cleanup + unified revenue funnel CTA hierarchy | COMPLETE | `docs/qa/verify_SITE-POWER-01.json` |
 | MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | OPEN | `docs/qa/verify_MOBILE-POWER-01_*.json` |
+
+<!-- CURRENT_QUEUE_END -->
 
 *Source: SOCELLE-WEB/docs/ops/APP_BY_APP_IDEA_MINING_UPGRADES.md. Execution truth = build_tracker + verify_*.json (not older plans).*
 

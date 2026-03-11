@@ -67,7 +67,7 @@ interface TrendingSignal {
   magnitude: number;
   direction: 'up' | 'down' | 'stable';
   signal_key: string;
-  category: string | null | undefined;
+  category?: string | null;
 }
 
 function matchSignalToCourse(signal: TrendingSignal): { course: string; path: string } | null {

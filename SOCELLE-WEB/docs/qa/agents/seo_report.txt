@@ -1,0 +1,6 @@
+src/pages/public/Shop.tsx:import { SeoHead } from '../../components/seo/SeoHead';
+src/pages/public/Shop.tsx:      <SeoHead
+src/pages/public/ShopCategory.tsx:import { SeoHead } from '../../components/seo/SeoHead';
+src/pages/public/ShopCategory.tsx:      <SeoHead
+src/pages/public/ProductDetail.tsx:import { SeoHead } from '../../components/seo/SeoHead';
+src/pages/public/ProductDetail.tsx:      <SeoHead 

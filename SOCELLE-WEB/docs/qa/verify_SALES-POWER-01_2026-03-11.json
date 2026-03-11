@@ -1,0 +1,22 @@
+{
+  "wo_id": "SALES-POWER-01",
+  "timestamp": "2026-03-11T16:35:00.000Z",
+  "check": "Deal attribution + revenue analytics",
+  "skills_run": ["tsc"],
+  "results": {
+    "signal_influenced_metric": {
+      "status": "PASS",
+      "evidence": "src/pages/sales/RevenueAnalytics.tsx contains 'Signal-Influenced Deals'."
+    },
+    "proposal_builder_context": {
+      "status": "PASS",
+      "evidence": "src/pages/sales/ProposalBuilder.tsx uses deal.signal_id and useSignal() to auto-fill the proposal title and solution blocks with intelligence context."
+    },
+    "tsc": {
+      "status": "PASS",
+      "evidence": "tsc compiled without errors"
+    }
+  },
+  "overall": "PASS",
+  "notes": "SALES-POWER-01 (Deal attribution + revenue analytics) completed by wiring useSignal into ProposalBuilder and validating RevenueAnalytics coverage."
+}

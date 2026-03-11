@@ -118,8 +118,9 @@ export default function IntelligencePricing() {
         {/* ── Tier Cards ──────────────────────────────────────── */}
         <div className="grid md:grid-cols-3 gap-6">
           {pricing.map((plan) => {
-            const Icon = TIER_ICONS[plan.tier];
-            const colors = TIER_COLORS[plan.tier];
+            const planTier = plan.tier as BrandTier;
+            const Icon = TIER_ICONS[planTier] || Star;
+            const colors = TIER_COLORS[planTier] || TIER_COLORS.basic;
             const isCurrentPlan = plan.tier === currentTier;
             const tierFeatures = features.filter((f) => f.includedIn[plan.tier]);
 

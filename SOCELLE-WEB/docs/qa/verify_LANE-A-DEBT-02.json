@@ -1,0 +1,18 @@
+{
+  "wo_id": "LANE-A-DEBT-02",
+  "status": "pass",
+  "timestamp": "2026-03-11T16:16:25-06:00",
+  "verified_by": "Agent",
+  "evidence": {
+    "files_changed": [
+      "src/components/gates/UpgradePrompt.tsx"
+    ],
+    "commands_run": [
+      "npm run test"
+    ],
+    "metrics": {
+      "tests_passed": "Verification passed"
+    },
+    "notes": "Changed PaywallGate UpgradePrompt to link.to=/plans to hit Stripe checkout instead of demo pricing funnel."
+  }
+}

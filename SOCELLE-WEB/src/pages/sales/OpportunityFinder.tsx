@@ -11,6 +11,7 @@ import {
   Filter,
   ArrowRight,
   Lightbulb,
+  Loader2,
 } from 'lucide-react';
 import { useDeals, type NewDeal } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';

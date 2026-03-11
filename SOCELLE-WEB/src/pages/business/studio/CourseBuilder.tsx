@@ -360,6 +360,8 @@ export default function CourseBuilder() {
           slug: `course-${Date.now()}`,
           space_id: '',
           status: 'draft',
+          scheduled_at: null,
+          seo_twitter_card: 'summary_large_image',
           category: 'course',
           body: null,
           metadata,

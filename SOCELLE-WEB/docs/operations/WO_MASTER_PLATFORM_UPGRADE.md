@@ -1248,6 +1248,38 @@ grep "intel-" tailwind.config.js  # 0 results
 
 ---
 
+### WO: WO_UX_AUDIT_01
+**Team:** 4 — Code Debt
+**Priority:** P1
+**Depends on:** P0 GATE
+
+**Owner goal / KPI**
+Remediate identified UX dead ends and shell pages to ensure a cohesive end-to-end user journey across portals and admin areas.
+
+**Priority order (high impact first):**
+1. Request Access Post-Submission success state
+2. Business Portal Onboarding Drop-off guard
+3. Brand Portal Application Status pending state
+4. Shell pages (Reseller, Events, Jobs, Admin Hubs)
+
+**Files / areas touched**
+- User journey auth and onboarding layouts
+- Identified missing entity pages
+
+**Acceptance tests**
+- Shell detector outputs improved score
+- Post-signup and application workflows have no dead ends
+
+**Skills Required (PATCH 3)**
+- `hub-shell-detector` — run before + after; score must improve per batch
+- `build-gate` — tsc + build
+
+**Proof pack**
+- File: `docs/qa/verify_WO_UX_AUDIT_01.json`
+- Required: shells_remediated, workflows_fixed, tsc_exit: 0, overall: PASS|FAIL
+
+---
+
 ### WO: P2-1
 **Team:** 5 — Testing / CI
 **Priority:** P2

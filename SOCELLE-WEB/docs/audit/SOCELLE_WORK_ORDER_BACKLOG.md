@@ -3,6 +3,9 @@
 # Status: PROPOSED — All WO IDs must be added to build_tracker.md before execution begins
 # Authority: build_tracker.md is the sole execution authority for WO IDs
 
+> **NON-EXECUTION DOCUMENT**
+> This is historical/context only. Execution authority is docs/build_tracker.md. Governance is /.claude/CLAUDE.md.
+
 ---
 
 ## WO: COPY-WO-01

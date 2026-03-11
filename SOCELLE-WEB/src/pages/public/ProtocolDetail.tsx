@@ -21,7 +21,7 @@ import BlockReveal from '../../components/motion/BlockReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { getProtocolBySlug, getProtocols } from '../../__fixtures__/mockProtocols';
 import { CATEGORY_LABELS, SKILL_LABELS } from '../../lib/protocols/useProtocols';
-import type { ProtocolCategory, SkillLevel } from '../../lib/protocols/types';
+import type { ProtocolCategory, SkillLevel, TreatmentProtocol, ProtocolStep, ProtocolProduct } from '../../lib/protocols/types';
 
 // ── Category / skill styling (mineral palette) ──────────────────────
 
@@ -58,7 +58,7 @@ const CATEGORY_ICONS: Record<ProtocolCategory, React.ElementType> = {
 export default function ProtocolDetail() {
   const { slug } = useParams<{ slug: string }>();
 
-  const protocol = slug ? getProtocolBySlug(slug) : undefined;
+  const protocol: TreatmentProtocol | undefined = slug ? getProtocolBySlug(slug) : undefined;
 
   if (!protocol) {
     return <Navigate to="/protocols" replace />;
@@ -70,25 +70,25 @@ export default function ProtocolDetail() {
   const CatIcon = CATEGORY_ICONS[protocol.category];
 
   // Related protocols: same category, excluding current
-  const related = getProtocols()
-    .filter((p) => p.category === protocol.category && p.id !== protocol.id)
+  const related: TreatmentProtocol[] = getProtocols()
+    .filter((p: TreatmentProtocol) => p.category === protocol.category && p.id !== protocol.id)
     .slice(0, 3);
 
   // If not enough same-category, fill from other protocols
-  const relatedFilled =
+  const relatedFilled: TreatmentProtocol[] =
     related.length < 3
       ? [
           ...related,
           ...getProtocols()
-            .filter((p) => p.id !== protocol.id && !related.find((r) => r.id === p.id))
+            .filter((p: TreatmentProtocol) => p.id !== protocol.id && !related.find((r: TreatmentProtocol) => r.id === p.id))
             .slice(0, 3 - related.length),
         ]
       : related;
 
   // Collect all unique products
-  const allProducts = protocol.steps.flatMap((s) => s.products);
-  const uniqueProducts = allProducts.filter(
-    (p, i) => allProducts.findIndex((pp) => pp.name === p.name && pp.brand === p.brand) === i
+  const allProducts: ProtocolProduct[] = protocol.steps.flatMap((s: ProtocolStep) => s.products);
+  const uniqueProducts: ProtocolProduct[] = allProducts.filter(
+    (p: ProtocolProduct, i: number) => allProducts.findIndex((pp: ProtocolProduct) => pp.name === p.name && pp.brand === p.brand) === i
   );
 
   const jsonLd = {
@@ -97,7 +97,7 @@ export default function ProtocolDetail() {
     name: protocol.title,
     description: protocol.description,
     totalTime: `PT${protocol.durationMinutes}M`,
-    step: protocol.steps.map((s) => ({
+    step: protocol.steps.map((s: ProtocolStep) => ({
       '@type': 'HowToStep',
       position: s.stepNumber,
       name: s.title,
@@ -208,7 +208,7 @@ export default function ProtocolDetail() {
               </h2>
 
               <div className="space-y-8">
-                {protocol.steps.map((step) => (
+                {protocol.steps.map((step: ProtocolStep) => (
                   <div key={step.stepNumber} className="relative">
                     <div className="flex gap-5">
                       {/* Step number */}
@@ -243,7 +243,7 @@ export default function ProtocolDetail() {
                             <p className="text-xs font-sans font-semibold text-graphite/40 uppercase tracking-wide">
                               Products Used
                             </p>
-                            {step.products.map((product, pIdx) => (
+                            {step.products.map((product: ProtocolProduct, pIdx: number) => (
                               <div
                                 key={pIdx}
                                 className="flex items-start justify-between gap-3 text-sm"
@@ -327,7 +327,7 @@ export default function ProtocolDetail() {
                     </h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {protocol.skinConcerns.map((concern) => (
+                    {protocol.skinConcerns.map((concern: string) => (
                       <span
                         key={concern}
                         className="inline-block bg-mn-surface text-graphite/60 text-xs font-sans font-medium rounded-full px-3 py-1"
@@ -349,7 +349,7 @@ export default function ProtocolDetail() {
                     </h3>
                   </div>
                   <ul className="space-y-2">
-                    {protocol.contraindications.map((ci) => (
+                    {protocol.contraindications.map((ci: string) => (
                       <li
                         key={ci}
                         className="text-sm font-sans text-signal-down/80 flex items-start gap-2"
@@ -381,7 +381,7 @@ export default function ProtocolDetail() {
                     Related Protocols
                   </h3>
                   <div className="space-y-3">
-                    {relatedFilled.map((rel) => {
+                    {relatedFilled.map((rel: TreatmentProtocol) => {
                       const relCatBg = CATEGORY_BG[rel.category];
                       const relCatAccent = CATEGORY_ACCENT[rel.category];
                       return (

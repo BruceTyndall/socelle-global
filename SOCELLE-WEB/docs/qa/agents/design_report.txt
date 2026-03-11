@@ -1,0 +1,7 @@
+src/pages/public/Brands.tsx:   Pearl Mineral V2 tokens only — no pro-*, no font-sans
+src/pages/public/Home.tsx:   Pearl Mineral V2 tokens only — no pro-*, no font-sans, no hardcoded hex.
+src/pages/public/PrelaunchQuiz.tsx:   Pearl Mineral V2 only — no pro-* tokens, no font-sans.
+src/pages/public/ForBrands.tsx:   Pearl Mineral V2 tokens only — no pro-*, no font-sans
+src/pages/public/Professionals.tsx:   Pearl Mineral V2 tokens only — no pro-*, no font-sans
+src/pages/public/Professionals.tsx:                  const el = document.getElementById('pro-search');
+src/pages/public/Professionals.tsx:              id="pro-search"
