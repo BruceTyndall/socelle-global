@@ -107,7 +107,7 @@ async function fetchFlags(): Promise<FeatureFlagData> {
 
 // ── Component ─────────────────────────────────────────────────────────────
 
-export default function AdminFeatureFlags() {
+export default function AdminFeatureFlags({ hideHeader = false }: { hideHeader?: boolean } = {}) {
   const queryClient = useQueryClient();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -384,34 +384,36 @@ export default function AdminFeatureFlags() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div>
-            <h1 className="text-3xl font-semibold text-graphite font-sans">Feature Flags</h1>
-            <p className="text-graphite/60 font-sans mt-1 text-sm">
-              {enabledCount} enabled, {flags.length - enabledCount} disabled
-            </p>
+      {!hideHeader && (
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-3xl font-semibold text-graphite font-sans">Feature Flags</h1>
+              <p className="text-graphite/60 font-sans mt-1 text-sm">
+                {enabledCount} enabled, {flags.length - enabledCount} disabled
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCreate(!showCreate)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white hover:bg-accent-hover font-sans text-sm transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Flag
+            </button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => void refetch()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Refresh
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowCreate(!showCreate)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white hover:bg-accent-hover font-sans text-sm transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Flag
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Create form */}
       {showCreate && (

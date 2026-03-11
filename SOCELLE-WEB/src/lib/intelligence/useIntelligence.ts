@@ -111,6 +111,8 @@ interface MarketSignalRow {
   author: string | null;
   published_at: string | null;
   geo_source: string | null;
+  fingerprint: string | null;
+  is_duplicate: boolean | null;
 }
 
 const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
@@ -173,7 +175,8 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
     tier_visibility: (row.tier_visibility === 'pro' || row.tier_visibility === 'admin'
       ? row.tier_visibility
       : row.tier_min === 'paid' ? 'pro' : 'free') as TierVisibility,
-    is_duplicate: false,
+    is_duplicate: row.is_duplicate ?? false,
+    fingerprint: row.fingerprint ?? undefined,
     // INTEL-MEDSPA-01: classification + scoring — previously computed at ingest but dropped here
     impact_score: row.impact_score ?? undefined,
     vertical: row.vertical ?? undefined,
@@ -229,7 +232,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       let q = supabase
         .from('market_signals')
         .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source'
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source, fingerprint, is_duplicate'
         )
         .eq('active', true)
         .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
@@ -427,7 +430,37 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     const cap = Math.ceil(total * 0.4);
     const topicCounts: Record<string, number> = {};
     const capped: IntelligenceSignal[] = [];
+    
+    // Pass 1: Deduplicate - Group similar signals by fingerprint
+    const fingerprintMap = new Map<string, IntelligenceSignal>();
+    const tempGrouped: IntelligenceSignal[] = [];
+    const duplicates: IntelligenceSignal[] = [];
+
     for (const s of sorted) {
+      if (s.is_duplicate && s.fingerprint) {
+        duplicates.push(s);
+      } else if (s.fingerprint) {
+        fingerprintMap.set(s.fingerprint, s);
+        tempGrouped.push(s);
+      } else {
+        tempGrouped.push(s);
+      }
+    }
+
+    // Attach duplicates to their parents
+    for (const dup of duplicates) {
+      const parent = fingerprintMap.get(dup.fingerprint!);
+      if (parent) {
+        parent.similar_signals = parent.similar_signals || [];
+        parent.similar_signals.push(dup);
+      } else {
+        // Fallback if parent is missing
+        tempGrouped.push(dup);
+      }
+    }
+
+    // Pass 2: Apply topic cap on primary signals only
+    for (const s of tempGrouped) {
       const topic = s.topic ?? 'general';
       const count = topicCounts[topic] ?? 0;
       if (count < cap) {

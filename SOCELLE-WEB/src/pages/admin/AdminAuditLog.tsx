@@ -109,7 +109,7 @@ function DetailsCell({ details }: { details: Record<string, unknown> }) {
 
 // ── Component ─────────────────────────────────────────────────────────────
 
-export default function AdminAuditLog() {
+export default function AdminAuditLog({ hideHeader = false }: { hideHeader?: boolean } = {}) {
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('All');
   const [resourceTypeFilter, setResourceTypeFilter] = useState('All');
@@ -223,32 +223,34 @@ export default function AdminAuditLog() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div>
-            <h1 className="text-3xl font-semibold text-graphite font-sans">Audit Log</h1>
-            <p className="text-graphite/60 font-sans mt-1 text-sm">
-              {total} event{total !== 1 ? 's' : ''} total
-              {filtered.length !== logs.length ? ` (${filtered.length} matching)` : ''}
-            </p>
+      {!hideHeader && (
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-3xl font-semibold text-graphite font-sans">Audit Log</h1>
+              <p className="text-graphite/60 font-sans mt-1 text-sm">
+                {total} event{total !== 1 ? 's' : ''} total
+                {filtered.length !== logs.length ? ` (${filtered.length} matching)` : ''}
+              </p>
+            </div>
+            {!isLive && (
+              <span className="text-[10px] font-semibold bg-[#A97A4C]/10 text-[#A97A4C] px-2 py-0.5 rounded-full">
+                DEMO
+              </span>
+            )}
           </div>
-          {!isLive && (
-            <span className="text-[10px] font-semibold bg-[#A97A4C]/10 text-[#A97A4C] px-2 py-0.5 rounded-full">
-              DEMO
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleExport}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExport}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
-          >
-            <Download className="w-4 h-4" />
-            Export CSV
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* DEMO banner */}
       {!isLive && (

@@ -122,9 +122,9 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | WO | Scope | Status | Proof pack |
 |----|--------|--------|------------|
 | INTEL-POWER-01 | Impact badge on every signal card (list + detail) | COMPLETE | `docs/qa/verify_INTEL-POWER-01_2026-03-11.json` |
-| INTEL-POWER-02 | "N similar" dedup UI + expand | OPEN | `docs/qa/verify_INTEL-POWER-02_*.json` |
+| INTEL-POWER-02 | "N similar" dedup UI + expand | COMPLETE | `docs/qa/verify_INTEL-POWER-02.json` |
 | INTEL-POWER-03 | Today View / Snapshot as default entry | COMPLETE | `docs/qa/verify_INTEL-POWER-03_2026-03-11.json` |
-| INTEL-POWER-04 | In-card "Take action" row (Spot→Understand→Act) | OPEN | `docs/qa/verify_INTEL-POWER-04_*.json` |
+| INTEL-POWER-04 | In-card "Take action" row (Spot→Understand→Act) | COMPLETE | `docs/qa/verify_INTEL-POWER-04.json` |
 | INTEL-POWER-05 | Sentiment aggregate banner + More filters | OPEN | `docs/qa/verify_INTEL-POWER-05_*.json` |
 | CRM-POWER-01 | Contact timeline + signal attribution | OPEN | `docs/qa/verify_CRM-POWER-01_*.json` |
 | CRM-POWER-02 | Consent audit + rebooking engine | OPEN | `docs/qa/verify_CRM-POWER-02_*.json` |
@@ -132,7 +132,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | MKT-POWER-01 | Signal → campaign CTA (fix DEBT-04) | OPEN | `docs/qa/verify_MKT-POWER-01_*.json` |
 | EDU-POWER-01 | CE credits + course player states | OPEN | `docs/qa/verify_EDU-POWER-01_*.json` |
 | COMMERCE-POWER-01 | Affiliate compliance + product intelligence | OPEN | `docs/qa/verify_COMMERCE-POWER-01_*.json` |
-| ADMIN-POWER-01 | System health + feeds + audit log dashboard | OPEN | `docs/qa/verify_ADMIN-POWER-01_*.json` |
+| ADMIN-POWER-01 | System health + feeds + audit log dashboard | COMPLETE | `docs/qa/verify_ADMIN-POWER-01.json` |
 | CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | COMPLETE | `docs/qa/verify_CMS-WO-07_2026-03-11.json` |
 | SITE-POWER-01 | Route cleanup + persona CTA hierarchy | OPEN | `docs/qa/verify_SITE-POWER-01_*.json` |
 | MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | OPEN | `docs/qa/verify_MOBILE-POWER-01_*.json` |

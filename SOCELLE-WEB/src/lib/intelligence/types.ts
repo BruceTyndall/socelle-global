@@ -50,6 +50,8 @@ export interface IntelligenceSignal {
   tier_visibility?: TierVisibility;
   image_url?: string;
   is_duplicate?: boolean;
+  fingerprint?: string;
+  similar_signals?: IntelligenceSignal[];
   // INTEL-MEDSPA-01: classification + scoring (were computed at ingest but missing from type)
   impact_score?: number;
   vertical?: string;

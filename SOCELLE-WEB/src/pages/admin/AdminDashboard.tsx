@@ -15,6 +15,10 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { exportToCsv } from '../../lib/csvExport';
+import { Tabs, TabList, Tab, TabPanel } from '../../components/ui/Tabs';
+import AdminAuditLog from './AdminAuditLog';
+import AdminFeatureFlags from './AdminFeatureFlags';
+import AdminApiControls from './AdminApiControls';
 
 // -- Types --------------------------------------------------------------------
 
@@ -238,7 +242,7 @@ async function fetchFeedStatuses(): Promise<FeedStatus[]> {
 
 // -- Component -----------------------------------------------------------------
 
-export default function AdminDashboard() {
+function SystemHealthPanel() {
   const {
     data: kpis,
     isLoading: kpisLoading,
@@ -534,7 +538,7 @@ export default function AdminDashboard() {
             to="/admin/feeds"
             className="inline-flex items-center gap-1 text-xs font-medium text-accent hover:text-accent-hover font-sans transition-colors"
           >
-            View all
+            View / Retry
             <ExternalLink className="w-3 h-3" />
           </Link>
         </div>
@@ -598,6 +602,43 @@ function KpiCard({
       <p className={`text-xs font-sans mt-1 ${subTone === 'warn' ? 'text-[#A97A4C]' : 'text-graphite/50'}`}>
         {sub}
       </p>
+    </div>
+  );
+}
+
+export default function AdminDashboard() {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-semibold text-graphite font-sans">Control Center</h1>
+          <p className="text-graphite/60 font-sans mt-1 text-sm">
+            Platform health, feeds, feature flags, API status, and audit telemetry.
+          </p>
+        </div>
+      </div>
+      
+      <Tabs defaultTab="health">
+        <TabList>
+          <Tab id="health">System Health</Tab>
+          <Tab id="api">API Status</Tab>
+          <Tab id="flags">Feature Flags</Tab>
+          <Tab id="audit">Audit Log</Tab>
+        </TabList>
+        
+        <TabPanel id="health" className="pt-6">
+          <SystemHealthPanel />
+        </TabPanel>
+        <TabPanel id="api" className="pt-6">
+          <AdminApiControls hideHeader />
+        </TabPanel>
+        <TabPanel id="flags" className="pt-6">
+          <AdminFeatureFlags hideHeader />
+        </TabPanel>
+        <TabPanel id="audit" className="pt-6">
+          <AdminAuditLog hideHeader />
+        </TabPanel>
+      </Tabs>
     </div>
   );
 }

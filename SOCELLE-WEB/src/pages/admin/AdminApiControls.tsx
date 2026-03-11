@@ -34,7 +34,7 @@ function timeAgo(iso: string | null): string {
 
 // ── Component ─────────────────────────────────────────────────────────────
 
-export default function AdminApiControls() {
+export default function AdminApiControls({ hideHeader = false }: { hideHeader?: boolean } = {}) {
   const { controls, isDemo, isLoading, isError, error: errorObj, refetch } =
     useEdgeFunctionControls();
   const toggleMutation = useToggleEdgeFunction();
@@ -130,31 +130,33 @@ export default function AdminApiControls() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div>
-            <h1 className="text-3xl font-semibold text-graphite font-sans">
-              API Controls
-            </h1>
-            <p className="text-graphite/60 font-sans mt-1 text-sm">
-              {enabledCount} enabled, {controls.length - enabledCount} disabled
-            </p>
+      {!hideHeader && (
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-3xl font-semibold text-graphite font-sans">
+                API Controls
+              </h1>
+              <p className="text-graphite/60 font-sans mt-1 text-sm">
+                {enabledCount} enabled, {controls.length - enabledCount} disabled
+              </p>
+            </div>
+            {isDemo && (
+              <span className="text-[10px] font-semibold bg-[#A97A4C]/10 text-[#A97A4C] px-2 py-0.5 rounded-full">
+                DEMO
+              </span>
+            )}
           </div>
-          {isDemo && (
-            <span className="text-[10px] font-semibold bg-[#A97A4C]/10 text-[#A97A4C] px-2 py-0.5 rounded-full">
-              DEMO
-            </span>
-          )}
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-soft text-graphite hover:bg-accent-soft font-sans text-sm transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh
-        </button>
-      </div>
+      )}
 
       {/* DEMO banner */}
       {isDemo && (

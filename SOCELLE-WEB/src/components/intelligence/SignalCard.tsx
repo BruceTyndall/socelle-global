@@ -7,11 +7,16 @@ import {
   DollarSign,
   AlertTriangle,
   GraduationCap,
+  ChevronDown,
+  ChevronUp,
+  Layers,
 } from 'lucide-react';
+import { useState } from 'react';
 import type { IntelligenceSignal, SignalType } from '../../lib/intelligence/types';
 import TrendIndicator from './TrendIndicator';
 import FreshnessLabel from './FreshnessLabel';
 import ImpactBadge from './ImpactBadge';
+import { CrossHubActionDispatcher } from '../CrossHubActionDispatcher';
 
 // ── Icon map ────────────────────────────────────────────────────────
 const SIGNAL_ICONS: Partial<Record<SignalType, React.ElementType>> = {
@@ -66,9 +71,12 @@ interface SignalCardProps {
 }
 
 export default function SignalCard({ signal }: SignalCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   const Icon = SIGNAL_ICONS[signal.signal_type] ?? BarChart3;
   const typeLabel = SIGNAL_LABELS[signal.signal_type] ?? humanizeSignalType(signal.signal_type);
   const hasHeroImage = !!signal.hero_image_url;
+  const similarCount = signal.similar_signals?.length ?? 0;
 
   return (
     <article className="group relative bg-mn-card rounded-xl border border-graphite/8 overflow-hidden transition-all duration-200 hover:border-graphite/16 hover:shadow-soft hover:-translate-y-0.5">
@@ -177,8 +185,78 @@ export default function SignalCard({ signal }: SignalCardProps) {
           )}
         </div>
 
-        {/* Freshness */}
-        <FreshnessLabel updatedAt={signal.updated_at} />
+        {/* Footer: Freshness & Actions */}
+        <div className="flex items-center justify-between border-t border-graphite/8 pt-3 mt-3">
+          <FreshnessLabel updatedAt={signal.updated_at} />
+          
+          <div className="flex items-center gap-2">
+            <CrossHubActionDispatcher 
+              compact 
+              signal={{
+                id: signal.id,
+                title: signal.title,
+                category: signal.category ?? signal.signal_type,
+                delta: signal.magnitude,
+                confidence: signal.confidence_score ?? 0,
+                source: signal.source_name ?? signal.source ?? 'market_signals',
+              }}
+            />
+
+            {similarCount > 0 && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsExpanded(!isExpanded);
+                }}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium font-sans transition-colors ${
+                  isExpanded
+                    ? 'bg-accent/10 text-accent'
+                    : 'bg-graphite/[0.05] text-graphite/60 hover:bg-graphite/[0.08]'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                {similarCount} similar source{similarCount === 1 ? '' : 's'}
+                {isExpanded ? (
+                  <ChevronUp className="w-3.5 h-3.5 ml-0.5" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+        
+        {/* Expanded Similar Signals */}
+        {isExpanded && similarCount > 0 && (
+          <div className="mt-4 pt-4 border-t border-graphite/8 space-y-3">
+            {signal.similar_signals!.map((sim) => (
+              <a
+                key={sim.id}
+                href={`/intelligence/signals/${sim.id}`}
+                className="block group/sim hover:bg-graphite/[0.02] -mx-2 px-2 py-2 rounded-lg transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-start gap-2 mb-1">
+                  <h4 className="text-sm font-sans font-medium text-graphite/80 group-hover/sim:text-accent transition-colors line-clamp-1">
+                    {sim.title}
+                  </h4>
+                  <span className="shrink-0 text-[10px] text-graphite/40 font-sans mt-0.5">
+                    {new Date(sim.updated_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] font-sans text-graphite/50">
+                  {sim.source && <span>{sim.source}</span>}
+                  {sim.provenance_tier && (
+                    <span className="px-1.5 py-0.5 rounded bg-graphite/[0.06] text-graphite/60 font-medium">
+                      Tier {sim.provenance_tier}
+                    </span>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </article>
   );
