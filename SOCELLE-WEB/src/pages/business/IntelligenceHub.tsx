@@ -23,6 +23,8 @@ import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPan
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
 import { TierGate, CreditGate } from '../../components/gates';
 import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
+import IntelligenceDashboardSkeleton from '../../components/intelligence/IntelligenceDashboardSkeleton';
+import SignalErrorState from '../../components/intelligence/SignalErrorState';
 
 // ── Cloud Modules (10) ──────────────────────────────────────────────
 import {
@@ -86,53 +88,9 @@ const AI_TOOL_DEFS: AIToolDef[] = [
   { key: 'mocra', label: 'MoCRA', icon: Scale },
 ];
 
-// ── Skeleton ────────────────────────────────────────────────────────
+// ── Skeleton (uses shared IntelligenceDashboardSkeleton) ────────────
 
-function HubSkeleton() {
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 pb-24">
-      <div className="animate-pulse space-y-6">
-        <div className="h-10 bg-gray-200 rounded-xl w-64" />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-24 bg-gray-200 rounded-xl" />
-          ))}
-        </div>
-        <div className="h-12 bg-gray-200 rounded-xl" />
-        <div className="space-y-3">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-14 bg-gray-200 rounded-xl" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Error State ─────────────────────────────────────────────────────
-
-function HubError({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
-      <div className="bg-white rounded-xl border border-[#8E6464]/20 p-12 text-center">
-        <AlertTriangle className="w-10 h-10 mx-auto mb-4 text-[#8E6464]" />
-        <h2 className="font-sans text-lg font-semibold text-[#141418] mb-2">
-          Unable to load intelligence data
-        </h2>
-        <p className="text-sm font-sans text-gray-500 mb-6">
-          There was a problem fetching market signals. Please try again.
-        </p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#6E879B] text-white text-sm font-sans font-medium hover:bg-[#5A7185] transition-colors"
-        >
-          Retry
-        </button>
-      </div>
-    </div>
-  );
-}
+// ── Error State (uses shared SignalErrorState) ──────────────────────
 
 // ── Main Component ──────────────────────────────────────────────────
 
@@ -162,7 +120,7 @@ export default function IntelligenceHub() {
         <Helmet>
           <title>Intelligence Hub | Socelle</title>
         </Helmet>
-        <HubSkeleton />
+        <IntelligenceDashboardSkeleton />
       </>
     );
   }

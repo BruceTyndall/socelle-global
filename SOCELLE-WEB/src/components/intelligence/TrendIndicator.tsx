@@ -13,7 +13,7 @@ export default function TrendIndicator({ direction, magnitude, suffix }: TrendIn
 
   if (direction === 'up') {
     return (
-      <span className="inline-flex items-center gap-1 text-emerald-400 text-sm font-semibold font-sans">
+      <span className="inline-flex items-center gap-1 text-signal-up text-sm font-semibold font-sans">
         <ArrowUp className="w-3.5 h-3.5" />
         <span>+{label}</span>
       </span>
@@ -22,7 +22,7 @@ export default function TrendIndicator({ direction, magnitude, suffix }: TrendIn
 
   if (direction === 'down') {
     return (
-      <span className="inline-flex items-center gap-1 text-red-400 text-sm font-semibold font-sans">
+      <span className="inline-flex items-center gap-1 text-signal-down text-sm font-semibold font-sans">
         <ArrowDown className="w-3.5 h-3.5" />
         <span>-{label}</span>
       </span>
@@ -31,7 +31,7 @@ export default function TrendIndicator({ direction, magnitude, suffix }: TrendIn
 
   // stable
   return (
-    <span className="inline-flex items-center gap-1 text-white/50 text-sm font-semibold font-sans">
+    <span className="inline-flex items-center gap-1 text-graphite/40 text-sm font-semibold font-sans">
       <Minus className="w-3.5 h-3.5" />
       <span>{label}</span>
     </span>

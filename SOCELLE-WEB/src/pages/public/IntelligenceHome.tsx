@@ -8,6 +8,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import SignalEmptyState from '../../components/intelligence/SignalEmptyState';
 import {
   TrendingUp,
   TrendingDown,
@@ -233,16 +234,20 @@ function DemoBanner() {
 
 function PageSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div
+      className="space-y-6 animate-pulse"
+      aria-busy="true"
+      aria-label="Loading intelligence"
+    >
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-24 bg-gray-100 rounded-xl" />
+          <div key={i} className="h-24 bg-graphite/6 rounded-xl" />
         ))}
       </div>
-      <div className="h-8 bg-gray-100 rounded-lg w-64" />
+      <div className="h-8 bg-graphite/6 rounded-lg w-64" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-40 bg-gray-100 rounded-2xl" />
+          <div key={i} className="h-40 bg-graphite/6 rounded-2xl" />
         ))}
       </div>
     </div>
@@ -391,27 +396,7 @@ export default function IntelligenceHome() {
 
               {/* Empty state (no signals in DB yet) */}
               {signals.length === 0 && (
-                <div className="py-16 text-center">
-                  <div className="relative w-16 h-16 mx-auto mb-6">
-                    <div className="absolute inset-0 rounded-full border border-[#6E879B]/20" />
-                    <div className="absolute inset-3 rounded-full border border-[#6E879B]/15" />
-                    <div className="absolute inset-[26px] rounded-full bg-[#6E879B]/20" />
-                  </div>
-                  <h3 className="font-sans font-semibold text-[#141418] text-lg mb-2">
-                    Signal intelligence loading
-                  </h3>
-                  <p className="text-sm font-sans text-gray-500 max-w-sm mx-auto mb-6">
-                    Market signals are collected from 37+ professional beauty data sources.
-                    Sign in to access your live intelligence feed.
-                  </p>
-                  <Link
-                    to="/request-access"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#141418] text-white font-sans font-medium text-sm hover:bg-[#2A2A30] transition-colors"
-                  >
-                    Request Access
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                <SignalEmptyState variant="no-signals" />
               )}
 
               {/* Bottom CTA */}

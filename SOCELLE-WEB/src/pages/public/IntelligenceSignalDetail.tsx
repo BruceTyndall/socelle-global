@@ -22,6 +22,8 @@ import { supabase } from '../../lib/supabase';
 import { getSignalImage } from '../../lib/intelligence/useSignalImage';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
 import { buildCanonical } from '../../lib/seo';
+import SignalDetailSkeleton from '../../components/intelligence/SignalDetailSkeleton';
+import SignalErrorState from '../../components/intelligence/SignalErrorState';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -126,50 +128,7 @@ async function fetchSignal(id: string): Promise<IntelligenceSignal> {
   };
 }
 
-// ── Loading skeleton ─────────────────────────────────────────────────
-
-function LoadingSkeleton() {
-  return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-pulse">
-      <div className="h-4 w-24 bg-graphite/8 rounded mb-8" />
-      <div className="h-3 w-32 bg-graphite/6 rounded mb-4" />
-      <div className="h-10 w-full bg-graphite/8 rounded mb-3" />
-      <div className="h-10 w-3/4 bg-graphite/8 rounded mb-8" />
-      <div className="space-y-3">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className={`h-4 bg-graphite/6 rounded ${i === 3 ? 'w-2/3' : 'w-full'}`} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Error state ──────────────────────────────────────────────────────
-
-function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
-  return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-      <p className="text-sm font-semibold text-graphite/45 uppercase tracking-wide mb-2">
-        Signal unavailable
-      </p>
-      <p className="text-sm text-graphite/30 mb-6">{message}</p>
-      <div className="flex items-center justify-center gap-4">
-        <button
-          onClick={onRetry}
-          className="px-4 py-2 text-sm font-medium text-accent border border-accent/20 rounded-lg hover:bg-accent/5 transition-colors"
-        >
-          Retry
-        </button>
-        <Link
-          to="/intelligence"
-          className="px-4 py-2 text-sm font-medium text-graphite/50 hover:text-graphite transition-colors"
-        >
-          ← Back to feed
-        </Link>
-      </div>
-    </div>
-  );
-}
+// ── Loading + Error states use shared components ─────────────────────
 
 // ── Main component ───────────────────────────────────────────────────
 
@@ -219,11 +178,12 @@ export default function IntelligenceSignalDetail() {
           </Link>
 
           {/* Loading */}
-          {isLoading && <LoadingSkeleton />}
+          {isLoading && <SignalDetailSkeleton />}
 
           {/* Error */}
           {error && !isLoading && (
-            <ErrorState
+            <SignalErrorState
+              variant="load-failed"
               message={(error as Error).message}
               onRetry={refetch}
             />

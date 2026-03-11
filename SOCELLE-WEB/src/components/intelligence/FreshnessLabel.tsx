@@ -23,7 +23,7 @@ function getRelativeTime(iso: string): string {
 
 export default function FreshnessLabel({ updatedAt }: FreshnessLabelProps) {
   return (
-    <span className="inline-flex items-center gap-1 text-white/40 text-xs font-sans">
+    <span className="inline-flex items-center gap-1 text-graphite/35 text-xs font-sans">
       <Clock className="w-3 h-3" />
       {getRelativeTime(updatedAt)}
     </span>
