@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { mockEducationContent, mockEducationProgress } from './mockContent';
+import { mockEducationContent, mockEducationProgress } from '../../__fixtures__/mockContent';
 import type {
   EducationContent,
   EducationProgress,

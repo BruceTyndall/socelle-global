@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useBrandTier } from '../../lib/brandTiers/useBrandTier';
-import { getTierPricing, getTierFeatures } from '../../lib/brandTiers/mockTierData';
+import { getTierPricing, getTierFeatures } from '../../__fixtures__/mockTierData';
 import type { BrandTier } from '../../lib/brandTiers/types';
 
 // ── FAQ Data ─────────────────────────────────────────────────────

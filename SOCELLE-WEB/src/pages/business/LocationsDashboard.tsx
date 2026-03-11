@@ -19,7 +19,7 @@ import {
   Zap,
   Star,
 } from 'lucide-react';
-import { getLocationSummaries, getCrossLocationInsights } from '../../lib/locations/mockLocations';
+import { getLocationSummaries, getCrossLocationInsights } from '../../__fixtures__/mockLocations';
 import type { LocationSummary, CrossLocationInsight } from '../../lib/locations/types';
 
 const BUSINESS_TYPE_LABELS: Record<string, string> = {

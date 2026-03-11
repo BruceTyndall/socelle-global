@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import type { TreatmentProtocol, ProtocolCategory, SkillLevel, CEProgress } from './types';
-import { getProtocols, getProtocolBySlug, getCEProgress as getMockCEProgress } from './mockProtocols';
+import { getProtocols, getProtocolBySlug, getCEProgress as getMockCEProgress } from '../../__fixtures__/mockProtocols';
 
 // ── Filter State ────────────────────────────────────────────────────
 

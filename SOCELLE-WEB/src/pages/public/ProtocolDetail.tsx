@@ -19,7 +19,7 @@ import {
 import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
-import { getProtocolBySlug, getProtocols } from '../../lib/protocols/mockProtocols';
+import { getProtocolBySlug, getProtocols } from '../../__fixtures__/mockProtocols';
 import { CATEGORY_LABELS, SKILL_LABELS } from '../../lib/protocols/useProtocols';
 import type { ProtocolCategory, SkillLevel } from '../../lib/protocols/types';
 

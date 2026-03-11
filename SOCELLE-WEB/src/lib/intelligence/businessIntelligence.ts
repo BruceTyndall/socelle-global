@@ -4,8 +4,8 @@
 
 import type { IntelligenceSignal } from './types';
 import type { EducationContent } from '../education/types';
-import { mockSignals } from './mockSignals';
-import { mockEducationContent } from '../education/mockContent';
+import { mockSignals } from '../../__fixtures__/mockSignals';
+import { mockEducationContent } from '../../__fixtures__/mockContent';
 
 // ── Types ──────────────────────────────────────────────────────────
 

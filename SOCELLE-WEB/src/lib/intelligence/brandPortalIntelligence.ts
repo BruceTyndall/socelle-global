@@ -4,7 +4,7 @@
 // DATA ACCESS RULE: brand-specific data + anonymized category data (no competitor names)
 
 import type { IntelligenceSignal } from './types';
-import { mockSignals } from './mockSignals';
+import { mockSignals } from '../../__fixtures__/mockSignals';
 
 // ── Types ──────────────────────────────────────────────────────────
 

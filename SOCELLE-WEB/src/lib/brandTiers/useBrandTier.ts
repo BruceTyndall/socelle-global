@@ -9,7 +9,7 @@ import {
   canAccessFeature,
   getRequiredTier,
   getTierFeatures,
-} from './mockTierData';
+} from '../../__fixtures__/mockTierData';
 
 interface UseBrandTierReturn {
   /** Current subscription tier */
