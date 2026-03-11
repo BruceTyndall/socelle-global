@@ -1,0 +1,83 @@
+{
+  "wo_id": "GOVERNANCE-PART-C-MERGE",
+  "description": "Part C of 4-part governance directive: rebase+merge all 5 open PRs",
+  "timestamp": "2026-03-10T21:49:00Z",
+  "baseline": {
+    "commit": "c824776",
+    "tsc_exit": 0,
+    "build_exit": 0,
+    "build_duration_s": 19.04
+  },
+  "merges": [
+    {
+      "pr": 1,
+      "branch": "phase0/cleanup-and-migration",
+      "commit": "c5761e6",
+      "tag": "lkg-2026-03-10-pr1-cleanup",
+      "tsc_exit": 0,
+      "build_exit": 0,
+      "build_duration_s": 16.55,
+      "conflicts": false,
+      "files_changed": 22,
+      "net_new": "Mock data __fixtures__ reorganization, devOnly guard"
+    },
+    {
+      "pr": 5,
+      "branch": "phase0/pricing-and-gates",
+      "commit": "ce1e8bd",
+      "tag": "lkg-2026-03-10-pr5-pricing",
+      "tsc_exit": 0,
+      "build_exit": 0,
+      "build_duration_s": 15.67,
+      "conflicts": false,
+      "files_changed": 10,
+      "post_merge_fix": "PaywallGate.tsx line 15: AI-powered → intelligence-driven",
+      "net_new": "V2-PLAT-04 onboarding pages, V2-PLAT-05 tier-aware gates, DB-backed pricing"
+    },
+    {
+      "pr": 2,
+      "branch": "phase0/design-system-cleanup",
+      "commit": "75257b8",
+      "tag": "lkg-2026-03-10-pr2-design",
+      "tsc_exit": 0,
+      "build_exit": 0,
+      "build_duration_s": 16.09,
+      "conflicts": false,
+      "files_changed": 7,
+      "net_new": "WCAG aria-busy on skeletons, ErrorBoundary+ErrorState in ui/ canonical path"
+    },
+    {
+      "pr": 3,
+      "branch": "phase0/ai-security-lockdown",
+      "commit": "b01e88b",
+      "tag": "lkg-2026-03-10-pr3-security",
+      "tsc_exit": 0,
+      "build_exit": 0,
+      "build_duration_s": 15.99,
+      "conflicts": false,
+      "files_changed": 12,
+      "net_new": "7-gate security pipeline, 6 _shared/ modules, ai_audit_log migration"
+    },
+    {
+      "pr": 4,
+      "branch": "phase0/intelligence-ux-polish",
+      "commit": "0376111",
+      "tag": "lkg-2026-03-10-pr4-intel-ux",
+      "tsc_exit": 0,
+      "build_exit": 0,
+      "build_duration_s": 16.50,
+      "conflicts": false,
+      "files_changed": 11,
+      "net_new": "5 dedicated intelligence skeleton/error/empty components"
+    }
+  ],
+  "final_state": {
+    "commit": "0376111",
+    "tsc_exit": 0,
+    "build_exit": 0,
+    "build_duration_s": 15.93,
+    "open_prs": 0,
+    "tags_created": 5
+  },
+  "overall": "PASS"
+}
