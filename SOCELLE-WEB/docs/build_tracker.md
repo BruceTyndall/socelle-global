@@ -180,7 +180,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 |-------|-------|------|--------|------------|------------|----------|-------|
 | CMS-SEED-01 | Seed 6 published cms_posts → editorial rail LIVE; 6 rows inserted (2 featured), migration 000033 applied, useStories confirmed LIVE | Team 2 | DONE | DB-TYPES-02 | `docs/qa/verify_CMS-SEED-01.json` | `fe64d8e` | db+docs |
 | CMS-WO-07 | story_drafts table + RLS + auto-ingest pipeline (feeds→drafts, not direct publish) | Team 2 | OPEN | CMS-SEED-01 | `docs/qa/verify_CMS-WO-07.json` | — | — |
-| CMS-WO-08 | Editorial approval workflow (draft→review→approve→publish, admin UI) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-08.json` | — | — |
+| CMS-WO-08 | Editorial approval workflow (draft→review→approve→publish, admin UI) | Team 2 | COMPLETE | CMS-WO-07 | `docs/qa/verify_CMS-WO-08_2026-03-11.json` | — | — |
 | CMS-WO-09 | WordPress-grade blog (scheduled_at, editorial calendar, OG/Twitter cards, schema.org Article, newsletter export, auto-sitemap) | Team 2 | OPEN | CMS-WO-08 | `docs/qa/verify_CMS-WO-09.json` | — | — |
 | CMS-WO-10 | content_placements table + Merchandising Console (owner changes any placement without code deploy) | Team 2 | OPEN | CMS-WO-07 | `docs/qa/verify_CMS-WO-10.json` | — | — |
 | CMS-WO-11 | Daily Brief + Weekly Market Memo edge fns + pg_cron → story_drafts (not auto-publish) | Team 2 | OPEN | CMS-WO-07, CMS-WO-10 | `docs/qa/verify_CMS-WO-11.json` | — | — |

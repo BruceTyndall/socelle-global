@@ -7,7 +7,7 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle, XCircle, ExternalLink, RefreshCw, FileText } from 'lucide-react';
+import { CheckCircle, XCircle, ExternalLink, RefreshCw, FileText, UploadCloud } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 
@@ -83,14 +83,18 @@ function DraftRow({
   draft,
   onApprove,
   onReject,
+  onPublish,
   approving,
   rejecting,
+  publishing,
 }: {
   draft: StoryDraft;
   onApprove: (id: string) => void;
   onReject:  (id: string, reason: string) => void;
+  onPublish: (id: string) => void;
   approving: boolean;
   rejecting: boolean;
+  publishing: boolean;
 }) {
   const [showReject, setShowReject] = useState(false);
   const [reason, setReason]         = useState('');
@@ -148,24 +152,38 @@ function DraftRow({
           </div>
         </div>
 
-        {/* Actions — pending only */}
-        {isPending && (
+        {/* Actions — pending & approved */}
+        {(isPending || draft.status === 'approved') && (
           <div className="flex flex-col gap-1.5 shrink-0">
-            <button
-              onClick={() => onApprove(draft.id)}
-              disabled={approving}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-signal-up bg-signal-up/8 hover:bg-signal-up/14 rounded transition-colors disabled:opacity-50"
-            >
-              <CheckCircle className="w-3.5 h-3.5" aria-hidden />
-              Approve
-            </button>
-            <button
-              onClick={() => setShowReject((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-signal-down bg-signal-down/8 hover:bg-signal-down/14 rounded transition-colors"
-            >
-              <XCircle className="w-3.5 h-3.5" aria-hidden />
-              Reject
-            </button>
+            {isPending && (
+              <>
+                <button
+                  onClick={() => onApprove(draft.id)}
+                  disabled={approving}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-signal-up bg-signal-up/8 hover:bg-signal-up/14 rounded transition-colors disabled:opacity-50"
+                >
+                  <CheckCircle className="w-3.5 h-3.5" aria-hidden />
+                  Approve
+                </button>
+                <button
+                  onClick={() => setShowReject((v) => !v)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-signal-down bg-signal-down/8 hover:bg-signal-down/14 rounded transition-colors"
+                >
+                  <XCircle className="w-3.5 h-3.5" aria-hidden />
+                  Reject
+                </button>
+              </>
+            )}
+            {draft.status === 'approved' && (
+              <button
+                onClick={() => onPublish(draft.id)}
+                disabled={publishing}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-accent bg-accent/10 hover:bg-accent/18 rounded transition-colors disabled:opacity-50"
+              >
+                <UploadCloud className="w-3.5 h-3.5" aria-hidden />
+                Publish
+              </button>
+            )}
           </div>
         )}
 
@@ -300,6 +318,20 @@ export default function AdminStoryDrafts() {
     },
   });
 
+  // ── Publish mutation ───────────────────────────────────────────
+  const publishMutation = useMutation({
+    mutationFn: async (id: string) => {
+      setActionId(id);
+      const { error } = await supabase.rpc('publish_story_draft', { p_draft_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['story_drafts'] });
+      void queryClient.invalidateQueries({ queryKey: ['story_drafts_counts'] });
+      setActionId(null);
+    },
+  });
+
   return (
     <div className="p-6 lg:p-8 max-w-4xl">
       {/* Header */}
@@ -378,8 +410,10 @@ export default function AdminStoryDrafts() {
               draft={draft}
               onApprove={(id) => approveMutation.mutate(id)}
               onReject={(id, reason) => rejectMutation.mutate({ id, reason })}
+              onPublish={(id) => publishMutation.mutate(id)}
               approving={approveMutation.isPending && actionId === draft.id}
               rejecting={rejectMutation.isPending  && actionId === draft.id}
+              publishing={publishMutation.isPending && actionId === draft.id}
             />
           ))}
         </div>
