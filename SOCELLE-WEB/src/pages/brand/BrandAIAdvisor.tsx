@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useChatSession } from '../../lib/ai/useChatSession';
 import type { ChatAction } from '../../lib/ai/types';
+import UpgradeGate from '../../components/UpgradeGate';
 
 /* ── Action icon mapping ──────────────────────────────── */
 function actionIcon(type: ChatAction['type']) {
@@ -101,6 +102,7 @@ export default function BrandAIAdvisor() {
         <meta name="description" content="Your brand intelligence advisor powered by Socelle AI — market positioning, retailer insights, and campaign strategy." />
       </Helmet>
 
+      <UpgradeGate feature="ai_advisor" requiredTier="starter" message="Brand Intelligence Advisor requires a Starter plan or above.">
       <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-10rem)]">
         {/* ── Chat Column (2/3) ─────────────────────────── */}
         <div className="flex-1 lg:flex-[2] flex flex-col bg-white rounded-2xl border border-accent-soft overflow-hidden min-h-0">
@@ -288,6 +290,7 @@ export default function BrandAIAdvisor() {
           </div>
         </div>
       </div>
+      </UpgradeGate>
     </>
   );
 }

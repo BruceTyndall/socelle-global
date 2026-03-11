@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Check, X, ChevronDown, Star, ArrowRight } from 'lucide-react';
+import { Check, X, ChevronDown, Star, ArrowRight, AlertTriangle } from 'lucide-react';
 import { useSubscriptionPlans, type Plan } from '../../modules/_core/hooks/useSubscriptionPlans';
 import { useSubscription } from '../../modules/_core/hooks/useSubscription';
+import { useTier } from '../../hooks/useTier';
 import { useAuth } from '../../lib/auth';
-import { MODULE_META, getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
+import { getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 
@@ -34,13 +35,25 @@ const FAQ_ITEMS = [
   },
 ];
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function getCtaLabel(plan: Plan, isCurrent: boolean, isLoggedIn: boolean, isDowngrade: boolean): string {
+  if (isCurrent) return 'Current Plan';
+  if (plan.price_monthly === 0) return isLoggedIn ? 'Downgrade to Free' : 'Start Free';
+  if (plan.trial_days > 0) return `Start ${plan.trial_days}-Day Trial`;
+  if (plan.price_monthly >= 500) return 'Contact Us';
+  if (isDowngrade) return `Switch to ${plan.name}`;
+  return isLoggedIn ? `Upgrade to ${plan.name}` : 'Upgrade';
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function Pricing() {
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { plans, isLoading } = useSubscriptionPlans();
-  const { plan: currentPlan, status } = useSubscription();
+  const { plan: currentPlan, status, isPastDue, isTrialing } = useSubscription();
+  const { tier } = useTier();
   const { user } = useAuth();
 
   const isSubscribed = status !== 'none' && currentPlan !== null;
@@ -77,9 +90,32 @@ export default function Pricing() {
           <h1 className="text-4xl md:text-5xl font-semibold text-graphite mb-4 max-w-2xl mx-auto leading-tight">
             The right plan for your practice
           </h1>
-          <p className="text-graphite/60 text-lg max-w-xl mx-auto mb-8">
+          <p className="text-graphite/60 text-lg max-w-xl mx-auto mb-6">
             Start free. Upgrade when you need deeper intelligence, more modules, or team access.
           </p>
+
+          {/* Current plan indicator */}
+          {user && (
+            <div className="mb-6">
+              <div className="inline-flex items-center gap-2 bg-white rounded-full border border-graphite/10 px-4 py-2 text-sm">
+                <span className="text-graphite/60">Your plan:</span>
+                <span className="font-semibold text-accent capitalize">
+                  {isSubscribed && currentPlan ? currentPlan.name : tier}
+                </span>
+                {isPastDue && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                    <AlertTriangle className="w-3 h-3" aria-hidden="true" />
+                    Past Due
+                  </span>
+                )}
+                {isTrialing && (
+                  <span className="text-[10px] font-bold bg-accent/10 text-accent px-2 py-0.5 rounded-full">
+                    Trial
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Billing toggle */}
           <div className="inline-flex items-center bg-white rounded-full border border-graphite/10 p-1" role="group" aria-label="Billing period">
@@ -146,25 +182,36 @@ export default function Pricing() {
               {plans.map((plan: Plan) => {
                 const price = billing === 'monthly' ? plan.price_monthly : plan.price_annual;
                 const isCurrent = isSubscribed && currentPlan?.id === plan.id;
+                const isDowngrade = isSubscribed && currentPlan
+                  ? plan.price_monthly < currentPlan.price_monthly
+                  : false;
                 const annualSavings = plan.price_monthly > 0
                   ? Math.round((1 - plan.price_annual / (plan.price_monthly * 12)) * 100)
                   : 0;
+                const ctaLabel = getCtaLabel(plan, isCurrent, !!user, isDowngrade);
+                const ctaLink = plan.price_monthly >= 500
+                  ? '/request-access'
+                  : user ? '/portal/subscription' : '/portal/signup';
 
                 return (
                   <div
                     key={plan.id}
                     className={`relative bg-white rounded-2xl border p-8 flex flex-col ${
-                      plan.is_featured
-                        ? 'border-accent shadow-lg ring-1 ring-accent/20'
-                        : 'border-graphite/10'
+                      isCurrent
+                        ? 'border-accent shadow-lg ring-2 ring-accent/20'
+                        : plan.is_featured
+                          ? 'border-accent shadow-lg ring-1 ring-accent/20'
+                          : 'border-graphite/10'
                     }`}
                   >
-                    {/* Featured badge */}
-                    {plan.is_featured && (
+                    {/* Featured / Current badge */}
+                    {(plan.is_featured || isCurrent) && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="inline-flex items-center gap-1 bg-accent text-white text-[11px] font-semibold px-3 py-1 rounded-full">
+                        <span className={`inline-flex items-center gap-1 text-white text-[11px] font-semibold px-3 py-1 rounded-full ${
+                          isCurrent ? 'bg-signal-up' : 'bg-accent'
+                        }`}>
                           <Star className="w-3 h-3" aria-hidden="true" />
-                          Most Popular
+                          {isCurrent ? 'Your Plan' : 'Most Popular'}
                         </span>
                       </div>
                     )}
@@ -219,35 +266,16 @@ export default function Pricing() {
                       <div className="h-11 flex items-center justify-center bg-graphite/5 text-graphite text-sm font-semibold rounded-full">
                         Current Plan
                       </div>
-                    ) : price === 0 ? (
-                      <Link
-                        to={user ? '/portal/subscription' : '/portal/signup'}
-                        className="h-11 flex items-center justify-center gap-2 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
-                      >
-                        Start Free
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                      </Link>
-                    ) : plan.trial_days > 0 ? (
-                      <Link
-                        to={user ? '/portal/subscription' : '/portal/signup'}
-                        className="h-11 flex items-center justify-center gap-2 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
-                      >
-                        Start {plan.trial_days}-Day Trial
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                      </Link>
-                    ) : plan.price_monthly >= 500 ? (
-                      <Link
-                        to="/request-access"
-                        className="h-11 flex items-center justify-center gap-2 border border-accent text-accent text-sm font-semibold rounded-full hover:bg-accent/5 transition-colors"
-                      >
-                        Contact Us
-                      </Link>
                     ) : (
                       <Link
-                        to={user ? '/portal/subscription' : '/portal/signup'}
-                        className="h-11 flex items-center justify-center gap-2 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
+                        to={ctaLink}
+                        className={`h-11 flex items-center justify-center gap-2 text-sm font-semibold rounded-full transition-colors ${
+                          plan.price_monthly >= 500
+                            ? 'border border-accent text-accent hover:bg-accent/5'
+                            : 'bg-mn-dark text-white hover:bg-graphite'
+                        }`}
                       >
-                        Upgrade
+                        {ctaLabel}
                         <ArrowRight className="w-4 h-4" aria-hidden="true" />
                       </Link>
                     )}
@@ -257,10 +285,14 @@ export default function Pricing() {
             </div>
           )}
 
-          {/* DEMO label */}
+          {/* Data source label */}
           <div className="text-center mt-8">
-            <span className="inline-block text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-              DEMO
+            <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+              !isLoading && plans.length > 0
+                ? 'bg-signal-up/10 text-signal-up'
+                : 'bg-signal-warn/10 text-signal-warn'
+            }`}>
+              {!isLoading && plans.length > 0 ? 'LIVE' : 'DEMO'}
             </span>
           </div>
         </section>
@@ -277,8 +309,15 @@ export default function Pricing() {
                   <tr className="border-b border-graphite/10">
                     <th className="text-left text-sm font-medium text-graphite/50 px-6 py-4">Module</th>
                     {plans.map((p: Plan) => (
-                      <th key={p.id} className="text-center text-sm font-semibold text-graphite px-4 py-4">
+                      <th key={p.id} className={`text-center text-sm font-semibold px-4 py-4 ${
+                        isSubscribed && currentPlan?.id === p.id ? 'text-accent' : 'text-graphite'
+                      }`}>
                         {p.name}
+                        {isSubscribed && currentPlan?.id === p.id && (
+                          <span className="block text-[10px] font-medium text-accent mt-0.5">
+                            (Your plan)
+                          </span>
+                        )}
                       </th>
                     ))}
                   </tr>

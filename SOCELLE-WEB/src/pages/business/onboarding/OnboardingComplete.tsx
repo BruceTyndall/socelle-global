@@ -1,13 +1,32 @@
 import { Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { OnboardingRoleValue } from './OnboardingRole';
+import type { VerticalValue } from './OnboardingVertical';
 import type { InterestValue } from './OnboardingInterests';
+import type { SelectedPlanSlug } from './OnboardingPlanSelect';
 
 const ROLE_LABELS: Record<OnboardingRoleValue, string> = {
   operator: 'Operator',
   provider: 'Provider',
   brand: 'Brand',
   student: 'Student',
+};
+
+const VERTICAL_LABELS: Record<VerticalValue, string> = {
+  day_spa: 'Day Spa',
+  medical_spa: 'Medical Spa',
+  hair_salon: 'Hair Salon',
+  barbershop: 'Barbershop',
+  nail_salon: 'Nail Salon',
+  wellness_center: 'Wellness Center',
+  skincare_brand: 'Skincare',
+  haircare_brand: 'Haircare',
+  professional_tools: 'Professional Tools',
+  cosmetics: 'Cosmetics',
+  esthetics: 'Esthetics',
+  cosmetology: 'Cosmetology',
+  nursing: 'Nursing',
+  business_mgmt: 'Business Management',
 };
 
 const INTEREST_LABELS: Record<InterestValue, string> = {
@@ -23,13 +42,17 @@ const INTEREST_LABELS: Record<InterestValue, string> = {
 
 interface OnboardingCompleteProps {
   role: OnboardingRoleValue | null;
+  vertical?: VerticalValue | null;
   interests: InterestValue[];
+  selectedPlan?: SelectedPlanSlug;
   onFinish: () => void;
 }
 
 export default function OnboardingComplete({
   role,
+  vertical,
   interests,
+  selectedPlan,
   onFinish,
 }: OnboardingCompleteProps) {
   return (
@@ -56,6 +79,14 @@ export default function OnboardingComplete({
             <p className="text-graphite font-medium">{ROLE_LABELS[role]}</p>
           </div>
         )}
+        {vertical && (
+          <div className="bg-white border border-graphite/10 rounded-xl p-4">
+            <p className="text-xs font-medium text-graphite/50 uppercase tracking-wide mb-1">
+              Vertical
+            </p>
+            <p className="text-graphite font-medium">{VERTICAL_LABELS[vertical]}</p>
+          </div>
+        )}
         {interests.length > 0 && (
           <div className="bg-white border border-graphite/10 rounded-xl p-4">
             <p className="text-xs font-medium text-graphite/50 uppercase tracking-wide mb-2">
@@ -71,6 +102,14 @@ export default function OnboardingComplete({
                 </span>
               ))}
             </div>
+          </div>
+        )}
+        {selectedPlan && (
+          <div className="bg-white border border-graphite/10 rounded-xl p-4">
+            <p className="text-xs font-medium text-graphite/50 uppercase tracking-wide mb-1">
+              Selected Plan
+            </p>
+            <p className="text-graphite font-medium capitalize">{selectedPlan.replace(/-/g, ' ')}</p>
           </div>
         )}
       </div>

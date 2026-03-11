@@ -12,7 +12,7 @@
  *   where G_max = 3 gap analyses per calendar month
  *
  * Usage:
- *   Wrap any AI-powered feature (plan wizard, protocol matches, retail attach)
+ *   Wrap any intelligence-driven feature (plan wizard, protocol matches, retail attach)
  *   with <PaywallGate feature="gap_analysis"> ... </PaywallGate>
  *
  *   <PaywallGate feature="gap_analysis">
@@ -27,9 +27,11 @@
 
 import { ReactNode, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import { useSubscription } from '../lib/useSubscription';
+import { useTier, type Tier } from '../hooks/useTier';
 import { PAYMENT_BYPASS } from '../lib/paymentBypass';
 import { Button } from './ui/Button';
 
@@ -71,6 +73,12 @@ interface PaywallGateProps {
    * is shown.
    */
   fallback?: ReactNode;
+
+  /**
+   * Required tier for this gate. When set, uses the tier-based system
+   * from useTier() instead of the binary isPro check.
+   */
+  requiredTier?: Tier;
 
   /**
    * If true, the gate checks access but always renders children.
@@ -122,22 +130,30 @@ export function PaywallGate({
   feature,
   children,
   fallback,
+  requiredTier,
   softGate = false,
   onAllow,
   onBlock,
 }: PaywallGateProps) {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { isPro, loading: subLoading, startCheckout } = useSubscription();
+  const { meetsMinimumTier, isLoading: tierLoading } = useTier();
   const { count: gapCount, loading: countLoading } = useMonthlyGapCount(
     user?.id ?? null
   );
+
+  // Admin bypasses all gates
+  if (isAdmin) {
+    onAllow?.();
+    return <>{children}</>;
+  }
 
   if (PAYMENT_BYPASS) {
     onAllow?.();
     return <>{children}</>;
   }
 
-  const loading = subLoading || countLoading;
+  const loading = subLoading || countLoading || tierLoading;
 
   if (loading) {
     return (
@@ -149,8 +165,14 @@ export function PaywallGate({
 
   // ── Gate evaluation ──────────────────────────────────────────────────────────
 
-  // S_u = active/trialing → always allow
-  if (isPro) {
+  // If a required tier is specified, use tier-based check
+  if (requiredTier && meetsMinimumTier(requiredTier)) {
+    onAllow?.();
+    return <>{children}</>;
+  }
+
+  // S_u = active/trialing → always allow (legacy binary check)
+  if (!requiredTier && isPro) {
     onAllow?.();
     return <>{children}</>;
   }
@@ -264,7 +286,14 @@ function UpgradeCard({ reason, gapCount, gMax, onUpgrade }: UpgradeCardProps) {
         {loading ? 'Redirecting…' : content.cta}
       </Button>
 
-      <p className="text-xs text-graphite/60/70 mt-3">
+      <Link
+        to="/pricing"
+        className="block text-center text-xs font-medium text-accent hover:underline mt-3"
+      >
+        Compare all plans
+      </Link>
+
+      <p className="text-xs text-graphite/40 mt-2 text-center">
         Cancel anytime. No commitment.
       </p>
     </div>

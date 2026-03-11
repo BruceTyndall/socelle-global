@@ -1,113 +1,24 @@
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, X, Star, ChevronDown } from 'lucide-react';
+import { useSubscriptionPlans, type Plan } from '../../modules/_core/hooks/useSubscriptionPlans';
+import { useSubscription } from '../../modules/_core/hooks/useSubscription';
+import { useTier } from '../../hooks/useTier';
+import { useAuth } from '../../lib/auth';
+import { getModuleMeta } from '../../modules/_core/components/UpgradePrompt';
 import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import GlassAccordion from '../../components/sections/GlassAccordion';
 import SiteFooter from '../../components/sections/SiteFooter';
-import { useCmsPage } from '../../lib/useCmsPage';
 import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
 import { usePlatformStats } from '../../lib/usePlatformStats';
 
 /* ══════════════════════════════════════════════════════════════════
-   Pricing — Liquid Glass Visual System
-   Three-tier intelligence pricing for operators and brands
+   Plans — DB-backed pricing page with tier awareness
+   Intelligence-first pricing for operators and brands
    ══════════════════════════════════════════════════════════════════ */
-
-// ── Tier definitions ────────────────────────────────────────────
-interface PricingTier {
-  name: string;
-  price: string;
-  period: string;
-  description: string;
-  features: string[];
-  cta: string;
-  ctaLink: string;
-  featured: boolean;
-}
-
-const TIERS: PricingTier[] = [
-  {
-    name: 'Essentials',
-    price: 'Free',
-    period: 'forever',
-    description:
-      'Basic market signals and community access for licensed operators getting started with intelligence-driven procurement.',
-    features: [
-      'Core market signals (weekly)',
-      'Category trend snapshots',
-      'Multi-brand marketplace access',
-      'Single-cart checkout',
-      'Community forum access',
-      'Basic business profile',
-    ],
-    cta: 'Create free account',
-    ctaLink: '/portal/signup',
-    featured: false,
-  },
-  {
-    name: 'Professional',
-    price: '$149',
-    period: '/mo',
-    description:
-      'Full intelligence suite with competitive benchmarks, protocol library, and priority support for serious operators.',
-    features: [
-      'Real-time market signals (daily)',
-      'Full competitive benchmarks',
-      'Peer comparison dashboard',
-      'Treatment protocol library',
-      'Pricing optimization tools',
-      'Vendor performance analytics',
-      'Reorder intelligence alerts',
-      'Priority email support',
-    ],
-    cta: 'Start Professional',
-    ctaLink: '/request-access',
-    featured: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: 'pricing',
-    description:
-      'Dedicated intelligence, API access, custom integrations, and white-glove account management for multi-location operators.',
-    features: [
-      'Everything in Professional',
-      'Dedicated intelligence analyst',
-      'Custom data integrations',
-      'Enterprise API access',
-      'Multi-location management',
-      'Custom reporting dashboards',
-      'Quarterly business reviews',
-      'Dedicated account manager',
-    ],
-    cta: 'Contact Sales',
-    ctaLink: '/request-access',
-    featured: false,
-  },
-];
-
-// ── Feature comparison ──────────────────────────────────────────
-interface ComparisonRow {
-  feature: string;
-  essentials: string;
-  professional: string;
-  enterprise: string;
-}
-
-const COMPARISON: ComparisonRow[] = [
-  { feature: 'Market signals', essentials: 'Weekly', professional: 'Daily', enterprise: 'Real-time' },
-  { feature: 'Competitive benchmarks', essentials: 'Limited', professional: 'Full', enterprise: 'Full + Custom' },
-  { feature: 'Peer comparison', essentials: '--', professional: 'Included', enterprise: 'Included' },
-  { feature: 'Protocol library', essentials: '--', professional: 'Full access', enterprise: 'Full + Custom' },
-  { feature: 'Marketplace access', essentials: 'Included', professional: 'Included', enterprise: 'Included' },
-  { feature: 'Pricing optimization', essentials: '--', professional: 'Included', enterprise: 'Included' },
-  { feature: 'API access', essentials: '--', professional: '--', enterprise: 'Included' },
-  { feature: 'Multi-location support', essentials: '--', professional: '--', enterprise: 'Included' },
-  { feature: 'Dedicated account manager', essentials: '--', professional: '--', enterprise: 'Included' },
-  { feature: 'Support', essentials: 'Community', professional: 'Priority email', enterprise: 'Dedicated' },
-];
 
 // ── FAQ items ───────────────────────────────────────────────────
 const FAQ_ITEMS = [
@@ -149,11 +60,40 @@ const FAQ_ITEMS = [
   },
 ];
 
-export default function Pricing() {
-  const { isLive: _cmsLive } = useCmsPage('plans');
+// ── Helpers ──────────────────────────────────────────────────────
+
+function getCtaLabel(plan: Plan, isCurrent: boolean, isLoggedIn: boolean): string {
+  if (isCurrent) return 'Current Plan';
+  if (plan.price_monthly === 0) return isLoggedIn ? 'Downgrade to Free' : 'Create free account';
+  if (plan.trial_days > 0) return `Start ${plan.trial_days}-Day Trial`;
+  if (plan.price_monthly >= 500) return 'Contact Sales';
+  return isLoggedIn ? `Upgrade to ${plan.name}` : `Start ${plan.name}`;
+}
+
+function getCtaLink(plan: Plan, isLoggedIn: boolean): string {
+  if (plan.price_monthly >= 500) return '/request-access';
+  return isLoggedIn ? '/portal/subscription' : '/portal/signup';
+}
+
+// ── Page ─────────────────────────────────────────────────────────
+
+export default function Plans() {
+  const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
+  const { plans, isLoading: plansLoading } = useSubscriptionPlans();
+  const { plan: currentPlan, status, isPastDue, isTrialing } = useSubscription();
+  const { tier, isDemo: tierIsDemo } = useTier();
+  const { user } = useAuth();
   const { totalSignals, totalFeeds, isLive: feedsLive } = useDataFeedStats();
   const { stats, isLive: statsLive } = usePlatformStats();
   const socialProofLive = feedsLive || statsLive;
+  const isSubscribed = status !== 'none' && currentPlan !== null;
+
+  // All unique module keys across all plans
+  const allModuleKeys = useMemo(() => {
+    const keys = new Set<string>();
+    plans.forEach((p) => p.modules_included?.forEach((m: string) => keys.add(m)));
+    return Array.from(keys);
+  }, [plans]);
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
@@ -161,7 +101,7 @@ export default function Pricing() {
         <title>Plans — Socelle</title>
         <meta
           name="description"
-          content="Intelligence that scales with your business. Free essentials, full professional suite at $149/mo, and custom enterprise plans for multi-location operators."
+          content="Intelligence that scales with your business. Choose the right plan for your professional beauty business."
         />
         <meta property="og:title" content="Plans — Socelle" />
         <meta
@@ -191,294 +131,410 @@ export default function Pricing() {
             ]
           }
         `}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'ItemList',
-          name: 'Socelle Plans',
-          description: 'Intelligence subscription tiers for professional beauty operators and brands.',
-          url: 'https://socelle.com/plans',
-          numberOfItems: TIERS.length,
-          itemListElement: TIERS.map((tier, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            item: {
-              '@type': 'Product',
-              name: `Socelle ${tier.name}`,
-              description: tier.description,
-              offers: {
-                '@type': 'Offer',
-                price: tier.price === 'Free' ? '0' : tier.price === 'Custom' ? undefined : tier.price.replace('$', ''),
-                priceCurrency: 'USD',
-                ...(tier.price !== 'Custom' && { availability: 'https://schema.org/InStock' }),
-              },
-            },
-          })),
-        })}</script>
       </Helmet>
       <MainNav />
 
       <main id="main-content">
-      {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative bg-mn-bg py-20 lg:py-28 overflow-hidden">
-        <img
-          src="/images/brand/photos/21.svg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none select-none"
-        />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
-                PLANS
-              </p>
-            </BlockReveal>
-            <WordReveal
-              text="Plans & Access"
-              as="h1"
-              className="font-sans font-semibold text-hero text-graphite mb-7 justify-center"
-            />
-            <BlockReveal delay={200}>
-              <p className="text-body-lg text-graphite/60 max-w-xl mx-auto mb-10">
-                Choose your access level. Upgrade when you need deeper intelligence and benchmarks.
-              </p>
-            </BlockReveal>
-            <BlockReveal delay={350}>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/portal/signup" className="btn-mineral-primary">
-                  Get Intelligence Access
-                  <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
-                </Link>
-                <Link to="/brand/apply" className="btn-mineral-secondary">
-                  Claim Your Brand Page
-                </Link>
-              </div>
-            </BlockReveal>
-            {/* W12-02: DEMO badge — pricing tiers are hardcoded, not DB-connected */}
-            <BlockReveal delay={450}>
-              <div className="flex justify-center mt-6">
-                <span className="inline-flex items-center gap-2 text-xs font-medium text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 font-sans">
-                  <span className="inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
-                  Preview Pricing — Plans subject to change
-                </span>
-              </div>
-            </BlockReveal>
-          </div>
-        </div>
-      </section>
+        {/* ── Hero ──────────────────────────────────────────────────── */}
+        <section className="relative bg-mn-bg py-20 lg:py-28 overflow-hidden">
+          <img
+            src="/images/brand/photos/21.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none select-none"
+          />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="max-w-3xl mx-auto text-center">
+              <BlockReveal>
+                <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-5">
+                  PLANS
+                </p>
+              </BlockReveal>
+              <WordReveal
+                text="Plans & Access"
+                as="h1"
+                className="font-sans font-semibold text-hero text-graphite mb-7 justify-center"
+              />
+              <BlockReveal delay={200}>
+                <p className="text-body-lg text-graphite/60 max-w-xl mx-auto mb-8">
+                  Choose your access level. Upgrade when you need deeper intelligence and benchmarks.
+                </p>
+              </BlockReveal>
 
-      {/* ── Social Proof Strip ───────────────────────────────────── */}
-      <section className="border-y border-graphite/6 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-            {[
-              { value: feedsLive ? totalSignals.toLocaleString() : '--', label: 'Signals tracked' },
-              { value: statsLive ? stats.brandsCount.toLocaleString() : '--', label: 'Verified brands' },
-              { value: feedsLive ? totalFeeds.toLocaleString() : '--', label: 'Data sources' },
-            ].map((item) => (
-              <div key={item.label} className="text-center">
-                <p className="font-sans font-semibold text-2xl text-graphite">{item.value}</p>
-                <p className="text-xs text-graphite/45 font-sans mt-0.5">{item.label}</p>
-              </div>
-            ))}
-            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${socialProofLive ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-warn/10 text-signal-warn'}`}>
-              {socialProofLive ? 'LIVE' : 'DEMO'}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Pricing Cards ────────────────────────────────────────── */}
-      <section className="pb-20 lg:pb-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {TIERS.map((tier, i) => (
-              <BlockReveal key={tier.name} delay={i * 100}>
-                <div
-                  className={`relative flex flex-col h-full rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-md ${tier.featured
-                    ? 'bg-white/60 backdrop-blur-[12px] border-2 border-accent/30 shadow-md'
-                    : 'bg-white/60 backdrop-blur-[12px] border border-white/30'
-                    }`}
-                >
-                  {tier.featured && (
-                    <div className="h-[3px] bg-accent" />
-                  )}
-                  <div className="p-8 lg:p-10 flex-1 flex flex-col">
-                    <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-3">
-                      {tier.name}
-                    </p>
-                    <div className="flex items-baseline gap-1 mb-3">
-                      <span className="font-sans font-semibold text-[2.5rem] text-graphite leading-none">
-                        {tier.price}
+              {/* Current tier indicator for logged-in users */}
+              {user && (
+                <BlockReveal delay={250}>
+                  <div className="flex justify-center mb-6">
+                    <div className="inline-flex items-center gap-2 bg-white rounded-full border border-graphite/10 px-4 py-2 text-sm font-sans">
+                      <span className="text-graphite/60">Your current plan:</span>
+                      <span className="font-semibold text-accent capitalize">
+                        {isSubscribed && currentPlan ? currentPlan.name : tier}
                       </span>
-                      <span className="text-sm text-graphite/40 font-sans">
-                        {tier.period}
-                      </span>
+                      {isPastDue && (
+                        <span className="text-[10px] font-bold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-full">
+                          Past Due
+                        </span>
+                      )}
+                      {isTrialing && (
+                        <span className="text-[10px] font-bold bg-accent/10 text-accent px-2 py-0.5 rounded-full">
+                          Trial
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm text-graphite/60 leading-relaxed mb-8">
-                      {tier.description}
-                    </p>
-
-                    <ul className="space-y-3 mb-8 flex-1">
-                      {tier.features.map((f) => (
-                        <li key={f} className="flex items-start gap-2.5">
-                          <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
-                          <span className="text-sm font-sans text-graphite">{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Link
-                      to={tier.ctaLink}
-                      className={`w-full ${tier.featured
-                        ? 'btn-mineral-primary'
-                        : 'btn-mineral-secondary'
-                        }`}
-                    >
-                      {tier.cta}
-                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                    </Link>
                   </div>
+                </BlockReveal>
+              )}
+
+              {/* Billing toggle */}
+              <BlockReveal delay={300}>
+                <div className="inline-flex items-center bg-white rounded-full border border-graphite/10 p-1" role="group" aria-label="Billing period">
+                  <button
+                    type="button"
+                    aria-pressed={billing === 'monthly'}
+                    onClick={() => setBilling('monthly')}
+                    className={`px-5 py-2 text-sm font-medium rounded-full transition-colors ${
+                      billing === 'monthly'
+                        ? 'bg-mn-dark text-white'
+                        : 'text-graphite/60 hover:text-graphite'
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={billing === 'annual'}
+                    onClick={() => setBilling('annual')}
+                    className={`px-5 py-2 text-sm font-medium rounded-full transition-colors flex items-center gap-2 ${
+                      billing === 'annual'
+                        ? 'bg-mn-dark text-white'
+                        : 'text-graphite/60 hover:text-graphite'
+                    }`}
+                  >
+                    Annual
+                    <span className="text-[10px] font-bold bg-accent/20 text-accent px-2 py-0.5 rounded-full">
+                      Save
+                    </span>
+                  </button>
                 </div>
               </BlockReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Feature Comparison ───────────────────────────────────── */}
-      <section className="bg-mn-surface py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
-                Compare Plans
-              </p>
-            </BlockReveal>
-            <BlockReveal delay={100}>
-              <h2 className="font-sans font-semibold text-section text-graphite">
-                Feature breakdown by tier
-              </h2>
-            </BlockReveal>
-          </div>
-
-          <BlockReveal delay={200}>
-            <div className="max-w-4xl mx-auto overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-graphite/[0.08]">
-                    <th className="py-4 pr-8 text-sm font-sans font-medium text-graphite/40 uppercase tracking-wider">
-                      Feature
-                    </th>
-                    <th className="py-4 px-4 text-sm font-sans font-medium text-graphite/40 uppercase tracking-wider text-center">
-                      Essentials
-                    </th>
-                    <th className="py-4 px-4 text-sm font-sans font-medium text-accent uppercase tracking-wider text-center">
-                      Professional
-                    </th>
-                    <th className="py-4 px-4 text-sm font-sans font-medium text-graphite/40 uppercase tracking-wider text-center">
-                      Enterprise
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {COMPARISON.map((row) => (
-                    <tr
-                      key={row.feature}
-                      className="border-b border-graphite/[0.06]"
-                    >
-                      <td className="py-4 pr-8 text-sm font-sans text-graphite">
-                        {row.feature}
-                      </td>
-                      <td className="py-4 px-4 text-sm font-sans text-graphite/50 text-center">
-                        {row.essentials}
-                      </td>
-                      <td className="py-4 px-4 text-sm font-sans text-graphite font-medium text-center">
-                        {row.professional}
-                      </td>
-                      <td className="py-4 px-4 text-sm font-sans text-graphite/50 text-center">
-                        {row.enterprise}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
-          </BlockReveal>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <section className="bg-mn-bg py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+        {/* ── Social Proof Strip ───────────────────────────────────── */}
+        <section className="border-y border-graphite/6 bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
+              {[
+                { value: feedsLive ? totalSignals.toLocaleString() : '--', label: 'Signals tracked' },
+                { value: statsLive ? stats.brandsCount.toLocaleString() : '--', label: 'Verified brands' },
+                { value: feedsLive ? totalFeeds.toLocaleString() : '--', label: 'Data sources' },
+              ].map((item) => (
+                <div key={item.label} className="text-center">
+                  <p className="font-sans font-semibold text-2xl text-graphite">{item.value}</p>
+                  <p className="text-xs text-graphite/45 font-sans mt-0.5">{item.label}</p>
+                </div>
+              ))}
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${socialProofLive ? 'bg-signal-up/10 text-signal-up' : 'bg-signal-warn/10 text-signal-warn'}`}>
+                {socialProofLive ? 'LIVE' : 'DEMO'}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Plan Cards (DB-backed) ──────────────────────────────── */}
+        <section className="py-20 lg:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {plansLoading ? (
+              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white/60 backdrop-blur-[12px] rounded-2xl border border-white/30 p-8 lg:p-10 animate-pulse">
+                    <div className="h-4 bg-graphite/10 rounded w-1/3 mb-4" />
+                    <div className="h-10 bg-graphite/10 rounded w-1/2 mb-6" />
+                    <div className="space-y-3 mb-8">
+                      {[1, 2, 3, 4].map((j) => (
+                        <div key={j} className="h-3 bg-graphite/5 rounded w-full" />
+                      ))}
+                    </div>
+                    <div className="h-11 bg-graphite/10 rounded-full" />
+                  </div>
+                ))}
+              </div>
+            ) : plans.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-graphite/40 text-sm">No plans available at this time.</p>
+                <span className="inline-block mt-2 text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                  DEMO
+                </span>
+              </div>
+            ) : (
+              <div className={`grid gap-6 max-w-5xl mx-auto ${
+                plans.length <= 2 ? 'md:grid-cols-2' :
+                plans.length === 3 ? 'md:grid-cols-3' :
+                'md:grid-cols-2 lg:grid-cols-' + Math.min(plans.length, 4)
+              }`}>
+                {plans.map((plan: Plan, i: number) => {
+                  const price = billing === 'monthly' ? plan.price_monthly : plan.price_annual;
+                  const isCurrent = isSubscribed && currentPlan?.id === plan.id;
+                  const annualSavings = plan.price_monthly > 0
+                    ? Math.round((1 - plan.price_annual / (plan.price_monthly * 12)) * 100)
+                    : 0;
+                  const ctaLabel = getCtaLabel(plan, isCurrent, !!user);
+                  const ctaLink = getCtaLink(plan, !!user);
+
+                  return (
+                    <BlockReveal key={plan.id} delay={i * 100}>
+                      <div
+                        className={`relative flex flex-col h-full rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-md ${
+                          plan.is_featured
+                            ? 'bg-white/60 backdrop-blur-[12px] border-2 border-accent/30 shadow-md'
+                            : 'bg-white/60 backdrop-blur-[12px] border border-white/30'
+                        }`}
+                      >
+                        {plan.is_featured && <div className="h-[3px] bg-accent" />}
+
+                        {/* Featured badge */}
+                        {plan.is_featured && (
+                          <div className="absolute top-4 right-4">
+                            <span className="inline-flex items-center gap-1 bg-accent text-white text-[11px] font-semibold px-3 py-1 rounded-full">
+                              <Star className="w-3 h-3" aria-hidden="true" />
+                              Most Popular
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="p-8 lg:p-10 flex-1 flex flex-col">
+                          {/* Plan name */}
+                          <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-3">
+                            {plan.name}
+                          </p>
+
+                          {/* Price */}
+                          <div className="flex items-baseline gap-1 mb-3">
+                            {price === 0 ? (
+                              <span className="font-sans font-semibold text-[2.5rem] text-graphite leading-none">
+                                Free
+                              </span>
+                            ) : (
+                              <>
+                                <span className="font-sans font-semibold text-[2.5rem] text-graphite leading-none">
+                                  ${price}
+                                </span>
+                                <span className="text-sm text-graphite/40 font-sans">
+                                  /{billing === 'monthly' ? 'mo' : 'yr'}
+                                </span>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Annual savings */}
+                          {billing === 'annual' && annualSavings > 0 && (
+                            <span className="inline-block w-fit mb-3 text-[10px] font-bold bg-green-50 text-green-700 px-2 py-0.5 rounded-full">
+                              Save {annualSavings}% vs monthly
+                            </span>
+                          )}
+
+                          {/* Description */}
+                          {plan.description && (
+                            <p className="text-sm text-graphite/60 leading-relaxed mb-8">
+                              {plan.description}
+                            </p>
+                          )}
+
+                          {/* Module features */}
+                          <ul className="space-y-2.5 mb-8 flex-1">
+                            {allModuleKeys.map((key) => {
+                              const included = plan.modules_included?.includes(key);
+                              const meta = getModuleMeta(key);
+                              return (
+                                <li key={key} className="flex items-center gap-2.5 text-sm">
+                                  {included ? (
+                                    <Check className="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true" />
+                                  ) : (
+                                    <X className="w-4 h-4 text-graphite/20 flex-shrink-0" aria-hidden="true" />
+                                  )}
+                                  <span className={`font-sans ${included ? 'text-graphite' : 'text-graphite/30'}`}>
+                                    {meta.label}
+                                  </span>
+                                </li>
+                              );
+                            })}
+                          </ul>
+
+                          {/* CTA */}
+                          {isCurrent ? (
+                            <div className="w-full h-11 flex items-center justify-center bg-graphite/5 text-graphite text-sm font-semibold rounded-full">
+                              Current Plan
+                            </div>
+                          ) : (
+                            <Link
+                              to={ctaLink}
+                              className={`w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold rounded-full transition-colors ${
+                                plan.is_featured
+                                  ? 'bg-mn-dark text-white hover:bg-graphite'
+                                  : plan.price_monthly >= 500
+                                    ? 'border border-accent text-accent hover:bg-accent/5'
+                                    : 'bg-mn-dark text-white hover:bg-graphite'
+                              }`}
+                            >
+                              {ctaLabel}
+                              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    </BlockReveal>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Data source label */}
+            <div className="text-center mt-8">
+              <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                !plansLoading && plans.length > 0
+                  ? 'bg-signal-up/10 text-signal-up'
+                  : 'bg-signal-warn/10 text-signal-warn'
+              }`}>
+                {!plansLoading && plans.length > 0 ? 'LIVE' : 'DEMO'}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Module Comparison Table ──────────────────────────────── */}
+        {!plansLoading && plans.length > 0 && allModuleKeys.length > 0 && (
+          <section className="bg-mn-surface py-20 lg:py-28">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-14">
+                <BlockReveal>
+                  <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
+                    Compare Plans
+                  </p>
+                </BlockReveal>
+                <BlockReveal delay={100}>
+                  <h2 className="font-sans font-semibold text-section text-graphite">
+                    Module comparison
+                  </h2>
+                </BlockReveal>
+              </div>
+
+              <BlockReveal delay={200}>
+                <div className="max-w-4xl mx-auto overflow-x-auto">
+                  <table className="w-full text-left bg-white rounded-2xl border border-graphite/10 overflow-hidden">
+                    <thead>
+                      <tr className="border-b border-graphite/10">
+                        <th className="text-left text-sm font-medium text-graphite/50 px-6 py-4">Module</th>
+                        {plans.map((p: Plan) => (
+                          <th key={p.id} className={`text-center text-sm font-semibold px-4 py-4 ${
+                            p.is_featured ? 'text-accent' : 'text-graphite'
+                          }`}>
+                            {p.name}
+                            {isSubscribed && currentPlan?.id === p.id && (
+                              <span className="block text-[10px] font-medium text-accent mt-0.5">
+                                (Your plan)
+                              </span>
+                            )}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allModuleKeys.map((key, idx) => {
+                        const meta = getModuleMeta(key);
+                        return (
+                          <tr key={key} className={idx % 2 === 0 ? '' : 'bg-mn-bg/50'}>
+                            <td className="px-6 py-3 text-sm text-graphite">{meta.label}</td>
+                            {plans.map((p: Plan) => (
+                              <td key={p.id} className="text-center px-4 py-3">
+                                {p.modules_included?.includes(key) ? (
+                                  <Check className="w-4 h-4 text-green-600 mx-auto" aria-hidden="true" />
+                                ) : (
+                                  <X className="w-4 h-4 text-graphite/15 mx-auto" aria-hidden="true" />
+                                )}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </BlockReveal>
+            </div>
+          </section>
+        )}
+
+        {/* ── FAQ ──────────────────────────────────────────────────── */}
+        <section className="bg-mn-bg py-20 lg:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-14">
+              <BlockReveal>
+                <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
+                  FAQ
+                </p>
+              </BlockReveal>
+              <BlockReveal delay={100}>
+                <h2 className="font-sans font-semibold text-section text-graphite">
+                  Common questions
+                </h2>
+              </BlockReveal>
+            </div>
+
+            <div className="max-w-3xl mx-auto">
+              <BlockReveal delay={200}>
+                <GlassAccordion items={FAQ_ITEMS} />
+              </BlockReveal>
+              <BlockReveal delay={300}>
+                <p className="text-center text-sm text-graphite/60 font-sans mt-10">
+                  More questions?{' '}
+                  <a
+                    href="mailto:hello@socelle.com"
+                    className="font-medium text-graphite hover:underline"
+                  >
+                    hello@socelle.com
+                  </a>
+                </p>
+              </BlockReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Dark CTA ─────────────────────────────────────────────── */}
+        <section className="bg-mn-dark rounded-section mx-4 lg:mx-8 py-24 lg:py-32 mb-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <BlockReveal>
-              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-graphite/40 mb-4">
-                FAQ
+              <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-mn-bg/45 mb-5">
+                GET STARTED
               </p>
             </BlockReveal>
             <BlockReveal delay={100}>
-              <h2 className="font-sans font-semibold text-section text-graphite">
-                Common questions
+              <h2 className="font-sans font-semibold text-section text-mn-bg mb-5">
+                Ready to see the difference?
               </h2>
             </BlockReveal>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
             <BlockReveal delay={200}>
-              <GlassAccordion items={FAQ_ITEMS} />
+              <p className="text-body text-mn-bg/55 max-w-md mx-auto mb-10">
+                Start with a free Essentials account or apply as a brand partner.
+                Intelligence and marketplace access from day one.
+              </p>
             </BlockReveal>
             <BlockReveal delay={300}>
-              <p className="text-center text-sm text-graphite/60 font-sans mt-10">
-                More questions?{' '}
-                <a
-                  href="mailto:hello@socelle.com"
-                  className="font-medium text-graphite hover:underline"
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link to="/portal/signup" className="btn-mineral-dark">
+                  Create free account
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+                <Link
+                  to="/brand/apply"
+                  className="btn-mineral-ghost"
                 >
-                  hello@socelle.com
-                </a>
-              </p>
+                  Apply as a brand
+                </Link>
+              </div>
             </BlockReveal>
           </div>
-        </div>
-      </section>
-
-      {/* ── Dark CTA ─────────────────────────────────────────────── */}
-      <section className="bg-mn-dark rounded-section mx-4 lg:mx-8 py-24 lg:py-32 mb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <BlockReveal>
-            <p className="text-[0.8125rem] tracking-[0.12em] font-medium uppercase text-mn-bg/45 mb-5">
-              GET STARTED
-            </p>
-          </BlockReveal>
-          <BlockReveal delay={100}>
-            <h2 className="font-sans font-semibold text-section text-mn-bg mb-5">
-              Ready to see the difference?
-            </h2>
-          </BlockReveal>
-          <BlockReveal delay={200}>
-            <p className="text-body text-mn-bg/55 max-w-md mx-auto mb-10">
-              Start with a free Essentials account or apply as a brand partner.
-              Intelligence and marketplace access from day one.
-            </p>
-          </BlockReveal>
-          <BlockReveal delay={300}>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/portal/signup" className="btn-mineral-dark">
-                Create free account
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-              <Link
-                to="/brand/apply"
-                className="btn-mineral-ghost"
-              >
-                Apply as a brand
-              </Link>
-            </div>
-          </BlockReveal>
-        </div>
-      </section>
-
+        </section>
       </main>
 
       <SiteFooter />
