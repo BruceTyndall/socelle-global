@@ -176,6 +176,32 @@ export async function processQuestion(
         },
       );
 
+      if (orchError) {
+        const errMsg = orchError.message ?? '';
+        // 402 — insufficient credits: return a user-friendly response
+        if (errMsg.includes('402') || errMsg.includes('insufficient')) {
+          return createGuardrailResponse(
+            'Your credit balance is too low to use the AI concierge. Please top up your credits at /pricing to continue.',
+            mode,
+          );
+        }
+        // 403 — subscription tier insufficient
+        if (errMsg.includes('403') || errMsg.includes('tier_insufficient')) {
+          return createGuardrailResponse(
+            'AI concierge requires an active subscription. Please upgrade your plan to access AI features.',
+            mode,
+          );
+        }
+        // 429 — rate limit exceeded
+        if (errMsg.includes('429') || errMsg.includes('rate_limit')) {
+          return createGuardrailResponse(
+            'You have exceeded the AI request limit. Please wait a moment and try again.',
+            mode,
+          );
+        }
+        // Other orchestrator errors — fall through to rule-based engine
+      }
+
       if (!orchError && orchData?.answer) {
         aiAnswer = orchData.answer as string;
       }

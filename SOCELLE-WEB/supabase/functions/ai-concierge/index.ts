@@ -4,9 +4,14 @@
  * Thin adapter that translates the AI Concierge request format into the
  * canonical ai-orchestrator format and forwards it.
  *
- * All model selection, credit deduction, and provider logic now lives in
- * ai-orchestrator. This function is kept as a stable public API endpoint
- * so existing callers do not need to change immediately.
+ * Security gates applied locally (fail-fast before forwarding):
+ *   1. Edge function kill-switch (CTRL-WO-02)
+ *   2. JWT authentication
+ *   3. Input validation (2000 char max on question)
+ *   4. Subscription tier gating (403 — free users blocked)
+ *   5. Rate limiting (429 — sliding window per user)
+ *
+ * Credit deduction happens inside ai-orchestrator (not duplicated here).
  *
  * Supports 5 concierge modes: discovery | protocol | retail | analytics | support
  * Maps each mode → task_type 'chat_concierge' (Tier 4 — sub-500ms latency).
@@ -17,13 +22,17 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
+import { corsPreflightResponse, jsonResponse } from '../_shared/cors.ts';
+import { authenticateUser } from '../_shared/auth.ts';
+import { getUserTier, enforceTierGate } from '../_shared/tier-gate.ts';
+import { getTierRateLimit, checkRateLimit } from '../_shared/rate-limit.ts';
+import { writeAiAuditLog, writeGenericAuditLog } from '../_shared/ai-audit-log.ts';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const MAX_QUESTION_LENGTH = 2000;
 
 type ConciergeMode = 'discovery' | 'protocol' | 'retail' | 'analytics' | 'support';
+
+const VALID_MODES: ConciergeMode[] = ['discovery', 'protocol', 'retail', 'analytics', 'support'];
 
 interface ConciergeRequest {
   question: string;
@@ -34,40 +43,23 @@ interface ConciergeRequest {
   conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>;
 }
 
-function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-  });
-}
-
 Deno.serve(async (req: Request) => {
+  // ── 0. Kill-switch & CORS ───────────────────────────────────────────────────
   const edgeControlResponse = await enforceEdgeFunctionEnabled('ai-concierge', req);
   if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: CORS_HEADERS });
+    return corsPreflightResponse();
   }
-
   if (req.method !== 'POST') {
     return jsonResponse({ error: 'Method not allowed' }, 405);
   }
 
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader) {
-    return jsonResponse({ error: 'Missing authorization' }, 401);
-  }
+  // ── 1. Authenticate user JWT ────────────────────────────────────────────────
+  const authResult = await authenticateUser(req);
+  if (authResult instanceof Response) return authResult;
+  const { user, authHeader } = authResult;
 
-  // Validate the user JWT before forwarding
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-  const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-  const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
-  const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
-  if (authError || !user) {
-    return jsonResponse({ error: 'Unauthorized' }, 401);
-  }
-
+  // ── 2. Parse and validate request body ──────────────────────────────────────
   let body: ConciergeRequest;
   try {
     body = await req.json();
@@ -84,13 +76,83 @@ Deno.serve(async (req: Request) => {
     conversationHistory = [],
   } = body;
 
-  const resolvedMode: ConciergeMode =
-    ['discovery', 'protocol', 'retail', 'analytics', 'support'].includes(mode)
-      ? (mode as ConciergeMode)
-      : 'discovery';
+  // Validate question
+  if (!question || typeof question !== 'string' || !question.trim()) {
+    return jsonResponse(
+      { error: 'question is required and must be a non-empty string', code: 'invalid_input' },
+      400,
+    );
+  }
+  if (question.length > MAX_QUESTION_LENGTH) {
+    return jsonResponse(
+      {
+        error: `Question exceeds maximum length of ${MAX_QUESTION_LENGTH} characters`,
+        code: 'input_too_long',
+        max_length: MAX_QUESTION_LENGTH,
+        actual_length: question.length,
+      },
+      400,
+    );
+  }
 
-  // Build conversation messages for the orchestrator.
-  // Prepend up to 6 turns of history, then append the current question.
+  const resolvedMode: ConciergeMode = VALID_MODES.includes(mode as ConciergeMode)
+    ? (mode as ConciergeMode)
+    : 'discovery';
+
+  // ── 3. Subscription tier gating (403) ───────────────────────────────────────
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+  const userTier = await getUserTier(supabaseAdmin, user.id);
+
+  // Concierge maps to chat_concierge — allowed for starter+
+  const tierGateResponse = enforceTierGate(userTier, 'chat_concierge');
+  if (tierGateResponse) {
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: `concierge_${resolvedMode}`,
+      tier: userTier,
+      status: 'blocked',
+      blockedReason: 'tier_insufficient',
+      requestMeta: { mode: resolvedMode, context_page: contextPage },
+    });
+    await writeGenericAuditLog(supabaseAdmin, {
+      userId: user.id,
+      action: 'ai.blocked',
+      details: {
+        reason: 'tier_insufficient',
+        user_tier: userTier,
+        tool: 'ai-concierge',
+        mode: resolvedMode,
+      },
+    });
+    return tierGateResponse;
+  }
+
+  // ── 4. Rate limiting (429) ──────────────────────────────────────────────────
+  const tierLimit = getTierRateLimit(userTier);
+  const rateLimitResponse = await checkRateLimit(supabaseAdmin, user.id, tierLimit);
+  if (rateLimitResponse) {
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: `concierge_${resolvedMode}`,
+      tier: userTier,
+      status: 'blocked',
+      blockedReason: 'rate_limit_exceeded',
+      requestMeta: { tier_limit: tierLimit, mode: resolvedMode },
+    });
+    await writeGenericAuditLog(supabaseAdmin, {
+      userId: user.id,
+      action: 'ai.rate_limited',
+      details: { tier_limit: tierLimit, tool: 'ai-concierge', mode: resolvedMode },
+    });
+    return rateLimitResponse;
+  }
+
+  // ── 5. Forward to ai-orchestrator ───────────────────────────────────────────
+  // Build conversation messages: up to 6 turns of history + current question
   const messages = [
     ...conversationHistory.slice(-6).map((m) => ({
       role: m.role as 'user' | 'assistant',
@@ -99,7 +161,6 @@ Deno.serve(async (req: Request) => {
     { role: 'user' as const, content: question },
   ];
 
-  // Forward to ai-orchestrator with full context
   const orchestratorUrl = `${supabaseUrl}/functions/v1/ai-orchestrator`;
 
   let orchRes: Response;

@@ -5,15 +5,20 @@
  * No prompt logic may live in the frontend. This function owns model
  * selection, tier routing, cost accounting, and credit deduction.
  *
+ * Security gates (in order):
+ *   1. Edge function kill-switch (CTRL-WO-02)
+ *   2. JWT authentication
+ *   3. Input sanitisation (2000 char limit, tool whitelist, injection stripping)
+ *   4. Subscription tier gating (403 — free blocked, starter limited)
+ *   5. Feature flag check (CTRL-WO-01)
+ *   6. Rate limiting (429 — sliding window per user)
+ *   7. Credit balance check (402 — atomic deduction via deduct_credits)
+ *
  * 4-Tier Routing (via OpenRouter — single API key for all providers):
  *   Tier 1 — Reasoning   : anthropic/claude-sonnet-4-5         (protocol mapping, gap analysis)
  *   Tier 2 — Long Context : google/gemini-2.5-pro              (large PDF / menu parsing)
  *   Tier 3 — Speed       : openai/gpt-4o-mini                  (summaries, retail attach)
  *   Tier 4 — Latency     : meta-llama/llama-3.3-70b-instruct   (real-time chat, AI Concierge)
- *
- * Credit Accounting:
- *   Calls deduct_credits() PostgreSQL function (SECURITY DEFINER, row-locked)
- *   before each AI call. Returns 402 if balance is insufficient.
  *
  * Deploy:
  *   supabase functions deploy ai-orchestrator
@@ -25,13 +30,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { checkFlag } from '../_shared/featureFlags.ts';
 import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
-
-// ── CORS ──────────────────────────────────────────────────────────────────────
-
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { CORS_HEADERS, corsPreflightResponse, jsonResponse } from '../_shared/cors.ts';
+import { authenticateUser } from '../_shared/auth.ts';
+import { deductCredits, reconcileCost } from '../_shared/credits.ts';
+import { getTierRateLimit, checkRateLimit } from '../_shared/rate-limit.ts';
+import { getUserTier, enforceTierGate } from '../_shared/tier-gate.ts';
+import { sanitizeInput } from '../_shared/input-sanitizer.ts';
+import { writeAiAuditLog, writeGenericAuditLog } from '../_shared/ai-audit-log.ts';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -56,24 +61,17 @@ interface ChatMessage {
 interface OrchestratorRequest {
   task_type: TaskType;
   messages: ChatMessage[];
-  /** Retrieved DB data passed as structured context to the model */
   context?: Record<string, unknown>;
-  /** Which product feature triggered this call — written to the credit ledger */
   feature: string;
-  /** Concierge mode — used to inject the correct system prompt */
   mode?: string;
-  /** User role — controls prompt permissions */
   user_role?: string;
-  /** Page the user is on — informs grounding context */
   context_page?: string;
 }
 
 interface TierConfig {
   tier: 1 | 2 | 3 | 4;
   model: string;
-  /** Cost per 1K input tokens in USD */
   cost_per_1k_in: number;
-  /** Cost per 1K output tokens in USD */
   cost_per_1k_out: number;
   max_tokens: number;
   label: string;
@@ -129,7 +127,6 @@ function selectTier(taskType: TaskType, contextLength: number): TierConfig {
     case 'menu_parse_large':
       return TIERS[2];
 
-    // Large menus (>4K chars) escalate to Tier 2
     case 'menu_parse_small':
       return contextLength > 4000 ? TIERS[2] : TIERS[3];
 
@@ -214,7 +211,6 @@ Tone: professional, warm, and concise. Focus on mutual business value.`,
 };
 
 function buildSystemPrompt(taskType: TaskType, mode?: string): string {
-  // Mode takes precedence for concierge tasks
   if (mode && MODE_SYSTEM_PROMPTS[mode]) return MODE_SYSTEM_PROMPTS[mode];
   if (MODE_SYSTEM_PROMPTS[taskType]) return MODE_SYSTEM_PROMPTS[taskType];
   return BASE_SYSTEM;
@@ -223,13 +219,11 @@ function buildSystemPrompt(taskType: TaskType, mode?: string): string {
 // ── Cost estimation ───────────────────────────────────────────────────────────
 
 function estimateCost(tierConfig: TierConfig, inputText: string): number {
-  // Rough token estimation: ~4 chars per token
   const estimatedTokensIn = Math.ceil(inputText.length / 4);
-  const estimatedTokensOut = tierConfig.max_tokens * 0.5; // conservative 50% utilisation
+  const estimatedTokensOut = tierConfig.max_tokens * 0.5;
   const cost =
     (estimatedTokensIn / 1000) * tierConfig.cost_per_1k_in +
     (estimatedTokensOut / 1000) * tierConfig.cost_per_1k_out;
-  // Minimum 6-decimal precision, rounded up for safety
   return Math.max(0.000001, parseFloat(cost.toFixed(6)));
 }
 
@@ -262,7 +256,6 @@ async function callOpenRouter(
   messages: ChatMessage[],
   maxTokens: number,
 ): Promise<OpenRouterResponse> {
-  // OpenRouter uses OpenAI-compatible chat completions format
   const body = {
     model,
     max_tokens: maxTokens,
@@ -291,66 +284,20 @@ async function callOpenRouter(
   return res.json() as Promise<OpenRouterResponse>;
 }
 
-// ── Rate limit tiers ─────────────────────────────────────────────────────────
-// Owner decision #7: 5/min Starter, 15/min Pro, 60/min Enterprise.
-
-const RATE_LIMITS: Record<string, number> = {
-  starter: 5,
-  pro: 15,
-  enterprise: 60,
-};
-
-function getTierLimit(subscriptionTier?: string): number {
-  const tier = (subscriptionTier ?? 'starter').toLowerCase();
-  return RATE_LIMITS[tier] ?? RATE_LIMITS.starter;
-}
-
-// ── JSON response helper ──────────────────────────────────────────────────────
-
-function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-  });
-}
-
-// ── Audit logging (CTRL-WO-03) ───────────────────────────────────────────────
-
-async function writeAuditLog(params: {
-  supabaseAdmin: ReturnType<typeof createClient>;
-  userId: string;
-  action: 'ai.request' | 'ai.blocked' | 'ai.rate_limited';
-  resourceType?: string;
-  resourceId?: string | null;
-  details?: Record<string, unknown>;
-}) {
-  const { error } = await params.supabaseAdmin.from('audit_logs').insert({
-    user_id: params.userId,
-    action: params.action,
-    resource_type: params.resourceType ?? 'ai_orchestrator',
-    resource_id: params.resourceId ?? null,
-    details: params.details ?? {},
-  });
-
-  if (error) {
-    console.warn('[ai-orchestrator] audit log write failed:', error.message);
-  }
-}
-
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
+  // ── 0. Kill-switch & CORS ───────────────────────────────────────────────────
   const edgeControlResponse = await enforceEdgeFunctionEnabled('ai-orchestrator', req);
   if (edgeControlResponse) return edgeControlResponse;
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: CORS_HEADERS });
+    return corsPreflightResponse();
   }
-
   if (req.method !== 'POST') {
     return jsonResponse({ error: 'Method not allowed' }, 405);
   }
 
-  // ── 1. Check secrets ───────────────────────────────────────────────────────
+  // ── 1. Check secrets ────────────────────────────────────────────────────────
   const openRouterKey = Deno.env.get('OPENROUTER_API_KEY');
   if (!openRouterKey) {
     return jsonResponse({ error: 'AI service not configured. Set OPENROUTER_API_KEY.' }, 503);
@@ -358,55 +305,57 @@ Deno.serve(async (req: Request) => {
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-  const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
-  // ── 2. Authenticate user JWT ───────────────────────────────────────────────
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader) {
-    return jsonResponse({ error: 'Missing authorization header' }, 401);
-  }
+  // ── 2. Authenticate user JWT ────────────────────────────────────────────────
+  const authResult = await authenticateUser(req);
+  if (authResult instanceof Response) return authResult;
+  const { user } = authResult;
 
-  const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
-  const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
-  if (authError || !user) {
-    return jsonResponse({ error: 'Unauthorized' }, 401);
-  }
-
-  // ── 3. Parse request body ──────────────────────────────────────────────────
-  let body: OrchestratorRequest;
+  // ── 3. Parse and sanitise request body ──────────────────────────────────────
+  let rawBody: OrchestratorRequest;
   try {
-    body = await req.json();
+    rawBody = await req.json();
   } catch {
     return jsonResponse({ error: 'Invalid JSON body' }, 400);
   }
 
-  const {
-    task_type,
-    messages,
-    context,
-    feature = 'unknown',
-    mode,
-  } = body;
+  const sanitized = sanitizeInput(rawBody);
+  if (sanitized instanceof Response) return sanitized;
 
-  if (!task_type || !messages?.length) {
-    return jsonResponse({ error: 'task_type and messages are required' }, 400);
+  const { taskType: task_type, messages } = sanitized;
+  const context = rawBody.context;
+  const feature = rawBody.feature || 'unknown';
+  const mode = rawBody.mode;
+
+  // ── 4. Look up subscription tier ────────────────────────────────────────────
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const userTier = await getUserTier(supabaseAdmin, user.id);
+
+  // ── 5. Subscription tier gating (403) ───────────────────────────────────────
+  const tierGateResponse = enforceTierGate(userTier, task_type);
+  if (tierGateResponse) {
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: task_type,
+      tier: userTier,
+      status: 'blocked',
+      blockedReason: 'tier_insufficient',
+      requestMeta: { feature, mode },
+    });
+    await writeGenericAuditLog(supabaseAdmin, {
+      userId: user.id,
+      action: 'ai.blocked',
+      details: {
+        reason: 'tier_insufficient',
+        user_tier: userTier,
+        task_type,
+        feature,
+      },
+    });
+    return tierGateResponse;
   }
 
-  // ── 4. Rate limit check (sliding window per user) ──────────────────────────
-  // Look up the user's subscription tier to determine their rate limit.
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-
-  const { data: profileData } = await supabaseAdmin
-    .from('user_profiles')
-    .select('subscription_tier')
-    .eq('id', user.id)
-    .single();
-
-  const userTier = profileData?.subscription_tier ?? 'starter';
-
-  // Server-side feature toggle (CTRL-WO-01).
+  // ── 6. Feature flag check (CTRL-WO-01) ─────────────────────────────────────
   const aiOrchestratorEnabled = await checkFlag({
     supabaseAdmin,
     userId: user.id,
@@ -414,8 +363,15 @@ Deno.serve(async (req: Request) => {
     userTier,
   });
   if (!aiOrchestratorEnabled) {
-    await writeAuditLog({
-      supabaseAdmin,
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: task_type,
+      tier: userTier,
+      status: 'blocked',
+      blockedReason: 'feature_flag_disabled',
+      requestMeta: { flag_key: 'AI_ORCHESTRATOR_ENABLED' },
+    });
+    await writeGenericAuditLog(supabaseAdmin, {
       userId: user.id,
       action: 'ai.blocked',
       details: {
@@ -424,7 +380,6 @@ Deno.serve(async (req: Request) => {
         user_tier: userTier,
       },
     });
-
     return jsonResponse(
       {
         error: 'AI service is currently disabled by feature flag.',
@@ -435,116 +390,75 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  const tierLimit = getTierLimit(userTier);
-
-  const { data: rateLimitResult, error: rateLimitError } = await supabaseAdmin
-    .rpc('check_rate_limit', {
-      p_user_id: user.id,
-      p_tier_limit: tierLimit,
+  // ── 7. Rate limiting (429) ──────────────────────────────────────────────────
+  const tierLimit = getTierRateLimit(userTier);
+  const rateLimitResponse = await checkRateLimit(supabaseAdmin, user.id, tierLimit);
+  if (rateLimitResponse) {
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: task_type,
+      tier: userTier,
+      status: 'blocked',
+      blockedReason: 'rate_limit_exceeded',
+      requestMeta: { tier_limit: tierLimit, feature },
     });
-
-  if (rateLimitError) {
-    console.error('Rate limit check error:', rateLimitError.message);
-    // Fail open on rate limit infrastructure errors — log but don't block
-  } else if (rateLimitResult && !rateLimitResult.allowed) {
-    await writeAuditLog({
-      supabaseAdmin,
+    await writeGenericAuditLog(supabaseAdmin, {
       userId: user.id,
       action: 'ai.rate_limited',
-      details: {
-        tier_limit: tierLimit,
-        current_count: rateLimitResult.current_count,
-        resets_at: rateLimitResult.resets_at,
-      },
+      details: { tier_limit: tierLimit, feature, task_type },
     });
-
-    return jsonResponse(
-      {
-        error: 'Rate limit exceeded',
-        code: 'rate_limit_exceeded',
-        message: `You have exceeded your rate limit of ${tierLimit} requests per minute. Please wait and try again.`,
-        limit: rateLimitResult.limit,
-        current_count: rateLimitResult.current_count,
-        resets_at: rateLimitResult.resets_at,
-      },
-      429,
-    );
+    return rateLimitResponse;
   }
 
-  // ── 5. Select tier based on task + context size ────────────────────────────
+  // ── 8. Select tier and estimate cost ────────────────────────────────────────
   const contextStr = context ? JSON.stringify(context) : '';
   const allText = messages.map((m) => m.content).join(' ') + contextStr;
-  const tierConfig = selectTier(task_type, allText.length);
-
-  // ── 6. Estimate cost and pre-check credit balance ──────────────────────────
-  // We estimate conservatively before the call. After the call we write the
-  // actual cost to the ledger. The pre-check prevents requests that are
-  // guaranteed to fail due to insufficient balance.
+  const tierConfig = selectTier(task_type as TaskType, allText.length);
   const estimatedCostUsd = estimateCost(tierConfig, allText);
 
-  // Call deduct_credits() — this acquires a row-level lock and deducts atomically.
-  // It raises a PostgreSQL exception (ERRCODE P0002) if balance is insufficient.
-  const { data: balanceAfter, error: creditError } = await supabaseAdmin.rpc('deduct_credits', {
-    p_user_id: user.id,
-    p_amount_usd: estimatedCostUsd,
-    p_provider: 'openrouter',
-    p_model: tierConfig.model,
-    p_tier: tierConfig.tier,
-    p_tokens_in: 0,   // updated post-call via ledger correction
-    p_tokens_out: 0,
-    p_request_id: null,
-    p_feature: feature,
+  // ── 9. Credit balance check (402) ───────────────────────────────────────────
+  const startTime = Date.now();
+  const creditResult = await deductCredits(supabaseAdmin, {
+    userId: user.id,
+    amountUsd: estimatedCostUsd,
+    provider: 'openrouter',
+    model: tierConfig.model,
+    tier: tierConfig.tier,
+    feature,
   });
 
-  if (creditError) {
-    // P0002 = insufficient funds (set in deduct_credits function)
-    const isInsufficientFunds = creditError.message?.toLowerCase().includes('insufficient credit');
-    if (isInsufficientFunds) {
-      await writeAuditLog({
-        supabaseAdmin,
-        userId: user.id,
-        action: 'ai.blocked',
-        details: {
-          reason: 'insufficient_credits',
-          estimated_cost_usd: estimatedCostUsd,
-          feature,
-          task_type,
-          model: tierConfig.model,
-        },
-      });
-
-      return jsonResponse(
-        {
-          error: 'Insufficient credit balance',
-          code: 'insufficient_credits',
-          message: 'Your credit balance is too low for this request. Please top up to continue.',
-        },
-        402,
-      );
-    }
-    console.error('Credit deduction error:', creditError.message);
-    await writeAuditLog({
-      supabaseAdmin,
+  if (creditResult instanceof Response) {
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: task_type,
+      tier: userTier,
+      status: 'blocked',
+      blockedReason: 'insufficient_credits',
+      requestMeta: {
+        estimated_cost_usd: estimatedCostUsd,
+        feature,
+        model: tierConfig.model,
+      },
+    });
+    await writeGenericAuditLog(supabaseAdmin, {
       userId: user.id,
       action: 'ai.blocked',
       details: {
-        reason: 'billing_error',
-        message: creditError.message,
+        reason: 'insufficient_credits',
+        estimated_cost_usd: estimatedCostUsd,
         feature,
         task_type,
+        model: tierConfig.model,
       },
     });
-    return jsonResponse({ error: 'Billing error — request cancelled' }, 500);
+    return creditResult;
   }
 
-  // ── 7. Build system prompt and call OpenRouter ─────────────────────────────
-  const systemPrompt = buildSystemPrompt(task_type, mode);
-
-  // Inject context data as a system-level data block if present
+  // ── 10. Build system prompt and call OpenRouter ─────────────────────────────
+  const systemPrompt = buildSystemPrompt(task_type as TaskType, mode);
   const contextBlock = contextStr
     ? `\n\n--- PLATFORM DATA ---\n${contextStr}\n--- END DATA ---`
     : '';
-
   const enrichedSystem = systemPrompt + contextBlock;
 
   let aiResult: OpenRouterResponse;
@@ -557,9 +471,20 @@ Deno.serve(async (req: Request) => {
       tierConfig.max_tokens,
     );
   } catch (err) {
+    const durationMs = Date.now() - startTime;
     console.error('OpenRouter call failed:', err);
-    await writeAuditLog({
-      supabaseAdmin,
+    await writeAiAuditLog(supabaseAdmin, {
+      userId: user.id,
+      toolName: task_type,
+      tier: userTier,
+      creditsBefore: creditResult.balanceAfter + estimatedCostUsd,
+      creditsAfter: creditResult.balanceAfter,
+      durationMs,
+      status: 'error',
+      blockedReason: 'ai_provider_error',
+      requestMeta: { feature, model: tierConfig.model },
+    });
+    await writeGenericAuditLog(supabaseAdmin, {
       userId: user.id,
       action: 'ai.blocked',
       details: {
@@ -569,7 +494,6 @@ Deno.serve(async (req: Request) => {
         model: tierConfig.model,
       },
     });
-    // On AI failure, log the failed attempt (balance already deducted — MVP behaviour)
     return jsonResponse(
       {
         error: 'AI service temporarily unavailable. Please try again.',
@@ -579,30 +503,38 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  // ── 8. Extract usage and compute actual cost ───────────────────────────────
+  // ── 11. Extract usage and compute actual cost ───────────────────────────────
+  const durationMs = Date.now() - startTime;
   const tokensIn = aiResult.usage?.prompt_tokens ?? 0;
   const tokensOut = aiResult.usage?.completion_tokens ?? 0;
   const actualCostUsd = actualCost(tierConfig, tokensIn, tokensOut);
   const answer = aiResult.choices?.[0]?.message?.content ?? '';
 
-  // Write a correcting ledger entry for the difference between estimated and actual.
-  // This keeps the audit log accurate without requiring a compensating transaction.
+  // Reconcile cost difference
   const costDelta = actualCostUsd - estimatedCostUsd;
-  if (Math.abs(costDelta) > 0.000001) {
-    // Non-blocking — best effort reconciliation
-    supabaseAdmin.rpc('top_up_credits', {
-      p_user_id: user.id,
-      // Positive delta = we over-charged; refund the difference.
-      // Negative delta = we under-charged; deduct more (rare with conservative estimate).
-      p_amount_usd: -costDelta,
-      p_request_id: aiResult.id,
-    }).then(({ error }) => {
-      if (error) console.warn('Cost reconciliation failed:', error.message);
-    });
-  }
+  reconcileCost(supabaseAdmin, user.id, costDelta, aiResult.id);
 
-  await writeAuditLog({
-    supabaseAdmin,
+  // ── 12. Write audit logs ────────────────────────────────────────────────────
+  await writeAiAuditLog(supabaseAdmin, {
+    userId: user.id,
+    toolName: task_type,
+    tier: userTier,
+    creditsBefore: creditResult.balanceAfter + estimatedCostUsd,
+    creditsAfter: creditResult.balanceAfter,
+    tokensUsed: tokensIn + tokensOut,
+    durationMs,
+    status: 'success',
+    requestMeta: {
+      feature,
+      model: tierConfig.model,
+      tier_config: tierConfig.tier,
+      tokens_in: tokensIn,
+      tokens_out: tokensOut,
+      cost_usd: actualCostUsd,
+      request_id: aiResult.id,
+    },
+  });
+  await writeGenericAuditLog(supabaseAdmin, {
     userId: user.id,
     action: 'ai.request',
     resourceId: aiResult.id,
@@ -618,7 +550,7 @@ Deno.serve(async (req: Request) => {
     },
   });
 
-  // ── 9. Return structured response ─────────────────────────────────────────
+  // ── 13. Return structured response ──────────────────────────────────────────
   return jsonResponse({
     answer,
     tier: tierConfig.tier,
@@ -627,7 +559,7 @@ Deno.serve(async (req: Request) => {
     tokens_in: tokensIn,
     tokens_out: tokensOut,
     cost_usd: actualCostUsd,
-    balance_remaining: typeof balanceAfter === 'number' ? balanceAfter : null,
+    balance_remaining: creditResult.balanceAfter,
     request_id: aiResult.id,
   });
 });
