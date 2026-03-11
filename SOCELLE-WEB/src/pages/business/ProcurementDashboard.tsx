@@ -68,7 +68,7 @@ async function fetchProcurementData(
 
   for (const item of data) {
     const pid = item.product_id ?? 'unknown';
-    const product = item.products as
+    const product = item.products as unknown as
       | { name: string; category_id: string | null; product_categories: { name: string } | null }
       | null;
     const existing = map.get(pid);

@@ -64,7 +64,7 @@ interface DashboardData {
   totalRevenue: number;
   todayTasks: { id: string; title: string; priority: string; due_date: string | null; contact_id: string | null }[];
   upcomingAppointments: { id: string; client_first_name: string; client_last_name: string; start_time: string; service_name?: string }[];
-  overdueClients: { id: string; first_name: string; last_name: string; last_visit_date: string | null; days_since: number }[];
+  overdueClients: { id: string; first_name: string; last_name: string; last_visit_date: string | null; days_since: number; churn_risk_score: number }[];
   expiringSubscriptions: number;
   milestoneClients: { id: string; first_name: string; last_name: string; total_visits: number }[];
   topSignals: { id: string; title: string; magnitude: number; direction: string; category: string | null }[];
@@ -175,12 +175,12 @@ export default function CrmDashboard() {
           .eq('status', 'scheduled')
           .order('start_time')
           .limit(5),
-        // Overdue clients (>30 days since last visit)
-        supabase.from('crm_contacts').select('id, first_name, last_name, last_visit_date')
+        // Overdue clients (>30 days since last visit) -> Rebooking Engine Prioritized by Churn Risk
+        supabase.from('crm_contacts').select('id, first_name, last_name, last_visit_date, churn_risk_score')
           .eq('business_id', businessId!)
           .lt('last_visit_date', thirtyDaysAgo)
           .not('last_visit_date', 'is', null)
-          .order('last_visit_date', { ascending: true })
+          .order('churn_risk_score', { ascending: false }) // CRM-POWER-02 Rebooking recommendation
           .limit(10),
         // Milestone clients (5th, 10th, 15th, 20th visit)
         supabase.from('crm_contacts').select('id, first_name, last_name, total_visits')
@@ -220,6 +220,7 @@ export default function CrmDashboard() {
           last_name: row.last_name as string,
           last_visit_date: lvd,
           days_since: lvd ? daysSince(lvd)! : 999,
+          churn_risk_score: (row.churn_risk_score as number | null) ?? 0,
         };
       });
 
@@ -492,8 +493,9 @@ export default function CrmDashboard() {
                 <p className="text-xs text-graphite/50 mt-0.5">More than 30 days since last visit</p>
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {stats.overdueClients.slice(0, 5).map(c => (
-                    <Link key={c.id} to={`/portal/crm/contacts/${c.id}`} className="text-xs bg-signal-down/10 text-signal-down px-2 py-0.5 rounded-full hover:bg-signal-down/20 transition-colors">
+                    <Link key={c.id} to={`/portal/crm/contacts/${c.id}`} className={`text-xs px-2 py-0.5 rounded-full transition-colors flex items-center gap-1 ${c.churn_risk_score >= 67 ? 'bg-signal-warn/20 text-signal-warn hover:bg-signal-warn/30' : 'bg-signal-down/10 text-signal-down hover:bg-signal-down/20'}`}>
                       {c.first_name} {c.last_name} ({c.days_since}d)
+                      {c.churn_risk_score >= 67 && <span className="font-bold opacity-80 pl-1 border-l border-signal-warn/30">Risk: {c.churn_risk_score}</span>}
                     </Link>
                   ))}
                   {stats.overdueClients.length > 5 && (

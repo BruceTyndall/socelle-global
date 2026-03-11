@@ -27,6 +27,7 @@ import {
   Building2,
   CheckSquare,
   Layers,
+  Shield,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useState } from 'react';
@@ -85,6 +86,7 @@ export default function BusinessLayout() {
         { path: '/portal/crm/companies', label: 'Companies', icon: Building2 },
         { path: '/portal/crm/tasks', label: 'Tasks', icon: CheckSquare },
         { path: '/portal/crm/segments', label: 'Segments', icon: Layers },
+        { path: '/portal/crm/consent', label: 'Consent Audit', icon: Shield },
         { path: '/portal/booking', label: 'Booking', icon: CalendarDays },
         { path: '/portal/prospects', label: 'Prospects', icon: Target },
         { path: '/portal/reseller', label: 'Reseller', icon: Store },

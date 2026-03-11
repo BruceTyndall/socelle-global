@@ -75,7 +75,7 @@ export default function CrmConsent() {
         `)
         .order('recorded_at', { ascending: false });
       if (error) throw new Error(error.message);
-      return (data ?? []) as ConsentRecord[];
+      return (data ?? []) as unknown as ConsentRecord[];
     },
     enabled: !!businessId,
   });
