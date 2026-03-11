@@ -62,7 +62,7 @@ type Tab = typeof TABS[number];
 
 const INTERACTION_ICONS: Record<string, typeof Phone> = { call: Phone, email: Mail, meeting: Users, note: FileText };
 const INTERACTION_TYPES = ['call', 'email', 'meeting', 'note'];
-type TimelineSource = 'interaction' | 'appointment' | 'purchase' | 'task' | 'service_record';
+type TimelineSource = 'interaction' | 'appointment' | 'purchase' | 'task' | 'service_record' | 'signal_attribution';
 
 interface UnifiedTimelineEntry {
   id: string;
@@ -80,6 +80,7 @@ const TIMELINE_SOURCE_META: Record<TimelineSource, { label: string; chip: string
   purchase: { label: 'Purchase', chip: 'bg-signal-warn/10 text-signal-warn' },
   task: { label: 'Task', chip: 'bg-graphite/10 text-graphite/70' },
   service_record: { label: 'Service Record', chip: 'bg-mn-dark/10 text-mn-dark' },
+  signal_attribution: { label: 'Signal Attribution', chip: 'bg-indigo-100 text-indigo-700' },
 };
 
 export default function ContactDetail() {
@@ -178,7 +179,7 @@ export default function ContactDetail() {
     interactions.forEach((interaction) => {
       entries.push({
         id: `interaction-${interaction.id}`,
-        source: 'interaction',
+        source: interaction.type === 'signal_link' ? 'signal_attribution' : 'interaction',
         occurredAt: interaction.occurred_at,
         title: interaction.subject || `${interaction.type} logged`,
         subtitle: interaction.notes || 'CRM interaction captured',
@@ -602,7 +603,34 @@ export default function ContactDetail() {
                 {TIMELINE_SOURCE_META[source].label}
               </button>
             ))}
+            {/* CRM-POWER-01: Signal filter explicitly added if not in TIMELINE_SOURCE_META */}
+            <button
+                onClick={() => setTimelineFilter('signal_attribution' as any)}
+                className={`h-7 px-3 rounded-full text-xs font-medium border transition-colors ${
+                  timelineFilter === 'signal_attribution'
+                    ? 'bg-accent text-white border-accent'
+                    : 'border-accent-soft/30 text-graphite/60 hover:border-accent/30'
+                }`}
+              >
+                Signal Attribution
+            </button>
           </div>
+
+          {/* CRM-POWER-01: Rebooking CTA & Churn Risk summary above timeline */}
+          {churnRiskScore >= 67 && daysSinceLastVisit !== null && daysSinceLastVisit > 90 && (
+             <div className="bg-signal-warn/10 border border-signal-warn/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
+               <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <AlertTriangle className="w-4 h-4 text-signal-warn" />
+                    <span className="text-sm font-semibold text-signal-warn uppercase tracking-wider">High Churn Risk</span>
+                  </div>
+                  <p className="text-xs text-graphite/70">Contact hasn't visited in {daysSinceLastVisit} days and has a risk score of {churnRiskScore}.</p>
+               </div>
+               <button onClick={() => setShowScheduleFollowUp(true)} className="h-9 px-4 shrink-0 bg-signal-warn text-white text-sm font-medium rounded-full hover:bg-signal-warn/90 transition-colors inline-flex items-center gap-2">
+                 <RefreshCw className="w-4 h-4" /> Schedule Rebooking
+               </button>
+             </div>
+          )}
 
           {timelineLoading ? (
             <div className="space-y-3 animate-pulse">
@@ -638,7 +666,10 @@ export default function ContactDetail() {
           ) : (
             <div className="space-y-3">
               {filteredTimelineEntries.map((entry) => {
-                const sourceMeta = TIMELINE_SOURCE_META[entry.source];
+                const sourceMeta = entry.source === 'signal_attribution' 
+                  ? { chip: 'bg-indigo-100 text-indigo-700', label: 'Signal Attribution' }
+                  : TIMELINE_SOURCE_META[entry.source];
+                  
                 const content = (
                   <div className="p-3 rounded-lg border border-accent-soft/20 hover:border-accent/30 transition-colors">
                     <div className="flex flex-wrap items-start justify-between gap-2">
@@ -677,7 +708,13 @@ export default function ContactDetail() {
       {tab === 'Overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div className="bg-white rounded-xl border border-accent-soft/30 p-5 space-y-4">
-            <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider">Contact Info</h2>
+            <div className="flex items-start justify-between">
+               <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider">Contact Info</h2>
+               {/* CRM-POWER-01: Churn Risk Header Badge */}
+               <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${churnRiskBg}/20 ${churnRiskColor} border border-${churnRiskColor}/20 flex items-center gap-1`}>
+                 <Activity className="w-3 h-3" /> Risk: {churnRiskScore}
+               </div>
+            </div>
             <div className="space-y-3 text-sm">
               {contact.email && <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-graphite/60" /><span className="text-graphite">{contact.email}</span></div>}
               {contact.phone && <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-graphite/60" /><span className="text-graphite">{contact.phone}</span></div>}
