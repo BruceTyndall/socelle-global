@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useCallback, useMemo } from 'react
 import type { ReactNode } from 'react';
 import { createElement } from 'react';
 import type { OperatorLocation } from './types';
-import { getLocations, isMultiLocation as checkMultiLocation } from './mockLocations';
+import { getLocations, isMultiLocation as checkMultiLocation } from '../../__fixtures__/mockLocations';
 
 interface LocationContextValue {
   selectedLocationId: string | 'all';

@@ -12,7 +12,7 @@ import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
-import { getApiPricing } from '../../lib/api/mockApiData';
+import { getApiPricing } from '../../__fixtures__/mockApiData';
 import type { ApiPricingTier } from '../../lib/api/types';
 
 // ── Feature comparison rows ─────────────────────────────────────────

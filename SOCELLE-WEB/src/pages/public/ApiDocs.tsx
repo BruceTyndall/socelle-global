@@ -18,7 +18,7 @@ import MainNav from '../../components/MainNav';
 import BlockReveal from '../../components/motion/BlockReveal';
 import WordReveal from '../../components/motion/WordReveal';
 import SiteFooter from '../../components/sections/SiteFooter';
-import { getApiEndpoints } from '../../lib/api/mockApiData';
+import { getApiEndpoints } from '../../__fixtures__/mockApiData';
 import type { ApiEndpoint } from '../../lib/api/types';
 
 // ── Method badge colors (mineral) ───────────────────────────────────

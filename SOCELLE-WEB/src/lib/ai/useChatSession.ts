@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import type { ChatMessage, ChatSession, UserRole } from './types';
-import { generateResponse, getGreeting } from './mockAdvisor';
+import { generateResponse, getGreeting } from '../../__fixtures__/mockAdvisor';
 
 interface UseChatSessionOptions {
   userRole: UserRole;
