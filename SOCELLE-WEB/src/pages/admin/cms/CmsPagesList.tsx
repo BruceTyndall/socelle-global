@@ -17,6 +17,7 @@ import {
   RefreshCw,
   Eye,
   EyeOff,
+  Layout,
 } from 'lucide-react';
 import {
   useCmsPages,
@@ -141,6 +142,8 @@ export default function CmsPagesList() {
           status: formStatus,
           published_at: null,
           author_id: null,
+          scheduled_at: null,
+          seo_twitter_card: null,
           seo_title: formSeoTitle || null,
           seo_description: formSeoDescription || null,
           seo_og_image: null,
@@ -404,6 +407,13 @@ export default function CmsPagesList() {
                   <td className="px-4 py-3 text-[#6E879B]">{formatDate(page.updated_at)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
+                      <Link
+                        to={`/admin/cms/pages/${page.id}/builder`}
+                        className="p-1.5 text-[#6E879B] hover:text-[#5A7185] hover:bg-[#E8EDF1] rounded flex items-center gap-1 group"
+                        title="Layout Builder"
+                      >
+                        <Layout className="w-4 h-4" />
+                      </Link>
                       <button
                         onClick={() => openEdit(page)}
                         className="p-1.5 text-[#6E879B] hover:text-[#5A7185] hover:bg-[#E8EDF1] rounded"

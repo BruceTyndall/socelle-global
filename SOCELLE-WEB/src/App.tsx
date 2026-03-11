@@ -320,6 +320,7 @@ const AdminSettingsHub = lazy(() => import('./pages/admin/AdminSettingsHub'));
 // ── Admin CMS Hub (WO-CMS-01..03)
 const CmsDashboard = lazy(() => import('./pages/admin/cms/CmsDashboard'));
 const CmsPagesList = lazy(() => import('./pages/admin/cms/CmsPagesList'));
+const PageLayoutBuilder = lazy(() => import('./pages/admin/cms/PageLayoutBuilder'));
 const CmsPostsList = lazy(() => import('./pages/admin/cms/CmsPostsList'));
 const CmsBlockLibrary = lazy(() => import('./pages/admin/cms/CmsBlockLibrary'));
 const CmsMediaLibrary = lazy(() => import('./pages/admin/cms/CmsMediaLibrary'));
@@ -1187,6 +1188,7 @@ function App() {
                     {/* ── CMS Hub (WO-CMS-01..03) ── */}
                     <Route path="cms" element={<CmsDashboard />} />
                     <Route path="cms/pages" element={<CmsPagesList />} />
+                    <Route path="cms/pages/:id/builder" element={<PageLayoutBuilder />} />
                     <Route path="cms/posts" element={<CmsPostsList />} />
                     <Route path="cms/blocks" element={<CmsBlockLibrary />} />
                     <Route path="cms/media" element={<CmsMediaLibrary />} />
