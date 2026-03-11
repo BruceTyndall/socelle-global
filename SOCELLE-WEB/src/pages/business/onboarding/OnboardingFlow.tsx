@@ -5,18 +5,24 @@ import { supabase } from '../../../lib/supabase';
 import OnboardingWelcome from './OnboardingWelcome';
 import OnboardingRole from './OnboardingRole';
 import type { OnboardingRoleValue } from './OnboardingRole';
+import OnboardingVertical from './OnboardingVertical';
+import type { VerticalValue } from './OnboardingVertical';
 import OnboardingInterests from './OnboardingInterests';
 import type { InterestValue } from './OnboardingInterests';
+import OnboardingPlanSelect from './OnboardingPlanSelect';
+import type { SelectedPlanSlug } from './OnboardingPlanSelect';
 import OnboardingComplete from './OnboardingComplete';
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 6;
 const STORAGE_KEY = 'socelle_onboarding_complete';
 
 export default function OnboardingFlow() {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<OnboardingRoleValue | null>(null);
+  const [selectedVertical, setSelectedVertical] = useState<VerticalValue | null>(null);
   const [selectedInterests, setSelectedInterests] = useState<InterestValue[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<SelectedPlanSlug>(null);
 
   const userName = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? null;
 
@@ -38,7 +44,9 @@ export default function OnboardingFlow() {
   const saveOnboardingMutation = useMutation({
     mutationFn: async (payload: {
       role: OnboardingRoleValue | null;
+      vertical: VerticalValue | null;
       interests: InterestValue[];
+      plan: SelectedPlanSlug;
     }) => {
       if (!user?.id) throw new Error('Not authenticated');
 
@@ -46,7 +54,9 @@ export default function OnboardingFlow() {
         .from('user_profiles')
         .update({
           onboarding_role: payload.role,
+          onboarding_vertical: payload.vertical,
           onboarding_interests: payload.interests,
+          onboarding_plan: payload.plan,
           onboarding_completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
@@ -76,7 +86,9 @@ export default function OnboardingFlow() {
         JSON.stringify({
           completedAt: new Date().toISOString(),
           role: selectedRole,
+          vertical: selectedVertical,
           interests: selectedInterests,
+          plan: selectedPlan,
         }),
       );
     } catch {
@@ -86,9 +98,11 @@ export default function OnboardingFlow() {
     // Persist to Supabase (fire-and-forget — mutation handles errors gracefully)
     saveOnboardingMutation.mutate({
       role: selectedRole,
+      vertical: selectedVertical,
       interests: selectedInterests,
+      plan: selectedPlan,
     });
-  }, [selectedRole, selectedInterests, saveOnboardingMutation]);
+  }, [selectedRole, selectedVertical, selectedInterests, selectedPlan, saveOnboardingMutation]);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -105,6 +119,16 @@ export default function OnboardingFlow() {
         );
       case 3:
         return (
+          <OnboardingVertical
+            role={selectedRole}
+            selectedVertical={selectedVertical}
+            onSelectVertical={setSelectedVertical}
+            onNext={goNext}
+            onBack={goBack}
+          />
+        );
+      case 4:
+        return (
           <OnboardingInterests
             selectedInterests={selectedInterests}
             onToggleInterest={handleToggleInterest}
@@ -112,11 +136,22 @@ export default function OnboardingFlow() {
             onBack={goBack}
           />
         );
-      case 4:
+      case 5:
+        return (
+          <OnboardingPlanSelect
+            selectedPlan={selectedPlan}
+            onSelectPlan={setSelectedPlan}
+            onNext={goNext}
+            onBack={goBack}
+          />
+        );
+      case 6:
         return (
           <OnboardingComplete
             role={selectedRole}
+            vertical={selectedVertical}
             interests={selectedInterests}
+            selectedPlan={selectedPlan}
             onFinish={handleFinish}
           />
         );

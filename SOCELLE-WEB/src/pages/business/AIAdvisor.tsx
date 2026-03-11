@@ -9,6 +9,7 @@ import type { ChatAction } from '../../lib/ai/types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { useQuery } from '@tanstack/react-query';
+import UpgradeGate from '../../components/UpgradeGate';
 
 /* ── Action icon mapping ──────────────────────────────── */
 function actionIcon(type: ChatAction['type']) {
@@ -211,6 +212,7 @@ export default function AIAdvisor() {
         <meta name="description" content="Your personal Socelle AI intelligence advisor for product recommendations, treatment protocols, and market insights." />
       </Helmet>
 
+      <UpgradeGate feature="ai_advisor" requiredTier="starter" message="Intelligence Advisor requires a Starter plan or above.">
       <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-14rem)]">
         {/* ── Chat Column (2/3) ─────────────────────────── */}
         <div className="flex-1 lg:flex-[2] flex flex-col bg-white rounded-2xl border border-accent-soft overflow-hidden min-h-0">
@@ -411,6 +413,7 @@ export default function AIAdvisor() {
           </div>
         </div>
       </div>
+      </UpgradeGate>
     </>
   );
 }
