@@ -153,7 +153,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | ADMIN-POWER-01 | System health + feeds + audit log dashboard | COMPLETE | `docs/qa/verify_ADMIN-POWER-01.json` |
 | CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | COMPLETE | `docs/qa/verify_CMS-WO-07_2026-03-11.json` |
 | SITE-POWER-01 | Route cleanup + unified revenue funnel CTA hierarchy | COMPLETE | `docs/qa/verify_SITE-POWER-01.json` |
-| MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | OPEN | `docs/qa/verify_MOBILE-POWER-01_*.json` |
+| MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | COMPLETE | `docs/qa/verify_MOBILE-POWER-01_2026-03-11.json` |
 
 <!-- CURRENT_QUEUE_END -->
 
