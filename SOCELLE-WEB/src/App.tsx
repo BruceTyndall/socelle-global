@@ -423,7 +423,7 @@ function App() {
                       Local dev (env var unset) → full access for development agents. */}
                   <Route element={<PrelaunchGuard />}>
                   {/* Full cinematic home kept accessible for internal preview */}
-                  <Route path="/home" element={<IntelligenceHome />} />
+                  <Route path="/home" element={<Navigate to="/intelligence" replace />} />
                   <Route path="/brands" element={<PublicBrands />} />
                   <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
                   <Route path="/plans" element={<Plans />} />
@@ -1050,29 +1050,7 @@ function App() {
                   <Route path="/spa/plans/:id" element={<SpaPlanIdRedirect />} />
                   <Route path="/spa/*" element={<Navigate to="/portal" replace />} />
 
-                  {/* ── Marketing Platform (WO-OVERHAUL-15) — MODULE_MARKETING gated ── */}
-                  <Route
-                    path="/marketing"
-                    element={
-                      <ProtectedRoute
-                        requireRole={['admin', 'platform_admin', 'brand_admin', 'business_user']}
-                        redirectTo="/portal/login"
-                      >
-                        <ModuleRoute moduleKey="MODULE_MARKETING">
-                          <MarketingLayout />
-                        </ModuleRoute>
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route index element={<MarketingDashboard />} />
-                    <Route path="campaigns" element={<CampaignList />} />
-                    <Route path="campaigns/new" element={<CampaignBuilder />} />
-                    <Route path="campaigns/:id" element={<CampaignDetail />} />
-                    <Route path="segments" element={<SegmentList />} />
-                    <Route path="templates" element={<TemplateGallery />} />
-                    <Route path="landing-pages" element={<LandingPageList />} />
-                    <Route path="calendar" element={<MktgCalendar />} />
-                  </Route>
+                  <Route path="/marketing/*" element={<Navigate to="/portal/marketing" replace />} />
 
                   {/* ── Dev Tools ──────────────────────────────────── */}
                   <Route path="/dev-index" element={<DevMasterIndex />} />

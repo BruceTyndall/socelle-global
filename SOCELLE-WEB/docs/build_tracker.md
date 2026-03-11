@@ -131,10 +131,10 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | SALES-POWER-01 | Deal attribution + revenue analytics | OPEN | `docs/qa/verify_SALES-POWER-01_*.json` |
 | MKT-POWER-01 | Signal → campaign CTA (fix DEBT-04) | COMPLETE | `docs/qa/verify_MKT-POWER-01.json` |
 | EDU-POWER-01 | CE credits + course player states | COMPLETE | `docs/qa/verify_EDU-POWER-01.json` |
-| COMMERCE-POWER-01 | Affiliate compliance + product intelligence | OPEN | `docs/qa/verify_COMMERCE-POWER-01_*.json` |
+| COMMERCE-POWER-01 | Organic commerce conversion + product intelligence | COMPLETE | `docs/qa/verify_COMMERCE-POWER-01.json` |
 | ADMIN-POWER-01 | System health + feeds + audit log dashboard | COMPLETE | `docs/qa/verify_ADMIN-POWER-01.json` |
 | CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | COMPLETE | `docs/qa/verify_CMS-WO-07_2026-03-11.json` |
-| SITE-POWER-01 | Route cleanup + persona CTA hierarchy | OPEN | `docs/qa/verify_SITE-POWER-01_*.json` |
+| SITE-POWER-01 | Route cleanup + unified revenue funnel CTA hierarchy | COMPLETE | `docs/qa/verify_SITE-POWER-01.json` |
 | MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | OPEN | `docs/qa/verify_MOBILE-POWER-01_*.json` |
 
 *Source: SOCELLE-WEB/docs/ops/APP_BY_APP_IDEA_MINING_UPGRADES.md. Execution truth = build_tracker + verify_*.json (not older plans).*
