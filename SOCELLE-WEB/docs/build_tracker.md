@@ -109,7 +109,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 |----|------|--------|
 | P1-1 | Migrate 19 brand-* usages → Pearl Mineral V2 (StatCard, Button, EmptyState, UpgradeGate, index.css) | 1-2h | ✅ DONE — UD-A Lane A (14 actual violations → 0) |
 | P1-2 | Migrate 30 intel-* usages → signal-*/accent (GlowBadge, DarkPanel, 5 business pages) | 1-2h | ✅ DONE — UD-A Lane A (29 actual violations → 0) |
-| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min | ⚠️ PENDING — verify brand-*/intel-* removed from tailwind.config.js legacy token blocks |
+| P1-3 | Remove brand-* + intel-* from tailwind.config.js after migration | 5 min | ✅ COMPLETE — `docs/qa/verify_P1-3_2026-03-11.json` |
 
 ## 🧪 P2 QUEUE — TEST FIXES
 
@@ -192,7 +192,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | PAY-UPGRADE-WO | TierGate → Stripe Checkout Session (BLOCKED: owner must configure stripe_price_id in Stripe dashboard) | Team 3 | BLOCKED | Owner prereq | `docs/qa/verify_PAY-UPGRADE-WO.json` | — | — |
 | DEBT-TANSTACK-REAL-6 | Migrate 6 raw useEffect+supabase violations to useQuery | Team 4 | COMPLETE | P0 GATE | `docs/qa/verify_DEBT-TANSTACK-REAL-6_2026-03-11.json` | — | — |
 | MERCH-INTEL-03-FINAL | MERCH-01 (openfda source_url), MERCH-06 (paid signal volume), MERCH-10 (30d archive cron) | Team 1 | OPEN | MERCH-INTEL-03-DB | `docs/qa/verify_MERCH-INTEL-03-FINAL.json` | — | — |
-| P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | OPEN | P0 GATE | `docs/qa/verify_P1-3.json` | — | — |
+| P1-3 | Remove brand-*/intel-* legacy blocks from tailwind.config.js | Team 4 | COMPLETE | P0 GATE | `docs/qa/verify_P1-3_2026-03-11.json` | — | — |
 | STATE-AUDIT-01 | Skeleton/error/empty states on 23 priority shell pages | Team 4 | OPEN | P0 GATE | `docs/qa/verify_STATE-AUDIT-01.json` | — | — |
 | COVERAGE-EXPANSION-01 | Domain coverage expansion: 53 candidate feeds (nails, makeup, fragrance, bodycare, education_training, spa_hospitality hotel), 18 heroes enabled, 15/15 domains covered, dedup migration 000033 | Team 1 | DONE | none (parallel push-ahead) | `docs/qa/verify_COVERAGE_EXPANSION.json` | pre-`2f005fe` | db+docs |
 | MERCH-REMEDIATION-01 | Archive 68 off-topic signals (NASA/dog/depression topics); add provenance_tier column to market_signals; backfill from data_feeds; freshness decay + rankedScore in useIntelligence; timeline eligibility filter. Migrations 000035+000036 applied. MERCH 1–12 audit: 6 PASS, 6 WARN, 0 FAIL → overall PASS | Team 1 | DONE | MERCH-INTEL-03-DB | `docs/qa/verify_INTEL_MERCH.json` + `verify_MERCH-REMEDIATION-01.json` | `36e323a`+`690ea8d`+`94875a2`+`fc4b6cc`+`1722d1f` | db+code+docs |
