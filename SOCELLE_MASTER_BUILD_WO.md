@@ -1,13 +1,14 @@
 # SOCELLE GLOBAL — MASTER BUILD WORK ORDER (COMPLETE)
 
+> **Superseded for phase order and WO list by:** `SOCELLE-WEB/docs/command/CONSOLIDATED_BUILD_PLAN.md`. Use this doc only for **full acceptance criteria per WO** (sections 2–9). Execution status = build_tracker.md + verify_*.json.
+
 **V3 CMS-First Platform Build + Full Product Completion**
-**Single source for all remaining execution**
 
 ---
 
-**Authority:** `CLAUDE.md` §A–§Z
-**Date:** March 9, 2026 (last consolidated from build_tracker.md)
-**Status:** V2-TECH FROZEN | CMS COMPLETE | Intelligence Cloud COMPLETE | All Hubs COMPLETE (most) | Multi-Platform PARTIAL
+**Authority:** `/.claude/CLAUDE.md` → CONSOLIDATED_BUILD_PLAN.md  
+**Date:** March 9, 2026 (last consolidated from build_tracker.md); 2026-03-13 (plan consolidation)  
+**Status:** Phase order and WO registry → CONSOLIDATED_BUILD_PLAN; this file = acceptance criteria detail only.  
 **Observability:** Admin Hub dashboards + CMS publish health. No external Sentry.
 
 ---

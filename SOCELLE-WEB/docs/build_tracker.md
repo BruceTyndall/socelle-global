@@ -113,6 +113,28 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 |----|------|--------|
 | P2-1 | Upgrade @testing-library/react to ^17.x (fixes 29 failing unit tests — React 19 compat) | 30 min |
 
+## 📋 PRODUCT POWER / IDEA MINING WOs (APP_BY_APP_IDEA_MINING_UPGRADES.md)
+
+| WO | Scope | Status | Proof pack |
+|----|--------|--------|------------|
+| INTEL-POWER-01 | Impact badge on every signal card (list + detail) | OPEN | `docs/qa/verify_INTEL-POWER-01_*.json` |
+| INTEL-POWER-02 | "N similar" dedup UI + expand | OPEN | `docs/qa/verify_INTEL-POWER-02_*.json` |
+| INTEL-POWER-03 | Today View / Snapshot as default entry | OPEN | `docs/qa/verify_INTEL-POWER-03_*.json` |
+| INTEL-POWER-04 | In-card "Take action" row (Spot→Understand→Act) | OPEN | `docs/qa/verify_INTEL-POWER-04_*.json` |
+| INTEL-POWER-05 | Sentiment aggregate banner + More filters | OPEN | `docs/qa/verify_INTEL-POWER-05_*.json` |
+| CRM-POWER-01 | Contact timeline + signal attribution | OPEN | `docs/qa/verify_CRM-POWER-01_*.json` |
+| CRM-POWER-02 | Consent audit + rebooking engine | OPEN | `docs/qa/verify_CRM-POWER-02_*.json` |
+| SALES-POWER-01 | Deal attribution + revenue analytics | OPEN | `docs/qa/verify_SALES-POWER-01_*.json` |
+| MKT-POWER-01 | Signal → campaign CTA (fix DEBT-04) | OPEN | `docs/qa/verify_MKT-POWER-01_*.json` |
+| EDU-POWER-01 | CE credits + course player states | OPEN | `docs/qa/verify_EDU-POWER-01_*.json` |
+| COMMERCE-POWER-01 | Affiliate compliance + product intelligence | OPEN | `docs/qa/verify_COMMERCE-POWER-01_*.json` |
+| ADMIN-POWER-01 | System health + feeds + audit log dashboard | OPEN | `docs/qa/verify_ADMIN-POWER-01_*.json` |
+| CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | OPEN | `docs/qa/verify_CMS-WO-07_*.json` |
+| SITE-POWER-01 | Route cleanup + persona CTA hierarchy | OPEN | `docs/qa/verify_SITE-POWER-01_*.json` |
+| MOBILE-POWER-01 | Mobile/Tauri/PWA parity + MODULE gates | OPEN | `docs/qa/verify_MOBILE-POWER-01_*.json` |
+
+*Source: SOCELLE-WEB/docs/ops/APP_BY_APP_IDEA_MINING_UPGRADES.md. Execution truth = build_tracker + verify_*.json (not older plans).*
+
 | Build 0 Foundation WO | Status | Verification JSON |
 |---|---|---|
 | FOUND-WO-01..FOUND-WO-15 | COMPLETE (artifact presence verified) | `docs/qa/verify_FOUND-WO-01_20260309.json` through `docs/qa/verify_FOUND-WO-15_20260309.json` |

@@ -1,8 +1,9 @@
 # SOURCE OF TRUTH MAP — SOCELLE MONOREPO
 
-**Created:** 2026-03-10
-**Purpose:** Single reference that resolves authority conflicts, defines reading order, and classifies every governance/spec/tracker doc in the monorepo.
-**Owner:** Architecture sprint. Update this file whenever a new governance doc is added or deprecated.
+**Created:** 2026-03-10  
+**Updated:** 2026-03-13 (Audit Sprint v2.1 — split validation)  
+**Purpose:** Single reference that resolves authority conflicts, defines reading order, and classifies every governance/spec/tracker doc in the monorepo.  
+**Owner:** Architecture sprint. Update this file whenever a new governance doc is added, superseded, or deprecated.
 
 ---
 
@@ -18,13 +19,14 @@
 
 ---
 
-### Tier 1 — Execution Authority (read every session, lines 1–50 minimum)
+### Tier 1 — Execution Authority (read every session, top-of-file slices)
 
 These files directly govern which WOs are active, what the current build state is, and what specs must be satisfied before any code ships.
 
 | File | Description | Why Tier 1 |
 |------|-------------|------------|
 | `SOCELLE-WEB/docs/build_tracker.md` | Live WO execution log. Active phase, freeze directives, debt queue, proof artifact log. | Most volatile governance doc — updated every session. Lines 1–50 show current state. |
+| `SOCELLE-WEB/MASTER_STATUS.md` | Status board summarizing build health, hub readiness, LIVE/DEMO mix, and data/API state. | Single-page snapshot of "what users currently experience" across hubs; referenced from multiple command docs as co-equal status authority. |
 | `/SOCELLE_MASTER_BUILD_WO.md` | 36+ WOs across 9 phases. Full acceptance criteria for every work order. | Canonical definition of what "done" means for each WO. Required before starting any WO. |
 | `SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md` | V3 canonical build plan. WO execution specs, phase gates, delivery milestones. | Declares the V3 execution sequence. Required to understand phase order and WO dependencies. |
 | `SOCELLE-WEB/docs/command/CMS_ARCHITECTURE.md` | CMS table definitions, admin routes, PageRenderer spec, block registration. | Governs all CMS work. Required before any CMS-WO. |
@@ -59,7 +61,7 @@ These files are reference material. Do not read all of them every session — lo
 | `docs/command/SOCELLE_ENTITLEMENTS_PACKAGING.md` | Tier definitions (free/pro/enterprise), feature gates | During payment, credit, or entitlement WOs |
 | `docs/command/SOCELLE_FIGMA_DESIGN_BRIEF.md` | Design brief — Pearl Mineral V2 visual language | During UI/design work |
 | `docs/command/SOCELLE_FIGMA_TO_CODE_HANDOFF.md` | Figma-to-code mapping, component correspondence | During component implementation from design files |
-| `docs/command/SOCELLE_MONOREPO_MAP.md` | Monorepo structure, package boundaries, directory layout | When navigating unfamiliar parts of the repo |
+| `docs/command/SOCELLE_MONOREPO_MAP.md` | Monorepo structure, package boundaries, directory layout | When navigating unfamiliar parts of the repo or planning split packaging |
 | `docs/command/SOCELLE_RELEASE_GATES.md` | Launch gates (overlaps with CLAUDE.md §16) | Pre-launch verification. Cross-reference with CLAUDE.md §16. |
 | `docs/command/SITE_MAP.md` | Older site map — **superseded by GLOBAL_SITE_MAP.md** (see §4) | Do not use as primary; reference only for historical context |
 
@@ -125,39 +127,14 @@ These files may overlap with Tier 0/1 docs. Do not treat them as authoritative w
 
 ---
 
-## §2 — MISSING FILE: MASTER_STATUS.md
-
-### Status: DOES NOT EXIST
-
-**Referenced in:** `SOCELLE-WEB/docs/build_tracker.md` line 249 and line 1403:
-> "Source of Truth: `/.claude/CLAUDE.md` + `/docs/command/*` + `MASTER_STATUS.md` (repo root)"
-
-**Current state:** No file named `MASTER_STATUS.md` exists anywhere in the repo root or any subdirectory.
-
-### Impact
-
-`build_tracker.md` references this file as a co-equal authority alongside `/.claude/CLAUDE.md` and `docs/command/*`. Agents following the authority chain literally cannot find it, creating a broken reference that could cause confusion about what constitutes ground truth.
-
-### Resolution
-
-Two options — owner must decide:
-
-**Option A (recommended):** Declare `MASTER_STATUS.md` as deprecated/never-created. Remove or correct the reference in `build_tracker.md` (lines 249 and 1403). The current state is fully captured by `/.claude/CLAUDE.md` (§2, §3) and `build_tracker.md` itself. No new file is needed.
-
-**Option B:** Create `MASTER_STATUS.md` at repo root as a one-page living status board (current phase, last 5 commits, P0 debt list, next WO). If created, it becomes Tier 1 and must be maintained every session alongside `build_tracker.md`.
-
-**Until owner decides:** Agents must treat `MASTER_STATUS.md` as non-existent. Do not block on it. Read `build_tracker.md` lines 1–50 as the proxy for current state.
-
----
-
-## §3 — SINGLE ENTRYPOINT READING ORDER
+## §2 — SINGLE ENTRYPOINT READING ORDER
 
 Every agent session MUST execute this reading sequence before writing any code or making any decision.
 
 ```
 1. /.claude/CLAUDE.md                                     (lines 1–end, every session)
 2. SOCELLE-WEB/docs/build_tracker.md                      (lines 1–50 only — current phase + active WOs)
-3. ULTRA_DRIVE_PROMPT.md                                  (IF it exists at repo root — read fully, pick lane)
+3. SOCELLE-WEB/MASTER_STATUS.md                           (top section — build health, LIVE/DEMO mix, data/API snapshot)
 4. /SOCELLE_MASTER_BUILD_WO.md                            (WO being executed — find its section only)
 5. SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md              (WO phase context — scan relevant phase section)
 6. /.claude/skills/<relevant-skill>/SKILL.md              (skill(s) mapped to this WO per CLAUDE.md §1)

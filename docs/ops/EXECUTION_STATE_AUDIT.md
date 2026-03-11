@@ -221,6 +221,19 @@ From CLAUDE.md §2:
 
 ---
 
+## 7. Command Evidence (this audit)
+
+The following commands were run from a clean working tree to validate execution state and anchor the audit:
+
+- `git status --porcelain=v1` → no output (clean working directory, no staged or unstaged changes)  
+- `git log -20 --oneline` → HEAD at `19e9ec7` (`chore(audit): AUDIT-SPRINT-01 — source-of-truth map, doc inventory, execution state, product surface, session start entrypoint`), prior anchor commit `d1442d3` present in history  
+- `ls -la` (repo root) → confirmed top-level structure: `SOCELLE-WEB`, `SOCELLE-MOBILE-main`, `docs/`, `.claude/`, `SOCELLE_MASTER_BUILD_WO.md`, `ULTRA_DRIVE_PROMPT.md`  
+- `find docs -maxdepth 3 -type f | sort` → inventory matches `DOC_INVENTORY_REPORT.md` (§2b–2e)  
+- `find .claude -maxdepth 3 -type f | sort` → inventory matches `.claude/` skill and command listings referenced in this audit  
+- Governance phrase search (via `rg`-equivalent tool) for "Source of Truth", "Authority", "canonical", `build_tracker`, `MASTER_STATUS` across `docs/` and `.claude/` → results corroborate the authority chain recorded in `SOURCE_OF_TRUTH_MAP.md` §1 and the Tier 0/1 classifications in `SESSION_START.md` §5.
+
+---
+
 ## 5. Open Debt Inventory
 
 ### P0 Severity (fix immediately, block launch gate §16)

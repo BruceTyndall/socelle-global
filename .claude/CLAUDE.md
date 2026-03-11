@@ -7,18 +7,22 @@
 
 ## §0 — MANDATORY READING ORDER (EVERY SESSION)
 
-> **SESSION ENTRYPOINT:** Read **`docs/command/SESSION_START.md`** first — it is the single-page reference containing the reading order, standup template, proof requirements, and stop conditions for every session. Updated 2026-03-13 by Audit Sprint.
+> **SESSION ENTRYPOINT:** Read **`docs/command/SESSION_START.md`** (or **`SOCELLE-WEB/docs/command/SESSION_START.md`** — same content) first. It is the single-page reference containing the reading order, standup template, proof requirements, and stop conditions for every session. **No agent may skip this read.** Updated 2026-03-13 by Audit Sprint + AUDIT + IDEA MINING + AGENT UPSKILL; 3-file chain and multi-agent shared-ledger rules in SESSION_START.
 
-**Before writing ANY code, running ANY command, or making ANY decision, read these files in this exact order:**
+**Before writing ANY code, running ANY command, or making ANY decision, follow the `SESSION_START.md` sequence exactly. The core three-file chain is:**
 
-1. **`SOCELLE-WEB/docs/build_tracker.md`** — lines 1-50 only (current phase, active WOs, freeze directives)
-2. **`SOCELLE_MASTER_BUILD_WO.md`** — the master work order document (36 WOs across 9 phases, full acceptance criteria)
-3. **`SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md`** — V3 canonical build plan with WO execution specs
-4. **`SOCELLE-WEB/docs/command/CMS_ARCHITECTURE.md`** — CMS table definitions, hooks, admin routes, PageRenderer spec
-5. **`SOCELLE-WEB/docs/command/CMS_CONTENT_MODEL.md`** — block types, content types, space definitions
-6. **`SOCELLE-WEB/docs/command/JOURNEY_STANDARDS.md`** — per-hub user journey definitions and E2E test requirements
+1. **`/.claude/CLAUDE.md`** — this file (governance, stop conditions, launch gates)
+2. **`SOCELLE-WEB/docs/build_tracker.md`** — lines 1–50 only (current phase, active WOs, freeze directives)
+3. **`SOCELLE-WEB/MASTER_STATUS.md`** — top sections (build health, LIVE/DEMO mix, data/API state)
 
-7. **`ULTRA_DRIVE_PROMPT.md`** — if it exists in repo root, this is the active corrective sprint. Read it and pick your lane.
+**Then, for the WO you are executing:**
+
+4. **`SOCELLE-WEB/docs/command/CONSOLIDATED_BUILD_PLAN.md`** — single plan document (phase order 1–9, WO registry, non-negotiables). Execution status = build_tracker + verify_*.json only.
+5. **`SOCELLE_MASTER_BUILD_WO.md`** — full acceptance criteria per WO (detail; phase order = CONSOLIDATED_BUILD_PLAN). **`V3_BUILD_PLAN.md`** — CMS WO substeps only (§8).
+6. **`SOCELLE-WEB/docs/command/CMS_ARCHITECTURE.md`** — CMS table definitions, hooks, admin routes, PageRenderer spec (CMS work only)
+7. **`SOCELLE-WEB/docs/command/CMS_CONTENT_MODEL.md`** — block types, content types, space definitions (CMS/content work only)
+8. **`SOCELLE-WEB/docs/command/JOURNEY_STANDARDS.md`** — per-hub user journey definitions and E2E test requirements (hub work only)
+9. **`ULTRA_DRIVE_PROMPT.md`** — if it exists in repo root, this is the active corrective sprint. Read it and pick your lane.
 
 **After reading those, check which WO you are executing and read the relevant skill(s) from `/.claude/skills/` before starting work.**
 

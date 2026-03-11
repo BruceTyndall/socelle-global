@@ -5,15 +5,24 @@
 
 ## 1. MANDATORY READ ORDER (every session, no exceptions)
 
+**Three-file chain (must always come first):**
+
 | Step | File | What to read |
 |------|------|-------------|
-| 1 | `SOCELLE-WEB/docs/build_tracker.md` | Lines 1–50 only — current phase, active WOs, last commit |
-| 2 | `SOCELLE_MASTER_BUILD_WO.md` | Current build phase + acceptance criteria for your WO |
-| 3 | `SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md` | WO execution spec for the phase you are in |
-| 4 | `docs/command/SOCELLE_CANONICAL_DOCTRINE.md` | Banned terms, IA rules, commerce boundary |
-| 5 | `/.claude/skills/<relevant-skill>/SKILL.md` | Skill for your WO group (see §7 below) |
+| 1 | `/.claude/CLAUDE.md` | Full file — governance, stop conditions, launch gates |
+| 2 | `SOCELLE-WEB/docs/build_tracker.md` | Lines 1–50 only — current phase, active WOs, last commit |
+| 3 | `SOCELLE-WEB/MASTER_STATUS.md` | Top sections — build health, LIVE/DEMO mix, data/API state |
 
-Read these files **before writing any code, running any command, or making any decision.**
+**Then, for the WO you are executing:**
+
+| Step | File | What to read |
+|------|------|-------------|
+| 4 | `SOCELLE_MASTER_BUILD_WO.md` | Current build phase + acceptance criteria for your WO |
+| 5 | `SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md` | WO execution spec for the phase you are in |
+| 6 | `docs/command/SOCELLE_CANONICAL_DOCTRINE.md` | Banned terms, IA rules, commerce boundary |
+| 7 | `/.claude/skills/<relevant-skill>/SKILL.md` | Skill for your WO group (see §7 below) |
+
+Read these in order **before writing any code, running any command, or making any decision.**
 
 ---
 
@@ -58,9 +67,10 @@ TIME_ESTIMATE: [e.g. 45 min]
 **Tier 0 — Single Law (governs all agent behavior):**
 - `/.claude/CLAUDE.md`
 
-**Tier 1 — Read every session (lines 1–50 for build_tracker):**
-- `SOCELLE-WEB/docs/build_tracker.md`
-- `SOCELLE_MASTER_BUILD_WO.md`
+**Tier 1 — Read every session (top-of-file slices):**
+- `SOCELLE-WEB/docs/build_tracker.md` (lines 1–50)
+- `SOCELLE-WEB/MASTER_STATUS.md` (top sections)
+- `SOCELLE_MASTER_BUILD_WO.md` (WO section you are executing)
 - `SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md`
 - `docs/command/SOCELLE_CANONICAL_DOCTRINE.md`
 
@@ -96,3 +106,9 @@ Full list: `/.claude/CLAUDE.md §9` (13 conditions total).
 | Intelligence / feed WO | `intelligence-hub-api-contract` → `feed-pipeline-checker` → `intelligence-merchandiser` |
 
 All skills live at `/.claude/skills/`. Run ALL required skills — do not skip based on assumed scope.
+
+---
+
+## 8. PROMPTING & MULTI-AGENT REFERENCE
+
+For how to prompt agents so they don’t get lost, how multi-agents stay aligned, and what’s updated with the new plan, see **`docs/command/PROMPTING_AND_MULTI_AGENT_GUIDE.md`**.

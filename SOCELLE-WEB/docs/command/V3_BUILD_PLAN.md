@@ -1,9 +1,10 @@
 # SOCELLE V3 BUILD PLAN — CMS-First Platform Build
 
-> Authority: `V1SOCELLE_CLAUDE_MD_ONE_SOURCE_OF_TRUTH.md`
-> Created: 2026-03-08
-> Updated: 2026-03-08 (V2-TECH FREEZE + owner V3 master prompt integration)
-> Status: Phase 0 COMPLETE — Phase 1 (CMS Schema+RLS) ACTIVE
+> **Superseded for phase order and WO list by:** `SOCELLE-WEB/docs/command/CONSOLIDATED_BUILD_PLAN.md`. Use this doc only for **WO-CMS-01..06 substep detail** (§8). Execution status = build_tracker.md + verify_*.json.
+>
+> Authority: `/.claude/CLAUDE.md` → CONSOLIDATED_BUILD_PLAN.md  
+> Created: 2026-03-08 | Updated: 2026-03-13 (consolidation)  
+> Status: Phase order and WO list → CONSOLIDATED_BUILD_PLAN; this file = CMS WO substeps only.
 
 ---
 
