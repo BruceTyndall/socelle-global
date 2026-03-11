@@ -102,10 +102,11 @@ export default {
         'display-sm': ['2.25rem', { lineHeight: '1.2',  letterSpacing: '-0.005em' }],
       },
       borderRadius: {
+        // ── Standard scale — prefer `rounded-lg` for general UI ──
         sm:   '4px',
         DEFAULT: '6px',
         md:   '8px',
-        lg:   '10px',
+        lg:   '10px',     // ← project standard (most common)
         xl:   '12px',
         '2xl': '16px',
         '3xl': '20px',
