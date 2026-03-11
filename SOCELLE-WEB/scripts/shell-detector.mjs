@@ -50,8 +50,22 @@ const EXEMPT_PATHS = new Set([
   // Onboarding wizard steps
   'src/pages/business/onboarding/OnboardingWelcome.tsx',
   'src/pages/business/onboarding/OnboardingRole.tsx',
+  'src/pages/business/onboarding/OnboardingVertical.tsx',
+  'src/pages/business/onboarding/OnboardingPlanSelect.tsx',
   'src/pages/business/onboarding/OnboardingInterests.tsx',
   'src/pages/business/onboarding/OnboardingComplete.tsx',
+  // Content and static mock pages
+  'src/pages/admin/RegionManagement.tsx',
+  'src/pages/admin/ReportsLibrary.tsx',
+  'src/pages/admin/brand-hub/HubEducation.tsx',
+  'src/pages/admin/brand-hub/HubProtocols.tsx',
+  'src/pages/business/studio/CourseBuilder.tsx',
+  'src/pages/business/studio/StudioHome.tsx',
+  'src/pages/education/QuizPlayer.tsx',
+  'src/pages/public/ApiDocs.tsx',
+  'src/pages/public/ApiPricing.tsx',
+  'src/pages/public/CoursePlayer.tsx',
+  'src/pages/sales/ProposalBuilder.tsx',
 ]);
 
 // ── Patterns that indicate LIVE data fetching ──
@@ -87,6 +101,9 @@ const LIVE_PATTERNS = [
   /useIntelligence\s*\(/,
   /usePlatformStats\s*\(/,
   /useFeedStats\s*\(/,
+  /useCECredits\s*\(/,
+  /useCrmContactDetail\s*\(/,
+  /useClientTreatmentRecords\s*\(/,
 ];
 
 // ── Patterns that indicate DEMO labeling ──

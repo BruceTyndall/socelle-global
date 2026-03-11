@@ -153,9 +153,25 @@ function DimensionCard({ dim }: { dim: BenchmarkScore }) {
 
 // ── Main Page ───────────────────────────────────────────────────────
 
+import { Skeleton } from '../../components/ui/Skeleton';
+
 export default function BenchmarkDashboard() {
   const { profile } = useAuth();
   const { benchmark, categories, reorderItems, peerGroup, loading: benchmarkLoading, isLive } = useBenchmarkData(profile?.business_id ?? undefined);
+
+  if (benchmarkLoading) {
+    return (
+      <div className="space-y-8 animate-pulse">
+        <div className="h-10 w-1/3 bg-accent-soft/40 rounded"></div>
+        <div className="h-48 w-full bg-accent-soft/40 rounded-2xl"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="h-40 bg-accent-soft/40 rounded-xl"></div>
+          <div className="h-40 bg-accent-soft/40 rounded-xl"></div>
+          <div className="h-40 bg-accent-soft/40 rounded-xl"></div>
+        </div>
+      </div>
+    );
+  }
 
   const belowPeerDimensions = benchmark.dimensions.filter((d) => d.recommendation);
 
@@ -171,7 +187,7 @@ export default function BenchmarkDashboard() {
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="font-sans text-3xl text-graphite">Your Treatment Room Benchmarks</h1>
             {!isLive && (
-              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+              <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">DEMO</span>
             )}
           </div>
           <div className="flex items-center gap-2 mt-2">

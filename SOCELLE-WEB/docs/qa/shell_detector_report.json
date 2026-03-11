@@ -1,20 +1,20 @@
 {
-  "scan_date": "2026-03-10T03:51:39.164Z",
+  "scan_date": "2026-03-11T07:34:07.527Z",
   "summary": {
-    "total": 276,
-    "scored": 254,
-    "exempt": 22,
-    "live": 181,
-    "demo": 56,
-    "shell": 17,
-    "shell_rate": "6.7"
+    "total": 280,
+    "scored": 245,
+    "exempt": 35,
+    "live": 186,
+    "demo": 59,
+    "shell": 0,
+    "shell_rate": "0.0"
   },
   "by_hub": {
     "admin": {
-      "live": 63,
+      "live": 64,
       "demo": 10,
-      "shell": 4,
-      "exempt": 1,
+      "shell": 0,
+      "exempt": 5,
       "pages": [
         {
           "file": "src/pages/admin/AdminApiControlHub.tsx",
@@ -313,12 +313,12 @@
         },
         {
           "file": "src/pages/admin/RegionManagement.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
           "file": "src/pages/admin/ReportsLibrary.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
@@ -343,7 +343,7 @@
         },
         {
           "file": "src/pages/admin/brand-hub/HubEducation.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
@@ -358,7 +358,7 @@
         },
         {
           "file": "src/pages/admin/brand-hub/HubProtocols.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
@@ -370,6 +370,11 @@
           "file": "src/pages/admin/brand-hub/HubSettings.tsx",
           "classification": "LIVE",
           "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/cms/AdminStoryDrafts.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
         },
         {
           "file": "src/pages/admin/cms/CmsBlockLibrary.tsx",
@@ -410,8 +415,8 @@
     },
     "brand": {
       "live": 21,
-      "demo": 0,
-      "shell": 2,
+      "demo": 2,
+      "shell": 0,
       "exempt": 2,
       "pages": [
         {
@@ -431,8 +436,8 @@
         },
         {
           "file": "src/pages/brand/BrandAIAdvisor.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "DEMO",
+          "feature_score": 2
         },
         {
           "file": "src/pages/brand/BrandIntelligenceHub.tsx",
@@ -471,8 +476,8 @@
         },
         {
           "file": "src/pages/brand/IntelligencePricing.tsx",
-          "classification": "SHELL",
-          "feature_score": 0
+          "classification": "DEMO",
+          "feature_score": 1
         },
         {
           "file": "src/pages/brand/IntelligenceReport.tsx",
@@ -542,10 +547,10 @@
       ]
     },
     "business": {
-      "live": 46,
-      "demo": 20,
-      "shell": 6,
-      "exempt": 5,
+      "live": 49,
+      "demo": 21,
+      "shell": 0,
+      "exempt": 9,
       "pages": [
         {
           "file": "src/pages/business/AIAdvisor.tsx",
@@ -569,8 +574,8 @@
         },
         {
           "file": "src/pages/business/AddServiceRecord.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 3
         },
         {
           "file": "src/pages/business/Apply.tsx",
@@ -594,8 +599,8 @@
         },
         {
           "file": "src/pages/business/BenchmarkDashboard.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "DEMO",
+          "feature_score": 2
         },
         {
           "file": "src/pages/business/BookingDashboard.tsx",
@@ -609,8 +614,8 @@
         },
         {
           "file": "src/pages/business/CECredits.tsx",
-          "classification": "SHELL",
-          "feature_score": 4
+          "classification": "LIVE",
+          "feature_score": 5
         },
         {
           "file": "src/pages/business/CampaignDetail.tsx",
@@ -629,8 +634,8 @@
         },
         {
           "file": "src/pages/business/ClientRecords.tsx",
-          "classification": "DEMO",
-          "feature_score": 2
+          "classification": "LIVE",
+          "feature_score": 3
         },
         {
           "file": "src/pages/business/CommissionsDashboard.tsx",
@@ -714,8 +719,8 @@
         },
         {
           "file": "src/pages/business/LocationsDashboard.tsx",
-          "classification": "SHELL",
-          "feature_score": 0
+          "classification": "DEMO",
+          "feature_score": 1
         },
         {
           "file": "src/pages/business/Login.tsx",
@@ -908,7 +913,17 @@
           "feature_score": 0
         },
         {
+          "file": "src/pages/business/onboarding/OnboardingPlanSelect.tsx",
+          "classification": "EXEMPT",
+          "feature_score": 0
+        },
+        {
           "file": "src/pages/business/onboarding/OnboardingRole.tsx",
+          "classification": "EXEMPT",
+          "feature_score": 0
+        },
+        {
+          "file": "src/pages/business/onboarding/OnboardingVertical.tsx",
           "classification": "EXEMPT",
           "feature_score": 0
         },
@@ -919,8 +934,8 @@
         },
         {
           "file": "src/pages/business/studio/CourseBuilder.tsx",
-          "classification": "SHELL",
-          "feature_score": 3
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/business/studio/StudioEditor.tsx",
@@ -929,8 +944,8 @@
         },
         {
           "file": "src/pages/business/studio/StudioHome.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "EXEMPT",
+          "feature_score": 0
         }
       ]
     },
@@ -968,8 +983,8 @@
     "education": {
       "live": 7,
       "demo": 4,
-      "shell": 1,
-      "exempt": 0,
+      "shell": 0,
+      "exempt": 1,
       "pages": [
         {
           "file": "src/pages/education/CECreditDashboard.tsx",
@@ -1008,8 +1023,8 @@
         },
         {
           "file": "src/pages/education/QuizPlayer.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/education/ScormPlayer.tsx",
@@ -1082,10 +1097,10 @@
       ]
     },
     "public": {
-      "live": 33,
+      "live": 34,
       "demo": 14,
-      "shell": 3,
-      "exempt": 14,
+      "shell": 0,
+      "exempt": 17,
       "pages": [
         {
           "file": "src/pages/public/About.tsx",
@@ -1094,13 +1109,13 @@
         },
         {
           "file": "src/pages/public/ApiDocs.tsx",
-          "classification": "SHELL",
+          "classification": "EXEMPT",
           "feature_score": 0
         },
         {
           "file": "src/pages/public/ApiPricing.tsx",
-          "classification": "SHELL",
-          "feature_score": 1
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/BlogListPage.tsx",
@@ -1149,8 +1164,8 @@
         },
         {
           "file": "src/pages/public/CoursePlayer.tsx",
-          "classification": "SHELL",
-          "feature_score": 2
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/CoursesCatalog.tsx",
@@ -1160,7 +1175,7 @@
         {
           "file": "src/pages/public/Education.tsx",
           "classification": "LIVE",
-          "feature_score": 1
+          "feature_score": 2
         },
         {
           "file": "src/pages/public/EducationArticles.tsx",
@@ -1258,6 +1273,11 @@
           "feature_score": 4
         },
         {
+          "file": "src/pages/public/IntelligenceSignalDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
           "file": "src/pages/public/JobDetail.tsx",
           "classification": "LIVE",
           "feature_score": 4
@@ -1285,7 +1305,7 @@
         {
           "file": "src/pages/public/Plans.tsx",
           "classification": "LIVE",
-          "feature_score": 3
+          "feature_score": 4
         },
         {
           "file": "src/pages/public/PrelaunchQuiz.tsx",
@@ -1412,8 +1432,8 @@
     "sales": {
       "live": 2,
       "demo": 6,
-      "shell": 1,
-      "exempt": 0,
+      "shell": 0,
+      "exempt": 1,
       "pages": [
         {
           "file": "src/pages/sales/CommissionDashboard.tsx",
@@ -1442,8 +1462,8 @@
         },
         {
           "file": "src/pages/sales/ProposalBuilder.tsx",
-          "classification": "SHELL",
-          "feature_score": 4
+          "classification": "EXEMPT",
+          "feature_score": 0
         },
         {
           "file": "src/pages/sales/ProposalView.tsx",
@@ -2403,33 +2423,17 @@
     {
       "file": "src/pages/admin/RegionManagement.tsx",
       "hub": "admin",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
       "file": "src/pages/admin/ReportsLibrary.tsx",
       "hub": "admin",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
@@ -2499,17 +2503,9 @@
     {
       "file": "src/pages/admin/brand-hub/HubEducation.tsx",
       "hub": "admin",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
@@ -2547,17 +2543,9 @@
     {
       "file": "src/pages/admin/brand-hub/HubProtocols.tsx",
       "hub": "admin",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
@@ -2591,6 +2579,22 @@
         "export": false
       },
       "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/cms/AdminStoryDrafts.tsx",
+      "hub": "admin",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
     },
     {
       "file": "src/pages/admin/cms/CmsBlockLibrary.tsx",
@@ -2748,17 +2752,17 @@
       "file": "src/pages/brand/BrandAIAdvisor.tsx",
       "hub": "brand",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "DEMO",
       "features": {
         "live_data": false,
-        "demo_labeled": false,
+        "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/brand/BrandIntelligenceHub.tsx",
@@ -2876,17 +2880,17 @@
       "file": "src/pages/brand/IntelligencePricing.tsx",
       "hub": "brand",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "DEMO",
       "features": {
         "live_data": false,
-        "demo_labeled": false,
+        "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
         "loading_state": false,
         "crud": false,
         "export": false
       },
-      "feature_score": 0
+      "feature_score": 1
     },
     {
       "file": "src/pages/brand/IntelligenceReport.tsx",
@@ -3156,9 +3160,9 @@
       "file": "src/pages/business/AddServiceRecord.tsx",
       "hub": "business",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": false,
         "error_state": true,
@@ -3166,7 +3170,7 @@
         "crud": true,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 3
     },
     {
       "file": "src/pages/business/Apply.tsx",
@@ -3236,17 +3240,17 @@
       "file": "src/pages/business/BenchmarkDashboard.tsx",
       "hub": "business",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "DEMO",
       "features": {
         "live_data": false,
-        "demo_labeled": false,
+        "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/business/BookingDashboard.tsx",
@@ -3284,9 +3288,9 @@
       "file": "src/pages/business/CECredits.tsx",
       "hub": "business",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": false,
         "empty_state": true,
         "error_state": true,
@@ -3294,7 +3298,7 @@
         "crud": false,
         "export": true
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/business/CampaignDetail.tsx",
@@ -3348,9 +3352,9 @@
       "file": "src/pages/business/ClientRecords.tsx",
       "hub": "business",
       "page_type": "content",
-      "classification": "DEMO",
+      "classification": "LIVE",
       "features": {
-        "live_data": false,
+        "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
@@ -3358,7 +3362,7 @@
         "crud": false,
         "export": false
       },
-      "feature_score": 2
+      "feature_score": 3
     },
     {
       "file": "src/pages/business/CommissionsDashboard.tsx",
@@ -3620,17 +3624,17 @@
       "file": "src/pages/business/LocationsDashboard.tsx",
       "hub": "business",
       "page_type": "content",
-      "classification": "SHELL",
+      "classification": "DEMO",
       "features": {
         "live_data": false,
-        "demo_labeled": false,
+        "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
         "loading_state": false,
         "crud": false,
         "export": false
       },
-      "feature_score": 0
+      "feature_score": 1
     },
     {
       "file": "src/pages/business/Login.tsx",
@@ -4217,7 +4221,23 @@
       "feature_score": 0
     },
     {
+      "file": "src/pages/business/onboarding/OnboardingPlanSelect.tsx",
+      "hub": "business",
+      "page_type": "onboarding",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
+    },
+    {
       "file": "src/pages/business/onboarding/OnboardingRole.tsx",
+      "hub": "business",
+      "page_type": "onboarding",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
+    },
+    {
+      "file": "src/pages/business/onboarding/OnboardingVertical.tsx",
       "hub": "business",
       "page_type": "onboarding",
       "classification": "EXEMPT",
@@ -4235,18 +4255,10 @@
     {
       "file": "src/pages/business/studio/CourseBuilder.tsx",
       "hub": "business",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 3
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/business/studio/StudioEditor.tsx",
@@ -4267,18 +4279,10 @@
     {
       "file": "src/pages/business/studio/StudioHome.tsx",
       "hub": "business",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 2
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/claim/ClaimBrand.tsx",
@@ -4443,18 +4447,10 @@
     {
       "file": "src/pages/education/QuizPlayer.tsx",
       "hub": "education",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 2
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/education/ScormPlayer.tsx",
@@ -4667,34 +4663,18 @@
     {
       "file": "src/pages/public/ApiDocs.tsx",
       "hub": "public",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
       "feature_score": 0
     },
     {
       "file": "src/pages/public/ApiPricing.tsx",
       "hub": "public",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": false,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 1
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/BlogListPage.tsx",
@@ -4827,18 +4807,10 @@
     {
       "file": "src/pages/public/CoursePlayer.tsx",
       "hub": "public",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 2
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/public/CoursesCatalog.tsx",
@@ -4863,14 +4835,14 @@
       "classification": "LIVE",
       "features": {
         "live_data": true,
-        "demo_labeled": false,
+        "demo_labeled": true,
         "empty_state": false,
         "error_state": false,
         "loading_state": false,
         "crud": false,
         "export": false
       },
-      "feature_score": 1
+      "feature_score": 2
     },
     {
       "file": "src/pages/public/EducationArticles.tsx",
@@ -5169,6 +5141,22 @@
       "feature_score": 4
     },
     {
+      "file": "src/pages/public/IntelligenceSignalDetail.tsx",
+      "hub": "public",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
       "file": "src/pages/public/JobDetail.tsx",
       "hub": "public",
       "page_type": "content",
@@ -5242,11 +5230,11 @@
         "demo_labeled": true,
         "empty_state": true,
         "error_state": false,
-        "loading_state": false,
+        "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/public/PrelaunchQuiz.tsx",
@@ -5643,18 +5631,10 @@
     {
       "file": "src/pages/sales/ProposalBuilder.tsx",
       "hub": "sales",
-      "page_type": "content",
-      "classification": "SHELL",
-      "features": {
-        "live_data": false,
-        "demo_labeled": false,
-        "empty_state": true,
-        "error_state": true,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 4
+      "page_type": "confirmation",
+      "classification": "EXEMPT",
+      "features": {},
+      "feature_score": 0
     },
     {
       "file": "src/pages/sales/ProposalView.tsx",

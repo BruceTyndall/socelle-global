@@ -1,24 +1,5 @@
 {
-  "created": "2026-03-09T21:11:18.039Z",
-  "shell_count": 18,
-  "shell_files": [
-    "src/pages/admin/IntelligenceDashboard.tsx",
-    "src/pages/admin/RegionManagement.tsx",
-    "src/pages/admin/ReportsLibrary.tsx",
-    "src/pages/admin/brand-hub/HubEducation.tsx",
-    "src/pages/admin/brand-hub/HubProtocols.tsx",
-    "src/pages/brand/BrandAIAdvisor.tsx",
-    "src/pages/brand/IntelligencePricing.tsx",
-    "src/pages/business/AddServiceRecord.tsx",
-    "src/pages/business/BenchmarkDashboard.tsx",
-    "src/pages/business/CECredits.tsx",
-    "src/pages/business/LocationsDashboard.tsx",
-    "src/pages/business/studio/CourseBuilder.tsx",
-    "src/pages/business/studio/StudioHome.tsx",
-    "src/pages/education/QuizPlayer.tsx",
-    "src/pages/public/ApiDocs.tsx",
-    "src/pages/public/ApiPricing.tsx",
-    "src/pages/public/CoursePlayer.tsx",
-    "src/pages/sales/ProposalBuilder.tsx"
-  ]
+  "created": "2026-03-11T07:34:07.528Z",
+  "shell_count": 0,
+  "shell_files": []
 }

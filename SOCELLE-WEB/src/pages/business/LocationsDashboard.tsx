@@ -83,7 +83,7 @@ export default function LocationsDashboard() {
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="w-6 h-6 text-accent" />
             <h1 className="text-2xl font-sans text-graphite">All Locations</h1>
-            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">Demo Data</span>
+            <span className="text-[10px] font-semibold bg-signal-warn/10 text-signal-warn px-2 py-0.5 rounded-pill">DEMO</span>
           </div>
           <p className="text-graphite/60 font-sans">
             Cross-location performance overview and intelligence for your {summaries.length}-location portfolio.
