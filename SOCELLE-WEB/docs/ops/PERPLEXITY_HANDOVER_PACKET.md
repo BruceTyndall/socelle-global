@@ -1,9 +1,11 @@
 # PERPLEXITY HANDOVER PACKET — VALIDATE PLAN & CHALLENGE ASSUMPTIONS
 
 **Created:** 2026-03-10  
-**Purpose:** Single handover doc for Perplexity Computer to validate the SOCELLE competitive plan, challenge assumptions, and answer specific questions before coding. Priority: product power (data + advanced features + modern UX). We are not taking the easiest split.
+**Purpose:** Single handover doc for Perplexity Computer to validate the SOCELLE competitive plan, challenge assumptions, and answer specific questions. Priority: product power (data + advanced features + modern UX). We are not taking the easiest split.
 
-**STOP CONDITION:** Do not start coding until app-by-app idea mining is done externally, WOs are upgraded per platform, UX growth upgrades are specified and governed, and this packet is complete.
+**HANDOVER OF RESPONSIBILITY:** Perplexity Computer is taking over **all planning and all code edits** for SOCELLE. After completing the validation and answering the questions in §8, Perplexity owns: (1) planning — WO sequencing, scope decisions, and plan updates; (2) code edits — implementing WOs, updating build_tracker, creating verify_*.json artifacts, and following the authority chain (CLAUDE.md, build_tracker, CONSOLIDATED_BUILD_PLAN, APP_BY_APP_IDEA_MINING_UPGRADES). The human owner approves direction and gates; Perplexity executes planning and code changes.
+
+**STOP CONDITION (before first code edit):** Do not start coding until app-by-app idea mining is done externally, WOs are upgraded per platform, UX growth upgrades are specified and governed, this packet is complete, and Q1–Q4 in §8 are answered. After that, Perplexity proceeds with planning and code edits as the primary executor.
 
 ---
 
@@ -406,4 +408,4 @@ SOCELLE is a B2B intelligence platform for professional beauty (medspa, salon, b
 
 ---
 
-*End of PERPLEXITY_HANDOVER_PACKET. Return to coding only after: app-by-app idea mining done externally, WOs upgraded per platform, UX growth upgrades specified and governed, and this packet complete.*
+*End of PERPLEXITY_HANDOVER_PACKET. Perplexity Computer takes over all planning and code edits after: app-by-app idea mining done externally, WOs upgraded per platform, UX growth upgrades specified and governed, this packet complete, and Q1–Q4 answered. Until then, complete validation only; then proceed as primary executor.*
