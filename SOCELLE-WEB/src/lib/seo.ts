@@ -347,6 +347,56 @@ export function buildHowToSchema({
   };
 }
 
+// ── Article schema (for blog/editorial) ──────────────────────────────────────
+
+export function buildArticleSchema({
+  headline,
+  description,
+  imageUrl,
+  datePublished,
+  dateModified,
+  authorName,
+  url,
+}: {
+  headline: string;
+  description?: string;
+  imageUrl?: string;
+  datePublished: string;
+  dateModified?: string;
+  authorName?: string;
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline,
+    ...(description && { description }),
+    ...(imageUrl && { image: imageUrl }),
+    datePublished,
+    dateModified: dateModified || datePublished,
+    ...(authorName && {
+      author: [
+        {
+          '@type': 'Person',
+          name: authorName,
+        },
+      ],
+    }),
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/favicon.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+  };
+}
+
 // ── Robots meta helpers ───────────────────────────────────────────────────────
 
 /**

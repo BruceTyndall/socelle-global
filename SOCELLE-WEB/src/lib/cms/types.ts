@@ -41,6 +41,8 @@ export interface CmsPage {
   title: string;
   slug: string;
   status: CmsStatus;
+  scheduled_at: string | null;
+  seo_twitter_card: string | null;
   published_at: string | null;
   author_id: string | null;
   seo_title: string | null;
@@ -85,6 +87,8 @@ export interface CmsPost {
   category: string | null;
   tags: string[] | null;
   status: CmsStatus;
+  scheduled_at: string | null;
+  seo_twitter_card: string | null;
   published_at: string | null;
   reading_time: number | null;
   featured: boolean | null;
@@ -124,6 +128,8 @@ export interface CmsDoc {
   body: string | null;
   category: string | null;
   status: CmsStatus;
+  scheduled_at: string | null;
+  seo_twitter_card: string | null;
   author_id: string | null;
   metadata: Json | null;
   created_at: string;

@@ -84,6 +84,8 @@ export default function CmsPostsList() {
   const [formTags, setFormTags] = useState('');
   const [formSeoTitle, setFormSeoTitle] = useState('');
   const [formSeoDescription, setFormSeoDescription] = useState('');
+  const [formScheduledAt, setFormScheduledAt] = useState('');
+  const [formTwitterCard, setFormTwitterCard] = useState('');
 
   const categories = useMemo(() => {
     const fromPosts = posts.map((p) => p.category).filter(Boolean) as string[];
@@ -115,6 +117,8 @@ export default function CmsPostsList() {
     setFormTags('');
     setFormSeoTitle('');
     setFormSeoDescription('');
+    setFormScheduledAt('');
+    setFormTwitterCard('');
     setEditingPost(null);
     setShowForm(false);
     setMutationError(null);
@@ -138,6 +142,8 @@ export default function CmsPostsList() {
     setFormTags(post.tags?.join(', ') ?? '');
     setFormSeoTitle(post.seo_title ?? '');
     setFormSeoDescription(post.seo_description ?? '');
+    setFormScheduledAt(post.scheduled_at ? new Date(post.scheduled_at).toISOString().slice(0, 16) : '');
+    setFormTwitterCard(post.seo_twitter_card ?? '');
     setShowForm(true);
     setMutationError(null);
   }
@@ -160,6 +166,8 @@ export default function CmsPostsList() {
           tags: tags.length > 0 ? tags : null,
           seo_title: formSeoTitle || null,
           seo_description: formSeoDescription || null,
+          scheduled_at: formScheduledAt ? new Date(formScheduledAt).toISOString() : null,
+          seo_twitter_card: formTwitterCard || null,
         });
       } else {
         if (!formSpaceId) {
@@ -183,6 +191,8 @@ export default function CmsPostsList() {
           seo_title: formSeoTitle || null,
           seo_description: formSeoDescription || null,
           seo_og_image: null,
+          seo_twitter_card: formTwitterCard || null,
+          scheduled_at: formScheduledAt ? new Date(formScheduledAt).toISOString() : null,
           seo_canonical: null,
           source_type: null,
           metadata: null,
@@ -242,12 +252,27 @@ export default function CmsPostsList() {
           <h1 className="text-2xl font-semibold text-[#141418]">CMS Posts</h1>
           <span className="text-sm text-[#6E879B]">({posts.length})</span>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#6E879B] text-white rounded-lg hover:bg-[#5A7185] transition-colors text-sm font-medium"
-        >
-          <Plus className="w-4 h-4" /> New Post
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              // Mock export functionality for CMS-WO-09
+              const toast = document.createElement('div');
+              toast.className = 'fixed bottom-4 right-4 bg-graphite text-white px-4 py-2 rounded shadow-lg z-50 text-sm font-sans';
+              toast.innerText = 'Newsletter HTML copied to clipboard (Mock)';
+              document.body.appendChild(toast);
+              setTimeout(() => toast.remove(), 3000);
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E8EDF1] text-[#6E879B] rounded-lg hover:bg-[#F6F3EF] transition-colors text-sm font-medium"
+          >
+            Export Newsletter
+          </button>
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-[#6E879B] text-white rounded-lg hover:bg-[#5A7185] transition-colors text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" /> New Post
+          </button>
+        </div>
       </div>
 
       {/* ── Mutation error ──────────────────────────────────────── */}
@@ -386,6 +411,25 @@ export default function CmsPostsList() {
                 onChange={(e) => setFormSeoDescription(e.target.value)}
                 className="w-full border border-[#E8EDF1] rounded-lg px-3 py-2 text-sm text-[#141418] focus:outline-none focus:border-[#6E879B]"
                 rows={2}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <label className="block text-sm font-medium text-[#141418] mb-1">Scheduled At (Optional)</label>
+              <input
+                type="datetime-local"
+                value={formScheduledAt}
+                onChange={(e) => setFormScheduledAt(e.target.value)}
+                className="w-full border border-[#E8EDF1] rounded-lg px-3 py-2 text-sm text-[#141418] focus:outline-none focus:border-[#6E879B]"
+              />
+            </div>
+            <div className="md:col-span-1">
+              <label className="block text-sm font-medium text-[#141418] mb-1">Twitter Card Image URL (Optional)</label>
+              <input
+                type="text"
+                value={formTwitterCard}
+                onChange={(e) => setFormTwitterCard(e.target.value)}
+                className="w-full border border-[#E8EDF1] rounded-lg px-3 py-2 text-sm text-[#141418] focus:outline-none focus:border-[#6E879B]"
+                placeholder="https://..."
               />
             </div>
           </div>
