@@ -3,6 +3,7 @@
    Pearl Mineral V2 · Monocle-magazine aesthetic
    Variants: 'featured' (lead / full-width) | 'standard' (grid)
    Scroll-triggered entry via IntersectionObserver — no deps
+   INTEL-PREMIUM-01: hero images, segment badges, reading time, quality, topic tags
    ═══════════════════════════════════════════════════════════════ */
 import { useEffect, useRef, useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
@@ -32,6 +33,25 @@ const TYPE_LABELS: Partial<Record<SignalType, string>> = {
   market_data:         'Market Data',
   supply_chain:        'Supply Chain',
 };
+
+// ─── Content segment badge colors (INTEL-PREMIUM-01) ─────────────────────────
+const SEGMENT_COLORS: Record<string, string> = {
+  breaking: 'bg-red-100/80 text-red-700',
+  research: 'bg-blue-100/80 text-blue-700',
+  trend_report: 'bg-teal-100/80 text-teal-700',
+  regulatory_update: 'bg-amber-100/80 text-amber-700',
+  product_launch: 'bg-purple-100/80 text-purple-700',
+  deep_dive: 'bg-indigo-100/80 text-indigo-700',
+  social_pulse: 'bg-pink-100/80 text-pink-700',
+  opinion: 'bg-orange-100/80 text-orange-700',
+  how_to: 'bg-cyan-100/80 text-cyan-700',
+  event_coverage: 'bg-emerald-100/80 text-emerald-700',
+  market_data: 'bg-slate-100/80 text-slate-700',
+};
+
+function humanizeSegment(segment: string): string {
+  return segment.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 // ─── Static class resolvers — JIT-safe (no string interpolation) ─────────────
 function getTextClass(dir: SignalDirection, type: SignalType): string {
@@ -146,7 +166,7 @@ export function SignalCardFeatured({
   const barClass   = getBarClass(signal.direction, signal.signal_type);
   const borderL    = getBorderLClass(signal.direction, signal.signal_type);
   const source     = signal.source_name ?? signal.source;
-  const img        = getSignalImage(signal);
+  const img        = signal.hero_image_url ? { url: signal.hero_image_url, alt: signal.title } : getSignalImage(signal);
 
   return (
     <article
@@ -161,13 +181,14 @@ export function SignalCardFeatured({
       ].join(' ')}
       style={{ transitionTimingFunction: 'cubic-bezier(0.25,0.46,0.45,0.94)' }}
     >
-      {/* Signal image — top strip, full width */}
+      {/* Signal image — top strip, full width (prefers hero_image_url) */}
       <div className="w-full h-36 overflow-hidden bg-graphite/5">
         <img
           src={img.url}
           alt={img.alt}
           className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity duration-300"
           loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
       </div>
 
@@ -175,8 +196,13 @@ export function SignalCardFeatured({
 
         {/* ── Eyebrow row ──────────────────────────────────────── */}
         <div className="flex items-start justify-between gap-4 mb-6">
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
             <span className="text-eyebrow text-accent/80 shrink-0">{label}</span>
+            {signal.content_segment && (
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-sans font-medium ${SEGMENT_COLORS[signal.content_segment] ?? 'bg-gray-100 text-gray-600'}`}>
+                {humanizeSegment(signal.content_segment)}
+              </span>
+            )}
             {signal.category && (
               <>
                 <span className="text-graphite/18 text-xs select-none">·</span>
@@ -205,9 +231,20 @@ export function SignalCardFeatured({
 
         {/* ── Description ──────────────────────────────────────── */}
         {signal.description && (
-          <p className="text-body text-graphite/52 leading-relaxed line-clamp-3 mb-7">
+          <p className="text-body text-graphite/52 leading-relaxed line-clamp-3 mb-5">
             {signal.description}
           </p>
+        )}
+
+        {/* ── Topic tags (INTEL-PREMIUM-01) ─────────────────────── */}
+        {signal.topic_tags && signal.topic_tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {signal.topic_tags.slice(0, 4).map((tag) => (
+              <span key={tag} className="px-2 py-0.5 rounded-full bg-graphite/[0.04] text-graphite/40 text-[10px] font-sans">
+                {tag.replace(/-/g, ' ')}
+              </span>
+            ))}
+          </div>
         )}
 
         {/* ── Evidence Strip ───────────────────────────────────── */}
@@ -223,9 +260,28 @@ export function SignalCardFeatured({
                 type={signal.signal_type}
               />
             )}
+            {/* Reading time + author (INTEL-PREMIUM-01) */}
+            {signal.reading_time_minutes != null && signal.reading_time_minutes > 0 && (
+              <span className="font-mono text-label text-graphite/30 tabular-nums">
+                {signal.reading_time_minutes} min
+              </span>
+            )}
+            {signal.author && (
+              <span className="text-[10px] text-graphite/26 truncate max-w-[100px]">
+                {signal.author}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
+            {signal.quality_score != null && signal.quality_score > 70 && (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5F8A72]" aria-hidden />
+                <span className="font-mono text-label text-graphite/30 tabular-nums mr-2">
+                  Premium
+                </span>
+              </>
+            )}
             <span
               className={`w-1.5 h-1.5 rounded-full ${barClass} opacity-50 animate-pulse-subtle`}
               aria-hidden
@@ -257,7 +313,7 @@ export function SignalCardStandard({
   const textClass = getTextClass(signal.direction, signal.signal_type);
   const barClass  = getBarClass(signal.direction, signal.signal_type);
   const source    = signal.source_name ?? signal.source;
-  const img       = getSignalImage(signal);
+  const img       = signal.hero_image_url ? { url: signal.hero_image_url, alt: signal.title } : getSignalImage(signal);
 
   return (
     <article
@@ -271,22 +327,30 @@ export function SignalCardStandard({
       ].join(' ')}
       style={{ transitionTimingFunction: 'cubic-bezier(0.25,0.46,0.45,0.94)' }}
     >
-      {/* Signal image with accent bar overlay */}
+      {/* Signal image with accent bar overlay (prefers hero_image_url) */}
       <div className="relative w-full h-24 overflow-hidden bg-graphite/5 shrink-0">
         <img
           src={img.url}
           alt={img.alt}
           className="w-full h-full object-cover opacity-75 group-hover:opacity-85 transition-opacity duration-300"
           loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         <div className={`absolute bottom-0 left-0 right-0 h-[3px] ${barClass} opacity-60`} aria-hidden />
       </div>
 
       <div className="px-6 pt-5 pb-6 flex flex-col flex-1">
 
-        {/* ── Eyebrow + magnitude ──────────────────────────────── */}
+        {/* ── Eyebrow + segment + magnitude ──────────────────────── */}
         <div className="flex items-start justify-between gap-2 mb-3.5">
-          <span className="text-eyebrow text-accent/65 leading-none">{label}</span>
+          <div className="flex items-center gap-2 min-w-0 flex-wrap">
+            <span className="text-eyebrow text-accent/65 leading-none">{label}</span>
+            {signal.content_segment && (
+              <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-sans font-medium leading-none ${SEGMENT_COLORS[signal.content_segment] ?? 'bg-gray-100 text-gray-600'}`}>
+                {humanizeSegment(signal.content_segment)}
+              </span>
+            )}
+          </div>
           {mag && (
             <span className={`font-mono text-sm font-semibold shrink-0 tabular-nums ${textClass}`}>
               {mag}
@@ -301,9 +365,20 @@ export function SignalCardStandard({
 
         {/* ── Description ──────────────────────────────────────── */}
         {signal.description && (
-          <p className="text-sm text-graphite/48 leading-relaxed line-clamp-3 mb-4">
+          <p className="text-sm text-graphite/48 leading-relaxed line-clamp-3 mb-3">
             {signal.description}
           </p>
+        )}
+
+        {/* ── Topic tags (INTEL-PREMIUM-01) ─────────────────────── */}
+        {signal.topic_tags && signal.topic_tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {signal.topic_tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="px-1.5 py-0.5 rounded-full bg-graphite/[0.04] text-graphite/40 text-[9px] font-sans">
+                {tag.replace(/-/g, ' ')}
+              </span>
+            ))}
+          </div>
         )}
 
         {/* ── Footer ───────────────────────────────────────────── */}
@@ -333,10 +408,18 @@ export function SignalCardStandard({
               {source && (
                 <span className="text-[10px] text-graphite/26 truncate">{source}</span>
               )}
+              {signal.reading_time_minutes != null && signal.reading_time_minutes > 0 && (
+                <span className="text-[10px] text-graphite/26">{signal.reading_time_minutes}m</span>
+              )}
             </div>
-            <span className="font-mono text-[10px] text-graphite/22 shrink-0 tabular-nums">
-              {timeAgo(signal.updated_at)}
-            </span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              {signal.quality_score != null && signal.quality_score > 70 && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5F8A72]" aria-hidden />
+              )}
+              <span className="font-mono text-[10px] text-graphite/22 shrink-0 tabular-nums">
+                {timeAgo(signal.updated_at)}
+              </span>
+            </div>
           </div>
         </div>
 

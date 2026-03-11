@@ -53,3 +53,45 @@ export default function SignalFilter({ active, onChange }: SignalFilterProps) {
     </div>
   );
 }
+
+// ── Content Segment Filter (INTEL-PREMIUM-01) ──────────────────────────────
+const SEGMENT_OPTIONS = [
+  { value: 'all', label: 'All Content' },
+  { value: 'breaking', label: 'Breaking' },
+  { value: 'deep_dive', label: 'Deep Dives' },
+  { value: 'trend_report', label: 'Trends' },
+  { value: 'research', label: 'Research' },
+  { value: 'product_launch', label: 'Launches' },
+  { value: 'regulatory_update', label: 'Regulatory' },
+  { value: 'social_pulse', label: 'Social' },
+] as const;
+
+interface ContentSegmentFilterProps {
+  active: string;
+  onChange: (segment: string) => void;
+}
+
+export function ContentSegmentFilter({ active, onChange }: ContentSegmentFilterProps) {
+  return (
+    <div className="w-full overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="flex items-center gap-1.5 min-w-max">
+        {SEGMENT_OPTIONS.map(({ value, label }) => {
+          const isActive = active === value;
+          return (
+            <button
+              key={value}
+              onClick={() => onChange(value)}
+              className={`px-3 py-1.5 rounded-full text-xs font-sans font-medium transition-all duration-150 whitespace-nowrap ${
+                isActive
+                  ? 'bg-accent text-white'
+                  : 'bg-graphite/[0.05] text-graphite/45 hover:bg-graphite/[0.10] hover:text-graphite/60'
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

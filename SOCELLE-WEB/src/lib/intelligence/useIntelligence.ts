@@ -46,6 +46,11 @@ interface UseIntelligenceOptions {
    * When undefined/empty, all signal types are returned.
    */
   signalTypes?: SignalType[];
+  /**
+   * INTEL-PREMIUM-01: Content segment filter.
+   * When provided (not 'all'), only signals matching this content_segment are returned.
+   */
+  contentSegment?: string;
 }
 
 interface UseIntelligenceReturn {
@@ -91,6 +96,21 @@ interface MarketSignalRow {
   tier_visibility: string | null;
   // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
   provenance_tier: number | null;
+  // INTEL-PREMIUM-01: premium content columns
+  article_body: string | null;
+  article_html: string | null;
+  hero_image_url: string | null;
+  image_urls: string[] | null;
+  content_segment: string | null;
+  topic_tags: string[] | null;
+  reading_time_minutes: number | null;
+  word_count: number | null;
+  quality_score: number | null;
+  is_enriched: boolean | null;
+  enriched_at: string | null;
+  author: string | null;
+  published_at: string | null;
+  geo_source: string | null;
 }
 
 const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
@@ -161,6 +181,21 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
     tier_min: row.tier_min ?? undefined,
     // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
     provenance_tier: row.provenance_tier ?? 3,
+    // INTEL-PREMIUM-01: premium content fields
+    article_body: row.article_body ?? undefined,
+    article_html: row.article_html ?? undefined,
+    hero_image_url: row.hero_image_url ?? undefined,
+    image_urls: row.image_urls ?? undefined,
+    content_segment: row.content_segment ?? undefined,
+    topic_tags: row.topic_tags ?? undefined,
+    reading_time_minutes: row.reading_time_minutes ?? undefined,
+    word_count: row.word_count ?? undefined,
+    quality_score: row.quality_score ?? undefined,
+    is_enriched: row.is_enriched ?? undefined,
+    enriched_at: row.enriched_at ?? undefined,
+    author: row.author ?? undefined,
+    published_at: row.published_at ?? undefined,
+    geo_source: row.geo_source ?? undefined,
   };
 }
 
@@ -189,20 +224,23 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const effectiveTierMin: 'free' | 'paid' = options?.tierOverride ?? (subscriptionTier === 'free' ? 'free' : 'paid');
 
   const { data: rawSignals = [], isLoading: loading } = useQuery({
-    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null],
+    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null, options?.contentSegment ?? null],
     queryFn: async () => {
       let q = supabase
         .from('market_signals')
         .select(
-          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier'
+          'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source'
         )
         .eq('active', true)
         .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
-        // MERCH-01: provenance authority first (tier 1=regulatory > tier 3=trade),
-        // then display_order for editorial overrides, then recency.
+        // INTEL-PREMIUM-01: quality_score DESC surfaces premium content first,
+        // then provenance authority (tier 1=regulatory > tier 3=trade),
+        // then display_order for editorial overrides, then published_at for freshness.
         // Decayed impact score re-ranking happens client-side (MERCH-04/05).
+        .order('quality_score', { ascending: false, nullsFirst: false })
         .order('provenance_tier', { ascending: true })
         .order('display_order', { ascending: true })
+        .order('published_at', { ascending: false, nullsFirst: false })
         .order('updated_at', { ascending: false })
         .limit(options?.limit ?? 50);
 
@@ -222,6 +260,11 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       // INTEL-UI-REMEDIATION-01: Server-side signal_type filter (category tab → DB filter)
       if (options?.signalTypes && options.signalTypes.length > 0) {
         q = (q as any).in('signal_type', options.signalTypes);
+      }
+
+      // INTEL-PREMIUM-01: Content segment filter
+      if (options?.contentSegment && options.contentSegment !== 'all') {
+        q = q.eq('content_segment', options.contentSegment);
       }
 
       // MERCH-10: Timeline eligibility — stricter filter for "What Changed" feed
@@ -250,7 +293,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const queryClient = useQueryClient();
   // Capture the exact queryKey used by this hook instance so the realtime
   // handler updates the same cache entry (not a bare ['market_signals'] ghost).
-  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null];
+  const queryKey = ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null, options?.contentSegment ?? null];
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 

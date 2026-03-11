@@ -62,6 +62,7 @@ Do not infer status from this plan. Check build_tracker + verify artifacts.
 | FEED-WO-01..05 | data_feeds, feed_run_log, rss-to-signals, health, DLQ |
 | INTEL-WO-01..11 | useIntelligence, SignalTable, TrendStacks, OpportunitySignals, AIToolbar, CrossHubActionDispatcher, states, saved searches, /home |
 | MERCH-INTEL-* | Merchandising rules, safety-pin sort, topic cap, coverage expansion, image clicks |
+| INTEL-PREMIUM-01 | Premium content UI: hero images, full articles, content segments, quality scoring, topic tags, reading time, author attribution |
 | INTEL-POWER-01..05 | Impact badge, "N similar" dedup UI, Today View default, in-card Take action, sentiment banner + filters |
 
 **Control & Pay (foundation)**  

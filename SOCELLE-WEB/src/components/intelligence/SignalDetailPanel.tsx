@@ -26,6 +26,25 @@ function getConfidenceLabel(score: number | undefined): { label: string; color: 
   return { label: 'LOW', color: 'text-[#8E6464]' };
 }
 
+// ── Content segment badge colors (INTEL-PREMIUM-01) ─────────────────
+const SEGMENT_COLORS: Record<string, string> = {
+  breaking: 'bg-red-100 text-red-700',
+  research: 'bg-blue-100 text-blue-700',
+  trend_report: 'bg-teal-100 text-teal-700',
+  regulatory_update: 'bg-amber-100 text-amber-700',
+  product_launch: 'bg-purple-100 text-purple-700',
+  deep_dive: 'bg-indigo-100 text-indigo-700',
+  social_pulse: 'bg-pink-100 text-pink-700',
+  opinion: 'bg-orange-100 text-orange-700',
+  how_to: 'bg-cyan-100 text-cyan-700',
+  event_coverage: 'bg-emerald-100 text-emerald-700',
+  market_data: 'bg-slate-100 text-slate-700',
+};
+
+function humanizeSegment(segment: string): string {
+  return segment.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
   // INTEL-WO-06: ESC key closes panel
   useEffect(() => {
@@ -55,7 +74,7 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
       {/* Panel */}
       <div className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#F6F3EF] z-50 shadow-xl overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-[#F6F3EF] border-b border-[#6E879B]/20 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-[#F6F3EF] border-b border-[#6E879B]/20 px-6 py-4 flex items-center justify-between z-10">
           <h2 className="font-sans font-semibold text-[#141418] text-lg truncate pr-4">Signal Detail</h2>
           <button
             onClick={onClose}
@@ -65,7 +84,48 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
           </button>
         </div>
 
+        {/* Hero image banner (INTEL-PREMIUM-01) */}
+        {signal.hero_image_url && (
+          <div className="w-full h-56 overflow-hidden">
+            <img
+              src={signal.hero_image_url}
+              alt=""
+              className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+            />
+          </div>
+        )}
+
         <div className="px-6 py-6 space-y-6">
+          {/* Author + published date + reading time (INTEL-PREMIUM-01) */}
+          {(signal.author || signal.published_at || (signal.reading_time_minutes != null && signal.reading_time_minutes > 0)) && (
+            <div className="flex items-center gap-3 text-sm text-gray-500 flex-wrap">
+              {signal.author && <span>By {signal.author}</span>}
+              {signal.published_at && (
+                <span>{new Date(signal.published_at).toLocaleDateString()}</span>
+              )}
+              {signal.reading_time_minutes != null && signal.reading_time_minutes > 0 && (
+                <span>{signal.reading_time_minutes} min read</span>
+              )}
+            </div>
+          )}
+
+          {/* Content segment badge + geo source (INTEL-PREMIUM-01) */}
+          {(signal.content_segment || signal.geo_source) && (
+            <div className="flex items-center gap-2 flex-wrap">
+              {signal.content_segment && (
+                <span className={`px-2.5 py-1 rounded-full text-xs font-sans font-medium ${SEGMENT_COLORS[signal.content_segment] ?? 'bg-gray-100 text-gray-600'}`}>
+                  {humanizeSegment(signal.content_segment)}
+                </span>
+              )}
+              {signal.geo_source && (
+                <span className="px-2.5 py-1 rounded-full bg-graphite/[0.06] text-graphite/50 text-xs font-sans">
+                  {signal.geo_source}
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Direction + Magnitude */}
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${config.bg}`}>
@@ -79,11 +139,64 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
             </div>
           </div>
 
-          {/* Title + Description */}
+          {/* Title + Full article body (INTEL-PREMIUM-01) */}
           <div>
-            <h3 className="font-sans font-semibold text-[#141418] text-base mb-2">{signal.title}</h3>
-            <p className="text-sm font-sans text-gray-600 leading-relaxed">{signal.description}</p>
+            <h3 className="font-sans font-semibold text-[#141418] text-base mb-3">{signal.title}</h3>
+            {signal.article_body ? (
+              <div className="text-sm text-[#141418]/80 leading-relaxed space-y-3">
+                {signal.article_body.split('\n').map((para, i) => (
+                  para.trim() ? <p key={i}>{para}</p> : null
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm font-sans text-gray-600 leading-relaxed">{signal.description}</p>
+            )}
           </div>
+
+          {/* Image gallery (INTEL-PREMIUM-01) */}
+          {signal.image_urls && signal.image_urls.length > 1 && (
+            <div className="grid grid-cols-2 gap-2">
+              {signal.image_urls.slice(1, 5).map((url, i) => (
+                <div key={i} className="aspect-video rounded-lg overflow-hidden">
+                  <img
+                    src={url}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Topic tags (INTEL-PREMIUM-01) */}
+          {signal.topic_tags && signal.topic_tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {signal.topic_tags.map((tag) => (
+                <span key={tag} className="px-2.5 py-1 rounded-full bg-graphite/[0.05] text-graphite/50 text-xs font-sans">
+                  {tag.replace(/-/g, ' ')}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Quality score visualization (INTEL-PREMIUM-01) */}
+          {signal.quality_score != null && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">Quality</span>
+              <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${signal.quality_score}%`,
+                    backgroundColor: signal.quality_score > 70 ? '#5F8A72' : signal.quality_score > 40 ? '#A97A4C' : '#8E6464',
+                  }}
+                />
+              </div>
+              <span className="text-xs text-gray-400">{signal.quality_score}</span>
+            </div>
+          )}
 
           {/* Metadata Grid */}
           <div className="grid grid-cols-2 gap-4">
