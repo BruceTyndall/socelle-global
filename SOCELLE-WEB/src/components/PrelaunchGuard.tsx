@@ -13,6 +13,6 @@ import { Navigate, Outlet } from 'react-router-dom';
 const PRELAUNCH_MODE = import.meta.env.VITE_PRELAUNCH_MODE === 'true';
 
 export function PrelaunchGuard() {
-  if (!PRELAUNCH_MODE) return <Outlet />;
-  return <Navigate to="/" replace />;
+  // Temporary bypass to allow review of production deployed pages
+  return <Outlet />;
 }
