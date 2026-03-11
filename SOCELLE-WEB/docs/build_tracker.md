@@ -1,6 +1,6 @@
 Claude Code updates this at the end of every session
 **OPERATING SYSTEM:** `SOCELLE-WEB/docs/GOVERNANCE.md` — read that file first for WO lifecycle, verification protocol, branch policy, agent model, and build plan lineage (V1+V2 strategic plans consolidated in §8).
-DELIVERABLES A+B COMPLETE — A: 6100b5e | B: 53c8c16 | Marker: (this commit)
+DELIVERABLES A+B COMPLETE — A: 598d8d6 (GOVERNANCE.md rewrite) | B: (this commit) PR→WO reconciliation table
 Last Updated: 2026-03-13 (MERCH-INTEL-IMAGE-CLICKS COMPLETE — signal cards clickable (/intelligence/signals/:id), IntelligenceSignalDetail page + TanStack Query, getSignalImage() hook, images in all signal cards. tsc=0, build=6.42s. Proof: docs/qa/verify_MERCH-INTEL-IMAGE-CLICKS.json. Previous: COVERAGE-EXPANSION-01 COMPLETE + URL VALIDATION DONE — migrations 000032/033/034 applied. 53 candidate feeds inserted (5 new domains); 12 dead feeds disabled (404/403/Cloudflare confirmed by background HTTP agent); 3 Bobit URLs fixed (/feed→/rss); 6 new verified hero feeds added (HJI, Aesthetics Journal UK, Skin Therapy Letter, Yoga Journal, Wellbeing Magazine, TheIndustry.beauty). Final: 175 total feeds, 103 enabled, 15/15 domains covered. P0 GATE: ALL DONE (MERCH-INTEL-03-DB + NEWSAPI-INGEST-01 + DB-TYPES-02). P1 next: CMS-WO-07. Proof: docs/qa/verify_COVERAGE_EXPANSION.json. Previous: CMS-SEED-01 COMPLETE — 6 published cms_posts seeded to Intelligence space; editorial rail LIVE; 2 featured, all slugs valid; migration 20260313000033 applied. feed-orchestrator v26 redeployed with verify_jwt=true. database.types.ts regenerated (6332 lines, 19 signal_type_enum values). tsc=0. Proof: docs/qa/verify_CMS-SEED-01.json. P0 GATE: COMPLETE. P1 next: CMS-WO-07. Previous: MERCH-INTEL-03 PARTIAL: useIntelligence safety-pin sort (MERCH-03) + topic 40% cap (MERCH-09) LIVE. Migration 000027 written (dedup MERCH-07-STOP, impact_score boost MERCH-05-STOP, display_order MERCH-11, fingerprint backfill) — DB PENDING manual apply (Supabase MCP permission error this session). tsc=0. Proof: docs/qa/verify_MERCH-INTEL-03_2026-03-10.json. Previous: LANE-A: CoursePlayer completion CTA added — "View Certificate" button (signal-up) shown when overallProgress=100 and no nextLesson; links to /education/certificates. tsc=0. Lane A audit: 228 routes mapped, 5/10 journeys pass, 4 P0 dead ends documented. Proof: docs/qa/verify_LANE-A.json. Previous: LANE-B FIXES: rowToSignal tier_visibility now reads from DB (P1 gate was no-op); BrandIntelligenceHub DEMO labels on Position Banner + 3 tab panels; IntelligencePricing DEMO banner + 3x font-playfair→font-sans. tsc=0. Proof: docs/qa/verify_LANE-B-fixes_2026-03-10.json. Previous: LANE-C P0 TIER-BYPASS FIXED — OpportunityFinder.tsx + CECreditDashboard.tsx replaced raw supabase.from('market_signals') with useIntelligence() tier-gated hook; direction/magnitude filters moved client-side. tsc=0. Proof: docs/qa/verify_TIER-BYPASS-FIX_2026-03-10.json. Previous: LANE-E BANNED TERMS FIXED — 11 violations resolved: Unlock→Access (UpgradeGate.tsx ×5, PaywallGate.tsx, Education.tsx, BrandStorefront.tsx, BrandDetail.tsx, ProductCard.tsx), optimized→calibrated (PlanResults.tsx). tsc=0. Proof: docs/qa/verify_LANE-E-fixes_2026-03-10.json.)
 Previously: EDU-WO-02/05 + QuizPlayer states COMPLETE — EducationDashboard.tsx created (business portal, live course_enrollments via TanStack Query, KPI strip, skeleton/error/empty); CECredits.tsx (business) migrated from mockProtocols to useCECredits live hook (certificates + course_enrollments); QuizPlayer.tsx: spinner→skeleton shimmer, error state + retry, empty state (no questions); route /portal/education added; tsc=0, build=5.66s. Proof: docs/qa/verify_EDU-WO-02-05_2026-03-10T01-00-00-000Z.json)
 Previously: SALES-WO-05/08 + ProposalBuilder states COMPLETE — signal_id FK + attributed_at migration on deals; OpportunityFinder wires signal attribution to createDeal; OpportunityFinder skeleton shimmer + error state; RevenueAnalytics Signal-Influenced Deals uses signal_id IS NOT NULL; ProposalBuilder loading/error/empty/save-error states added; tsc=0, build=PASS. Proof: docs/qa/verify_SALES-WO-05-08_2026-03-10T00-00-00-000Z.json)
@@ -218,6 +218,35 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 **What remains blocked (separate gates):**
 - PAY-UPGRADE-WO — BLOCKED pending owner Stripe dashboard config
 - P2-1, P2-STRIPE — blocked on P1 gate completion
+
+### PR → WO RECONCILIATION (Part B — Governance Directive 2026-03-10)
+
+> **Authority:** GOVERNANCE.md §4 (Branch and PR Policy). All 5 open PRs were created WITHOUT WO mapping. This reconciliation maps them before any merges.
+
+| PR | Branch | Mapped WO(s) | WOs on main? | Risk | Merge Order | Disposition |
+|----|--------|-------------|-------------|------|-------------|-------------|
+| #1 | `phase0/cleanup-and-migration` | DEBT-TANSTACK-6, FOUND-WO-04 | Partial (DEBT-TANSTACK-6 COMPLETE) | ⚠️ MED | 1st | REBASE → keep fixtures, drop overlapping hook changes |
+| #2 | `phase0/design-system-cleanup` | V2-TECH-07 (FROZEN), P1-1/P1-2 | Most done (P1-1/P1-2 DONE, V2-TECH-07 FROZEN) | 🔴 HIGH | 3rd (conditional) | DIFF AUDIT → cherry-pick net-new only, else CLOSE |
+| #3 | `phase0/ai-security-lockdown` | V2-INTEL-02, PAY-WO-01..05, CTRL-WO-01..04 | All COMPLETE on main | 🔴 HIGH | 4th (conditional) | DIFF AUDIT → likely CLOSE, open targeted PRs for gaps |
+| #4 | `phase0/intelligence-ux-polish` | INTEL-WO-08, MERCH-INTEL-IMAGE-CLICKS, INTEL-UI-REMEDIATION-01 | All COMPLETE on main | 🔴 HIGH | CLOSE | All scope delivered. IntelligenceHome rewritten (795→407 lines). |
+| #5 | `phase0/pricing-and-gates` | V2-PLAT-04 (OPEN), V2-PLAT-05 (OPEN), PAY-UPGRADE-WO (BLOCKED) | Primary WOs still OPEN | ⚠️ MED | 2nd | REBASE → extract V2-PLAT-04/05 work, defer Stripe-dependent code |
+
+**Merge execution order:** #1 → #5 → #2 (if net-new) → #3 (if gaps found) → #4 (CLOSE)
+
+**Pre-merge baseline (mandatory):** `git checkout main && git pull`, then `tsc --noEmit` = 0 + `npm run build` = 0.
+
+**After each merge:** Pull main, re-run `tsc + build`, tag `lkg-<date>-<pr>`. If broken: `git revert` immediately per GOVERNANCE.md §4.
+
+**Missing verification (all PRs):** None have `docs/qa/verify_*.json`. Must be created during merge execution per GOVERNANCE.md §3.
+
+**Governance compliance issues:**
+- §2: PRs created before WO mapping enforced — fixed by this table
+- §4: PR #3 spans 3 WO groups (should have been 3 PRs) — if extracted, split
+- §7: At 5/5 PR limit — must merge or close before opening new PRs
+
+**Full reconciliation detail:** `/home/user/workspace/pr_reconciliation_draft.md` (workspace reference — not committed to repo)
+
+---
 
 ### P2 GATE — Testing / CI (starts when P1 PASS)
 
