@@ -131,8 +131,10 @@ serve(async (req) => {
 
     // --- Validate inventory + calculate subtotal ---
     let subtotalCents = 0;
+    const brandCounts: Record<string, number> = {};
     const orderItems: Array<{
       product_id: string;
+      brand_id: string | null;
       variant_id: string | null;
       quantity: number;
       unit_price_cents: number;
@@ -173,8 +175,14 @@ serve(async (req) => {
       const totalPrice = unitPrice * item.quantity;
       subtotalCents += totalPrice;
 
+      // Track brand dominance
+      if (product.brand_id) {
+        brandCounts[product.brand_id] = (brandCounts[product.brand_id] || 0) + item.quantity;
+      }
+
       orderItems.push({
         product_id: product.id,
+        brand_id: product.brand_id,
         variant_id: item.variant_id,
         quantity: item.quantity,
         unit_price_cents: unitPrice,
@@ -276,8 +284,17 @@ serve(async (req) => {
       'metadata[cart_id]': cart_id,
     }, stripeKey);
 
-    // --- Generate order number ---
+    // --- Generate order number & Dominant Brand ---
     const orderNumber = generateOrderNumber();
+    
+    let dominantBrandId = null;
+    let maxCount = 0;
+    for (const [bId, count] of Object.entries(brandCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        dominantBrandId = bId;
+      }
+    }
 
     // --- Create order ---
     const { data: order, error: orderError } = await admin
@@ -285,6 +302,7 @@ serve(async (req) => {
       .insert({
         order_number: orderNumber,
         user_id: user.id,
+        brand_id: dominantBrandId,
         status: 'pending',
         subtotal_cents: subtotalCents,
         discount_cents: discountCents,

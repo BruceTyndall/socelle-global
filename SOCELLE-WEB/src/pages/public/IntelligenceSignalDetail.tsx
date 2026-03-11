@@ -25,6 +25,7 @@ import { buildCanonical } from '../../lib/seo';
 import SignalDetailSkeleton from '../../components/intelligence/SignalDetailSkeleton';
 import SignalErrorState from '../../components/intelligence/SignalErrorState';
 import ImpactBadge from '../../components/intelligence/ImpactBadge';
+import { GlobalCommentThread } from '../../components/social/GlobalCommentThread';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -378,6 +379,14 @@ export default function IntelligenceSignalDetail() {
                   </div>
                 </div>
               )}
+
+              {/* Peer Validation Thread */}
+              <div className="mt-8">
+                <GlobalCommentThread 
+                  topicId={signal.id} 
+                  title="Operator Insights & Discussion" 
+                />
+              </div>
 
               {/* AI provenance label */}
               <div className="mt-8 pt-5 border-t border-graphite/6">

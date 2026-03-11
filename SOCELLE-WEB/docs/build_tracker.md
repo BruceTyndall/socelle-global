@@ -1,4 +1,14 @@
 Claude Code updates this at the end of every session
+- **Walkthrough**: `walkthrough.md` updated with AI functionalities and new commerce schemas.
+
+---
+
+### **[2026-03-11]** - SALES-TRACKER-01: Omni-Channel Attribution & Account Parity
+- **Edge Functions**: Modified `shop-checkout` to extract dominant `brand_id` from retail cart items and sync to the main `orders` table.
+   - Result: Retail sales tracking now works natively in Brand Manager admin pipelines.
+- **Frontend Changes**:
+   - Built `AccountProfile.tsx` for a centralized Shopify-style user hub encompassing Order History, Wishlists, and Profile Settings.
+   - Integrated `My Account` omni-channel access link into `MainNav.tsx` auth dropdown for default retail users.
 **OPERATING SYSTEM:** `SOCELLE-WEB/docs/GOVERNANCE.md` — read that file first for WO lifecycle, verification protocol, branch policy, agent model, and build plan lineage (V1+V2 strategic plans consolidated in §8).
 **WHERE WE LEFT OFF:** Execution stopped after **INTEL-GLOBAL-01** (`dbe4818`) + **INTEL-PREMIUM-01** (`ee9be9a`) — global intelligence expansion and premium UI (hero images, full articles, segments, quality scoring). Next approved work: **CMS-WO-07** + **Product Power WOs** (parallel execution per owner approval). Sources of truth: this file + `docs/qa/verify_*.json`.
 DELIVERABLES A+B+C COMPLETE — A: 598d8d6 (GOVERNANCE.md) | B: c824776 (PR reconciliation) | C: 0376111 (all 5 PRs merged, 0 open, tsc=0, build=0)
@@ -17,6 +27,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 
 | WO | Scope | Status | Commit | Verification JSON |
 |---|---|---|---|---|
+| NEXTGEN-AGENT-DEPLOYMENT | Executed Idea-Mining Commerce/Social/AI/SEO Upgrades: Cart Video Upsell, Global Reviews, Omnipresent Context-Aware ShoppingAssistant, Shopify 2026 JSON-LD | COMPLETE | — | `docs/qa/verify_NEXTGEN-AGENT-DEPLOYMENT.json` |
 | MERCH-SKILL-01 | Agent registry + skill library governance correction: (P0) Fix Sentry contradiction in Anti-Shell Rule #10 → "Admin Hub dashboards and logs"; add Forbidden Paths to 4 supporting agents (Doc Gate QA, Events Pipeline, Analytics/Attribution, Infra/DevOps). (P1) Add Required Skills field to all 15 agent definitions missing it; add Hub ownership N/A to agents 4/5/6/7/9; fix numbering order (Agent 16 before 17); extend CRM Agent Allowed Paths to include booking surfaces; update SKILLS_DEFINITION_SPEC.md §7.3 with Agent #17 row; create 4 missing Intelligence Merchandiser skill files: intelligence-merchandiser, feed-value-ranker, topic-distribution-checker, signal-title-rewriter. | COMPLETE | — | `docs/qa/verify_SKILL-CREATOR-01.json` |
 | AUTH-CORE-01..06 | cms_versions migration (entity versioning, draft/published/archived, UNIQUE(entity_id,version_number), RLS) + block_data_bindings migration (variable→data_source→field_path, RLS) + VersionHistory.tsx (TanStack Query v5, timeline, admin restore, skeleton/error/empty) + EmbedIntelligenceBlock.tsx (live market_signals CMS block, direction badge, LIVE badge, skeleton/error/empty) + DataBindingEngine.ts (resolveBindings async + resolveBindingsSync) + barrel exports updated; tsc=0, build=6.26s | COMPLETE | — | `docs/qa/verify_AUTH-CORE-01-06_2026-03-13T00-00-00-000Z.json` |
 | EMBED-01 | generate-embeddings v1 ACTIVE (inlined edgeControl); embedding_queue table + UNIQUE(table_name,row_id); vector(1536) columns + HNSW cosine indexes on retail_products/pro_products/canonical_protocols; backfill: 62/62 done (35 retail + 27 pro), 0 errors; canonical_protocols 0 rows (embeddings auto-queue on seed); model: text-embedding-ada-002 | COMPLETE | — | `docs/qa/verify_EMBED-01.json` |
@@ -92,6 +103,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | E2E-typeA-fixes | navigation.spec.ts: For Buyers href /for-buyers→/professionals; Pricing href /pricing→/plans; Brands link exact:true + .first(). seo.spec.ts: auth pages (/forgot-password, /reset-password) added to AUTH_EXEMPT_PATHS. tsc=0. | COMPLETE | — | `docs/qa/verify_E2E-typeA-fixes_2026-03-09T23-00-00-000Z.json` |
 | INTEL-GLOBAL-01 | Global Intelligence Expansion: Activated 34 dormant feeds + inserted 49 new global intelligence sources across APAC (12: Korea, Japan, SEA, India, Australia), Europe (10: UK, France, EU regulatory, journals), AI/Beauty Tech (13: CosmeticsDesign, arXiv, VentureBeat, FDA), Reddit RSS (8 subreddits, no auth), PubMed/Google/FTC (6). Extended category CHECK to include 'research'. Added UNIQUE constraint on endpoint_url. Total ~190 enabled feeds. Migration: 20260311043000_global_intelligence_expansion.sql | COMPLETE | `dbe4818` | `docs/qa/verify_INTEL-GLOBAL-01_2026-03-11.json` |
 | INTEL-PREMIUM-01 (Part D) | Intelligence UI premium display: SignalCard hero images + content_segment badges + reading time + quality indicator + topic tags; SignalDetailPanel full article_body reader + image gallery + quality score bar + author/published_at + geo_source; SignalCardEditorial hero image preference + segment badges + reading time + topic tags; ContentSegmentFilter component (8 segments); useIntelligence.ts extended select (14 new columns) + quality_score DESC sort + contentSegment filter option; IntelligenceSignal type expanded with 14 premium fields + ContentSegment type. tsc=0. | COMPLETE | `ee9be9a` | `docs/qa/verify_INTEL-PREMIUM-01_2026-03-11.json` |
+| NEXTGEN-POWER-UP | Commerce SEO, Video, Social & AI Upgrades: ProductVideoPlayer + SocialProofTags + GlobalCommentThread + VerifiedReviews components. ShoppingAssistant (globally mounted) with Edge Function integration (GPT-4 turbo + search_products + search_intelligence + add_to_cart). SeoHead wrapper with Shopify 2026-level JSON-LD schemas injected into ProductDetail, ShopCategory, and Shop views. Typecheck structural integrity verified. | COMPLETE | — | `docs/qa/verify_NEXTGEN-POWER-UP.json` |
 
 ## ⚡ P0 QUEUE — FIX BEFORE ANY NEW WO (from 2026-03-09 audit)
 

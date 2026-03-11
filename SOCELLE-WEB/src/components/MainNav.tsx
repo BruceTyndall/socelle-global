@@ -141,6 +141,14 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
               {!loading && user && (
                 <div className="hidden lg:flex items-center gap-2">
                   {/* Role-aware portal shortcut */}
+                  {(!effectiveRole || effectiveRole === 'business_user' || effectiveRole === 'spa_user') && (
+                    <Link
+                      to="/account"
+                      className="inline-flex items-center justify-center h-[36px] px-4 border border-graphite/15 text-graphite text-sm font-sans font-semibold rounded-full transition-all duration-200 hover:bg-black/[0.04]"
+                    >
+                      My Account
+                    </Link>
+                  )}
                   {(effectiveRole === 'admin' || effectiveRole === 'platform_admin') && (
                     <Link
                       to="/admin"
@@ -261,6 +269,15 @@ export default function MainNav({ noSpacer = false }: { noSpacer?: boolean } = {
             {!loading && user && (
               <div className="space-y-2.5">
                 {/* Role-aware portal shortcut (mobile) */}
+                {(!effectiveRole || effectiveRole === 'business_user' || effectiveRole === 'spa_user') && (
+                  <Link
+                    to="/account"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-center h-12 w-full rounded-full border border-graphite/15 text-[15px] font-sans font-semibold text-graphite transition-all hover:bg-black/[0.04]"
+                  >
+                    My Account
+                  </Link>
+                )}
                 {(effectiveRole === 'admin' || effectiveRole === 'platform_admin') && (
                   <Link
                     to="/admin"

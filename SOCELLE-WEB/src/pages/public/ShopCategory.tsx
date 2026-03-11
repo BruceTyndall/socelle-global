@@ -2,7 +2,7 @@
 // Data: LIVE — products + product_categories tables
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { SeoHead } from '../../components/seo/SeoHead';
 import {
   Search, SlidersHorizontal, Star, ShoppingBag, ChevronLeft, ChevronRight, ArrowLeft,
 } from 'lucide-react';
@@ -66,20 +66,38 @@ export default function ShopCategory() {
   const totalPages = Math.ceil(total / PER_PAGE);
 
   const categoryName = category?.name ?? slug?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) ?? 'Category';
+  const categoryDescription = category?.description ? String(category.description) : `Browse ${categoryName} products on SOCELLE — professional beauty intelligence marketplace.`;
+  const currentUrl = `https://socelle.com/shop/category/${slug}`;
+
+  // Shopify-level JSON-LD Structure
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `${categoryName} | SOCELLE Shop`,
+      description: categoryDescription,
+      url: currentUrl,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: products.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `https://socelle.com/shop/${p.slug}`
+      }))
+    }
+  ];
 
   return (
     <>
-      <Helmet>
-        <title>{categoryName} | SOCELLE Shop</title>
-        <meta name="description" content={`Browse ${categoryName} products on SOCELLE — professional beauty intelligence marketplace.`} />
-        <meta property="og:title" content={`${categoryName} | SOCELLE Shop`} />
-        <meta property="og:description" content={`Browse ${categoryName} products on SOCELLE.`} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://socelle.com/shop/category/${slug}`} />
-        <meta property="og:image" content="https://socelle.com/og-image.svg" />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href={`https://socelle.com/shop/category/${slug}`} />
-      </Helmet>
+      <SeoHead
+        title={categoryName}
+        description={categoryDescription}
+        url={currentUrl}
+        type="website"
+        jsonLd={jsonLd}
+      />
       <MainNav />
 
       <main className="min-h-screen bg-mn-bg pt-28 pb-16">

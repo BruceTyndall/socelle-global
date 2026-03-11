@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ShoppingBag, Minus, Plus, Trash2, Tag, ArrowRight, ChevronLeft } from 'lucide-react';
+import { ShoppingBag, Minus, Plus, Trash2, Tag, ArrowRight, ChevronLeft, Zap } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useShopCart } from '../../lib/shop/useShopCart';
 import { formatCents } from '../../lib/shop/types';
 import { supabase } from '../../lib/supabase';
+import { ProductVideoPlayer } from '../../components/commerce/ProductVideoPlayer';
 
 export default function Cart() {
   const { items, loading, summary, updateQuantity, removeItem } = useShopCart();
@@ -217,6 +218,30 @@ export default function Cart() {
                     Proceed to Checkout <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* NEXTGEN-COMMERCE-01: In-Cart Video Upsell */}
+          {!loading && items.length > 0 && (
+            <div className="mt-16 border-t border-graphite/10 pt-16">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-accent" />
+                </div>
+                <h2 className="text-xl font-sans font-semibold text-graphite">Recommended Protocols</h2>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <ProductVideoPlayer 
+                  src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" 
+                  title="Advanced Exfoliation Protocol"
+                  className="aspect-video w-full"
+                />
+                <ProductVideoPlayer 
+                  src="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" 
+                  title="Post-Treatment Recovery"
+                  className="aspect-video w-full hidden sm:block"
+                />
               </div>
             </div>
           )}

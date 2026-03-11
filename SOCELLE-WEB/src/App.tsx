@@ -16,6 +16,7 @@ import BrandLayout from './layouts/BrandLayout';
 import MarketingLayout from './layouts/MarketingLayout';
 import { PageRenderer } from './components/cms/PageRenderer';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
+import { ShoppingAssistant } from './components/chat/ShoppingAssistant';
 
 // ── Dev Tools
 const DevMasterIndex = lazy(() => import('./pages/dev/MasterIndex'));
@@ -68,6 +69,7 @@ const ProductDetail = lazy(() => import('./pages/public/ProductDetail'));
 const CartPage = lazy(() => import('./pages/public/Cart'));
 const CheckoutPage = lazy(() => import('./pages/public/Checkout'));
 const OrderHistory = lazy(() => import('./pages/public/OrderHistory'));
+const AccountProfile = lazy(() => import('./pages/public/AccountProfile'));
 const ShopOrderDetail = lazy(() => import('./pages/public/OrderDetail'));
 const WishlistPage = lazy(() => import('./pages/public/WishlistPage'));
 
@@ -549,6 +551,11 @@ function App() {
                   <Route path="/shop/:slug" element={<ModuleRoute moduleKey="MODULE_SHOP"><ProductDetail /></ModuleRoute>} />
                   <Route path="/cart" element={<ModuleRoute moduleKey="MODULE_SHOP"><CartPage /></ModuleRoute>} />
                   <Route path="/checkout" element={<ModuleRoute moduleKey="MODULE_SHOP"><CheckoutPage /></ModuleRoute>} />
+                  <Route path="/account" element={
+                    <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
+                      <ModuleRoute moduleKey="MODULE_SHOP"><AccountProfile /></ModuleRoute>
+                    </ProtectedRoute>
+                  } />
                   <Route path="/account/orders" element={
                     <ProtectedRoute requireRole={['business_user', 'brand_admin', 'admin', 'platform_admin']}>
                       <ModuleRoute moduleKey="MODULE_SHOP"><OrderHistory /></ModuleRoute>
@@ -1216,14 +1223,12 @@ function App() {
                           Page not found
                         </h1>
                         <p className="text-graphite/60 font-sans mb-8">The page you're looking for doesn't exist or has moved.</p>
-                        <a href="/" className="inline-flex items-center justify-center h-[44px] px-6 bg-[#1F2428] text-[#F7F5F2] text-sm font-sans font-semibold rounded-full transition-all hover:bg-[#2a3038]">
-                          Back to Socelle
-                        </a>
                       </div>
                     </div>
                   } />
                 </Routes>
               </Suspense>
+              <ShoppingAssistant />
             </BrowserRouter>
             </ModuleAccessProvider>
           </AuthProvider>

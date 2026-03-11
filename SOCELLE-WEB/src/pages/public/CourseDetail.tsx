@@ -29,6 +29,7 @@ import { useCourse } from '../../lib/useCourses';
 import type { CourseModule } from '../../lib/useCourses';
 import { useEnrollment } from '../../lib/useEnrollments';
 import { useAuth } from '../../lib/auth';
+import { GlobalCommentThread } from '../../components/social/GlobalCommentThread';
 
 /* ── Lesson type icons ─────────────────────────────────────────────── */
 
@@ -380,6 +381,15 @@ export default function CourseDetail() {
             </div>
           </section>
         )}
+
+        {/* Peer Discussion Thread */}
+        <section className="max-w-4xl mx-auto px-4 pb-16">
+          <GlobalCommentThread 
+            topicId={course.id} 
+            title="Operator Q&A and Discussions"
+            className="shadow-soft"
+          />
+        </section>
       </main>
 
       <SiteFooter />

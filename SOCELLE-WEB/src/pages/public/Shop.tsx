@@ -1,7 +1,7 @@
 // Shop.tsx — /shop — Product catalog page (LIVE — products table)
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { SeoHead } from '../../components/seo/SeoHead';
 import {
   Search, SlidersHorizontal, Star, ShoppingBag, ChevronLeft, ChevronRight,
 } from 'lucide-react';
@@ -49,19 +49,46 @@ export default function Shop() {
   const { matches: signalMatches } = useProductSignals(products);
   const totalPages = Math.ceil(total / PER_PAGE);
 
+  const currentUrl = "https://socelle.com/shop";
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Socelle Shop',
+      url: 'https://socelle.com/',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://socelle.com/shop?search={search_term_string}',
+        'query-input': 'required name=search_term_string'
+      }
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Socelle',
+      url: 'https://socelle.com/',
+      logo: 'https://socelle.com/og-image.svg'
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: products.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `https://socelle.com/shop/${p.slug}`
+      }))
+    }
+  ];
+
   return (
     <>
-      <Helmet>
-        <title>Shop Professional Products | Socelle</title>
-        <meta name="description" content="Shop professional beauty and skincare products verified by industry intelligence. Curated for licensed salons, spas, and medspas." />
-        <meta property="og:title" content="Shop Professional Products | Socelle" />
-        <meta property="og:description" content="Shop professional beauty and skincare products verified by industry intelligence." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://socelle.com/shop" />
-        <meta property="og:image" content="https://socelle.com/og-image.svg" />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://socelle.com/shop" />
-      </Helmet>
+      <SeoHead
+        title="Shop Professional Products"
+        description="Shop professional beauty and skincare products verified by industry intelligence. Curated for licensed salons, spas, and medspas."
+        url={currentUrl}
+        type="website"
+        jsonLd={jsonLd}
+      />
       <MainNav />
 
       <main className="min-h-screen bg-mn-bg">
