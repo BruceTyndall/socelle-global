@@ -9,8 +9,11 @@ import {
   Send,
   Download,
   Save,
+  Zap,
 } from 'lucide-react';
 import { useProposals, type NewProposal, type ProposalLineItem, type ProposalBlock } from '../../lib/useProposals';
+import { useDeal } from '../../lib/useDeals';
+import { useSignal } from '../../lib/intelligence/useIntelligence';
 
 // ── WO-OVERHAUL-14: Proposal Editor (Business Portal) ───────────────────
 // Data source: proposals table (LIVE when DB-connected)
@@ -30,6 +33,10 @@ export default function ProposalEditor() {
   const dealId = searchParams.get('deal_id') ?? '';
   const navigate = useNavigate();
   const { isLive, createProposal } = useProposals(dealId || undefined);
+  
+  // SALES-POWER-01: Fetch deal to get signal attribution, then fetch signal
+  const { deal } = useDeal(dealId || undefined);
+  const { signal } = useSignal(deal?.signal_id ?? undefined);
 
   const [title, setTitle] = useState('');
   const [clientName, setClientName] = useState('');
@@ -156,6 +163,23 @@ export default function ProposalEditor() {
       {error && (
         <div className="bg-signal-down/10 text-signal-down text-sm font-sans px-4 py-3 rounded-xl">
           {error}
+        </div>
+      )}
+
+      {/* SALES-POWER-01: Signal Context Alert */}
+      {signal && (
+        <div className="bg-accent/5 rounded-2xl border border-accent/20 p-5 flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Zap className="w-5 h-5 text-accent" />
+          </div>
+          <div>
+            <h3 className="text-sm font-sans font-semibold text-accent uppercase tracking-wider mb-1">Intelligence Attribution</h3>
+            <p className="text-sm font-sans text-graphite/80 leading-relaxed">
+              This deal originated from the market signal: <strong>{signal.title}</strong>{' '}
+              <span className="text-graphite/50 text-xs">({signal.magnitude} magnitude)</span>. 
+              Keep the signal's context in mind when drafting the proposal terms.
+            </p>
+          </div>
         </div>
       )}
 

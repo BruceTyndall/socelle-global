@@ -473,3 +473,23 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
 
   return { signals, totalSignalCount: rawSignals.length, marketPulse, loading, isLive, activeFilter, setActiveFilter };
 }
+
+// ── SALES-POWER-01: Single Signal Fetcher ──────────────────────────────
+export function useSignal(signalId?: string) {
+  const { data: signal = null, isLoading: loading, error } = useQuery({
+    queryKey: ['market_signal', signalId],
+    queryFn: async () => {
+      if (!isSupabaseConfigured || !signalId) return null;
+      const { data, error } = await supabase
+        .from('market_signals')
+        .select('*')
+        .eq('id', signalId)
+        .single();
+      if (error) throw new Error(error.message);
+      return data as IntelligenceSignal;
+    },
+    enabled: !!signalId,
+  });
+
+  return { signal, loading, error: error instanceof Error ? error.message : null };
+}

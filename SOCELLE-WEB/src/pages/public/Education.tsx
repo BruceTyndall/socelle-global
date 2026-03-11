@@ -21,6 +21,7 @@ import EducationCard from '../../components/education/EducationCard';
 import EducationFilter from '../../components/education/EducationFilter';
 import CEProgressBar from '../../components/education/CEProgressBar';
 import { useEducation, CATEGORY_LABELS } from '../../lib/education/useEducation';
+import { useCECredits } from '../../lib/education/useCECredits';
 import type { ContentCategory } from '../../lib/education/types';
 
 // ── Category card metadata ──────────────────────────────────────────
@@ -116,7 +117,13 @@ export default function Education() {
     setCeOnlyFilter,
     sortKey,
     setSortKey,
+    progress,
   } = useEducation();
+
+  // EDU-POWER-01: Read live CE credits from the database hooks instead of mocked
+  const { summary } = useCECredits();
+  const actualEarned = summary.totalEarned;
+  const actualGoal = summary.goal;
 
   const totalCourses = allContent.length;
   const totalCategories = Object.keys(CATEGORY_LABELS).length;
@@ -201,8 +208,8 @@ export default function Education() {
                 <p className="mn-eyebrow mt-1">Courses</p>
               </div>
               <div className="text-center">
-                <p className="font-sans text-metric-md text-accent">{totalCeCreditsAvailable}</p>
-                <p className="mn-eyebrow mt-1">CE Credits Available</p>
+                <p className="font-sans text-metric-md text-accent">{actualEarned}</p>
+                <p className="mn-eyebrow mt-1">CE Credits Earned</p>
               </div>
               <div className="text-center">
                 <p className="font-sans text-metric-md text-graphite">{totalCategories}</p>
@@ -313,9 +320,10 @@ export default function Education() {
           {/* Content grid */}
           {content.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {content.map((item) => (
-                <EducationCard key={item.id} item={item} />
-              ))}
+              {content.map((item) => {
+                const itemProgress = progress.find(p => p.content_id === item.id);
+                return <EducationCard key={item.id} item={item} progress={itemProgress} />;
+              })}
             </div>
           ) : (
             <div className="text-center py-16">
@@ -351,7 +359,7 @@ export default function Education() {
             </div>
 
             <BlockReveal delay={300}>
-              <CEProgressBar earned={ceCreditsEarned} goal={ceGoal} />
+              <CEProgressBar earned={actualEarned} goal={actualGoal} />
             </BlockReveal>
 
             <p className="text-center text-sm text-graphite/40 font-sans mt-6">

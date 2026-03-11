@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,6 +22,7 @@ import {
   BookOpen,
   Monitor,
   Stethoscope,
+  Zap,
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -30,6 +31,7 @@ import { Input } from '../../components/ui/Input';
 import { useToast } from '../../components/Toast';
 import { useCampaigns } from '../../lib/campaigns/useCampaigns';
 import type { CampaignStatus, OperatorTier } from '../../lib/campaigns/types';
+import { useSignal } from '../../lib/intelligence/useIntelligence';
 
 const STEPS = [
   { id: 1, label: 'Campaign Setup' },
@@ -83,6 +85,10 @@ const MOCK_CHANNEL_RECOMMENDATIONS: ChannelRec[] = [
 
 export default function CampaignBuilder() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const signalId = searchParams.get('signal_id') ?? undefined;
+  const { signal } = useSignal(signalId);
+
   const { addToast } = useToast();
   const { addCampaign } = useCampaigns();
 
@@ -260,6 +266,23 @@ export default function CampaignBuilder() {
             </div>
           ))}
         </div>
+
+        {/* SALES-POWER-01 / MKT-POWER-01: Signal Context Alert */}
+        {signal && (
+          <div className="bg-accent/5 rounded-2xl border border-accent/20 p-5 flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Zap className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <h3 className="text-sm font-sans font-semibold text-accent uppercase tracking-wider mb-1">Signals to Campaigns</h3>
+              <p className="text-sm font-sans text-graphite/80 leading-relaxed">
+                You are building a campaign inspired by the market signal: <strong>{signal.title}</strong>{' '}
+                <span className="text-graphite/50 text-xs">({signal.magnitude} magnitude)</span>. 
+                AI channel recommendations will be optimized for this topic.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Step Content */}
         {step === 1 && (

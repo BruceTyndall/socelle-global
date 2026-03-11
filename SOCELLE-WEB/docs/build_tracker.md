@@ -129,8 +129,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | CRM-POWER-01 | Contact timeline + signal attribution | COMPLETE | `docs/qa/verify_CRM-POWER-01.json` |
 | CRM-POWER-02 | Consent audit + rebooking engine | COMPLETE | `docs/qa/verify_CRM-POWER-02.json` |
 | SALES-POWER-01 | Deal attribution + revenue analytics | OPEN | `docs/qa/verify_SALES-POWER-01_*.json` |
-| MKT-POWER-01 | Signal → campaign CTA (fix DEBT-04) | OPEN | `docs/qa/verify_MKT-POWER-01_*.json` |
-| EDU-POWER-01 | CE credits + course player states | OPEN | `docs/qa/verify_EDU-POWER-01_*.json` |
+| MKT-POWER-01 | Signal → campaign CTA (fix DEBT-04) | COMPLETE | `docs/qa/verify_MKT-POWER-01.json` |
+| EDU-POWER-01 | CE credits + course player states | COMPLETE | `docs/qa/verify_EDU-POWER-01.json` |
 | COMMERCE-POWER-01 | Affiliate compliance + product intelligence | OPEN | `docs/qa/verify_COMMERCE-POWER-01_*.json` |
 | ADMIN-POWER-01 | System health + feeds + audit log dashboard | COMPLETE | `docs/qa/verify_ADMIN-POWER-01.json` |
 | CMS-POWER-01 | Editorial rail + story drafts (complete CMS-WO-07) | COMPLETE | `docs/qa/verify_CMS-WO-07_2026-03-11.json` |

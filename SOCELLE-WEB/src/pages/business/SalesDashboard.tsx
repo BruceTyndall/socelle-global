@@ -8,6 +8,7 @@ import {
   AlertCircle,
   Loader2,
   ArrowRight,
+  Zap,
 } from 'lucide-react';
 import { useDeals } from '../../lib/useDeals';
 import { usePipelines } from '../../lib/usePipelines';
@@ -52,7 +53,11 @@ export default function SalesDashboard() {
       ? wonDeals.reduce((s, d) => s + d.value, 0) / wonDeals.length
       : 0;
 
-    return { mtdRevenue, qtdRevenue, ytdRevenue, winRate, avgDealSize };
+    // SALES-POWER-01: Signal attribution tracking
+    const signalDeals = wonDeals.filter(d => !!d.signal_id);
+    const signalRevenue = signalDeals.reduce((s, d) => s + d.value, 0);
+
+    return { mtdRevenue, qtdRevenue, ytdRevenue, winRate, avgDealSize, signalRevenue, signalDealsCount: signalDeals.length };
   }, [deals]);
 
   // Build stage summary from pipelines + deals
@@ -134,6 +139,34 @@ export default function SalesDashboard() {
             <p className="text-2xl font-sans font-semibold text-graphite">{m.value}</p>
           </div>
         ))}
+      </div>
+
+      {/* SALES-POWER-01 Signal Attribution Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-accent/5 rounded-2xl border border-accent/20 p-5 flex items-center justify-between group">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Zap className="w-4 h-4 text-accent" />
+              <span className="text-xs font-sans text-accent uppercase tracking-wider font-semibold">Signal-Influenced Revenue</span>
+            </div>
+            <p className="text-2xl font-sans font-semibold text-graphite">{formatCurrency(metrics.signalRevenue)}</p>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-colors">
+            <DollarSign className="w-5 h-5" />
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl border border-graphite/8 p-5 flex items-center justify-between group">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-4 h-4 text-graphite/40" />
+              <span className="text-xs font-sans text-graphite/50 uppercase tracking-wider">Signals Won</span>
+            </div>
+            <p className="text-2xl font-sans font-semibold text-graphite">{metrics.signalDealsCount} Deals</p>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-mn-surface flex items-center justify-center text-graphite/40">
+            <TrendingUp className="w-5 h-5" />
+          </div>
+        </div>
       </div>
 
       {/* Pipeline Overview */}

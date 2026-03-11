@@ -7,7 +7,7 @@ import {
   BookOpen,
   Award,
 } from 'lucide-react';
-import type { EducationContent, ContentType, ContentCategory } from '../../lib/education/types';
+import type { EducationContent, ContentType, ContentCategory, EducationProgress } from '../../lib/education/types';
 
 // ── Gradient map per category (thumbnail placeholder) ───────────────
 // Pearl Mineral V2 tokens only — no pro-*, no font-sans
@@ -43,9 +43,10 @@ const DIFFICULTY_STYLE: Record<string, string> = {
 
 interface EducationCardProps {
   item: EducationContent;
+  progress?: EducationProgress;
 }
 
-export default function EducationCard({ item }: EducationCardProps) {
+export default function EducationCard({ item, progress }: EducationCardProps) {
   const gradient = CATEGORY_GRADIENT[item.category];
   const typeMeta = TYPE_META[item.content_type];
   const TypeIcon = typeMeta.icon;
@@ -65,6 +66,15 @@ export default function EducationCard({ item }: EducationCardProps) {
         {item.brand_name && (
           <span className="absolute top-3 right-3 px-2 py-0.5 rounded bg-black/30 text-white text-[10px] font-sans font-medium backdrop-blur">
             {item.brand_name}
+          </span>
+        )}
+
+        {/* EDU-POWER-01: Progress Badge */}
+        {progress && progress.status !== 'not_started' && (
+          <span className={`absolute bottom-3 right-3 px-2 py-0.5 rounded text-[10px] font-sans font-semibold backdrop-blur ${
+            progress.status === 'completed' ? 'bg-signal-up text-white' : 'bg-signal-warn text-white'
+          }`}>
+            {progress.status === 'completed' ? 'Completed' : `${progress.progress_pct}%`}
           </span>
         )}
       </div>
