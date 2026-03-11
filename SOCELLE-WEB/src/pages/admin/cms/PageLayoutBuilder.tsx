@@ -10,7 +10,7 @@ import { useToast } from '../../../components/Toast';
 export default function PageLayoutBuilder() {
   const { id } = useParams<{ id: string }>();
   const { page, isLoading, error } = useCmsPageWithBlocks(id ?? '');
-  const { showToast } = useToast();
+  const { addToast } = useToast();
   
   // Local state for the canvas blocks (we keep a drafted version)
   const [draftBlocks, setDraftBlocks] = useState<(CmsPageBlock & { block: { type: string, content: any } })[]>([]);
@@ -72,10 +72,10 @@ export default function PageLayoutBuilder() {
 
       if (pbErr) throw pbErr;
 
-      showToast('Block added', 'success');
+      addToast('Block added', 'success');
     } catch (err) {
       console.error(err);
-      showToast('Failed to add block', 'error');
+      addToast('Failed to add block', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -110,10 +110,10 @@ export default function PageLayoutBuilder() {
           })
           .eq('id', pb.id);
       }
-      showToast('Layout saved', 'success');
+      addToast('Layout saved', 'success');
     } catch (err) {
       console.error(err);
-      showToast('Failed to save layout', 'error');
+      addToast('Failed to save layout', 'error');
     } finally {
       setIsSaving(false);
     }
