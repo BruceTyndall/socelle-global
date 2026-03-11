@@ -10,6 +10,7 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
 import { getSignalImage } from '../../lib/intelligence/useSignalImage';
 import EvidenceStrip from './EvidenceStrip';
+import ImpactBadge from './ImpactBadge';
 
 // ─── Editorial section labels ────────────────────────────────────────────────
 const TYPE_LABELS: Partial<Record<SignalType, string>> = {
@@ -203,6 +204,9 @@ export function SignalCardFeatured({
                 {humanizeSegment(signal.content_segment)}
               </span>
             )}
+            {signal.impact_score != null && (
+              <ImpactBadge score={signal.impact_score} />
+            )}
             {signal.category && (
               <>
                 <span className="text-graphite/18 text-xs select-none">·</span>
@@ -349,6 +353,9 @@ export function SignalCardStandard({
               <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-sans font-medium leading-none ${SEGMENT_COLORS[signal.content_segment] ?? 'bg-gray-100 text-gray-600'}`}>
                 {humanizeSegment(signal.content_segment)}
               </span>
+            )}
+            {signal.impact_score != null && (
+              <ImpactBadge score={signal.impact_score} className="!text-[9px] !px-1.5" />
             )}
           </div>
           {mag && (

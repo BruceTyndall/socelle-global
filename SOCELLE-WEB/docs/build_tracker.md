@@ -121,7 +121,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 
 | WO | Scope | Status | Proof pack |
 |----|--------|--------|------------|
-| INTEL-POWER-01 | Impact badge on every signal card (list + detail) | OPEN | `docs/qa/verify_INTEL-POWER-01_*.json` |
+| INTEL-POWER-01 | Impact badge on every signal card (list + detail) | COMPLETE | `docs/qa/verify_INTEL-POWER-01_2026-03-11.json` |
 | INTEL-POWER-02 | "N similar" dedup UI + expand | OPEN | `docs/qa/verify_INTEL-POWER-02_*.json` |
 | INTEL-POWER-03 | Today View / Snapshot as default entry | OPEN | `docs/qa/verify_INTEL-POWER-03_*.json` |
 | INTEL-POWER-04 | In-card "Take action" row (Spot→Understand→Act) | OPEN | `docs/qa/verify_INTEL-POWER-04_*.json` |

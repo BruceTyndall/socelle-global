@@ -24,6 +24,7 @@ import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/
 import { buildCanonical } from '../../lib/seo';
 import SignalDetailSkeleton from '../../components/intelligence/SignalDetailSkeleton';
 import SignalErrorState from '../../components/intelligence/SignalErrorState';
+import ImpactBadge from '../../components/intelligence/ImpactBadge';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -308,9 +309,7 @@ export default function IntelligenceSignalDetail() {
                       <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-graphite/30 mb-1.5">
                         Impact Score
                       </p>
-                      <span className="font-mono text-sm font-semibold text-graphite/60 tabular-nums">
-                        {signal.impact_score}
-                      </span>
+                      <ImpactBadge score={signal.impact_score} className="text-[11px] px-2.5 py-1" />
                     </div>
                   )}
                   {signal.tier_min && (

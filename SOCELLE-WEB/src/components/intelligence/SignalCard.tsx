@@ -11,6 +11,7 @@ import {
 import type { IntelligenceSignal, SignalType } from '../../lib/intelligence/types';
 import TrendIndicator from './TrendIndicator';
 import FreshnessLabel from './FreshnessLabel';
+import ImpactBadge from './ImpactBadge';
 
 // ── Icon map ────────────────────────────────────────────────────────
 const SIGNAL_ICONS: Partial<Record<SignalType, React.ElementType>> = {
@@ -98,6 +99,9 @@ export default function SignalCard({ signal }: SignalCardProps) {
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-sans font-medium ${SEGMENT_COLORS[signal.content_segment] ?? 'bg-gray-100 text-gray-600'}`}>
                 {humanizeSegment(signal.content_segment)}
               </span>
+            )}
+            {signal.impact_score != null && (
+              <ImpactBadge score={signal.impact_score} />
             )}
           </div>
           <TrendIndicator direction={signal.direction} magnitude={signal.magnitude} />
