@@ -172,11 +172,23 @@ function ToolModal({ tool, creditBalanceUsd, onClose, activeSignal }: ToolModalP
       });
 
       if (fnError) {
-        if (fnError.message?.includes('402') || fnError.message?.includes('insufficient')) {
+        const msg = fnError.message ?? '';
+        // 402 — insufficient credits
+        if (msg.includes('402') || msg.includes('insufficient')) {
           setShowInsufficientCredits(true);
           return;
         }
-        throw new Error(fnError.message ?? 'AI service unavailable');
+        // 403 — subscription tier insufficient
+        if (msg.includes('403') || msg.includes('tier_insufficient')) {
+          setError('This AI tool requires a higher subscription tier. Please upgrade your plan.');
+          return;
+        }
+        // 429 — rate limit exceeded
+        if (msg.includes('429') || msg.includes('rate_limit')) {
+          setError('Rate limit exceeded. Please wait a moment and try again.');
+          return;
+        }
+        throw new Error(msg || 'AI service unavailable');
       }
 
       const text =
