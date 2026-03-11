@@ -326,6 +326,7 @@ const CmsMediaLibrary = lazy(() => import('./pages/admin/cms/CmsMediaLibrary'));
 const CmsTemplatesList = lazy(() => import('./pages/admin/cms/CmsTemplatesList'));
 const CmsSpacesConfig = lazy(() => import('./pages/admin/cms/CmsSpacesConfig'));
 const AdminStoryDrafts = lazy(() => import('./pages/admin/cms/AdminStoryDrafts'));
+const MerchandisingConsole = lazy(() => import('./pages/admin/cms/MerchandisingConsole'));
 
 // ── Brand Hub (brand-centric admin)
 const BrandHub = lazy(() => import('./pages/admin/BrandHub'));
@@ -1192,6 +1193,7 @@ function App() {
                     <Route path="cms/templates" element={<CmsTemplatesList />} />
                     <Route path="cms/spaces" element={<CmsSpacesConfig />} />
                     <Route path="cms/story-drafts" element={<AdminStoryDrafts />} />
+                    <Route path="cms/placements" element={<MerchandisingConsole />} />
 
                     {/* ── Shop Admin (WO-OVERHAUL-11) ── */}
                     <Route path="shop" element={<AdminShopHub />} />

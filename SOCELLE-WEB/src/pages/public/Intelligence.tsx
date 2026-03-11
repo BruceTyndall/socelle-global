@@ -25,6 +25,7 @@ import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
 import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
 import { useStories } from '../../lib/editorial/useStories';
+import { useContentPlacements } from '../../lib/cms/useContentPlacements';
 import { useAuth } from '../../lib/auth';
 import { trackSignalViewed } from '../../lib/analytics/funnelEvents';
 
@@ -270,7 +271,20 @@ export default function Intelligence() {
     avgConfidence,
     lastOrchestratorRun,
   } = useDataFeedStats();
-  const { stories: editorialStories } = useStories({ limit: 4 });
+
+  const { placements } = useContentPlacements({ placementKey: 'intel_hub_editorial_rail', isActive: true });
+  const { stories: fallbackStories } = useStories({ limit: 4 });
+  
+  const editorialStories = placements.length > 0 
+    ? placements.filter(p => p.post).map(p => ({
+        title: p.post.title,
+        hero_image_url: p.post.hero_image,
+        category: p.post.category,
+        reading_time_minutes: 5,
+        published_at: p.post.published_at,
+      }))
+    : fallbackStories;
+
   const { user } = useAuth();
 
   useEffect(() => {

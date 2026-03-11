@@ -2107,6 +2107,7 @@ export type Database = {
           consecutive_failures: number | null
           created_at: string | null
           display_order: number
+          domain: string | null
           endpoint_url: string | null
           feed_type: string
           health_status: string | null
@@ -2131,6 +2132,7 @@ export type Database = {
           consecutive_failures?: number | null
           created_at?: string | null
           display_order?: number
+          domain?: string | null
           endpoint_url?: string | null
           feed_type: string
           health_status?: string | null
@@ -2155,6 +2157,7 @@ export type Database = {
           consecutive_failures?: number | null
           created_at?: string | null
           display_order?: number
+          domain?: string | null
           endpoint_url?: string | null
           feed_type?: string
           health_status?: string | null
@@ -2857,6 +2860,7 @@ export type Database = {
           impact_score: number | null
           is_duplicate: boolean
           magnitude: number
+          provenance_tier: number
           region: string | null
           related_brands: string[] | null
           related_products: string[] | null
@@ -2899,6 +2903,7 @@ export type Database = {
           impact_score?: number | null
           is_duplicate?: boolean
           magnitude: number
+          provenance_tier?: number
           region?: string | null
           related_brands?: string[] | null
           related_products?: string[] | null
@@ -2941,6 +2946,7 @@ export type Database = {
           impact_score?: number | null
           is_duplicate?: boolean
           magnitude?: number
+          provenance_tier?: number
           region?: string | null
           related_brands?: string[] | null
           related_products?: string[] | null

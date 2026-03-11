@@ -195,3 +195,23 @@ export type CmsTemplateInsert = Omit<CmsTemplate, 'id' | 'created_at' | 'updated
 };
 
 export type CmsTemplateUpdate = Partial<Omit<CmsTemplate, 'id' | 'created_at' | 'updated_at'>>;
+
+export interface ContentPlacement {
+  id: string;
+  placement_key: string;
+  cms_post_id: string;
+  display_order: number;
+  is_pinned: boolean;
+  expires_at: string | null;
+  segment: string[] | null;
+  is_active: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ContentPlacementInsert = Omit<ContentPlacement, 'id' | 'created_at' | 'updated_at'> & {
+  id?: string;
+};
+
+export type ContentPlacementUpdate = Partial<Omit<ContentPlacement, 'id' | 'created_at' | 'updated_at'>>;

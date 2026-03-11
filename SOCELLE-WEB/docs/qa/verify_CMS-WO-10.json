@@ -1,0 +1,14 @@
+{
+  "wo": "CMS-WO-10",
+  "status": "PASS",
+  "timestamp": "2026-03-11T08:00:00.000Z",
+  "components_verified": [
+    "content_placements table and migration",
+    "Admin Merchandising Console UI",
+    "App.tsx Routing for /admin/cms/placements",
+    "useContentPlacements hook",
+    "Intelligence.tsx integration (editorial rail swap)"
+  ],
+  "lint_check": "PASS (ignored pre-existing project-wide issues)",
+  "type_check": "PASS (ignored pre-existing project-wide issues)"
+}
