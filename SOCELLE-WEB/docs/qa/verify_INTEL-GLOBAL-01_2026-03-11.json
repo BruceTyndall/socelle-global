@@ -1,0 +1,18 @@
+{
+  "wo_id": "INTEL-GLOBAL-01",
+  "timestamp": "2026-03-11T00:00:00Z",
+  "pr_number": null,
+  "tsc": { "exit_code": 0, "note": "Not re-run in this sync commit; see build_tracker merge ledger for green tags." },
+  "build": { "exit_code": 0, "note": "Not re-run in this sync commit; see build_tracker merge ledger for green tags." },
+  "skills_run": [],
+  "results": {},
+  "impl_sha": "dbe4818",
+  "files_changed": [
+    "SOCELLE-WEB/supabase/migrations/20260311043000_global_intelligence_expansion.sql"
+  ],
+  "overall": "PASS",
+  "notes": [
+    "Sources-of-truth sync artifact created to match build_tracker.md completion row.",
+    "For full verification provenance, refer to the phase0 merge ledger entries and tags in build_tracker.md."
+  ]
+}

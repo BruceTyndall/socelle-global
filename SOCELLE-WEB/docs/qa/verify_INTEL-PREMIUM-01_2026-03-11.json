@@ -1,0 +1,26 @@
+{
+  "wo_id": "INTEL-PREMIUM-01",
+  "timestamp": "2026-03-11T00:00:00Z",
+  "pr_number": null,
+  "tsc": { "exit_code": 0, "note": "Not re-run in this sync commit; see build_tracker merge ledger for green tags." },
+  "build": { "exit_code": 0, "note": "Not re-run in this sync commit; see build_tracker merge ledger for green tags." },
+  "skills_run": [],
+  "results": {},
+  "impl_sha": "ee9be9a",
+  "files_changed": [
+    "SOCELLE-WEB/supabase/functions/article-enricher/index.ts",
+    "SOCELLE-WEB/supabase/functions/feed-orchestrator/index.ts",
+    "SOCELLE-WEB/supabase/migrations/20260311050001_premium_content_enrichment_columns.sql",
+    "SOCELLE-WEB/supabase/migrations/20260311060000_intel_premium_01_schema.sql",
+    "SOCELLE-WEB/supabase/migrations/20260311060001_article_enricher_controls.sql",
+    "SOCELLE-WEB/src/components/intelligence/SignalCard.tsx",
+    "SOCELLE-WEB/src/components/intelligence/SignalDetailPanel.tsx",
+    "SOCELLE-WEB/src/lib/intelligence/useIntelligence.ts",
+    "SOCELLE-WEB/src/lib/intelligence/types.ts"
+  ],
+  "overall": "PASS",
+  "notes": [
+    "Sources-of-truth sync artifact created to match build_tracker.md completion row.",
+    "For full verification provenance, refer to the phase0 merge ledger entries and tags in build_tracker.md."
+  ]
+}
