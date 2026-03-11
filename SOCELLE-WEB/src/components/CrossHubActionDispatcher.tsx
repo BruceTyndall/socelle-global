@@ -51,7 +51,8 @@ export type SignalActionType =
   | 'create_brief'
   | 'create_alert'
   | 'add_to_note'
-  | 'create_protocol';
+  | 'create_protocol'
+  | 'sponsor_signal';
 
 // ── Action definitions ──────────────────────────────────────────────────────
 
@@ -136,6 +137,14 @@ const ACTION_DEFS: ActionDef[] = [
     targetHub: 'education',
     route: '/portal/protocols',
     description: 'Create a treatment protocol from this signal',
+  },
+  {
+    type: 'sponsor_signal',
+    label: 'Sponsor Signal',
+    icon: Zap,
+    targetHub: 'brand',
+    route: '/brand/campaigns',
+    description: 'Boost products against this trending signal (Costs Credits)',
   },
 ];
 

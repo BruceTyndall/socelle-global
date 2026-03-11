@@ -101,25 +101,36 @@ export default function UpgradePrompt({ moduleKey }: UpgradePromptProps) {
           </div>
         )}
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            to="/pricing"
-            className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-mn-dark text-white text-sm font-semibold rounded-full transition-colors hover:bg-graphite"
-          >
+        {/* CTAs with Mobile App Bounds (MOBILE-POWER-01) */}
+        {('__TAURI__' in window || window.matchMedia('(display-mode: standalone)').matches) ? (
+          <div className="bg-mn-bg border border-graphite/10 rounded-xl p-4 mt-2">
+            <p className="text-sm font-medium text-graphite">
+              To unlock this module, please upgrade your plan at <strong>socelle.com</strong>
+            </p>
+            <p className="text-xs text-graphite/60 mt-1">
+              In-app subscription management is temporarily unavailable.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/plans"
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-mn-dark text-white text-sm font-semibold rounded-full transition-colors hover:bg-graphite"
+            >
             View Plans
             <ArrowRight className="w-4 h-4" />
           </Link>
 
           {trialPlan && (
             <Link
-              to="/pricing"
+              to="/plans"
               className="inline-flex items-center justify-center gap-2 h-11 px-6 border border-accent text-accent text-sm font-semibold rounded-full transition-colors hover:bg-accent/5"
             >
               Start {trialPlan.trial_days}-Day Free Trial
             </Link>
           )}
         </div>
+        )}
 
         {/* DEMO label per governance */}
         <p className="mt-6 text-[10px] text-graphite/30 uppercase tracking-widest">

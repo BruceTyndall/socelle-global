@@ -1,0 +1,14 @@
+{
+  "taskId": "MERCH-INTEL-03-FINAL_AND_MOBILE-POWER-01",
+  "status": "verified",
+  "timestamp": "2026-03-11T16:00:00Z",
+  "checklist": [
+    "archive-signals Edge function deployed for auto-archiving.",
+    "SQL migration completed establishing requires_credit data gates on Gold signals.",
+    "SignalCard UI modified to securely handle Credit Gating natively.",
+    "openFDA sources securely rendered within the Hub feed.",
+    "Native Tauri / PWA constraints correctly implemented within UpgradePrompt.",
+    "Unauthorized billing URLs suppressed in mobile environments per Apple/Google constraints.",
+    "TypeScript boundary checks executed and confirmed."
+  ]
+}

@@ -79,6 +79,7 @@ Deno.serve(async (_req) => {
       vertical:    item.vertical_tags?.[0] ?? null,
       fingerprint: (item.guid ?? item.link)!,
       status:      'pending' as const,
+      suggested_products: [],
     }));
 
   if (!drafts.length) {

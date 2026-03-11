@@ -173,6 +173,7 @@ const WhiteLabelConfig = lazy(() => import('./pages/business/WhiteLabelConfig'))
 
 // ── Wave 9 — new public pages
 const Events = lazy(() => import('./pages/public/Events'));
+const EventDetail = lazy(() => import('./pages/public/EventDetail'));
 const Jobs = lazy(() => import('./pages/public/Jobs'));
 const JobDetail = lazy(() => import('./pages/public/JobDetail'));
 const SearchPage = lazy(() => import('./pages/public/SearchPage'));
@@ -429,7 +430,7 @@ function App() {
                   <Route path="/brands" element={<PublicBrands />} />
                   <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
                   <Route path="/plans" element={<Plans />} />
-                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/pricing" element={<Navigate to="/plans" replace />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/intelligence" element={<Intelligence />} />
                   <Route path="/insights" element={<Navigate to="/intelligence" replace />} />
@@ -438,8 +439,8 @@ function App() {
                   <Route path="/professionals" element={<Professionals />} />
                   <Route path="/professionals/:id" element={<ProfessionalDetail />} />
                   <Route path="/for-brands" element={<ForBrands />} />
-                  <Route path="/for-medspas" element={<ForMedspas />} />
-                  <Route path="/for-salons" element={<ForSalons />} />
+                  <Route path="/for-medspas" element={<Navigate to="/professionals" replace />} />
+                  <Route path="/for-salons" element={<Navigate to="/professionals" replace />} />
                   <Route path="/for-buyers" element={<Navigate to="/professionals" replace />} />
                   <Route path="/how-it-works" element={<HowItWorks />} />
                   <Route path="/education" element={<Education />} />
@@ -490,6 +491,7 @@ function App() {
                   <Route path="/api/docs" element={<ApiDocs />} />
                   <Route path="/api/pricing" element={<ApiPricing />} />
                   <Route path="/events" element={<Events />} />
+                  <Route path="/events/:slug" element={<EventDetail />} />
                   <Route path="/jobs" element={<Jobs />} />
                   <Route path="/jobs/:slug" element={<JobDetail />} />
                   <Route path="/search" element={<SearchPage />} />

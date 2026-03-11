@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   Layers,
+  Lock,
 } from 'lucide-react';
 import { useState } from 'react';
 import type { IntelligenceSignal, SignalType } from '../../lib/intelligence/types';
@@ -120,10 +121,23 @@ export default function SignalCard({ signal }: SignalCardProps) {
           {signal.title}
         </h3>
 
-        {/* Description */}
-        <p className="text-sm text-graphite/55 font-sans font-light leading-relaxed mb-4">
-          {signal.description}
-        </p>
+        {/* Description / Premium Data Gate */}
+        {signal.requires_credit ? (
+          <div className="bg-graphite/[0.03] border border-graphite/[0.08] rounded-lg p-5 mb-4 text-center">
+             <div className="bg-graphite/[0.05] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3">
+               <Lock className="w-4 h-4 text-graphite/60" />
+             </div>
+             <p className="text-sm font-semibold text-graphite mb-1">Premium Historical Data</p>
+             <p className="text-xs text-graphite/60 mb-3 max-w-xs mx-auto">This high-magnitude historical signal is archived. Unlock full context & analytics for 50 Credits.</p>
+             <button className="px-4 py-2 bg-accent text-white rounded-lg text-xs font-semibold hover:bg-accent/90 transition-colors">
+               Unlock Signal (50 Credits)
+             </button>
+          </div>
+        ) : (
+          <p className="text-sm text-graphite/55 font-sans font-light leading-relaxed mb-4">
+            {signal.description}
+          </p>
+        )}
 
         {/* Category pill + source */}
         <div className="flex items-center flex-wrap gap-2 mb-3">
@@ -138,9 +152,15 @@ export default function SignalCard({ signal }: SignalCardProps) {
             </span>
           )}
           {signal.source && (
-            <span className="text-graphite/30 text-[11px] font-sans">
-              {signal.source}
-            </span>
+            signal.source_url ? (
+               <a href={signal.source_url} target="_blank" rel="noopener noreferrer" className="text-accent underline hover:text-accent/80 text-[11px] font-sans">
+                 {signal.source}
+               </a>
+            ) : (
+               <span className="text-graphite/30 text-[11px] font-sans">
+                 {signal.source}
+               </span>
+            )
           )}
         </div>
 

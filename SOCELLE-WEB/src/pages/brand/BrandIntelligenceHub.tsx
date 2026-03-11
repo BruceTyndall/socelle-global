@@ -31,6 +31,7 @@ import type {
 import type { OperatorEnrichment } from '../../lib/enrichment/types';
 import { Link } from 'react-router-dom';
 import { useBrandTier } from '../../lib/brandTiers/useBrandTier';
+import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
 
 // ── Velocity / Status helpers ────────────────────────────────────
 
@@ -357,19 +358,32 @@ export default function BrandIntelligenceHub() {
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h4 className="font-sans font-medium text-sm text-graphite leading-tight">{signal.title}</h4>
-                        <div className={`flex items-center gap-1 flex-shrink-0 text-xs font-medium font-sans px-2 py-0.5 rounded-full ${
-                          signal.direction === 'up'
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : signal.direction === 'down'
-                            ? 'bg-red-50 text-red-700'
-                            : 'bg-accent-soft text-graphite/60'
-                        }`}>
-                          {signal.direction === 'up' ? (
-                            <TrendingUp className="w-3 h-3" />
-                          ) : signal.direction === 'down' ? (
-                            <TrendingDown className="w-3 h-3" />
-                          ) : null}
-                          {signal.magnitude > 0 ? `${signal.direction === 'down' ? '-' : '+'}${signal.magnitude}%` : 'Stable'}
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <CrossHubActionDispatcher 
+                            compact 
+                            signal={{
+                              id: signal.id,
+                              title: signal.title,
+                              category: signal.category || 'market',
+                              delta: signal.magnitude,
+                              confidence: 90,
+                              source: signal.source || 'system'
+                            }} 
+                          />
+                          <div className={`flex items-center gap-1 text-xs font-medium font-sans px-2 py-0.5 rounded-full ${
+                            signal.direction === 'up'
+                              ? 'bg-emerald-50 text-emerald-700'
+                              : signal.direction === 'down'
+                              ? 'bg-red-50 text-red-700'
+                              : 'bg-accent-soft text-graphite/60'
+                          }`}>
+                            {signal.direction === 'up' ? (
+                              <TrendingUp className="w-3 h-3" />
+                            ) : signal.direction === 'down' ? (
+                              <TrendingDown className="w-3 h-3" />
+                            ) : null}
+                            {signal.magnitude > 0 ? `${signal.direction === 'down' ? '-' : '+'}${signal.magnitude}%` : 'Stable'}
+                          </div>
                         </div>
                       </div>
                       <p className="text-xs text-graphite/60 font-sans line-clamp-2">{signal.description}</p>
