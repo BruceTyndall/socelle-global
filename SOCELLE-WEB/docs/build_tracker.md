@@ -123,7 +123,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 |----|--------|--------|------------|
 | INTEL-POWER-01 | Impact badge on every signal card (list + detail) | COMPLETE | `docs/qa/verify_INTEL-POWER-01_2026-03-11.json` |
 | INTEL-POWER-02 | "N similar" dedup UI + expand | OPEN | `docs/qa/verify_INTEL-POWER-02_*.json` |
-| INTEL-POWER-03 | Today View / Snapshot as default entry | OPEN | `docs/qa/verify_INTEL-POWER-03_*.json` |
+| INTEL-POWER-03 | Today View / Snapshot as default entry | COMPLETE | `docs/qa/verify_INTEL-POWER-03_2026-03-11.json` |
 | INTEL-POWER-04 | In-card "Take action" row (Spot→Understand→Act) | OPEN | `docs/qa/verify_INTEL-POWER-04_*.json` |
 | INTEL-POWER-05 | Sentiment aggregate banner + More filters | OPEN | `docs/qa/verify_INTEL-POWER-05_*.json` |
 | CRM-POWER-01 | Contact timeline + signal attribution | OPEN | `docs/qa/verify_CRM-POWER-01_*.json` |
