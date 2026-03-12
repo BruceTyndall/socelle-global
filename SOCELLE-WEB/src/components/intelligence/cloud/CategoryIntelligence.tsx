@@ -186,7 +186,7 @@ export function CategoryIntelligence({
               <button
                 type="button"
                 onClick={() => setSelectedCategory(null)}
-                className="text-xs font-sans font-medium text-[#6E879B] hover:text-[#5A7185] transition-colors"
+                className="-ml-2 px-2 py-2 text-xs font-sans font-medium text-[#6E879B] hover:text-[#5A7185] transition-colors"
               >
                 All Categories
               </button>

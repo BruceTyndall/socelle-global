@@ -215,7 +215,7 @@ export default function IntelligenceFeedSection({
           {/* INTEL-POWER-05: More Filters Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors shrink-0 mb-1.5 ${
+            className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-sans font-medium transition-colors shrink-0 mb-1.5 ${
               showFilters || minImpact > 0
                 ? 'bg-accent/10 text-accent'
                 : 'bg-graphite/[0.04] text-graphite/60 hover:bg-graphite/[0.08]'
@@ -289,7 +289,7 @@ export default function IntelligenceFeedSection({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="p-1 text-graphite/35 hover:text-graphite/65 transition-colors pointer-events-auto"
+                className="p-2.5 -mr-1.5 text-graphite/35 hover:text-graphite/65 transition-colors pointer-events-auto"
                 aria-label="Clear search"
               >
                 <X className="w-3.5 h-3.5" aria-hidden />

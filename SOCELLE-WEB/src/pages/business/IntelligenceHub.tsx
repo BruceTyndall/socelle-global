@@ -90,6 +90,9 @@ const AI_TOOL_DEFS: AIToolDef[] = [
   { key: 'mocra', label: 'MoCRA', icon: Scale },
 ];
 
+const BEAUTY_RELEVANCE_PATTERN = /\b(beauty|skincare|skin care|skin|salon|medspa|spa|aesthetic|cosmetic|laser|microneed\w*|facial|peel|inject\w*|filler|botox|nail\w*|hair|scalp|brow|lash|makeup|fragrance|wellness|esthetician|dermat\w*|acne|pigment|melasma|serum|ingredient|peptide|retinol|hyaluronic|waxing|lashes|brows)\b/i;
+const BEAUTY_REGULATORY_PATTERN = /\b(fda|ftc|mocra|laser|device|cosmetic|aesthetic|derma\w*|skin|treatment|rf|ipl)\b/i;
+
 // ── Skeleton (uses shared IntelligenceDashboardSkeleton) ────────────
 
 // ── Error State (uses shared SignalErrorState) ──────────────────────
@@ -98,7 +101,7 @@ const AI_TOOL_DEFS: AIToolDef[] = [
 
 export default function IntelligenceHub() {
   const { tier, isLoading: tierLoading } = useTier();
-  const signalLimit = tier === 'free' ? 80 : 140;
+  const signalLimit = tier === 'free' ? 80 : 220;
   const { signals, loading, isLive } = useIntelligence({ limit: signalLimit });
   const { signals: timelineSignals, loading: timelineLoading } = useIntelligence({
     limit: 15,
@@ -345,6 +348,34 @@ export default function IntelligenceHub() {
   );
 }
 
+function isBeautyRelevantSignal(signal: IntelligenceSignal): boolean {
+  if (!['salon', 'medspa', 'beauty_brand', 'multi'].includes(signal.vertical ?? '')) {
+    return false;
+  }
+
+  const haystack = [
+    signal.title,
+    signal.description,
+    signal.category,
+    signal.topic,
+    signal.source_name,
+    ...(signal.related_brands ?? []),
+    ...(signal.related_products ?? []),
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  if (
+    signal.signal_type === 'regulatory_alert'
+    && BEAUTY_REGULATORY_PATTERN.test(haystack)
+  ) {
+    return true;
+  }
+
+  return BEAUTY_RELEVANCE_PATTERN.test(haystack);
+}
+
 // ── Overview Tab ────────────────────────────────────────────────────
 
 function OverviewTab({
@@ -360,6 +391,17 @@ function OverviewTab({
   timelineLoading: boolean;
   onSelectSignal: (signal: IntelligenceSignal) => void;
 }) {
+  const displaySignals = useMemo(() => {
+    const filtered = signals.filter(isBeautyRelevantSignal);
+    return filtered.length >= 24 ? filtered : signals;
+  }, [signals]);
+
+  const displayTimelineSignals = useMemo(() => {
+    const filtered = timelineSignals.filter(isBeautyRelevantSignal);
+    if (filtered.length > 0) return filtered;
+    return timelineSignals.length > 0 ? timelineSignals : displaySignals;
+  }, [timelineSignals, displaySignals]);
+
   const featuredSignals = useMemo(() => {
     const hasMedia = (signal: IntelligenceSignal) =>
       Boolean(
@@ -380,25 +422,23 @@ function OverviewTab({
       picked.push(signal);
     };
 
-    signals
+    displaySignals
       .filter((signal) => hasMedia(signal) && hasReadableState(signal))
       .slice(0, 4)
       .forEach(tryAdd);
 
-    signals
+    displaySignals
       .filter((signal) => (signal.impact_score ?? 0) >= 60 || signal.signal_type === 'regulatory_alert')
       .slice(0, 4)
       .forEach(tryAdd);
 
-    signals
+    displaySignals
       .filter(hasReadableState)
       .slice(0, 4)
       .forEach(tryAdd);
 
     return picked.slice(0, 4);
-  }, [signals]);
-
-  const merchandisedTimeline = timelineSignals.length > 0 ? timelineSignals : signals;
+  }, [displaySignals]);
 
   return (
     <>
@@ -412,18 +452,18 @@ function OverviewTab({
         onSelectSignal={onSelectSignal}
       />
 
-      <KPIStrip signals={signals} loading={loading} />
+      <KPIStrip signals={displaySignals} loading={loading} />
 
       <SignalTable
-        signals={signals}
+        signals={displaySignals}
         loading={loading}
         onSelect={onSelectSignal}
         defaultSortField="impact_score"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <OpportunitySignals signals={signals} loading={loading} />
-        <WhatChangedTimeline signals={merchandisedTimeline} loading={timelineLoading} />
+        <OpportunitySignals signals={displaySignals} loading={loading} />
+        <WhatChangedTimeline signals={displayTimelineSignals} loading={timelineLoading} />
       </div>
     </>
   );
