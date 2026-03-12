@@ -1,6 +1,6 @@
 {
   "wo_id": "INTEL-MONETIZATION-02",
-  "timestamp": "2026-03-12T17:27:21Z",
+  "timestamp": "2026-03-12T17:41:12Z",
   "status": "READY_FOR_REVIEW",
   "owner_request": "Apply first-class Intelligence Channels backed by live intelligence_channels + intelligence_channel_tags, weighted taxonomy performance views, and personalized channel rails across public + portal Intelligence surfaces.",
   "depends_on": [
@@ -27,11 +27,11 @@
     },
     "intelligence-hub-api-contract": {
       "status": "PASS",
-      "evidence": "Public and portal Intelligence pages now consume live channel objects through useIntelligenceChannels, which reads v_intelligence_channel_performance_30d + v_intelligence_channel_top_tags_30d and ranks channels against real signal/tag data plus first-party preference scores."
+      "evidence": "Public and portal Intelligence pages now consume live channel objects through useIntelligenceChannels, which reads v_intelligence_channel_performance_30d + v_intelligence_channel_top_tags_30d and ranks channels against real signal/tag data plus first-party preference scores. The follow-up route fix registers /waitlist so PrelaunchGuard no longer strands public Intelligence traffic in the 404 shell."
     },
     "hub-shell-detector": {
       "status": "PASS",
-      "evidence": "`npm run shell:check` -> 0 shells after the new rail was added to src/pages/public/Intelligence.tsx and src/pages/business/IntelligenceHub.tsx."
+      "evidence": "`npm run shell:check` -> 0 shells after the new rail was added to src/pages/public/Intelligence.tsx and src/pages/business/IntelligenceHub.tsx, and after /waitlist was registered in App.tsx."
     },
     "live-demo-detector": {
       "status": "WARN",
@@ -43,7 +43,7 @@
     },
     "build-gate": {
       "status": "PASS",
-      "evidence": "`npx tsc --noEmit` and `npm run build` exited 0 after adding useIntelligenceChannels and IntelligenceChannelRail."
+      "evidence": "`npx tsc --noEmit` and `npm run build` exited 0 after adding useIntelligenceChannels, IntelligenceChannelRail, and the /waitlist route registration."
     }
   },
   "overall": "WARN",
@@ -63,7 +63,8 @@
     "Repaired remote migration history so 20260313000047 is recorded on project rumdmulxzmjtsplsjngi.",
     "Seeded 14 active first-class channels and 91 weighted tag mappings.",
     "Verified live view rows and queried top channel performance directly from the database.",
-    "Pushed commit 539129f95f8de4042e442619b8efef1c21ff8fd7 to origin/main and confirmed Cloudflare switched from index-DV1DaAsE.js / index-ClXKSAGy.css to index-Bsd_jnj9.js / index-BC175c89.css."
+    "Pushed commit 539129f95f8de4042e442619b8efef1c21ff8fd7 to origin/main for the channel implementation and commit 0470a3a59af1400544305633182363893de04d86 to register /waitlist.",
+    "Confirmed Cloudflare switched from index-Bsd_jnj9.js / index-BC175c89.css to index-jVbdOPNg.js / index-BC175c89.css and that /intelligence now resolves to the intended /waitlist prelaunch surface instead of the 404 shell."
   ],
   "live_metrics": {
     "active_channels": 14,
@@ -96,7 +97,8 @@
     "local_preview_url": "http://127.0.0.1:4173/intelligence",
     "public_screenshot": "docs/qa/screenshots/intelligence_channels_public_local.png",
     "public_screenshot_note": "Local preview screenshot captured from the validated production build; portal login screenshot was not included because the local auth session did not complete during this pass.",
-    "live_public_route_note": "After Cloudflare updated, a direct hit to https://socelle.com/intelligence still rendered the existing 404 shell instead of the public Intelligence page."
+    "live_public_route_note": "After the route fix propagated, a direct hit to https://socelle.com/intelligence now lands on the intended /waitlist prelaunch surface instead of the old 404 shell.",
+    "live_waitlist_screenshot": "docs/qa/screenshots/intelligence_waitlist_live.png"
   },
   "commands_run": [
     "POST /functions/v1/apply-intel-monetization {\"action\":\"apply\",\"migrations\":[{\"version\":\"20260313000047\",\"sql\":\"<migration file>\"}]}",
@@ -111,11 +113,12 @@
     "npm run preview -- --host 127.0.0.1 --port 4173",
     "playwright screenshot -> docs/qa/screenshots/intelligence_channels_public_local.png",
     "git push origin main",
-    "curl -sS https://socelle.com | rg -o 'index-[A-Za-z0-9_-]+\\\\.js|index-[A-Za-z0-9_-]+\\\\.css' -N"
+    "curl -sS https://socelle.com | grep -oE 'index-[A-Za-z0-9_-]+\\\\.js|index-[A-Za-z0-9_-]+\\\\.css'",
+    "playwright live check -> https://socelle.com/intelligence (saved docs/qa/screenshots/intelligence_waitlist_live.png)"
   ],
   "notes": [
     "The database and app code for first-class channels are complete and the new bundle is on Cloudflare.",
-    "Residual risk: direct public routing for /intelligence on socelle.com still falls into the existing 404 shell, so public live visual proof is currently from local preview rather than the deployed route.",
-    "overall remains WARN because reviewer sign-off is still pending and the live public route rewrite issue remains open."
+    "The direct public /intelligence routing defect is fixed; anonymous visitors are now intentionally redirected to the live /waitlist prelaunch surface instead of a 404 shell.",
+    "overall remains WARN because reviewer sign-off is still pending and public channel rails remain prelaunch-gated for anonymous production traffic."
   ]
 }
