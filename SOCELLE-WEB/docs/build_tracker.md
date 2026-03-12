@@ -151,8 +151,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | INTEL-POWER-03 | Today View / Snapshot as default entry | COMPLETE | `docs/qa/verify_INTEL-POWER-03_2026-03-11.json` |
 | INTEL-POWER-04 | In-card "Take action" row (Spot→Understand→Act) | COMPLETE | `docs/qa/verify_INTEL-POWER-04.json` |
 | INTEL-POWER-05 | Sentiment aggregate banner + More filters | COMPLETE | `docs/qa/verify_INTEL-POWER-05.json` |
-| CRM-POWER-01 | Signal-attributed timeline markers missing from UI. | OPEN | — |
-| CRM-POWER-02 | Rebooking CTA not wired to churn_risk_score. | OPEN | — |
+| CRM-POWER-01 | Signal-attributed timeline markers missing from UI. | 🟡 READY FOR REVIEW (PR: `feat/crm-power-01`) | `docs/qa/verify_CRM-POWER-01_20...json` |
+| CRM-POWER-02 | Rebooking CTA not wired to churn_risk_score. | 🟡 READY FOR REVIEW (PR: `feat/crm-power-02`) | `docs/qa/verify_CRM-POWER-02_20...json` |
 | SALES-POWER-01 | Signal-influenced deals not flagged in pipeline UI or RevenueAnalytics. | OPEN | — |
 | MKT-POWER-01 | No journey from BrandIntelligenceHub to campaign creation. | OPEN | — |
 | EDU-POWER-01 | Missing error/loading/empty skeletons. CE expiry warnings absent. | COMPLETE | `verify_EDU-POWER-01_2026-03-12T01-57-00Z` |
@@ -168,7 +168,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 |-------|-----|-------------|--------|----------|-------|
 | DEBT-MONETIZATION-01 | Platform | Close ai-shopping-assistant credit gate bypass — route through ai-orchestrator | COMPLETE | P0 | A |
 | ROUTE-CLEANUP-01 | Marketing/Site | Consolidate /portal/marketing + /portal/marketing-hub. Single /plans pricing. Kill orphan routes | COMPLETE | P0 | A |
-| CRM-CONSENT-01 | CRM | 1-click consent audit modal with agreed_at + source IP in timeline | OPEN | P1 | A |
+| CRM-CONSENT-01 | CRM | 1-click consent audit modal with agreed_at + source IP in timeline | 🟡 READY FOR REVIEW (PR: `feat/crm-consent-01`) | P1 | A |
 | EDU-CE-EXPIRY-01 | Education | CE credits expiration warnings on Education dashboard | OPEN | P1 | A |
 | COMMERCE-PROCURE-01 | Commerce | Intelligence-informed procurement alerts (market demand reorder logic) | OPEN | P1 | A |
 | SITE-ONBOARD-01 | Public Site | In-app onboarding flow (Identity Scan → Shadow Audit → Signal Match → Gate) | OPEN | P1 | B |
