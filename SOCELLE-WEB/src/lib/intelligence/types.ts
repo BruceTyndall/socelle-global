@@ -93,6 +93,49 @@ export interface IntelligenceSignal {
   geo_source?: string;
 }
 
+export type IntelligenceChannelAudience = 'all' | 'provider' | 'brand';
+export type IntelligenceChannelTierMin = 'free' | 'paid';
+
+export interface IntelligenceChannelTag {
+  tag_code: string;
+  display_label: string;
+  category_group: string;
+  weight: number;
+  required: boolean;
+  signal_count: number;
+  engagement_per_signal: number;
+  unique_actor_count: number;
+  tag_rank: number;
+}
+
+export interface IntelligenceChannel {
+  channel_id: string;
+  slug: string;
+  name: string;
+  eyebrow?: string;
+  summary: string;
+  audience: IntelligenceChannelAudience;
+  tier_min: IntelligenceChannelTierMin;
+  icon_key: string;
+  accent_token: string;
+  region_scope: string[];
+  vertical_scope: string[];
+  signal_type_scope: SignalType[];
+  sort_order: number;
+  configured_tag_count: number;
+  required_tag_count: number;
+  weighted_signal_count: number;
+  weighted_engagement_score: number;
+  weighted_unique_actor_count: number;
+  last_published_at?: string | null;
+  last_event_at?: string | null;
+  top_tags: IntelligenceChannelTag[];
+  top_signals: IntelligenceSignal[];
+  personalization_score: number;
+  rank_score: number;
+  is_locked: boolean;
+}
+
 export interface MarketPulse {
   total_professionals: number;
   total_brands: number;

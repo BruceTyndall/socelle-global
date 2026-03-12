@@ -20,13 +20,16 @@ import {
   buildWebPageSchema,
 } from '../../lib/seo';
 import IntelligenceFeedSection, { FEED_FILTERS } from '../../components/intelligence/IntelligenceFeedSection';
+import IntelligenceChannelRail from '../../components/intelligence/IntelligenceChannelRail';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
+import { useIntelligenceChannels } from '../../lib/intelligence/useIntelligenceChannels';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
 import { useDataFeedStats } from '../../lib/intelligence/useDataFeedStats';
 import { useStories } from '../../lib/editorial/useStories';
 import { useContentPlacements } from '../../lib/cms/useContentPlacements';
 import { useAuth } from '../../lib/auth';
+import { useTier } from '../../hooks/useTier';
 import { trackSignalViewed } from '../../lib/analytics/funnelEvents';
 
 type VerticalFilter = 'all' | 'medspa' | 'salon' | 'beauty_brand';
@@ -286,6 +289,15 @@ export default function Intelligence() {
     : fallbackStories;
 
   const { user } = useAuth();
+  const { tier } = useTier();
+  const viewerTier = tier === 'free' ? 'free' : 'paid';
+  const { channels: intelligenceChannels, loading: channelLoading } = useIntelligenceChannels({
+    audience: 'provider',
+    viewerTier,
+    includeLocked: true,
+    limit: viewerTier === 'free' ? 6 : 8,
+    signals: deferredSignals,
+  });
 
   useEffect(() => {
     if (!loading && deferredSignals.length > 0) {
@@ -641,6 +653,20 @@ export default function Intelligence() {
                 </div>
               </aside>
             </div>
+          </div>
+        </section>
+
+        <section className="relative pt-2">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <IntelligenceChannelRail
+              title="Pro Intelligence Channels"
+              subtitle="Follow the live areas most likely to matter for operators, merchandised from the same signal corpus."
+              channels={intelligenceChannels}
+              loading={channelLoading}
+              lockedCtaHref={dashboardHref}
+              lockedCtaLabel={user ? 'Open dashboard for deeper reads' : 'Get intelligence access'}
+              signalHrefBuilder={(signal) => `/intelligence/signals/${signal.id}`}
+            />
           </div>
         </section>
 

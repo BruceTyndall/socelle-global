@@ -19,10 +19,12 @@ import {
   X,
 } from 'lucide-react';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
+import { useIntelligenceChannels } from '../../lib/intelligence/useIntelligenceChannels';
 import { normalizeMediaUrl } from '../../lib/intelligence/normalizeMediaUrl';
 import { trackSignalClicked } from '../../lib/analytics/funnelEvents';
+import IntelligenceChannelRail from '../../components/intelligence/IntelligenceChannelRail';
 import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPanel';
-import type { IntelligenceSignal } from '../../lib/intelligence/types';
+import type { IntelligenceChannel, IntelligenceSignal } from '../../lib/intelligence/types';
 import { TierGate, CreditGate } from '../../components/gates';
 import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 import IntelligenceDashboardSkeleton from '../../components/intelligence/IntelligenceDashboardSkeleton';
@@ -109,6 +111,13 @@ export default function IntelligenceHub() {
   const { signals: timelineSignals, loading: timelineLoading } = useIntelligence({
     limit: 15,
     timeline: true,
+  });
+  const { channels: intelligenceChannels, loading: channelLoading } = useIntelligenceChannels({
+    audience: brandId ? 'brand' : 'provider',
+    viewerTier: tier === 'free' ? 'free' : 'paid',
+    includeLocked: true,
+    limit: tier === 'free' ? 6 : 8,
+    signals,
   });
 
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
@@ -228,6 +237,10 @@ export default function IntelligenceHub() {
               timelineSignals={timelineSignals}
               loading={loading}
               timelineLoading={timelineLoading}
+              channels={intelligenceChannels}
+              channelLoading={channelLoading}
+              channelLockedCtaHref={tier === 'free' ? '/plans' : '/portal/intelligence'}
+              channelLockedCtaLabel={tier === 'free' ? 'Compare paid plans' : 'Open channel detail'}
               onSelectSignal={handleSelectSignal}
             />
           )}
@@ -391,12 +404,20 @@ function OverviewTab({
   timelineSignals,
   loading,
   timelineLoading,
+  channels,
+  channelLoading,
+  channelLockedCtaHref,
+  channelLockedCtaLabel,
   onSelectSignal,
 }: {
   signals: IntelligenceSignal[];
   timelineSignals: IntelligenceSignal[];
   loading: boolean;
   timelineLoading: boolean;
+  channels: IntelligenceChannel[];
+  channelLoading: boolean;
+  channelLockedCtaHref: string;
+  channelLockedCtaLabel: string;
   onSelectSignal: (signal: IntelligenceSignal) => void;
 }) {
   const displaySignals = useMemo(() => {
@@ -454,6 +475,16 @@ function OverviewTab({
       <div className="mb-6">
         <ApiStatusRibbon showDetailed={true} />
       </div>
+
+      <IntelligenceChannelRail
+        title="For Your Business"
+        subtitle="Live channels that blend service, claim, and market behavior so the hub feels broader than a simple signal list."
+        channels={channels}
+        loading={channelLoading}
+        lockedCtaHref={channelLockedCtaHref}
+        lockedCtaLabel={channelLockedCtaLabel}
+        onOpenSignal={onSelectSignal}
+      />
 
       <FeaturedCoverageDeck
         signals={featuredSignals}

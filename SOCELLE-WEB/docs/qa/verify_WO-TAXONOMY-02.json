@@ -1,0 +1,88 @@
+{
+  "wo_id": "WO-TAXONOMY-02",
+  "timestamp": "2026-03-12T17:27:21Z",
+  "status": "READY_FOR_REVIEW",
+  "owner_request": "Add rss_tag_rules + rss_item_tags + auto_tag_rss_items using taxonomy_tags.tag_code as the canonical RSS tagging source, wire ingest-rss to auto-tag newly upserted items, and capture the operating specs in repo docs.",
+  "depends_on": [
+    "WO-TAXONOMY-01"
+  ],
+  "skills_run": [
+    "migration-validator",
+    "rls-auditor",
+    "feed-pipeline-checker",
+    "schema-db-suite",
+    "build-gate"
+  ],
+  "results": {
+    "migration-validator": {
+      "status": "PASS",
+      "evidence": "Applied 20260313000043 through a temporary admin-only helper, then repaired remote migration history with `supabase migration repair 20260313000043 --status applied --linked`."
+    },
+    "rls-auditor": {
+      "status": "PASS",
+      "evidence": "public.rss_tag_rules and public.rss_item_tags are live with RLS enabled plus authenticated/service_role/admin policies from 20260313000043."
+    },
+    "feed-pipeline-checker": {
+      "status": "PASS",
+      "evidence": "Live path verified: `ingest-rss` v22 calls `auto_tag_rss_items`, `rss_item_tags` now contains 603 rows across 19 distinct tag_codes, and `rss-to-signals` consumes those tags on promotion."
+    },
+    "schema-db-suite": {
+      "status": "PASS",
+      "evidence": "Remote DB now records 20260313000043, `rss_tag_rules` holds 66 active seeded rules, and `rss_item_tags` query returns 603 live rows."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "evidence": "`deno check --node-modules-dir=auto supabase/functions/ingest-rss/index.ts`, `deno check --node-modules-dir=auto supabase/functions/rss-to-signals/index.ts`, `npx tsc --noEmit`, and `npm run build` all exited 0."
+    }
+  },
+  "overall": "WARN",
+  "files_changed": [
+    "docs/build_tracker.md",
+    "docs/command/AUTO_TAGGING_RULES.md",
+    "docs/command/INTEL_TAXONOMY_AND_SIGNALS.md",
+    "docs/qa/verify_WO-TAXONOMY-02.json",
+    "supabase/functions/ingest-rss/index.ts",
+    "supabase/functions/rss-to-signals/index.ts",
+    "supabase/migrations/20260313000043_wo_taxonomy_02_rss_item_tags.sql"
+  ],
+  "live_db_actions": [
+    "Applied migration 20260313000043 to create public.rss_tag_rules, public.rss_item_tags, normalize_tag_match_text(text), and auto_tag_rss_items(uuid, integer, text).",
+    "Repaired remote migration history so 20260313000043 is recorded on project rumdmulxzmjtsplsjngi.",
+    "Verified 66 active rule rows in public.rss_tag_rules.",
+    "Forced live redeploy of ingest-rss to v22 after the first deploy did not advance the remote bundle hash.",
+    "Invoked ingest-rss with batch_size=1 and confirmed `total_tag_rows_written = 30` on the live response."
+  ],
+  "live_metrics": {
+    "rss_tag_rules_active": 66,
+    "rss_item_tags_count": 603,
+    "rss_item_tags_distinct_tag_codes": 19,
+    "ingest_rss_version": 22
+  },
+  "sample_runtime_proof": {
+    "ingest_rss_batch": {
+      "source_name": "Allure",
+      "sources_processed": 1,
+      "total_fetched": 30,
+      "total_new_items": 7,
+      "total_tag_rows_written": 30,
+      "rule_hits": 30,
+      "distinct_matches": 30
+    }
+  },
+  "commands_run": [
+    "deno check --node-modules-dir=auto supabase/functions/ingest-rss/index.ts",
+    "supabase functions deploy ingest-rss --project-ref rumdmulxzmjtsplsjngi --use-api --no-verify-jwt",
+    "supabase functions deploy ingest-rss --project-ref rumdmulxzmjtsplsjngi --use-api --no-verify-jwt --debug",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"apply\",\"migrations\":[{\"version\":\"20260313000043\",\"sql\":\"<migration file>\"}]}",
+    "supabase migration repair 20260313000043 --status applied --linked",
+    "POST /functions/v1/ingest-rss {\"batch_size\":1}",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"query\",\"sql\":\"select count(*) from public.rss_item_tags\"}",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"query\",\"sql\":\"select count(*) from public.rss_tag_rules where is_active = true\"}",
+    "npx tsc --noEmit",
+    "npm run build"
+  ],
+  "notes": [
+    "A temporary admin-only helper function was used because the linked project still has broad historical migration drift and a blind `supabase db push` was unsafe. The helper and its one-time secret were deleted after verification.",
+    "overall remains WARN because this artifact is first-party build evidence awaiting reviewer sign-off, not a self-issued DONE state."
+  ]
+}

@@ -130,9 +130,9 @@ export default function SignalCard({ signal }: SignalCardProps) {
                <Lock className="w-4 h-4 text-graphite/60" />
              </div>
              <p className="text-sm font-semibold text-graphite mb-1">Premium Historical Data</p>
-             <p className="text-xs text-graphite/60 mb-3 max-w-xs mx-auto">This high-magnitude historical signal is archived. Unlock full context & analytics for 50 Credits.</p>
+             <p className="text-xs text-graphite/60 mb-3 max-w-xs mx-auto">This high-magnitude historical signal is archived. Access full context and analytics for 50 Credits.</p>
              <button className="px-4 py-2 bg-accent text-white rounded-lg text-xs font-semibold hover:bg-accent/90 transition-colors">
-               Unlock Signal (50 Credits)
+               Access Signal (50 Credits)
              </button>
           </div>
         ) : (

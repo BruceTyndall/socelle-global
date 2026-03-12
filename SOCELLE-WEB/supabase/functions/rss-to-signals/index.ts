@@ -539,12 +539,46 @@ interface RssItemRow {
   // joined from rss_sources:
   source_name: string | null;
   source_category: string | null;
+  source_feed_url?: string | null;
+}
+
+interface RssItemTagRow {
+  rss_item_id: string;
+  tag_code: string;
+}
+
+interface TaxonomyTagRow {
+  tag_code: string;
+  category_group: string;
+}
+
+interface ResolvedItemTag extends TaxonomyTagRow {
+  rss_item_id: string;
+}
+
+interface DataFeedLookupRow {
+  id: string;
+  endpoint_url: string | null;
+  name: string;
+}
+
+interface TaxonomySignalFields {
+  primaryEnvironment: string | null;
+  primaryVertical: string | null;
+  verticalOverride: string | null;
+  topicTags: string[];
+  productTags: string[];
+  claimTags: string[];
+  regionTags: string[];
+  trendTags: string[];
+  serviceTags: string[];
 }
 
 type SignalType = 'product_velocity' | 'treatment_trend' | 'ingredient_momentum' | 'brand_adoption' | 'regional' | 'pricing_benchmark' | 'regulatory_alert' | 'education';
 type SignalDirection = 'up' | 'down' | 'stable';
 
 interface MarketSignalUpsert {
+  rss_item_id:       string;
   signal_type:      SignalType;
   signal_key:       string;
   title:            string;
@@ -559,6 +593,7 @@ interface MarketSignalUpsert {
   source_type:      string;
   external_id:      string;
   data_source:      string;
+  source_feed_id?:  string;
   confidence_score: number;
   active:           boolean;
   // FEED-WO-03: dedup fingerprint
@@ -569,6 +604,16 @@ interface MarketSignalUpsert {
   topic:            string;
   tier_min:         string;
   impact_score:     number;
+  primary_environment: string | null;
+  primary_vertical: string | null;
+  service_tags:     string[];
+  product_tags:     string[];
+  claim_tags:       string[];
+  region_tags:      string[];
+  trend_tags:       string[];
+  brand_names:      string[];
+  sentiment:        'positive' | 'neutral' | 'negative';
+  score_importance: number;
   // INTEL-HUB-17 (PR3): Content+Media attributes
   source_url?:      string;
   source_name?:     string | null;
@@ -578,6 +623,8 @@ interface MarketSignalUpsert {
   article_body?:    string | null;
   hero_image_url?:  string | null;
   image_url?:       string | null;
+  topic_tags?:      string[];
+  geo_source?:      string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -691,6 +738,149 @@ function buildSource(item: RssItemRow): string | null {
   return item.link ?? null;
 }
 
+function normalizeFeedLookupValue(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return value.trim().replace(/\/+$/, '');
+}
+
+const PRODUCT_CATEGORY_GROUPS = new Set([
+  'pro_product_line',
+  'product_macro',
+  'skincare_product',
+  'hair_body_product',
+  'color_cosmetic',
+]);
+
+const PRIMARY_ENVIRONMENT_PRIORITY = [
+  'medspa',
+  'dermatology_clinic',
+  'aesthetic_clinic',
+  'plastic_surgery_practice',
+];
+
+function isMissingRelationError(error: { code?: string; message?: string } | null | undefined): boolean {
+  return error?.code === '42P01' || /does not exist/i.test(error?.message ?? '');
+}
+
+function deriveVerticalFromTaxonomy(tags: ResolvedItemTag[]): string | null {
+  if (tags.some((tag) => ['medspa_service', 'body_device_service'].includes(tag.category_group))) {
+    return 'medspa';
+  }
+
+  if (tags.some((tag) => ['hair_service', 'nail_lash_brow_service', 'spa_wellness_service'].includes(tag.category_group))) {
+    return 'salon';
+  }
+
+  const environmentTags = tags
+    .filter((tag) => tag.category_group === 'pro_environment')
+    .map((tag) => tag.tag_code);
+
+  if (environmentTags.some((tag) => PRIMARY_ENVIRONMENT_PRIORITY.includes(tag))) {
+    return 'medspa';
+  }
+
+  if (environmentTags.some((tag) => [
+    'hair_salon',
+    'beauty_salon',
+    'nail_salon',
+    'lash_brow_studio',
+    'brow_bar',
+  ].includes(tag))) {
+    return 'salon';
+  }
+
+  return null;
+}
+
+function derivePrimaryVertical(tags: ResolvedItemTag[]): string | null {
+  if (tags.some((tag) => ['medspa_service', 'body_device_service'].includes(tag.category_group))) {
+    return 'medspa_service';
+  }
+
+  if (tags.some((tag) => tag.category_group === 'hair_service')) {
+    return 'hair_service';
+  }
+
+  if (tags.some((tag) => tag.category_group === 'nail_lash_brow_service')) {
+    return 'nail_lash_brow_service';
+  }
+
+  if (tags.some((tag) => tag.category_group === 'spa_wellness_service')) {
+    return 'spa_wellness_service';
+  }
+
+  return null;
+}
+
+function deriveTaxonomySignalFields(tags: ResolvedItemTag[]): TaxonomySignalFields {
+  const deduped = Array.from(new Map(tags.map((tag) => [tag.tag_code, tag])).values());
+  const topicTags = deduped.map((tag) => tag.tag_code);
+  const environmentTags = deduped
+    .filter((tag) => tag.category_group === 'pro_environment')
+    .map((tag) => tag.tag_code);
+  const serviceTags = deduped
+    .filter((tag) => tag.category_group.endsWith('_service'))
+    .map((tag) => tag.tag_code);
+  const productTags = deduped
+    .filter((tag) => PRODUCT_CATEGORY_GROUPS.has(tag.category_group))
+    .map((tag) => tag.tag_code);
+  const claimTags = deduped
+    .filter((tag) => tag.category_group === 'claim_regulation')
+    .map((tag) => tag.tag_code);
+  const regionTags = deduped
+    .filter((tag) => tag.category_group === 'region')
+    .map((tag) => tag.tag_code);
+  const trendTags = deduped
+    .filter((tag) => tag.category_group === 'market_trend')
+    .map((tag) => tag.tag_code);
+  const primaryEnvironment =
+    PRIMARY_ENVIRONMENT_PRIORITY.find((tag) => environmentTags.includes(tag))
+    ?? environmentTags[0]
+    ?? null;
+
+  return {
+    primaryEnvironment,
+    primaryVertical: derivePrimaryVertical(deduped),
+    verticalOverride: deriveVerticalFromTaxonomy(deduped),
+    topicTags,
+    productTags,
+    claimTags,
+    regionTags,
+    trendTags,
+    serviceTags,
+  };
+}
+
+function deriveSentiment(title: string, description: string | null): 'positive' | 'neutral' | 'negative' {
+  const text = `${title} ${description ?? ''}`.toLowerCase();
+
+  if (/(recall|lawsuit|fined|warning letter|safety issue|adverse event|withdrawal|ban\b)/.test(text)) {
+    return 'negative';
+  }
+
+  if (/(record growth|expansion|award|partnership|launch|funding|opens|opening|acquisition|breakthrough)/.test(text)) {
+    return 'positive';
+  }
+
+  return 'neutral';
+}
+
+function computeScoreImportance(
+  primaryEnvironment: string | null,
+  serviceTags: string[],
+  claimTags: string[],
+  impactScore: number,
+): number {
+  const score =
+    1
+    + (primaryEnvironment ? 1 : 0)
+    + (serviceTags.length > 0 ? 1 : 0)
+    + (claimTags.length > 0 ? 1 : 0)
+    + Math.min(impactScore / 25, 4);
+
+  return Number(Math.min(10, score).toFixed(2));
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -760,7 +950,8 @@ serve(async (req) => {
         source_id,
         rss_sources!inner (
           name,
-          category
+          category,
+          feed_url
         )
       `)
       .gte('confidence_score', CONFIDENCE_THRESHOLD)
@@ -785,6 +976,135 @@ serve(async (req) => {
       );
     }
 
+    const itemIds = (items as Array<{ id: string }>).map((row) => row.id);
+    const taxonomyTagsByItemId = new Map<string, ResolvedItemTag[]>();
+    const sourceFeedIdBySourceId = new Map<string, string>();
+
+    if (itemIds.length > 0) {
+      const { data: rssItemTags, error: rssItemTagsError } = await supabase
+        .from('rss_item_tags')
+        .select('rss_item_id, tag_code')
+        .in('rss_item_id', itemIds);
+
+      if (rssItemTagsError && !isMissingRelationError(rssItemTagsError)) {
+        throw rssItemTagsError;
+      }
+
+      if (rssItemTags && rssItemTags.length > 0) {
+        const tagCodes = Array.from(new Set((rssItemTags as RssItemTagRow[]).map((row) => row.tag_code)));
+        let taxonomyRows: TaxonomyTagRow[] = [];
+
+        if (tagCodes.length > 0) {
+          const { data: taxonomyData, error: taxonomyError } = await supabase
+            .from('taxonomy_tags')
+            .select('tag_code, category_group')
+            .in('tag_code', tagCodes)
+            .eq('is_active', true);
+
+          if (taxonomyError && !isMissingRelationError(taxonomyError)) {
+            throw taxonomyError;
+          }
+
+          taxonomyRows = (taxonomyData as TaxonomyTagRow[] | null) ?? [];
+        }
+
+        const taxonomyByCode = new Map(taxonomyRows.map((row) => [row.tag_code, row]));
+
+        for (const row of (rssItemTags as RssItemTagRow[])) {
+          const taxonomy = taxonomyByCode.get(row.tag_code);
+          if (!taxonomy) continue;
+          const existing = taxonomyTagsByItemId.get(row.rss_item_id) ?? [];
+          existing.push({
+            rss_item_id: row.rss_item_id,
+            tag_code: taxonomy.tag_code,
+            category_group: taxonomy.category_group,
+          });
+          taxonomyTagsByItemId.set(row.rss_item_id, existing);
+        }
+      }
+    }
+
+    const rssSourceLookupRows = Array.from(
+      new Map(
+        (items as Array<{ source_id: string; rss_sources?: { name?: string | null; feed_url?: string | null } | null }>).map((row) => [
+          row.source_id,
+          {
+            source_id: row.source_id,
+            source_name: row.rss_sources?.name ?? null,
+            feed_url: row.rss_sources?.feed_url ?? null,
+          },
+        ]),
+      ).values(),
+    );
+
+    const feedUrlKeys = Array.from(
+      new Set(
+        rssSourceLookupRows
+          .map((row) => normalizeFeedLookupValue(row.feed_url))
+          .filter((value): value is string => Boolean(value)),
+      ),
+    );
+
+    const dataFeedsByEndpoint = new Map<string, string>();
+    const dataFeedsByName = new Map<string, string>();
+
+    if (feedUrlKeys.length > 0) {
+      const { data: feedMatches, error: feedMatchesError } = await supabase
+        .from('data_feeds')
+        .select('id, endpoint_url, name')
+        .in('endpoint_url', feedUrlKeys);
+
+      if (feedMatchesError) throw feedMatchesError;
+
+      for (const row of ((feedMatches ?? []) as DataFeedLookupRow[])) {
+        const endpointKey = normalizeFeedLookupValue(row.endpoint_url);
+        if (endpointKey) dataFeedsByEndpoint.set(endpointKey, row.id);
+        if (!dataFeedsByName.has(row.name)) dataFeedsByName.set(row.name, row.id);
+      }
+    }
+
+    const unresolvedNames = Array.from(
+      new Set(
+        rssSourceLookupRows
+          .filter((row) => {
+            const endpointKey = normalizeFeedLookupValue(row.feed_url);
+            return !endpointKey || !dataFeedsByEndpoint.has(endpointKey);
+          })
+          .map((row) => row.source_name)
+          .filter((value): value is string => Boolean(value)),
+      ),
+    );
+
+    if (unresolvedNames.length > 0) {
+      const { data: nameMatches, error: nameMatchesError } = await supabase
+        .from('data_feeds')
+        .select('id, endpoint_url, name')
+        .in('name', unresolvedNames);
+
+      if (nameMatchesError) throw nameMatchesError;
+
+      for (const row of ((nameMatches ?? []) as DataFeedLookupRow[])) {
+        const endpointKey = normalizeFeedLookupValue(row.endpoint_url);
+        if (endpointKey && !dataFeedsByEndpoint.has(endpointKey)) {
+          dataFeedsByEndpoint.set(endpointKey, row.id);
+        }
+        if (!dataFeedsByName.has(row.name)) {
+          dataFeedsByName.set(row.name, row.id);
+        }
+      }
+    }
+
+    for (const row of rssSourceLookupRows) {
+      const endpointKey = normalizeFeedLookupValue(row.feed_url);
+      const resolvedFeedId =
+        (endpointKey ? dataFeedsByEndpoint.get(endpointKey) : undefined) ??
+        (row.source_name ? dataFeedsByName.get(row.source_name) : undefined);
+
+      if (resolvedFeedId) {
+        sourceFeedIdBySourceId.set(row.source_id, resolvedFeedId);
+      }
+    }
+
     // ── 2. Build market_signals upsert payload ────────────────────────────────
 
     const upsertRows: MarketSignalUpsert[] = (items as any[]).map((row) => {
@@ -793,27 +1113,38 @@ serve(async (req) => {
         ...row,
         source_name:     row.rss_sources?.name     ?? null,
         source_category: row.rss_sources?.category ?? null,
+        source_feed_url: row.rss_sources?.feed_url ?? null,
+        source_feed_id:  sourceFeedIdBySourceId.get(row.source_id),
       };
+      const taxonomyFields = deriveTaxonomySignalFields(taxonomyTagsByItemId.get(item.id) ?? []);
 
       const sourceCategory = item.source_category ?? 'trade_pub';
 
       // INTEL-MEDSPA-01: derive vertical, tier_min, topic, impact_score
       const topic          = classifyTopic(item.title, item.description ?? '');
-      const signalVertical = deriveVerticalFromTopic(topic, null);
+      const signalVertical = taxonomyFields.verticalOverride ?? deriveVerticalFromTopic(topic, null);
       const signalTierMin  = deriveTierMinFromCategory(sourceCategory);
       const impactScore    = computeImpactScore(sourceCategory, item.published_at, topic);
+      const sentiment      = deriveSentiment(item.title, item.description);
+      const scoreImportance = computeScoreImportance(
+        taxonomyFields.primaryEnvironment,
+        taxonomyFields.serviceTags,
+        taxonomyFields.claimTags,
+        impactScore,
+      );
 
       return {
+        rss_item_id:       item.id,
         signal_type:      resolveSignalType(item),
         signal_key:       signalKey(item.id),
         title:            item.title,
         description:      buildDescription(item),
         magnitude:        buildMagnitude(item),
         direction:        'stable' as SignalDirection, // RSS articles don't convey trend direction
-        region:           null,                         // Not derivable from RSS without NLP
+        region:           taxonomyFields.regionTags[0] ?? null,
         category:         item.source_category,
         related_brands:   item.brand_mentions,
-        related_products: [],                           // RSS has no product-level data
+        related_products: taxonomyFields.productTags,
         source:           buildSource(item),
         source_url:       item.link ?? undefined, // Ensure click target
         // Provenance (W12-20 requirements):
@@ -821,7 +1152,8 @@ serve(async (req) => {
         source_name:      item.source_name,
         source_domain:    item.link ? new URL(item.link).hostname.replace(/^www\./, '') : null,
         external_id:      item.guid,
-        data_source:      item.source_feed_id ?? item.source_id,
+        data_source:      item.id,
+        source_feed_id:   item.source_feed_id ?? undefined,
         confidence_score: item.confidence_score,
         active:           true,
         // FEED-WO-03: dedup fingerprint
@@ -832,14 +1164,67 @@ serve(async (req) => {
         topic,
         tier_min:         signalTierMin,
         impact_score:     impactScore,
+        primary_environment: taxonomyFields.primaryEnvironment,
+        primary_vertical: taxonomyFields.primaryVertical,
+        service_tags:     taxonomyFields.serviceTags,
+        product_tags:     taxonomyFields.productTags,
+        claim_tags:       taxonomyFields.claimTags,
+        region_tags:      taxonomyFields.regionTags,
+        trend_tags:       taxonomyFields.trendTags,
+        brand_names:      Array.from(new Set(item.brand_mentions)),
+        sentiment,
+        score_importance: scoreImportance,
         // INTEL-HUB-17 (PR3): Open article mapping requirements
         published_at:     item.published_at,
         article_html:     sanitizeHtml(item.content?.substring(0, 50000)),
         article_body:     item.content ? item.content.replace(/<[^>]+>/g, '').substring(0, 20000) : null,
         hero_image_url:   extractHeroImage(item),
         image_url:        item.image_url ?? null,
+        topic_tags:       taxonomyFields.topicTags,
+        geo_source:       taxonomyFields.regionTags[0] ?? null,
       };
     });
+
+    const fingerprints = Array.from(
+      new Set(
+        upsertRows
+          .map((row) => row.fingerprint)
+          .filter((value): value is string => Boolean(value)),
+      ),
+    );
+
+    const existingFingerprintOwners = new Map<string, string>();
+
+    if (fingerprints.length > 0) {
+      const { data: existingSignals, error: existingSignalsError } = await supabase
+        .from('market_signals')
+        .select('fingerprint, source_type, external_id')
+        .in('fingerprint', fingerprints);
+
+      if (existingSignalsError) throw existingSignalsError;
+
+      for (const row of (existingSignals ?? []) as Array<{ fingerprint: string | null; source_type: string | null; external_id: string | null }>) {
+        if (!row.fingerprint || !row.source_type || !row.external_id) continue;
+        existingFingerprintOwners.set(row.fingerprint, `${row.source_type}:${row.external_id}`);
+      }
+    }
+
+    const seenBatchFingerprints = new Map<string, string>();
+    for (const row of upsertRows) {
+      if (!row.fingerprint) continue;
+
+      const ownerKey = `${row.source_type}:${row.external_id}`;
+      const existingOwner = existingFingerprintOwners.get(row.fingerprint);
+      const batchOwner = seenBatchFingerprints.get(row.fingerprint);
+
+      if ((existingOwner && existingOwner !== ownerKey) || (batchOwner && batchOwner !== ownerKey)) {
+        row.is_duplicate = true;
+        row.fingerprint = null;
+        continue;
+      }
+
+      seenBatchFingerprints.set(row.fingerprint, ownerKey);
+    }
 
     // ── 3. Upsert into market_signals ─────────────────────────────────────────
     //

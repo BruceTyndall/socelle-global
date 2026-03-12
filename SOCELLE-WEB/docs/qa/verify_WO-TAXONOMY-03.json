@@ -1,0 +1,138 @@
+{
+  "wo_id": "WO-TAXONOMY-03",
+  "timestamp": "2026-03-12T17:27:21Z",
+  "status": "READY_FOR_REVIEW",
+  "owner_request": "Add canonical taxonomy fields to market_signals, create tag-performance/tag-health SQL views over market_signals + rss_item_tags + platform_events, and persist signal interaction analytics with tag payloads so SOCELLE can rank, compare, and clean pro beauty tags over time.",
+  "depends_on": [
+    "WO-TAXONOMY-02"
+  ],
+  "skills_run": [
+    "migration-validator",
+    "schema-db-suite",
+    "feed-pipeline-checker",
+    "hub-shell-detector",
+    "live-demo-detector",
+    "banned-term-scanner",
+    "build-gate"
+  ],
+  "results": {
+    "migration-validator": {
+      "status": "PASS",
+      "evidence": "Applied 20260313000044 through the temporary helper and repaired remote migration history with `supabase migration repair 20260313000044 --status applied --linked`."
+    },
+    "schema-db-suite": {
+      "status": "PASS",
+      "evidence": "market_signals now exposes canonical taxonomy columns live, 52 older RSS signals were backfilled with source_feed_id, and v_tag_performance_30d / v_signal_tag_assignments query successfully."
+    },
+    "feed-pipeline-checker": {
+      "status": "PASS",
+      "evidence": "rss-to-signals v23 now resolves rss_sources -> data_feeds for source_feed_id, suppresses fingerprint collisions by nulling duplicate fingerprints + marking is_duplicate, and successfully promoted a 200-row live batch."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "evidence": "`npm run shell:check` -> 0 shells; the touched Intelligence surfaces remain LIVE/DEMO compliant at the page level."
+    },
+    "live-demo-detector": {
+      "status": "WARN",
+      "evidence": "`npm run fakelive:check` still reports pre-existing baseline hits in tests, src/lib/intelligence/adminIntelligence.ts, and src/pages/public/EventDetail.tsx only."
+    },
+    "banned-term-scanner": {
+      "status": "PASS",
+      "evidence": "Targeted scan across touched intelligence files returned 0 matches for `unlock`, `AI-powered`, `seamless`, and `Shop Now`."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "evidence": "`deno check --node-modules-dir=auto supabase/functions/rss-to-signals/index.ts`, `npx tsc --noEmit`, and `npm run build` all exited 0."
+    }
+  },
+  "overall": "WARN",
+  "files_changed": [
+    "docs/build_tracker.md",
+    "docs/command/INTEL_TAXONOMY_AND_SIGNALS.md",
+    "docs/command/TAG_PERFORMANCE_GUIDE.md",
+    "docs/qa/verify_WO-TAXONOMY-03.json",
+    "src/components/intelligence/IntelligenceFeedSection.tsx",
+    "src/components/intelligence/SignalDetailPanel.tsx",
+    "src/lib/analytics/funnelEvents.ts",
+    "src/lib/intelligence/signalAnalytics.ts",
+    "src/lib/intelligence/types.ts",
+    "src/lib/intelligence/useIntelligence.ts",
+    "src/pages/business/IntelligenceHub.tsx",
+    "src/pages/public/IntelligenceSignalDetail.tsx",
+    "supabase/functions/rss-to-signals/index.ts",
+    "supabase/migrations/20260313000044_wo_taxonomy_03_tag_performance.sql"
+  ],
+  "live_db_actions": [
+    "Applied migration 20260313000044 to add canonical taxonomy fields and tag-performance views on market_signals.",
+    "Repaired remote migration history so 20260313000044 is recorded on project rumdmulxzmjtsplsjngi.",
+    "Backfilled source_feed_id onto 52 older RSS market_signals rows using rss_item_id -> rss_sources.feed_url -> data_feeds.endpoint_url/name matching.",
+    "Redeployed rss-to-signals to v23 with live source_feed_id resolution and fingerprint collision handling.",
+    "Promoted a live 200-row batch after the dedup fix without hitting market_signals_fingerprint_idx."
+  ],
+  "live_metrics": {
+    "market_signals_total": 2467,
+    "market_signals_24h": 243,
+    "market_signals_7d": 736,
+    "source_feed_id_backfilled": 52,
+    "rss_to_signals_version": 23,
+    "rss_item_tags_count": 603
+  },
+  "sample_signal_ids": [
+    "0385111a-ae54-4535-a26f-1abe88dc2e43",
+    "39c7b2de-70b4-4c96-a8b8-0e51ff6218aa",
+    "6dc23086-89f3-44b7-a2c6-8631537a2fcf",
+    "d6ca8c44-5f38-4c9f-98e8-c59b6525e971",
+    "e9dfb4bd-b49b-45ec-a542-921ed6493c17"
+  ],
+  "sample_signal_shape": [
+    {
+      "id": "0385111a-ae54-4535-a26f-1abe88dc2e43",
+      "primary_environment": "hair_salon",
+      "primary_vertical": null,
+      "source_feed_id": "6489e72d-a82a-497b-9416-d4c9fb00ce84",
+      "rss_item_id": "fe03ebce-4597-4303-ba19-2f3094193592",
+      "score_importance": "3.80"
+    },
+    {
+      "id": "6dc23086-89f3-44b7-a2c6-8631537a2fcf",
+      "primary_environment": "hair_salon",
+      "primary_vertical": null,
+      "source_feed_id": "6489e72d-a82a-497b-9416-d4c9fb00ce84",
+      "rss_item_id": "e476bbfd-5165-480a-bcb6-e199bc206efb",
+      "score_importance": "3.64"
+    }
+  ],
+  "tag_performance_sample": [
+    {
+      "tag_code": "hair_salon",
+      "signal_count": "81"
+    },
+    {
+      "tag_code": "professional_beauty_news",
+      "signal_count": "53"
+    },
+    {
+      "tag_code": "spa",
+      "signal_count": "11"
+    }
+  ],
+  "commands_run": [
+    "deno check --node-modules-dir=auto supabase/functions/rss-to-signals/index.ts",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"apply\",\"migrations\":[{\"version\":\"20260313000044\",\"sql\":\"<migration file>\"}]}",
+    "supabase migration repair 20260313000044 --status applied --linked",
+    "supabase functions deploy rss-to-signals --project-ref rumdmulxzmjtsplsjngi --use-api --no-verify-jwt",
+    "POST /functions/v1/rss-to-signals {\"limit\":25}",
+    "POST /functions/v1/rss-to-signals {\"limit\":200}",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"query\",\"sql\":\"with matched ... update source_feed_id ...\"}",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"query\",\"sql\":\"select * from public.v_tag_performance_30d order by signal_count desc limit 10\"}",
+    "POST /functions/v1/apply-intel-monetization {\"action\":\"query\",\"sql\":\"select count(*) from public.market_signals\"}",
+    "npx tsc --noEmit",
+    "npm run build",
+    "npm run shell:check",
+    "npm run fakelive:check"
+  ],
+  "notes": [
+    "The first 200-row promotion attempt exposed a live duplicate-fingerprint blocker on market_signals_fingerprint_idx. rss-to-signals was patched in the same turn so duplicate fingerprints are marked with is_duplicate=true and null fingerprint instead of aborting the whole batch.",
+    "overall remains WARN because the fake-live baseline still contains unrelated legacy findings outside this slice and because this artifact is awaiting reviewer sign-off."
+  ]
+}

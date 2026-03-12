@@ -139,7 +139,19 @@ interface SourceResult {
   name: string;
   fetched: number;
   new_items: number;
+  tagging?: AutoTagResult | null;
+  tagging_error?: string;
   error?: string;
+}
+
+interface AutoTagResult {
+  scanned_items: number;
+  rule_hits: number;
+  distinct_matches: number;
+  tag_rows_written: number;
+  category_group: string | null;
+  source_id: string | null;
+  limit_used: number;
 }
 
 // ── XML / Feed Parsing ────────────────────────────────────────────────────────
@@ -376,6 +388,18 @@ Deno.serve(async (req: Request) => {
               .gte('created_at', since);
 
             result.new_items = count ?? 0;
+
+            const autoTagLimit = Math.min(Math.max(rows.length, 1), 250);
+            const { data: autoTagData, error: autoTagError } = await supabase.rpc('auto_tag_rss_items', {
+              p_source_id: source.id,
+              p_limit: autoTagLimit,
+            });
+
+            if (autoTagError) {
+              result.tagging_error = autoTagError.message;
+            } else if (autoTagData && typeof autoTagData === 'object') {
+              result.tagging = autoTagData as AutoTagResult;
+            }
           }
 
           // Update source: clear error count, record fetch timestamp and item count
@@ -404,6 +428,7 @@ Deno.serve(async (req: Request) => {
 
       const totalFetched  = results.reduce((s, r) => s + r.fetched, 0);
       const totalNew      = results.reduce((s, r) => s + r.new_items, 0);
+      const totalTagged   = results.reduce((s, r) => s + (r.tagging?.tag_rows_written ?? 0), 0);
       const errorCount    = results.filter(r => r.error).length;
 
       return new Response(
@@ -412,6 +437,7 @@ Deno.serve(async (req: Request) => {
           sources_processed: sources.length,
           total_fetched: totalFetched,
           total_new_items: totalNew,
+          total_tag_rows_written: totalTagged,
           errors: errorCount,
           results,
         }),

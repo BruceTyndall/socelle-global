@@ -2682,6 +2682,136 @@ export type Database = {
         }
         Relationships: []
       }
+      intelligence_channel_tags: {
+        Row: {
+          channel_id: string
+          created_at: string
+          required: boolean
+          sort_order: number
+          tag_code: string
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string
+          required?: boolean
+          sort_order?: number
+          tag_code: string
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string
+          required?: boolean
+          sort_order?: number
+          tag_code?: string
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intelligence_channel_tags_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "intelligence_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "v_intelligence_channel_performance_30d"
+            referencedColumns: ["channel_id"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "v_intelligence_channel_top_tags_30d"
+            referencedColumns: ["channel_id"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_orphans"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_performance_30d"
+            referencedColumns: ["tag_code"]
+          },
+        ]
+      }
+      intelligence_channels: {
+        Row: {
+          accent_token: string
+          audience: string
+          created_at: string
+          eyebrow: string | null
+          icon_key: string
+          id: string
+          name: string
+          region_scope: string[]
+          signal_type_scope: string[]
+          slug: string
+          sort_order: number
+          status: string
+          summary: string
+          tier_min: string
+          updated_at: string
+          vertical_scope: string[]
+        }
+        Insert: {
+          accent_token?: string
+          audience?: string
+          created_at?: string
+          eyebrow?: string | null
+          icon_key?: string
+          id?: string
+          name: string
+          region_scope?: string[]
+          signal_type_scope?: string[]
+          slug: string
+          sort_order?: number
+          status?: string
+          summary: string
+          tier_min?: string
+          updated_at?: string
+          vertical_scope?: string[]
+        }
+        Update: {
+          accent_token?: string
+          audience?: string
+          created_at?: string
+          eyebrow?: string | null
+          icon_key?: string
+          id?: string
+          name?: string
+          region_scope?: string[]
+          signal_type_scope?: string[]
+          slug?: string
+          sort_order?: number
+          status?: string
+          summary?: string
+          tier_min?: string
+          updated_at?: string
+          vertical_scope?: string[]
+        }
+        Relationships: []
+      }
       job_postings: {
         Row: {
           company: string
@@ -2844,7 +2974,9 @@ export type Database = {
           article_body: string | null
           article_html: string | null
           author: string | null
+          brand_names: string[]
           category: string | null
+          claim_tags: string[]
           confidence: number | null
           confidence_score: number | null
           confidence_tier: string | null
@@ -2872,13 +3004,21 @@ export type Database = {
           og_description: string | null
           og_image: string | null
           og_title: string | null
+          primary_environment: string | null
+          primary_vertical: string | null
+          product_tags: string[]
           provenance_tier: number
           published_at: string | null
           quality_score: number | null
           reading_time_minutes: number | null
           region: string | null
+          region_tags: string[]
           related_brands: string[] | null
           related_products: string[] | null
+          rss_item_id: string | null
+          score_importance: number
+          sentiment: string | null
+          service_tags: string[]
           signal_key: string
           signal_type: Database["public"]["Enums"]["signal_type_enum"]
           source: string | null
@@ -2894,6 +3034,7 @@ export type Database = {
           title: string
           topic: string | null
           topic_tags: string[] | null
+          trend_tags: string[]
           updated_at: string
           vertical: string | null
           why_it_matters: string | null
@@ -2904,7 +3045,9 @@ export type Database = {
           article_body?: string | null
           article_html?: string | null
           author?: string | null
+          brand_names?: string[]
           category?: string | null
+          claim_tags?: string[]
           confidence?: number | null
           confidence_score?: number | null
           confidence_tier?: string | null
@@ -2932,13 +3075,21 @@ export type Database = {
           og_description?: string | null
           og_image?: string | null
           og_title?: string | null
+          primary_environment?: string | null
+          primary_vertical?: string | null
+          product_tags?: string[]
           provenance_tier?: number
           published_at?: string | null
           quality_score?: number | null
           reading_time_minutes?: number | null
           region?: string | null
+          region_tags?: string[]
           related_brands?: string[] | null
           related_products?: string[] | null
+          rss_item_id?: string | null
+          score_importance?: number
+          sentiment?: string | null
+          service_tags?: string[]
           signal_key: string
           signal_type: Database["public"]["Enums"]["signal_type_enum"]
           source?: string | null
@@ -2954,6 +3105,7 @@ export type Database = {
           title: string
           topic?: string | null
           topic_tags?: string[] | null
+          trend_tags?: string[]
           updated_at?: string
           vertical?: string | null
           why_it_matters?: string | null
@@ -2964,7 +3116,9 @@ export type Database = {
           article_body?: string | null
           article_html?: string | null
           author?: string | null
+          brand_names?: string[]
           category?: string | null
+          claim_tags?: string[]
           confidence?: number | null
           confidence_score?: number | null
           confidence_tier?: string | null
@@ -2992,13 +3146,21 @@ export type Database = {
           og_description?: string | null
           og_image?: string | null
           og_title?: string | null
+          primary_environment?: string | null
+          primary_vertical?: string | null
+          product_tags?: string[]
           provenance_tier?: number
           published_at?: string | null
           quality_score?: number | null
           reading_time_minutes?: number | null
           region?: string | null
+          region_tags?: string[]
           related_brands?: string[] | null
           related_products?: string[] | null
+          rss_item_id?: string | null
+          score_importance?: number
+          sentiment?: string | null
+          service_tags?: string[]
           signal_key?: string
           signal_type?: Database["public"]["Enums"]["signal_type_enum"]
           source?: string | null
@@ -3014,12 +3176,20 @@ export type Database = {
           title?: string
           topic?: string | null
           topic_tags?: string[] | null
+          trend_tags?: string[]
           updated_at?: string
           vertical?: string | null
           why_it_matters?: string | null
           word_count?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "market_signals_rss_item_id_fkey"
+            columns: ["rss_item_id"]
+            isOneToOne: false
+            referencedRelation: "rss_items"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "market_signals_source_feed_id_fkey"
             columns: ["source_feed_id"]
@@ -5014,6 +5184,78 @@ export type Database = {
           },
         ]
       }
+      rss_item_tags: {
+        Row: {
+          confidence: number
+          created_at: string
+          matched_keyword: string | null
+          matched_scope: string | null
+          rss_item_id: string
+          rule_id: number | null
+          source: string
+          tag_code: string
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          matched_keyword?: string | null
+          matched_scope?: string | null
+          rss_item_id: string
+          rule_id?: number | null
+          source?: string
+          tag_code: string
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          matched_keyword?: string | null
+          matched_scope?: string | null
+          rss_item_id?: string
+          rule_id?: number | null
+          source?: string
+          tag_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rss_item_tags_rss_item_id_fkey"
+            columns: ["rss_item_id"]
+            isOneToOne: false
+            referencedRelation: "rss_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "rss_tag_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_orphans"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_performance_30d"
+            referencedColumns: ["tag_code"]
+          },
+        ]
+      }
       rss_items: {
         Row: {
           attribution_text: string
@@ -5133,6 +5375,48 @@ export type Database = {
           refresh_minutes?: number
           status?: string
           verticals?: string[]
+        }
+        Relationships: []
+      }
+      rss_tag_rules: {
+        Row: {
+          category_group: string
+          confidence: number
+          context_required: string[]
+          created_at: string
+          exclude_if_tag_codes: string[]
+          id: number
+          is_active: boolean
+          keywords: string[]
+          match_type: string
+          tag_code: string
+          updated_at: string
+        }
+        Insert: {
+          category_group: string
+          confidence?: number
+          context_required?: string[]
+          created_at?: string
+          exclude_if_tag_codes?: string[]
+          id?: number
+          is_active?: boolean
+          keywords?: string[]
+          match_type?: string
+          tag_code: string
+          updated_at?: string
+        }
+        Update: {
+          category_group?: string
+          confidence?: number
+          context_required?: string[]
+          created_at?: string
+          exclude_if_tag_codes?: string[]
+          id?: number
+          is_active?: boolean
+          keywords?: string[]
+          match_type?: string
+          tag_code?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -5838,6 +6122,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "story_drafts_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "v_signal_tag_assignments"
+            referencedColumns: ["signal_id"]
+          },
+          {
             foreignKeyName: "story_drafts_source_feed_id_fkey"
             columns: ["source_feed_id"]
             isOneToOne: false
@@ -6148,6 +6439,13 @@ export type Database = {
             referencedRelation: "market_signals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_signal_engagements_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "v_signal_tag_assignments"
+            referencedColumns: ["signal_id"]
+          },
         ]
       }
       user_tag_preferences: {
@@ -6190,6 +6488,20 @@ export type Database = {
             columns: ["tag_code"]
             isOneToOne: false
             referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "user_tag_preferences_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_orphans"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "user_tag_preferences_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_performance_30d"
             referencedColumns: ["tag_code"]
           },
         ]
@@ -6310,6 +6622,213 @@ export type Database = {
         }
         Relationships: []
       }
+      v_intelligence_channel_performance_30d: {
+        Row: {
+          accent_token: string | null
+          audience: string | null
+          channel_id: string | null
+          configured_tag_count: number | null
+          eyebrow: string | null
+          icon_key: string | null
+          last_event_at: string | null
+          last_published_at: string | null
+          name: string | null
+          region_scope: string[] | null
+          required_tag_count: number | null
+          signal_type_scope: string[] | null
+          slug: string | null
+          sort_order: number | null
+          status: string | null
+          summary: string | null
+          tier_min: string | null
+          vertical_scope: string[] | null
+          weighted_engagement_score: number | null
+          weighted_signal_count: number | null
+          weighted_unique_actor_count: number | null
+        }
+        Relationships: []
+      }
+      v_intelligence_channel_top_tags_30d: {
+        Row: {
+          category_group: string | null
+          channel_id: string | null
+          display_label: string | null
+          engagement_per_signal: number | null
+          required: boolean | null
+          signal_count: number | null
+          slug: string | null
+          sort_order: number | null
+          tag_code: string | null
+          tag_rank: number | null
+          unique_actor_count: number | null
+          weight: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intelligence_channel_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_orphans"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "intelligence_channel_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_performance_30d"
+            referencedColumns: ["tag_code"]
+          },
+        ]
+      }
+      v_signal_tag_assignments: {
+        Row: {
+          category_group: string | null
+          confidence_score: number | null
+          display_label: string | null
+          level: number | null
+          primary_environment: string | null
+          primary_vertical: string | null
+          rss_item_id: string | null
+          score_importance: number | null
+          sentiment: string | null
+          signal_created_at: string | null
+          signal_id: string | null
+          signal_published_at: string | null
+          signal_title: string | null
+          source_domain: string | null
+          source_name: string | null
+          tag_code: string | null
+          tag_confidence: number | null
+          tag_source: string | null
+          tier_min: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_signals_rss_item_id_fkey"
+            columns: ["rss_item_id"]
+            isOneToOne: false
+            referencedRelation: "rss_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_orphans"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_performance_30d"
+            referencedColumns: ["tag_code"]
+          },
+        ]
+      }
+      v_tag_cooccurrence_30d: {
+        Row: {
+          cooccurrence_count: number | null
+          related_rank: number | null
+          related_tag_code: string | null
+          tag_code: string | null
+        }
+        Relationships: []
+      }
+      v_tag_event_metrics_30d: {
+        Row: {
+          click_count: number | null
+          detail_view_count: number | null
+          last_event_at: string | null
+          like_count: number | null
+          save_count: number | null
+          tag_code: string | null
+          unique_actor_count: number | null
+          unique_signals_engaged: number | null
+        }
+        Relationships: []
+      }
+      v_tag_orphans: {
+        Row: {
+          category_group: string | null
+          display_label: string | null
+          level: number | null
+          tag_code: string | null
+        }
+        Relationships: []
+      }
+      v_tag_performance_30d: {
+        Row: {
+          avg_score_importance: number | null
+          avg_tag_confidence: number | null
+          category_group: string | null
+          click_count: number | null
+          detail_view_count: number | null
+          display_label: string | null
+          engagement_per_signal: number | null
+          last_event_at: string | null
+          last_published_at: string | null
+          level: number | null
+          like_count: number | null
+          save_count: number | null
+          signal_count: number | null
+          source_diversity: number | null
+          tag_code: string | null
+          unique_actor_count: number | null
+          unique_signals_engaged: number | null
+        }
+        Relationships: []
+      }
+      v_tag_signal_metrics_30d: {
+        Row: {
+          avg_score_importance: number | null
+          avg_tag_confidence: number | null
+          category_group: string | null
+          display_label: string | null
+          last_published_at: string | null
+          level: number | null
+          signal_count: number | null
+          source_diversity: number | null
+          tag_code: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_orphans"
+            referencedColumns: ["tag_code"]
+          },
+          {
+            foreignKeyName: "rss_item_tags_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "v_tag_performance_30d"
+            referencedColumns: ["tag_code"]
+          },
+        ]
+      }
     }
     Functions: {
       apply_user_tag_preference_delta: {
@@ -6321,6 +6840,14 @@ export type Database = {
           p_user_id: string
         }
         Returns: number
+      }
+      auto_tag_rss_items: {
+        Args: {
+          p_category_group?: string
+          p_limit?: number
+          p_source_id?: string
+        }
+        Returns: Json
       }
       claim_brand: { Args: { p_brand_id: string }; Returns: Json }
       claim_business: { Args: { p_business_id: string }; Returns: Json }
@@ -6361,6 +6888,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: number
+      }
+      normalize_tag_match_text: {
+        Args: { input_text: string }
+        Returns: string
       }
       request_return: {
         Args: { p_order_id: string; p_reason: string }
