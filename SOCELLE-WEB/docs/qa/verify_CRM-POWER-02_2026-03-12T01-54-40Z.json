@@ -14,7 +14,7 @@
     "manual-verification": {
       "status": "PASS",
       "failures": [],
-      "evidence": "Verified Rebooking CTA is wired to churn_risk_score in ContactDetail.tsx"
+      "evidence": "Verified Rebooking CTA is conditionally rendered based on churn_risk_score >= 67 in ContactDetail.tsx"
     }
   },
   "overall": "PASS"
