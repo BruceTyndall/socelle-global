@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
   Brain,
@@ -19,12 +19,14 @@ import {
   X,
 } from 'lucide-react';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
+import { normalizeMediaUrl } from '../../lib/intelligence/normalizeMediaUrl';
 import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPanel';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
 import { TierGate, CreditGate } from '../../components/gates';
 import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 import IntelligenceDashboardSkeleton from '../../components/intelligence/IntelligenceDashboardSkeleton';
 import SignalErrorState from '../../components/intelligence/SignalErrorState';
+import { useTier } from '../../hooks/useTier';
 
 // ── Cloud Modules (10) ──────────────────────────────────────────────
 import {
@@ -95,7 +97,13 @@ const AI_TOOL_DEFS: AIToolDef[] = [
 // ── Main Component ──────────────────────────────────────────────────
 
 export default function IntelligenceHub() {
-  const { signals, loading, isLive } = useIntelligence();
+  const { tier, isLoading: tierLoading } = useTier();
+  const signalLimit = tier === 'free' ? 80 : 140;
+  const { signals, loading, isLive } = useIntelligence({ limit: signalLimit });
+  const { signals: timelineSignals, loading: timelineLoading } = useIntelligence({
+    limit: 15,
+    timeline: true,
+  });
 
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [selectedSignal, setSelectedSignal] = useState<IntelligenceSignal | null>(null);
@@ -114,7 +122,7 @@ export default function IntelligenceHub() {
   }, []);
 
   // ── Loading state ───────────────────────────────────────────────
-  if (loading) {
+  if (loading || tierLoading) {
     return (
       <>
         <Helmet>
@@ -206,7 +214,9 @@ export default function IntelligenceHub() {
           {activeTab === 'overview' && (
             <OverviewTab
               signals={signals}
+              timelineSignals={timelineSignals}
               loading={loading}
+              timelineLoading={timelineLoading}
               onSelectSignal={handleSelectSignal}
             />
           )}
@@ -339,13 +349,57 @@ export default function IntelligenceHub() {
 
 function OverviewTab({
   signals,
+  timelineSignals,
   loading,
+  timelineLoading,
   onSelectSignal,
 }: {
   signals: IntelligenceSignal[];
+  timelineSignals: IntelligenceSignal[];
   loading: boolean;
+  timelineLoading: boolean;
   onSelectSignal: (signal: IntelligenceSignal) => void;
 }) {
+  const featuredSignals = useMemo(() => {
+    const hasMedia = (signal: IntelligenceSignal) =>
+      Boolean(
+        normalizeMediaUrl(signal.hero_image_url)
+        ?? normalizeMediaUrl(signal.image_urls?.[0])
+        ?? normalizeMediaUrl(signal.image_url)
+      );
+
+    const hasReadableState = (signal: IntelligenceSignal) =>
+      Boolean(signal.article_body || signal.article_html || signal.source_url || signal.description);
+
+    const picked: IntelligenceSignal[] = [];
+    const seen = new Set<string>();
+
+    const tryAdd = (signal: IntelligenceSignal) => {
+      if (!signal || seen.has(signal.id)) return;
+      seen.add(signal.id);
+      picked.push(signal);
+    };
+
+    signals
+      .filter((signal) => hasMedia(signal) && hasReadableState(signal))
+      .slice(0, 4)
+      .forEach(tryAdd);
+
+    signals
+      .filter((signal) => (signal.impact_score ?? 0) >= 60 || signal.signal_type === 'regulatory_alert')
+      .slice(0, 4)
+      .forEach(tryAdd);
+
+    signals
+      .filter(hasReadableState)
+      .slice(0, 4)
+      .forEach(tryAdd);
+
+    return picked.slice(0, 4);
+  }, [signals]);
+
+  const merchandisedTimeline = timelineSignals.length > 0 ? timelineSignals : signals;
+
   return (
     <>
       {/* Data source status — detailed cards for portal users */}
@@ -353,19 +407,167 @@ function OverviewTab({
         <ApiStatusRibbon showDetailed={true} />
       </div>
 
+      <FeaturedCoverageDeck
+        signals={featuredSignals}
+        onSelectSignal={onSelectSignal}
+      />
+
       <KPIStrip signals={signals} loading={loading} />
 
       <SignalTable
         signals={signals}
         loading={loading}
         onSelect={onSelectSignal}
+        defaultSortField="impact_score"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <OpportunitySignals signals={signals} loading={loading} />
-        <WhatChangedTimeline signals={signals} loading={loading} />
+        <WhatChangedTimeline signals={merchandisedTimeline} loading={timelineLoading} />
       </div>
     </>
+  );
+}
+
+function FeaturedCoverageDeck({
+  signals,
+  onSelectSignal,
+}: {
+  signals: IntelligenceSignal[];
+  onSelectSignal: (signal: IntelligenceSignal) => void;
+}) {
+  if (signals.length === 0) return null;
+
+  const lead = signals[0];
+  const supporting = signals.slice(1, 4);
+
+  return (
+    <section className="mb-8">
+      <div className="flex items-end justify-between gap-3 mb-4">
+        <div>
+          <p className="text-[11px] font-sans font-semibold uppercase tracking-[0.18em] text-[#6E879B]">
+            Featured Coverage
+          </p>
+          <h2 className="font-sans text-lg font-semibold text-[#141418]">
+            Live signal cards with source media
+          </h2>
+        </div>
+        <p className="text-xs font-sans text-gray-500 max-w-sm text-right">
+          Ranked from live feeds and biased toward readable content with real source images when available.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-5">
+        <StorySignalCard
+          signal={lead}
+          onSelect={onSelectSignal}
+          featured={true}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-5">
+          {supporting.map((signal) => (
+            <StorySignalCard
+              key={signal.id}
+              signal={signal}
+              onSelect={onSelectSignal}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StorySignalCard({
+  signal,
+  onSelect,
+  featured = false,
+}: {
+  signal: IntelligenceSignal;
+  onSelect: (signal: IntelligenceSignal) => void;
+  featured?: boolean;
+}) {
+  const mediaUrl = normalizeMediaUrl(signal.hero_image_url)
+    ?? normalizeMediaUrl(signal.image_urls?.[0])
+    ?? normalizeMediaUrl(signal.image_url);
+
+  const sourceLabel = signal.source_name ?? signal.source ?? 'Market signal';
+  const segmentLabel = signal.content_segment?.replace(/_/g, ' ');
+  const recency = signal.published_at ?? signal.updated_at;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(signal)}
+      className={`group overflow-hidden rounded-2xl border border-[#6E879B]/10 bg-white text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#6E879B]/25 hover:shadow-md ${
+        featured ? 'h-full' : ''
+      }`}
+    >
+      {mediaUrl ? (
+        <div className={featured ? 'aspect-[16/9] overflow-hidden' : 'aspect-[16/10] overflow-hidden'}>
+          <img
+            src={mediaUrl}
+            alt=""
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            loading="lazy"
+            onError={(event) => {
+              (event.target as HTMLImageElement).parentElement?.remove();
+            }}
+          />
+        </div>
+      ) : (
+        <div className={featured ? 'aspect-[16/9] bg-gradient-to-br from-[#E8EDF1] via-white to-[#F6F3EF]' : 'aspect-[16/10] bg-gradient-to-br from-[#F6F3EF] via-white to-[#E8EDF1]'}>
+          <div className="flex h-full items-end p-5">
+            <div className="rounded-full bg-[#141418]/5 px-3 py-1 text-[10px] font-sans font-semibold uppercase tracking-[0.16em] text-[#141418]/55">
+              Live Source Media Unavailable
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={featured ? 'p-5 md:p-6' : 'p-4'}>
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-[#E8EDF1] px-2.5 py-1 text-[10px] font-sans font-semibold uppercase tracking-[0.14em] text-[#6E879B]">
+            {signal.signal_type.replace(/_/g, ' ')}
+          </span>
+          {segmentLabel && (
+            <span className="rounded-full bg-[#141418]/5 px-2.5 py-1 text-[10px] font-sans font-medium capitalize text-[#141418]/70">
+              {segmentLabel}
+            </span>
+          )}
+          {signal.quality_score != null && signal.quality_score > 70 && (
+            <span className="rounded-full bg-[#5F8A72]/10 px-2.5 py-1 text-[10px] font-sans font-semibold uppercase tracking-[0.14em] text-[#5F8A72]">
+              Premium
+            </span>
+          )}
+        </div>
+
+        <h3 className={`font-sans font-semibold leading-tight text-[#141418] transition-colors group-hover:text-[#2A2A33] ${
+          featured ? 'text-xl md:text-2xl mb-3' : 'text-base mb-2'
+        }`}>
+          {signal.title}
+        </h3>
+
+        {signal.description && (
+          <p className={`font-sans text-gray-600 ${
+            featured ? 'line-clamp-3 text-sm leading-6 mb-4' : 'line-clamp-2 text-sm leading-5 mb-3'
+          }`}>
+            {signal.description}
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-sans text-gray-500">
+          <span className="font-medium text-[#141418]/70">{sourceLabel}</span>
+          {signal.reading_time_minutes != null && signal.reading_time_minutes > 0 && (
+            <span>{signal.reading_time_minutes} min read</span>
+          )}
+          {signal.impact_score != null && (
+            <span>Impact {signal.impact_score}</span>
+          )}
+          <span>{new Date(recency).toLocaleDateString()}</span>
+        </div>
+      </div>
+    </button>
   );
 }
 

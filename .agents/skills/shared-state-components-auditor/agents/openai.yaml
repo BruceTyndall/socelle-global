@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shared State Components Auditor"
+  short_description: "Help with Shared State Components Auditor tasks"
+  default_prompt: "Use $shared-state-components-auditor to run a PASS/FAIL verification with evidence."

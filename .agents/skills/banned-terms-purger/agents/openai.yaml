@@ -1,0 +1,4 @@
+interface:
+  display_name: "Banned Terms Purger"
+  short_description: "Help with Banned Terms Purger tasks"
+  default_prompt: "Use $banned-terms-purger to run a PASS/FAIL verification with evidence."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Empty State Enforcer"
+  short_description: "Help with Empty State Enforcer tasks"
+  default_prompt: "Use $empty-state-enforcer to run a PASS/FAIL verification with evidence."

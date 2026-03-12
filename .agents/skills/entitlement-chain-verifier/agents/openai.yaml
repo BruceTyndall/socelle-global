@@ -1,0 +1,4 @@
+interface:
+  display_name: "Entitlement Chain Verifier"
+  short_description: "Help with Entitlement Chain Verifier tasks"
+  default_prompt: "Use $entitlement-chain-verifier to run a PASS/FAIL verification with evidence."

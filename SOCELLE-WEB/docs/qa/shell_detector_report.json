@@ -1,17 +1,17 @@
 {
-  "scan_date": "2026-03-11T07:34:07.527Z",
+  "scan_date": "2026-03-12T02:17:07.786Z",
   "summary": {
-    "total": 280,
-    "scored": 245,
+    "total": 281,
+    "scored": 246,
     "exempt": 35,
     "live": 186,
     "demo": 59,
-    "shell": 0,
-    "shell_rate": "0.0"
+    "shell": 1,
+    "shell_rate": "0.4"
   },
   "by_hub": {
     "admin": {
-      "live": 64,
+      "live": 66,
       "demo": 10,
       "shell": 0,
       "exempt": 5,
@@ -410,6 +410,16 @@
           "file": "src/pages/admin/cms/CmsTemplatesList.tsx",
           "classification": "LIVE",
           "feature_score": 5
+        },
+        {
+          "file": "src/pages/admin/cms/MerchandisingConsole.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
+        },
+        {
+          "file": "src/pages/admin/cms/PageLayoutBuilder.tsx",
+          "classification": "LIVE",
+          "feature_score": 4
         }
       ]
     },
@@ -547,7 +557,7 @@
       ]
     },
     "business": {
-      "live": 49,
+      "live": 46,
       "demo": 21,
       "shell": 0,
       "exempt": 9,
@@ -623,11 +633,6 @@
           "feature_score": 3
         },
         {
-          "file": "src/pages/business/CampaignEditor.tsx",
-          "classification": "LIVE",
-          "feature_score": 5
-        },
-        {
           "file": "src/pages/business/ClaimReview.tsx",
           "classification": "LIVE",
           "feature_score": 3
@@ -660,11 +665,6 @@
         {
           "file": "src/pages/business/ContactList.tsx",
           "classification": "DEMO",
-          "feature_score": 4
-        },
-        {
-          "file": "src/pages/business/ContentTemplates.tsx",
-          "classification": "LIVE",
           "feature_score": 4
         },
         {
@@ -734,11 +734,6 @@
         },
         {
           "file": "src/pages/business/MarketingCalendar.tsx",
-          "classification": "LIVE",
-          "feature_score": 5
-        },
-        {
-          "file": "src/pages/business/MarketingDashboard.tsx",
           "classification": "LIVE",
           "feature_score": 5
         },
@@ -989,7 +984,7 @@
         {
           "file": "src/pages/education/CECreditDashboard.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 6
         },
         {
           "file": "src/pages/education/CertificateVerify.tsx",
@@ -1004,7 +999,7 @@
         {
           "file": "src/pages/education/CourseDetail.tsx",
           "classification": "LIVE",
-          "feature_score": 4
+          "feature_score": 5
         },
         {
           "file": "src/pages/education/CoursePlayer.tsx",
@@ -1019,7 +1014,7 @@
         {
           "file": "src/pages/education/MyCertificates.tsx",
           "classification": "DEMO",
-          "feature_score": 3
+          "feature_score": 4
         },
         {
           "file": "src/pages/education/QuizPlayer.tsx",
@@ -1097,15 +1092,20 @@
       ]
     },
     "public": {
-      "live": 34,
+      "live": 35,
       "demo": 14,
-      "shell": 0,
+      "shell": 1,
       "exempt": 17,
       "pages": [
         {
           "file": "src/pages/public/About.tsx",
           "classification": "LIVE",
           "feature_score": 2
+        },
+        {
+          "file": "src/pages/public/AccountProfile.tsx",
+          "classification": "SHELL",
+          "feature_score": 0
         },
         {
           "file": "src/pages/public/ApiDocs.tsx",
@@ -1181,6 +1181,11 @@
           "file": "src/pages/public/EducationArticles.tsx",
           "classification": "DEMO",
           "feature_score": 4
+        },
+        {
+          "file": "src/pages/public/EventDetail.tsx",
+          "classification": "LIVE",
+          "feature_score": 3
         },
         {
           "file": "src/pages/public/Events.tsx",
@@ -2709,6 +2714,38 @@
       "feature_score": 5
     },
     {
+      "file": "src/pages/admin/cms/MerchandisingConsole.tsx",
+      "hub": "admin",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": true,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
+    },
+    {
+      "file": "src/pages/admin/cms/PageLayoutBuilder.tsx",
+      "hub": "admin",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": true,
+        "loading_state": true,
+        "crud": true,
+        "export": false
+      },
+      "feature_score": 4
+    },
+    {
       "file": "src/pages/brand/ApplicationReceived.tsx",
       "hub": "brand",
       "page_type": "confirmation",
@@ -3317,22 +3354,6 @@
       "feature_score": 3
     },
     {
-      "file": "src/pages/business/CampaignEditor.tsx",
-      "hub": "business",
-      "page_type": "content",
-      "classification": "LIVE",
-      "features": {
-        "live_data": true,
-        "demo_labeled": true,
-        "empty_state": true,
-        "error_state": false,
-        "loading_state": true,
-        "crud": true,
-        "export": false
-      },
-      "feature_score": 5
-    },
-    {
       "file": "src/pages/business/ClaimReview.tsx",
       "hub": "business",
       "page_type": "content",
@@ -3441,22 +3462,6 @@
         "loading_state": true,
         "crud": false,
         "export": true
-      },
-      "feature_score": 4
-    },
-    {
-      "file": "src/pages/business/ContentTemplates.tsx",
-      "hub": "business",
-      "page_type": "content",
-      "classification": "LIVE",
-      "features": {
-        "live_data": true,
-        "demo_labeled": true,
-        "empty_state": false,
-        "error_state": false,
-        "loading_state": true,
-        "crud": true,
-        "export": false
       },
       "feature_score": 4
     },
@@ -3662,22 +3667,6 @@
     },
     {
       "file": "src/pages/business/MarketingCalendar.tsx",
-      "hub": "business",
-      "page_type": "content",
-      "classification": "LIVE",
-      "features": {
-        "live_data": true,
-        "demo_labeled": true,
-        "empty_state": true,
-        "error_state": true,
-        "loading_state": true,
-        "crud": false,
-        "export": false
-      },
-      "feature_score": 5
-    },
-    {
-      "file": "src/pages/business/MarketingDashboard.tsx",
       "hub": "business",
       "page_type": "content",
       "classification": "LIVE",
@@ -4340,13 +4329,13 @@
       "features": {
         "live_data": true,
         "demo_labeled": true,
-        "empty_state": false,
-        "error_state": false,
+        "empty_state": true,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": true
       },
-      "feature_score": 4
+      "feature_score": 6
     },
     {
       "file": "src/pages/education/CertificateVerify.tsx",
@@ -4389,12 +4378,12 @@
         "live_data": true,
         "demo_labeled": true,
         "empty_state": false,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": true,
         "export": false
       },
-      "feature_score": 4
+      "feature_score": 5
     },
     {
       "file": "src/pages/education/CoursePlayer.tsx",
@@ -4437,12 +4426,12 @@
         "live_data": false,
         "demo_labeled": true,
         "empty_state": true,
-        "error_state": false,
+        "error_state": true,
         "loading_state": true,
         "crud": false,
         "export": false
       },
-      "feature_score": 3
+      "feature_score": 4
     },
     {
       "file": "src/pages/education/QuizPlayer.tsx",
@@ -4661,6 +4650,22 @@
       "feature_score": 2
     },
     {
+      "file": "src/pages/public/AccountProfile.tsx",
+      "hub": "public",
+      "page_type": "content",
+      "classification": "SHELL",
+      "features": {
+        "live_data": false,
+        "demo_labeled": false,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": false,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 0
+    },
+    {
       "file": "src/pages/public/ApiDocs.tsx",
       "hub": "public",
       "page_type": "confirmation",
@@ -4859,6 +4864,22 @@
         "export": false
       },
       "feature_score": 4
+    },
+    {
+      "file": "src/pages/public/EventDetail.tsx",
+      "hub": "public",
+      "page_type": "content",
+      "classification": "LIVE",
+      "features": {
+        "live_data": true,
+        "demo_labeled": true,
+        "empty_state": false,
+        "error_state": false,
+        "loading_state": true,
+        "crud": false,
+        "export": false
+      },
+      "feature_score": 3
     },
     {
       "file": "src/pages/public/Events.tsx",

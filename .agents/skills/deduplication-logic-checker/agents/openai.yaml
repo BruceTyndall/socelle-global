@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deduplication Logic Checker"
+  short_description: "Help with Deduplication Logic Checker tasks"
+  default_prompt: "Use $deduplication-logic-checker to run a PASS/FAIL verification with evidence."

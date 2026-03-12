@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Log Auditor"
+  short_description: "Help with Audit Log Auditor tasks"
+  default_prompt: "Use $audit-log-auditor to run a PASS/FAIL verification with evidence."

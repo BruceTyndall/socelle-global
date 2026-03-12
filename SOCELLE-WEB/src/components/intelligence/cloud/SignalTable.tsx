@@ -4,7 +4,7 @@
 // CSV export. Pagination. Click row → onSelect callback.
 // Pearl Mineral V2 tokens only.
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Search,
   Filter,
@@ -30,9 +30,11 @@ export interface SignalTableProps {
   loading?: boolean;
   onSelect?: (signal: IntelligenceSignal) => void;
   pageSize?: number;
+  defaultSortField?: SortField;
+  defaultSortDir?: SortDir;
 }
 
-type SortField = 'title' | 'category' | 'direction' | 'magnitude' | 'confidence_score' | 'updated_at';
+type SortField = 'title' | 'category' | 'direction' | 'magnitude' | 'impact_score' | 'confidence_score' | 'updated_at';
 type SortDir = 'asc' | 'desc';
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -77,6 +79,9 @@ function compareSignals(a: IntelligenceSignal, b: IntelligenceSignal, field: Sor
     case 'magnitude':
       cmp = a.magnitude - b.magnitude;
       break;
+    case 'impact_score':
+      cmp = (a.impact_score ?? 0) - (b.impact_score ?? 0);
+      break;
     case 'confidence_score':
       cmp = (a.confidence_score ?? 0) - (b.confidence_score ?? 0);
       break;
@@ -112,15 +117,27 @@ function exportCSV(signals: IntelligenceSignal[]): void {
 
 // ── Component ────────────────────────────────────────────────────────
 
-export function SignalTable({ signals, loading = false, onSelect, pageSize = 20 }: SignalTableProps) {
-  const [sortField, setSortField] = useState<SortField>('updated_at');
-  const [sortDir, setSortDir] = useState<SortDir>('desc');
+export function SignalTable({
+  signals,
+  loading = false,
+  onSelect,
+  pageSize = 20,
+  defaultSortField = 'updated_at',
+  defaultSortDir = 'desc',
+}: SignalTableProps) {
+  const [sortField, setSortField] = useState<SortField>(defaultSortField);
+  const [sortDir, setSortDir] = useState<SortDir>(defaultSortDir);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterDirection, setFilterDirection] = useState<string>('all');
   const [filterConfidence, setFilterConfidence] = useState<string>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    setSortField(defaultSortField);
+    setSortDir(defaultSortDir);
+  }, [defaultSortField, defaultSortDir]);
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
@@ -158,7 +175,9 @@ export function SignalTable({ signals, loading = false, onSelect, pageSize = 20 
   }, [signals, searchQuery, filterCategory, filterDirection, filterConfidence, sortField, sortDir]);
 
   // Reset page when filters change
-  useMemo(() => setPage(0), [searchQuery, filterCategory, filterDirection, filterConfidence]);
+  useEffect(() => {
+    setPage(0);
+  }, [searchQuery, filterCategory, filterDirection, filterConfidence]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageItems = filtered.slice(page * pageSize, (page + 1) * pageSize);

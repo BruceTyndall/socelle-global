@@ -1,0 +1,4 @@
+interface:
+  display_name: "Affiliate Link Tracker Auditor"
+  short_description: "Help with Affiliate Link Tracker Auditor tasks"
+  default_prompt: "Use $affiliate-link-tracker-auditor to run a PASS/FAIL verification with evidence."

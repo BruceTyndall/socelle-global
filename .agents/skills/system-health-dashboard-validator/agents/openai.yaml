@@ -1,0 +1,4 @@
+interface:
+  display_name: "System Health Dashboard Validator"
+  short_description: "Help with System Health Dashboard Validator tasks"
+  default_prompt: "Use $system-health-dashboard-validator to run a PASS/FAIL verification with evidence."

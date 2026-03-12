@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Flag Validator"
+  short_description: "Help with Feature Flag Validator tasks"
+  default_prompt: "Use $feature-flag-validator to run a PASS/FAIL verification with evidence."

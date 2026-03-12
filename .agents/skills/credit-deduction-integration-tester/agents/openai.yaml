@@ -1,0 +1,4 @@
+interface:
+  display_name: "Credit Deduction Integration Tester"
+  short_description: "Help with Credit Deduction Integration Tester tasks"
+  default_prompt: "Use $credit-deduction-integration-tester to run a PASS/FAIL verification with evidence."

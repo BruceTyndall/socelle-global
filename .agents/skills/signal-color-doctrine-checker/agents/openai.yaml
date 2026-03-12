@@ -1,0 +1,4 @@
+interface:
+  display_name: "Signal Color Doctrine Checker"
+  short_description: "Help with Signal Color Doctrine Checker tasks"
+  default_prompt: "Use $signal-color-doctrine-checker to run a PASS/FAIL verification with evidence."

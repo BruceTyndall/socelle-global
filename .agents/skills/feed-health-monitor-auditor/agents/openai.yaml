@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feed Health Monitor Auditor"
+  short_description: "Help with Feed Health Monitor Auditor tasks"
+  default_prompt: "Use $feed-health-monitor-auditor to run a PASS/FAIL verification with evidence."
