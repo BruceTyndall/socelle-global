@@ -14,7 +14,7 @@
     "manual-verification": {
       "status": "PASS",
       "failures": [],
-      "evidence": "Verified presence of Signal Attribution in ContactDetail.tsx timeline filter"
+      "evidence": "Verified presence of Signal Attribution marker UI with Sparkles icon in ContactDetail.tsx timeline"
     }
   },
   "overall": "PASS"
