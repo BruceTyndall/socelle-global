@@ -1,0 +1,21 @@
+{
+  "wo_id": "CRM-POWER-02",
+  "timestamp": "2026-03-12T01:54:40Z",
+  "skills_run": [
+    "tsc-build-gate",
+    "manual-verification"
+  ],
+  "results": {
+    "tsc-build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit completed with 0 errors"
+    },
+    "manual-verification": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Verified Rebooking CTA is wired to churn_risk_score in ContactDetail.tsx"
+    }
+  },
+  "overall": "PASS"
+}

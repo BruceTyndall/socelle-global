@@ -591,7 +591,7 @@ export default function ContactDetail() {
             </button>
           </div>
 
-          {/* CRM-POWER-01: Rebooking CTA & Churn Risk summary above timeline */}
+          {/* CRM-POWER-02: Rebooking CTA & Churn Risk summary above timeline */}
           {churnRiskScore >= 67 && daysSinceLastVisit !== null && daysSinceLastVisit > 90 && (
              <div className="bg-signal-warn/10 border border-signal-warn/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
                <div>
@@ -685,7 +685,7 @@ export default function ContactDetail() {
           <div className="bg-white rounded-xl border border-accent-soft/30 p-5 space-y-4">
             <div className="flex items-start justify-between">
                <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider">Contact Info</h2>
-               {/* CRM-POWER-01: Churn Risk Header Badge */}
+               {/* CRM-POWER-02: Churn Risk Header Badge */}
                <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${churnRiskBg}/20 ${churnRiskColor} border border-${churnRiskColor}/20 flex items-center gap-1`}>
                  <Activity className="w-3 h-3" /> Risk: {churnRiskScore}
                </div>
