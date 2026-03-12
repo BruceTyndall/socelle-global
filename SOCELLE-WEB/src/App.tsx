@@ -281,11 +281,8 @@ const BusinessCommissionsDashboard = lazy(() => import('./pages/business/Commiss
 const AdminSalesPlatformHub = lazy(() => import('./pages/admin/AdminSalesPlatformHub'));
 
 // ── Business Portal Marketing (WO-OVERHAUL-15)
-const BusinessMarketingDashboard = lazy(() => import('./pages/business/MarketingDashboard'));
 const BusinessCampaignDetail = lazy(() => import('./pages/business/CampaignDetail'));
-const BusinessCampaignEditor = lazy(() => import('./pages/business/CampaignEditor'));
 const BusinessAudienceSegments = lazy(() => import('./pages/business/AudienceSegments'));
-const BusinessContentTemplates = lazy(() => import('./pages/business/ContentTemplates'));
 const BusinessMarketingAnalytics = lazy(() => import('./pages/business/MarketingAnalytics'));
 
 // ── Marketing Platform (WO-OVERHAUL-15)
