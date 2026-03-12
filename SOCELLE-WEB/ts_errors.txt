@@ -1,0 +1,148 @@
+src/__fixtures__/mockAdvisor.ts(1,68): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockApiData.ts(6,71): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockCampaigns.ts(1,77): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockContent.ts(1,58): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockLocations.ts(4,78): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockNotifications.ts(4,35): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockProtocols.ts(1,52): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockSignals.ts(1,54): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/__fixtures__/mockTierData.ts(11,8): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/components/__tests__/PaywallGate.test.tsx(58,44): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(65,44): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; onAllow: Mock<Procedure>; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; onAllow: Mock<Procedure>; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(72,39): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(82,44): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(92,39): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; onBlock: Mock<Procedure>; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; onBlock: Mock<Procedure>; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(102,39): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(115,11): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; fallback: ReactElement<{ 'data-testid': string; }, string | JSXElementConstructor<any>>; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; fallback: ReactElement<{ 'data-testid': string; }, string | JSXElementConstructor<any>>; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(130,44): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; }' but required in type 'PaywallGateProps'.
+src/components/__tests__/PaywallGate.test.tsx(136,44): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ feature: string; }' is not assignable to parameter of type 'Attributes & PaywallGateProps'.
+      Property 'children' is missing in type '{ feature: string; }' but required in type 'PaywallGateProps'.
+src/components/PWAInstallPrompt.tsx(77,13): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'string | BufferSource | null | undefined'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+          Types of property '[Symbol.toStringTag]' are incompatible.
+            Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/components/studio/DragCanvas.tsx(97,11): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(46,35): error TS2339: Property 'tier' does not exist on type 'CreditBalance'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(47,35): error TS2339: Property 'allocated' does not exist on type 'CreditBalance'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(63,27): error TS2339: Property 'remaining' does not exist on type 'CreditBalance'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(64,27): error TS2339: Property 'used_this_month' does not exist on type 'CreditBalance'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(65,27): error TS2339: Property 'allocated' does not exist on type 'CreditBalance'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(80,35): error TS2339: Property 'used_this_month' does not exist on type 'CreditBalance'.
+src/lib/credits/__tests__/useCreditBalance.test.ts(81,35): error TS2339: Property 'remaining' does not exist on type 'CreditBalance'.
+src/lib/studio/studioExportEngine.ts(568,35): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>[]' is not assignable to parameter of type 'BlobPart[]'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+    Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+      Types of property 'buffer' are incompatible.
+        Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+          Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+            Types of property '[Symbol.toStringTag]' are incompatible.
+              Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/studio/studioSharePack.ts(126,20): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+          Types of property '[Symbol.toStringTag]' are incompatible.
+            Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/studio/studioSharePack.ts(126,30): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+          Types of property '[Symbol.toStringTag]' are incompatible.
+            Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/studio/studioSharePack.ts(126,47): error TS2322: Type 'Uint8Array<ArrayBufferLike> | Uint8Array<ArrayBuffer>' is not assignable to type 'BlobPart'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BlobPart'.
+    Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+      Types of property 'buffer' are incompatible.
+        Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+          Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+            Types of property '[Symbol.toStringTag]' are incompatible.
+              Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/pages/admin/IntelligenceDashboard.tsx(148,11): error TS2339: Property 'showToast' does not exist on type 'ToastContextValue'.
+src/pages/brand/IntelligencePricing.tsx(121,26): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<BrandTier, ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>>'.
+src/pages/brand/IntelligencePricing.tsx(122,28): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<BrandTier, { card: string; badge: string; button: string; border: string; }>'.
+src/pages/business/credits/CreditDashboard.tsx(35,66): error TS2339: Property 'tierAllocations' does not exist on type '{ balance: CreditBalance; transactions: CreditTransaction[]; isLive: boolean; loading: boolean; error: string | null; reload: (options?: RefetchOptions | undefined) => Promise<...>; }'.
+src/pages/business/credits/CreditDashboard.tsx(38,17): error TS2339: Property 'remaining' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(39,17): error TS2339: Property 'remaining' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(39,37): error TS2339: Property 'allocated' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(46,9): error TS2339: Property 'action' does not exist on type 'CreditTransaction'.
+src/pages/business/credits/CreditDashboard.tsx(47,16): error TS2339: Property 'credits_deducted' does not exist on type 'CreditTransaction'.
+src/pages/business/credits/CreditDashboard.tsx(48,9): error TS2339: Property 'signal_id' does not exist on type 'CreditTransaction'.
+src/pages/business/credits/CreditDashboard.tsx(144,41): error TS2339: Property 'remaining' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(148,67): error TS2339: Property 'used_this_month' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(149,71): error TS2339: Property 'allocated' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(149,94): error TS2339: Property 'tier' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(175,34): error TS2339: Property 'tier' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(184,31): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'number'.
+src/pages/business/credits/CreditDashboard.tsx(187,33): error TS2339: Property 'tier' does not exist on type 'CreditBalance'.
+src/pages/business/credits/CreditDashboard.tsx(226,76): error TS2339: Property 'action' does not exist on type 'CreditTransaction'.
+src/pages/business/credits/CreditDashboard.tsx(227,90): error TS2339: Property 'credits_deducted' does not exist on type 'CreditTransaction'.
+src/pages/business/credits/CreditDashboard.tsx(229,26): error TS2339: Property 'signal_id' does not exist on type 'CreditTransaction'.
+src/pages/business/studio/CourseBuilder.tsx(358,52): error TS2345: Argument of type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: { [key: string]: Json | undefined; }; }' is not assignable to parameter of type 'Omit<CmsDocInsert, "author_id"> & { author_id?: string | undefined; }'.
+  Type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: { [key: string]: Json | undefined; }; }' is missing the following properties from type 'Omit<CmsDocInsert, "author_id">': scheduled_at, seo_twitter_card
+src/pages/business/studio/StudioEditor.tsx(381,32): error TS2345: Argument of type '"All"' is not assignable to parameter of type 'TemplateCategory'.
+src/pages/business/studio/StudioEditor.tsx(382,32): error TS2345: Argument of type 'string' is not assignable to parameter of type 'TemplateCategory'.
+src/pages/business/studio/StudioEditor.tsx(490,9): error TS2322: Type '{ id: string; type: string; x: number; y: number; w: number; h: number; content: string; bg: string | undefined; color: string | undefined; }[]' is not assignable to type 'CanvasExportBlock[]'.
+  Type '{ id: string; type: string; x: number; y: number; w: number; h: number; content: string; bg: string | undefined; color: string | undefined; }' is not assignable to type 'CanvasExportBlock'.
+    Types of property 'content' are incompatible.
+      Type 'string' is not assignable to type 'Record<string, unknown>'.
+src/pages/business/studio/StudioEditor.tsx(812,52): error TS2345: Argument of type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: { [key: string]: Json | undefined; }; }' is not assignable to parameter of type 'Omit<CmsDocInsert, "author_id"> & { author_id?: string | undefined; }'.
+  Type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: { [key: string]: Json | undefined; }; }' is missing the following properties from type 'Omit<CmsDocInsert, "author_id">': scheduled_at, seo_twitter_card
+src/pages/business/studio/StudioHome.tsx(187,48): error TS2345: Argument of type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: Json; }' is not assignable to parameter of type 'Omit<CmsDocInsert, "author_id"> & { author_id?: string | undefined; }'.
+  Type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: Json; }' is missing the following properties from type 'Omit<CmsDocInsert, "author_id">': scheduled_at, seo_twitter_card
+src/pages/business/studio/StudioHome.tsx(200,48): error TS2345: Argument of type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: { version: number; view_count: number; doc_type: string; space: string; }; }' is not assignable to parameter of type 'Omit<CmsDocInsert, "author_id"> & { author_id?: string | undefined; }'.
+  Type '{ title: string; slug: string; space_id: string; status: "draft"; category: string; body: null; metadata: { version: number; view_count: number; doc_type: string; space: string; }; }' is missing the following properties from type 'Omit<CmsDocInsert, "author_id">': scheduled_at, seo_twitter_card
+src/pages/education/CECreditDashboard.tsx(87,9): error TS2322: Type 'IntelligenceSignal[]' is not assignable to type 'TrendingSignal[]'.
+  Type 'IntelligenceSignal' is not assignable to type 'TrendingSignal'.
+    Property 'category' is optional in type 'IntelligenceSignal' but required in type 'TrendingSignal'.
+src/pages/public/ProtocolDetail.tsx(67,21): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/public/ProtocolDetail.tsx(68,17): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/public/ProtocolDetail.tsx(69,22): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<SkillLevel, string>'.
+src/pages/public/ProtocolDetail.tsx(70,19): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, ElementType<any, keyof IntrinsicElements>>'.
+src/pages/public/ProtocolDetail.tsx(89,47): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(91,6): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(91,9): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(91,38): error TS7006: Parameter 'pp' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(100,31): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(126,55): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/public/ProtocolDetail.tsx(150,49): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/public/ProtocolDetail.tsx(160,18): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/public/ProtocolDetail.tsx(163,18): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<SkillLevel, string>'.
+src/pages/public/ProtocolDetail.tsx(211,38): error TS7006: Parameter 'step' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(246,49): error TS7006: Parameter 'product' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(246,58): error TS7006: Parameter 'pIdx' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(330,49): error TS7006: Parameter 'concern' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(352,54): error TS7006: Parameter 'ci' implicitly has an 'any' type.
+src/pages/public/ProtocolDetail.tsx(385,40): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/public/ProtocolDetail.tsx(386,44): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<ProtocolCategory, string>'.
+src/pages/sales/OpportunityFinder.tsx(328,24): error TS2304: Cannot find name 'Loader2'.

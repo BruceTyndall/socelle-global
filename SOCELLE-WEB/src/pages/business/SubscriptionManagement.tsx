@@ -120,7 +120,7 @@ export default function SubscriptionManagement() {
 
         <div className="flex gap-3">
           <Link
-            to="/pricing"
+            to="/plans"
             className="inline-flex items-center gap-2 h-10 px-5 bg-mn-dark text-white text-sm font-semibold rounded-full hover:bg-graphite transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -195,7 +195,7 @@ export default function SubscriptionManagement() {
                 </div>
                 {!hasAccess && (
                   <Link
-                    to="/pricing"
+                    to="/plans"
                     className="text-[11px] font-medium text-accent hover:underline flex-shrink-0"
                   >
                     Upgrade

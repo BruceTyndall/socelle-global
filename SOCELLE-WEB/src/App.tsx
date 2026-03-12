@@ -425,12 +425,9 @@ function App() {
                       all routes below redirect to "/" for public visitors.
                       Local dev (env var unset) → full access for development agents. */}
                   <Route element={<PrelaunchGuard />}>
-                  {/* Full cinematic home kept accessible for internal preview */}
-                  <Route path="/home" element={<Navigate to="/intelligence" replace />} />
                   <Route path="/brands" element={<PublicBrands />} />
                   <Route path="/brands/:slug" element={<PublicBrandStorefront />} />
                   <Route path="/plans" element={<Plans />} />
-                  <Route path="/pricing" element={<Navigate to="/plans" replace />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/intelligence" element={<Intelligence />} />
                   <Route path="/insights" element={<Navigate to="/intelligence" replace />} />
@@ -439,8 +436,6 @@ function App() {
                   <Route path="/professionals" element={<Professionals />} />
                   <Route path="/professionals/:id" element={<ProfessionalDetail />} />
                   <Route path="/for-brands" element={<ForBrands />} />
-                  <Route path="/for-medspas" element={<Navigate to="/professionals" replace />} />
-                  <Route path="/for-salons" element={<Navigate to="/professionals" replace />} />
                   <Route path="/for-buyers" element={<Navigate to="/professionals" replace />} />
                   <Route path="/how-it-works" element={<HowItWorks />} />
                   <Route path="/education" element={<Education />} />
@@ -785,20 +780,25 @@ function App() {
                         <ModuleRoute moduleKey="MODULE_SALES"><BusinessCommissionsDashboard /></ModuleRoute>
                       </ProtectedRoute>
                     } />
-                    {/* ── Marketing Platform (WO-OVERHAUL-15) — MODULE_MARKETING gated ── */}
+                    {/* ── Marketing Platform (WO-OVERHAUL-15 + V2-HUBS-08) — MODULE_MARKETING gated ── */}
                     <Route path="marketing" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessMarketingDashboard /></ModuleRoute>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BizMarketingDashboard /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/campaigns" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BizCampaignList /></ModuleRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="marketing/campaigns/new" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BizCampaignBuilder /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="marketing/campaigns/:id" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessCampaignDetail /></ModuleRoute>
-                      </ProtectedRoute>
-                    } />
-                    <Route path="marketing/campaigns/new" element={
-                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessCampaignEditor /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="marketing/segments" element={
@@ -808,7 +808,7 @@ function App() {
                     } />
                     <Route path="marketing/templates" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <ModuleRoute moduleKey="MODULE_MARKETING"><BusinessContentTemplates /></ModuleRoute>
+                        <ModuleRoute moduleKey="MODULE_MARKETING"><BizMarketingTemplates /></ModuleRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="marketing/analytics" element={
@@ -980,27 +980,6 @@ function App() {
                       </ProtectedRoute>
                     } />
 
-                    {/* ── Marketing Hub (V2-HUBS-08) ── */}
-                    <Route path="marketing-hub" element={
-                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <BizMarketingDashboard />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="marketing-hub/campaigns" element={
-                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <BizCampaignList />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="marketing-hub/campaigns/new" element={
-                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <BizCampaignBuilder />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="marketing-hub/templates" element={
-                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
-                        <BizMarketingTemplates />
-                      </ProtectedRoute>
-                    } />
                   </Route>
 
                   {/* ── Brand Portal ─────────────────────────────── */}

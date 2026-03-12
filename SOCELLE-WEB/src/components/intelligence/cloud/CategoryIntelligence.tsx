@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../../lib/supabase';
 import type { IntelligenceSignal } from '../../../lib/intelligence/types';
+import { useIntelligence } from '../../../lib/intelligence/useIntelligence';
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -60,23 +61,9 @@ export function CategoryIntelligence({
 }: CategoryIntelligenceProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Fetch category-specific signals from Supabase when a category is selected
-  const { data: categorySignals, isLoading: categoryLoading } = useQuery({
-    queryKey: ['category_signals', selectedCategory],
-    queryFn: async () => {
-      if (!selectedCategory) return [];
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('*')
-        .eq('active', true)
-        .eq('is_duplicate', false)
-        .eq('category', selectedCategory)
-        .order('magnitude', { ascending: false });
-
-      if (error) throw new Error(error.message);
-      return (data ?? []) as IntelligenceSignal[];
-    },
-    enabled: isSupabaseConfigured && !!selectedCategory,
+  // Fetch category-specific signals from useIntelligence hook
+  const { signals: categorySignals, loading: categoryLoading } = useIntelligence({
+    category: selectedCategory || undefined
   });
 
   // Derive categories from prop signals

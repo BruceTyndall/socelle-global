@@ -3,8 +3,8 @@
 // TanStack Query v5 | Pearl Mineral V2 | LIVE badge | no spinners.
 
 import { useQuery } from '@tanstack/react-query';
-import { TrendingUp, TrendingDown, Minus, RefreshCw } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '../../../lib/supabase';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useIntelligence } from '../../../lib/intelligence/useIntelligence';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -87,34 +87,9 @@ export function EmbedIntelligenceBlock({ block }: EmbedIntelligenceBlockProps) {
   const { vertical, limit = 3, show_confidence = false } = block.properties;
   const clampedLimit = Math.max(1, Math.min(5, limit));
 
-  const {
-    data: signals = [],
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ['embed_intelligence_block', block.id, vertical, clampedLimit],
-    queryFn: async (): Promise<MarketSignalRow[]> => {
-      let query = supabase
-        .from('market_signals')
-        .select('id, title, category, signal_type, direction, confidence_score, updated_at')
-        .eq('status', 'active')
-        .order('updated_at', { ascending: false })
-        .limit(clampedLimit);
-
-      if (vertical) {
-        query = query.or(`vertical.eq.${vertical},vertical.eq.multi`);
-      }
-
-      const { data, error: dbErr } = await query;
-      if (dbErr) {
-        if (dbErr.code === '42P01') return [];
-        throw new Error(dbErr.message);
-      }
-      return (data ?? []) as MarketSignalRow[];
-    },
-    enabled: isSupabaseConfigured,
-    staleTime: 60_000, // 1 min — signals are near-realtime but not hyper-fresh
+  const { signals, loading: isLoading } = useIntelligence({
+    limit: clampedLimit,
+    vertical: vertical as any,
   });
 
   // ── Loading ────────────────────────────────────────────────────────
@@ -124,24 +99,6 @@ export function EmbedIntelligenceBlock({ block }: EmbedIntelligenceBlockProps) {
         {Array.from({ length: clampedLimit }).map((_, i) => (
           <SignalSkeleton key={i} />
         ))}
-      </div>
-    );
-  }
-
-  // ── Error ──────────────────────────────────────────────────────────
-  if (error) {
-    return (
-      <div className="rounded-lg border border-graphite/10 bg-white/60 px-5 py-6 text-center">
-        <p className="text-sm text-graphite/60 mb-3">
-          Signal data temporarily unavailable.
-        </p>
-        <button
-          onClick={() => refetch()}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:text-accent-hover transition-colors"
-        >
-          <RefreshCw className="w-3 h-3" />
-          Retry
-        </button>
       </div>
     );
   }
@@ -190,7 +147,7 @@ export function EmbedIntelligenceBlock({ block }: EmbedIntelligenceBlockProps) {
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
-            {show_confidence && signal.confidence_score !== null && (
+            {show_confidence && signal.confidence_score != null && (
               <span className="text-[10px] text-graphite/50">
                 Confidence: {Math.round(signal.confidence_score * 100)}%
               </span>

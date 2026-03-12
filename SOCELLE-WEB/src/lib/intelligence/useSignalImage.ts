@@ -9,6 +9,7 @@
 //   signal.image_url (direct) or fallback to images.vertical + domain lookup.
 
 import type { IntelligenceSignal, SignalType } from './types';
+import { normalizeMediaUrl } from './normalizeMediaUrl';
 
 export interface SignalImage {
   url: string;
@@ -137,12 +138,15 @@ const DEFAULT_POOL: readonly SignalImage[] = [
  * Returns the best available image for a signal, with deterministic pool
  * variation so signals of the same type show different images.
  *
- * Priority: signal.image_url → type pool (hashed) → vertical pool (hashed) → default pool (hashed).
+ * Priority: hero_image_url → image_urls[0] → image_url → type pool (hashed)
+ * → vertical pool (hashed) → default pool (hashed).
  */
 export function getSignalImage(signal: IntelligenceSignal): SignalImage {
-  // Direct image_url from DB (set when IMAGE-INTEL-01 wires image_id)
-  if (signal.image_url) {
-    return { url: signal.image_url, alt: signal.title };
+  const directImage = normalizeMediaUrl(signal.hero_image_url)
+    ?? normalizeMediaUrl(signal.image_urls?.[0])
+    ?? normalizeMediaUrl(signal.image_url);
+  if (directImage) {
+    return { url: directImage, alt: signal.title };
   }
   // signal_type pool — deterministic by signal ID
   const typePool = TYPE_POOL[signal.signal_type];

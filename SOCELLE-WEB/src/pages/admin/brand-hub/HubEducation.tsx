@@ -10,6 +10,7 @@ import {
   Search,
 } from 'lucide-react';
 import { Badge, StatCard, Card, CardHeader, CardTitle, Button, Input } from '../../../components/ui';
+import { EmptyState } from '../../../components/ui/EmptyState';
 import { getBrandEducation } from '../../../lib/intelligence/adminIntelligence';
 
 const TYPE_ICONS: Record<string, typeof GraduationCap> = {
@@ -99,10 +100,12 @@ export default function HubEducation() {
       {/* Content List */}
       <div className="bg-white rounded-xl border border-accent-soft divide-y divide-accent-soft/50">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <GraduationCap className="w-10 h-10 text-accent-soft mb-3" />
-            <p className="text-sm font-sans text-graphite/60">No education content matches your filters.</p>
-          </div>
+          <EmptyState 
+            icon={GraduationCap}
+            title="No education content found"
+            description="No education content matches your filters."
+            {...(typeFilter !== 'all' || search ? { action: { label: "Clear Filters", onClick: () => { setSearch(''); setTypeFilter('all'); } } } : {})}
+          />
         ) : (
           filtered.map((item, idx) => {
             const Icon = TYPE_ICONS[item.type] || FileText;

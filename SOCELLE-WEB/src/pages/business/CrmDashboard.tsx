@@ -11,8 +11,10 @@ import { supabase } from '../../lib/supabase';
 import { useOverdueTasks } from '../../lib/useCrmTasks';
 import {
   CrossHubActionDispatcher,
+  CrossHubActionDispatcher,
   type SignalAction,
 } from '../../components/CrossHubActionDispatcher';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 // ── CRM Dashboard — "Today View" (V2-HUBS-06) ─────────────────────────
 // Data source: crm_contacts, crm_tasks, appointments, market_signals (LIVE)
@@ -67,7 +69,6 @@ interface DashboardData {
   overdueClients: { id: string; first_name: string; last_name: string; last_visit_date: string | null; days_since: number; churn_risk_score: number }[];
   expiringSubscriptions: number;
   milestoneClients: { id: string; first_name: string; last_name: string; total_visits: number }[];
-  topSignals: { id: string; title: string; magnitude: number; direction: string; category: string | null }[];
   recentOrders: { id: string; order_number: string; status: string; total_cents: number; created_at: string }[];
 }
 
@@ -78,6 +79,9 @@ export default function CrmDashboard() {
   const navigate = useNavigate();
   const businessId = profile?.business_id;
   const { tasks: overdueTasks } = useOverdueTasks(businessId);
+  
+  const { signals: allSignals } = useIntelligence({ limit: 3 });
+  const topSignals = useMemo(() => allSignals.slice(0, 3), [allSignals]);
 
   const signalTaskMutation = useMutation({
     mutationFn: async (action: SignalAction) => {
@@ -154,7 +158,6 @@ export default function CrmDashboard() {
         upcomingRes,
         overdueClientsRes,
         milestoneRes,
-        signalsRes,
         revenueRes,
         recentOrdersRes,
       ] = await Promise.all([
@@ -187,10 +190,6 @@ export default function CrmDashboard() {
           .eq('business_id', businessId!)
           .in('total_visits', [5, 10, 15, 20, 25, 50, 100])
           .limit(5),
-        // Top signals by magnitude
-        supabase.from('market_signals').select('id, title, magnitude, direction, category')
-          .order('magnitude', { ascending: false })
-          .limit(3),
         // Revenue sum
         supabase.from('crm_contacts').select('total_spend')
           .eq('business_id', businessId!),
@@ -259,7 +258,6 @@ export default function CrmDashboard() {
         overdueClients: mappedOverdue,
         expiringSubscriptions: 0,
         milestoneClients: (milestoneRes.data ?? []) as DashboardData['milestoneClients'],
-        topSignals: (signalsRes.data ?? []) as DashboardData['topSignals'],
         recentOrders,
       };
     },
@@ -582,7 +580,7 @@ export default function CrmDashboard() {
       </div>
 
       {/* ── Relevant Signals ─────────────────────────────────────────────── */}
-      {stats.topSignals.length > 0 && (
+      {topSignals.length > 0 && (
         <div className="bg-white rounded-xl border border-accent/20 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-graphite uppercase tracking-wider flex items-center gap-2">
@@ -591,7 +589,7 @@ export default function CrmDashboard() {
             <Link to="/portal/intelligence" className="text-xs text-accent hover:text-accent-hover font-medium">View All</Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {stats.topSignals.map(signal => (
+            {topSignals.map(signal => (
               <div key={signal.id} className="p-3 rounded-lg bg-accent-soft/50 border border-accent/10">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="flex items-center gap-2 min-w-0">

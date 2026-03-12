@@ -51,6 +51,8 @@ interface UseIntelligenceOptions {
    * When provided (not 'all'), only signals matching this content_segment are returned.
    */
   contentSegment?: string;
+  /** Optional generic category string filter. */
+  category?: string;
 }
 
 interface UseIntelligenceReturn {
@@ -227,7 +229,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   const effectiveTierMin: 'free' | 'paid' = options?.tierOverride ?? (subscriptionTier === 'free' ? 'free' : 'paid');
 
   const { data: rawSignals = [], isLoading: loading } = useQuery({
-    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null, options?.contentSegment ?? null],
+    queryKey: ['market_signals', effectiveTierMin, options?.vertical, options?.limit, options?.timeline ?? false, options?.signalTypes ?? null, options?.contentSegment ?? null, options?.category ?? null],
     queryFn: async () => {
       // Helper function to build the base query without vertical filters
       const buildBaseQuery = () => {
@@ -264,6 +266,11 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         // INTEL-PREMIUM-01: Content segment filter
         if (options?.contentSegment && options.contentSegment !== 'all') {
           q = q.eq('content_segment', options.contentSegment);
+        }
+
+        // Category filter
+        if (options?.category) {
+          q = q.eq('category', options.category);
         }
 
         // MERCH-10: Timeline eligibility — stricter filter for "What Changed" feed

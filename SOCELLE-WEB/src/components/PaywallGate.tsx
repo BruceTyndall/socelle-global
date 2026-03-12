@@ -287,7 +287,7 @@ function UpgradeCard({ reason, gapCount, gMax, onUpgrade }: UpgradeCardProps) {
       </Button>
 
       <Link
-        to="/pricing"
+        to="/plans"
         className="block text-center text-xs font-medium text-accent hover:underline mt-3"
       >
         Compare all plans

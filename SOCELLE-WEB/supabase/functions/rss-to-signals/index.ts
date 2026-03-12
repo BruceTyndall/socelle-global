@@ -4,7 +4,7 @@
  *
  * POST /functions/v1/rss-to-signals
  *   Body (optional JSON): { "limit": <n> }  — max items per run (default 100, max 500)
- *   GET also accepted (no body needed, uses defaults).
+ *   Requires service-role key or admin JWT. Anonymous requests are rejected.
  *
  * Promotion threshold: rss_items.confidence_score >= 0.50
  *
@@ -87,6 +87,61 @@ async function enforceEdgeFunctionEnabled(
   }
 }
 
+async function verifyAdminOrServiceRole(
+  req: Request,
+  supabaseUrl: string,
+  serviceRoleKey: string,
+): Promise<{ authorized: boolean; reason?: string }> {
+  const authHeader = req.headers.get('Authorization') ?? '';
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+
+  if (!token) {
+    return { authorized: false, reason: 'Missing Authorization header' };
+  }
+
+  try {
+    const serviceProbe = createClient(supabaseUrl, token, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { error: serviceError } = await serviceProbe.auth.admin.listUsers({ page: 1, perPage: 1 });
+    if (!serviceError) {
+      return { authorized: true };
+    }
+  } catch {
+    // Fall through to user JWT validation.
+  }
+
+  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+
+  const {
+    data: { user },
+    error: userError,
+  } = await adminClient.auth.getUser(token);
+
+  if (userError || !user) {
+    return { authorized: false, reason: 'Invalid or expired token' };
+  }
+
+  const { data: profile, error: profileError } = await adminClient
+    .from('user_profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (profileError || !profile) {
+    return { authorized: false, reason: 'Profile not found' };
+  }
+
+  if (!['admin', 'super_admin'].includes(profile.role)) {
+    return { authorized: false, reason: 'Admin access required' };
+  }
+
+  return { authorized: true };
+}
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const CORS_HEADERS = {
@@ -105,7 +160,6 @@ const CONFIDENCE_THRESHOLD = 0.50;
 // Batch cap per invocation
 const MAX_LIMIT = 500;
 const DEFAULT_LIMIT = 100;
-
 // Categories are dynamically mapped inside the process loop.
 // This prevents naive starvation on complex RSS aggregates.
 
@@ -177,6 +231,17 @@ function deriveVerticalFromTopic(topic: string, defaultVertical?: string | null)
       return 'beauty_brand';
     default:
       return 'multi';
+  }
+}
+
+function deriveTierMinFromCategory(sourceCategory: string): 'free' | 'paid' {
+  switch (sourceCategory) {
+    case 'academic':
+    case 'market_data':
+    case 'association':
+      return 'paid';
+    default:
+      return 'free';
   }
 }
 
@@ -549,8 +614,13 @@ function sanitizeHtml(html: string | null | undefined): string | null {
   if (!html) return null;
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
     .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    .replace(/\s+on[a-z]+=(["'])(.*?)\1/gi, '');
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^>]*>/gi, '')
+    .replace(/\s+on[a-z]+=(["'])(.*?)\1/gi, '')
+    .replace(/\s+(href|src)=(["'])javascript:[^"']*\2/gi, '')
+    .replace(/\s+style=(["'])(.*?)\1/gi, '');
 }
 
 /**
@@ -630,7 +700,7 @@ serve(async (req) => {
     return new Response('ok', { headers: CORS_HEADERS });
   }
 
-  if (req.method !== 'POST' && req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
       headers: JSON_HEADERS,
@@ -649,15 +719,21 @@ serve(async (req) => {
 
   // Parse optional limit from POST body
   let limit = DEFAULT_LIMIT;
-  if (req.method === 'POST') {
-    try {
-      const body = await req.json().catch(() => ({}));
-      if (typeof body.limit === 'number') {
-        limit = Math.min(Math.max(body.limit, 1), MAX_LIMIT);
-      }
-    } catch {
-      // Ignore parse errors — use default limit
+  try {
+    const body = await req.json().catch(() => ({}));
+    if (typeof body.limit === 'number') {
+      limit = Math.min(Math.max(body.limit, 1), MAX_LIMIT);
     }
+  } catch {
+    // Ignore parse errors — use default limit
+  }
+
+  const auth = await verifyAdminOrServiceRole(req, supabaseUrl, serviceKey);
+  if (!auth.authorized) {
+    return new Response(JSON.stringify({ error: auth.reason ?? 'Unauthorized' }), {
+      status: 401,
+      headers: JSON_HEADERS,
+    });
   }
 
   const supabase = createClient(supabaseUrl, serviceKey, {
@@ -724,7 +800,7 @@ serve(async (req) => {
       // INTEL-MEDSPA-01: derive vertical, tier_min, topic, impact_score
       const topic          = classifyTopic(item.title, item.description ?? '');
       const signalVertical = deriveVerticalFromTopic(topic, null);
-      const signalTierMin  = 'paid'; // Fallback logic is standard if not dictated
+      const signalTierMin  = deriveTierMinFromCategory(sourceCategory);
       const impactScore    = computeImpactScore(sourceCategory, item.published_at, topic);
 
       return {

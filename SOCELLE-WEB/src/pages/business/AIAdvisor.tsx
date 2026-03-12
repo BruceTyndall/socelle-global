@@ -10,6 +10,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { useQuery } from '@tanstack/react-query';
 import UpgradeGate from '../../components/UpgradeGate';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 /* ── Action icon mapping ──────────────────────────────── */
 function actionIcon(type: ChatAction['type']) {
@@ -131,54 +132,31 @@ export default function AIAdvisor() {
     enabled: isSupabaseConfigured && !!profile?.business_id,
   });
 
-  const { data: recentSignals = [], isLoading: signalsLoading } = useQuery({
-    queryKey: ['advisor-signals', businessLocation.city, businessLocation.state],
-    queryFn: async (): Promise<ContextSignal[]> => {
-      if (!isSupabaseConfigured) return [];
+  const { signals: allSignals, loading: signalsLoading } = useIntelligence({ limit: 50 });
 
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('id,title,direction,updated_at,source,source_name,region,confidence_score')
-        .eq('active', true)
-        .eq('is_duplicate', false)
-        .order('updated_at', { ascending: false })
-        .limit(36);
+  const recentSignals = useMemo(() => {
+    if (allSignals.length === 0) return [];
+    
+    const cityNeedle = businessLocation.city?.toLowerCase() ?? '';
+    const stateNeedle = businessLocation.state?.toLowerCase() ?? '';
 
-      if (error || !data || data.length === 0) return [];
+    const regional = allSignals.filter((row) => {
+      const haystack = (row.region ?? '').toLowerCase();
+      if (!haystack) return false;
+      return (cityNeedle && haystack.includes(cityNeedle)) || (stateNeedle && haystack.includes(stateNeedle));
+    });
 
-      const cityNeedle = businessLocation.city?.toLowerCase() ?? '';
-      const stateNeedle = businessLocation.state?.toLowerCase() ?? '';
-
-      const rows = data as Array<{
-        id: string;
-        title: string;
-        direction: 'up' | 'down' | 'stable' | null;
-        updated_at: string;
-        source: string | null;
-        source_name: string | null;
-        region: string | null;
-        confidence_score: number | null;
-      }>;
-
-      const regional = rows.filter((row) => {
-        const haystack = (row.region ?? '').toLowerCase();
-        if (!haystack) return false;
-        return (cityNeedle && haystack.includes(cityNeedle)) || (stateNeedle && haystack.includes(stateNeedle));
-      });
-
-      return (regional.length > 0 ? regional : rows)
-        .slice(0, 3)
-        .map((row) => ({
-          id: row.id,
-          title: row.title,
-          direction: row.direction,
-          source: row.source_name ?? row.source ?? 'Unknown source',
-          confidenceScore: row.confidence_score,
-          updatedAt: row.updated_at,
-        }));
-    },
-    enabled: isSupabaseConfigured,
-  });
+    return (regional.length > 0 ? regional : allSignals)
+      .slice(0, 3)
+      .map((row) => ({
+        id: row.id,
+        title: row.title,
+        direction: row.direction ?? 'stable',
+        source: row.source_name ?? 'Unknown source',
+        confidenceScore: row.confidence_score,
+        updatedAt: row.published_at ?? new Date().toISOString(),
+      }));
+  }, [allSignals, businessLocation]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;

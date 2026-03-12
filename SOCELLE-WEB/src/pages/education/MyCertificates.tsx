@@ -3,7 +3,7 @@
  * Lists user's earned certificates with download and share
  * Data: certificates table (LIVE)
  */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
   Award,
@@ -13,10 +13,13 @@ import {
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { ErrorState } from '../../components/ui/ErrorState';
 import { useCertificates } from '../../lib/education/useCertificates';
 
 export default function MyCertificates() {
   const { certificates, loading, error, isLive } = useCertificates();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-mn-bg font-sans">
@@ -71,9 +74,10 @@ export default function MyCertificates() {
               ))}
             </div>
           ) : error ? (
-            <div className="text-center py-20">
-              <p className="text-graphite/60 text-sm">{error}</p>
-            </div>
+            <ErrorState 
+              title="Failed to load certificates"
+              message={typeof error === 'string' ? error : (error as any).message || 'An error occurred'}
+            />
           ) : certificates.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {certificates.map(cert => (
@@ -126,16 +130,12 @@ export default function MyCertificates() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <GraduationCap className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="text-lg font-semibold text-graphite mb-2">No certificates yet</h3>
-              <p className="text-graphite/60 max-w-md mx-auto mb-6">Complete courses to earn certificates and CE credits.</p>
-              <Link to="/education/courses" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
-                Browse Courses →
-              </Link>
-            </div>
+            <EmptyState 
+              icon={GraduationCap}
+              title="No certificates yet"
+              description="Complete courses to earn certificates and CE credits."
+              action={{ label: "Browse Courses", onClick: () => navigate('/education/courses') }}
+            />
           )}
         </div>
       </section>

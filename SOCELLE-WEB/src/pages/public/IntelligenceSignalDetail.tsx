@@ -19,6 +19,7 @@ import {
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { supabase } from '../../lib/supabase';
+import { sanitizeArticleHtml } from '../../lib/intelligence/sanitizeArticleHtml';
 import { getSignalImage } from '../../lib/intelligence/useSignalImage';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
 import { buildCanonical } from '../../lib/seo';
@@ -127,6 +128,14 @@ async function fetchSignal(id: string): Promise<IntelligenceSignal> {
     vertical:         data.vertical ?? undefined,
     topic:            data.topic ?? undefined,
     tier_min:         data.tier_min ?? undefined,
+    article_body:     data.article_body ?? undefined,
+    article_html:     data.article_html ?? undefined,
+    hero_image_url:   data.hero_image_url ?? undefined,
+    image_urls:       data.image_urls ?? undefined,
+    content_segment:  data.content_segment ?? undefined,
+    reading_time_minutes: data.reading_time_minutes ?? undefined,
+    author:           data.author ?? undefined,
+    published_at:     data.published_at ?? undefined,
   };
 }
 
@@ -150,6 +159,7 @@ export default function IntelligenceSignalDetail() {
   });
 
   const image = signal ? getSignalImage(signal) : null;
+  const safeArticleHtml = signal ? sanitizeArticleHtml(signal.article_html) : null;
 
   return (
     <>
@@ -259,10 +269,22 @@ export default function IntelligenceSignalDetail() {
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 text-[12px] text-graphite/35 font-sans">
                 <div className="flex items-center gap-1.5">
                   <Clock className="w-3 h-3" aria-hidden />
-                  <span>{timeAgo(signal.updated_at)}</span>
+                  <span>{timeAgo(signal.published_at ?? signal.updated_at)}</span>
                 </div>
                 <span className="text-graphite/15">·</span>
-                <span>{formatDate(signal.updated_at)}</span>
+                <span>{formatDate(signal.published_at ?? signal.updated_at)}</span>
+                {signal.author && (
+                  <>
+                    <span className="text-graphite/15">·</span>
+                    <span>{signal.author}</span>
+                  </>
+                )}
+                {signal.reading_time_minutes && signal.reading_time_minutes > 0 && (
+                  <>
+                    <span className="text-graphite/15">·</span>
+                    <span>{signal.reading_time_minutes} min read</span>
+                  </>
+                )}
                 {signal.vertical && (
                   <>
                     <span className="text-graphite/15">·</span>
@@ -276,6 +298,44 @@ export default function IntelligenceSignalDetail() {
                   </>
                 )}
               </div>
+
+              {(safeArticleHtml || signal.article_body || signal.source_url) && (
+                <section className="mb-8 rounded-xl border border-graphite/8 bg-white/70 p-5">
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-graphite/30">
+                      Readable Content
+                    </span>
+                    {signal.content_segment && (
+                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                        {signal.content_segment.replace(/_/g, ' ')}
+                      </span>
+                    )}
+                  </div>
+
+                  {safeArticleHtml ? (
+                    <div
+                      className="space-y-3 text-sm leading-7 text-graphite/70 [&_a]:text-accent [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-accent/20 [&_blockquote]:pl-4 [&_h1]:text-xl [&_h1]:font-semibold [&_h2]:text-lg [&_h2]:font-semibold [&_h3]:font-semibold [&_img]:rounded-lg [&_img]:w-full [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-graphite/[0.04] [&_pre]:p-3 [&_ul]:list-disc [&_ul]:pl-5"
+                      dangerouslySetInnerHTML={{ __html: safeArticleHtml }}
+                    />
+                  ) : signal.article_body ? (
+                    <div className="space-y-3 text-sm leading-7 text-graphite/70">
+                      {signal.article_body.split(/\n+/).map((paragraph, index) => (
+                        paragraph.trim() ? <p key={`${signal.id}-${index}`}>{paragraph.trim()}</p> : null
+                      ))}
+                    </div>
+                  ) : (
+                    <a
+                      href={signal.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+                    >
+                      Read on the original source
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden />
+                    </a>
+                  )}
+                </section>
+              )}
 
               {/* Confidence + impact */}
               {(signal.confidence_score != null || signal.impact_score != null) && (

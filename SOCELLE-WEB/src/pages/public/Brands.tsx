@@ -41,6 +41,7 @@ import {
 import type { BrandIntelFilter } from '../../lib/intelligence/brandIntelligence';
 import { useActionableSignals } from '../../lib/intelligence/useActionableSignals';
 import { CrossHubActionDispatcher } from '../../components/CrossHubActionDispatcher';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -178,44 +179,7 @@ function useBrands() {
   });
 }
 
-function useBrandMentions(brandNames: string[]) {
-  return useQuery<BrandMention[], Error>({
-    queryKey: ['brand-mentions', brandNames.length],
-    queryFn: async () => {
-      if (!isSupabaseConfigured || brandNames.length === 0) return [];
 
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('title, description')
-        .eq('active', true);
-
-      if (error) throw error;
-      if (!data || data.length === 0) return [];
-
-      // Count mentions of each brand name in signal titles/descriptions
-      const mentionMap = new Map<string, number>();
-      for (const name of brandNames) {
-        mentionMap.set(name, 0);
-      }
-
-      for (const signal of data) {
-        const text = `${signal.title} ${signal.description}`.toLowerCase();
-        for (const name of brandNames) {
-          if (text.includes(name.toLowerCase())) {
-            mentionMap.set(name, (mentionMap.get(name) ?? 0) + 1);
-          }
-        }
-      }
-
-      return Array.from(mentionMap.entries())
-        .map(([brandName, count]) => ({ brandName, count }))
-        .filter((m) => m.count > 0)
-        .sort((a, b) => b.count - a.count);
-    },
-    enabled: brandNames.length > 0,
-    staleTime: 10 * 60 * 1000,
-  });
-}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -238,7 +202,33 @@ export default function Brands() {
   const { data: brands = [], isLoading: loading, error: queryError, refetch } = useBrands();
 
   const brandNames = useMemo(() => brands.map((b) => b.name), [brands]);
-  const { data: brandMentions = [], isLoading: mentionsLoading } = useBrandMentions(brandNames);
+  
+  const { signals: allSignals, loading: signalsLoad } = useIntelligence({ limit: 1000 });
+  
+  const brandMentions = useMemo(() => {
+    if (allSignals.length === 0 || brandNames.length === 0) return [];
+    
+    const mentionMap = new Map<string, number>();
+    for (const name of brandNames) {
+      mentionMap.set(name, 0);
+    }
+
+    for (const signal of allSignals) {
+      const text = `${signal.title} ${signal.description}`.toLowerCase();
+      for (const name of brandNames) {
+        if (text.includes(name.toLowerCase())) {
+          mentionMap.set(name, (mentionMap.get(name) ?? 0) + 1);
+        }
+      }
+    }
+
+    return Array.from(mentionMap.entries())
+      .map(([brandName, count]) => ({ brandName, count }))
+      .filter((m) => m.count > 0)
+      .sort((a, b) => b.count - a.count);
+  }, [allSignals, brandNames]);
+
+  const mentionsLoading = signalsLoad;
 
   const mentionsByName = useMemo(() => {
     const map = new Map<string, number>();

@@ -155,7 +155,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | CRM-POWER-02 | Rebooking CTA not wired to churn_risk_score. | OPEN | — |
 | SALES-POWER-01 | Signal-influenced deals not flagged in pipeline UI or RevenueAnalytics. | OPEN | — |
 | MKT-POWER-01 | No journey from BrandIntelligenceHub to campaign creation. | OPEN | — |
-| EDU-POWER-01 | Missing error/loading/empty skeletons. CE expiry warnings absent. | OPEN | — |
+| EDU-POWER-01 | Missing error/loading/empty skeletons. CE expiry warnings absent. | COMPLETE | `verify_EDU-POWER-01_2026-03-12T01-57-00Z` |
 | COMMERCE-POWER-01 | affiliate-link-wrapper needs audit. FTC badges not DB-driven. | OPEN | — |
 | ADMIN-POWER-01 | Dashboard fractured across separate pages. No unified telemetry view. | OPEN | — |
 | CMS-POWER-01 | No automated feeds-to-drafts pipeline. | OPEN | — |
@@ -166,8 +166,8 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 
 | WO ID | Hub | Description | Status | Priority | Block |
 |-------|-----|-------------|--------|----------|-------|
-| DEBT-MONETIZATION-01 | Platform | Close ai-shopping-assistant credit gate bypass — route through ai-orchestrator | OPEN | P0 | A |
-| ROUTE-CLEANUP-01 | Marketing/Site | Consolidate /portal/marketing + /portal/marketing-hub. Single /plans pricing. Kill orphan routes | OPEN | P0 | A |
+| DEBT-MONETIZATION-01 | Platform | Close ai-shopping-assistant credit gate bypass — route through ai-orchestrator | COMPLETE | P0 | A |
+| ROUTE-CLEANUP-01 | Marketing/Site | Consolidate /portal/marketing + /portal/marketing-hub. Single /plans pricing. Kill orphan routes | COMPLETE | P0 | A |
 | CRM-CONSENT-01 | CRM | 1-click consent audit modal with agreed_at + source IP in timeline | OPEN | P1 | A |
 | EDU-CE-EXPIRY-01 | Education | CE credits expiration warnings on Education dashboard | OPEN | P1 | A |
 | COMMERCE-PROCURE-01 | Commerce | Intelligence-informed procurement alerts (market demand reorder logic) | OPEN | P1 | A |
@@ -224,7 +224,7 @@ Previously: INTEL-FLOW-01 COMPLETE — ApiStatusRibbon (compact pill + detailed 
 | CMS-WO-09 | WordPress-grade blog (scheduled_at, editorial calendar, OG/Twitter cards, schema.org Article, newsletter export, auto-sitemap) | Team 2 | COMPLETE | CMS-WO-08 | `docs/qa/verify_CMS-WO-09_2026-03-11.json` | — | — |
 | CMS-WO-10 | content_placements table + Merchandising Console (owner changes any placement without code deploy) | Team 2 | COMPLETE | CMS-WO-07 | `docs/qa/verify_CMS-WO-10.json` | — | — |
 | CMS-WO-11 | Daily Brief + Weekly Market Memo edge fns + pg_cron → story_drafts (not auto-publish) | Team 2 | OPEN | CMS-WO-07, CMS-WO-10 | `docs/qa/verify_CMS-WO-11.json` | — | — |
-| INTEL-HUB-17 | Merchandising & Dispersion Overhaul: Fix data_feeds and api_registry mapping to market_signals. Update Edge Functions (feed-orchestrator, rss-to-signals, refresh-live-data) to ensure API & RSS dispersion routes correctly to tier_min, topic, and vertical. Add UI guards for edge-case signal types on Intelligence Hub. | Unassigned | READY FOR REVIEW | none | `docs/qa/verify_INTEL-HUB-17.json` | Runtime verified 2026-03-12: auth path restored, live inventory snapshot 417 rows @ 00:37Z | edge+ui+runtime |
+| INTEL-HUB-17 | Merchandising & Dispersion Overhaul: Fix data_feeds and api_registry mapping to market_signals. Update Edge Functions (feed-orchestrator, rss-to-signals, refresh-live-data) to ensure API & RSS dispersion routes correctly to tier_min, topic, and vertical. Add UI guards for edge-case signal types on Intelligence Hub. | Unassigned | READY FOR REVIEW | none | `docs/qa/verify_INTEL-HUB-17.json` | Runtime verified 2026-03-12: auth root cause fixed, anonymous feed invokes now 401, live inventory snapshot 417 rows @ 00:37Z, browser proof saved (`portal_intelligence_overview_live.png`, `portal_intelligence_detail_live.png`) | edge+ui+runtime |
 
 | CMS-WO-12 | Layout Builder + Block Placement Editing (owner edits any block/layout/grid placement without code deploy) | Team 2 | COMPLETE | CMS-WO-10 | `docs/qa/verify_CMS-WO-12.json` | — | — |
 | DATA-PRESS-PROOF | Proof pack: 5 source layers, topic cap, dup rate, 30 signal sample, MERCH 1–12 | Team 2 | OPEN | NEWSAPI-INGEST-01, CMS-WO-07 | `docs/qa/verify_DATA_PRESS_VALUE.json` | — | — |

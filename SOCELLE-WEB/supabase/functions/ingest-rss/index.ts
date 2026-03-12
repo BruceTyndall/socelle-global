@@ -14,6 +14,7 @@
  *   Body (optional):
  *     { "batch_size": 10 }              — sources per run (default 10)
  *     { "source_ids": ["uuid", ...] }   — target specific sources
+ *   Requires service-role key or admin JWT. Anonymous requests are rejected.
  *
  * Deployment:
  *   supabase functions deploy ingest-rss
@@ -23,10 +24,10 @@
  *   SUPABASE_SERVICE_ROLE_KEY
  *
  * Scheduling:
- *   pg_cron every 5 minutes (rotating batches of 10)
- *   select cron.schedule('ingest-rss', '* /5 * * * *',  -- note: remove space before /5
+ *   pg_cron using service-role Authorization headers
+ *   select cron.schedule('ingest-rss', '0,30 * * * *',
  *     $$select net.http_post(url:='<SUPABASE_URL>/functions/v1/ingest-rss',
- *       headers:='{"Authorization":"Bearer <ANON_KEY>"}')$$);
+ *       headers:='{"Authorization":"Bearer <SERVICE_ROLE_KEY>"}')$$);
  *
  * W10-08 — SOCELLE GLOBAL RSS Ingestion Pipeline
  * Owner: Editorial/News Agent (Edge Fn) + Backend Agent (migration)
@@ -34,6 +35,61 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { enforceEdgeFunctionEnabled } from '../_shared/edgeControl.ts';
+
+async function verifyAdminOrServiceRole(
+  req: Request,
+  supabaseUrl: string,
+  serviceRoleKey: string,
+): Promise<{ authorized: boolean; reason?: string }> {
+  const authHeader = req.headers.get('Authorization') ?? '';
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+
+  if (!token) {
+    return { authorized: false, reason: 'Missing Authorization header' };
+  }
+
+  try {
+    const serviceProbe = createClient(supabaseUrl, token, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { error: serviceError } = await serviceProbe.auth.admin.listUsers({ page: 1, perPage: 1 });
+    if (!serviceError) {
+      return { authorized: true };
+    }
+  } catch {
+    // Fall through to user JWT validation.
+  }
+
+  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+
+  const {
+    data: { user },
+    error: userError,
+  } = await adminClient.auth.getUser(token);
+
+  if (userError || !user) {
+    return { authorized: false, reason: 'Invalid or expired token' };
+  }
+
+  const { data: profile, error: profileError } = await adminClient
+    .from('user_profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (profileError || !profile) {
+    return { authorized: false, reason: 'Profile not found' };
+  }
+
+  if (!['admin', 'super_admin'].includes(profile.role)) {
+    return { authorized: false, reason: 'Admin access required' };
+  }
+
+  return { authorized: true };
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -43,6 +99,8 @@ const CORS_HEADERS = {
 };
 
 const DEFAULT_BATCH_SIZE = 10;
+const MAX_BATCH_SIZE     = 25;
+const MAX_SOURCE_IDS     = 50;
 const FETCH_TIMEOUT_MS   = 12_000;
 const USER_AGENT         = 'Socelle-Intelligence-Bot/1.0 (https://socelle.com)';
 
@@ -197,148 +255,168 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS });
   }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+    });
+  }
 
-  const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    { auth: { persistSession: false } },
-  );
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
   try {
     // Parse request body
     const body: { batch_size?: number; source_ids?: string[] } =
-      req.method === 'POST' && req.headers.get('content-type')?.includes('application/json')
+      req.headers.get('content-type')?.includes('application/json')
         ? await req.json().catch(() => ({}))
         : {};
-
-    const batchSize = body.batch_size ?? DEFAULT_BATCH_SIZE;
-    const specificIds = body.source_ids;
-
-    // Fetch sources to process
-    let query = supabase
-      .from('rss_sources')
-      .select('id, name, feed_url, verticals, error_count')
-      .eq('status', 'active')
-      .order('last_fetched_at', { ascending: true, nullsFirst: true })
-      .limit(batchSize);
-
-    if (specificIds?.length) {
-      query = query.in('id', specificIds);
+    const auth = await verifyAdminOrServiceRole(req, supabaseUrl, serviceRoleKey);
+    if (!auth.authorized) {
+      return new Response(JSON.stringify({ error: auth.reason ?? 'Unauthorized' }), {
+        status: 401,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      });
     }
 
-    const { data: sources, error: sourcesError } = await query;
-    if (sourcesError) throw new Error(`rss_sources fetch failed: ${sourcesError.message}`);
-    if (!sources?.length) {
-      return new Response(
-        JSON.stringify({ ok: true, message: 'No active sources to process' }),
-        { headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } },
-      );
-    }
-
-    const results: SourceResult[] = [];
-
-    for (const source of sources as RssSource[]) {
-      const result: SourceResult = {
-        source_id: source.id,
-        name: source.name,
-        fetched: 0,
-        new_items: 0,
-      };
-
-      try {
-        // Fetch feed
-        const response = await fetch(source.feed_url, {
-          headers: { 'User-Agent': USER_AGENT },
-          signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status} from ${source.feed_url}`);
-
-        const xml = await response.text();
-        const items = parseFeedItems(xml);
-        result.fetched = items.length;
-
-        if (items.length > 0) {
-            const rows = items.map(item => ({
-            source_id: source.id,
-            guid: item.guid,
-            title: item.title,
-            link: item.link,
-            description: item.description,
-            // Truncate to MAX_CONTENT_CHARS per SOCELLE_DATA_PROVENANCE_POLICY.md §6
-            // (excerpt only — full-text reproduction of copyrighted articles is prohibited)
-            content: item.content ? item.content.substring(0, MAX_CONTENT_CHARS) : null,
-            author: item.author,
-            published_at: item.published_at,
-            image_url: item.image_url,
-            vertical_tags: source.verticals,
-            is_new: true,
-            // Provenance per SOCELLE_DATA_PROVENANCE_POLICY.md §2–3
-            confidence_score: RSS_CONFIDENCE_SCORE,
-            attribution_text: item.link
-              ? `${source.name} — ${item.link}`
-              : `${source.name} — ${source.feed_url}`,
-          }));
-
-          // Upsert — UNIQUE(source_id, guid) ensures deduplication
-          const { error: upsertError } = await supabase
-            .from('rss_items')
-            .upsert(rows, { onConflict: 'source_id,guid', ignoreDuplicates: true });
-
-          if (upsertError) throw new Error(`rss_items upsert failed: ${upsertError.message}`);
-
-          // Count net-new items (those that weren't duplicates)
-          // Proxy: query for items from this source created in last 30s
-          const since = new Date(Date.now() - 30_000).toISOString();
-          const { count } = await supabase
-            .from('rss_items')
-            .select('id', { count: 'exact', head: true })
-            .eq('source_id', source.id)
-            .gte('created_at', since);
-
-          result.new_items = count ?? 0;
-        }
-
-        // Update source: clear error count, record fetch timestamp and item count
-        await supabase
-          .from('rss_sources')
-          .update({
-            last_fetched_at: new Date().toISOString(),
-            last_item_count: result.fetched,
-            error_count: 0,
-          })
-          .eq('id', source.id);
-
-      } catch (err) {
-        result.error = err instanceof Error ? err.message : String(err);
-
-        // Increment error count (best-effort, non-blocking)
-        await supabase
-          .from('rss_sources')
-          .update({ error_count: (source.error_count ?? 0) + 1 })
-          .eq('id', source.id)
-          .then(() => null, () => null);
-      }
-
-      results.push(result);
-    }
-
-    const totalFetched  = results.reduce((s, r) => s + r.fetched, 0);
-    const totalNew      = results.reduce((s, r) => s + r.new_items, 0);
-    const errorCount    = results.filter(r => r.error).length;
-
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        sources_processed: sources.length,
-        total_fetched: totalFetched,
-        total_new_items: totalNew,
-        errors: errorCount,
-        results,
-      }),
-      { headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } },
+    const supabase = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      { auth: { persistSession: false } },
     );
 
+    const requestedBatchSize = typeof body.batch_size === 'number'
+      ? Math.trunc(body.batch_size)
+      : DEFAULT_BATCH_SIZE;
+    const batchSize = Math.min(Math.max(requestedBatchSize, 1), MAX_BATCH_SIZE);
+    const specificIds = Array.isArray(body.source_ids)
+      ? body.source_ids.slice(0, MAX_SOURCE_IDS)
+      : undefined;
+
+      // Fetch sources to process
+      let query = supabase
+        .from('rss_sources')
+        .select('id, name, feed_url, verticals, error_count')
+        .eq('status', 'active')
+        .order('last_fetched_at', { ascending: true, nullsFirst: true })
+        .limit(batchSize);
+
+      if (specificIds?.length) {
+        query = query.in('id', specificIds);
+      }
+
+      const { data: sources, error: sourcesError } = await query;
+      if (sourcesError) throw new Error(`rss_sources fetch failed: ${sourcesError.message}`);
+      if (!sources?.length) {
+        return new Response(
+          JSON.stringify({ ok: true, message: 'No active sources to process' }),
+          { headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } },
+        );
+      }
+
+      const results: SourceResult[] = [];
+
+      for (const source of sources as RssSource[]) {
+        const result: SourceResult = {
+          source_id: source.id,
+          name: source.name,
+          fetched: 0,
+          new_items: 0,
+        };
+
+        try {
+          // Fetch feed
+          const response = await fetch(source.feed_url, {
+            headers: { 'User-Agent': USER_AGENT },
+            signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+          });
+
+          if (!response.ok) throw new Error(`HTTP ${response.status} from ${source.feed_url}`);
+
+          const xml = await response.text();
+          const items = parseFeedItems(xml);
+          result.fetched = items.length;
+
+          if (items.length > 0) {
+              const rows = items.map(item => ({
+              source_id: source.id,
+              guid: item.guid,
+              title: item.title,
+              link: item.link,
+              description: item.description,
+              // Truncate to MAX_CONTENT_CHARS per SOCELLE_DATA_PROVENANCE_POLICY.md §6
+              // (excerpt only — full-text reproduction of copyrighted articles is prohibited)
+              content: item.content ? item.content.substring(0, MAX_CONTENT_CHARS) : null,
+              author: item.author,
+              published_at: item.published_at,
+              image_url: item.image_url,
+              vertical_tags: source.verticals,
+              is_new: true,
+              // Provenance per SOCELLE_DATA_PROVENANCE_POLICY.md §2–3
+              confidence_score: RSS_CONFIDENCE_SCORE,
+              attribution_text: item.link
+                ? `${source.name} — ${item.link}`
+                : `${source.name} — ${source.feed_url}`,
+            }));
+
+            // Upsert — UNIQUE(source_id, guid) ensures deduplication
+            const { error: upsertError } = await supabase
+              .from('rss_items')
+              .upsert(rows, { onConflict: 'source_id,guid', ignoreDuplicates: true });
+
+            if (upsertError) throw new Error(`rss_items upsert failed: ${upsertError.message}`);
+
+            // Count net-new items (those that weren't duplicates)
+            // Proxy: query for items from this source created in last 30s
+            const since = new Date(Date.now() - 30_000).toISOString();
+            const { count } = await supabase
+              .from('rss_items')
+              .select('id', { count: 'exact', head: true })
+              .eq('source_id', source.id)
+              .gte('created_at', since);
+
+            result.new_items = count ?? 0;
+          }
+
+          // Update source: clear error count, record fetch timestamp and item count
+          await supabase
+            .from('rss_sources')
+            .update({
+              last_fetched_at: new Date().toISOString(),
+              last_item_count: result.fetched,
+              error_count: 0,
+            })
+            .eq('id', source.id);
+
+        } catch (err) {
+          result.error = err instanceof Error ? err.message : String(err);
+
+          // Increment error count (best-effort, non-blocking)
+          await supabase
+            .from('rss_sources')
+            .update({ error_count: (source.error_count ?? 0) + 1 })
+            .eq('id', source.id)
+            .then(() => null, () => null);
+        }
+
+        results.push(result);
+      }
+
+      const totalFetched  = results.reduce((s, r) => s + r.fetched, 0);
+      const totalNew      = results.reduce((s, r) => s + r.new_items, 0);
+      const errorCount    = results.filter(r => r.error).length;
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          sources_processed: sources.length,
+          total_fetched: totalFetched,
+          total_new_items: totalNew,
+          errors: errorCount,
+          results,
+        }),
+        { headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } },
+      );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('[ingest-rss] Fatal error:', message);

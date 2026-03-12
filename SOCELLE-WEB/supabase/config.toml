@@ -79,3 +79,15 @@ gcp_jwt_path = "supabase/gcloud.json"
 [functions.ai-orchestrator]
 enabled = true
 verify_jwt = true
+
+[functions.feed-orchestrator]
+enabled = true
+verify_jwt = false
+
+[functions.ingest-rss]
+enabled = true
+verify_jwt = false
+
+[functions.rss-to-signals]
+enabled = true
+verify_jwt = false

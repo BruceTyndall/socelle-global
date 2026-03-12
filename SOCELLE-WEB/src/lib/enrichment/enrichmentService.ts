@@ -23,8 +23,6 @@ interface AdapterResult<T> {
   provenance: EnrichmentProvenanceEntry;
 }
 
-let enrichmentScheduleTimer: ReturnType<typeof setInterval> | null = null;
-
 const ENRICHMENT_PROXY_URL = import.meta.env.VITE_ENRICHMENT_PROXY_URL as string | undefined;
 
 function nowIso(): string {
@@ -417,43 +415,4 @@ export async function buildEnrichmentProfile(
   };
 }
 
-interface EnrichmentScheduleOptions {
-  operatorIds: string[];
-  intervalMs?: number;
-  onProfile?: (operatorId: string, profile: OperatorEnrichment) => void;
-}
 
-export function scheduleEnrichment(options?: EnrichmentScheduleOptions): void {
-  if (enrichmentScheduleTimer) {
-    clearInterval(enrichmentScheduleTimer);
-    enrichmentScheduleTimer = null;
-  }
-
-  if (!options || options.operatorIds.length === 0) {
-    return;
-  }
-
-  const intervalMs = Math.max(options.intervalMs ?? 6 * 60 * 60 * 1000, 60 * 1000);
-
-  const run = async () => {
-    for (const operatorId of options.operatorIds) {
-      try {
-        const profile = await buildEnrichmentProfile(operatorId);
-        options.onProfile?.(operatorId, profile);
-      } catch (error) {
-        console.error('[enrichment] scheduled run failed', { operatorId, error });
-      }
-    }
-  };
-
-  void run();
-  enrichmentScheduleTimer = setInterval(() => {
-    void run();
-  }, intervalMs);
-}
-
-export function stopEnrichmentSchedule(): void {
-  if (!enrichmentScheduleTimer) return;
-  clearInterval(enrichmentScheduleTimer);
-  enrichmentScheduleTimer = null;
-}

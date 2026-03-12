@@ -5,6 +5,7 @@ import {
   mergeSmartFillContext,
   type SmartFillContext,
 } from './studioTemplateVariables';
+import { useIntelligence } from '../intelligence/useIntelligence';
 
 interface SmartFillState {
   context: SmartFillContext;
@@ -15,6 +16,7 @@ interface SmartFillState {
 
 export function useStudioSmartFill(): SmartFillState {
   const { user, profile } = useAuth();
+  const { signals, loading: signalsLoading } = useIntelligence({ limit: 1 });
 
   const query = useQuery({
     queryKey: ['studio-smart-fill', user?.id, profile?.business_id, profile?.brand_id],
@@ -23,7 +25,7 @@ export function useStudioSmartFill(): SmartFillState {
       const businessId = profile?.business_id;
       const brandId = profile?.brand_id;
 
-      const [businessRes, brandRes, signalRes] = await Promise.all([
+      const [businessRes, brandRes] = await Promise.all([
         businessId
           ? supabase
               .from('businesses')
@@ -38,13 +40,6 @@ export function useStudioSmartFill(): SmartFillState {
               .eq('id', brandId)
               .maybeSingle()
           : Promise.resolve({ data: null, error: null }),
-        supabase
-          .from('market_signals')
-          .select('title, magnitude, direction')
-          .eq('active', true)
-          .order('updated_at', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
       ]);
 
       if (businessRes.error && businessRes.error.code !== 'PGRST116') {
@@ -53,9 +48,8 @@ export function useStudioSmartFill(): SmartFillState {
       if (brandRes.error && brandRes.error.code !== 'PGRST116') {
         throw new Error(brandRes.error.message);
       }
-      if (signalRes.error && signalRes.error.code !== 'PGRST116') {
-        throw new Error(signalRes.error.message);
-      }
+
+      const signalResData = signals.length > 0 ? signals[0] : null;
 
       const businessName =
         businessRes.data?.name ??
@@ -83,8 +77,8 @@ export function useStudioSmartFill(): SmartFillState {
             ? brandTheme.primaryColor
             : '#6E879B';
 
-      const signalMetric = signalRes.data
-        ? `${signalRes.data.title} (${signalRes.data.direction} ${signalRes.data.magnitude})`
+      const signalMetric = signalResData
+        ? `${signalResData.title} (${signalResData.direction} ${signalResData.magnitude})`
         : null;
 
       return {
@@ -108,7 +102,7 @@ export function useStudioSmartFill(): SmartFillState {
 
   return {
     context,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading || signalsLoading,
     error: query.error instanceof Error ? query.error.message : null,
     isLive: !!query.data,
   };

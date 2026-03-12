@@ -3,7 +3,8 @@
 // Migrated to TanStack Query v5.
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase, isSupabaseConfigured } from '../supabase';
+import { isSupabaseConfigured } from '../supabase';
+import { useIntelligence } from '../intelligence/useIntelligence';
 import type { Product } from './types';
 
 export interface ProductSignalMatch {
@@ -38,33 +39,20 @@ interface MarketSignalRow {
  * or signal category matching product category.
  */
 export function useProductSignals(products: Product[]) {
-  const { data: signals = [], isLoading: loading } = useQuery({
-    queryKey: ['product_signals_cross_ref'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select(
-          'id, signal_type, title, description, magnitude, direction, category, region, related_products, updated_at'
-        )
-        .eq('active', true)
-        .in('signal_type', [
-          'product_velocity',
-          'ingredient_momentum',
-          'treatment_trend',
-          'brand_adoption',
-        ])
-        .order('magnitude', { ascending: false })
-        .limit(100);
-
-      if (error) return [];
-      return (data ?? []) as MarketSignalRow[];
-    },
-    enabled: isSupabaseConfigured && products.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 min cache
+  const { signals: allSignals, loading } = useIntelligence({
+    signalTypes: [
+      'product_velocity',
+      'ingredient_momentum',
+      'treatment_trend',
+      'brand_adoption'
+    ],
+    limit: 100
   });
 
   const matches = useMemo(() => {
-    if (signals.length === 0 || products.length === 0) return new Map<string, ProductSignalMatch>();
+    if (allSignals.length === 0 || products.length === 0) return new Map<string, ProductSignalMatch>();
+
+    const signals = [...allSignals].sort((a, b) => Math.abs(b.magnitude || 0) - Math.abs(a.magnitude || 0));
 
     const matchMap = new Map<string, ProductSignalMatch>();
 
@@ -92,13 +80,13 @@ export function useProductSignals(products: Product[]) {
               productId: product.id,
               productName: product.name,
               signalId: signal.id,
-              signalTitle: signal.title,
-              signalType: signal.signal_type,
-              magnitude: signal.magnitude,
-              direction: signal.direction,
-              category: signal.category,
-              region: signal.region,
-              updatedAt: signal.updated_at,
+              signalTitle: signal.title || '',
+              signalType: signal.signal_type || 'trend',
+              magnitude: signal.magnitude || 0,
+              direction: (signal.direction === 'up' || signal.direction === 'down' || signal.direction === 'stable' ? signal.direction : 'stable') as 'up' | 'down' | 'stable',
+              category: signal.category || null,
+              region: signal.region || null,
+              updatedAt: signal.updated_at || signal.published_at || new Date().toISOString(),
             });
           }
         }
@@ -106,7 +94,7 @@ export function useProductSignals(products: Product[]) {
     }
 
     return matchMap;
-  }, [signals, products]);
+  }, [allSignals, products]);
 
   return { matches, loading };
 }
@@ -116,27 +104,18 @@ export function useProductSignals(products: Product[]) {
  * Finds related signals based on product name, category, and brand.
  */
 export function useProductIntelligenceContext(product: Product | null) {
-  const { data: relatedSignals = [], isLoading: loading } = useQuery({
-    queryKey: ['product_intelligence_context', product?.id],
-    queryFn: async () => {
-      if (!product) return [];
+  const { signals: allSignals = [], loading } = useIntelligence({ limit: 50 });
 
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select(
-          'id, signal_type, title, description, magnitude, direction, category, region, related_products, updated_at, source_name, confidence_score'
-        )
-        .eq('active', true)
-        .order('magnitude', { ascending: false })
-        .limit(50);
+  const relatedSignals = useMemo(() => {
+    if (!product || allSignals.length === 0) return [];
 
-      if (error || !data) return [];
-
-      const productNameLower = product.name.toLowerCase();
-      const rows = data as Array<MarketSignalRow & { source_name: string | null; confidence_score: number | null }>;
+    const productNameLower = product.name.toLowerCase();
+    
+    // Sort by magnitude
+    const sorted = [...allSignals].sort((a, b) => Math.abs(b.magnitude || 0) - Math.abs(a.magnitude || 0));
 
       // Find signals related to this product
-      return rows.filter(signal => {
+      return sorted.filter(signal => {
         const relatedLower = (signal.related_products ?? []).map(rp => rp.toLowerCase());
         const nameMatch = relatedLower.some(
           rp => productNameLower.includes(rp) || rp.includes(productNameLower)
@@ -147,10 +126,7 @@ export function useProductIntelligenceContext(product: Product | null) {
             signal.signal_type === 'ingredient_momentum');
         return nameMatch || catMatch;
       }).slice(0, 5);
-    },
-    enabled: isSupabaseConfigured && !!product?.id,
-    staleTime: 5 * 60 * 1000,
-  });
+  }, [allSignals, product]);
 
   return { relatedSignals, loading };
 }

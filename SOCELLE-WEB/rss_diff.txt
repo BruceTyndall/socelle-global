@@ -1,0 +1,189 @@
+diff --git a/SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts b/SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts
+index fb22a05..e1a89e3 100644
+--- a/SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts
++++ b/SOCELLE-WEB/supabase/functions/rss-to-signals/index.ts
+@@ -106,43 +106,8 @@ const CONFIDENCE_THRESHOLD = 0.50;
+ const MAX_LIMIT = 500;
+ const DEFAULT_LIMIT = 100;
+ 
+-// ── INTEL-MEDSPA-01: Category → vertical mapping ──────────────────────────────
+-
+-const CATEGORY_VERTICAL: Record<string, string> = {
+-  academic:      'medspa',
+-  regulatory:    'medspa',
+-  government:    'medspa',
+-  association:   'salon',
+-  trade_pub:     'multi',
+-  brand_news:    'beauty_brand',
+-  press_release: 'multi',
+-  ingredients:   'multi',
+-  market_data:   'multi',
+-  social:        'multi',
+-  jobs:          'multi',
+-  events:        'multi',
+-  supplier:      'multi',
+-  regional:      'multi',
+-};
+-
+-// ── INTEL-MEDSPA-01: Category → tier_min mapping ──────────────────────────────
+-
+-const CATEGORY_TIER_MIN: Record<string, string> = {
+-  academic:      'paid',
+-  regulatory:    'free',
+-  government:    'free',
+-  association:   'free',
+-  trade_pub:     'free',
+-  brand_news:    'paid',
+-  press_release: 'free',
+-  ingredients:   'paid',
+-  market_data:   'paid',
+-  social:        'free',
+-  jobs:          'paid',
+-  events:        'free',
+-  supplier:      'paid',
+-  regional:      'paid',
+-};
++// Categories are dynamically mapped inside the process loop.
++// This prevents naive starvation on complex RSS aggregates.
+ 
+ // ── INTEL-MEDSPA-01: Topic classifier ────────────────────────────────────────
+ 
+@@ -192,6 +157,29 @@ function classifyTopic(title: string, description: string): string {
+   return 'other';
+ }
+ 
++function deriveVerticalFromTopic(topic: string, defaultVertical?: string | null): string {
++  if (defaultVertical && defaultVertical !== 'multi') return defaultVertical;
++  
++  switch (topic) {
++    case 'safety':
++    case 'regulation':
++    case 'science':
++    case 'treatment_trend':
++    case 'technology':
++      return 'medspa';
++    case 'skincare':
++    case 'consumer_trend':
++      return 'salon';
++    case 'brand_news':
++    case 'retail':
++    case 'pricing':
++    case 'market_data':
++      return 'beauty_brand';
++    default:
++      return 'multi';
++  }
++}
++
+ // ── INTEL-MEDSPA-01: Impact score calculator ─────────────────────────────────
+ 
+ // Category → provenance_tier equivalent for rss_sources (no direct provenance_tier column)
+@@ -478,8 +466,11 @@ interface RssItemRow {
+   ingredient_mentions: string[];
+   treatment_mentions: string[];
+   vertical_tags: string[];
+-  attribution_text: string;
++  attribution_text: string | null;
+   source_id: string;
++  // extras:
++  image_url?: string | null;
++  source_feed_id?: string;
+   // joined from rss_sources:
+   source_name: string | null;
+   source_category: string | null;
+@@ -513,10 +504,55 @@ interface MarketSignalUpsert {
+   topic:            string;
+   tier_min:         string;
+   impact_score:     number;
++  // INTEL-HUB-17 (PR3): Content+Media attributes
++  source_url?:      string;
++  source_name?:     string | null;
++  source_domain?:   string | null;
++  published_at?:    string | null;
++  article_html?:    string | null;
++  article_body?:    string | null;
++  hero_image_url?:  string | null;
++  image_url?:       string | null;
+ }
+ 
+ // ── Helpers ───────────────────────────────────────────────────────────────────
+ 
++/**
++ * INTEL-HUB-17 (PR3): Extract first <img> src from arbitrary HTML content
++ */
++function extractFirstImgSrc(html: string): string | null {
++  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
++  return match ? match[1] : null;
++}
++
++/**
++ * INTEL-HUB-17 (PR3): Robustly identify the best available hero image per policy
++ */
++function extractHeroImage(item: RssItemRow): string | null {
++  // 1) Explicit field overrides fallbacks
++  let url = item.image_url ?? extractFirstImgSrc(item.content ?? '') ?? extractFirstImgSrc(item.description ?? '');
++  
++  if (!url) return null;
++  const clean = url.trim();
++  if (clean.startsWith('data:image/')) return null;
++  if (/pixel|tracker|1x1/i.test(clean)) return null;
++  
++  if (clean.startsWith('//')) return `https:${clean}`;
++  if (clean.startsWith('http:')) return clean.replace('http:', 'https:');
++  return clean;
++}
++
++/**
++ * INTEL-HUB-17 (PR3): Strip <script> and <iframe> tags to prevent XSS.
++ */
++function sanitizeHtml(html: string | null | undefined): string | null {
++  if (!html) return null;
++  return html
++    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
++    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
++    .replace(/\s+on[a-z]+=(["'])(.*?)\1/gi, '');
++}
++
+ /**
+  * Deterministic signal_type mapping (owner approved 2026-03-06):
+  * brand_mentions > 0 AND ingredient_mentions = 0 → brand_adoption
+@@ -686,9 +722,9 @@ serve(async (req) => {
+       const sourceCategory = item.source_category ?? 'trade_pub';
+ 
+       // INTEL-MEDSPA-01: derive vertical, tier_min, topic, impact_score
+-      const signalVertical = CATEGORY_VERTICAL[sourceCategory] ?? 'multi';
+-      const signalTierMin  = CATEGORY_TIER_MIN[sourceCategory]  ?? 'paid';
+       const topic          = classifyTopic(item.title, item.description ?? '');
++      const signalVertical = deriveVerticalFromTopic(topic, null);
++      const signalTierMin  = 'paid'; // Fallback logic is standard if not dictated
+       const impactScore    = computeImpactScore(sourceCategory, item.published_at, topic);
+ 
+       return {
+@@ -703,10 +739,13 @@ serve(async (req) => {
+         related_brands:   item.brand_mentions,
+         related_products: [],                           // RSS has no product-level data
+         source:           buildSource(item),
++        source_url:       item.link ?? undefined, // Ensure click target
+         // Provenance (W12-20 requirements):
+         source_type:      'rss',
++        source_name:      item.source_name,
++        source_domain:    item.link ? new URL(item.link).hostname.replace(/^www\./, '') : null,
+         external_id:      item.guid,
+-        data_source:      item.id,
++        data_source:      item.source_feed_id ?? item.source_id,
+         confidence_score: item.confidence_score,
+         active:           true,
+         // FEED-WO-03: dedup fingerprint
+@@ -717,6 +756,12 @@ serve(async (req) => {
+         topic,
+         tier_min:         signalTierMin,
+         impact_score:     impactScore,
++        // INTEL-HUB-17 (PR3): Open article mapping requirements
++        published_at:     item.published_at,
++        article_html:     sanitizeHtml(item.content?.substring(0, 50000)),
++        article_body:     item.content ? item.content.replace(/<[^>]+>/g, '').substring(0, 20000) : null,
++        hero_image_url:   extractHeroImage(item),
++        image_url:        item.image_url ?? null,
+       };
+     });
+ 

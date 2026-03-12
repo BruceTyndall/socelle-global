@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { useIntelligence } from './intelligence/useIntelligence';
+import { useMemo } from 'react';
 
 /* ══════════════════════════════════════════════════════════════════
    useJobPostings — TanStack Query v5 hook for job_postings table
@@ -162,32 +164,20 @@ export function useTalentSignals() {
     'beauty', 'spa', 'dermatology', 'wellness', 'cosmetics',
   ];
 
-  const query = useQuery({
-    queryKey: ['talent_signals'],
-    queryFn: async (): Promise<TalentSignalRow[]> => {
-      if (!isSupabaseConfigured) return [];
+  const { signals: allSignals, loading, isLive } = useIntelligence({ limit: 100 });
 
-      // Fetch recent active signals whose category overlaps with job-relevant terms
-      const orFilter = JOB_CATEGORIES.map((c) => `category.ilike.%${c}%`).join(',');
-
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('id, title, description, direction, magnitude, category, region, updated_at')
-        .eq('active', true)
-        .or(orFilter)
-        .order('updated_at', { ascending: false })
-        .limit(3);
-
-      if (error) throw error;
-      return (data ?? []) as TalentSignalRow[];
-    },
-    staleTime: 300_000,
-  });
+  const signals = useMemo(() => {
+    return allSignals.filter(s => {
+      if (!s.category) return false;
+      const cat = s.category.toLowerCase();
+      return JOB_CATEGORIES.some(c => cat.includes(c));
+    }).slice(0, 3) as unknown as TalentSignalRow[];
+  }, [allSignals]);
 
   return {
-    signals: query.data ?? [],
-    loading: query.isLoading,
-    isLive: isSupabaseConfigured && !query.isLoading && !query.error && (query.data?.length ?? 0) > 0,
+    signals,
+    loading,
+    isLive,
   };
 }
 

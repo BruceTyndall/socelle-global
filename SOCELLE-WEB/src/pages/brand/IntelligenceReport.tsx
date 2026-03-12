@@ -21,6 +21,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../lib/auth';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import type { IntelligenceReport as IReport, ReportSection } from '../../lib/brandTiers/types';
 
 const SECTION_ICONS: Record<string, typeof BarChart3> = {
@@ -43,10 +44,10 @@ interface MarketSignalRow {
   id: string;
   title: string;
   description: string;
-  signal_type: string;
-  magnitude: number;
-  direction: 'up' | 'down' | 'stable';
-  updated_at: string;
+  signal_type: string | null;
+  magnitude: number | null;
+  direction: string | null;
+  updated_at: string | null;
   source: string | null;
   source_name: string | null;
   related_brands: string[] | null;
@@ -125,7 +126,8 @@ function buildReportSections(signals: MarketSignalRow[]): ReportSection[] {
   const bullishPct = Math.round((positive / sentimentBase) * 100);
 
   const byType = signals.reduce<Record<string, number>>((acc, signal) => {
-    acc[signal.signal_type] = (acc[signal.signal_type] ?? 0) + 1;
+    const type = signal.signal_type || 'trend';
+    acc[type] = (acc[type] ?? 0) + 1;
     return acc;
   }, {});
 
@@ -145,11 +147,11 @@ function buildReportSections(signals: MarketSignalRow[]): ReportSection[] {
   );
 
   const highMagnitude = [...signals]
-    .sort((a, b) => Math.abs(b.magnitude) - Math.abs(a.magnitude))
+    .sort((a, b) => Math.abs(b.magnitude || 0) - Math.abs(a.magnitude || 0))
     .slice(0, 3);
 
   const recommendations = highMagnitude.length
-    ? highMagnitude.map((signal) => signal.title)
+    ? highMagnitude.map((signal) => signal.title || 'Unknown signal')
     : ['No high-impact signals available in this period'];
 
   return [
@@ -244,6 +246,7 @@ function buildReports(signals: MarketSignalRow[], brandId: string, brandName: st
   const groups = new Map<string, MarketSignalRow[]>();
 
   for (const signal of signals) {
+    if (!signal.updated_at) continue;
     const monthKey = signal.updated_at.slice(0, 7);
     const bucket = groups.get(monthKey) ?? [];
     bucket.push(signal);
@@ -255,7 +258,7 @@ function buildReports(signals: MarketSignalRow[], brandId: string, brandName: st
     .map(([monthKey, monthSignals]) => {
       const reportDate = `${monthKey}-01`;
       const generatedAt = monthSignals
-        .sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0]?.updated_at ?? new Date().toISOString();
+        .sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''))[0]?.updated_at ?? new Date().toISOString();
 
       return {
         id: `${brandId}-${monthKey}`,
@@ -308,7 +311,9 @@ export default function IntelligenceReport() {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [queueingFormat, setQueueingFormat] = useState<'pdf' | 'email' | null>(null);
 
-  const { data: reportData, isLoading: loading, error: queryError } = useQuery({
+  const { signals: allSignals, loading: signalsLoading } = useIntelligence({ limit: 300 });
+
+  const { data: reportData, isLoading: dataLoading, error: queryError } = useQuery({
     queryKey: ['brand-intelligence-report', profile?.brand_id],
     queryFn: async () => {
       if (!isSupabaseConfigured) {
@@ -317,15 +322,8 @@ export default function IntelligenceReport() {
 
       const brandId = profile!.brand_id!;
 
-      const [{ data: brandRow }, { data: rawSignals, error: signalsError }, { data: jobsData, error: jobsError }] = await Promise.all([
+      const [{ data: brandRow }, { data: jobsData, error: jobsError }] = await Promise.all([
         supabase.from('brands').select('name').eq('id', brandId).maybeSingle(),
-        supabase
-          .from('market_signals')
-          .select('id,title,description,signal_type,magnitude,direction,updated_at,source,source_name,related_brands,region')
-          .eq('active', true)
-          .eq('is_duplicate', false)
-          .order('updated_at', { ascending: false })
-          .limit(300),
         supabase
           .from('brand_intelligence_report_jobs')
           .select('id,report_month,output_format,delivery_email,status,status_message,artifact_url,created_at,updated_at,completed_at')
@@ -334,7 +332,6 @@ export default function IntelligenceReport() {
           .limit(20),
       ]);
 
-      if (signalsError) throw signalsError;
       if (jobsError) throw jobsError;
 
       const resolvedBrandName =
@@ -342,13 +339,8 @@ export default function IntelligenceReport() {
         (user?.user_metadata?.brand_name as string | undefined) ||
         'Your Brand';
 
-      const allSignals = (rawSignals as MarketSignalRow[]) ?? [];
-      const brandSignals = allSignals.filter((signal) => isBrandSignal(signal, resolvedBrandName));
-      const reportSignals = brandSignals.length > 0 ? brandSignals : allSignals;
-
       return {
         brandName: resolvedBrandName,
-        reports: buildReports(reportSignals, brandId, resolvedBrandName),
         jobs: (jobsData as ReportJobRow[]) ?? [],
       };
     },
@@ -356,9 +348,34 @@ export default function IntelligenceReport() {
   });
 
   const brandName = reportData?.brandName ?? 'Your Brand';
-  const reports = reportData?.reports ?? [];
   const jobs = reportData?.jobs ?? [];
   const error = queryError ? (queryError instanceof Error ? queryError.message : 'Failed to load intelligence report') : null;
+
+  const reports = useMemo(() => {
+    if (!reportData || allSignals.length === 0) return [];
+    
+    // Convert IntelligenceSignal to MarketSignalRow for the legacy report builder
+    const convertedSignals = allSignals.map(s => ({
+      id: s.id,
+      title: s.title || '',
+      description: s.description || '',
+      signal_type: s.signal_type || 'trend',
+      magnitude: s.magnitude || 0,
+      direction: (s.direction === 'up' || s.direction === 'down' || s.direction === 'stable' ? s.direction : 'stable') as 'up' | 'down' | 'stable',
+      updated_at: s.updated_at || s.published_at || new Date().toISOString(),
+      source: s.source || null,
+      source_name: s.source_name || null,
+      related_brands: s.related_brands || null,
+      region: s.region || null,
+    }));
+    
+    const brandSignals = convertedSignals.filter((signal) => isBrandSignal(signal, reportData.brandName));
+    const reportSignals = brandSignals.length > 0 ? brandSignals : convertedSignals;
+
+    return buildReports(reportSignals, profile?.brand_id || '', reportData.brandName);
+  }, [allSignals, reportData, profile?.brand_id]);
+
+  const loading = signalsLoading || dataLoading;
 
   useEffect(() => {
     if (reports.length === 0) {

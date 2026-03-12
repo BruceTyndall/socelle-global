@@ -1,0 +1,13 @@
+{
+  "wo_id": "ROUTE-CLEANUP-01",
+  "timestamp": "2026-03-12T01:50:00Z",
+  "skills_run": ["route-mapper"],
+  "results": {
+    "route-mapper": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Orphan routes removed: /home, /pricing, /for-medspas, /for-salons. Marketing hub paths merged to /marketing. Routes manifest updated successfully."
+    }
+  },
+  "overall": "PASS"
+}

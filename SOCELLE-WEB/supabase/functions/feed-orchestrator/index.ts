@@ -52,7 +52,7 @@
  *     { "feed_ids": ["uuid",...] }   — target specific feeds
  *     { "dry_run": true }            — report what would run without executing
  *
- * Admin-only: requires valid JWT with admin role.
+ * Requires service-role key or admin JWT. Anonymous requests are rejected.
  *
  * Data label: LIVE — reads/writes data_feeds + market_signals + feed_run_log.
  *
@@ -64,7 +64,7 @@
  * Allowed path: SOCELLE-WEB/supabase/functions/ (AGENT_SCOPE_REGISTRY §Backend Agent)
  */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // ── Inline edgeControl (cannot use ../ imports in Supabase MCP deployment) ────
 
@@ -98,6 +98,61 @@ async function enforceEdgeFunctionEnabled(
   }
 }
 
+async function verifyAdminOrServiceRole(
+  req: Request,
+  supabaseUrl: string,
+  serviceRoleKey: string,
+): Promise<{ authorized: boolean; reason?: string }> {
+  const authHeader = req.headers.get('Authorization') ?? '';
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+
+  if (!token) {
+    return { authorized: false, reason: 'Missing Authorization header' };
+  }
+
+  try {
+    const serviceProbe = createClient(supabaseUrl, token, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { error: serviceError } = await serviceProbe.auth.admin.listUsers({ page: 1, perPage: 1 });
+    if (!serviceError) {
+      return { authorized: true };
+    }
+  } catch {
+    // Fall through to user JWT validation.
+  }
+
+  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+
+  const {
+    data: { user },
+    error: userError,
+  } = await adminClient.auth.getUser(token);
+
+  if (userError || !user) {
+    return { authorized: false, reason: 'Invalid or expired token' };
+  }
+
+  const { data: profile, error: profileError } = await adminClient
+    .from('user_profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (profileError || !profile) {
+    return { authorized: false, reason: 'Profile not found' };
+  }
+
+  if (!['admin', 'super_admin'].includes(profile.role)) {
+    return { authorized: false, reason: 'Admin access required' };
+  }
+
+  return { authorized: true };
+}
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const CORS_HEADERS = {
@@ -119,6 +174,73 @@ const PROVENANCE_CONFIDENCE: Record<number, number> = {
   2: 0.70, // Public/Structured
   3: 0.50, // Aggregated/Derived
 };
+
+type FeedSignalType =
+  | 'product_velocity'
+  | 'treatment_trend'
+  | 'ingredient_momentum'
+  | 'brand_adoption'
+  | 'regional'
+  | 'pricing_benchmark'
+  | 'regulatory_alert'
+  | 'education'
+  | 'industry_news'
+  | 'brand_update'
+  | 'press_release'
+  | 'social_trend'
+  | 'job_market'
+  | 'event_signal'
+  | 'research_insight'
+  | 'ingredient_trend'
+  | 'market_data'
+  | 'regional_market'
+  | 'supply_chain';
+
+type SignalDirection = 'up' | 'down' | 'stable';
+type FeedTierVisibility = 'free' | 'pro' | 'admin';
+
+interface MarketSignalInsert {
+  signal_type: FeedSignalType;
+  signal_key: string;
+  title: string;
+  description: string;
+  magnitude: number;
+  direction: SignalDirection;
+  region?: string | null;
+  category?: string | null;
+  related_brands?: string[] | null;
+  related_products?: string[] | null;
+  source?: string | null;
+  source_type?: string | null;
+  source_name?: string | null;
+  source_url?: string | null;
+  source_domain?: string | null;
+  external_id?: string | null;
+  data_source?: string | null;
+  source_feed_id?: string | null;
+  confidence_score?: number | null;
+  tier_visibility?: FeedTierVisibility | null;
+  image_url?: string | null;
+  is_duplicate?: boolean;
+  active?: boolean;
+  vertical?: string | null;
+  topic?: string | null;
+  tier_min?: string | null;
+  impact_score?: number | null;
+  hero_image_url?: string | null;
+  image_urls?: string[] | null;
+  article_html?: string | null;
+  article_body?: string | null;
+  word_count?: number | null;
+  reading_time_minutes?: number | null;
+  author?: string | null;
+  published_at?: string | null;
+  is_enriched?: boolean;
+}
+
+interface UntypedSupabaseClient {
+  from: (table: string) => any;
+}
 
 // Categories now dynamically derived via topic heuristics instead of static mapping arrays.
 // This prevents niche signals from getting starved or over-saturated.
@@ -182,6 +304,76 @@ function computeImpactScore(
     else if (hoursOld < 72) score += 5;
   }
   return Math.min(100, Math.max(0, score));
+}
+
+function deriveSignalTypeFromTopic(topic: string, category: string): FeedSignalType {
+  switch (topic) {
+    case 'safety':
+    case 'regulation':
+      return 'regulatory_alert';
+    case 'science':
+      return 'research_insight';
+    case 'ingredient':
+      return category === 'academic' ? 'ingredient_trend' : 'ingredient_momentum';
+    case 'treatment_trend':
+      return 'treatment_trend';
+    case 'consumer_trend':
+      return 'social_trend';
+    case 'pricing':
+      return 'pricing_benchmark';
+    case 'jobs':
+      return 'job_market';
+    case 'events':
+      return 'event_signal';
+    case 'market_data':
+      return 'market_data';
+    case 'brand_news':
+      return category === 'press_release' ? 'press_release' : 'brand_update';
+    case 'technology':
+      return 'industry_news';
+    default:
+      break;
+  }
+
+  switch (category) {
+    case 'press_release':
+      return 'press_release';
+    case 'brand_news':
+      return 'brand_update';
+    case 'jobs':
+      return 'job_market';
+    case 'events':
+      return 'event_signal';
+    case 'market_data':
+      return 'market_data';
+    case 'social':
+      return 'social_trend';
+    case 'ingredients':
+      return 'ingredient_momentum';
+    default:
+      return 'industry_news';
+  }
+}
+
+function deriveVerticalFromTopic(topic: string, defaultVertical?: string | null): string {
+  if (defaultVertical && defaultVertical !== 'multi') {
+    return defaultVertical;
+  }
+
+  switch (topic) {
+    case 'safety':
+    case 'regulation':
+    case 'science':
+    case 'treatment_trend':
+    case 'technology':
+      return 'medspa';
+    case 'brand_news':
+    case 'pricing':
+    case 'market_data':
+      return 'beauty_brand';
+    default:
+      return defaultVertical ?? 'multi';
+  }
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -328,9 +520,22 @@ function sanitizeHtml(html: string | null | undefined): string | null {
   if (!html) return null;
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
     .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    // Also strip inline event handlers (on*="...")
-    .replace(/\s+on[a-z]+=(["'])(.*?)\1/gi, '');
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^>]*>/gi, '')
+    .replace(/\s+on[a-z]+=(["'])(.*?)\1/gi, '')
+    .replace(/\s+(href|src)=(["'])javascript:[^"']*\2/gi, '')
+    .replace(/\s+style=(["'])(.*?)\1/gi, '');
+}
+
+function htmlToText(html: string | null | undefined, maxChars: number): string | null {
+  if (!html) return null;
+  const text = html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return text ? text.substring(0, maxChars) : null;
 }
 
 /**
@@ -545,7 +750,7 @@ function extractDomain(url: string | null | undefined): string | null {
 
 async function processRssFeed(
   feed: DataFeed,
-  supabase: ReturnType<typeof createClient>,
+  supabase: UntypedSupabaseClient,
 ): Promise<{ signals: number; error?: string; items_fetched?: number; content_type?: string; format?: string }> {
   if (!feed.endpoint_url) {
     return { signals: 0, error: 'No endpoint_url configured' };
@@ -587,9 +792,12 @@ async function processRssFeed(
   const tierVisibility = feed.tier_min === 'paid' ? 'pro' : 'free';
   const signalTierMin = feed.tier_min ?? 'paid';
 
-  const signalRows = items.map((item) => {
+  const signalRows: MarketSignalInsert[] = items.map((item) => {
     const topic = classifyTopic(item.title, item.description ?? '');
     const impactScore = computeImpactScore(feed, item.published_at, topic);
+    const safeArticleHtml = sanitizeHtml(item.content_full?.substring(0, 50000));
+    const articleBody = htmlToText(safeArticleHtml, 20000);
+    const imageUrl = item.image_url ?? null;
 
     const dynamicSignalType = deriveSignalTypeFromTopic(topic, feed.category);
     const dynamicVertical = deriveVerticalFromTopic(topic, feed.vertical);
@@ -615,7 +823,7 @@ async function processRssFeed(
       source_feed_id: feed.id,
       confidence_score: confidence,
       tier_visibility: tierVisibility,
-      image_url: null,
+      image_url: imageUrl,
       is_duplicate: false,
       active: true,
       // INTEL-MEDSPA-01 classification fields (dynamically routed):
@@ -624,18 +832,12 @@ async function processRssFeed(
       tier_min: signalTierMin,
       impact_score: impactScore,
       // INTEL-PREMIUM-01: full content, images, metadata
-      hero_image_url: item.image_url,
-      image_urls: item.image_url ? [item.image_url] : [],
-      article_html: item.content_full?.substring(0, 50000) ?? null,
-      article_body: item.content_full
-        ? item.content_full.replace(/<[^>]+>/g, '').substring(0, 20000)
-        : null,
-      word_count: item.content_full
-        ? item.content_full.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length
-        : 0,
-      reading_time_minutes: item.content_full
-        ? Math.max(1, Math.ceil(item.content_full.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length / 200))
-        : 0,
+      hero_image_url: imageUrl,
+      image_urls: imageUrl ? [imageUrl] : [],
+      article_html: safeArticleHtml,
+      article_body: articleBody,
+      word_count: articleBody ? articleBody.split(/\s+/).filter(Boolean).length : 0,
+      reading_time_minutes: articleBody ? Math.max(1, Math.ceil(articleBody.split(/\s+/).filter(Boolean).length / 200)) : 0,
       author: item.author,
       published_at: item.published_at,
       is_enriched: false,
@@ -657,7 +859,7 @@ async function processRssFeed(
 
 async function processApiFeed(
   feed: DataFeed,
-  supabase: ReturnType<typeof createClient>,
+  supabase: UntypedSupabaseClient,
 ): Promise<{ signals: number; error?: string; items_fetched?: number }> {
   if (!feed.endpoint_url) {
     return { signals: 0, error: 'No endpoint_url configured' };
@@ -732,7 +934,7 @@ async function processApiFeed(
   const tierVisibility = feed.tier_min === 'paid' ? 'pro' : 'free';
   const signalTierMin = feed.tier_min ?? 'paid';
 
-  const signalRows = items.slice(0, 100).map((item: any, idx: number) => {
+  const signalRows: MarketSignalInsert[] = items.slice(0, 100).map((item: any, idx: number) => {
     const title = item.title || item.name || item.headline || `${feed.name} item ${idx + 1}`;
     const description =
       item.description || item.summary || item.abstract || item.selftext || item.content || title;
@@ -747,6 +949,8 @@ async function processApiFeed(
 
     const topic = classifyTopic(String(title), String(description));
     const impactScore = computeImpactScore(feed, publishedAt ? String(publishedAt) : null, topic);
+    const imageUrl = extractHeroImageFromApi(item);
+    const articleBody = String(description).substring(0, 20000);
 
     const dynamicSignalType = deriveSignalTypeFromTopic(topic, feed.category);
     const dynamicVertical = deriveVerticalFromTopic(topic, feed.vertical);
@@ -772,7 +976,7 @@ async function processApiFeed(
       source_feed_id: feed.id,
       confidence_score: confidence,
       tier_visibility: tierVisibility,
-      image_url: item.image || item.image_url || item.thumbnail || null,
+      image_url: imageUrl,
       is_duplicate: false,
       active: true,
       // INTEL-MEDSPA-01 classification fields (dynamically routed):
@@ -781,13 +985,13 @@ async function processApiFeed(
       tier_min: signalTierMin,
       impact_score: impactScore,
       // INTEL-PREMIUM-01: images, content metadata
-      hero_image_url: extractHeroImageFromApi(item),
-      image_urls: (item.image || item.image_url || item.thumbnail || item.urlToImage)
-        ? [String(item.image || item.image_url || item.thumbnail || item.urlToImage)]
+      hero_image_url: imageUrl,
+      image_urls: imageUrl
+        ? [String(imageUrl)]
         : [],
-      article_body: String(description).substring(0, 20000),
-      word_count: String(description).split(/\s+/).filter(Boolean).length,
-      reading_time_minutes: Math.max(1, Math.ceil(String(description).split(/\s+/).filter(Boolean).length / 200)),
+      article_body: articleBody,
+      word_count: articleBody.split(/\s+/).filter(Boolean).length,
+      reading_time_minutes: Math.max(1, Math.ceil(articleBody.split(/\s+/).filter(Boolean).length / 200)),
       author: item.author || item.creator || null,
       published_at: publishedAt ? new Date(String(publishedAt)).toISOString() : null,
       is_enriched: false,
@@ -824,6 +1028,12 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS });
   }
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { status: 405, headers: JSON_HEADERS },
+    );
+  }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -841,9 +1051,16 @@ Deno.serve(async (req: Request) => {
 
   try {
     const body: RequestBody =
-      req.method === 'POST' && req.headers.get('content-type')?.includes('application/json')
+      req.headers.get('content-type')?.includes('application/json')
         ? await req.json().catch(() => ({}))
         : {};
+    const auth = await verifyAdminOrServiceRole(req, supabaseUrl, serviceKey);
+    if (!auth.authorized) {
+      return new Response(
+        JSON.stringify({ error: auth.reason ?? 'Unauthorized' }),
+        { status: 401, headers: JSON_HEADERS },
+      );
+    }
 
     const dryRun = body.dry_run === true;
 

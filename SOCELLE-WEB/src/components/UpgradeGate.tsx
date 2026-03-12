@@ -245,7 +245,7 @@ export default function UpgradeGate({
             </button>
 
             <Link
-              to="/pricing"
+              to="/plans"
               className="w-full flex items-center justify-center gap-2 px-6 py-3 border border-graphite/15 text-graphite rounded-lg font-sans font-medium text-sm hover:bg-graphite/5 transition-colors duration-150"
             >
               <Sparkles className="w-4 h-4" />

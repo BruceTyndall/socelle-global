@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { X, TrendingUp, TrendingDown, Minus, ExternalLink, Shield } from 'lucide-react';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
+import { sanitizeArticleHtml } from '../../lib/intelligence/sanitizeArticleHtml';
+import { normalizeMediaUrl, normalizeMediaUrls } from '../../lib/intelligence/normalizeMediaUrl';
 import { CrossHubActionDispatcher } from '../CrossHubActionDispatcher';
 
 interface SignalDetailPanelProps {
@@ -63,9 +65,17 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
   const config = directionConfig[signal.direction];
   const DirIcon = config.icon;
   const confidence = getConfidenceLabel(signal.confidence_score);
+  const safeArticleHtml = sanitizeArticleHtml(signal.article_html);
+  const galleryImageUrls = normalizeMediaUrls(signal.image_urls);
+  const heroImageUrl = normalizeMediaUrl(signal.hero_image_url)
+    ?? galleryImageUrls[0]
+    ?? normalizeMediaUrl(signal.image_url);
+  const additionalGalleryImages = galleryImageUrls
+    .filter((url) => url !== heroImageUrl)
+    .slice(0, 4);
 
   // PR3 Content Inference
-  const hasFullContent = Boolean(signal.article_body || signal.article_html);
+  const hasFullContent = Boolean(signal.article_body || safeArticleHtml);
   const contentStatus = hasFullContent ? 'full' : (signal.description ? 'excerpt_only' : 'external_only');
 
   return (
@@ -89,10 +99,10 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
         </div>
 
         {/* Hero image banner (INTEL-PREMIUM-01) */}
-        {signal.hero_image_url && (
+        {heroImageUrl && (
           <div className="w-full h-56 overflow-hidden">
             <img
-              src={signal.hero_image_url}
+              src={heroImageUrl}
               alt=""
               className="w-full h-full object-cover"
               onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
@@ -149,8 +159,8 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
             
             {contentStatus === 'full' ? (
               <div className="text-sm text-[#141418]/80 leading-relaxed space-y-3">
-                 {signal.article_html ? (
-                    <div dangerouslySetInnerHTML={{ __html: signal.article_html }} />
+                 {safeArticleHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: safeArticleHtml }} />
                  ) : (
                     signal.article_body?.split('\n').map((para, i) => (
                       para.trim() ? <p key={i}>{para}</p> : null
@@ -190,9 +200,9 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
           </div>
 
           {/* Image gallery (INTEL-PREMIUM-01) */}
-          {signal.image_urls && signal.image_urls.length > 1 && (
+          {additionalGalleryImages.length > 0 && (
             <div className="grid grid-cols-2 gap-2">
-              {signal.image_urls.slice(1, 5).map((url, i) => (
+              {additionalGalleryImages.map((url, i) => (
                 <div key={i} className="aspect-video rounded-lg overflow-hidden">
                   <img
                     src={url}

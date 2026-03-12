@@ -3,15 +3,14 @@
 // Migrated to TanStack Query v5 (V2-TECH-04).
 // NOTE: useOperatorEnrichment retains scheduling side-effect via useEffect.
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { OperatorEnrichment, BrandEnrichment } from './types';
 import {
   buildEnrichmentProfile,
-  scheduleEnrichment,
-  stopEnrichmentSchedule,
 } from './enrichmentService';
 import { supabase, isSupabaseConfigured } from '../supabase';
+import { useIntelligence } from '../intelligence/useIntelligence';
 
 interface UseOperatorEnrichmentResult {
   data: OperatorEnrichment | null;
@@ -24,33 +23,14 @@ interface UseOperatorEnrichmentResult {
 export function useOperatorEnrichment(
   operatorId: string | null | undefined
 ): UseOperatorEnrichmentResult {
-  const [liveData, setLiveData] = useState<OperatorEnrichment | null>(null);
-
-  const { data: initialData, isLoading: loading, error: queryError, refetch } = useQuery({
+  const { data: enrichmentData = null, isLoading: loading, error: queryError, refetch } = useQuery({
     queryKey: ['operator_enrichment', operatorId],
     queryFn: async () => {
       return buildEnrichmentProfile(operatorId!);
     },
     enabled: !!operatorId,
+    refetchInterval: 6 * 60 * 60 * 1000, // Schedule enrichment updates via TanStack Query (6 hours)
   });
-
-  // Schedule enrichment updates via side-effect
-  useEffect(() => {
-    if (!operatorId) return;
-
-    scheduleEnrichment({
-      operatorIds: [operatorId],
-      onProfile: (_, profile) => {
-        setLiveData(profile);
-      },
-    });
-
-    return () => {
-      stopEnrichmentSchedule();
-    };
-  }, [operatorId]);
-
-  const enrichmentData = liveData ?? initialData ?? null;
 
   const daysSinceEnrichment = enrichmentData
     ? Math.round(
@@ -60,7 +40,6 @@ export function useOperatorEnrichment(
     : null;
 
   const refreshEnrichment = useCallback(() => {
-    setLiveData(null);
     refetch();
   }, [refetch]);
 
@@ -84,31 +63,23 @@ function normalizeConfidence(value: number | null): number {
 export function useBrandEnrichment(
   brandId: string | null | undefined
 ): UseBrandEnrichmentResult {
-  const { data: enrichment = null, isLoading: loading, error: queryError } = useQuery({
+  const { signals: rawSignals, loading: signalsLoading } = useIntelligence({ limit: 360 });
+
+  const { data: enrichment = null, isLoading: queryLoading, error: queryError } = useQuery({
     queryKey: ['brand_enrichment', brandId],
     queryFn: async () => {
-      const [{ data: brandRow }, { data: rawSignals, error: signalError }] = await Promise.all([
-        supabase.from('brands').select('name').eq('id', brandId!).maybeSingle(),
-        supabase
-          .from('market_signals')
-          .select('title,description,related_brands,confidence_score,updated_at')
-          .eq('active', true)
-          .eq('is_duplicate', false)
-          .order('updated_at', { ascending: false })
-          .limit(360),
-      ]);
+      const { data: brandRow, error: brandError } = await supabase.from('brands').select('name').eq('id', brandId!).maybeSingle();
 
-      if (signalError) throw signalError;
+      if (brandError) throw brandError;
 
       const brandName = ((brandRow?.name as string | undefined) ?? '').toLowerCase();
-      const rows =
-        (rawSignals as Array<{
-          title: string;
-          description: string;
-          related_brands: string[] | null;
-          confidence_score: number | null;
-          updated_at: string;
-        }> | null) ?? [];
+      const rows = rawSignals.map(s => ({
+        title: s.title || '',
+        description: s.description || '',
+        related_brands: s.related_brands || null,
+        confidence_score: s.confidence_score || null,
+        updated_at: s.updated_at || s.published_at || new Date().toISOString()
+      }));
 
       const scopedSignals = rows.filter((row) => {
         if (!brandName) return false;
@@ -154,6 +125,7 @@ export function useBrandEnrichment(
   });
 
   const error = queryError instanceof Error ? queryError.message : null;
+  const loading = signalsLoading || queryLoading;
 
   return { data: enrichment, loading, error };
 }

@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
 import { getSignalImage } from '../../lib/intelligence/useSignalImage';
+import { normalizeMediaUrl } from '../../lib/intelligence/normalizeMediaUrl';
 import EvidenceStrip from './EvidenceStrip';
 import ImpactBadge from './ImpactBadge';
 
@@ -167,7 +168,8 @@ export function SignalCardFeatured({
   const barClass   = getBarClass(signal.direction, signal.signal_type);
   const borderL    = getBorderLClass(signal.direction, signal.signal_type);
   const source     = signal.source_name ?? signal.source;
-  const img        = signal.hero_image_url ? { url: signal.hero_image_url, alt: signal.title } : getSignalImage(signal);
+  const heroImageUrl = normalizeMediaUrl(signal.hero_image_url);
+  const img          = heroImageUrl ? { url: heroImageUrl, alt: signal.title } : getSignalImage(signal);
 
   return (
     <article
@@ -317,7 +319,8 @@ export function SignalCardStandard({
   const textClass = getTextClass(signal.direction, signal.signal_type);
   const barClass  = getBarClass(signal.direction, signal.signal_type);
   const source    = signal.source_name ?? signal.source;
-  const img       = signal.hero_image_url ? { url: signal.hero_image_url, alt: signal.title } : getSignalImage(signal);
+  const heroImageUrl = normalizeMediaUrl(signal.hero_image_url);
+  const img          = heroImageUrl ? { url: heroImageUrl, alt: signal.title } : getSignalImage(signal);
 
   return (
     <article

@@ -28,6 +28,7 @@ import SiteFooter from '../../components/sections/SiteFooter';
 import { useCourse } from '../../lib/education/useCourse';
 import { useEnrollment } from '../../lib/education/useEnrollment';
 import { useAuth } from '../../lib/auth';
+import { ErrorState } from '../../components/ui/ErrorState';
 
 const LESSON_TYPE_ICON: Record<string, React.ElementType> = {
   video: Play,
@@ -103,11 +104,13 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-mn-bg font-sans">
         <MainNav />
-        <div className="pt-40 text-center">
-          <BookOpen className="w-10 h-10 text-graphite/20 mx-auto mb-4" />
-          <h1 className="text-2xl font-sans font-semibold text-graphite mb-2">Course not found</h1>
-          <p className="text-graphite/60 mb-6">{error || 'The course you are looking for does not exist.'}</p>
-          <Link to="/education/courses" className="btn-mineral-primary">Browse Courses</Link>
+        <div className="pt-40">
+          <ErrorState 
+            icon={BookOpen}
+            title="Course not found"
+            message={error || 'The course you are looking for does not exist.'}
+            action={{ label: "Browse Courses", onClick: () => navigate('/education/courses') }}
+          />
         </div>
         <SiteFooter />
       </div>

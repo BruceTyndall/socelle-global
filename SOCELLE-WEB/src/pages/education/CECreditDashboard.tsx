@@ -3,7 +3,7 @@
  * CE credit tracking: credits by category, expiry warnings, compliance dashboard
  * Data: course_enrollments + certificates + courses (LIVE)
  */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
   GraduationCap,
@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
 import { useCECredits, type CECreditEntry } from '../../lib/education/useCECredits';
 import { useAuth } from '../../lib/auth';
 import { exportToCSV } from '../../lib/csvExport';
@@ -80,6 +82,7 @@ function matchSignalToCourse(signal: TrendingSignal): { course: string; path: st
 }
 
 export default function CECreditDashboard() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { summary, allCredits, loading, error, isLive } = useCECredits();
   const { signals: allSignals } = useIntelligence({ limit: 6 });
@@ -228,10 +231,10 @@ export default function CECreditDashboard() {
               </div>
             </div>
           ) : error ? (
-            <div className="text-center py-20">
-              <AlertTriangle className="w-8 h-8 text-signal-warn mx-auto mb-3" />
-              <p className="text-graphite/60 text-sm">{error}</p>
-            </div>
+            <ErrorState 
+              title="Failed to load CE credits"
+              message={String(error)}
+            />
           ) : (
             <div className="space-y-8">
               {/* Progress overview */}
@@ -428,16 +431,12 @@ export default function CECreditDashboard() {
                     </table>
                   </div>
                 ) : (
-                  <div className="text-center py-16">
-                    <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <GraduationCap className="w-8 h-8 text-accent" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-graphite mb-2">No CE credits earned this period</h3>
-                    <p className="text-graphite/60 max-w-md mx-auto mb-6">Complete CE-eligible courses to start tracking your credits and compliance.</p>
-                    <Link to="/education/courses" className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
-                      Browse CE-eligible courses →
-                    </Link>
-                  </div>
+                  <EmptyState 
+                    icon={GraduationCap}
+                    title="No CE credits earned this period"
+                    description="Complete CE-eligible courses to start tracking your credits and compliance."
+                    action={{ label: "Browse CE-eligible courses", onClick: () => navigate('/education/courses') }}
+                  />
                 )}
               </div>
 

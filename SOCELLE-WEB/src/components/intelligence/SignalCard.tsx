@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import type { IntelligenceSignal, SignalType } from '../../lib/intelligence/types';
+import { normalizeMediaUrl } from '../../lib/intelligence/normalizeMediaUrl';
 import TrendIndicator from './TrendIndicator';
 import FreshnessLabel from './FreshnessLabel';
 import ImpactBadge from './ImpactBadge';
@@ -73,10 +74,11 @@ interface SignalCardProps {
 
 export default function SignalCard({ signal }: SignalCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const heroImageUrl = normalizeMediaUrl(signal.hero_image_url);
   
   const Icon = SIGNAL_ICONS[signal.signal_type] ?? BarChart3;
   const typeLabel = SIGNAL_LABELS[signal.signal_type] ?? humanizeSignalType(signal.signal_type);
-  const hasHeroImage = !!signal.hero_image_url;
+  const hasHeroImage = Boolean(heroImageUrl);
   const similarCount = signal.similar_signals?.length ?? 0;
 
   return (
@@ -85,7 +87,7 @@ export default function SignalCard({ signal }: SignalCardProps) {
       {hasHeroImage && (
         <div className="w-full aspect-[16/9] overflow-hidden">
           <img
-            src={signal.hero_image_url}
+            src={heroImageUrl ?? undefined}
             alt=""
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"

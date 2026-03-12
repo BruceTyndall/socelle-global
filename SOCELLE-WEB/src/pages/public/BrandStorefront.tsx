@@ -7,6 +7,8 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { useCart } from '../../lib/useCart';
 import { sendNewOrderEmail } from '../../lib/emailService';
+import UpgradeGate from '../../components/UpgradeGate';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import CartDrawer from '../../components/CartDrawer';
 import BlockReveal from '../../components/motion/BlockReveal';
 import MainNav from '../../components/MainNav';
@@ -964,32 +966,19 @@ export default function BrandStorefront() {
   ];
 
   // ── Brand-specific signals from market_signals ──
-  const brandSignalsQuery = useQuery({
-    queryKey: ['brand-signals', brand?.name],
-    queryFn: async () => {
-      if (!isSupabaseConfigured || !brand) return [];
-      const { data, error: sigErr } = await supabase
-        .from('market_signals')
-        .select('id, title, description, category, magnitude, direction, updated_at')
-        .eq('active', true)
-        .order('updated_at', { ascending: false })
-        .limit(200);
+  const { signals: allSignals, loading: signalsLoading } = useIntelligence({ limit: 200 });
 
-      if (sigErr) throw sigErr;
-      if (!data) return [];
-
-      const name = brand.name.toLowerCase();
-      return data.filter(
-        (s: { title: string; description: string }) =>
-          s.title.toLowerCase().includes(name) ||
-          s.description.toLowerCase().includes(name)
-      );
-    },
-    enabled: !!brand?.name,
-    staleTime: 10 * 60 * 1000,
-  });
-
-  const brandSignals = brandSignalsQuery.data ?? [];
+  const brandSignals = useMemo(() => {
+    if (!brand || allSignals.length === 0) return [];
+    const name = brand.name.toLowerCase();
+    return allSignals.filter((s) =>
+      s.title.toLowerCase().includes(name) ||
+      s.description.toLowerCase().includes(name)
+    ).map(s => ({
+      ...s,
+      updated_at: s.published_at || new Date().toISOString()
+    }));
+  }, [allSignals, brand]);
 
   // Guards
   if (loading) return <StorefrontSkeleton />;
@@ -1358,7 +1347,7 @@ export default function BrandStorefront() {
                 Active market signals that mention {brand.name} across the intelligence feed
               </p>
 
-              {brandSignalsQuery.isLoading ? (
+              {signalsLoading ? (
                 <div className="space-y-3">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="bg-white border border-graphite/[0.08] rounded-2xl p-4">
@@ -1366,20 +1355,6 @@ export default function BrandStorefront() {
                       <div className="h-3 w-full rounded animate-pulse bg-mn-surface" />
                     </div>
                   ))}
-                </div>
-              ) : brandSignalsQuery.isError ? (
-                <div className="bg-red-50 border border-red-200 rounded-2xl p-5 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-sans font-semibold text-red-900 text-sm mb-1">Unable to load signals</p>
-                    <p className="font-sans text-red-700 text-xs mb-3">Check your connection and try again.</p>
-                    <button
-                      onClick={() => brandSignalsQuery.refetch()}
-                      className="btn-mineral-primary btn-mineral-sm"
-                    >
-                      Retry
-                    </button>
-                  </div>
                 </div>
               ) : brandSignals.length === 0 ? (
                 <div className="py-12 border border-dashed border-graphite/[0.12] rounded-2xl text-center">
@@ -1391,7 +1366,7 @@ export default function BrandStorefront() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {brandSignals.map((signal: { id: string; title: string; description: string; category: string | null; magnitude: number; direction: string; updated_at: string }) => {
+                  {brandSignals.map((signal) => {
                     const dirColor =
                       signal.direction === 'up' ? 'text-signal-up' :
                       signal.direction === 'down' ? 'text-signal-down' :
@@ -1423,7 +1398,7 @@ export default function BrandStorefront() {
                           </div>
                           <div className="flex flex-col items-center gap-1 flex-shrink-0">
                             <span className={`inline-flex items-center gap-0.5 font-sans text-[11px] font-semibold px-2 py-0.5 rounded-full ${dirBg} ${dirColor}`}>
-                              <TrendingUp className={`w-3 h-3 ${signal.direction === 'down' ? 'rotate-180' : signal.direction === 'flat' ? 'rotate-90' : ''}`} />
+                              <TrendingUp className={`w-3 h-3 ${signal.direction === 'down' ? 'rotate-180' : signal.direction === 'stable' ? 'rotate-90' : ''}`} />
                               {signal.magnitude}%
                             </span>
                           </div>

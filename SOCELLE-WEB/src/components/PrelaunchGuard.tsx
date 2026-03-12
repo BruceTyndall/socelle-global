@@ -1,18 +1,29 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../lib/auth';
 
-/**
- * PrelaunchGuard — layout route that gates all public pages during prelaunch.
- *
- * Activated by: VITE_PRELAUNCH_MODE=true (set in Cloudflare Pages env, production only).
- * Dev / local builds: VITE_PRELAUNCH_MODE is unset → guard is transparent (Outlet renders normally).
- *
- * Any route wrapped by this component will redirect to "/" when prelaunch mode is active.
- * Portal, brand, and admin routes are NOT wrapped — they are auth-protected independently
- * and must remain accessible to development agents at all times.
- */
 const PRELAUNCH_MODE = import.meta.env.VITE_PRELAUNCH_MODE === 'true';
 
 export function PrelaunchGuard() {
-  // Temporary bypass to allow review of production deployed pages
-  return <Outlet />;
+  const { user, loading: authLoading } = useAuth();
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-graphite">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  // Pre-launch rules:
+  // 1. If PRELAUNCH_MODE is false, site is open
+  // 2. If user is logged in, site is open
+  const isUnlocked = !PRELAUNCH_MODE || !!user;
+
+  if (isUnlocked) {
+    return <Outlet />;
+  }
+
+  // If locked, redirect to pre-launch waitlist
+  // using replace to prevent back navigation issues
+  return <Navigate to="/waitlist" replace />;
 }

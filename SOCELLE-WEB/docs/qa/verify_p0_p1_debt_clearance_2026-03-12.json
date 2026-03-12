@@ -1,0 +1,33 @@
+{
+  "wo_id": "P0_P1_DEBT_CLEARANCE",
+  "timestamp": "2026-03-12T01:30:00Z",
+  "skills_run": [
+    "token-drift-scanner",
+    "dev-best-practice-checker",
+    "banned-term-scanner",
+    "live-demo-detector"
+  ],
+  "results": {
+    "token-drift-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No brand-* or intel-* utility classes found in src/."
+    },
+    "dev-best-practice-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "useEnrichment.ts now uses TanStack Query refetchInterval instead of raw useEffect polling."
+    },
+    "banned-term-scanner": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "AI-powered terms removed from user-facing copy."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "isLive guard added to IntelligenceCommerce.tsx and all market_signals queries consolidated to useIntelligence hook."
+    }
+  },
+  "overall": "PASS"
+}

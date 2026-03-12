@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { EmptyState } from '../../components/ui/EmptyState';
 import { useCourses, type CourseLevel, type CoursePricing, type CourseSortKey } from '../../lib/education/useCourses';
 
 const LEVEL_BADGE: Record<string, string> = {
@@ -278,20 +279,12 @@ export default function CourseCatalog() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-accent-soft rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <GraduationCap className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="text-lg font-semibold text-graphite mb-2">No courses found</h3>
-              <p className="text-graphite/60 max-w-md mx-auto mb-6">
-                {hasActiveFilters ? 'Try adjusting your filters to find more courses.' : 'New courses are being added regularly. Check back soon.'}
-              </p>
-              {hasActiveFilters && (
-                <button onClick={clearFilters} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover text-sm">
-                  Clear filters →
-                </button>
-              )}
-            </div>
+            <EmptyState 
+              icon={GraduationCap}
+              title="No courses found"
+              description={hasActiveFilters ? 'Try adjusting your filters to find more courses.' : 'New courses are being added regularly. Check back soon.'}
+              {...(hasActiveFilters ? { action: { label: "Clear filters", onClick: clearFilters } } : {})}
+            />
           )}
         </div>
       </section>

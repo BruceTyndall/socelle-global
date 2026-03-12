@@ -1,27 +1,513 @@
 {
-  "work_order": "INTEL-HUB-17",
-  "status": "READY FOR REVIEW",
-  "blockers": [
-    "Deno is not installed, blocking 'deno check'",
-    "Docker Daemon is not running locally, blocking 'supabase functions serve'"
-  ],
-  "blocked_files": [
+  "wo_id": "INTEL-HUB-17",
+  "timestamp": "2026-03-12T01:24:28.896Z",
+  "status": "READY_FOR_REVIEW",
+  "audit_snapshot_at": "2026-03-12T00:37:03.748Z",
+  "root_cause": "No live feeds because the scheduled/manual execution path broke on auth: `feed-orchestrator` and `ingest-rss` were deployed with `verify_jwt=true`, admin JWT invocation returned `401 Invalid JWT`, and the pipeline then stopped after 2026-03-10T07:50:07Z, leaving only insecure anonymous invocation able to run the feed functions before the auth guard was hardened.",
+  "table_existence": {
+    "market_signals": true,
+    "data_feeds": true,
+    "api_registry": true,
+    "rss_items": true,
+    "rss_sources": true,
+    "feed_run_log": true
+  },
+  "db_counts": {
+    "market_signals_total": 417,
+    "market_signals_last_24h": 316,
+    "market_signals_last_7d": 417,
+    "grouped_by_vertical": {
+      "beauty_brand": 36,
+      "medspa": 99,
+      "multi": 261,
+      "salon": 21
+    },
+    "grouped_by_topic": {
+      "brand_news": 37,
+      "consumer_trend": 32,
+      "events": 6,
+      "ingredient": 10,
+      "jobs": 8,
+      "market_data": 1,
+      "other": 190,
+      "pricing": 17,
+      "regulation": 9,
+      "safety": 52,
+      "science": 32,
+      "technology": 8,
+      "treatment_trend": 15
+    },
+    "grouped_by_signal_type": {
+      "brand_update": 18,
+      "education": 1,
+      "event_signal": 1,
+      "industry_news": 104,
+      "ingredient_momentum": 107,
+      "job_market": 4,
+      "market_data": 1,
+      "pricing_benchmark": 3,
+      "product_velocity": 1,
+      "regional": 1,
+      "regulatory_alert": 57,
+      "research_insight": 12,
+      "social_trend": 16,
+      "treatment_trend": 91
+    },
+    "grouped_by_tier_min": {
+      "free": 401,
+      "paid": 16
+    },
+    "field_presence": {
+      "vertical": 417,
+      "topic": 417,
+      "signal_type": 417,
+      "tier_min": 417,
+      "published_at": 185,
+      "source_url": 417,
+      "hero_image_url": 56,
+      "image_url": 76,
+      "article_html": 96,
+      "article_body": 96
+    }
+  },
+  "feed_registry_health": {
+    "data_feeds_total": 216,
+    "data_feeds_enabled": 179,
+    "data_feeds_disabled": 37,
+    "data_feeds_by_feed_type": {
+      "api": 7,
+      "rss": 209
+    },
+    "data_feeds_by_vertical": {
+      "beauty_brand": 29,
+      "medspa": 65,
+      "multi": 86,
+      "salon": 36
+    },
+    "data_feeds_by_tier_min": {
+      "free": 148,
+      "paid": 68
+    },
+    "data_feeds_by_health_status": {
+      "degraded": 47,
+      "failed": 70,
+      "healthy": 99
+    },
+    "data_feeds_success_last_24h": 11,
+    "data_feeds_success_last_7d": 32,
+    "data_feeds_without_any_success": 184,
+    "api_registry_total": 31,
+    "api_registry_active": 27,
+    "api_registry_inactive": 4,
+    "api_registry_by_last_test_status": {
+      "pass": 24,
+      "timeout": 3,
+      "untested": 4
+    },
+    "api_registry_tested_last_7d": 27,
+    "latest_successful_feeds": [
+      {
+        "id": "d986f3bd-6d34-4878-b670-49a1b603778c",
+        "name": "MIT Tech Review AI",
+        "last_success_at": "2026-03-12T00:37:06.847+00:00",
+        "signal_count": 10
+      },
+      {
+        "id": "6e5d9e23-ec1a-4aa7-ad35-8487f396ae8e",
+        "name": "TheIndustry.beauty",
+        "last_success_at": "2026-03-12T00:30:01.047+00:00",
+        "signal_count": 20
+      },
+      {
+        "id": "3218f70d-c9bf-42ad-9c5e-524451ebe25d",
+        "name": "Yoga Journal",
+        "last_success_at": "2026-03-12T00:29:58.915+00:00",
+        "signal_count": 10
+      },
+      {
+        "id": "bdcdc8cf-6d61-413a-848e-99821ba7f48b",
+        "name": "Aesthetics Journal UK",
+        "last_success_at": "2026-03-12T00:29:57.860+00:00",
+        "signal_count": 10
+      },
+      {
+        "id": "71af335d-fb9a-465e-b023-336a5e757fa8",
+        "name": "Hairdressers Journal (HJI)",
+        "last_success_at": "2026-03-12T00:29:57.155+00:00",
+        "signal_count": 10
+      },
+      {
+        "id": "0f80ed24-f15a-4dcf-bdf9-940c0aa3dd1f",
+        "name": "Allure Makeup",
+        "last_success_at": "2026-03-12T00:29:55.237+00:00",
+        "signal_count": 19
+      },
+      {
+        "id": "01a065d7-a533-4f63-922d-f8bd268ea75c",
+        "name": "Beauty Independent",
+        "last_success_at": "2026-03-12T00:29:53.634+00:00",
+        "signal_count": 6
+      },
+      {
+        "id": "a300ee92-00cd-4140-826e-dcf70464ccb5",
+        "name": "WWD Beauty",
+        "last_success_at": "2026-03-12T00:29:53.098+00:00",
+        "signal_count": 10
+      }
+    ]
+  },
+  "ingestion_run_health": {
+    "feed_run_log_total": 463,
+    "feed_run_log_last_24h": 12,
+    "largest_gap_hours": 40.32,
+    "largest_gap_window": {
+      "previous_started_at": "2026-03-10T07:50:07.601+00:00",
+      "next_started_at": "2026-03-12T00:09:08.765+00:00"
+    },
+    "latest_targeted_restore_runs": [
+      {
+        "feed_id": "a300ee92-00cd-4140-826e-dcf70464ccb5",
+        "started_at": "2026-03-12T00:29:52.675+00:00",
+        "finished_at": "2026-03-12T00:29:53.154+00:00",
+        "status": "success",
+        "signals_created": 10,
+        "items_fetched": 10
+      },
+      {
+        "feed_id": "01a065d7-a533-4f63-922d-f8bd268ea75c",
+        "started_at": "2026-03-12T00:29:53.213+00:00",
+        "finished_at": "2026-03-12T00:29:53.687+00:00",
+        "status": "success",
+        "signals_created": 6,
+        "items_fetched": 6
+      },
+      {
+        "feed_id": "0f80ed24-f15a-4dcf-bdf9-940c0aa3dd1f",
+        "started_at": "2026-03-12T00:29:53.739+00:00",
+        "finished_at": "2026-03-12T00:29:55.290+00:00",
+        "status": "success",
+        "signals_created": 19,
+        "items_fetched": 19
+      },
+      {
+        "feed_id": "71af335d-fb9a-465e-b023-336a5e757fa8",
+        "started_at": "2026-03-12T00:29:55.344+00:00",
+        "finished_at": "2026-03-12T00:29:57.207+00:00",
+        "status": "success",
+        "signals_created": 10,
+        "items_fetched": 10
+      },
+      {
+        "feed_id": "bdcdc8cf-6d61-413a-848e-99821ba7f48b",
+        "started_at": "2026-03-12T00:29:57.264+00:00",
+        "finished_at": "2026-03-12T00:29:57.911+00:00",
+        "status": "success",
+        "signals_created": 10,
+        "items_fetched": 10
+      },
+      {
+        "feed_id": "3218f70d-c9bf-42ad-9c5e-524451ebe25d",
+        "started_at": "2026-03-12T00:29:57.968+00:00",
+        "finished_at": "2026-03-12T00:29:58.976+00:00",
+        "status": "success",
+        "signals_created": 10,
+        "items_fetched": 10
+      },
+      {
+        "feed_id": "6e5d9e23-ec1a-4aa7-ad35-8487f396ae8e",
+        "started_at": "2026-03-12T00:29:59.031+00:00",
+        "finished_at": "2026-03-12T00:30:01.181+00:00",
+        "status": "success",
+        "signals_created": 20,
+        "items_fetched": 20
+      }
+    ],
+    "scheduler_shape_proof": {
+      "started_at": "2026-03-12T00:37:06.652+00:00",
+      "evidence": "Anonymous POST {} to feed-orchestrator produced new feed_run_log rows from 00:37:06Z through 00:38:35Z, including success rows for MIT Tech Review AI, Yonhap News Korea, PBL Magazine UK, Glossy, CEW, PR Newswire Beauty, Nails Magazine, Scratch Magazine, Skin Therapy Letter, and Wellbeing Magazine."
+    },
+    "minimal_tracing_assessment": "feed_run_log already records run_id, feed_id, started_at, finished_at, status, signals_created, items_fetched, and error_message. Additional tracing is only needed if per-item errors or orchestrator batch IDs are required."
+  },
+  "edge_function_runtime": {
+    "deployed_functions": [
+      {
+        "name": "feed-orchestrator",
+        "version": 29,
+        "verify_jwt": false,
+        "status": "ACTIVE"
+      },
+      {
+        "name": "ingest-rss",
+        "version": 21,
+        "verify_jwt": false,
+        "status": "ACTIVE"
+      },
+      {
+        "name": "rss-to-signals",
+        "version": 20,
+        "verify_jwt": false,
+        "status": "ACTIVE"
+      }
+    ],
+    "refresh_live_data": {
+      "deployed_remotely": false,
+      "evidence": "refresh-live-data was not present in `supabase functions list` for project rumdmulxzmjtsplsjngi during this audit."
+    }
+  },
+  "invocation_guard_audit": {
+    "summary": "`verify_jwt=false` is a deploy-time setting only. Runtime access is enforced inside each function before any feed work starts.",
+    "feed-orchestrator": {
+      "method": "POST only",
+      "anonymous_without_bearer": "401 Missing Authorization header",
+      "authorized_callers": [
+        "service-role bearer",
+        "admin JWT with `user_profiles.role` in [`admin`, `super_admin`]"
+      ],
+      "request_shape_guards": [
+        "Only optional `dry_run` boolean is accepted."
+      ]
+    },
+    "ingest-rss": {
+      "method": "POST only",
+      "anonymous_without_bearer": "401 Missing Authorization header",
+      "authorized_callers": [
+        "service-role bearer",
+        "admin JWT with `user_profiles.role` in [`admin`, `super_admin`]"
+      ],
+      "request_shape_guards": [
+        "`batch_size` defaults to 10 and is clamped to 25.",
+        "`source_ids` is capped at 50 items."
+      ]
+    },
+    "rss-to-signals": {
+      "method": "POST only",
+      "anonymous_without_bearer": "401 Missing Authorization header",
+      "authorized_callers": [
+        "service-role bearer",
+        "admin JWT with `user_profiles.role` in [`admin`, `super_admin`]"
+      ],
+      "request_shape_guards": [
+        "`limit` defaults to 100 and is clamped to 500."
+      ]
+    },
+    "rate_limiting": "There is no separate anonymous rate limiter because anonymous requests are rejected before work begins. The current protection is bearer auth plus bounded request shapes."
+  },
+  "ui_filter_audit": {
+    "root_cause_in_ui": false,
+    "evidence": [
+      "useIntelligence applies DB-level `tier_min='free'` plus a 14-day freshness window for free users.",
+      "useIntelligence applies a two-pass fallback for narrow verticals when strict results are below 8 rows.",
+      "useIntelligence defaults to `limit=50`, which is large enough for the restored inventory.",
+      "With 417 rows total and 316 rows updated in the last 24h at snapshot time, empty boards were not caused by pagination or gating once ingestion resumed."
+    ],
+    "notes": [
+      "The `beauty_brand` fallback topic list references `brand_growth` and `retail`, which are not part of the current classifier output. That is not the primary root cause because the strict `vertical in (beauty_brand, multi)` path already returns inventory."
+    ]
+  },
+  "security_hardening": {
+    "status": "addressed",
+    "details": [
+      "Anonymous invocation is now blocked inside `feed-orchestrator`, `ingest-rss`, and `rss-to-signals`; all three return `401 Missing Authorization header` when called without a bearer token, while service-role invocations still return `200`.",
+      "`verify_jwt=false` remains required for deploy-time compatibility, but it is no longer a public execution path because every live handler now enforces service-role or admin access before work starts.",
+      "Server-side sanitization strips script/style/iframe/object/embed blocks, inline event handlers, javascript: URLs, and inline styles before writing article HTML.",
+      "Client-side `sanitizeArticleHtml()` now allowlists basic content tags and safe attrs before `dangerouslySetInnerHTML` is used in intelligence detail surfaces.",
+      "Client-side `normalizeMediaUrl()` decodes HTML-escaped media query params so `hero_image_url`, `image_url`, and `image_urls` render consistently from live data.",
+      "Signal detail pages fall back to plaintext `article_body` or the external `source_url` when full HTML is unavailable."
+    ]
+  },
+  "browser_visual_proof": {
+    "route": "/portal/intelligence",
+    "overview_screenshot": "/Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL/SOCELLE-WEB/docs/qa/screenshots/portal_intelligence_overview_live.png",
+    "detail_screenshot": "/Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL/SOCELLE-WEB/docs/qa/screenshots/portal_intelligence_detail_live.png",
+    "service_worker_note": "Playwright used `serviceWorkers: 'block'` because the local PWA offline path was returning `408 Offline` for external media in headless verification.",
+    "overview": {
+      "headerVisible": true,
+      "signalTableVisible": true,
+      "totalRowsVisible": 20,
+      "sampleBannerVisible": false,
+      "isLive": true
+    },
+    "detail": {
+      "signal_id": "7a749484-1fd0-42ed-8750-8704d9e11d0a",
+      "signal_title": "Veronique Leroy Fall 2026 Ready-to-Wear",
+      "content_state": "excerpt_only",
+      "hero_image_loaded": true,
+      "badges_visible": [
+        "Category",
+        "Signal Type",
+        "Confidence"
+      ],
+      "source_action": "Read Full Article"
+    }
+  },
+  "files_changed": [
     "supabase/functions/feed-orchestrator/index.ts",
-    "supabase/functions/rss-to-signals/index.ts"
+    "supabase/functions/ingest-rss/index.ts",
+    "supabase/functions/rss-to-signals/index.ts",
+    "supabase/config.toml",
+    "src/lib/intelligence/sanitizeArticleHtml.ts",
+    "src/lib/intelligence/normalizeMediaUrl.ts",
+    "src/components/intelligence/SignalDetailPanel.tsx",
+    "src/components/intelligence/SignalCard.tsx",
+    "src/components/intelligence/SignalCardEditorial.tsx",
+    "src/pages/public/IntelligenceSignalDetail.tsx",
+    "src/lib/intelligence/useSignalImage.ts"
   ],
-  "blocked_commands": [
-    "deno check supabase/functions/feed-orchestrator/index.ts",
-    "deno check supabase/functions/rss-to-signals/index.ts",
-    "supabase functions serve feed-orchestrator --no-verify-jwt",
-    "supabase functions serve rss-to-signals --no-verify-jwt"
+  "commands": [
+    {
+      "command": "deno check supabase/functions/feed-orchestrator/index.ts",
+      "output": "Check supabase/functions/feed-orchestrator/index.ts"
+    },
+    {
+      "command": "deno check supabase/functions/ingest-rss/index.ts",
+      "output": "Check supabase/functions/ingest-rss/index.ts"
+    },
+    {
+      "command": "deno check supabase/functions/rss-to-signals/index.ts",
+      "output": "Check supabase/functions/rss-to-signals/index.ts"
+    },
+    {
+      "command": "SUPABASE_ACCESS_TOKEN=<redacted> supabase functions list --project-ref rumdmulxzmjtsplsjngi --output json",
+      "output": "feed-orchestrator v29 verify_jwt=false ACTIVE; ingest-rss v21 verify_jwt=false ACTIVE; rss-to-signals v20 verify_jwt=false ACTIVE"
+    },
+    {
+      "command": "SUPABASE_ACCESS_TOKEN=<redacted> supabase functions deploy feed-orchestrator ingest-rss rss-to-signals --project-ref rumdmulxzmjtsplsjngi --no-verify-jwt",
+      "output": "Deployed Functions on project rumdmulxzmjtsplsjngi: feed-orchestrator, ingest-rss, rss-to-signals"
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/feed-orchestrator {\"dry_run\":true} with no Authorization header",
+      "output": "HTTP/2 401; {\"error\":\"Missing Authorization header\"}"
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/feed-orchestrator {\"dry_run\":true} with service-role bearer",
+      "output": "HTTP/2 200; {\"ok\":true,\"dry_run\":true,\"would_process\":81,...}"
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/ingest-rss {\"batch_size\":1} with no Authorization header",
+      "output": "HTTP/2 401; {\"error\":\"Missing Authorization header\"}"
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/ingest-rss {\"batch_size\":1} with service-role bearer",
+      "output": "HTTP/2 200; {\"ok\":true,\"sources_processed\":1,\"total_fetched\":6,\"total_new_items\":0,\"errors\":0,...}"
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/ingest-rss {\"batch_size\":999,\"source_ids\":[...51 ids...]} with service-role bearer",
+      "output": "HTTP/2 200; the project currently has only 10 active `rss_sources`, so the live run could not numerically exceed the clamp. Handler inspection confirms `batch_size<=25` and `source_ids<=50` before query execution."
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/rss-to-signals {\"limit\":1} with no Authorization header",
+      "output": "HTTP/2 401; {\"error\":\"Missing Authorization header\"}"
+    },
+    {
+      "command": "POST https://rumdmulxzmjtsplsjngi.supabase.co/functions/v1/rss-to-signals {\"limit\":1} with service-role bearer",
+      "output": "HTTP/2 200; {\"promoted\":1,\"skipped\":0,\"threshold\":0.5,\"limit_used\":1,...}"
+    },
+    {
+      "command": "SELECT COUNT(*) FROM rss_sources WHERE status='active'",
+      "output": "10 active rss_sources at verification time"
+    },
+    {
+      "command": "temporary admin JWT script -> create temp admin user, sign in, POST /functions/v1/feed-orchestrator with {\"dry_run\":true}, then delete temp profile and auth user",
+      "output": "HTTP/2 200; admin JWT invoke remained valid after the auth hardening."
+    },
+    {
+      "command": "Playwright headless browser pass against http://127.0.0.1:4173/portal/intelligence with serviceWorkers='block'",
+      "output": "Saved `docs/qa/screenshots/portal_intelligence_overview_live.png` and `docs/qa/screenshots/portal_intelligence_detail_live.png`; overview showed 20 visible live rows with no sample-data banner, and the detail panel for signal 7a749484-1fd0-42ed-8750-8704d9e11d0a rendered a loaded hero image plus excerpt/action state and metadata badges."
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "output": "exit 0"
+    },
+    {
+      "command": "npm run build",
+      "output": "vite build finished successfully in 6.77s; PWA generateSW completed"
+    }
   ],
-  "blocked_tests": [
-    "Runtime extraction of article_html and hero_image_url",
-    "5 live signal ID proof (blocked due to no ingest pipeline)"
+  "sample_signal_ids": [
+    {
+      "id": "0a90403a-c67d-4c0f-9b8f-d70c1927a697",
+      "title": "Diptyque expands celebration of Orphéon fragrance with new music collaboration",
+      "source_name": "TheIndustry.beauty",
+      "vertical": "beauty_brand",
+      "openable_via": "internal detail + source_url",
+      "hero_image_url": "present",
+      "readable_content": "article_html + article_body"
+    },
+    {
+      "id": "3d2b1b51-2359-4ae6-b186-c54c1821376e",
+      "title": "Refy leverages community insights for new complexion launch",
+      "source_name": "TheIndustry.beauty",
+      "vertical": "beauty_brand",
+      "openable_via": "internal detail + source_url",
+      "hero_image_url": "present",
+      "readable_content": "article_html + article_body"
+    },
+    {
+      "id": "5487abcc-337d-4a88-ac87-cc6231e7d57b",
+      "title": "5 Yoga Practices on YouTube to Help You Find Your Calm",
+      "source_name": "Yoga Journal",
+      "vertical": "medspa",
+      "openable_via": "internal detail + source_url",
+      "hero_image_url": "present",
+      "readable_content": "article_html + article_body"
+    },
+    {
+      "id": "0cff1b0a-eec0-49f4-beb2-0933c945afb7",
+      "title": "Yes, Yoga Teachers, You Can Use Your Notes During Class",
+      "source_name": "Yoga Journal",
+      "vertical": "medspa",
+      "openable_via": "internal detail + source_url",
+      "hero_image_url": "present",
+      "readable_content": "article_html + article_body"
+    },
+    {
+      "id": "1e3bb7ce-fc63-4182-a5b7-f60307570380",
+      "title": "Meet The F.A.M.E. Team 2026!",
+      "source_name": "Hairdressers Journal (HJI)",
+      "vertical": "salon",
+      "openable_via": "internal detail + source_url",
+      "hero_image_url": "fallback",
+      "readable_content": "article_html + article_body"
+    },
+    {
+      "id": "4d1b06a7-4495-40f2-963b-a64421c8c2e3",
+      "title": "Caffeine Inspired Hair: The Latest Spring Hair Colour Trend",
+      "source_name": "Hairdressers Journal (HJI)",
+      "vertical": "salon",
+      "openable_via": "internal detail + source_url",
+      "hero_image_url": "fallback",
+      "readable_content": "article_html + article_body"
+    }
   ],
-  "verification_follow_up": [
-    "To confirm the API Registry Count estimates: supabase db psql -c 'SELECT COUNT(*) FROM api_registry;'",
-    "To confirm the Data Feeds Count estimates: supabase db psql -c 'SELECT COUNT(*) FROM data_feeds;'"
+  "next_prs": [
+    {
+      "title": "PR-A: Merge ingestion auth hardening + proof pack",
+      "scope": [
+        "Keep feed-orchestrator, ingest-rss, and rss-to-signals on function-level auth with service-role/admin-only execution.",
+        "Document deploy-time `verify_jwt=false` in supabase/config.toml and the required service-role Authorization header for cron/manual runs.",
+        "Ship the browser proof pack and auth matrix with the merge."
+      ]
+    },
+    {
+      "title": "PR-B: Mapping and data integrity hardening",
+      "scope": [
+        "Continue classification cleanup for topic -> signal_type -> vertical mappings.",
+        "Reduce failing/degraded feed inventory using current `feed_run_log` evidence.",
+        "Add remediation for recurring 404/403/502 feeds surfaced by the scheduler burst."
+      ]
+    },
+    {
+      "title": "PR-C: UI consumption integrity and security hardening",
+      "scope": [
+        "Keep sanitized article rendering on detail surfaces.",
+        "Review `beauty_brand` fallback topic list in `useIntelligence` so the fallback taxonomy matches current classifier outputs.",
+        "Preserve graceful image fallback when hero media is unavailable."
+      ]
+    }
   ],
-  "date": "2026-03-11"
+  "notes": [
+    "The audit snapshot counts were taken at 2026-03-12T00:37:03.748Z. Inventory continued rising after that snapshot during the restore run; the earlier anonymous cron-shape path used for diagnosis has since been closed and now returns 401 without a bearer token.",
+    "Residual feed debt remains: 70 feeds are still marked failed and 47 degraded. The restored pipeline is live, but feed health cleanup should continue in PR-B.",
+    "refresh-live-data was not needed to restore `/portal/intelligence` inventory during this audit, but its deploy status should be addressed if any cache-refresh workflow still depends on it."
+  ]
 }

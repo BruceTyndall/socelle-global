@@ -37,6 +37,7 @@ import { useCrmTasks, useCrmTasksForContact } from '../../lib/useCrmTasks';
 import { useCrmPurchaseHistory, type ContactPurchase } from '../../lib/useCrmPurchaseHistory';
 import { supabase } from '../../lib/supabase';
 import { exportToCsv } from '../../lib/csvExport';
+import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 
 interface RelevantSignal {
   id: string;
@@ -362,52 +363,26 @@ export default function ContactDetail() {
     return Array.from(cats);
   }, [records]);
 
-  const { data: relevantSignals = [], isLoading: signalsLoading } = useQuery({
-    queryKey: ['crm_contact_signals', id, treatmentCategories],
-    queryFn: async () => {
-      if (treatmentCategories.length === 0) {
-        // fallback: just get top signals by magnitude
-        const { data, error } = await supabase
-          .from('market_signals')
-          .select('id, title, description, magnitude, direction, category, updated_at')
-          .order('magnitude', { ascending: false })
-          .limit(5);
-        if (error) throw new Error(error.message);
-        return (data ?? []) as RelevantSignal[];
-      }
-      // Try to match signals whose category or title overlaps with treatment history
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('id, title, description, magnitude, direction, category, updated_at')
-        .order('magnitude', { ascending: false })
-        .limit(20);
-      if (error) throw new Error(error.message);
-      const rows = (data ?? []) as RelevantSignal[];
-      // Client-side filter: match category or title keywords with treatment history
-      const matched = rows.filter(s => {
-        const cat = (s.category ?? '').toLowerCase();
-        const title = s.title.toLowerCase();
-        return treatmentCategories.some(tc => cat.includes(tc) || title.includes(tc));
-      });
-      return matched.length > 0 ? matched.slice(0, 5) : rows.slice(0, 5);
-    },
-    enabled: !!id && tab === 'Intelligence',
-  });
+  const { signals: allSignals, loading: signalsLoading } = useIntelligence({ limit: 50 });
+
+  const relevantSignals = useMemo(() => {
+    if (!id || tab !== 'Intelligence' || allSignals.length === 0) return [];
+    if (treatmentCategories.length === 0) {
+      return allSignals.slice(0, 5) as RelevantSignal[];
+    }
+    const matched = allSignals.filter(s => {
+      const cat = (s.category ?? '').toLowerCase();
+      const title = s.title.toLowerCase();
+      return treatmentCategories.some(tc => cat.includes(tc) || title.includes(tc));
+    });
+    return (matched.length > 0 ? matched.slice(0, 5) : allSignals.slice(0, 5)) as RelevantSignal[];
+  }, [allSignals, treatmentCategories, id, tab]);
 
   /* ── CRM-WO-07: Signal search for Link Signal modal ──────────────────── */
-  const { data: searchableSignals = [] } = useQuery({
-    queryKey: ['crm_signal_search', signalSearch],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('market_signals')
-        .select('id, title, description, category, direction, magnitude, updated_at')
-        .order('magnitude', { ascending: false })
-        .limit(50);
-      if (error) throw new Error(error.message);
-      return (data ?? []) as RelevantSignal[];
-    },
-    enabled: showLinkSignal,
-  });
+  const searchableSignals = useMemo(() => {
+    if (!showLinkSignal) return [];
+    return allSignals as RelevantSignal[];
+  }, [allSignals, showLinkSignal]);
 
   const filteredSearchSignals = useMemo(() => {
     if (!signalSearch.trim()) return searchableSignals.slice(0, 10);

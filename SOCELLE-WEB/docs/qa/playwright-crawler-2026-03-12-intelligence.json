@@ -1,0 +1,48 @@
+{
+  "baseUrl": "http://127.0.0.1:4173",
+  "route": "/portal/intelligence",
+  "visual_proof_at": "2026-03-12T01:24:28.896Z",
+  "screenshots": {
+    "overview": "/Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL/SOCELLE-WEB/docs/qa/screenshots/portal_intelligence_overview_live.png",
+    "detail": "/Users/brucetyndall/Documents/GitHub/SOCELLE GLOBAL/SOCELLE-WEB/docs/qa/screenshots/portal_intelligence_detail_live.png"
+  },
+  "overview": {
+    "headerVisible": true,
+    "signalTableVisible": true,
+    "totalRowsVisible": 20,
+    "sampleBannerVisible": false,
+    "isLive": true
+  },
+  "detail": {
+    "signal_id": "7a749484-1fd0-42ed-8750-8704d9e11d0a",
+    "signal_title": "Veronique Leroy Fall 2026 Ready-to-Wear",
+    "titleVisible": true,
+    "excerptVisible": true,
+    "readFullArticleVisible": true,
+    "confidenceVisible": true,
+    "signalTypeVisible": true,
+    "categoryVisible": true,
+    "heroInfo": {
+      "ok": true,
+      "naturalWidth": 2732,
+      "clientHeight": 224,
+      "src": "https://assets.vogue.com/photos/69b1a29b81cf0552768d3a41/master/pass/00001-veronique-leroy-fall-2026-ready-to-wear-credit-brand.jpg"
+    },
+    "signal_row": {
+      "id": "7a749484-1fd0-42ed-8750-8704d9e11d0a",
+      "title": "Veronique Leroy Fall 2026 Ready-to-Wear",
+      "hero_image_url": "https://assets.vogue.com/photos/69b1a29b81cf0552768d3a41/master/pass/00001-veronique-leroy-fall-2026-ready-to-wear-credit-brand.jpg",
+      "image_url": "https://assets.vogue.com/photos/69b1a29b81cf0552768d3a41/master/pass/00001-veronique-leroy-fall-2026-ready-to-wear-credit-brand.jpg",
+      "source_url": "https://www.vogue.com/fashion-shows/fall-2026-ready-to-wear/veronique-leroy",
+      "signal_type": "industry_news",
+      "category": "trade_pub",
+      "confidence_score": 0.7,
+      "updated_at": "2026-03-12T00:37:20.132961+00:00",
+      "published_at": "2026-03-12T00:35:36+00:00"
+    }
+  },
+  "notes": [
+    "Browser context used serviceWorkers='block' so the local PWA offline cache path did not suppress external hero images during verification.",
+    "The overview screenshot was captured before the table search narrowed to the verified live signal."
+  ]
+}
