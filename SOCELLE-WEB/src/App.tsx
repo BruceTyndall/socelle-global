@@ -408,6 +408,7 @@ function App() {
                   {/* Pre-launch quiz — primary landing during build phase (W14-01) */}
                   <Route path="/" element={<PrelaunchQuiz />} />
                   {/* Always accessible — auth, legal, and access form bypass prelaunch gate */}
+                  <Route path="/waitlist" element={<PrelaunchQuiz />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/privacy" element={<Privacy />} />
