@@ -13,7 +13,7 @@ import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, Tier
 // Migrated to TanStack Query v5 (V2-TECH-04).
 
 interface UseIntelligenceOptions {
-  /** User's plan tier — controls which signals are visible. Default: 'free' */
+  /** User's plan tier — controls which signals are visible. Defaults to subscription tier. */
   userTier?: TierVisibility;
   /**
    * INTEL-MEDSPA-01: Optional vertical filter.
@@ -220,11 +220,11 @@ const EMPTY_MARKET_PULSE: MarketPulse = {
 };
 
 export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligenceReturn {
-  const userTier = options?.userTier ?? 'free';
   const [activeFilter, setActiveFilter] = useState<SignalFilterKey>('all');
 
   // INTEL-MEDSPA-01: resolve effective tier for tier_min DB filtering
   const { tier: subscriptionTier } = useTier();
+  const resolvedUserTier: TierVisibility = options?.userTier ?? (subscriptionTier === 'free' ? 'free' : 'pro');
   // Map subscription tier to tier_min gate: 'free' tier sees only free-labelled signals; any paid tier sees all
   const effectiveTierMin: 'free' | 'paid' = options?.tierOverride ?? (subscriptionTier === 'free' ? 'free' : 'paid');
 
@@ -406,7 +406,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
   // rowToSignal now reads tier_visibility from DB; falls back to tier_min
   // mapping (paid→pro); finally 'free' for rows predating the column.
   // This prevents bypass if signals are injected outside the DB query path.
-  const allowedTiers = TIER_ACCESS[userTier];
+  const allowedTiers = TIER_ACCESS[resolvedUserTier];
   const tieredSignals = useMemo(() => {
     return rawSignals.filter((s) => {
       const tier = s.tier_visibility ?? 'free';

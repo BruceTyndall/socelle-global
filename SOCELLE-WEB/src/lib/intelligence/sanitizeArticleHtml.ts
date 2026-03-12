@@ -76,7 +76,8 @@ export function sanitizeArticleHtml(html: string | null | undefined): string | n
   }
 
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  doc.querySelectorAll('script,style,iframe,object,embed,form,input,button,textarea,select,svg,math,link,meta,base')
+  doc
+    .querySelectorAll('script,style,iframe,object,embed,form,input,button,textarea,select,svg,math,link,meta,base')
     .forEach((node) => node.remove());
 
   const elements = Array.from(doc.body.querySelectorAll('*')).reverse();
