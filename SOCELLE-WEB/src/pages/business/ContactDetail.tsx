@@ -646,11 +646,12 @@ export default function ContactDetail() {
                   : TIMELINE_SOURCE_META[entry.source];
                   
                 const content = (
-                  <div className="p-3 rounded-lg border border-accent-soft/20 hover:border-accent/30 transition-colors">
+                  <div className={`p-3 rounded-lg border transition-colors ${entry.source === 'signal_attribution' ? 'border-indigo-200 bg-indigo-50/40 hover:border-indigo-300' : 'border-accent-soft/20 hover:border-accent/30'}`}>
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${sourceMeta.chip}`}>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${sourceMeta.chip}`}>
+                            {entry.source === 'signal_attribution' && <Sparkles className="w-3 h-3" />}
                             {sourceMeta.label}
                           </span>
                           <span className="text-[10px] text-graphite/40 uppercase">{entry.status}</span>
