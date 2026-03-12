@@ -38,11 +38,12 @@ const productionFallbackAllowed = import.meta.env.PROD;
 const resolvedUrl = envUrl || (productionFallbackAllowed ? PROD_SUPABASE_URL : '');
 const resolvedProjectRef = extractProjectRef(resolvedUrl);
 const hasValidEnvKey = isAnonKeyForProject(envKey, resolvedProjectRef);
+const useBundledProdAnonKey = productionFallbackAllowed && resolvedProjectRef === PROD_SUPABASE_PROJECT_REF;
 
-const resolvedKey = hasValidEnvKey
-  ? envKey!
-  : productionFallbackAllowed && resolvedProjectRef === PROD_SUPABASE_PROJECT_REF
-    ? PROD_SUPABASE_ANON_KEY
+const resolvedKey = useBundledProdAnonKey
+  ? PROD_SUPABASE_ANON_KEY
+  : hasValidEnvKey
+    ? envKey!
     : '';
 
 export const isSupabaseConfigured = !!(resolvedUrl && resolvedKey);
@@ -56,6 +57,8 @@ if (!isSupabaseConfigured && bypass) {
   console.warn('Supabase not configured: app running in UI-only mode. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for data.');
 } else if (productionFallbackAllowed && !hasValidEnvKey && resolvedProjectRef === PROD_SUPABASE_PROJECT_REF) {
   console.warn('Supabase anon key env invalid for production project. Falling back to bundled public anon key.');
+} else if (useBundledProdAnonKey) {
+  console.warn('Using bundled public anon key for the production Socelle Supabase project.');
 }
 
 const unconfiguredProxy = new Proxy({} as ReturnType<typeof createClient>, {
