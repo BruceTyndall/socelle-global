@@ -132,12 +132,7 @@ async function networkFirst(request) {
  * Navigation fallback — try network, serve offline page if unavailable.
  */
 async function navigationFallback(request) {
-  try {
-    return await fetch(request);
-  } catch {
-    const offlinePage = await caches.match(OFFLINE_PAGE);
-    return offlinePage || new Response('Offline', { status: 503 });
-  }
+  return await fetch(request);
 }
 
 /**

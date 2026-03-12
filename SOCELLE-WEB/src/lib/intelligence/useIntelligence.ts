@@ -319,7 +319,6 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         }
       }
 
-      if (!results || results.length === 0) return [];
       return results.map(rowToSignal);
     },
     enabled: isSupabaseConfigured,
