@@ -38,7 +38,6 @@ import { useCrmPurchaseHistory, type ContactPurchase } from '../../lib/useCrmPur
 import { supabase } from '../../lib/supabase';
 import { exportToCsv } from '../../lib/csvExport';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
-import ContactConsentModal from '../../components/crm/ContactConsentModal';
 
 interface RelevantSignal {
   id: string;
@@ -144,9 +143,6 @@ export default function ContactDetail() {
   const [linkingSignalId, setLinkingSignalId] = useState<string | null>(null);
   const [linkSuccess, setLinkSuccess] = useState<string | null>(null);
   const [linkError, setLinkError] = useState<string | null>(null);
-
-  // ── CRM-CONSENT-01: View Consent Modal state ───────────────────────────
-  const [showConsentModal, setShowConsentModal] = useState(false);
 
   // ── CRM-WO-09: Schedule follow-up modal state ───────────────────────────
   const [showScheduleFollowUp, setShowScheduleFollowUp] = useState(false);
@@ -550,20 +546,12 @@ export default function ContactDetail() {
                 Booking, commerce, service records, tasks, and interactions in one operational stream.
               </p>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowConsentModal(true)}
-                className="h-8 px-3 rounded-full bg-accent/10 border border-accent/20 text-xs font-medium text-accent hover:bg-accent/20 hover:border-accent/30 transition-colors flex items-center gap-1.5"
-              >
-                <Shield className="w-3.5 h-3.5" /> View Consent Audit
-              </button>
-              <button
-                onClick={handleExportTimeline}
-                className="h-8 px-3 rounded-full border border-accent-soft/30 text-xs text-graphite/70 hover:border-accent/30 transition-colors"
-              >
-                Export CSV
-              </button>
-            </div>
+            <button
+              onClick={handleExportTimeline}
+              className="h-8 px-3 rounded-full border border-accent-soft/30 text-xs text-graphite/70 hover:border-accent/30 transition-colors"
+            >
+              Export CSV
+            </button>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -1436,12 +1424,6 @@ export default function ContactDetail() {
           </div>
         </div>
       )}
-
-      <ContactConsentModal 
-        isOpen={showConsentModal} 
-        onClose={() => setShowConsentModal(false)} 
-        contactId={id} 
-      />
     </div>
   );
 }
