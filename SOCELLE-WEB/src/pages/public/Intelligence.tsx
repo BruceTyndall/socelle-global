@@ -464,12 +464,12 @@ export default function Intelligence() {
         <title>Socelle Intelligence Hub | Premium Health Signals</title>
         <meta
           name="description"
-          content="Socelle Intelligence Hub blends editorial health intelligence with live market metrics, signal scoring, and timestamped operator insight."
+          content="Socelle Intelligence Hub blends editorial beauty intelligence with live market movement, brand momentum, treatment shifts, and operator-ready insight."
         />
-        <meta property="og:title" content="Socelle Intelligence Hub | Premium Health Signals" />
+        <meta property="og:title" content="Socelle Intelligence Hub | Beauty Signals And Market Movement" />
         <meta
           property="og:description"
-          content="A premium health intelligence landing page with live signals, clinical demand metrics, and data-terminal clarity."
+          content="A live beauty intelligence landing page for treatment demand, brand movement, ingredients, regulation, and consumer shifts."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={buildCanonical('/intelligence')} />
@@ -480,7 +480,7 @@ export default function Intelligence() {
       <JsonLd
         data={buildWebPageSchema({
           name: 'Socelle Intelligence Hub',
-          description: 'Premium health intelligence with live signals, scored evidence, and editorial market coverage.',
+          description: 'Live beauty intelligence with scored signals, editorial market coverage, and operator-ready context.',
           url: buildCanonical('/intelligence'),
         })}
       />
@@ -506,17 +506,17 @@ export default function Intelligence() {
               <div className="relative">
                 <div className="inline-flex items-center gap-3 rounded-pill border border-graphite/10 bg-white/68 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-graphite/54 shadow-soft backdrop-blur-sm">
                   <span className={`h-2 w-2 rounded-full ${isLive ? 'bg-accent animate-pulse-subtle' : 'bg-signal-warn'}`} />
-                  <span>{isLive ? 'Live Health Intelligence' : 'Preview Feed'}</span>
+                  <span>{isLive ? 'Live Beauty Intelligence' : 'Preview Feed'}</span>
                   <span className="hidden text-graphite/34 sm:inline">TanStack Query + Supabase</span>
                 </div>
 
                 <div className="mt-8 max-w-3xl">
                   <p className="text-[11px] uppercase tracking-[0.26em] text-accent">Socelle Intelligence Hub</p>
                   <h1 className="mt-5 max-w-4xl text-[clamp(3.2rem,7vw,6rem)] font-light leading-[0.94] tracking-[-0.05em] text-graphite">
-                    Editorial health intelligence with terminal-grade clarity.
+                    Beauty intelligence people actually want to read.
                   </h1>
                   <p className="mt-6 max-w-2xl text-lg leading-8 text-graphite/66 sm:text-xl">
-                    A premium landing surface for live treatment demand, formulation movement, safety watch, and pricing pressure. The page reads like a journal, but behaves like an instrument panel.
+                    Follow the treatments, brands, ingredients, consumer shifts, and market moves shaping beauty right now. The free surface should feel broad and useful before anyone ever needs the deeper paid layer.
                   </p>
                 </div>
 
@@ -660,7 +660,7 @@ export default function Intelligence() {
                   <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                     <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/58">Journal notes</p>
                     <h2 className="mt-2 max-w-md text-2xl font-medium tracking-[-0.03em]">
-                      The editorial rail stays tied to the live feed, not a static mock.
+                      The editorial rail stays tied to the live feed, not a static placeholder.
                     </h2>
                   </div>
                 </div>

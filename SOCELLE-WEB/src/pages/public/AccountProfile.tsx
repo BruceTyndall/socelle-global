@@ -1,13 +1,38 @@
 // AccountProfile.tsx — /account — Main user account hub (Shopify parity)
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Package, Heart, LogOut, Settings, User as UserIcon, CreditCard, Clock } from 'lucide-react';
+import { Package, Heart, LogOut, Settings, User as UserIcon, CreditCard, Clock, Bookmark } from 'lucide-react';
 import MainNav from '../../components/MainNav';
 import SiteFooter from '../../components/sections/SiteFooter';
 import { useAuth } from '../../lib/auth';
+import { useSignalLibrary } from '../../lib/intelligence/useSignalEngagement';
+
+function timeAgo(dateStr?: string | null): string {
+  if (!dateStr) return 'Recently saved';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  if (!Number.isFinite(diff) || diff < 0) return 'Recently saved';
+  const hours = Math.floor(diff / 3_600_000);
+  if (hours < 1) return 'Just now';
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
+function humanizeSignalType(value?: string | null): string {
+  if (!value) return 'Signal';
+  return value
+    .split('_')
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(' ');
+}
 
 export default function AccountProfile() {
   const { user, profile, signOut } = useAuth();
+  const {
+    data: signalLibrary,
+    isLoading: libraryLoading,
+    error: libraryError,
+  } = useSignalLibrary(4);
 
   return (
     <>
@@ -58,14 +83,91 @@ export default function AccountProfile() {
 
                 <Link to="/account/wishlist" className="bg-mn-card rounded-xl p-6 border border-graphite/5 shadow-sm hover:shadow-md transition-shadow group">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-                    <Heart className="w-6 h-6 text-accent" />
+                    <Bookmark className="w-6 h-6 text-accent" />
                   </div>
-                  <h3 className="text-lg font-sans font-semibold text-graphite mb-1">Saved Items</h3>
+                  <h3 className="text-lg font-sans font-semibold text-graphite mb-1">Saved Intelligence</h3>
                   <p className="text-sm font-sans text-graphite/60 line-clamp-2">
-                    Products and protocols you have saved for later.
+                    Articles and signals you have saved for later.
                   </p>
                 </Link>
               </div>
+
+              <section className="bg-mn-card rounded-xl border border-graphite/5 overflow-hidden">
+                <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-graphite/5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-graphite/45">Saved intelligence</p>
+                    <p className="text-sm text-graphite/60 mt-1">Your profile-ready library of signals and stories.</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-graphite/42">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-graphite/[0.04] px-3 py-1">
+                      <Bookmark className="w-3.5 h-3.5" />
+                      {signalLibrary?.savedCount ?? 0} saved
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-graphite/[0.04] px-3 py-1">
+                      <Heart className="w-3.5 h-3.5" />
+                      {signalLibrary?.likedCount ?? 0} liked
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  {libraryLoading ? (
+                    <div className="space-y-3 animate-pulse">
+                      {[...Array(3)].map((_, index) => (
+                        <div key={index} className="h-16 rounded-xl bg-graphite/[0.05]" />
+                      ))}
+                    </div>
+                  ) : libraryError ? (
+                    <div className="rounded-xl border border-graphite/10 bg-white p-5">
+                      <p className="text-sm font-semibold text-graphite">Saved library unavailable</p>
+                      <p className="mt-1 text-sm text-graphite/60">
+                        Your account is live, but this library will appear after the saved-signal migration is applied.
+                      </p>
+                    </div>
+                  ) : signalLibrary?.savedSignals?.length ? (
+                    <div className="space-y-3">
+                      {signalLibrary.savedSignals.map(({ signal, isLiked, savedAt }) => (
+                        <Link
+                          key={signal.id}
+                          to={`/intelligence/signals/${signal.id}`}
+                          className="flex items-start justify-between gap-4 rounded-xl border border-graphite/8 bg-white px-4 py-4 transition-colors hover:border-graphite/16 hover:bg-graphite/[0.02]"
+                        >
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-graphite/42">
+                              <span>{humanizeSignalType(signal.signal_type)}</span>
+                              {signal.source_name && <span>{signal.source_name}</span>}
+                            </div>
+                            <p className="mt-2 text-sm font-semibold leading-6 text-graphite">{signal.title}</p>
+                            {signal.description && (
+                              <p className="mt-1 text-sm text-graphite/60 line-clamp-2">{signal.description}</p>
+                            )}
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <div className="flex items-center justify-end gap-2 text-graphite/42">
+                              <Bookmark className="w-4 h-4 fill-current" />
+                              {isLiked && <Heart className="w-4 h-4 fill-current" />}
+                            </div>
+                            <p className="mt-2 text-[11px] font-mono text-graphite/42">{timeAgo(savedAt)}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="rounded-xl border border-dashed border-graphite/12 bg-white p-6 text-center">
+                      <p className="text-sm font-semibold text-graphite">No saved intelligence yet</p>
+                      <p className="mt-2 text-sm text-graphite/60">
+                        Save or like content from the Intelligence feed and it will show up here.
+                      </p>
+                      <Link
+                        to="/intelligence"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-graphite/12 px-4 py-2 text-sm font-medium text-graphite hover:border-graphite/20 hover:bg-graphite/[0.03]"
+                      >
+                        Browse intelligence
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </section>
 
               {/* Utility List */}
               <div className="bg-mn-card rounded-xl border border-graphite/5 overflow-hidden">
@@ -88,10 +190,7 @@ export default function AccountProfile() {
                         <UserIcon className="w-5 h-5 text-graphite/70" />
                       </div>
                       <div>
-                        <p className="text-sm font-sans font-semibold text-graphite flex items-center gap-2">
-                          Saved Addresses
-                          <span className="text-[9px] uppercase tracking-wider bg-graphite/10 px-1.5 py-0.5 rounded font-medium text-graphite/60">Coming Soon</span>
-                        </p>
+                        <p className="text-sm font-sans font-semibold text-graphite">Saved Addresses</p>
                         <p className="text-xs font-sans text-graphite/60">Manage your shipping destinations</p>
                       </div>
                     </div>
@@ -103,10 +202,7 @@ export default function AccountProfile() {
                         <CreditCard className="w-5 h-5 text-graphite/70" />
                       </div>
                       <div>
-                        <p className="text-sm font-sans font-semibold text-graphite flex items-center gap-2">
-                          Payment Methods
-                          <span className="text-[9px] uppercase tracking-wider bg-graphite/10 px-1.5 py-0.5 rounded font-medium text-graphite/60">Coming Soon</span>
-                        </p>
+                        <p className="text-sm font-sans font-semibold text-graphite">Payment Methods</p>
                         <p className="text-xs font-sans text-graphite/60">Manage your linked cards</p>
                       </div>
                     </div>

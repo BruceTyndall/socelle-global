@@ -12,6 +12,10 @@ import type { InterestValue } from './OnboardingInterests';
 import OnboardingPlanSelect from './OnboardingPlanSelect';
 import type { SelectedPlanSlug } from './OnboardingPlanSelect';
 import OnboardingComplete from './OnboardingComplete';
+import {
+  applyUserTagPreferenceDelta,
+  buildOnboardingPreferenceSeedGroups,
+} from '../../../lib/intelligence/personalization';
 
 const TOTAL_STEPS = 6;
 const STORAGE_KEY = 'socelle_onboarding_complete';
@@ -40,6 +44,25 @@ export default function OnboardingFlow() {
     );
   }, []);
 
+  const isRecoverablePreferenceError = useCallback((error: unknown) => {
+    const message = error instanceof Error ? error.message.toLowerCase() : '';
+    const code =
+      typeof error === 'object' && error !== null && 'code' in error
+        ? String((error as { code?: string }).code)
+        : '';
+
+    return (
+      code === '42P01' ||
+      code === '42703' ||
+      code === '42883' ||
+      code === 'PGRST202' ||
+      message.includes('user_tag_preferences') ||
+      message.includes('apply_user_tag_preference_delta') ||
+      message.includes('does not exist') ||
+      message.includes('could not find the function')
+    );
+  }, []);
+
   // ── Persist onboarding selections to Supabase ─────────────────────
   const saveOnboardingMutation = useMutation({
     mutationFn: async (payload: {
@@ -50,7 +73,7 @@ export default function OnboardingFlow() {
     }) => {
       if (!user?.id) throw new Error('Not authenticated');
 
-      const { error } = await supabase
+      const { error: profileError } = await supabase
         .from('user_profiles')
         .update({
           onboarding_role: payload.role,
@@ -59,18 +82,49 @@ export default function OnboardingFlow() {
           onboarding_plan: payload.plan,
           onboarding_completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        })
+        } as never)
         .eq('id', user.id);
 
-      if (error) {
-        // 42P01 = table/column missing — fall back to localStorage only
-        if (error.code === '42P01' || error.message.toLowerCase().includes('does not exist')) {
-          console.warn('[onboarding] Supabase column not yet available, saving to localStorage only.');
-          return;
+      if (profileError) {
+        // 42P01 / 42703 = table or column missing — fall back to localStorage only
+        if (
+          profileError.code === '42P01' ||
+          profileError.code === '42703' ||
+          profileError.message.toLowerCase().includes('does not exist')
+        ) {
+          console.warn('[onboarding] Supabase onboarding columns not yet available, saving to localStorage only.');
+        } else {
+          throw profileError;
         }
-        // 42703 = column does not exist — same fallback
-        if (error.code === '42703') {
-          console.warn('[onboarding] Onboarding columns not yet migrated, saving to localStorage only.');
+      }
+
+      const { primaryTags, secondaryTags } = buildOnboardingPreferenceSeedGroups({
+        role: payload.role,
+        vertical: payload.vertical,
+        interests: payload.interests,
+      });
+
+      try {
+        if (primaryTags.length > 0) {
+          await applyUserTagPreferenceDelta({
+            userId: user.id,
+            tagCodes: primaryTags,
+            delta: 4,
+            source: 'onboarding',
+          });
+        }
+
+        if (secondaryTags.length > 0) {
+          await applyUserTagPreferenceDelta({
+            userId: user.id,
+            tagCodes: secondaryTags,
+            delta: 2,
+            source: 'onboarding',
+          });
+        }
+      } catch (error) {
+        if (isRecoverablePreferenceError(error)) {
+          console.warn('[onboarding] Preference seed layer not yet available, continuing without preference sync.');
           return;
         }
         throw error;

@@ -2,6 +2,7 @@
 // Fetches a single market_signal by UUID and renders full detail view.
 // Pearl Mineral V2 tokens only. TanStack Query. Error/loading/404 states.
 
+import { useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
@@ -22,10 +23,12 @@ import { supabase } from '../../lib/supabase';
 import { sanitizeArticleHtml } from '../../lib/intelligence/sanitizeArticleHtml';
 import { getSignalImage } from '../../lib/intelligence/useSignalImage';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
+import { trackSignalClicked, trackSignalDetailViewed } from '../../lib/analytics/funnelEvents';
 import { buildCanonical } from '../../lib/seo';
 import SignalDetailSkeleton from '../../components/intelligence/SignalDetailSkeleton';
 import SignalErrorState from '../../components/intelligence/SignalErrorState';
 import ImpactBadge from '../../components/intelligence/ImpactBadge';
+import { SignalEngagementButtons } from '../../components/intelligence/SignalEngagementButtons';
 import { GlobalCommentThread } from '../../components/social/GlobalCommentThread';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -107,6 +110,7 @@ async function fetchSignal(id: string): Promise<IntelligenceSignal> {
   // Map DB row → IntelligenceSignal
   return {
     id:               data.id,
+    rss_item_id:      data.rss_item_id ?? undefined,
     signal_type:      data.signal_type,
     signal_key:       data.signal_key ?? data.id,
     title:            data.title,
@@ -128,6 +132,16 @@ async function fetchSignal(id: string): Promise<IntelligenceSignal> {
     vertical:         data.vertical ?? undefined,
     topic:            data.topic ?? undefined,
     tier_min:         data.tier_min ?? undefined,
+    primary_environment: data.primary_environment ?? undefined,
+    primary_vertical: data.primary_vertical ?? undefined,
+    service_tags:     data.service_tags ?? undefined,
+    product_tags:     data.product_tags ?? undefined,
+    claim_tags:       data.claim_tags ?? undefined,
+    region_tags:      data.region_tags ?? undefined,
+    trend_tags:       data.trend_tags ?? undefined,
+    brand_names:      data.brand_names ?? undefined,
+    sentiment:        data.sentiment ?? undefined,
+    score_importance: data.score_importance ?? undefined,
     article_body:     data.article_body ?? undefined,
     article_html:     data.article_html ?? undefined,
     hero_image_url:   data.hero_image_url ?? undefined,
@@ -145,6 +159,7 @@ async function fetchSignal(id: string): Promise<IntelligenceSignal> {
 
 export default function IntelligenceSignalDetail() {
   const { id } = useParams<{ id: string }>();
+  const trackedDetailViewRef = useRef<string | null>(null);
 
   const {
     data: signal,
@@ -160,6 +175,12 @@ export default function IntelligenceSignalDetail() {
 
   const image = signal ? getSignalImage(signal) : null;
   const safeArticleHtml = signal ? sanitizeArticleHtml(signal.article_html) : null;
+
+  useEffect(() => {
+    if (!signal || trackedDetailViewRef.current === signal.id) return;
+    trackSignalDetailViewed(signal, { surface: 'public_signal_detail' });
+    trackedDetailViewRef.current = signal.id;
+  }, [signal]);
 
   return (
     <>
@@ -258,6 +279,10 @@ export default function IntelligenceSignalDetail() {
                 <h1 className="text-2xl sm:text-3xl font-semibold text-graphite leading-tight tracking-tight mb-4">
                   {signal.title}
                 </h1>
+
+                <div className="mb-4">
+                  <SignalEngagementButtons signal={signal} surface="public_signal_detail" />
+                </div>
                 {signal.description && (
                   <p className="text-base text-graphite/60 leading-relaxed">
                     {signal.description}
@@ -329,6 +354,7 @@ export default function IntelligenceSignalDetail() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+                      onClick={() => trackSignalClicked(signal, { surface: 'public_signal_detail', target: 'source' })}
                     >
                       Read on the original source
                       <ExternalLink className="w-3.5 h-3.5" aria-hidden />
@@ -431,6 +457,7 @@ export default function IntelligenceSignalDetail() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-accent text-xs hover:underline"
                         aria-label={`View source: ${signal.source_name ?? signal.source}`}
+                        onClick={() => trackSignalClicked(signal, { surface: 'public_signal_detail', target: 'source' })}
                       >
                         <ExternalLink className="w-3 h-3" aria-hidden />
                         View source

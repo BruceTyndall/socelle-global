@@ -1,0 +1,97 @@
+{
+  "wo_id": "WO-TAXONOMY-01",
+  "timestamp": "2026-03-12T16:08:45Z",
+  "status": "READY_FOR_REVIEW",
+  "owner_request": "Add flat public.taxonomy_tags import table for the 500+ cross-hub taxonomy and record the work in build_tracker.md.",
+  "source_csv": {
+    "path": "/Users/brucetyndall/Downloads/socelle_taxonomy_full_500plus.csv",
+    "rows": 584,
+    "levels": {
+      "1": 65,
+      "2": 237,
+      "3": 282
+    },
+    "category_groups": 17,
+    "groups": [
+      "body_device_service",
+      "business_model",
+      "claim_regulation",
+      "color_cosmetic",
+      "consumer_segment",
+      "hair_body_product",
+      "hair_service",
+      "market_trend",
+      "medspa_service",
+      "nail_lash_brow_service",
+      "pro_environment",
+      "pro_product_line",
+      "pro_role",
+      "product_macro",
+      "region",
+      "skincare_product",
+      "spa_wellness_service"
+    ]
+  },
+  "files_changed": [
+    "supabase/migrations/20260313000042_wo_taxonomy_01_core.sql",
+    "src/lib/database.types.ts",
+    "src/lib/taxonomy/types.ts",
+    "src/lib/taxonomy/useTaxonomy.ts",
+    "src/lib/taxonomy/index.ts",
+    "docs/build_tracker.md",
+    "docs/qa/verify_WO-TAXONOMY-01.json"
+  ],
+  "commands_run": [
+    {
+      "command": "POST /functions/v1/apply-intel-monetization {\"action\":\"apply\",\"versions\":[\"20260313000042\"]}",
+      "result": "200",
+      "notes": [
+        "Created public.taxonomy_tags on the linked Supabase project via temporary admin-only helper",
+        "Remote migration history now contains 20260313000042"
+      ]
+    },
+    {
+      "command": "python3 CSV import -> POST /rest/v1/taxonomy_tags?on_conflict=tag_code",
+      "result": "584 rows imported in 6 batches"
+    },
+    {
+      "command": "REST GET /rest/v1/taxonomy_tags?select=id&Prefer=count=exact",
+      "result": "206",
+      "notes": [
+        "content-range: 0-583/584"
+      ]
+    },
+    {
+      "command": "SUPABASE_ACCESS_TOKEN=... supabase gen types typescript --project-id rumdmulxzmjtsplsjngi --schema public > src/lib/database.types.ts",
+      "result": "6632 lines generated"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "result": "exit 0"
+    },
+    {
+      "command": "npm run build",
+      "result": "exit 0",
+      "notes": [
+        "vite build succeeded in 6.93s",
+        "existing warning: pdfjs-dist uses eval",
+        "existing warning: several chunks exceed 600 kB after minification"
+      ]
+    }
+  ],
+  "artifacts": {
+    "tracker_row": "docs/build_tracker.md#L229",
+    "migration": "supabase/migrations/20260313000042_wo_taxonomy_01_core.sql#L1",
+    "query_hook": "src/lib/taxonomy/useTaxonomy.ts#L1",
+    "types": "src/lib/taxonomy/types.ts#L1",
+    "rest_count": "taxonomy_tags content-range 0-583/584"
+  },
+  "manual_follow_up": [
+    "WO-TAXONOMY-02 and WO-TAXONOMY-03 remain local READY FOR REVIEW items; their DB/edge deploy path is still separate from this applied core taxonomy import."
+  ],
+  "notes": [
+    "The earlier namespace-based draft was replaced with the simpler flat taxonomy_tags model requested by the owner.",
+    "Because the linked project had migration drift, the live apply used a temporary admin-only helper edge function plus a service-role REST import path instead of a blind supabase db push.",
+    "The helper was deleted after the live apply and migration-history repair completed."
+  ]
+}

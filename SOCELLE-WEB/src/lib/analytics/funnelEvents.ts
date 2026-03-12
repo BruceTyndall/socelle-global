@@ -1,76 +1,207 @@
-// ── funnelEvents — W15-08 ────────────────────────────────────────────
+// ── funnelEvents — W15-08 + WO-TAXONOMY-03 ────────────────────────
 // Intelligence + Editorial funnel event tracking.
-// 8 events covering the signal/story lifecycle. No PII.
-//
-// Provider-agnostic: logs to console in dev, dispatches CustomEvents
-// for any analytics provider (GA4, Segment, PostHog) to consume.
-// Wire a listener in your provider init:
-//   window.addEventListener('socelle:funnel', (e) => provider.track(e.detail))
-//
-// Data label: LIVE — events fire on real user interactions
+// Provider-agnostic: logs to console in dev, dispatches CustomEvents,
+// and now persists non-PII event rows into public.platform_events.
 
-// ── Event Definitions ────────────────────────────────────────────────
+import { supabase, isSupabaseConfigured } from '../supabase';
+import type { IntelligenceSignal } from '../intelligence/types';
+import {
+  applyUserTagPreferenceDelta,
+  PREFERENCE_EVENT_WEIGHTS,
+  type PreferenceEventName,
+} from '../intelligence/personalization';
+import { applyAnonymousPreferenceDelta } from '../intelligence/anonymousSignalMemory';
+import {
+  buildSignalAnalyticsProperties,
+  type SignalAnalyticsProperties,
+  type SignalAnalyticsValue,
+} from '../intelligence/signalAnalytics';
 
 export type FunnelEventName =
-  | 'feed_activated'       // Feed run completes, signals ingested
-  | 'signal_created'       // New signal written to market_signals
-  | 'signal_viewed'        // User views Intelligence page (signal list loaded)
-  | 'signal_searched'      // User filters/searches signals
-  | 'signal_clicked'       // User clicks through to signal source or detail
-  | 'signal_saved'         // User bookmarks/saves a signal (future)
-  | 'story_viewed'         // User views a story detail page
-  | 'story_clicked';       // User clicks a story from listings
+  | 'feed_activated'
+  | 'signal_created'
+  | 'signal_viewed'
+  | 'signal_searched'
+  | 'signal_clicked'
+  | 'signal_saved'
+  | 'signal_liked'
+  | 'signal_hidden'
+  | 'story_viewed'
+  | 'story_clicked';
+
+export type FunnelEventProperties = Record<string, SignalAnalyticsValue>;
 
 export interface FunnelEventPayload {
   event: FunnelEventName;
-  /** ISO timestamp — auto-filled if omitted */
   timestamp?: string;
-  /** Non-PII properties */
-  properties?: Record<string, string | number | boolean | null>;
+  properties?: FunnelEventProperties;
 }
 
-// ── Tracking Function ────────────────────────────────────────────────
+interface SignalInteractionOptions {
+  surface?: string | null;
+  target?: string | null;
+  orgId?: string | null;
+}
 
 const IS_DEV = import.meta.env.DEV;
+const SESSION_STORAGE_KEY = 'socelle.analytics.session_id';
 
-/**
- * Track a funnel event. No PII allowed in properties.
- *
- * In development: logs to console.
- * In all environments: dispatches a CustomEvent on window for
- * analytics providers to consume.
- *
- * @example
- * trackFunnelEvent('signal_viewed', { signal_count: 42, category: 'industry_news' });
- * trackFunnelEvent('story_clicked', { story_id: 'abc-123', category: 'Brand Watch' });
- */
+const EVENT_CATEGORY: Record<FunnelEventName, string> = {
+  feed_activated: 'system',
+  signal_created: 'system',
+  signal_viewed: 'engagement',
+  signal_searched: 'engagement',
+  signal_clicked: 'engagement',
+  signal_saved: 'conversion',
+  signal_liked: 'conversion',
+  signal_hidden: 'engagement',
+  story_viewed: 'engagement',
+  story_clicked: 'engagement',
+};
+
+function isPreferenceEvent(event: FunnelEventName): event is PreferenceEventName {
+  return (
+    event === 'signal_viewed' ||
+    event === 'signal_clicked' ||
+    event === 'signal_saved' ||
+    event === 'signal_liked' ||
+    event === 'signal_hidden'
+  );
+}
+
+function getOrCreateSessionId(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const existing = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (existing) return existing;
+    const next = crypto.randomUUID();
+    window.sessionStorage.setItem(SESSION_STORAGE_KEY, next);
+    return next;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
+function normalizeProperties(properties?: FunnelEventProperties): FunnelEventProperties {
+  const normalized: FunnelEventProperties = {};
+
+  for (const [key, value] of Object.entries(properties ?? {})) {
+    if (value === undefined) continue;
+
+    if (Array.isArray(value)) {
+      const compact = value.filter((entry) => entry !== undefined && entry !== null && entry !== '');
+      if (compact.length > 0) {
+        normalized[key] = compact as SignalAnalyticsValue;
+      }
+      continue;
+    }
+
+    normalized[key] = value;
+  }
+
+  return normalized;
+}
+
+async function persistFunnelEvent(
+  event: FunnelEventName,
+  properties?: FunnelEventProperties,
+): Promise<void> {
+  if (!isSupabaseConfigured || typeof window === 'undefined') return;
+
+  const sessionId = getOrCreateSessionId();
+  const normalized = normalizeProperties(properties);
+  const orgId = typeof normalized.org_id === 'string' ? normalized.org_id : null;
+
+  if ('org_id' in normalized) {
+    delete normalized.org_id;
+  }
+
+  try {
+    const { data } = await supabase.auth.getSession();
+    const userId = data.session?.user?.id ?? null;
+
+    const { error } = await supabase
+      .from('platform_events')
+      .insert({
+        session_id: sessionId,
+        user_id: userId,
+        org_id: orgId,
+        event_type: event,
+        event_category: EVENT_CATEGORY[event],
+        properties: normalized,
+        page_path: `${window.location.pathname}${window.location.search}`,
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent || null,
+      });
+
+    if (error && IS_DEV) {
+      // eslint-disable-next-line no-console
+      console.warn(`[Socelle Funnel] persist failed for ${event}`, error.message);
+      return;
+    }
+
+    const tagCodes = Array.isArray(normalized.tag_codes)
+      ? normalized.tag_codes.filter((value): value is string => typeof value === 'string')
+      : [];
+
+    if (tagCodes.length > 0 && isPreferenceEvent(event)) {
+      if (userId) {
+        try {
+          await applyUserTagPreferenceDelta({
+            userId,
+            tagCodes,
+            delta: PREFERENCE_EVENT_WEIGHTS[event],
+            source: 'behavior',
+            eventAt: payloadTimestamp(normalized),
+          });
+        } catch (preferenceError) {
+          if (IS_DEV) {
+            // eslint-disable-next-line no-console
+            console.warn(`[Socelle Funnel] preference sync failed for ${event}`, preferenceError);
+          }
+        }
+      } else {
+        applyAnonymousPreferenceDelta(tagCodes, PREFERENCE_EVENT_WEIGHTS[event]);
+      }
+    }
+  } catch (error) {
+    if (IS_DEV) {
+      // eslint-disable-next-line no-console
+      console.warn(`[Socelle Funnel] persist exception for ${event}`, error);
+    }
+  }
+}
+
+function payloadTimestamp(properties: FunnelEventProperties): string {
+  const value = properties.event_at;
+  return typeof value === 'string' ? value : new Date().toISOString();
+}
+
 export function trackFunnelEvent(
   event: FunnelEventName,
-  properties?: Record<string, string | number | boolean | null>,
+  properties?: FunnelEventProperties,
 ): void {
   const payload: FunnelEventPayload = {
     event,
     timestamp: new Date().toISOString(),
-    properties: properties ?? {},
+    properties: normalizeProperties(properties),
   };
 
-  // Dev console logging
   if (IS_DEV) {
     // eslint-disable-next-line no-console
     console.log(`[Socelle Funnel] ${event}`, payload.properties);
   }
 
-  // Dispatch CustomEvent for provider integration
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
       new CustomEvent('socelle:funnel', { detail: payload }),
     );
   }
+
+  void persistFunnelEvent(event, payload.properties);
 }
 
-// ── Convenience Helpers ──────────────────────────────────────────────
-
-/** Track Intelligence page load with signal count */
 export function trackSignalViewed(signalCount: number, category?: string): void {
   trackFunnelEvent('signal_viewed', {
     signal_count: signalCount,
@@ -78,28 +209,62 @@ export function trackSignalViewed(signalCount: number, category?: string): void 
   });
 }
 
-/** Track signal filter/search action */
 export function trackSignalSearched(query: string, resultCount: number): void {
   trackFunnelEvent('signal_searched', {
-    query_length: query.length,  // length only, not content (no PII)
+    query_length: query.length,
     result_count: resultCount,
   });
 }
 
-/** Track signal click-through */
-export function trackSignalClicked(signalId: string, signalType: string): void {
-  trackFunnelEvent('signal_clicked', {
-    signal_id: signalId,
-    signal_type: signalType,
-  });
+export function trackSignalClicked(
+  signal: IntelligenceSignal,
+  options?: SignalInteractionOptions,
+): void {
+  trackFunnelEvent('signal_clicked', buildSignalAnalyticsProperties(signal, {
+    surface: options?.surface ?? null,
+    target: options?.target ?? null,
+    org_id: options?.orgId ?? null,
+  }));
 }
 
-/** Track signal save/bookmark */
-export function trackSignalSaved(signalId: string): void {
-  trackFunnelEvent('signal_saved', { signal_id: signalId });
+export function trackSignalDetailViewed(
+  signal: IntelligenceSignal,
+  options?: Omit<SignalInteractionOptions, 'target'>,
+): void {
+  trackFunnelEvent('signal_viewed', buildSignalAnalyticsProperties(signal, {
+    surface: options?.surface ?? 'signal_detail',
+    org_id: options?.orgId ?? null,
+  }));
 }
 
-/** Track story card click from listing */
+export function trackSignalSaved(
+  signalOrId: IntelligenceSignal | string,
+  options?: Omit<SignalInteractionOptions, 'target'>,
+): void {
+  if (typeof signalOrId === 'string') {
+    trackFunnelEvent('signal_saved', {
+      signal_id: signalOrId,
+      org_id: options?.orgId ?? null,
+    });
+    return;
+  }
+
+  trackFunnelEvent('signal_saved', buildSignalAnalyticsProperties(signalOrId, {
+    surface: options?.surface ?? null,
+    org_id: options?.orgId ?? null,
+  }));
+}
+
+export function trackSignalLiked(
+  signal: IntelligenceSignal,
+  options?: Omit<SignalInteractionOptions, 'target'>,
+): void {
+  trackFunnelEvent('signal_liked', buildSignalAnalyticsProperties(signal, {
+    surface: options?.surface ?? null,
+    org_id: options?.orgId ?? null,
+  }));
+}
+
 export function trackStoryClicked(storyId: string, category: string | null): void {
   trackFunnelEvent('story_clicked', {
     story_id: storyId,
@@ -107,7 +272,6 @@ export function trackStoryClicked(storyId: string, category: string | null): voi
   });
 }
 
-/** Track story detail page view */
 export function trackStoryViewed(storyId: string, slug: string, category: string | null): void {
   trackFunnelEvent('story_viewed', {
     story_id: storyId,

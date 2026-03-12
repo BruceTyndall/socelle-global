@@ -2841,26 +2841,41 @@ export type Database = {
       market_signals: {
         Row: {
           active: boolean
+          article_body: string | null
+          article_html: string | null
+          author: string | null
           category: string | null
           confidence: number | null
           confidence_score: number | null
           confidence_tier: string | null
+          content_segment: string | null
           created_at: string
           data_source: string | null
           description: string
           direction: Database["public"]["Enums"]["signal_direction_enum"]
           display_order: number | null
+          enriched_at: string | null
           expires_at: string | null
           external_id: string | null
           fingerprint: string | null
           geo_country: string | null
           geo_region: string | null
+          geo_source: string | null
+          hero_image_url: string | null
           id: string
           image_url: string | null
+          image_urls: Json | null
           impact_score: number | null
           is_duplicate: boolean
+          is_enriched: boolean | null
           magnitude: number
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
           provenance_tier: number
+          published_at: string | null
+          quality_score: number | null
+          reading_time_minutes: number | null
           region: string | null
           related_brands: string[] | null
           related_products: string[] | null
@@ -2878,32 +2893,49 @@ export type Database = {
           tier_visibility: string | null
           title: string
           topic: string | null
+          topic_tags: string[] | null
           updated_at: string
           vertical: string | null
           why_it_matters: string | null
+          word_count: number | null
         }
         Insert: {
           active?: boolean
+          article_body?: string | null
+          article_html?: string | null
+          author?: string | null
           category?: string | null
           confidence?: number | null
           confidence_score?: number | null
           confidence_tier?: string | null
+          content_segment?: string | null
           created_at?: string
           data_source?: string | null
           description: string
           direction: Database["public"]["Enums"]["signal_direction_enum"]
           display_order?: number | null
+          enriched_at?: string | null
           expires_at?: string | null
           external_id?: string | null
           fingerprint?: string | null
           geo_country?: string | null
           geo_region?: string | null
+          geo_source?: string | null
+          hero_image_url?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: Json | null
           impact_score?: number | null
           is_duplicate?: boolean
+          is_enriched?: boolean | null
           magnitude: number
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
           provenance_tier?: number
+          published_at?: string | null
+          quality_score?: number | null
+          reading_time_minutes?: number | null
           region?: string | null
           related_brands?: string[] | null
           related_products?: string[] | null
@@ -2921,32 +2953,49 @@ export type Database = {
           tier_visibility?: string | null
           title: string
           topic?: string | null
+          topic_tags?: string[] | null
           updated_at?: string
           vertical?: string | null
           why_it_matters?: string | null
+          word_count?: number | null
         }
         Update: {
           active?: boolean
+          article_body?: string | null
+          article_html?: string | null
+          author?: string | null
           category?: string | null
           confidence?: number | null
           confidence_score?: number | null
           confidence_tier?: string | null
+          content_segment?: string | null
           created_at?: string
           data_source?: string | null
           description?: string
           direction?: Database["public"]["Enums"]["signal_direction_enum"]
           display_order?: number | null
+          enriched_at?: string | null
           expires_at?: string | null
           external_id?: string | null
           fingerprint?: string | null
           geo_country?: string | null
           geo_region?: string | null
+          geo_source?: string | null
+          hero_image_url?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: Json | null
           impact_score?: number | null
           is_duplicate?: boolean
+          is_enriched?: boolean | null
           magnitude?: number
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
           provenance_tier?: number
+          published_at?: string | null
+          quality_score?: number | null
+          reading_time_minutes?: number | null
           region?: string | null
           related_brands?: string[] | null
           related_products?: string[] | null
@@ -2964,9 +3013,11 @@ export type Database = {
           tier_visibility?: string | null
           title?: string
           topic?: string | null
+          topic_tags?: string[] | null
           updated_at?: string
           vertical?: string | null
           why_it_matters?: string | null
+          word_count?: number | null
         }
         Relationships: [
           {
@@ -5699,6 +5750,102 @@ export type Database = {
           },
         ]
       }
+      story_drafts: {
+        Row: {
+          author_id: string | null
+          body: string | null
+          body_html: string | null
+          category: string | null
+          created_at: string
+          excerpt: string | null
+          hero_image_url: string | null
+          id: string
+          metadata: Json | null
+          published_at: string | null
+          quality_score: number | null
+          reading_time_minutes: number | null
+          scheduled_at: string | null
+          seo_description: string | null
+          seo_title: string | null
+          signal_id: string | null
+          slug: string | null
+          source_feed_id: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          vertical: string | null
+          word_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          body?: string | null
+          body_html?: string | null
+          category?: string | null
+          created_at?: string
+          excerpt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          metadata?: Json | null
+          published_at?: string | null
+          quality_score?: number | null
+          reading_time_minutes?: number | null
+          scheduled_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          signal_id?: string | null
+          slug?: string | null
+          source_feed_id?: string | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          vertical?: string | null
+          word_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          body?: string | null
+          body_html?: string | null
+          category?: string | null
+          created_at?: string
+          excerpt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          metadata?: Json | null
+          published_at?: string | null
+          quality_score?: number | null
+          reading_time_minutes?: number | null
+          scheduled_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          signal_id?: string | null
+          slug?: string | null
+          source_feed_id?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          vertical?: string | null
+          word_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_drafts_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "market_signals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_drafts_source_feed_id_fkey"
+            columns: ["source_feed_id"]
+            isOneToOne: false
+            referencedRelation: "data_feeds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscription_plans: {
         Row: {
           created_at: string | null
@@ -5791,6 +5938,39 @@ export type Database = {
           },
         ]
       }
+      taxonomy_tags: {
+        Row: {
+          category_group: string
+          created_at: string
+          display_label: string
+          id: number
+          is_active: boolean
+          level: number
+          tag_code: string
+          updated_at: string
+        }
+        Insert: {
+          category_group: string
+          created_at?: string
+          display_label: string
+          id?: number
+          is_active?: boolean
+          level: number
+          tag_code: string
+          updated_at?: string
+        }
+        Update: {
+          category_group?: string
+          created_at?: string
+          display_label?: string
+          id?: number
+          is_active?: boolean
+          level?: number
+          tag_code?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tenant_balances: {
         Row: {
           created_at: string
@@ -5869,11 +6049,12 @@ export type Database = {
           gap_analysis_count_month: number
           gap_analysis_reset_at: string | null
           id: string
+          onboarding_plan: string | null
+          onboarding_vertical: string | null
           reseller_tier: string | null
           role: Database["public"]["Enums"]["user_role"]
           spa_name: string | null
           updated_at: string | null
-          ai_context: Json | null
         }
         Insert: {
           brand_id?: string | null
@@ -5886,11 +6067,12 @@ export type Database = {
           gap_analysis_count_month?: number
           gap_analysis_reset_at?: string | null
           id: string
+          onboarding_plan?: string | null
+          onboarding_vertical?: string | null
           reseller_tier?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           spa_name?: string | null
           updated_at?: string | null
-          ai_context?: Json | null
         }
         Update: {
           brand_id?: string | null
@@ -5903,11 +6085,12 @@ export type Database = {
           gap_analysis_count_month?: number
           gap_analysis_reset_at?: string | null
           id?: string
+          onboarding_plan?: string | null
+          onboarding_vertical?: string | null
           reseller_tier?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           spa_name?: string | null
           updated_at?: string | null
-          ai_context?: Json | null
         }
         Relationships: [
           {
@@ -5923,6 +6106,91 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "businesses"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_signal_engagements: {
+        Row: {
+          created_at: string
+          is_liked: boolean
+          is_saved: boolean
+          liked_at: string | null
+          saved_at: string | null
+          signal_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          is_liked?: boolean
+          is_saved?: boolean
+          liked_at?: string | null
+          saved_at?: string | null
+          signal_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          is_liked?: boolean
+          is_saved?: boolean
+          liked_at?: string | null
+          saved_at?: string | null
+          signal_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_signal_engagements_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "market_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_tag_preferences: {
+        Row: {
+          created_at: string
+          event_count: number
+          first_seen_at: string
+          last_event_at: string
+          score: number
+          source: string
+          tag_code: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_count?: number
+          first_seen_at?: string
+          last_event_at?: string
+          score?: number
+          source?: string
+          tag_code: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_count?: number
+          first_seen_at?: string
+          last_event_at?: string
+          score?: number
+          source?: string
+          tag_code?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tag_preferences_tag_code_fkey"
+            columns: ["tag_code"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_tags"
+            referencedColumns: ["tag_code"]
           },
         ]
       }
@@ -6044,6 +6312,16 @@ export type Database = {
       }
     }
     Functions: {
+      apply_user_tag_preference_delta: {
+        Args: {
+          p_delta: number
+          p_event_at?: string
+          p_source?: string
+          p_tag_codes: string[]
+          p_user_id: string
+        }
+        Returns: number
+      }
       claim_brand: { Args: { p_brand_id: string }; Returns: Json }
       claim_business: { Args: { p_business_id: string }; Returns: Json }
       deduct_credits: {
@@ -6071,6 +6349,19 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_platform_admin: { Args: never; Returns: boolean }
+      merge_user_signal_engagements: {
+        Args: { p_engagements: Json; p_user_id: string }
+        Returns: number
+      }
+      merge_user_tag_preference_scores: {
+        Args: {
+          p_event_at?: string
+          p_scores: Json
+          p_source?: string
+          p_user_id: string
+        }
+        Returns: number
+      }
       request_return: {
         Args: { p_order_id: string; p_reason: string }
         Returns: Json

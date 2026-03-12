@@ -16,6 +16,7 @@ import type {
   MarketPulse,
   SignalType,
 } from '../../lib/intelligence/types';
+import { trackSignalClicked } from '../../lib/analytics/funnelEvents';
 import { SignalCardFeatured, SignalCardStandard } from './SignalCardEditorial';
 import FeedSidebar from './FeedSidebar';
 import FeedSkeleton from './FeedSkeleton';
@@ -32,14 +33,53 @@ interface FilterDef {
 // INTEL-UI-REMEDIATION-01: exported so Intelligence.tsx can derive signalTypes
 // from the active filter key and pass them to useIntelligence() for server-side filtering.
 export const FEED_FILTERS: FilterDef[] = [
-  { key: 'all',        label: 'All Signals' },
-  { key: 'treatment',  label: 'Treatment',  types: ['treatment_trend'] },
-  { key: 'ingredient', label: 'Ingredients', types: ['ingredient_momentum', 'ingredient_trend'] },
-  { key: 'regulatory', label: 'Regulatory', types: ['regulatory_alert'] },
-  { key: 'pricing',    label: 'Pricing',    types: ['pricing_benchmark'] },
-  { key: 'research',   label: 'Research',   types: ['research_insight'] },
-  { key: 'market',     label: 'Market',     types: ['market_data', 'industry_news'] },
+  { key: 'all',         label: 'Top Stories' },
+  { key: 'services',    label: 'Services',            types: ['treatment_trend', 'education', 'event_signal'] },
+  { key: 'brands',      label: 'Brands & Launches',   types: ['brand_update', 'brand_adoption', 'press_release', 'product_velocity'] },
+  { key: 'ingredient',  label: 'Ingredients & Claims', types: ['ingredient_momentum', 'ingredient_trend', 'research_insight'] },
+  { key: 'consumer',    label: 'Consumer & Culture',  types: ['social_trend', 'industry_news'] },
+  { key: 'business',    label: 'Business & Pricing',  types: ['pricing_benchmark', 'market_data', 'regional_market', 'supply_chain'] },
+  { key: 'regulatory',  label: 'Safety & Regulation', types: ['regulatory_alert'] },
 ];
+
+const PUBLIC_EDITORIAL_TYPE_BOOST: Partial<Record<SignalType, number>> = {
+  industry_news: 22,
+  social_trend: 20,
+  brand_update: 18,
+  treatment_trend: 17,
+  ingredient_momentum: 16,
+  ingredient_trend: 15,
+  brand_adoption: 14,
+  product_velocity: 13,
+  research_insight: 12,
+  event_signal: 10,
+  education: 9,
+  press_release: 7,
+  market_data: 6,
+  regional_market: 5,
+  pricing_benchmark: 4,
+  supply_chain: 3,
+  regulatory_alert: 2,
+};
+
+function freshnessBonus(updatedAt: string): number {
+  const hoursOld = (Date.now() - new Date(updatedAt).getTime()) / 3_600_000;
+  if (hoursOld < 6) return 10;
+  if (hoursOld < 24) return 6;
+  if (hoursOld < 72) return 3;
+  return 0;
+}
+
+function editorialPublicScore(signal: IntelligenceSignal): number {
+  const typeBoost = PUBLIC_EDITORIAL_TYPE_BOOST[signal.signal_type] ?? 0;
+  const qualityBoost = (signal.quality_score ?? 0) * 0.35;
+  const importanceBoost = (signal.score_importance ?? signal.impact_score ?? 0) * 0.18;
+  const enrichmentBoost = signal.is_enriched ? 4 : 0;
+  const imageBoost = signal.hero_image_url || signal.image_url ? 3 : 0;
+  const freshness = freshnessBonus(signal.updated_at);
+
+  return typeBoost + qualityBoost + importanceBoost + enrichmentBoost + imageBoost + freshness;
+}
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface IntelligenceFeedSectionProps {
@@ -113,8 +153,7 @@ export default function IntelligenceFeedSection({
   // This memo only applies client-side full-text search on the already-filtered signal set.
   const filteredSignals = useMemo<IntelligenceSignal[]>(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return signals;
-    return signals.filter((s) => {
+    const matchingSignals = signals.filter((s) => {
       const haystack = [
         s.title,
         s.description,
@@ -134,6 +173,8 @@ export default function IntelligenceFeedSection({
       
       return textMatch && impactMatch;
     });
+
+    return [...matchingSignals].sort((a, b) => editorialPublicScore(b) - editorialPublicScore(a));
   }, [signals, searchQuery, minImpact]);
 
   // ── INTEL-POWER-05: Sentiment Aggregation ─────────────────────
@@ -166,10 +207,10 @@ export default function IntelligenceFeedSection({
             Section header
         ════════════════════════════════════════════════════════ */}
         <div className="mb-10">
-          <span className="text-eyebrow text-accent/75 block mb-3">Live Signal Feed</span>
+          <span className="text-eyebrow text-accent/75 block mb-3">Beauty Signal Feed</span>
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <h2 className="text-section text-graphite leading-tight">
-              Active Market Signals
+              What Beauty Pros Are Watching Now
             </h2>
             {!isLive && (
               <span className="text-xs font-semibold bg-signal-warn/10 text-signal-warn px-2.5 py-1 rounded-pill shrink-0">
@@ -273,7 +314,7 @@ export default function IntelligenceFeedSection({
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search signals, ingredients, brands… ( / )"
+            placeholder="Search services, brands, ingredients, consumer shifts… ( / )"
             className={[
               'w-full bg-transparent border-0 border-b pb-2.5 pt-0',
               'text-[0.9375rem] text-graphite placeholder:text-graphite/28',
@@ -372,6 +413,7 @@ export default function IntelligenceFeedSection({
                         to={`/intelligence/signals/${featured.id}`}
                         className="block focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none rounded-card"
                         aria-label={`Read signal: ${featured.title}`}
+                        onClick={() => trackSignalClicked(featured, { surface: 'public_feed_featured', target: 'detail' })}
                       >
                         <SignalCardFeatured signal={featured} index={0} />
                       </Link>
@@ -398,6 +440,7 @@ export default function IntelligenceFeedSection({
                                 to={`/intelligence/signals/${signal.id}`}
                                 className="block h-full focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none rounded-card"
                                 aria-label={`Read signal: ${signal.title}`}
+                                onClick={() => trackSignalClicked(signal, { surface: 'public_feed_grid', target: 'detail' })}
                               >
                                 <SignalCardStandard signal={signal} index={i} />
                               </Link>

@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { User, Check, CheckCircle, Clock, AlertCircle, Globe, Instagram, Phone, MapPin, Building2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User, Check, CheckCircle, Clock, AlertCircle, Globe, Instagram, Phone, MapPin, Building2, Bookmark, Heart } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSignalLibrary } from '../../lib/intelligence/useSignalEngagement';
 
 const BUSINESS_TYPES = [
   { value: 'salon',    label: 'Salon' },
@@ -34,6 +36,25 @@ const EMPTY_BUSINESS: BusinessData = {
   verification_status: 'unverified',
 };
 
+function timeAgo(dateStr?: string | null): string {
+  if (!dateStr) return 'Recently saved';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  if (!Number.isFinite(diff) || diff < 0) return 'Recently saved';
+  const hours = Math.floor(diff / 3_600_000);
+  if (hours < 1) return 'Just now';
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
+function humanizeSignalType(value?: string | null): string {
+  if (!value) return 'Signal';
+  return value
+    .split('_')
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(' ');
+}
+
 function VerificationBadge({ status }: { status: string }) {
   if (status === 'verified') {
     return (
@@ -62,6 +83,7 @@ function VerificationBadge({ status }: { status: string }) {
 export default function BusinessAccount() {
   const { user, profile } = useAuth();
   const queryClient = useQueryClient();
+  const { data: signalLibrary, isLoading: libraryLoading } = useSignalLibrary(6);
 
   const [form, setForm]         = useState<BusinessData>(EMPTY_BUSINESS);
   const [saved, setSaved]       = useState(false);
@@ -370,7 +392,7 @@ export default function BusinessAccount() {
       {business.verification_status !== 'verified' && (
         <div className="bg-background rounded-xl border border-accent-soft px-6 py-5">
           <p className="text-sm font-semibold text-graphite font-sans mb-1">
-            Get verified to unlock brand relationships
+            Get verified to access brand relationships
           </p>
           <p className="text-xs text-graphite/60 font-sans leading-relaxed">
             Verified businesses can connect directly with brands, access wholesale pricing, and place orders.
@@ -380,6 +402,78 @@ export default function BusinessAccount() {
           </p>
         </div>
       )}
+
+      <div className="bg-white rounded-xl border border-accent-soft overflow-hidden">
+        <div className="px-6 pt-5 pb-4 border-b border-accent-soft flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-sans font-semibold text-graphite/60 uppercase tracking-wider">Signal library</p>
+            <p className="text-sm text-graphite/62 font-sans mt-1">
+              Saved and liked intelligence will live on your profile as this library grows.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-graphite/42">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1">
+              <Bookmark className="h-3.5 w-3.5" />
+              {signalLibrary?.savedCount ?? 0} saved
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1">
+              <Heart className="h-3.5 w-3.5" />
+              {signalLibrary?.likedCount ?? 0} liked
+            </span>
+          </div>
+        </div>
+
+        <div className="px-6 py-5">
+          {libraryLoading ? (
+            <div className="space-y-3 animate-pulse">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="h-16 rounded-xl bg-accent-soft/25" />
+              ))}
+            </div>
+          ) : signalLibrary?.savedSignals?.length ? (
+            <div className="space-y-3">
+              {signalLibrary.savedSignals.map(({ signal, isLiked, savedAt }) => (
+                <Link
+                  key={signal.id}
+                  to={`/intelligence/signals/${signal.id}`}
+                  className="flex items-start justify-between gap-4 rounded-xl border border-accent-soft/70 bg-background px-4 py-4 transition-colors hover:border-graphite/20 hover:bg-accent-soft/20"
+                >
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-graphite/42">
+                      <span>{humanizeSignalType(signal.signal_type)}</span>
+                      {signal.source_name && <span>{signal.source_name}</span>}
+                    </div>
+                    <p className="mt-2 text-sm font-semibold text-graphite leading-6">{signal.title}</p>
+                    {signal.description && (
+                      <p className="mt-1 text-sm text-graphite/56 line-clamp-2">{signal.description}</p>
+                    )}
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <div className="flex items-center justify-end gap-2 text-graphite/42">
+                      <Bookmark className="h-4 w-4 fill-current" />
+                      {isLiked && <Heart className="h-4 w-4 fill-current" />}
+                    </div>
+                    <p className="mt-2 text-[11px] font-mono text-graphite/42">{timeAgo(savedAt)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-accent-soft bg-background px-5 py-8 text-center">
+              <p className="text-sm font-semibold text-graphite font-sans">No saved intelligence yet</p>
+              <p className="mt-2 text-sm text-graphite/56 font-sans">
+                Save or like signals from the Intelligence feed and they will show up here.
+              </p>
+              <Link
+                to="/portal/intelligence"
+                className="mt-4 inline-flex items-center gap-2 rounded-full border border-graphite/12 px-4 py-2 text-sm font-medium text-graphite hover:border-graphite/20 hover:bg-graphite/[0.03]"
+              >
+                Browse intelligence
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
 
     </div>
   );

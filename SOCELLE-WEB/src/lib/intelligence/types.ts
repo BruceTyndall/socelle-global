@@ -30,6 +30,7 @@ export type TierVisibility = 'free' | 'pro' | 'admin';
 
 export interface IntelligenceSignal {
   id: string;
+  rss_item_id?: string;
   signal_type: SignalType;
   signal_key: string;
   title: string;
@@ -57,6 +58,16 @@ export interface IntelligenceSignal {
   vertical?: string;
   topic?: string;
   tier_min?: string;
+  primary_environment?: string;
+  primary_vertical?: string;
+  service_tags?: string[];
+  product_tags?: string[];
+  claim_tags?: string[];
+  region_tags?: string[];
+  trend_tags?: string[];
+  brand_names?: string[];
+  sentiment?: 'positive' | 'neutral' | 'negative';
+  score_importance?: number;
   // MERCH-INTEL-03-FINAL: Premium Data Gates
   requires_credit?: boolean;
   status?: string;

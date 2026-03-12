@@ -3,6 +3,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '../supabase';
 import { useTier } from '../../hooks/useTier';
 import type { IntelligenceSignal, MarketPulse, SignalFilterKey, SignalType, TierVisibility } from './types';
+import { applyPreferenceBoost, buildPreferenceScoreMap, type UserTagPreference } from './personalization';
+import { useUserTagPreferences } from './useUserTagPreferences';
+import { useAnonymousTagPreferences } from './useAnonymousSignalMemory';
 
 // ── useIntelligence — resilient live signal hook ──
 // Fetches live signals from market_signals (active + non-expired) using a
@@ -70,6 +73,7 @@ interface UseIntelligenceReturn {
 
 interface MarketSignalRow {
   id: string;
+  rss_item_id: string | null;
   signal_type: string | null;
   signal_key: string | null;
   title: string | null;
@@ -90,6 +94,16 @@ interface MarketSignalRow {
   topic: string | null;
   tier_min: string | null;
   impact_score: number | null;
+  primary_environment: string | null;
+  primary_vertical: string | null;
+  service_tags: string[] | null;
+  product_tags: string[] | null;
+  claim_tags: string[] | null;
+  region_tags: string[] | null;
+  trend_tags: string[] | null;
+  brand_names: string[] | null;
+  sentiment: 'positive' | 'neutral' | 'negative' | null;
+  score_importance: number | null;
   // provenance columns (added by migrations — may be null in older rows)
   source_name: string | null;
   source_url: string | null;
@@ -116,6 +130,8 @@ interface MarketSignalRow {
   fingerprint: string | null;
   is_duplicate: boolean | null;
 }
+
+interface UserTagPreferenceRow extends UserTagPreference {}
 
 const VALID_SIGNAL_TYPES: ReadonlySet<SignalType> = new Set([
   'product_velocity',
@@ -156,6 +172,7 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
 
   return {
     id: row.id,
+    rss_item_id: row.rss_item_id ?? undefined,
     signal_type: normalizeSignalType(row.signal_type),
     signal_key: row.signal_key ?? `signal-${row.id}`,
     title: row.title ?? 'Market signal',
@@ -184,6 +201,16 @@ function rowToSignal(row: MarketSignalRow): IntelligenceSignal {
     vertical: row.vertical ?? undefined,
     topic: row.topic ?? undefined,
     tier_min: row.tier_min ?? undefined,
+    primary_environment: row.primary_environment ?? undefined,
+    primary_vertical: row.primary_vertical ?? undefined,
+    service_tags: row.service_tags ?? undefined,
+    product_tags: row.product_tags ?? undefined,
+    claim_tags: row.claim_tags ?? undefined,
+    region_tags: row.region_tags ?? undefined,
+    trend_tags: row.trend_tags ?? undefined,
+    brand_names: row.brand_names ?? undefined,
+    sentiment: row.sentiment ?? undefined,
+    score_importance: row.score_importance ?? undefined,
     // MERCH-REMEDIATION-01: source authority tier (1=regulatory, 2=academic, 3=trade_pub)
     provenance_tier: row.provenance_tier ?? 3,
     // INTEL-PREMIUM-01: premium content fields
@@ -236,7 +263,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
         let q = supabase
           .from('market_signals')
           .select(
-            'id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source, fingerprint, is_duplicate'
+            'id, rss_item_id, signal_type, signal_key, title, description, magnitude, direction, region, category, related_brands, related_products, updated_at, source, source_type, source_name, source_url, image_url, data_source, confidence_score, vertical, topic, tier_min, tier_visibility, impact_score, primary_environment, primary_vertical, service_tags, product_tags, claim_tags, region_tags, trend_tags, brand_names, sentiment, score_importance, provenance_tier, article_body, article_html, hero_image_url, image_urls, content_segment, topic_tags, reading_time_minutes, word_count, quality_score, is_enriched, enriched_at, author, published_at, geo_source, fingerprint, is_duplicate'
           )
           .eq('active', true)
           .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
@@ -331,6 +358,18 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     enabled: isSupabaseConfigured,
     staleTime: 60_000,
   });
+
+  const { data: userTagPreferences = [] } = useUserTagPreferences();
+  const anonymousTagPreferences = useAnonymousTagPreferences();
+
+  const preferenceScoreMap = useMemo(
+    () =>
+      buildPreferenceScoreMap([
+        ...anonymousTagPreferences,
+        ...(userTagPreferences as UserTagPreferenceRow[]),
+      ]),
+    [anonymousTagPreferences, userTagPreferences],
+  );
 
   // ── Realtime: prepend new signals to top of feed with slide-in animation ──────
   const queryClient = useQueryClient();
@@ -439,7 +478,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
     const base   = s.impact_score ?? 50;
     const decay  = freshnessDecay(s.updated_at);
     const prov   = PROVENANCE_WEIGHTS[s.provenance_tier ?? 3] ?? 1.0;
-    return base * decay * prov;
+    return applyPreferenceBoost(s, base * decay * prov, preferenceScoreMap);
   }
 
   // ── Filter + sort + MERCH-03 safety pin + MERCH-09 topic cap ──────
@@ -509,7 +548,7 @@ export function useIntelligence(options?: UseIntelligenceOptions): UseIntelligen
       }
     }
     return capped;
-  }, [tieredSignals, activeFilter]);
+  }, [tieredSignals, activeFilter, preferenceScoreMap]);
 
   return { signals, totalSignalCount: rawSignals.length, marketPulse, loading, isLive, activeFilter, setActiveFilter };
 }

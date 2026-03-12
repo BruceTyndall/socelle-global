@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import { normalizeMediaUrl } from '../../lib/intelligence/normalizeMediaUrl';
+import { trackSignalClicked } from '../../lib/analytics/funnelEvents';
 import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPanel';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
 import { TierGate, CreditGate } from '../../components/gates';
@@ -27,6 +28,7 @@ import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 import IntelligenceDashboardSkeleton from '../../components/intelligence/IntelligenceDashboardSkeleton';
 import SignalErrorState from '../../components/intelligence/SignalErrorState';
 import { useTier } from '../../hooks/useTier';
+import { useAuth } from '../../lib/auth';
 
 // ── Cloud Modules (10) ──────────────────────────────────────────────
 import {
@@ -101,6 +103,7 @@ const BEAUTY_REGULATORY_PATTERN = /\b(fda|ftc|mocra|laser|device|cosmetic|aesthe
 
 export default function IntelligenceHub() {
   const { tier, isLoading: tierLoading } = useTier();
+  const { businessId, brandId } = useAuth();
   const signalLimit = tier === 'free' ? 80 : 220;
   const { signals, loading, isLive } = useIntelligence({ limit: signalLimit });
   const { signals: timelineSignals, loading: timelineLoading } = useIntelligence({
@@ -113,8 +116,13 @@ export default function IntelligenceHub() {
   const [activeAITool, setActiveAITool] = useState<AIToolKey | null>(null);
 
   const handleSelectSignal = useCallback((signal: IntelligenceSignal) => {
+    trackSignalClicked(signal, {
+      surface: 'portal_intelligence_story_card',
+      target: 'panel',
+      orgId: businessId ?? brandId,
+    });
     setSelectedSignal(signal);
-  }, []);
+  }, [brandId, businessId]);
 
   const handleCloseDetail = useCallback(() => {
     setSelectedSignal(null);

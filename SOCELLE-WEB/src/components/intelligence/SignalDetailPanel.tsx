@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X, TrendingUp, TrendingDown, Minus, ExternalLink, Shield } from 'lucide-react';
 import type { IntelligenceSignal } from '../../lib/intelligence/types';
+import { trackSignalClicked, trackSignalDetailViewed } from '../../lib/analytics/funnelEvents';
 import { sanitizeArticleHtml } from '../../lib/intelligence/sanitizeArticleHtml';
 import { normalizeMediaUrl, normalizeMediaUrls } from '../../lib/intelligence/normalizeMediaUrl';
 import { CrossHubActionDispatcher } from '../CrossHubActionDispatcher';
+import { SignalEngagementButtons } from './SignalEngagementButtons';
 
 interface SignalDetailPanelProps {
   signal: IntelligenceSignal;
@@ -48,6 +50,8 @@ function humanizeSegment(segment: string): string {
 }
 
 export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
+  const trackedDetailViewRef = useRef<string | null>(null);
+
   // INTEL-WO-06: ESC key closes panel
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -56,6 +60,12 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
+
+  useEffect(() => {
+    if (trackedDetailViewRef.current === signal.id) return;
+    trackSignalDetailViewed(signal, { surface: 'portal_signal_panel' });
+    trackedDetailViewRef.current = signal.id;
+  }, [signal]);
 
   const directionConfig = {
     up: { icon: TrendingUp, cls: 'text-[#5F8A72]', bg: 'bg-[#5F8A72]/10', label: 'Trending Up' },
@@ -140,6 +150,8 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
             </div>
           )}
 
+          <SignalEngagementButtons signal={signal} surface="portal_signal_panel" compact />
+
           {/* Direction + Magnitude */}
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${config.bg}`}>
@@ -177,6 +189,7 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
                      target="_blank"
                      rel="noopener noreferrer"
                      className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-[#141418] text-white rounded-lg text-sm font-medium hover:bg-[#2A2A33] transition-colors"
+                     onClick={() => trackSignalClicked(signal, { surface: 'portal_signal_panel', target: 'source' })}
                    >
                      Read Full Article <ExternalLink className="w-4 h-4 ml-1" />
                    </a>
@@ -191,6 +204,7 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
                      target="_blank"
                      rel="noopener noreferrer"
                      className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-[#141418] text-white rounded-lg text-sm font-semibold shadow-sm hover:translate-y-[-1px] hover:shadow-md transition-all w-full sm:w-auto"
+                     onClick={() => trackSignalClicked(signal, { surface: 'portal_signal_panel', target: 'source' })}
                    >
                      Open Original <ExternalLink className="w-4 h-4 ml-1" />
                    </a>
@@ -309,6 +323,7 @@ export function SignalDetailPanel({ signal, onClose }: SignalDetailPanelProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex w-full items-center justify-center gap-1.5 px-4 py-2 bg-[#E8EDF1] text-[#141418] rounded-lg text-xs font-semibold hover:bg-[#D1D9E0] transition-colors"
+                    onClick={() => trackSignalClicked(signal, { surface: 'portal_signal_panel', target: 'source' })}
                   >
                     Open original <ExternalLink className="w-3.5 h-3.5 ml-0.5" />
                   </a>

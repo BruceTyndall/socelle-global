@@ -7,6 +7,7 @@ import { createScopedLogger } from './logger';
 import { getErrorMessage } from './errors';
 import { PAYMENT_BYPASS } from './paymentBypass';
 import { syncSignupToCrm } from './crmRegistration';
+import { syncAnonymousSignalMemoryToUser } from './intelligence/anonymousSignalMemory';
 
 export type SubscriptionTier = 'free' | 'starter' | 'growth' | 'pro';
 
@@ -196,6 +197,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           }
           fetchSubscription(session.user.id);
+          void syncAnonymousSignalMemoryToUser(session.user.id).catch((error) => {
+            log.warn('Anonymous intelligence memory sync failed', { error: getErrorMessage(error) });
+          });
         }
 
         setLoadingFalse();
@@ -226,6 +230,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           }
           fetchSubscription(session.user.id);
+          void syncAnonymousSignalMemoryToUser(session.user.id).catch((error) => {
+            log.warn('Anonymous intelligence memory sync failed', { error: getErrorMessage(error) });
+          });
         } else {
           setProfile(null);
           setProfileError(null);
