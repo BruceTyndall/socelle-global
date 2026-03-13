@@ -1,0 +1,22 @@
+{
+  "name": "socelle-admin",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SOCELLE Admin Control Panel — system health dashboard, feature flags, audit log viewer, user management, feed monitoring. Source: SOCELLE-WEB/src/pages/admin/.",
+  "scripts": {
+    "dev": "echo 'Run: cd ../../SOCELLE-WEB && npm run dev (navigate to /admin)'",
+    "build": "echo 'Extraction to standalone app tracked in ADMIN-WO-01..05 (BUILD 2)'",
+    "typecheck": "echo 'Run: cd ../../SOCELLE-WEB && npx tsc --noEmit'"
+  },
+  "note": "Admin Panel is currently co-located in SOCELLE-WEB. Extraction scheduled for ADMIN-WO-01..05 (BUILD 2). This stub establishes the app namespace.",
+  "routes": [
+    "/admin (dashboard)",
+    "/admin/users",
+    "/admin/feeds",
+    "/admin/feature-flags",
+    "/admin/audit-log",
+    "/admin/cms",
+    "/admin/shop"
+  ],
+  "depends_on": ["@socelle/ui", "@socelle/supabase-config"]
+}

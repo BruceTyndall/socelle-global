@@ -1,0 +1,20 @@
+{
+  "name": "socelle-sales",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SOCELLE Sales Pipeline Mini-App — deal tracking, ProposalBuilder, opportunity engine, sales analytics. Source: SOCELLE-WEB/src/pages/business/SalesDashboard.tsx and related sales components.",
+  "scripts": {
+    "dev": "echo 'Run: cd ../../SOCELLE-WEB && npm run dev (navigate to /portal/sales)'",
+    "build": "echo 'Extraction to standalone app tracked in SALES-WO-01..08 (BUILD 2)'",
+    "typecheck": "echo 'Run: cd ../../SOCELLE-WEB && npx tsc --noEmit'"
+  },
+  "note": "Sales Pipeline is currently co-located in SOCELLE-WEB. Extraction scheduled for SALES-WO-01..08 (BUILD 2). This stub establishes the app namespace.",
+  "routes": [
+    "/portal/sales (pipeline dashboard)",
+    "/portal/sales/deals",
+    "/portal/sales/deals/:id",
+    "/portal/sales/proposals",
+    "/portal/sales/proposals/:id"
+  ],
+  "depends_on": ["@socelle/ui", "@socelle/supabase-config"]
+}

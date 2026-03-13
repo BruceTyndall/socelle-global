@@ -1,0 +1,20 @@
+{
+  "name": "socelle-crm",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SOCELLE CRM Mini-App — client management, rebooking engine, consent audit log, intelligence tab. Source: SOCELLE-WEB/src/pages/business/CrmDashboard.tsx and related CRM components.",
+  "scripts": {
+    "dev": "echo 'Run: cd ../../SOCELLE-WEB && npm run dev (navigate to /portal/crm)'",
+    "build": "echo 'Extraction to standalone app tracked in CRM-WO-01..12 (BUILD 2)'",
+    "typecheck": "echo 'Run: cd ../../SOCELLE-WEB && npx tsc --noEmit'"
+  },
+  "note": "CRM is currently co-located in SOCELLE-WEB. Extraction scheduled for CRM-WO-01..12 (BUILD 2). This stub establishes the app namespace.",
+  "routes": [
+    "/portal/crm (dashboard)",
+    "/portal/crm/clients",
+    "/portal/crm/clients/:id",
+    "/portal/crm/appointments",
+    "/portal/crm/consent-logs"
+  ],
+  "depends_on": ["@socelle/ui", "@socelle/supabase-config"]
+}

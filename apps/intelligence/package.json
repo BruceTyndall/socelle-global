@@ -1,0 +1,19 @@
+{
+  "name": "socelle-intelligence",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SOCELLE Intelligence Hub — standalone mini-app. Market signals, channel rail, trending analysis, AI tools. Source: SOCELLE-WEB/src/pages/business/IntelligenceHub.tsx + public/Intelligence.tsx",
+  "scripts": {
+    "dev": "echo 'Run: cd ../../SOCELLE-WEB && npm run dev (navigate to /portal/intelligence)'",
+    "build": "echo 'Extraction to standalone app tracked in INTEL-WO-01 (BUILD 1)'",
+    "typecheck": "echo 'Run: cd ../../SOCELLE-WEB && npx tsc --noEmit'"
+  },
+  "note": "Intelligence Hub is currently co-located in SOCELLE-WEB. Extraction to this standalone app is scheduled for INTEL-WO-01 (BUILD 1). This stub establishes the app namespace.",
+  "routes": [
+    "/intelligence (public feed)",
+    "/portal/intelligence (authenticated hub)",
+    "/portal/intelligence/channel/:slug",
+    "/portal/intelligence/signal/:id"
+  ],
+  "depends_on": ["@socelle/ui", "@socelle/supabase-config"]
+}
