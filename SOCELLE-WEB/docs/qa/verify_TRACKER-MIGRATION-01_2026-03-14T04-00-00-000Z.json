@@ -1,0 +1,19 @@
+{
+  "wo_id": "TRACKER-MIGRATION-01",
+  "timestamp": "2026-03-14T04:00:00.000Z",
+  "files_changed": [
+    "SOCELLE-WEB/docs/build_tracker_v2.md",
+    "SOCELLE-WEB/docs/build_tracker.md",
+    "SOCELLE-WEB/docs/command/SOURCE_OF_TRUTH_MAP.md"
+  ],
+  "evidence": {
+    "current_queue_locations": {
+      "build_tracker_v2.md": "Contains full CURRENT_QUEUE table between <!-- CURRENT_QUEUE_START --> and <!-- CURRENT_QUEUE_END -->.",
+      "build_tracker.md": "CURRENT_QUEUE block replaced with single pointer line: 'CURRENT_QUEUE has moved to SOCELLE-WEB/docs/build_tracker_v2.md — do not execute from this file.'",
+      "grep_sample": "rg \"CURRENT_QUEUE_START\" SOCELLE-WEB/docs -n → markers in build_tracker_v2.md (execution) and build_tracker.md (neutralized pointer only), plus quoted references in audit docs."
+    },
+    "canonical_pointer": "SOURCE_OF_TRUTH_MAP Tier 1 now points to build_tracker_v2.md as canonical execution ledger and marks build_tracker.md as ARCHIVED — REFERENCE ONLY."
+  },
+  "overall": "PASS"
+}
+

@@ -1,0 +1,99 @@
+{
+  "wo_id": "MKT-POWER-01",
+  "timestamp": "2026-03-14T05:15:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": [
+    "hub-shell-detector",
+    "live-demo-detector",
+    "cta-validator",
+    "route-mapper",
+    "accessibility-checker",
+    "marketing-alignment-checker"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Marketing hub routes (BrandIntelligenceHub, CampaignBuilder, Campaigns) have live data hooks, loading/empty/error states, and no stub-only shells after MKT-POWER-01 changes."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "BrandIntelligenceHub and CampaignBuilder surfaces that show signals or campaign metrics respect isLive and DEMO/LIVE labeling; no unlabeled mock marketing data introduced by MKT-POWER-01."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Signal → Create campaign CTA from Intelligence/BrandIntelligenceHub flows to marketing routes that keep intelligence-first framing; no commerce-first CTAs on intelligence surfaces."
+    },
+    "route-mapper": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Routes for marketing (/portal/marketing/campaigns/new, /brand/campaigns/new) map correctly from CrossHubActionDispatcher create_campaign actions; no orphan or duplicate marketing hubs after MKT-POWER-01."
+    },
+    "accessibility-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "CampaignBuilder and related forms have labeled inputs, focusable CTAs, and heading structure consistent with Pearl Mineral V2; basic keyboard navigation works."
+    },
+    "marketing-alignment-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Campaign CTAs and copy emphasize intelligence-driven targeting rather than generic blasts; no cold-outreach patterns or banned marketing language added in MKT-POWER-01."
+    }
+  },
+  "files_changed": [
+    "src/pages/brand/CampaignBuilder.tsx"
+  ],
+  "usability_checks": {
+    "no_dead_ends": {
+      "status": "PASS",
+      "evidence": "From Intelligence/BrandIntelligenceHub → Create Campaign → CampaignBuilder, users always have a clear path to review/save a campaign and navigate back; no one-way dead-end screens introduced."
+    },
+    "loading_empty_error_states": {
+      "status": "PASS",
+      "evidence": "Marketing pages touched by MKT-POWER-01 retain existing loading/empty/error handling for campaign lists and signal context; no new data-bound views were added without these states."
+    },
+    "cta_hierarchy_ok": {
+      "status": "PASS",
+      "evidence": "Primary CTAs on intelligence surfaces remain intelligence-first (e.g., \"Create campaign from this signal\"), with commerce/paywall CTAs secondary or absent per doctrine."
+    },
+    "demo_live_labeling_ok": {
+      "status": "PASS",
+      "evidence": "Marketing views using signal-derived context do not introduce unlabeled DEMO data; DEMO badges and timestamps flow from existing intelligence components."
+    },
+    "provenance_visible_or_linked": {
+      "status": "PASS",
+      "evidence": "Campaign creation flows launched from signals preserve fromSignal/signal_id context, and users can trace back to the originating signal from CampaignBuilder or via breadcrumbs."
+    },
+    "a11y_smoke_ok": {
+      "status": "PASS",
+      "evidence": "Form controls and CTAs in CampaignBuilder and related marketing views have accessible labels and are reachable via keyboard."
+    },
+    "specialist_inputs": {
+      "agent_17": {
+        "top_risks_targets": [
+          "src/lib/intelligence/useIntelligence.ts",
+          "src/pages/brand/BrandIntelligenceHub.tsx",
+          "src/pages/brand/CampaignBuilder.tsx"
+        ]
+      },
+      "fe_design_template_auditor": {
+        "constraints_targets": [
+          "src/pages/brand/BrandIntelligenceHub.tsx",
+          "src/pages/brand/CampaignBuilder.tsx"
+        ]
+      },
+      "journey_qa_specialist": {
+        "journey_targets": [
+          "src/pages/public/Intelligence.tsx",
+          "src/pages/brand/BrandIntelligenceHub.tsx",
+          "src/pages/brand/CampaignBuilder.tsx"
+        ]
+      }
+    }
+  },
+  "overall": "PASS"
+}
+

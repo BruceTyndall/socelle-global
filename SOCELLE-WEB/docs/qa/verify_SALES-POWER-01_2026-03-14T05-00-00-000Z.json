@@ -1,0 +1,112 @@
+{
+  "wo_id": "SALES-POWER-01",
+  "timestamp": "2026-03-14T05:00:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": [
+    "hub-shell-detector",
+    "live-demo-detector",
+    "cta-validator",
+    "route-mapper",
+    "accessibility-checker",
+    "error-state-enforcer",
+    "loading-skeleton-enforcer"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales hub routes (SalesDashboard, PipelineBoard, RevenueAnalytics, ProposalBuilder, DealDetail) all have live data hooks, loading/empty/error states, and CTAs; no shells detected for SALES-POWER-01 changes."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales views using deals/pipelines respect isLive flags; DEMO pill appears only when data is not live; no unlabeled mock data found on SALES-POWER-01 surfaces."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Primary CTAs on SalesDashboard, PipelineBoard, RevenueAnalytics, and ProposalBuilder remain sales-intent (not commerce); no commerce-first CTAs introduced on Intelligence-driven Sales flows."
+    },
+    "route-mapper": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales routes from Intelligence (Signal → Create Deal/Proposal) land on Sales pages with working back/forward navigation; /sales/opportunities, /sales/analytics, and related views are reachable without dead ends."
+    },
+    "accessibility-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Key Sales pages have headings, focusable CTAs, and accessible button/link labels; keyboard navigation works for primary CTAs and filters on pipeline/analytics screens."
+    },
+    "error-state-enforcer": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "SalesDashboard, PipelineBoard, and RevenueAnalytics include error states with retry CTAs; SALES-POWER-01 changes did not remove or bypass these flows."
+    },
+    "loading-skeleton-enforcer": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Loading skeletons remain in place for pipeline and analytics components; SALES-POWER-01 does not introduce new loading paths without skeletons."
+    }
+  },
+  "files_changed": [
+    "src/pages/sales/RevenueAnalytics.tsx",
+    "src/pages/sales/PipelineBoard.tsx",
+    "src/pages/business/PipelineBoard.tsx",
+    "src/pages/sales/SalesDashboard.tsx"
+  ],
+  "usability_checks": {
+    "no_dead_ends": {
+      "status": "PASS",
+      "evidence": "From Intelligence → Create Deal/Proposal → Sales views, users can always navigate back to Intelligence or onward to next sales actions; SalesDashboard provides clear navigation to Pipeline and RevenueAnalytics."
+    },
+    "loading_empty_error_states": {
+      "status": "PASS",
+      "evidence": "SalesDashboard, RevenueAnalytics, and PipelineBoard all have loading skeletons and explicit empty/error states; no new SALES-POWER-01 surfaces bypass these patterns."
+    },
+    "cta_hierarchy_ok": {
+      "status": "PASS",
+      "evidence": "On Sales-related pages, primary CTAs remain focused on sales workflows (create deal, view pipeline, export), with no commerce-first CTAs introduced on Intelligence-driven flows."
+    },
+    "demo_live_labeling_ok": {
+      "status": "PASS",
+      "evidence": "DEMO badges only appear when isLive is false; SALES-POWER-01 did not introduce unlabeled mock data or remove existing DEMO/LIVE indicators."
+    },
+    "provenance_visible_or_linked": {
+      "status": "PASS",
+      "evidence": "Signal-influenced deals are identified via signal_id; Sales views that originate from Intelligence preserve context via fromSignal/signal_id and allow users to trace back to the originating signal."
+    },
+    "a11y_smoke_ok": {
+      "status": "PASS",
+      "evidence": "Keyboard focus, headings, and button/link labels on SalesDashboard, PipelineBoard, and RevenueAnalytics meet basic accessibility expectations for this WO."
+    },
+    "specialist_inputs": {
+      "agent_17": {
+        "top_risks_targets": [
+          "src/lib/intelligence/useIntelligence.ts",
+          "src/pages/intelligence/Intelligence.tsx",
+          "src/pages/sales/RevenueAnalytics.tsx",
+          "src/pages/sales/SalesDashboard.tsx"
+        ]
+      },
+      "fe_design_template_auditor": {
+        "constraints_targets": [
+          "src/pages/sales/RevenueAnalytics.tsx",
+          "src/pages/sales/PipelineBoard.tsx",
+          "src/pages/business/PipelineBoard.tsx",
+          "src/pages/sales/SalesDashboard.tsx"
+        ]
+      },
+      "journey_qa_specialist": {
+        "journey_targets": [
+          "src/pages/intelligence/Intelligence.tsx",
+          "src/pages/sales/OpportunityFinder.tsx",
+          "src/pages/sales/ProposalBuilder.tsx",
+          "src/pages/sales/SalesDashboard.tsx"
+        ]
+      }
+    }
+  },
+  "overall": "PASS"
+}
+
