@@ -108,6 +108,8 @@ const CreditPurchase = lazy(() => import('./pages/business/credits/CreditPurchas
 // ── Affiliate Engine (V2-HUBS-13)
 const AffiliateDashboard = lazy(() => import('./pages/business/affiliates/AffiliateDashboard'));
 const AffiliateLinks = lazy(() => import('./pages/business/affiliates/AffiliateLinks'));
+const ServiceSupport = lazy(() => import('./pages/business/ServiceSupport'));
+const DataGovernance = lazy(() => import('./pages/business/DataGovernance'));
 
 // ── Onboarding (V2-PLAT-04)
 const OnboardingFlow = lazy(() => import('./pages/business/onboarding/OnboardingFlow'));
@@ -966,6 +968,20 @@ function App() {
                     <Route path="credits/purchase" element={
                       <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
                         <CreditPurchase />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* ── Service & Support ── */}
+                    <Route path="support" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <ServiceSupport />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* ── Data & Governance ── */}
+                    <Route path="governance" element={
+                      <ProtectedRoute requireRole={['business_user', 'admin', 'platform_admin']}>
+                        <DataGovernance />
                       </ProtectedRoute>
                     } />
 

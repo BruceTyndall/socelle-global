@@ -10,11 +10,13 @@ import {
   Users,
   Target,
   Megaphone,
+  LifeBuoy,
   ShoppingCart,
   GraduationCap,
   Link2,
   Layout,
   Coins,
+  Layers,
   Shield,
   ChevronLeft,
   ChevronRight,
@@ -170,6 +172,7 @@ export default function PortalSidebar() {
         { path: '/portal/crm', label: 'CRM & Audiences', icon: Users },
         { path: '/portal/sales', label: 'Sales Pipeline', icon: Target },
         { path: '/portal/marketing', label: 'Marketing Campaigns', icon: Megaphone },
+        { path: '/portal/support', label: 'Service & Support', icon: LifeBuoy },
       ],
     },
     {
@@ -181,10 +184,11 @@ export default function PortalSidebar() {
       ],
     },
     {
-      label: 'Platform & Admin',
+      label: 'Platform & Data',
       items: [
         { path: '/portal/studio', label: 'Authoring Studio', icon: Layout },
         { path: '/portal/credits', label: 'Credit Economy', icon: Coins },
+        { path: '/portal/governance', label: 'Data & Governance', icon: Layers },
         {
           path: '/admin',
           label: 'Admin Console',
