@@ -1,0 +1,65 @@
+{
+  "wo_id": "INTEL-FEED-REDESIGN-01",
+  "timestamp": "2026-03-14T08:00:00.000Z",
+  "files_created": [
+    "src/components/intelligence/IntelligenceFeedCard.tsx",
+    "src/components/intelligence/IntelligenceFilterSidebar.tsx",
+    "src/components/intelligence/IntelligenceInsightsPanel.tsx"
+  ],
+  "files_modified": [
+    "src/pages/public/Intelligence.tsx"
+  ],
+  "data_source": "story_drafts (status=published) with rss_items fallback via useQuery (TanStack Query v5)",
+  "loading_state": true,
+  "error_state": true,
+  "empty_state": true,
+  "tsc_exit_code": 0,
+  "design_tokens": {
+    "background": "#F8F9FB",
+    "foreground": "#1a1a1a",
+    "accent_interactive": "#6E879B",
+    "accent": "#EFF3F6",
+    "muted": "#ececf0",
+    "muted_foreground": "#717182",
+    "signal_up": "#5F8A72",
+    "signal_warn": "#A97A4C",
+    "signal_down": "#8E6464",
+    "no_glassmorphism": true,
+    "no_heavy_gradients": true,
+    "no_warm_browns": true
+  },
+  "layout": {
+    "columns": 3,
+    "left_sidebar": "IntelligenceFilterSidebar (w-56, hidden below 1280px with toggle)",
+    "center_feed": "IntelligenceFeedCard grid (flex-1, sm:grid-cols-2)",
+    "right_panel": "IntelligenceInsightsPanel (w-72, hidden below 1024px)",
+    "channel_rail": "IntelligenceChannelRail preserved and not regressed"
+  },
+  "components": {
+    "IntelligenceFeedCard": {
+      "hero_image": "16:9 (h-44) with gradient placeholder fallback",
+      "hover": "-translate-y-0.5 shadow elevation on hover",
+      "pills": "vertical tag, topic tags, signal score badge",
+      "data_shape": "FeedArticle interface matches story_drafts Row columns"
+    },
+    "IntelligenceFilterSidebar": {
+      "search": "local state, filters feed client-side",
+      "vertical_radio": "All | Medspa | Salon | Beauty Brand",
+      "source_type_checkboxes": "All Sources | RSS Feeds | Research Notes | Market Signals",
+      "sort_select": "Most Recent | Highest Signal | Most Relevant",
+      "live_channel_count": "prop-driven count with live dot indicator"
+    },
+    "IntelligenceInsightsPanel": {
+      "data_fetching": "useQuery fetching market_signals and story_drafts counts",
+      "kpis": "Total Signals | This Week | New Today",
+      "vertical_breakdown": "proportional bars per vertical",
+      "top_topics": "top 5 topics ranked by count",
+      "trending": "top 3 signals by impact_score DESC",
+      "sticky": "top-6 sticky positioning"
+    }
+  },
+  "tanstack_query": true,
+  "no_raw_useEffect_supabase": true,
+  "channel_rail_regression": false,
+  "overall": "PASS"
+}

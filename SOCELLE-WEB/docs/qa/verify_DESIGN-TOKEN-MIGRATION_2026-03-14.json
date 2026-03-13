@@ -1,0 +1,85 @@
+{
+  "wo_id": "DESIGN-TOKEN-MIGRATION-01",
+  "timestamp": "2026-03-13T08:08:44Z",
+  "skills_run": ["token-drift-scanner"],
+  "results": {
+    "tailwind_config_updated": true,
+    "css_variables_added": true,
+    "files_edited": [
+      "tailwind.config.js",
+      "src/index.css"
+    ],
+    "changes_summary": {
+      "tailwind_config": [
+        "background updated from #F6F3EF to #F8F9FB (cool off-white)",
+        "foreground added: #1a1a1a",
+        "primary added: { DEFAULT: #030213, foreground: #ffffff }",
+        "secondary added: { DEFAULT: #f3f3f8, foreground: #030213 }",
+        "muted added: { DEFAULT: #ececf0, foreground: #717182 }",
+        "accent changed: DEFAULT from #6E879B (interactive) to #EFF3F6 (surface); foreground: #030213",
+        "border added: rgba(0,0,0,0.1)",
+        "input added: #f3f3f5",
+        "ring added: #717182",
+        "accent-interactive added: #6E879B (was accent.DEFAULT)",
+        "accent-hover kept: #5A7185",
+        "graphite remapped: #1a1a1a (was #141418, mapped to new foreground value)",
+        "signal-up / signal-warn / signal-down: UNCHANGED (#5F8A72 / #A97A4C / #8E6464)",
+        "destructive added: { DEFAULT: #d4183d, foreground: #ffffff }",
+        "mn.bg updated from #F6F3EF to #F8F9FB",
+        "borderRadius.lg changed to var(--radius) (0.625rem = 10px)",
+        "borderRadius.section changed to 16px (was 32px)",
+        "borderRadius.pill changed to 999px (was 9999px)"
+      ],
+      "css_index": [
+        "--radius: 0.625rem added",
+        "--background: #F8F9FB added (phase 0A canonical)",
+        "--foreground: #1a1a1a added",
+        "--primary / --primary-foreground added",
+        "--secondary / --secondary-foreground added",
+        "--muted / --muted-foreground added",
+        "--accent / --accent-foreground added (surface token)",
+        "--accent-interactive: #6E879B added (interactive CTA/link token)",
+        "--accent-hover: #5A7185 added",
+        "--border / --input / --ring added",
+        "--signal-up / --signal-warn / --signal-down added (unchanged values)",
+        "--destructive / --destructive-foreground added",
+        "--color-bg updated to #F8F9FB (was #F6F3EF)",
+        "--color-text-primary updated to #1a1a1a (was #141418)",
+        "--radius-pill updated to 999px (was 9999px)",
+        "--radius-section updated to 16px (was 32px)",
+        "mobile dialog bg updated from hardcoded #F6F3EF to var(--background)"
+      ]
+    },
+    "legacy_tokens_found": [
+      "#F6F3EF in src/styles/socelle-cleanroom.css:22 (--scl-paper-1 comment) — CSS comment only, not a live color value",
+      "#F6F3EF hardcoded in src/components/intelligence/tools/ActionPlanGenerator.tsx (7 occurrences) — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/tools/BriefGenerator.tsx (7 occurrences) — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/tools/SignalSearch.tsx (4+ occurrences) — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/tools/MoCRAChecker.tsx — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/tools/ExplainSignal.tsx — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/tools/RnDScout.tsx — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/SignalDetailPanel.tsx — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/SavedSearches.tsx — component file, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/intelligence/cloud/*.tsx (multiple files) — component files, Phase 0A scope excludes components",
+      "#F6F3EF hardcoded in src/components/cms/blocks/HeroBlock.tsx — component file",
+      "#F6F3EF hardcoded in src/components/cms/PageRenderer.tsx — component file",
+      "#F6F3EF hardcoded in src/components/PWAInstallPrompt.tsx — component file",
+      "#F6F3EF hardcoded in src/lib/studio/studioExportEngine.ts — lib file",
+      "#F6F3EF hardcoded in src/lib/studio/studioTemplates.ts — lib file",
+      "accent-soft used in src/components/ui/Card.tsx, Tabs.tsx, Table.tsx, Badge.tsx, StatCard.tsx, BusinessRulesView.tsx (228 total occurrences in component files) — Phase 0A scope excludes components; requires Phase 0B component sweep",
+      "font-playfair used in src/pages/brand/IntelligenceReport.tsx:487 — BANNED token, requires Phase 0B fix",
+      "font-serif used in src/pages/admin/cms/PageLayoutBuilder.tsx:198 — BANNED token, requires Phase 0B fix"
+    ],
+    "tokens_confirmed_absent_in_src": [
+      "brand-* Tailwind class tokens — 0 violations in className attributes",
+      "intel-* Tailwind class tokens — 0 violations in className attributes",
+      "natura-* tokens — 0 violations (regions.ts URL is data, not a design token)",
+      "pro-* Tailwind class tokens — 0 violations in className attributes"
+    ],
+    "tsc_exit_code": 0,
+    "tsc_errors": 0,
+    "status": "PASS"
+  },
+  "overall": "PASS",
+  "notes": "Phase 0A scope: tailwind.config.js and src/index.css only. Legacy token usages in component/page/lib files are documented above and require Phase 0B component sweep WO. The #F6F3EF references in component files are hardcoded hex strings (not Tailwind utilities) — they must be replaced with var(--background) or bg-background in a separate component migration pass. accent-soft (228 occurrences) must be replaced with accent (surface) in Phase 0B. font-playfair (1) and font-serif (1) in page files are P0 STOP conditions requiring immediate fix in Phase 0B."
+}

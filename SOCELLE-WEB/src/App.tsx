@@ -24,6 +24,9 @@ const DevMasterIndex = lazy(() => import('./pages/dev/MasterIndex'));
 // ── Pre-launch quiz (primary / route during pre-launch phase — W14-01)
 const PrelaunchQuiz = lazy(() => import('./pages/public/PrelaunchQuiz'));
 
+// ── Auth-aware home route — shows PublicHome to visitors, redirects logged-in users to portal
+const AuthAwareHome = lazy(() => import('./components/AuthAwareHome'));
+
 // ── Public
 const PublicHome = lazy(() => import('./pages/public/Home'));
 const IntelligenceHome = lazy(() => import('./pages/public/IntelligenceHome'));
@@ -405,8 +408,8 @@ function App() {
               <Suspense fallback={Fallback}>
                 <Routes>
                   {/* ── Public ─────────────────────────────────── */}
-                  {/* Pre-launch quiz — primary landing during build phase (W14-01) */}
-                  <Route path="/" element={<PrelaunchQuiz />} />
+                  {/* Auth-aware home — redirects authenticated users to portal, shows public home to visitors */}
+                  <Route path="/" element={<AuthAwareHome />} />
                   {/* Always accessible — auth, legal, and access form bypass prelaunch gate */}
                   <Route path="/waitlist" element={<PrelaunchQuiz />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />

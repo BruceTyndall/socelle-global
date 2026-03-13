@@ -1,0 +1,61 @@
+{
+  "wo_id": "LAYOUT-OVERHAUL-01",
+  "timestamp": "2026-03-14T08:00:00.000Z",
+  "files_modified": [
+    "src/components/AuthAwareHome.tsx (new)",
+    "src/App.tsx",
+    "src/components/layout/PortalSidebar.tsx (new)",
+    "src/layouts/BusinessLayout.tsx"
+  ],
+  "auth_aware_home": {
+    "handles_loading": true,
+    "handles_authenticated": true,
+    "handles_unauthenticated": true,
+    "auth_field_used": "loading",
+    "auth_field_source": "src/lib/auth.tsx line 38 — AuthContextType.loading: boolean",
+    "redirect_target": "/portal/dashboard",
+    "fallback_component": "PublicHome (lazy-loaded)"
+  },
+  "sidebar_built": true,
+  "sidebar_details": {
+    "collapsed_state_persisted": "localStorage('sidebar-collapsed')",
+    "collapsed_width": "56px (w-14)",
+    "expanded_width": "240px (w-60)",
+    "phase_groups": 5,
+    "phase_group_labels": [
+      "Intelligence & Discovery",
+      "Audience & Identity",
+      "Execution & Workflow",
+      "Commerce & Retention",
+      "Platform Infrastructure"
+    ],
+    "home_shortcut": true,
+    "icons_library": "lucide-react",
+    "icon_stroke_width": 1.5,
+    "icon_size": 16,
+    "admin_gating": "adminOnly flag on Admin Control item — only renders if isAdmin",
+    "module_gating": "checkAccess() from useModuleAccessContext for MODULE_PROFESSIONALS, MODULE_BRANDS, MODULE_JOBS",
+    "tooltip_in_collapsed": true,
+    "active_state": "bg-accent border-l-2 border-accent-interactive text-primary font-medium",
+    "hover_state": "bg-accent/60 text-primary",
+    "design_tokens_used": ["background", "foreground", "accent", "accent-interactive", "graphite"]
+  },
+  "business_layout_updated": true,
+  "business_layout_changes": {
+    "inline_aside_removed": true,
+    "portal_sidebar_integrated": true,
+    "credit_strip_moved_to_header": true,
+    "redundant_imports_cleaned": true
+  },
+  "tsc_exit_code": 0,
+  "tsc_errors": 0,
+  "skills_run": ["manual-tsc-check"],
+  "results": {
+    "tsc": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit exited with code 0, no errors"
+    }
+  },
+  "overall": "PASS"
+}

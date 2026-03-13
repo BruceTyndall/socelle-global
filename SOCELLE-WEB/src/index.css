@@ -8,26 +8,49 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS Custom Properties — Mineral Intelligence System ───── */
+/* ── CSS Custom Properties — New Design System (Phase 0A) ───── */
 :root {
-  /* Core background system */
-  --color-bg:             #F6F3EF;   /* Pearl Mineral V2 locked — CANONICAL_DOCTRINE §3 */
+  /* ── Semantic design tokens (Phase 0A) ── */
+  --radius:               0.625rem;   /* 10px — maps to rounded-lg in Tailwind */
+  --background:           #F8F9FB;    /* cool off-white (replaces #F6F3EF warm beige) */
+  --foreground:           #1a1a1a;
+  --primary:              #030213;
+  --primary-foreground:   #ffffff;
+  --secondary:            #f3f3f8;
+  --secondary-foreground: #030213;
+  --muted:                #ececf0;
+  --muted-foreground:     #717182;
+  --accent:               #EFF3F6;    /* surface only — use --accent-interactive for links/CTAs */
+  --accent-foreground:    #030213;
+  --accent-interactive:   #6E879B;    /* steel blue — CTAs, links, interactive borders */
+  --accent-hover:         #5A7185;    /* hover state of steel blue */
+  --border:               rgba(0,0,0,0.1);
+  --input:                #f3f3f5;
+  --ring:                 #717182;
+  --signal-up:            #5F8A72;    /* DO NOT CHANGE */
+  --signal-warn:          #A97A4C;    /* DO NOT CHANGE */
+  --signal-down:          #8E6464;    /* DO NOT CHANGE */
+  --destructive:          #d4183d;
+  --destructive-foreground: #ffffff;
+
+  /* Core background system (legacy vars kept for component compat) */
+  --color-bg:             #F8F9FB;   /* updated to new cool off-white */
   --color-surface-alt:    #EFEBE6;
   --color-surface-card:   #FFFFFF;
   --color-panel-dark:     #1F2428;
   --color-footer:         #15191D;
 
   /* Text system */
-  --color-text-primary:   #141418;   /* graphite locked — CANONICAL_DOCTRINE §3 */
+  --color-text-primary:   #1a1a1a;   /* mapped to new foreground */
   --color-text-secondary: rgba(30, 37, 43, 0.62);
   --color-text-muted:     rgba(30, 37, 43, 0.42);
   --color-text-on-dark:   #F7F5F2;
   --color-text-on-dark-secondary: rgba(247, 245, 242, 0.72);
 
-  /* Accent system */
-  --color-accent:         #6E879B;
-  --color-accent-hover:   #5A7185;   /* Pearl Mineral V2 locked */
-  --color-accent-soft:    #E8EDF1;   /* Pearl Mineral V2 locked */
+  /* Accent system (legacy vars kept for component compat) */
+  --color-accent:         #6E879B;   /* maps to accent-interactive */
+  --color-accent-hover:   #5A7185;
+  --color-accent-soft:    #E8EDF1;
   --color-accent-tint:    rgba(110, 135, 155, 0.10);
   --color-focus:          rgba(110, 135, 155, 0.35);
 
@@ -37,9 +60,9 @@
   --color-danger:         #8E6464;
 
   /* Radii */
-  --radius-pill:          9999px;
+  --radius-pill:          999px;
   --radius-card:          28px;
-  --radius-section:       32px;
+  --radius-section:       16px;
 
   /* Shadows */
   --shadow-soft:          0 8px 24px rgba(19, 24, 29, 0.06);
@@ -663,7 +686,7 @@ dialog.mobile-nav-dialog {
   max-height: 100%;
   width: 100%;
   height: 100%;
-  background: #F6F3EF; /* locked Pearl Mineral V2 bg */
+  background: var(--background); /* Phase 0A — new cool off-white */
   outline: none;
 }
 

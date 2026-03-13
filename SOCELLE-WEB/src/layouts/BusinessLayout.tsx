@@ -1,36 +1,6 @@
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import {
-  Home,
-  ShoppingBag,
-  Sparkles,
-  MessageSquare,
-  User,
-  LogOut,
-  ChevronDown,
-  ArrowLeft,
-  Brain,
-  Bot,
-  BarChart3,
-  GraduationCap,
-  MapPin,
-  CalendarDays,
-  ClipboardList,
-  FileText,
-  CheckCircle2,
-  TrendingUp,
-  Megaphone,
-  Users,
-  Target,
-  Bell,
-  CreditCard,
-  Store,
-  Building2,
-  CheckSquare,
-  Layers,
-  Shield,
-} from 'lucide-react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { CreditCard } from 'lucide-react';
 import { useAuth } from '../lib/auth';
-import { useState } from 'react';
 import MainNav from '../components/MainNav';
 import { RouteErrorBoundary } from '../components/RouteErrorBoundary';
 import ChatPanel from '../components/ai/ChatPanel';
@@ -38,75 +8,12 @@ import NotificationCenter from '../components/notifications/NotificationCenter';
 import LocationSwitcher from '../components/locations/LocationSwitcher';
 import { LocationProvider } from '../lib/locations/useLocationContext';
 import { useCreditBalance } from '../lib/credits/useCreditBalance';
+import PortalSidebar from '../components/layout/PortalSidebar';
 
 export default function BusinessLayout() {
-  const { user, profile, signOut } = useAuth();
-  const location = useLocation();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { balance: creditBalance, loading: creditLoading } = useCreditBalance();
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/portal');
-  };
-
-  const navSections = [
-    {
-      label: 'Intelligence',
-      items: [
-        { path: '/portal/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/portal/intelligence', label: 'Intelligence Hub', icon: Brain },
-        { path: '/portal/advisor', label: 'AI Advisor', icon: Bot },
-        { path: '/portal/benchmarks', label: 'Benchmarks', icon: BarChart3 },
-        { path: '/portal/locations', label: 'Locations', icon: MapPin },
-        { path: '/portal/ce-credits', label: 'CE Credits', icon: GraduationCap },
-      ],
-    },
-    {
-      label: 'Operations',
-      items: [
-        { path: '/portal/orders', label: 'Orders', icon: ShoppingBag },
-        { path: '/portal/messages', label: 'Messages', icon: MessageSquare },
-        { path: '/portal/calendar', label: 'Calendar', icon: CalendarDays },
-        { path: '/portal/plans', label: 'Plans', icon: ClipboardList },
-        { path: '/portal/plans/new', label: 'New Plan', icon: ClipboardList },
-        { path: '/portal/plans/compare', label: 'Compare Plans', icon: ClipboardList },
-        { path: '/portal/apply', label: 'Apply', icon: FileText },
-        { path: '/portal/claim/review', label: 'Claim Review', icon: CheckCircle2 },
-      ],
-    },
-    {
-      label: 'Growth',
-      items: [
-        { path: '/portal/sales', label: 'Sales', icon: TrendingUp },
-        { path: '/portal/marketing', label: 'Marketing', icon: Megaphone },
-        { path: '/portal/crm', label: 'CRM', icon: Users },
-        { path: '/portal/crm/contacts', label: 'Contacts', icon: Users },
-        { path: '/portal/crm/companies', label: 'Companies', icon: Building2 },
-        { path: '/portal/crm/tasks', label: 'Tasks', icon: CheckSquare },
-        { path: '/portal/crm/segments', label: 'Segments', icon: Layers },
-        { path: '/portal/crm/consent', label: 'Consent Audit', icon: Shield },
-        { path: '/portal/booking', label: 'Booking', icon: CalendarDays },
-        { path: '/portal/prospects', label: 'Prospects', icon: Target },
-        { path: '/portal/reseller', label: 'Reseller', icon: Store },
-      ],
-    },
-    {
-      label: 'Discovery',
-      items: [
-        { path: '/brands', label: 'Browse Brands', icon: Sparkles },
-      ],
-    },
-    {
-      label: 'Account',
-      items: [
-        { path: '/portal/notifications', label: 'Notifications', icon: Bell },
-        { path: '/portal/account', label: 'Account', icon: User },
-        { path: '/portal/subscription', label: 'Subscription', icon: CreditCard },
-      ],
-    },
-  ];
 
   if (!user) {
     return (
@@ -119,136 +26,63 @@ export default function BusinessLayout() {
 
   return (
     <LocationProvider>
-    <div className="min-h-screen bg-background">
-      <MainNav />
-      <div className="flex">
-        <aside className="w-64 bg-white/95 backdrop-blur-sm border-r border-accent-soft flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
-          <div className="p-6 border-b border-accent-soft">
-            <Link to="/portal">
-              <h1 className="font-sans text-lg text-graphite">
-                socelle<span className="text-accent">.</span>
-              </h1>
-            </Link>
-          </div>
+      <div className="min-h-screen bg-background">
+        <MainNav />
+        <div className="flex">
+          {/* ── Phase-grouped collapsible sidebar ── */}
+          <PortalSidebar />
 
-          <nav className="flex-1 p-4 space-y-1">
-            <Link
-              to="/"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors text-graphite/60 hover:bg-accent-soft hover:text-graphite mb-2 font-sans min-h-touch"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </Link>
-            {navSections.map((section) => (
-              <div key={section.label}>
-                <p className="text-[10px] font-sans font-semibold text-graphite/60/70 uppercase tracking-wider px-4 pt-4 pb-1">
-                  {section.label}
-                </p>
-                {section.items.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = item.path === '/brands'
-                    ? location.pathname.startsWith('/brands')
-                    : location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors font-sans min-h-touch ${
-                        isActive
-                          ? 'bg-accent-soft text-graphite font-medium'
-                          : 'text-graphite/60 hover:bg-accent-soft hover:text-graphite'
-                      }`}
+          {/* ── Main content area ── */}
+          <div className="flex-1 flex flex-col min-w-0" style={{ height: 'calc(100vh - 4rem)' }}>
+            <header className="bg-white border-b border-accent/60">
+              <div className="px-8 py-5">
+                <div className="flex items-center justify-between">
+                  <h1 className="font-sans text-lg text-graphite">
+                    {profile?.spa_name || 'Business Portal'}
+                  </h1>
+                  <div className="flex items-center gap-3">
+                    {/* PAY-WO-02: Credit balance strip */}
+                    <button
+                      onClick={() => navigate('/portal/credits')}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent hover:bg-accent/80 transition-colors"
                     >
-                      <Icon className="w-5 h-5" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            ))}
-          </nav>
-
-          <div className="p-4 border-t border-accent-soft">
-            {/* PAY-WO-02: Credit balance strip */}
-            <Link
-              to="/portal/credits"
-              className="flex items-center justify-between px-3 py-2 mb-2 rounded-lg bg-accent-soft hover:bg-accent-soft/80 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <CreditCard className="w-3.5 h-3.5 text-accent flex-shrink-0" />
-                <span className="text-[11px] font-sans font-medium text-graphite/70">Credits</span>
-              </div>
-              {creditLoading ? (
-                <div className="h-3 w-12 bg-graphite/10 rounded animate-pulse" />
-              ) : (
-                <span className="text-[11px] font-sans font-semibold text-graphite">
-                  {creditBalance.isLive ? creditBalance.display : (
-                    <span className="text-graphite/40">DEMO</span>
-                  )}
-                </span>
-              )}
-            </Link>
-            <div className="relative">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-graphite hover:bg-accent-soft rounded-lg transition-colors font-sans"
-              >
-                <span className="truncate">{profile?.spa_name || user.email}</span>
-                <ChevronDown className="w-4 h-4 flex-shrink-0" />
-              </button>
-
-              {userMenuOpen && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border border-accent-soft overflow-hidden">
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-graphite hover:bg-accent-soft transition-colors font-sans"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </aside>
-
-        <div className="flex-1 flex flex-col min-w-0" style={{ height: 'calc(100vh - 4rem)' }}>
-          <header className="bg-white border-b border-accent-soft">
-            <div className="px-8 py-5">
-              <div className="flex items-center justify-between">
-                <h1 className="font-sans text-lg text-graphite">
-                  {profile?.spa_name || 'Business Portal'}
-                </h1>
-                <div className="flex items-center gap-3">
-                  <LocationSwitcher />
-                  <NotificationCenter preferencesUrl="/portal/notifications" />
-                  <div className="text-sm text-graphite/60 font-sans">
-                    Reseller Portal
+                      <CreditCard className="w-3.5 h-3.5 text-accent-interactive flex-shrink-0" />
+                      {creditLoading ? (
+                        <div className="h-3 w-10 bg-foreground/10 rounded animate-pulse" />
+                      ) : (
+                        <span className="text-[11px] font-sans font-semibold text-foreground">
+                          {creditBalance.isLive ? creditBalance.display : (
+                            <span className="text-foreground/40">DEMO</span>
+                          )}
+                        </span>
+                      )}
+                    </button>
+                    <LocationSwitcher />
+                    <NotificationCenter preferencesUrl="/portal/notifications" />
                   </div>
                 </div>
               </div>
-            </div>
-          </header>
+            </header>
 
-          <main className="flex-1 px-8 py-8 overflow-auto">
-            <div className="max-w-7xl mx-auto">
-              <RouteErrorBoundary section="Business Portal">
-                <Outlet />
-              </RouteErrorBoundary>
-            </div>
-          </main>
+            <main className="flex-1 px-8 py-8 overflow-auto">
+              <div className="max-w-7xl mx-auto">
+                <RouteErrorBoundary section="Business Portal">
+                  <Outlet />
+                </RouteErrorBoundary>
+              </div>
+            </main>
 
-          <footer className="border-t border-accent-soft bg-white">
-            <div className="px-8 py-4">
-              <p className="text-center text-sm text-graphite/60 font-sans">
-                © 2026 Socelle. All rights reserved.
-              </p>
-            </div>
-          </footer>
+            <footer className="border-t border-accent/60 bg-white">
+              <div className="px-8 py-4">
+                <p className="text-center text-sm text-graphite/60 font-sans">
+                  © 2026 Socelle. All rights reserved.
+                </p>
+              </div>
+            </footer>
+          </div>
         </div>
+        <ChatPanel userRole="operator" />
       </div>
-      <ChatPanel userRole="operator" />
-    </div>
     </LocationProvider>
   );
 }

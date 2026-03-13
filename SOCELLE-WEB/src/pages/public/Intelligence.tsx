@@ -7,11 +7,14 @@ import {
   ArrowRight,
   Clock3,
   FlaskConical,
+  LayoutGrid,
+  Menu,
   ShieldCheck,
   Sparkles,
   TrendingUp,
   Waves,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import MainNav from '../../components/MainNav';
 import JsonLd from '../../components/seo/JsonLd';
 import {
@@ -21,7 +24,13 @@ import {
 } from '../../lib/seo';
 import IntelligenceFeedSection, { FEED_FILTERS } from '../../components/intelligence/IntelligenceFeedSection';
 import IntelligenceChannelRail from '../../components/intelligence/IntelligenceChannelRail';
+import IntelligenceFeedCard from '../../components/intelligence/IntelligenceFeedCard';
+import type { FeedArticle } from '../../components/intelligence/IntelligenceFeedCard';
+import IntelligenceFilterSidebar from '../../components/intelligence/IntelligenceFilterSidebar';
+import type { VerticalFilter as FeedVerticalFilter, SourceTypeFilter, SortOrder } from '../../components/intelligence/IntelligenceFilterSidebar';
+import IntelligenceInsightsPanel from '../../components/intelligence/IntelligenceInsightsPanel';
 import SiteFooter from '../../components/sections/SiteFooter';
+import { supabase } from '../../lib/supabase';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';
 import { useIntelligenceChannels } from '../../lib/intelligence/useIntelligenceChannels';
 import type { IntelligenceSignal, SignalDirection, SignalType } from '../../lib/intelligence/types';
@@ -259,6 +268,13 @@ export default function Intelligence() {
   const [activeVertical, setActiveVertical] = useState<VerticalFilter>('all');
   const [activeFilter, setActiveFilter] = useState('all');
 
+  // Feed redesign state (Phase 0C)
+  const [feedVertical, setFeedVertical] = useState<FeedVerticalFilter>('all');
+  const [feedSortOrder, setFeedSortOrder] = useState<SortOrder>('recent');
+  const [feedSearchQuery, setFeedSearchQuery] = useState('');
+  const [feedSourceTypes, setFeedSourceTypes] = useState<SourceTypeFilter[]>(['all']);
+  const [feedSidebarOpen, setFeedSidebarOpen] = useState(true);
+
   const activeSignalTypes = useMemo<SignalType[] | undefined>(() => {
     const filter = FEED_FILTERS.find((item) => item.key === activeFilter);
     return filter?.types && filter.types.length > 0 ? filter.types : undefined;
@@ -306,6 +322,84 @@ export default function Intelligence() {
       trackSignalViewed(deferredSignals.length);
     }
   }, [deferredSignals.length, loading]);
+
+  // Feed redesign: fetch story_drafts (Phase 0C)
+  const { data: feedArticlesRaw = [], isLoading: feedLoading, isError: feedError, refetch: feedRefetch } = useQuery<FeedArticle[]>({
+    queryKey: ['intelligence-feed', feedVertical, feedSortOrder],
+    queryFn: async () => {
+      let query = supabase
+        .from('story_drafts')
+        .select('id, title, excerpt, hero_image_url, source_url, tags, vertical, category, created_at, published_at, reading_time_minutes')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false })
+        .limit(40);
+
+      if (feedVertical !== 'all') {
+        query = query.eq('vertical', feedVertical);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      const rows: FeedArticle[] = (data ?? []).map((row) => ({
+        id: row.id,
+        title: row.title,
+        excerpt: row.excerpt ?? null,
+        hero_image_url: row.hero_image_url ?? null,
+        source_url: row.source_url ?? null,
+        tags: row.tags ?? null,
+        vertical: row.vertical ?? null,
+        category: row.category ?? null,
+        created_at: row.created_at,
+        published_at: row.published_at ?? null,
+        reading_time_minutes: row.reading_time_minutes ?? null,
+        signal_score: null,
+      }));
+
+      // If no published story_drafts, fall back to rss_items
+      if (rows.length === 0) {
+        let rssQuery = supabase
+          .from('rss_items')
+          .select('id, title, description, image_url, link, vertical_tags, created_at, published_at, confidence_score')
+          .order('created_at', { ascending: false })
+          .limit(40);
+
+        if (feedVertical !== 'all') {
+          rssQuery = rssQuery.contains('vertical_tags', [feedVertical]);
+        }
+
+        const { data: rssData } = await rssQuery;
+        return (rssData ?? []).map((row) => ({
+          id: row.id,
+          title: row.title,
+          excerpt: row.description ?? null,
+          hero_image_url: row.image_url ?? null,
+          source_url: row.link ?? null,
+          tags: row.vertical_tags ?? null,
+          vertical: (row.vertical_tags ?? [])[0] ?? null,
+          category: null,
+          created_at: row.created_at,
+          published_at: row.published_at ?? null,
+          reading_time_minutes: null,
+          signal_score: row.confidence_score ? Math.round(row.confidence_score) : null,
+        }));
+      }
+
+      return rows;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Client-side filter by search query
+  const feedArticles = useMemo<FeedArticle[]>(() => {
+    if (!feedSearchQuery.trim()) return feedArticlesRaw;
+    const q = feedSearchQuery.toLowerCase();
+    return feedArticlesRaw.filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        (a.excerpt ?? '').toLowerCase().includes(q),
+    );
+  }, [feedArticlesRaw, feedSearchQuery]);
 
   const dashboardHref = user ? '/portal/intelligence' : '/request-access';
   const dashboardLabel = user ? 'Open Intelligence Dashboard' : 'Get Intelligence Access';
@@ -665,6 +759,115 @@ export default function Intelligence() {
               lockedCtaLabel={user ? 'Open dashboard for deeper reads' : 'Get intelligence access'}
               signalHrefBuilder={(signal) => `/intelligence/signals/${signal.id}`}
             />
+          </div>
+        </section>
+
+        {/* ── Phase 0C: Editorial Feed (3-column layout) ─────────────────── */}
+        <section id="signal-feed" className="relative pb-12 pt-6">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Section header */}
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#6E879B]">Intelligence Feed</p>
+                <h2 className="mt-1 text-2xl font-medium tracking-[-0.03em] text-[#1a1a1a]">
+                  Articles & market signals
+                </h2>
+              </div>
+              {/* Sidebar toggle (visible below 1280px) */}
+              <button
+                type="button"
+                onClick={() => setFeedSidebarOpen((prev) => !prev)}
+                className="inline-flex items-center gap-2 rounded-lg border border-[#e2e6ea] bg-white px-3 py-2 text-sm text-[#717182] hover:border-[#6E879B]/40 hover:text-[#6E879B] xl:hidden"
+                aria-label="Toggle filters"
+              >
+                {feedSidebarOpen ? <LayoutGrid className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                <span>Filters</span>
+              </button>
+            </div>
+
+            {/* 3-column grid */}
+            <div className="flex gap-5">
+              {/* LEFT: filter sidebar */}
+              <div
+                className={[
+                  'w-56 shrink-0 transition-all duration-200',
+                  feedSidebarOpen ? 'block' : 'hidden xl:block',
+                ].join(' ')}
+              >
+                <IntelligenceFilterSidebar
+                  vertical={feedVertical}
+                  onVerticalChange={(v) => startTransition(() => setFeedVertical(v))}
+                  sourceTypes={feedSourceTypes}
+                  onSourceTypesChange={setFeedSourceTypes}
+                  sortOrder={feedSortOrder}
+                  onSortOrderChange={(v) => startTransition(() => setFeedSortOrder(v))}
+                  searchQuery={feedSearchQuery}
+                  onSearchQueryChange={setFeedSearchQuery}
+                  liveChannelCount={intelligenceChannels.length}
+                />
+              </div>
+
+              {/* CENTER: article cards */}
+              <div className="min-w-0 flex-1">
+                {feedLoading ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="animate-pulse overflow-hidden rounded-xl border border-[#e2e6ea] bg-white">
+                        <div className="h-44 w-full bg-[#F8F9FB]" />
+                        <div className="p-4 space-y-2">
+                          <div className="h-3 w-24 rounded bg-[#ececf0]" />
+                          <div className="h-5 w-full rounded bg-[#ececf0]" />
+                          <div className="h-4 w-4/5 rounded bg-[#ececf0]" />
+                          <div className="h-4 w-3/5 rounded bg-[#F8F9FB]" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : feedError ? (
+                  <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#e2e6ea] bg-white py-16 text-center">
+                    <p className="text-base font-medium text-[#1a1a1a]">Could not load feed</p>
+                    <p className="mt-2 text-sm text-[#717182]">The intelligence feed encountered an error. Please try again.</p>
+                    <button
+                      type="button"
+                      onClick={() => feedRefetch()}
+                      className="mt-4 rounded-lg border border-[#e2e6ea] bg-white px-4 py-2 text-sm text-[#6E879B] hover:bg-[#EFF3F6]"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : feedArticles.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#e2e6ea] bg-white py-16 text-center">
+                    <p className="text-base font-medium text-[#1a1a1a]">No intelligence signals found</p>
+                    <p className="mt-2 max-w-sm text-sm text-[#717182]">
+                      {feedSearchQuery
+                        ? `No results for "${feedSearchQuery}". Try a different search term or clear the filter.`
+                        : 'No published articles match the current filter. Try selecting a different vertical or clearing your filters.'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFeedSearchQuery('');
+                        startTransition(() => setFeedVertical('all'));
+                      }}
+                      className="mt-4 rounded-lg border border-[#e2e6ea] bg-white px-4 py-2 text-sm text-[#6E879B] hover:bg-[#EFF3F6]"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {feedArticles.map((article) => (
+                      <IntelligenceFeedCard key={article.id} article={article} />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* RIGHT: insights panel (hidden below 1024px) */}
+              <div className="hidden lg:block w-72 shrink-0">
+                <IntelligenceInsightsPanel />
+              </div>
+            </div>
           </div>
         </section>
 

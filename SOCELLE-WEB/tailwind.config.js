@@ -4,25 +4,52 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Socelle — Mineral Intelligence Design System ────────────
-        // Core background system
+        // ── Socelle — New Design System (Phase 0A migration) ────────
+        // Core semantic tokens
+        background:    '#F8F9FB',   // cool off-white (replaces Pearl Mineral V2 #F6F3EF warm beige)
+        foreground:    '#1a1a1a',   // near-black
+        primary: {
+          DEFAULT:     '#030213',   // deep brand primary
+          foreground:  '#ffffff',
+        },
+        secondary: {
+          DEFAULT:     '#f3f3f8',
+          foreground:  '#030213',
+        },
+        muted: {
+          DEFAULT:     '#ececf0',
+          foreground:  '#717182',
+        },
+        accent: {
+          DEFAULT:     '#EFF3F6',   // surface only (was interactive — now accent-interactive)
+          foreground:  '#030213',
+        },
+        border:        'rgba(0,0,0,0.1)',
+        input:         '#f3f3f5',
+        ring:          '#717182',
+        // Interactive accent — steel blue for links, CTAs, borders
+        'accent-interactive': '#6E879B',   // was accent.DEFAULT in Pearl Mineral V2
+        'accent-hover':       '#5A7185',   // hover state of steel blue (locked)
+        // Text system — graphite kept for backwards compatibility
+        graphite:      '#1a1a1a',   // mapped to foreground value
+        // Signal colors — DO NOT CHANGE
+        'signal-up':   '#5F8A72',   // positive / upward
+        'signal-warn': '#A97A4C',   // warning / attention
+        'signal-down': '#8E6464',   // negative / decline
+        // Destructive
+        destructive: {
+          DEFAULT:     '#d4183d',
+          foreground:  '#ffffff',
+        },
+        // ── Core background system (kept for component compat) ──────
         mn: {
-          bg:          '#F6F3EF',   // porcelain mineral — page background (Pearl Mineral V2)
+          bg:          '#F8F9FB',   // updated to new cool off-white
           surface:     '#EFEBE6',   // soft stone — alternate surface
           card:        '#FFFFFF',   // card / elevated surface
           dark:        '#1F2428',   // carbon slate — dark contrast panels
           footer:      '#15191D',   // deep graphite — footer / deep intelligence
         },
-        // Text system
-        graphite:      '#141418',   // primary text on light (Pearl Mineral V2 — #141418 locked)
-        background:    '#F6F3EF',   // page background (Pearl Mineral V2 — alias of mn.bg)
-        // Accent system
-        accent: {
-          DEFAULT:     '#6E879B',   // mineral slate blue
-          hover:       '#5A7185',   // accent hover / active (Pearl Mineral V2 locked)
-          soft:        '#E8EDF1',   // soft panels (Pearl Mineral V2 locked)
-        },
-        // Signal colors
+        // Signal colors (object form — kept for compat with signal.up / signal.warn / signal.down)
         signal: {
           up:          '#5F8A72',   // positive / upward
           warn:        '#A97A4C',   // warning / attention
@@ -106,14 +133,14 @@ export default {
         sm:   '4px',
         DEFAULT: '6px',
         md:   '8px',
-        lg:   '10px',     // ← project standard (most common)
+        lg:   'var(--radius)',   // var(--radius) = 0.625rem = 10px
         xl:   '12px',
         '2xl': '16px',
         '3xl': '20px',
-        // ── Mineral design system ──
+        // ── Design system ──
         'card':    '28px',
-        'section': '32px',
-        'pill':    '9999px',
+        'section': '16px',      // updated per Phase 0A spec
+        'pill':    '999px',     // updated per Phase 0A spec
         // ── Warm Cocoa border radii — PORTAL ONLY (W12-25) ──
         'ds-small':  '24px',   // var(--border-radius-small) @ desktop — PORTAL ONLY
         'ds-medium': '40px',   // var(--border-radius-medium) @ desktop — PORTAL ONLY
