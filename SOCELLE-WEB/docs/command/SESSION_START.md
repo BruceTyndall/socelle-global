@@ -12,7 +12,7 @@
 | Step | File | What to read |
 |------|------|--------------|
 | 1 | `/.claude/CLAUDE.md` | Full file — governance, stop conditions, launch gates |
-| 2 | `SOCELLE-WEB/docs/build_tracker.md` | Lines 1–50 — current phase, active WOs, last commit |
+| 2 | `SOCELLE-WEB/docs/build_tracker_v2.md` | Lines 1–50 — current phase, active WOs, last commit |
 | 3 | `SOCELLE-WEB/MASTER_STATUS.md` | Top sections — build health, LIVE/DEMO mix, data/API state |
 
 **Then, for the WO you are executing:**
@@ -42,10 +42,10 @@ TIME_ESTIMATE: [e.g. 45 min]
 
 ## 3. NO WO ID = NO WORK
 
-- Every code change, migration, and deployment must map to a **WO ID in `build_tracker.md`**.
-- WO IDs not in `build_tracker.md` are invalid. Do not invent IDs.
-- If work is not in `build_tracker.md`, stop and add a WO entry before proceeding.
-- Debt fixes use DEBT-style IDs (e.g. `DEBT-TANSTACK-REAL-6`) — they must also appear in `build_tracker.md`.
+- Every code change, migration, and deployment must map to a **WO ID in `build_tracker_v2.md`**.
+- WO IDs not in `build_tracker_v2.md` are invalid. Do not invent IDs.
+- If work is not in `build_tracker_v2.md`, stop and add a WO entry before proceeding.
+- Debt fixes use DEBT-style IDs (e.g. `DEBT-TANSTACK-REAL-6`) — they must also appear in `build_tracker_v2.md`.
 
 ---
 
@@ -71,7 +71,7 @@ TIME_ESTIMATE: [e.g. 45 min]
 **Tier 0 — Single law:** `/.claude/CLAUDE.md`
 
 **Tier 1 — Read every session (slices):**
-- `SOCELLE-WEB/docs/build_tracker.md` (lines 1–50)
+- `SOCELLE-WEB/docs/build_tracker_v2.md` (lines 1–50)
 - `SOCELLE-WEB/MASTER_STATUS.md` (top sections)
 - `SOCELLE_MASTER_BUILD_WO.md` (WO section you are executing)
 - `SOCELLE-WEB/docs/command/V3_BUILD_PLAN.md`
@@ -84,7 +84,7 @@ TIME_ESTIMATE: [e.g. 45 min]
 - **One WO per session** unless the owner explicitly authorizes parallelism.
 - Stay within the WO scope and allowed paths per `docs/command/AGENT_SCOPE_REGISTRY.md`.
 - If blocked, note in build_tracker and stop — do not invent work.
-- **Multi-agent shared ledger:** All agents read and update the same `build_tracker.md`. No agent-specific trackers. No WO marked DONE without proof pack (tsc + build + verify_*.json + required skills). Conflicts: Tier 0 wins; then execution truth = build_tracker + verify_*.json (not older plans).
+- **Multi-agent shared ledger:** All agents read and update the same `build_tracker_v2.md`. No agent-specific trackers. No WO marked DONE without proof pack (tsc + build + verify_*.json + required skills). Conflicts: Tier 0 wins; then execution truth = build_tracker_v2 + verify_*.json (not older plans).
 
 ---
 

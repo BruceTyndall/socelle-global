@@ -12,7 +12,7 @@
 **Before writing ANY code, running ANY command, or making ANY decision, follow the `SESSION_START.md` sequence exactly. The core three-file chain is:**
 
 1. **`/.claude/CLAUDE.md`** — this file (governance, stop conditions, launch gates)
-2. **`SOCELLE-WEB/docs/build_tracker.md`** — lines 1–50 only (current phase, active WOs, freeze directives)
+2. **`SOCELLE-WEB/docs/build_tracker_v2.md`** — lines 1–50 only (current phase, active WOs, freeze directives)
 3. **`SOCELLE-WEB/MASTER_STATUS.md`** — top sections (build health, LIVE/DEMO mix, data/API state)
 
 **Then, for the WO you are executing:**
@@ -101,7 +101,7 @@ Key skill mappings by WO group:
 - Writing "PASS — correctly scoped to portals" to exempt known violations
 - Claiming "comments only" without running the actual grep
 - Marking "COMPLETE" without a verification JSON in `docs/qa/`
-- Creating exemption rules in build_tracker.md (e.g., "do not clean those without a dedicated audit WO") without owner approval
+- Creating exemption rules in build_tracker_v2.md (e.g., "do not clean those without a dedicated audit WO") without owner approval
 - Passing `build-gate` as a proxy for design compliance (build-gate checks tsc+build, NOT tokens)
 
 **Required verification by work type:**
@@ -199,7 +199,7 @@ Execute WOs in this order. Complete each before starting the next. Check `SOCELL
 - ✅ Sentry: fully removed — package.json clean, src/ clean, vite.config.ts clean. §16.20 SATISFIED.
 - ✅ DEBT-6 tier filter bypass: resolved — `allowedTiers` now applied unconditionally on all signal paths.
 
-**OPEN (fix immediately — P0 queue in build_tracker.md):**
+**OPEN (fix immediately — P0 queue in build_tracker_v2.md):**
 
 1. **`brand-*` token violations: 19** — StatCard, Button, EmptyState, UpgradeGate, index.css. Defined in `tailwind.config.js` as legacy tokens. Migrate to Pearl Mineral V2 (`accent-soft`, etc.). → P1-1
 2. **`intel-*` token violations: 30** — GlowBadge, DarkPanel, 5 business portal pages. Replace `intel-up/down/accent/dark` with `signal-up/down/warn/accent`. → P1-2
@@ -379,8 +379,8 @@ All observability is via **Admin Hub dashboards and CMS Hub publish/route health
 
 - **One turn = one WO** (or one sub-task of a WO). Don't try to do everything at once.
 - **Don't re-read the full build tracker** every turn — read lines 1-50 for current state, then execute.
-- **Append-only updates** to build_tracker.md — update the status line at the top, mark WO complete at the bottom.
-- **No new planning docs** — all plans live in `build_tracker.md` or existing command docs.
+- **Append-only updates** to build_tracker_v2.md — update the status line at the top, mark WO complete at the bottom.
+- **No new planning docs** — all plans live in `build_tracker_v2.md` or existing command docs.
 - **No status summaries** — just build.
 
 ---
