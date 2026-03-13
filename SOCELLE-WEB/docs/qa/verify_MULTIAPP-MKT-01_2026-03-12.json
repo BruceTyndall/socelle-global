@@ -1,0 +1,33 @@
+{
+  "wo_id": "MULTIAPP-MKT-01",
+  "timestamp": "2026-03-12T13:10:14-06:00",
+  "skills_run": [
+    "agent-marketing",
+    "live-demo-detector",
+    "cta-validator",
+    "build-gate"
+  ],
+  "results": {
+    "agent-marketing": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "campaigns exist in schema cache; metrics use production-backed analytics; list->builder->detail->analytics flow verified"
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "no proxy placeholders/hardcoded metrics left"
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "CTAs properly validate to corresponding action routes"
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit passed, build succeeded"
+    }
+  },
+  "overall": "PASS"
+}

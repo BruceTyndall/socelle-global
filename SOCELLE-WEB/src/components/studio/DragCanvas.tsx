@@ -94,7 +94,7 @@ function renderBlockContent(block: CanvasBlock): React.ReactNode {
         <div className={`flex flex-col px-3 py-2 w-full h-full justify-center ${alignClass}`}>
           <span className="text-3xl font-bold font-sans" style={{ color: kpiColor }}>{String(content.value ?? '—')}</span>
           <span className="text-xs mt-1" style={{ color, opacity: 0.5 }}>{String(content.label ?? 'KPI')}</span>
-          {content.change && <span className="text-xs mt-0.5" style={{ color: kpiColor }}>{String(content.change)}</span>}
+          {!!content.change && <span className="text-xs mt-0.5" style={{ color: kpiColor }}>{String(content.change)}</span>}
         </div>
       );
     }

@@ -1,0 +1,27 @@
+{
+  "wo_id": "MISSING-APP-FEAT-06",
+  "timestamp": "2026-03-12T13:24:15-06:00",
+  "skills_run": [
+    "schema-db-suite",
+    "agent-site",
+    "build-gate"
+  ],
+  "results": {
+    "schema-db-suite": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "pgvector extension active; schema up to date."
+    },
+    "agent-site": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Web push, regional heatmaps, salary benchmarks implemented."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit passed, build succeeded."
+    }
+  },
+  "overall": "PASS"
+}

@@ -1,0 +1,33 @@
+{
+  "wo_id": "INTEL-CONTENT-01",
+  "timestamp": "2026-03-14T01:00:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0, "duration_s": 7.1 },
+  "skills_run": ["copy-quality-suite", "hub-shell-detector", "authoring-core-schema-validator"],
+  "results": {
+    "copy-quality-suite": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No banned terms in IntelligenceBriefDetail.tsx (grep Shop Now, AI-powered, Unlock, revolutionary, game-changing). Changed file uses intelligence-first vocabulary and safe HTML path only."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "IntelligenceBriefDetail.tsx: useIntelligenceBriefBySlug, useIntelligencePosts (data hooks). Not a shell; live CMS data."
+    },
+    "authoring-core-schema-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No authoring core schema or block type changes in this WO. Sanitization applied to existing cms_posts body only; document model and PageRenderer unchanged."
+    }
+  },
+  "files_changed": [
+    "SOCELLE-WEB/docs/build_tracker.md",
+    "SOCELLE-WEB/src/pages/public/IntelligenceBriefDetail.tsx"
+  ],
+  "evidence_summary": {
+    "editorial_rail_intentional": "Editorial rail on /intelligence uses useContentPlacements(intel_hub_editorial_rail) with fallback to useStories(4) then first 4 signals; consistent metadata (title, eyebrow, detail with reading time and date). No code change in this WO; verified existing behavior.",
+    "full_article_views_premium_and_clean": "IntelligenceSignalDetail and SignalDetailPanel already use sanitizeArticleHtml for article_html. IntelligenceBriefDetail now uses same sanitizeArticleHtml for post.body when HTML; plain-text fallback for non-HTML. Full-article section has prose styling and clear Readable Content / source link. No junk paths removed (none identified)."
+  },
+  "overall": "PASS"
+}

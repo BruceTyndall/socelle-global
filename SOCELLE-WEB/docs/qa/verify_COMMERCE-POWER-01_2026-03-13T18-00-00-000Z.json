@@ -1,0 +1,45 @@
+{
+  "wo_id": "COMMERCE-POWER-01",
+  "timestamp": "2026-03-13T18:00:00.000Z",
+  "skills_run": [
+    "affiliate-link-checker",
+    "affiliate-link-tracker-auditor",
+    "authoring-core-schema-validator",
+    "hub-shell-detector",
+    "stripe-integration-tester"
+  ],
+  "results": {
+    "affiliate-link-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Edge function supabase/functions/affiliate-link-wrapper exists; writes to affiliate_clicks; FTC/Commission-linked badges in AffiliateBadge, AffiliateLinks, ProductDetail, ShopProduct, IntelligenceCommerce, blockRegistry; affiliate_links table + useAffiliateLinks CRUD; getAffiliateWrapperRedirectUrl used in Admin AffiliatesHub and business AffiliateLinks."
+    },
+    "affiliate-link-tracker-auditor": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "affiliate_clicks and affiliate_links in migrations and database.types.ts; affiliate-link-wrapper logs then redirects; AffiliateLink component and getAffiliateWrapperRedirectUrl used for outbound links; Commission-linked disclosure on product and block surfaces."
+    },
+    "authoring-core-schema-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "affiliate_link block type in src/lib/cms/types.ts CmsBlockType; AffiliateLinkBlock in blockRegistry with type affiliate_link, component AffiliateLinkBlock; CMS_CONTENT_MODEL.md documents AffiliateLinkBlockContent (affiliate_link_id, target_url, product_id, label)."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Admin AffiliatesHub and business AffiliateLinks use useAffiliateLinks, useCreateAffiliateLink, useDeleteAffiliateLink, getAffiliateWrapperRedirectUrl; no new shells introduced; AffiliatesHub no longer coming-soon."
+    },
+    "stripe-integration-tester": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No Stripe changes in COMMERCE-POWER-01 scope; no regressions (affiliate work is separate from payments)."
+    }
+  },
+  "build": {
+    "tsc": "PASS",
+    "npm_run_build": "FAIL",
+    "build_error": "PWA service worker write failed: terser renderChunk hook did not resolve (Unexpected early exit). Pre-existing infra issue; not caused by COMMERCE-POWER-01."
+  },
+  "overall": "FAIL",
+  "block_reason": "Build must exit 0 to mark COMPLETE. npm run build fails on vite-plugin-pwa/workbox terser step. COMMERCE-POWER-01 implementation complete; WO remains BLOCKED until build infra (PWA/terser) is fixed."
+}

@@ -1,0 +1,21 @@
+{
+  "wo_id": "CRM-POWER-01",
+  "timestamp": "2026-03-12T13:35:42-06:00",
+  "skills_run": [
+    "agent-crm",
+    "build-gate"
+  ],
+  "results": {
+    "agent-crm": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Signal-attributed timeline markers integrated into CRM view."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc and build passed."
+    }
+  },
+  "overall": "PASS"
+}

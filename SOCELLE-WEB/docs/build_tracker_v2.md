@@ -27,12 +27,13 @@ All execution truth = this file **plus** `SOCELLE-WEB/docs/qa/verify_<WO_ID>_*.j
 | INTEL-POWER-05 | Intelligence Product Power | P1 | COMPLETE | — | `docs/qa/verify_INTEL-POWER-05.json` | `intelligence-hub-api-contract` | None (COMPLETE; reference only). |
 | CRM-POWER-01 | CRM Product Power | P1 | READY_FOR_REVIEW | PR `feat/crm-power-01` | `docs/qa/verify_CRM-POWER-01_20...json` | `agent-crm` | Run review + verification skills, then decide MERGE. |
 | CRM-POWER-02 | CRM Product Power | P1 | READY_FOR_REVIEW | PR `feat/crm-power-02` | `docs/qa/verify_CRM-POWER-02_20...json` | `agent-crm` | Run review + verification skills, then decide MERGE. |
-| SALES-POWER-01 | Sales Product Power | P1 | READY_FOR_REVIEW | — | `docs/qa/verify_SALES-POWER-01_2026-03-14T05-00-00-000Z.json` | `agent-sales` |  |
+| SALES-POWER-01 | Sales Product Power | P1 | READY_FOR_REVIEW | — | `docs/qa/verify_SALES-POWER-01_2026-03-14T05-00-00-000Z.json`, `docs/qa/verify_SALES-POWER-01_2026-03-14T05-30-00-000Z.json` | `agent-sales` |  |
 | MKT-POWER-01 | Marketing Product Power | P1 | READY_FOR_REVIEW | — | `docs/qa/verify_MKT-POWER-01_2026-03-14T05-15-00-000Z.json` | `agent-marketing` |  |
 | EDU-POWER-01 | Education Product Power | P1 | COMPLETE | — | `verify_EDU-POWER-01_2026-03-12T01-57-00Z` | `agent-education` | None (COMPLETE; reference only). |
 | COMMERCE-POWER-01 | Commerce Product Power | P1 | OPEN | — | — | `agent-commerce` | Keep OPEN; execute only when Commerce phase is active. |
 | ADMIN-POWER-01 | Admin Product Power | P1 | OPEN | — | — | `agent-admin` | Keep OPEN; execute only when Admin phase is active. |
-| CMS-POWER-01 | CMS Product Power | P1 | OPEN | — | — | `agent-cms` | Keep OPEN; execute only when CMS phase is active. |
+| PWA-BUILD-UNBLOCK-01 | Infra / PWA | P0 | READY_FOR_REVIEW | — | `docs/qa/verify_PWA-BUILD-UNBLOCK-01_2026-03-12T12-00-00-000Z.json` | `build-gate` | Owner to certify DONE; unblocks CMS-POWER-01. |
+| CMS-POWER-01 | CMS Product Power | P1 | READY_FOR_REVIEW | — | `docs/qa/verify_CMS-POWER-01_2026-03-13T06-43-00-000Z.json` | `agent-cms` | Owner to certify COMPLETE after reviewing AdminStoryDrafts + /intelligence/briefs. |
 | SITE-POWER-01 | Public Site Product Power | P1 | OPEN | — | — | `agent-site` | Keep OPEN; execute only when Site phase is active. |
 | MOBILE-POWER-01 | Mobile Product Power | P1 | OPEN | — | — | `agent-mobile` | Keep OPEN; execute only when Mobile phase is active. |
 | DEBT-MONETIZATION-01 | Platform / Monetization Debt | P0 | COMPLETE | — | `docs/qa/verify_DEBT-MONETIZATION-01.json` | `billing-payments-suite` | None (COMPLETE; reference only). |
@@ -46,6 +47,8 @@ All execution truth = this file **plus** `SOCELLE-WEB/docs/qa/verify_<WO_ID>_*.j
 | SITE-ONBOARD-01 | Public Site Onboarding | P1 | OPEN | — | `docs/qa/verify_SITE-ONBOARD-01.json` | `agent-site` | Design and implement onboarding per CONSOLIDATED_BUILD_PLAN. |
 | MOBILE-PUSH-01 | Mobile Push | P2 | OPEN | — | `docs/qa/verify_MOBILE-PUSH-01.json` | `agent-mobile` | Plan mobile push implementation when Mobile phase is active. |
 | SALES-AUTOFILL-01 | Sales Autofill | P2 | OPEN | — | `docs/qa/verify_SALES-AUTOFILL-01.json` | `agent-sales` | Implement Proposal autofill when Sales phase is active. |
+| rss-feeds-bridge-01 | CMS / Feed Pipeline | P2 | OPEN | — | — | `agent-cms` | Bridge rss_sources ↔ data_feeds so story_drafts.feed_id can be populated; enables feed name display in AdminStoryDrafts. |
+| MIGRATION-DRIFT-01 | Infra / Migrations | P2 | OPEN | — | — | `migration-validator` | Local file 20260313000041_story_drafts_suggested_products.sql missing from DB history; audit and reconcile local↔remote migration sequence. |
 
 <!-- CURRENT_QUEUE_END -->
 
@@ -62,6 +65,7 @@ These rows are **not** execution authority on their own. They exist to help revi
 | CRM-CONSENT-01 | CRM | `docs/qa/verify_CRM-CONSENT-01.json` | Consent audit modal; ready once tests+skills pass. |
 | INTEL-MONETIZATION-01 | Intelligence | `docs/qa/verify_INTEL-MONETIZATION-01.json` | Intelligence monetization slice; depends on taxonomy WOs. |
 | INTEL-MONETIZATION-02 | Intelligence | `docs/qa/verify_INTEL-MONETIZATION-02.json` | Channels rail; depends on taxonomy WOs. |
+| CMS-POWER-01 | CMS Product Power | `docs/qa/verify_CMS-POWER-01_2026-03-13T06-43-00-000Z.json` | Editorial rail + story_drafts pipeline. 4 migrations applied. 40 pending drafts in DB. Review AdminStoryDrafts (/admin/cms/story-drafts) and IntelligenceBriefs (/intelligence/briefs). |
 
 ---
 

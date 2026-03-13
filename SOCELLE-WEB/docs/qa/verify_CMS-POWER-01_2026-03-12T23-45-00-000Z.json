@@ -1,0 +1,16 @@
+{
+  "wo_id": "CMS-POWER-01",
+  "timestamp": "2026-03-12T23-45-00-000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0, "duration_s": 7.07 },
+  "skills_run": ["hub-shell-detector", "authoring-core-schema-validator"],
+  "results": {
+    "hub-shell-detector": { "status": "PASS", "failures": [], "evidence": "AdminStoryDrafts: loading (DraftSkeleton), empty (EmptyDrafts), error (retry), list from story_drafts, actions Approve/Reject/Publish wired to Supabase" },
+    "authoring-core-schema-validator": { "status": "PASS", "failures": [], "evidence": "story_drafts table in migrations 000034/000037/000041; publish_story_draft RPC; cms_posts promotion path" }
+  },
+  "files_changed": [
+    "src/pages/admin/cms/AdminStoryDrafts.tsx"
+  ],
+  "scope": "CMS-WO-07 slice: story_drafts + feeds-to-drafts pipeline + AdminStoryDrafts non-shell. AdminStoryDrafts: list from DB, loading/empty/error states, Approve/Reject/Publish actions. Feeds-to-drafts edge fn and story_drafts migration pre-existing.",
+  "overall": "PASS"
+}

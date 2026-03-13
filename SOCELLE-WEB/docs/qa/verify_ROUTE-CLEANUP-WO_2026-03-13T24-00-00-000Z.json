@@ -1,0 +1,34 @@
+{
+  "wo_id": "ROUTE-CLEANUP-WO",
+  "timestamp": "2026-03-13T24:00:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "duration_s": 15.18,
+    "error": "Unable to write the service worker file. Unfinished hook action(s) on exit: (terser) renderChunk. PWA/workbox-build plugin, not route changes."
+  },
+  "skills_run": ["route-mapper", "cta-validator", "seo-audit", "hub-shell-detector"],
+  "results": {
+    "route-mapper": {
+      "status": "PASS",
+      "evidence": "Redirects added: /home→/intelligence, /pricing→/plans, /for-medspas→/professionals, /for-salons→/professionals, /portal/marketing-hub/*→/portal/marketing/*. No new routes; consolidations only."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "evidence": "No CTA changes; upgrade/plans links already point to /plans. Persona pages now redirect to /professionals."
+    },
+    "seo-audit": {
+      "status": "DEFERRED",
+      "evidence": "Redirects preserve canonical targets (/plans, /intelligence, /professionals). Full SEO audit deferred until build passes."
+    },
+    "hub-shell-detector": {
+      "status": "DEFERRED",
+      "evidence": "No hub page changes; route-only WO. Full shell check deferred until build passes."
+    }
+  },
+  "files_changed": [
+    "SOCELLE-WEB/src/App.tsx"
+  ],
+  "overall": "FAIL",
+  "blocker_summary": "npm run build fails with PWA/workbox-build (terser renderChunk) error. Failure is in service worker generation, not in ROUTE-CLEANUP-WO code. tsc=0. Route changes implemented: /home→/intelligence, /pricing→/plans, /for-medspas→/professionals, /for-salons→/professionals, MarketingHubRedirect for /portal/marketing-hub/*."
+}

@@ -1,0 +1,37 @@
+{
+  "wo_id": "CMS-WO-07",
+  "timestamp": "2026-03-13T23:59:00.000Z",
+  "micro_plan": "Verify existing implementation: story_drafts migration + RLS, feeds-to-drafts edge fn (no auto-publish), AdminStoryDrafts TanStack Query + approve/reject/publish; run tsc, build, authoring-core-schema-validator, hub-shell-detector; write verify JSON; update build_tracker.",
+  "lane": "Lane C — CMS / Editorial Automation (agent-cms)",
+  "scope": "story_drafts table + RLS + auto-ingest pipeline (feeds→drafts); NO auto-publish, human-in-loop",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "duration_s": 11.4,
+    "block_reason": "PWA/service worker write failure: vite-plugin-pwa/workbox terser renderChunk unfinished on exit. Pre-existing; not caused by CMS-WO-07."
+  },
+  "skills_run": ["authoring-core-schema-validator", "hub-shell-detector"],
+  "results": {
+    "authoring-core-schema-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "story_drafts table in migrations 20260313000034_story_drafts.sql (RLS, fingerprint dedup, pg_cron feeds-to-drafts schedule), 20260313000037_cms_publish_draft_rpc.sql (publish_story_draft RPC draft→cms_posts), 20260313000041_story_drafts_suggested_products.sql. Publish path: draft must be status=approved; RPC creates cms_posts row and sets story_drafts.promoted_post_id. PageRenderer/block types present in src/components/cms/PageRenderer.tsx and BlockRenderer."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "AdminStoryDrafts.tsx: useQuery (story_drafts list by status, counts), useMutation (approve, reject, publish_story_draft RPC). Loading: DraftSkeleton; empty: EmptyDrafts; error: retry + refetch. List from DB, actions Approve/Reject/Publish wired to Supabase. No static-only content; not a shell."
+    }
+  },
+  "files_changed": [],
+  "implementation_evidence": {
+    "story_drafts_table": "supabase/migrations/20260313000034_story_drafts.sql",
+    "rls": "admin_all_story_drafts policy (is_admin()), ENABLE ROW LEVEL SECURITY",
+    "feeds_to_drafts": "supabase/functions/feeds-to-drafts/index.ts (rss_items→story_drafts, status=pending, ON CONFLICT DO NOTHING, kill-switch feature_flags.feeds-to-drafts)",
+    "pg_cron": "feeds-to-drafts-hourly at :15 (migration 00034)",
+    "admin_ui": "src/pages/admin/cms/AdminStoryDrafts.tsx (tabs pending/approved/rejected/published, TanStack Query, publish_story_draft RPC)",
+    "no_auto_publish": "feeds-to-drafts inserts status=pending only; publish_story_draft requires status=approved and is_admin(). Human-in-loop confirmed."
+  },
+  "overall": "FAIL",
+  "block_reason": "Build exit 1 (PWA/terser). tsc=0. Implementation for CMS-WO-07 is complete and verified by skills; gate blocked on pre-existing build failure."
+}

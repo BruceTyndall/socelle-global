@@ -1,0 +1,7 @@
+{
+  "scan_date": "2026-03-14T00:00:00.000Z",
+  "missing_fields": [],
+  "missing_action_types": [],
+  "status": "PASS",
+  "evidence": "SignalAction interface and all 9 action_types (create_deal, add_to_crm, create_campaign, assign_training, price_alert, create_brief, create_alert, add_to_note, create_protocol) present in CrossHubActionDispatcher.tsx. create_deal routes to /portal/sales/opportunities; add_to_crm/add_to_note to /portal/crm; create_campaign to /portal/marketing/campaigns/new (business) or /brand/campaigns/new (brand) with signal_id and state.fromSignal."
+}

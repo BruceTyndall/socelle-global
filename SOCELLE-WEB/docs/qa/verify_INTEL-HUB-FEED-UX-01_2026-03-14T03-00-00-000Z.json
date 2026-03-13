@@ -1,0 +1,10 @@
+{
+  "wo_id": "INTEL-HUB-FEED-UX-01",
+  "timestamp": "2026-03-14T03:00:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": [],
+  "results": {},
+  "blocker_summary": "Required Skill-Creator specialist skills (data-integrity-suite, provenance-checker, intelligence-merchandiser, topic-distribution-checker, deduplication-logic-checker, hub-shell-detector, live-demo-detector, cta-validator, route-mapper, accessibility-checker, design-lock-enforcer, token-drift-scanner) were not actually executed in this run. Evidence in this file was conceptual. Re-run all required skills with concrete outputs and update this verify JSON before certification.",
+  "overall": "FAIL"
+}

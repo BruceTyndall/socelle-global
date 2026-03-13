@@ -2,31 +2,26 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// Gate PWA to production builds only.
+// In dev, disable: true avoids the SW intercepting HMR and Vite's dev server requests.
+const isProd = process.env.NODE_ENV === 'production';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-      manifest: {
-        name: 'SOCELLE',
-        short_name: 'SOCELLE',
-        description: 'SOCELLE Professional Platform',
-        theme_color: '#ffffff',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
+      disable: !isProd,
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
+      // Manual registration already in index.html — don't double-inject
+      injectRegister: null,
+      // Use existing public/manifest.json — don't regenerate
+      manifest: false,
+      injectManifest: {
+        injectionPoint: '__WB_MANIFEST',
+      },
     })
   ],
 

@@ -1,0 +1,19 @@
+{
+  "wo_id": "PWA-BUILD-UNBLOCK-01",
+  "timestamp": "2026-03-14T00:15:00.000Z",
+  "skills_run": ["build-gate"],
+  "results": {
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc --noEmit exit 0; npm run build exit 0; PWA generateSW completed (workbox mode development, minify false)."
+    }
+  },
+  "evidence": {
+    "fix": "Option A: VitePWA minify: false + workbox: { mode: 'development' } in vite.config.ts to bypass terser renderChunk during service worker generation.",
+    "tsc_exit_code": 0,
+    "build_exit_code": 0,
+    "files_changed": ["SOCELLE-WEB/vite.config.ts"]
+  },
+  "overall": "PASS"
+}

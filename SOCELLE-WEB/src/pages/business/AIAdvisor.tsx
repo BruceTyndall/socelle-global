@@ -364,7 +364,7 @@ export default function AIAdvisor() {
                           <p className="text-xs text-graphite font-sans leading-snug">{signal.title}</p>
                         </div>
                         <p className="text-[10px] font-sans text-graphite/60 mt-1.5">
-                          {signal.source} | {formatSignalTimestamp(signal.updatedAt)} | {formatConfidence(signal.confidenceScore)}
+                          {signal.source} | {formatSignalTimestamp(signal.updatedAt)} | {formatConfidence(signal.confidenceScore ?? null)}
                         </p>
                       </div>
                     );

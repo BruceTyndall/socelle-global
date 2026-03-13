@@ -1,0 +1,41 @@
+{
+  "wo_id": "CMS-POWER-01",
+  "timestamp": "2026-03-14T07:00:00Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 1 },
+  "skills_run": [],
+  "results": {},
+  "files_changed": [
+    "docs/qa/verify_CMS-POWER-01_2026-03-14T07-00-00-000Z.json",
+    "docs/build_tracker_v2.md"
+  ],
+  "usability_checks": {
+    "no_dead_ends": {
+      "status": "FAIL",
+      "evidence": "Verification blocked before skills and UX checks could run due to failing build gate."
+    },
+    "loading_empty_error_states": {
+      "status": "FAIL",
+      "evidence": "Verification blocked before loading/empty/error state checks could run."
+    },
+    "cta_hierarchy_ok": {
+      "status": "FAIL",
+      "evidence": "Verification blocked before CTA hierarchy checks could run."
+    },
+    "demo_live_labeling_ok": {
+      "status": "FAIL",
+      "evidence": "Verification blocked before LIVE/DEMO labeling checks could run."
+    },
+    "provenance_visible_or_linked": {
+      "status": "FAIL",
+      "evidence": "Verification blocked before provenance checks could run."
+    },
+    "a11y_smoke_ok": {
+      "status": "FAIL",
+      "evidence": "Verification blocked before accessibility checks could run."
+    }
+  },
+  "overall": "FAIL",
+  "blocker_summary": "Build gate failed: npm run build exited with code 1 due to PWA service worker generation error."
+}
+

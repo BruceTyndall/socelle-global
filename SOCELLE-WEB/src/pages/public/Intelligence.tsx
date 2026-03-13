@@ -76,6 +76,8 @@ const VERTICAL_TABS: { key: VerticalFilter; label: string; summary: string }[] =
   { key: 'beauty_brand', label: 'Brands', summary: 'Market adoption and pricing pressure' },
 ];
 
+// Only use editorial story images as the hero. Signal images are often
+// irrelevant stock photos sourced from RSS feeds and look wrong in context.
 const FALLBACK_EDITORIAL_IMAGE = '/images/brand/photos/10.svg';
 
 const PAGE_BACKGROUND: CSSProperties = {
@@ -309,7 +311,8 @@ export default function Intelligence() {
   const dashboardLabel = user ? 'Open Intelligence Dashboard' : 'Get Intelligence Access';
   const confidenceDisplay = avgConfidence === null ? '--' : `${Math.round(avgConfidence)}%`;
   const heroSignal = deferredSignals[0] ?? null;
-  const heroImage = editorialStories[0]?.hero_image_url || heroSignal?.image_url || FALLBACK_EDITORIAL_IMAGE;
+  // Use editorial story image only — signal images are RSS stock photos and often irrelevant
+  const heroImage = editorialStories[0]?.hero_image_url || FALLBACK_EDITORIAL_IMAGE;
   const currentVerticalSummary = VERTICAL_TABS.find((tab) => tab.key === activeVertical)?.summary ?? 'Full health intelligence surface';
 
   const heroStats = useMemo<HeroStat[]>(() => {
@@ -590,13 +593,8 @@ export default function Intelligence() {
                     </div>
                   </div>
 
-                  <div className="relative mt-6 overflow-hidden rounded-[26px] border border-graphite/10 bg-[#141418] p-5 text-white">
-                    <img
-                      src={heroImage}
-                      alt="Intelligence journal artwork"
-                      className="absolute inset-0 h-full w-full object-cover opacity-12"
-                    />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,20,24,0.15),rgba(20,20,24,0.92))]" />
+                  <div className="relative mt-6 overflow-hidden rounded-[26px] border border-white/6 bg-[#141418] p-5 text-white" style={{ backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(110,135,155,0.18) 0%, transparent 50%), radial-gradient(circle at 10% 90%, rgba(110,135,155,0.10) 0%, transparent 40%)' }}>
+                    <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
                     <div className="relative">
                       <div className="flex items-center justify-between gap-3">
                         <div>

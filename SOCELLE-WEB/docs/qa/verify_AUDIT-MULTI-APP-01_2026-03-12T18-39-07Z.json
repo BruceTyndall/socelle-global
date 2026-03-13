@@ -1,0 +1,66 @@
+{
+  "wo_id": "AUDIT-MULTI-APP-01",
+  "timestamp": "2026-03-12T18:39:07Z",
+  "scope": "Post-audit governance alignment for source-of-truth docs and owner read path",
+  "skills_run": [
+    "operations-optimizer",
+    "doc-gate-enforcer",
+    "build-gate"
+  ],
+  "commands_run": [
+    {
+      "command": "cmp -s docs/command/SESSION_START.md SOCELLE-WEB/docs/command/SESSION_START.md; echo SESSION_START_SYNC:$?",
+      "summary": "SESSION_START_SYNC:0"
+    },
+    {
+      "command": "rg -n 'OPERATING SYSTEM: `SOCELLE-WEB/docs/GOVERNANCE.md`|Supersedes `\\\\.claude/CLAUDE.md`|read that file first for WO lifecycle' SOCELLE-WEB/docs/build_tracker.md SOCELLE-WEB/docs/GOVERNANCE.md",
+      "summary": "No matches returned."
+    },
+    {
+      "command": "git diff --stat -- AGENTS.md docs/command/SESSION_START.md SOCELLE-WEB/docs/command/SESSION_START.md docs/command/SOURCE_OF_TRUTH_MAP.md SOCELLE-WEB/docs/command/SOURCE_OF_TRUTH_MAP.md SOCELLE-WEB/docs/build_tracker.md SOCELLE-WEB/docs/GOVERNANCE.md SOCELLE-WEB/docs/audit/AUDIT_REPORT_2026_MULTI_APP_READINESS.md",
+      "summary": "7 files changed, 170 insertions(+), 83 deletions(-)"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "summary": "Exit 0."
+    },
+    {
+      "command": "npm run build",
+      "summary": "Exit 0. Built in 7.01s with existing pdfjs-dist eval warning and chunk-size warnings only."
+    }
+  ],
+  "results": {
+    "operations-optimizer": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Owner quick-start routing was added to SOURCE_OF_TRUTH_MAP and build_tracker so the team can follow one execution path."
+    },
+    "doc-gate-enforcer": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "The conflicting 'read GOVERNANCE.md first' cue was removed from the canonical build_tracker entry path, and GOVERNANCE.md was demoted to reference-only."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Typecheck and production build both passed after the documentation alignment."
+    },
+    "session_start_sync": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Root and SOCELLE-WEB SESSION_START copies now compare equal."
+    }
+  },
+  "files_changed": [
+    "AGENTS.md",
+    "docs/command/SESSION_START.md",
+    "docs/command/SOURCE_OF_TRUTH_MAP.md",
+    "SOCELLE-WEB/docs/GOVERNANCE.md",
+    "SOCELLE-WEB/docs/build_tracker.md",
+    "SOCELLE-WEB/docs/command/SESSION_START.md",
+    "SOCELLE-WEB/docs/command/SOURCE_OF_TRUTH_MAP.md",
+    "SOCELLE-WEB/docs/audit/AUDIT_REPORT_2026_MULTI_APP_READINESS.md"
+  ],
+  "overall": "PASS",
+  "note": "This artifact documents the governance alignment follow-up. The build_tracker row remains READY_FOR_REVIEW for owner or independent reviewer disposition."
+}

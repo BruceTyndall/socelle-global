@@ -1,0 +1,45 @@
+{
+  "wo_id": "COMMERCE-POWER-01",
+  "timestamp": "2026-03-13T19:30:00.000Z",
+  "owner": "Compliance + Attribution Engineer",
+  "skills_run": [
+    "affiliate-link-checker",
+    "affiliate-link-tracker-auditor",
+    "authoring-core-schema-validator",
+    "hub-shell-detector",
+    "stripe-integration-tester"
+  ],
+  "results": {
+    "affiliate-link-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Edge function affiliate-link-wrapper; FTC/Commission-linked badges; affiliate_links table + useAffiliateLinks CRUD; getAffiliateWrapperRedirectUrl used in Admin and Brand UIs."
+    },
+    "affiliate-link-tracker-auditor": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "affiliate_clicks and affiliate_links schema; wrapper logs then redirects; AffiliateLink + getAffiliateWrapperRedirectUrl; Commission-linked disclosure on surfaces."
+    },
+    "authoring-core-schema-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "affiliate_link block in CmsBlockType and blockRegistry; AffiliateLinkBlock component; CMS_CONTENT_MODEL.md documents block."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Admin AffiliatesHub and business AffiliateLinks use live hooks; no new shells."
+    },
+    "stripe-integration-tester": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No Stripe changes; no regressions."
+    }
+  },
+  "build": {
+    "tsc": "PASS",
+    "npm_run_build": "PASS",
+    "build_note": "PWA/terser fix: workbox mode development in vite.config.ts so generateSW skips terser; build exits 0."
+  },
+  "overall": "PASS"
+}

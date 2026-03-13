@@ -1,0 +1,38 @@
+{
+  "wo_id": "SITE-POWER-01",
+  "timestamp": "2026-03-13T21:00:00.000Z",
+  "owner": "Public Site / Conversion Engineer (agent-site)",
+  "skills_run": [
+    "seo-audit",
+    "cta-validator",
+    "route-mapper",
+    "hub-shell-detector"
+  ],
+  "results": {
+    "seo-audit": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Canonical pricing is /plans; sitemap-generator lists /plans. /pricing redirects to /plans. Persona and public pages retain meta/OG; no new SEO regressions."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Pricing CTAs point to /plans (UpgradePrompt, UpgradeGate, PaywallGate, SubscriptionManagement, AIToolbar, SignalErrorState). Persona pages (ForBrands, ForMedspas, ForSalons) have routes; CTAs to /request-access and /plans. No dead-end persona CTAs."
+    },
+    "route-mapper": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Single pricing path: /plans canonical, /pricing → Navigate to /plans. Orphan /home → Navigate to /intelligence. /for-medspas, /for-salons, /for-brands routed; /for-buyers → /professionals. One marketing path: /portal/marketing/* only; CrossHubActionDispatcher uses /portal/marketing/campaigns/new."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No new shells introduced. Route cleanup only; persona pages ForMedspas, ForSalons, ForBrands remain live; public Plans and redirects do not add shell surfaces."
+    }
+  },
+  "build": {
+    "tsc": { "exit_code": 0 },
+    "npm_run_build": { "exit_code": 0 }
+  },
+  "overall": "PASS"
+}

@@ -1,0 +1,28 @@
+{
+  "wo_id": "EDU-CE-EXPIRY-01",
+  "timestamp": "2026-03-12T13:05:00Z",
+  "skills_run": ["agent-education", "hub-shell-detector", "live-demo-detector", "build-gate"],
+  "results": {
+    "agent-education": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Applied CE credits expiration warnings to EducationDashboard."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Verified 0 shells."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All components labeled LIVE."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc=0 errors, build successful."
+    }
+  },
+  "overall": "PASS"
+}

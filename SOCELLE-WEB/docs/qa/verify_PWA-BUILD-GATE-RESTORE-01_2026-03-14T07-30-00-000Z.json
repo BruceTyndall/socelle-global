@@ -1,0 +1,20 @@
+{
+  "wo_id": "PWA-BUILD-GATE-RESTORE-01",
+  "timestamp": "2026-03-14T07:30:00Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 1 },
+  "files_changed": [
+    "vite.config.ts",
+    "docs/qa/verify_PWA-BUILD-GATE-RESTORE-01_2026-03-14T07-30-00-000Z.json"
+  ],
+  "pwa_config_evidence": {
+    "plugin": "VitePWA",
+    "options": {
+      "registerType": "autoUpdate",
+      "minify": false
+    }
+  },
+  "overall": "FAIL",
+  "blocker_summary": "npm run build still failing after setting VitePWA minify:false; Workbox generateSW/terser renderChunk error persists."
+}
+

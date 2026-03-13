@@ -1,0 +1,38 @@
+{
+  "wo_id": "MOBILE-PUSH-01",
+  "timestamp": "2026-03-13T23:00:00.000Z",
+  "skills_run": ["mobile-module-key-validator", "mobile-parity-checker", "agent-mobile"],
+  "gates": { "flutter_analyze": "blocked (exit 1)", "flutter_build": "blocked (not run)" },
+  "results": {
+    "mobile-module-key-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Push routing uses MODULE_CRM for crm_warning; signal_alert uses path '/' (no gate). ModuleGate and module_access_provider unchanged; all MODULE_* keys present in module_access.dart."
+    },
+    "agent-mobile": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "APNs/FCM handlers in lib/core/push/push_handler_service.dart; init in main.dart; routing respects MODULE_* via hasModuleAccess callback; no edits to intelligence paths."
+    }
+  },
+  "evidence": {
+    "socelle_web_touched": false,
+    "tsc_build_run": "N/A",
+    "mobile_changes": [
+      "SOCELLE-MOBILE-main/apps/mobile/pubspec.yaml: firebase_core ^3.0.0, firebase_messaging ^15.0.0",
+      "SOCELLE-MOBILE-main/apps/mobile/lib/core/push/push_handler_service.dart: new file — resolvePushDestination, initializePushHandlers, initializeFirebaseForPush",
+      "SOCELLE-MOBILE-main/apps/mobile/lib/main.dart: initializeFirebaseForPush() in main(); one-time initializePushHandlers(router, hasModuleAccess) in SocelleApp build"
+    ],
+    "payload_contract": {
+      "signal_alert": "path: '/', moduleKey: null",
+      "crm_warning": "path: '/crm' or '/crm/contact/:id', moduleKey: MODULE_CRM"
+    },
+    "smoke_test_path": "Firebase Console test message with data { \"type\": \"signal_alert\" } → home; { \"type\": \"crm_warning\", \"contact_id\": \"<uuid>\" } → /crm/contact/<uuid> if MODULE_CRM, else /subscription/upgrade",
+    "flutter_pub_get": "exit 0",
+    "flutter_analyze": "exit 1 — 432 issues in repo (all pre-existing in lib/services/*: missing firebase_analytics, device_calendar, cloud_functions, google_sign_in, etc.). Zero issues in lib/core/push/* and lib/main.dart.",
+    "flutter_analyze_exit_code": 1,
+    "flutter_build": "not run (no Android SDK in execution environment)"
+  },
+  "blocker_summary": "flutter analyze exits 1 (432 pre-existing issues in lib/services/*). flutter build not run. Cannot certify PASS.",
+  "overall": "FAIL"
+}

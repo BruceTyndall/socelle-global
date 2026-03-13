@@ -137,20 +137,20 @@ export default function IntelligenceChannelRail({
                 onClick={() => setManualSelectedSlug(channel.slug)}
                 className={`rounded-[24px] border p-4 text-left transition-all duration-200 ${
                   isActive
-                    ? 'border-graphite bg-graphite text-white shadow-soft'
+                    ? 'border-accent/40 bg-white shadow-md ring-1 ring-accent/10'
                     : 'border-graphite/10 bg-background text-graphite hover:border-graphite/20 hover:-translate-y-0.5'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-2xl border ${isActive ? 'border-white/10 bg-white/8 text-white' : accentClasses(channel.accent_token)}`}>
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-2xl border ${accentClasses(channel.accent_token)}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="flex flex-wrap items-center justify-end gap-2">
-                    <span className={`rounded-pill border px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] ${isActive ? 'border-white/12 bg-white/10 text-white/80' : 'border-graphite/10 bg-white text-graphite/55'}`}>
+                    <span className="rounded-pill border border-graphite/10 bg-background px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-graphite/55">
                       {channel.audience === 'brand' ? 'Brand' : channel.audience === 'provider' ? 'Provider' : 'Cross-market'}
                     </span>
                     {channel.is_locked && (
-                      <span className={`inline-flex items-center gap-1 rounded-pill border px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] ${isActive ? 'border-white/12 bg-white/10 text-white/80' : 'border-signal-warn/20 bg-signal-warn/8 text-signal-warn'}`}>
+                      <span className="inline-flex items-center gap-1 rounded-pill border border-signal-warn/20 bg-signal-warn/8 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-signal-warn">
                         <Lock className="h-3 w-3" />
                         Paid
                       </span>
@@ -158,11 +158,11 @@ export default function IntelligenceChannelRail({
                   </div>
                 </div>
 
-                <p className={`mt-4 text-[11px] uppercase tracking-[0.18em] ${isActive ? 'text-white/55' : 'text-graphite/40'}`}>
+                <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-graphite/40">
                   {channel.eyebrow ?? 'Live channel'}
                 </p>
-                <h3 className="mt-2 text-lg font-medium leading-tight">{channel.name}</h3>
-                <p className={`mt-2 line-clamp-3 text-sm leading-6 ${isActive ? 'text-white/78' : 'text-graphite/62'}`}>
+                <h3 className="mt-2 text-lg font-medium leading-tight text-graphite">{channel.name}</h3>
+                <p className="mt-2 line-clamp-3 text-sm leading-6 text-graphite/62">
                   {channel.summary}
                 </p>
 
@@ -170,11 +170,7 @@ export default function IntelligenceChannelRail({
                   {channel.top_tags.slice(0, 3).map((tag) => (
                     <span
                       key={`${channel.slug}-${tag.tag_code}`}
-                      className={`rounded-pill border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] ${
-                        isActive
-                          ? 'border-white/10 bg-white/10 text-white/78'
-                          : 'border-graphite/10 bg-white text-graphite/55'
-                      }`}
+                      className="rounded-pill border border-graphite/10 bg-background px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-graphite/55"
                     >
                       {tag.display_label}
                     </span>

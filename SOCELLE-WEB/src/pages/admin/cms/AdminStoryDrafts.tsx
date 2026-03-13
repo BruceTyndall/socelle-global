@@ -11,6 +11,21 @@ import { CheckCircle, XCircle, ExternalLink, RefreshCw, FileText, UploadCloud } 
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 
+// ── HTML entity decoder (display-side cleanup for existing dirty data) ──────
+const HTML_ENTITY_MAP: Record<string, string> = {
+  '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&apos;': "'",
+  '&nbsp;': ' ', '&mdash;': '—', '&ndash;': '–', '&lsquo;': ''',
+  '&rsquo;': ''', '&ldquo;': '"', '&rdquo;': '"', '&hellip;': '…',
+};
+function decodeEntities(text: string | null | undefined): string {
+  if (!text) return '';
+  return text
+    .replace(/&[a-z]+;/gi, (m) => HTML_ENTITY_MAP[m.toLowerCase()] ?? m)
+    .replace(/&#(\d+);/g, (_, c) => String.fromCodePoint(parseInt(c, 10)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, c) => String.fromCodePoint(parseInt(c, 16)))
+    .trim();
+}
+
 // ── Types ──────────────────────────────────────────────────────────────────
 type DraftStatus = 'pending' | 'approved' | 'rejected' | 'published';
 
@@ -126,17 +141,24 @@ function DraftRow({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 mb-1">
             <h3 className="text-sm font-semibold text-graphite leading-snug line-clamp-2">
-              {draft.title}
+              {decodeEntities(draft.title)}
             </h3>
             <StatusBadge status={draft.status} />
           </div>
 
           {draft.excerpt && (
-            <p className="text-xs text-graphite/50 line-clamp-2 mb-2">{draft.excerpt}</p>
+            <p className="text-xs text-graphite/50 line-clamp-2 mb-2">{decodeEntities(draft.excerpt)}</p>
           )}
 
           <div className="flex items-center gap-3 text-[10px] text-graphite/35 font-mono">
-            {draft.vertical && <span className="uppercase">{draft.vertical}</span>}
+            {draft.vertical && (
+              <span className="uppercase">
+                {draft.vertical === 'beauty_brand' ? 'Beauty Brand'
+                  : draft.vertical === 'medspa' ? 'Medspa'
+                  : draft.vertical === 'salon' ? 'Salon'
+                  : draft.vertical.replace(/_/g, ' ')}
+              </span>
+            )}
             {draft.feed?.name && <span>{draft.feed.name}</span>}
             <span>{new Date(draft.created_at).toLocaleDateString()}</span>
             {draft.source_url && (

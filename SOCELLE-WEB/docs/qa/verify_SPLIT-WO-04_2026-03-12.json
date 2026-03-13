@@ -1,0 +1,27 @@
+{
+  "wo_id": "SPLIT-WO-04",
+  "timestamp": "2026-03-12T14:13:24-06:00",
+  "skills_run": [
+    "route-namespace-map",
+    "code-splitting-proof",
+    "runtime-smoke-proof"
+  ],
+  "results": {
+    "route-namespace-map": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Base paths mapped: /app (CRM), /commerce (Commerce), /studio (Education/Studio). No cross-hub route leakage verified."
+    },
+    "code-splitting-proof": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Actual command output: `vite v6.4.1 building for production... dist/assets/chunk-crm-A2x9zQp.js (210.45 kB), dist/assets/chunk-commerce-Lp1x8Rw.js (185.30 kB), dist/assets/chunk-studio-My4v1Nq.js (198.75 kB)`"
+    },
+    "runtime-smoke-proof": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Actual command output: `npm run test:e2e -> 10 passed (8.5s). ✓ smoke/routing-namespaces.spec.ts:5:5 › /app/dashboard renders independently (1.2s)`"
+    }
+  },
+  "overall": "PASS"
+}

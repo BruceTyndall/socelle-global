@@ -1,0 +1,37 @@
+{
+  "wo_id": "INTEL-UX-01",
+  "timestamp": "2026-03-14T01-00-00-000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": ["hub-shell-detector", "cta-validator", "live-demo-detector"],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Intelligence.tsx, IntelligenceSignalDetail.tsx, IntelligenceHub.tsx all use useQuery/useIntelligence; no shell pattern on touched surfaces."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "No Shop Now/Buy Now/Add to Cart on public Intelligence pages; Take action row uses CrossHubActionDispatcher (create deal, CRM, campaign, etc.)."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Public Intelligence.tsx uses isLive from useIntelligence; DEMO banner when !isLive; signal detail uses live fetch."
+    }
+  },
+  "files_changed": [
+    "SOCELLE-WEB/docs/build_tracker.md",
+    "SOCELLE-WEB/src/pages/public/Intelligence.tsx",
+    "SOCELLE-WEB/src/pages/public/IntelligenceSignalDetail.tsx"
+  ],
+  "usability_evidence": {
+    "today_snapshot": "Public /intelligence: sidebar labeled 'Today's snapshot' and 'What's new today' with explainer 'Signals in the feed right now, ranked by impact and freshness.'; feed section has id=signal-feed with 'Live feed' / 'All signals' and explainer 'Ranked by impact and freshness. Use the filter tabs to narrow by category.'",
+    "signal_detail": "Detail page has hero image, reading time, source, date, confidence, impact badge, topic, related brands; Take action row with CrossHubActionDispatcher; Related signals section (same category, up to 5 links).",
+    "take_action_row": "Take action row present on list cards (SignalCard CrossHubActionDispatcher) and on signal detail page (INTEL-UX-01 block with CrossHubActionDispatcher).",
+    "dead_ends": "No new dead ends; back link to /intelligence; related signals link to other detail pages.",
+    "demo_live_confusion": "Public Intelligence shows Preview mode banner when !isLive; no DEMO/LIVE confusion introduced."
+  },
+  "overall": "PASS"
+}

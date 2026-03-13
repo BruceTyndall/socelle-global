@@ -1,0 +1,45 @@
+{
+  "wo_id": "SPLIT-WO-03",
+  "timestamp": "2026-03-12T13:54:28-06:00",
+  "skills_run": [
+    "entitlement-chain-verifier",
+    "shared-package-validator",
+    "build-gate",
+    "workspace-wiring-check",
+    "circular-dependency-check",
+    "runtime-smoke-proof"
+  ],
+  "results": {
+    "workspace-wiring-check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "apps/web/package.json string: `\"@socelle/auth-core\": \"workspace:*\"`. Dependencies injected."
+    },
+    "circular-dependency-check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "madge --circular apps/web packages/auth-core returns 'No circular dependency found!'."
+    },
+    "runtime-smoke-proof": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npm run test:e2e passed auth flows. UpgradeGate triggered correctly on Premium route."
+    },
+    "shared-package-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "auth-core package extracted. Entrypoints updated."
+    },
+    "entitlement-chain-verifier": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Role gating + UpgradeGate isolated without behavior changes."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit && npm run build -> Exit 0."
+    }
+  },
+  "overall": "PASS"
+}

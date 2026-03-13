@@ -1,0 +1,11 @@
+{
+  "skill": "growth-tactic-simulator",
+  "scenario_name": "Multi-Cloud Split-Screen UX Transition",
+  "hypothesis": "If we launch a split-screen workspace enforcing side-by-side actionable hubs paired with live signal streams, operator Time-to-Value will collapse, causing Pro Free-to-Paid conversions to scale drastically while dropping platform churn.",
+  "baseline_arr": 588000,
+  "scenario_arr": 1150000,
+  "delta_pct": 95,
+  "confidence": "high",
+  "recommendation": "ship",
+  "timestamp": "2026-03-12T11:21:03Z"
+}

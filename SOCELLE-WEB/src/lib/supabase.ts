@@ -75,7 +75,14 @@ export const supabase = (isSupabaseConfigured || bypass)
       auth: {
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: true
+        detectSessionInUrl: true,
+        // Use plain localStorage to avoid navigator.locks contention in React Strict Mode.
+        // Double-invoked effects cause concurrent getSession() calls that steal the lock.
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        // Override the internal auth lock with a no-op so React Strict Mode double-invocations
+        // don't steal each other's locks and cause AbortError cascades.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        lock: (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => fn(),
       }
     })
   : unconfiguredProxy;

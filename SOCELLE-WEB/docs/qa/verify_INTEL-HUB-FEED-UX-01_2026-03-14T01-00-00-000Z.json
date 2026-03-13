@@ -1,0 +1,37 @@
+{
+  "wo_id": "INTEL-HUB-FEED-UX-01",
+  "timestamp": "2026-03-14T01:00:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "note": "Pre-existing failure: vite-plugin-pwa transform error in src/pages/sales/OpportunityFinder.tsx:331 (outside WO scope). PWA-BUILD-UNBLOCK-01 was previously PASS per build_tracker."
+  },
+  "skills_run": ["intelligence-merchandiser (code-side)", "topic-distribution-checker", "hub-shell-detector"],
+  "results": {
+    "intelligence-merchandiser": {
+      "status": "PASS",
+      "evidence": "useIntelligence.ts: safety pin (regulatory_alert) at 491-501; topic cap 40% at 504-419; display_order in query at 274; impact_score added to ORDER at 271; domain diversity cap max 25% per source at 419-433. AdminFeedsHub.order('display_order') at 166. SignalCard + Detail show provenance_tier (Regulatory/Academic/Trade) and confidence_score.",
+      "failures": []
+    },
+    "topic-distribution-checker": {
+      "status": "SKIPPED",
+      "evidence": "Requires live DB. Code-side: MERCH-09 topic cap (40%) enforced in useIntelligence.ts useMemo (topicCounts, cap = ceil(total*0.4))."
+    },
+    "hub-shell-detector": {
+      "status": "SKIPPED",
+      "evidence": "No new pages; Intelligence/IntelligenceHub/IntelligenceSignalDetail already use useIntelligence or useSignal (TanStack Query)."
+    }
+  },
+  "files_changed": [
+    "docs/build_tracker.md",
+    "src/lib/intelligence/useIntelligence.ts",
+    "src/components/intelligence/SignalCard.tsx",
+    "src/pages/public/IntelligenceSignalDetail.tsx"
+  ],
+  "usability_evidence": {
+    "filter_vertical_topic_tier": "useIntelligence(options) supports vertical, signalTypes, contentSegment, category, tierOverride; UI filter state passed to hook; domain diversity cap applied after topic cap.",
+    "duplicate_low_quality_minimized": "Domain diversity cap: max 25% of list from any single source_name (min 2 per source). Dedup by fingerprint/similar_signals already in useMemo. Sort: quality_score DESC, impact_score DESC, provenance_tier ASC, display_order, published_at, updated_at.",
+    "provenance_confidence_clear": "SignalCard: source_name/source + provenance pill (Regulatory/Academic/Trade) + confidence % when present. Similar-signals expand: source + provenance label + confidence %. IntelligenceSignalDetail: Source & provenance section with same labels; Confidence + Impact strip already present; provenance_tier added to fetchSignal mapping."
+  },
+  "overall": "FAIL"
+}

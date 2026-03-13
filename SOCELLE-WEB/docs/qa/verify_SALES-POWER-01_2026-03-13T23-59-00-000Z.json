@@ -1,0 +1,28 @@
+{
+  "wo_id": "SALES-POWER-01",
+  "timestamp": "2026-03-13T23:59:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "duration_s": 18.66,
+    "note": "Vite app built successfully; failure in PWA/vite-plugin-pwa writeSW (terser renderChunk). Pre-existing infra, unrelated to SALES-POWER-01."
+  },
+  "skills_run": ["hub-shell-detector"],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "evidence": "Sales hub: 9 pages, 105 hooks, verdict LIVE. Existing docs/qa/hub_shell_report.json (2026-03-09). No new shells introduced."
+    },
+    "revenue_signal_attribution": {
+      "status": "PASS",
+      "evidence": "Signal-influenced deals derived strictly from signal_id IS NOT NULL. No title fallback. Grep: RevenueAnalytics.tsx (signalAttributedWon/All), SalesDashboard.tsx (!!d.signal_id), both PipelineBoards (filter + badge). Copy updated: 'Deals with signal_id set (no title fallback)'."
+    }
+  },
+  "files_changed": [
+    "src/pages/sales/RevenueAnalytics.tsx",
+    "src/pages/sales/PipelineBoard.tsx",
+    "src/pages/business/PipelineBoard.tsx"
+  ],
+  "overall": "FAIL",
+  "block_reason": "npm run build exits 1 due to PWA service worker write (terser plugin). Code changes for SALES-POWER-01 are complete and correct; re-run build after PWA/terser fix to move to VERIFIED."
+}

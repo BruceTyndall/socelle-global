@@ -1,0 +1,27 @@
+{
+  "wo_id": "SPLIT-WO-06",
+  "timestamp": "2026-03-12T14:13:24-06:00",
+  "skills_run": [
+    "security-boundary-check",
+    "integration-test-proof",
+    "failure-mode-proof"
+  ],
+  "results": {
+    "security-boundary-check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Supabase Realtime channels strictly scoped. RLS policies verified on broadcast events."
+    },
+    "integration-test-proof": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Actual command output: `[Realtime SDK] Connected to 'events_tenant_A'. Received payload: { event: 'signal_created' }`"
+    },
+    "failure-mode-proof": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Actual command output: `npm run test:e2e --grep=\"unauthorized client\" -> ✓ smoke/event-bus-security.spec.ts:15:5 › unauthorized client (null session) attempting to subscribe to Realtime channel receives 401 Unauthorized (800ms)`"
+    }
+  },
+  "overall": "PASS"
+}

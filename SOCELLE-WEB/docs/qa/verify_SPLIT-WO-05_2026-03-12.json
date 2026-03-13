@@ -1,0 +1,27 @@
+{
+  "wo_id": "SPLIT-WO-05",
+  "timestamp": "2026-03-12T14:13:24-06:00",
+  "skills_run": [
+    "deploy-mapping-check",
+    "build-command-check",
+    "env-var-matrix-check"
+  ],
+  "results": {
+    "deploy-mapping-check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "vercel.json maps targets: socelle-web, socelle-studio, socelle-commerce."
+    },
+    "build-command-check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Actual command output: `npx turbo run build --filter=web --filter=studio --filter=commerce -> ✓ web:build (6.42s) ✓ studio:build (5.81s) ✓ commerce:build (6.05s)`"
+    },
+    "env-var-matrix-check": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Env var matrix mapped. NEXT_PUBLIC_SUPABASE_URL and PUBLIC_ENV uniquely attached."
+    }
+  },
+  "overall": "PASS"
+}

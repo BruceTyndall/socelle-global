@@ -1,0 +1,39 @@
+{
+  "wo_id": "COMMERCE-POWER-01",
+  "timestamp": "2026-03-13T00:00:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "duration_s": 6.69,
+    "blocker": "PWA service worker write failed: Unexpected early exit (terser renderChunk). Pre-existing; unrelated to COMMERCE-POWER-01 code changes."
+  },
+  "skills_run": ["affiliate-link-checker", "affiliate-link-tracker-auditor", "hub-shell-detector", "stripe-integration-tester"],
+  "results": {
+    "affiliate-link-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "FTC compliance: AffiliateBadge.tsx (Commission-linked label, tooltip); ProductCard.tsx uses isAffiliated prop; Shop.tsx, ProductDetail.tsx, IntelligenceCommerce.tsx, ShopProduct.tsx use product.affiliate_url / is_affiliated from DB. No affiliate edge function in supabase/functions/ (affiliate-link-wrapper not present in repo). affiliate_clicks table and buildAffiliateUrl in AffiliateBadge documented in verify_PAY-WO-04."
+    },
+    "affiliate-link-tracker-auditor": {
+      "status": "PARTIAL",
+      "failures": ["affiliate-link-wrapper edge function not found under supabase/functions/"],
+      "evidence": "affiliate_clicks in database.types.ts. buildAffiliateUrl in src/components/commerce/AffiliateBadge.tsx. FTC badge and disclosure on ProductCard, Shop, ProductDetail, IntelligenceCommerce, ShopProduct. Attribution path: click→buildAffiliateUrl→target_url with ref/pid; purchase attribution depends on affiliate-link-wrapper (missing)."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Commerce entry points: Shop.tsx (useProducts, loading/error/empty/grid); ProductDetail (useProduct, states); IntelligenceCommerce (useProducts, useIntelligence, loading/empty/content); ShopProduct (product detail); ProcurementDashboard (COMMERCE-WO-07). All have data hooks and state handling. Shop.tsx error state added this WO (refetch on error)."
+    },
+    "stripe-integration-tester": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Stripe webhook (stripe-webhook, shop-checkout, create-checkout, manage-subscription). No hardcoded sk_test_/pk_test_ in src. COMMERCE-POWER-01 scope is FTC/affiliate only; Stripe unchanged."
+    }
+  },
+  "files_changed": [
+    "SOCELLE-WEB/src/pages/public/Shop.tsx"
+  ],
+  "changes_made": "Added error state to Shop: destructure error and refetch from useProducts; render error panel with AlertTriangle, message, and Try again button; guard loading/empty/grid with !error so error takes precedence.",
+  "overall": "FAIL",
+  "blocker_summary": "npm run build exits 1 due to PWA/vite-plugin-pwa service worker write (terser renderChunk early exit). overall PASS requires tsc=0 and build=0 per GOVERNANCE.md §3."
+}

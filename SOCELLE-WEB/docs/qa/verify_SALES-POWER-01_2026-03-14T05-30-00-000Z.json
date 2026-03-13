@@ -1,0 +1,264 @@
+{
+  "wo_id": "SALES-POWER-01",
+  "timestamp": "2026-03-14T05:30:00Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": [
+    "hub-shell-detector",
+    "live-demo-detector",
+    "cta-validator",
+    "route-mapper",
+    "accessibility-checker",
+    "error-state-enforcer",
+    "loading-skeleton-enforcer"
+  ],
+  "results": {
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Reviewed Sales hub pages including src/pages/sales/SalesDashboard.tsx, src/pages/sales/ProposalBuilder.tsx, src/pages/sales/RevenueAnalytics.tsx; all have live data hooks and non-shell states per CLAUDE §7."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales surfaces show LIVE vs DEMO labeling consistent with Intelligence patterns; no unlabeled mock arrays found in Sales components."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Primary CTAs on SalesDashboard, ProposalBuilder, and DealDetail reinforce intelligence-first flows; no commerce-first CTAs on intelligence surfaces."
+    },
+    "route-mapper": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales routes (/sales, /sales/proposals, /sales/deals/:id, /portal/sales) align with GLOBAL_SITE_MAP and have bidirectional navigation with no orphaned pages."
+    },
+    "accessibility-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Key Sales pages expose headings, landmark roles, and labeled buttons/links; no obvious keyboard traps or missing labels on primary actions."
+    },
+    "error-state-enforcer": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales data surfaces use shared ErrorState component or equivalent patterns to show retryable errors on failed queries."
+    },
+    "loading-skeleton-enforcer": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Sales listings and detail pages use Skeleton-based loading states for TanStack Query transitions, avoiding blank screens or layout jumps."
+    }
+  },
+  "files_changed": [
+    "docs/qa/verify_SALES-POWER-01_2026-03-14T05-30-00-000Z.json",
+    "docs/build_tracker_v2.md"
+  ],
+  "usability_checks": {
+    "no_dead_ends": true,
+    "loading_empty_error_states": true,
+    "cta_hierarchy_ok": true,
+    "demo_live_labeling_ok": true,
+    "provenance_visible_or_linked": true,
+    "a11y_smoke_ok": true,
+    "specialist_inputs": {
+      "AGENT_17_dataset_integrity": [
+        {
+          "id": "AG17-1",
+          "description": "Sales pipeline metrics depend on consistent joins between deals, proposals, and market_signals-derived attribution.",
+          "table_or_view": "public.deals, public.proposals, public.market_signals",
+          "query_or_function": "RevenueAnalytics aggregate query (deals with signal_id IS NOT NULL)",
+          "hook_or_module": "src/pages/sales/RevenueAnalytics.tsx"
+        },
+        {
+          "id": "AG17-2",
+          "description": "Cross-hub attribution for Sales depends on signal_id FKs being present and enforced.",
+          "table_or_view": "public.deals(signal_id), public.market_signals(id)",
+          "query_or_function": "JOIN deals ON deals.signal_id = market_signals.id",
+          "hook_or_module": "src/pages/sales/DealDetail.tsx"
+        },
+        {
+          "id": "AG17-3",
+          "description": "Intelligence channels rail must stay in sync with market_signals vertical/topic contracts.",
+          "table_or_view": "public.market_signals, public.data_feeds",
+          "query_or_function": "useIntelligenceChannels data fetch",
+          "hook_or_module": "src/lib/intelligence/useIntelligenceChannels.ts"
+        },
+        {
+          "id": "AG17-4",
+          "description": "Actionable signals queue powers Sales tasks; stale or missing updated_at weakens prioritization.",
+          "table_or_view": "public.market_signals(updated_at), public.signal_actions",
+          "query_or_function": "useActionableSignals query for open actions",
+          "hook_or_module": "src/lib/intelligence/useActionableSignals.ts"
+        },
+        {
+          "id": "AG17-5",
+          "description": "Feed health telemetry must stay accurate so Sales dashboards never show obviously stale intelligence.",
+          "table_or_view": "public.data_feeds, public.feed_run_log",
+          "query_or_function": "useDataFeedStats aggregate over feed_run_log",
+          "hook_or_module": "src/lib/intelligence/useDataFeedStats.ts"
+        },
+        {
+          "id": "AG17-6",
+          "description": "CRM contact records with churn_risk_score feed directly into Sales re-engagement flows.",
+          "table_or_view": "public.crm_contacts(churn_risk_score), public.crm_churn_risk",
+          "query_or_function": "CRM rebooking and risk surfaces joined on contact_id",
+          "hook_or_module": "src/pages/crm/CrmDashboard.tsx"
+        },
+        {
+          "id": "AG17-7",
+          "description": "Education CE credits influence Sales upsell and proof-of-value for providers.",
+          "table_or_view": "public.course_enrollments, public.ce_credits",
+          "query_or_function": "useCECredits hook for business portal",
+          "hook_or_module": "src/pages/business/CECredits.tsx"
+        },
+        {
+          "id": "AG17-8",
+          "description": "Procurement dashboard requires consistent supplier and inventory data to avoid misleading intelligence on stock-outs.",
+          "table_or_view": "public.procurement_items, public.suppliers, public.orders",
+          "query_or_function": "ProcurementDashboard aggregate queries over procurement_* tables",
+          "hook_or_module": "src/pages/business/ProcurementDashboard.tsx"
+        },
+        {
+          "id": "AG17-9",
+          "description": "Affiliate clicks must be reliably stored for downstream revenue attribution in Sales reports.",
+          "table_or_view": "public.affiliate_clicks, public.orders",
+          "query_or_function": "Joins between affiliate_clicks and orders on session or referral keys",
+          "hook_or_module": "src/lib/commerce/useAffiliateData.ts"
+        },
+        {
+          "id": "AG17-10",
+          "description": "Signal detail pages need consistent provenance fields to support Sales conversations about data quality.",
+          "table_or_view": "public.market_signals(source_name, confidence, updated_at)",
+          "query_or_function": "Signal detail fetch by id",
+          "hook_or_module": "src/pages/intelligence/IntelligenceSignalDetail.tsx"
+        }
+      ],
+      "FE_template_auditor": [
+        {
+          "id": "FE-1",
+          "description": "Shared EmptyState component should be the default for list/table empties across Sales and CRM.",
+          "layouts_or_components": "src/components/ui/EmptyState.tsx",
+          "safe_deviation": "Allow Sales-specific copy and icons while keeping Pearl Mineral tokens and spacing scale."
+        },
+        {
+          "id": "FE-2",
+          "description": "Shared ErrorState component should be wired to all Sales data surfaces.",
+          "layouts_or_components": "src/components/ui/ErrorState.tsx, src/components/ErrorState.tsx",
+          "safe_deviation": "Customize titles/descriptions per hub but keep retry patterns and button hierarchy."
+        },
+        {
+          "id": "FE-3",
+          "description": "Skeleton loading component should be preferred over spinners for Sales dashboards and tables.",
+          "layouts_or_components": "src/components/ui/Skeleton.tsx",
+          "safe_deviation": "Adjust skeleton shapes for cards vs rows while preserving animation and color tokens."
+        },
+        {
+          "id": "FE-4",
+          "description": "StatCard pattern should be reused for Sales KPIs to avoid bespoke metrics tiles.",
+          "layouts_or_components": "src/components/ui/StatCard.tsx",
+          "safe_deviation": "Permit icon and metric label swaps; keep card chrome and typography consistent."
+        },
+        {
+          "id": "FE-5",
+          "description": "PageLayoutBuilder in CMS admin should guide new Sales/CRM layouts rather than bespoke grids.",
+          "layouts_or_components": "src/pages/admin/cms/PageLayoutBuilder.tsx",
+          "safe_deviation": "Extend with additional slots but keep base column system and responsive breakpoints."
+        },
+        {
+          "id": "FE-6",
+          "description": "Shared Modal component should wrap proposal and deal modals to keep keyboard/a11y behavior consistent.",
+          "layouts_or_components": "src/components/ui/Modal.tsx",
+          "safe_deviation": "Sales-specific widths and titles allowed; avoid custom focus traps."
+        },
+        {
+          "id": "FE-7",
+          "description": "SeoHead helper should be used on Sales top-level routes to avoid missing meta tags.",
+          "layouts_or_components": "src/components/seo/SeoHead.tsx",
+          "safe_deviation": "Override title/description per page but keep canonical/OG patterns."
+        },
+        {
+          "id": "FE-8",
+          "description": "Shared CTA button variants should be used for primary/secondary actions in Sales flows.",
+          "layouts_or_components": "src/components/ui/Button.tsx",
+          "safe_deviation": "Text labels and icons may change; color and size variants must follow design tokens."
+        },
+        {
+          "id": "FE-9",
+          "description": "Global navigation components should own entry points into Sales, not per-page hero buttons.",
+          "layouts_or_components": "src/components/layout/MainNav.tsx, src/components/layout/AppShell.tsx",
+          "safe_deviation": "Add Sales nav links but keep intelligence-first ordering and IA."
+        },
+        {
+          "id": "FE-10",
+          "description": "Shared table component should be preferred over bespoke tables for Sales pipelines.",
+          "layouts_or_components": "src/components/ui/Table.tsx",
+          "safe_deviation": "Allow column-level customization and per-row actions while preserving header, row, and hover styles."
+        }
+      ],
+      "Journey_QA_specialist": [
+        {
+          "id": "JOURNEY-1",
+          "route": "/sales",
+          "component_or_page": "src/pages/sales/SalesDashboard.tsx",
+          "issue_or_risk": "Dashboard must link clearly into ProposalBuilder and DealDetail without dead-end widgets."
+        },
+        {
+          "id": "JOURNEY-2",
+          "route": "/sales/proposals/new",
+          "component_or_page": "src/pages/sales/ProposalBuilder.tsx",
+          "issue_or_risk": "All ProposalBuilder states (draft, error, saved) must route back to SalesDashboard and DealDetail."
+        },
+        {
+          "id": "JOURNEY-3",
+          "route": "/sales/revenue",
+          "component_or_page": "src/pages/sales/RevenueAnalytics.tsx",
+          "issue_or_risk": "Revenue analytics views should deep-link into deals and source signals so users can investigate anomalies."
+        },
+        {
+          "id": "JOURNEY-4",
+          "route": "/business/benchmark",
+          "component_or_page": "src/pages/business/BenchmarkDashboard.tsx",
+          "issue_or_risk": "Benchmark dashboard historically shell-like; ensure live data, empty/error/loading states, and clear return paths to core hub."
+        },
+        {
+          "id": "JOURNEY-5",
+          "route": "/business/locations",
+          "component_or_page": "src/pages/business/LocationsDashboard.tsx",
+          "issue_or_risk": "Locations dashboard must never strand users; every drill-down should have visible navigation back."
+        },
+        {
+          "id": "JOURNEY-6",
+          "route": "/business/ce-credits",
+          "component_or_page": "src/pages/business/CECredits.tsx",
+          "issue_or_risk": "CE credit journeys must connect Education completion back into CRM and Sales follow-up flows."
+        },
+        {
+          "id": "JOURNEY-7",
+          "route": "/business/intelligence",
+          "component_or_page": "src/pages/business/IntelligenceHub.tsx",
+          "issue_or_risk": "Portal IntelligenceHub should steer users into concrete actions (CRM tasks, proposals) instead of stopping at charts."
+        },
+        {
+          "id": "JOURNEY-8",
+          "route": "/brand/intelligence",
+          "component_or_page": "src/pages/brand/BrandIntelligenceHub.tsx",
+          "issue_or_risk": "Brand Intelligence Hub must expose DEMO/LIVE labels and routes into brand campaigns and product updates."
+        },
+        {
+          "id": "JOURNEY-9",
+          "route": "/education/courses/:slug",
+          "component_or_page": "src/pages/education/CoursePlayer.tsx",
+          "issue_or_risk": "Course completion CTAs should send users to certificates and relevant Sales/CRM follow-ups without dead ends."
+        },
+        {
+          "id": "JOURNEY-10",
+          "route": "/education/quizzes/:id",
+          "component_or_page": "src/pages/education/QuizPlayer.tsx",
+          "issue_or_risk": "Quiz results should clearly route back into EducationDashboard, not strand users on a results-only screen."
+        }
+      ]
+    }
+  },
+  "overall": "PASS"
+}
+

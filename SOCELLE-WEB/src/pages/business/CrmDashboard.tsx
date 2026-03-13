@@ -11,7 +11,6 @@ import { supabase } from '../../lib/supabase';
 import { useOverdueTasks } from '../../lib/useCrmTasks';
 import {
   CrossHubActionDispatcher,
-  CrossHubActionDispatcher,
   type SignalAction,
 } from '../../components/CrossHubActionDispatcher';
 import { useIntelligence } from '../../lib/intelligence/useIntelligence';

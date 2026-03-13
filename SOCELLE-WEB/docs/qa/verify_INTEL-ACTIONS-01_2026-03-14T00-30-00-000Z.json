@@ -1,0 +1,34 @@
+{
+  "wo_id": "INTEL-ACTIONS-01",
+  "timestamp": "2026-03-14T00:30:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": ["cross-hub-dispatcher-validator", "cta-validator", "hub-shell-detector"],
+  "results": {
+    "cross-hub-dispatcher-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "SignalAction contract and all 9 action types present. create_deal → /portal/sales/opportunities with state; add_to_crm/add_to_note → /portal/crm with state; create_campaign → /portal/marketing/campaigns/new?signal_id= (business) or /brand/campaigns/new?signal_id= (brand). Target pages consume fromSignal/signal_id."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Shop Now/Buy Now grep on src/pages: 0. No commerce CTAs on intelligence surfaces."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "OpportunityFinder, CrmDashboard, CampaignBuilder (business) have data hooks and consume fromSignal; no new shells introduced."
+    }
+  },
+  "files_changed": [
+    "src/components/CrossHubActionDispatcher.tsx",
+    "src/App.tsx",
+    "src/pages/sales/OpportunityFinder.tsx",
+    "src/pages/business/CrmDashboard.tsx",
+    "src/pages/business/marketing/CampaignBuilder.tsx"
+  ],
+  "evidence_question": "Can I take an action from a signal and land in the target hub with context carried?",
+  "evidence_answer": "Yes. Signal → Create Deal navigates to /portal/sales/opportunities with state.fromSignal; OpportunityFinder preselects the signal and shows banner. Signal → Add CRM Note navigates to /portal/crm with state.fromSignal; CrmDashboard creates a crm_task from the action and clears state. Signal → Create Campaign navigates to /portal/marketing/campaigns/new?signal_id= with state; business CampaignBuilder prefills name/objective from fromSignal or useSignal(signal_id). Brand create_campaign already used /brand/campaigns/new?signal_id=. No dead ends; context preserved.",
+  "overall": "PASS"
+}

@@ -1,0 +1,43 @@
+{
+  "wo_id": "COMMERCE-POWER-01",
+  "timestamp": "2026-03-13T23:59:00.000Z",
+  "micro_plan": "Lane E (agent-commerce): (1) Audit affiliate-link-wrapper edge function — GET/POST, affiliate_clicks insert, kill-switch, CORS; (2) Make FTC badges DB-driven: is_affiliated | affiliate_url for visibility, affiliate_disclosure for tooltip/copy; AffiliateBadge disclosureText prop; ShopProduct/Shop/IntelligenceCommerce/ProductDetail use DB columns; (3) Run tsc, build, affiliate-link-checker, affiliate-link-tracker-auditor, stripe-integration-tester, hub-shell-detector; (4) Verify JSON + build_tracker update.",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "note": "Pre-existing failure: vite-plugin-pwa / workbox writeSW (terser renderChunk). Not caused by COMMERCE-POWER-01 code changes."
+  },
+  "skills_run": [
+    "affiliate-link-checker",
+    "affiliate-link-tracker-auditor",
+    "stripe-integration-tester",
+    "hub-shell-detector"
+  ],
+  "results": {
+    "affiliate-link-checker": {
+      "status": "PASS",
+      "evidence": "affiliate-link-wrapper at supabase/functions/affiliate-link-wrapper; GET/POST; logs to affiliate_clicks; enforceEdgeFunctionEnabled; CORS. FTC badges: AffiliateBadge, ProductDetail, ShopProduct, Shop, IntelligenceCommerce, ProductCard, AffiliateLinks, AffiliateDashboard. Distributor: affiliate_links.distributor_id, wrapper accepts distributor_id."
+    },
+    "affiliate-link-tracker-auditor": {
+      "status": "PASS",
+      "evidence": "Schema: affiliate_clicks (target_url, product_id, affiliate_code, distributor_id, user_id, ip_address, user_agent). Wrapper: affiliate-link-wrapper inserts then 302/200. FTC disclosure: Commission-linked badge + optional affiliate_disclosure (DB) on ProductDetail, ShopProduct; hasAffiliate from is_affiliated | affiliate_url on Shop, IntelligenceCommerce."
+    },
+    "stripe-integration-tester": {
+      "status": "PASS",
+      "evidence": "Stripe edge functions present: stripe-webhook, subscription-webhook, shop-webhook, create-checkout, manage-subscription. Commerce lane does not modify Stripe; audit confirms no regression."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "evidence": "node scripts/shell-detector.mjs: 0 shells (0.0% of scored pages), 187 LIVE, 60 DEMO, 35 EXEMPT. Gate passed. No new shells introduced."
+    }
+  },
+  "files_changed": [
+    "src/components/commerce/AffiliateBadge.tsx",
+    "src/pages/public/ShopProduct.tsx",
+    "src/pages/public/Shop.tsx",
+    "src/pages/public/IntelligenceCommerce.tsx",
+    "src/pages/public/ProductDetail.tsx"
+  ],
+  "overall": "FAIL",
+  "block_reason": "Build exit_code 1 (vite-plugin-pwa / workbox service worker write). tsc=0; all four skills PASS. COMMERCE-POWER-01 code complete: affiliate-link-wrapper audited; FTC badges DB-driven (is_affiliated, affiliate_url, affiliate_disclosure)."
+}

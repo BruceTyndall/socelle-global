@@ -1,0 +1,33 @@
+{
+  "wo_id": "MULTIAPP-INTEL-01",
+  "timestamp": "2026-03-12T13:08:37-06:00",
+  "skills_run": [
+    "intelligence-module-checker",
+    "hub-shell-detector",
+    "live-demo-detector",
+    "build-gate"
+  ],
+  "results": {
+    "intelligence-module-checker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "portal intelligence scores 5/5 on nav/data/action"
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "0 shells detected in /intelligence"
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "all intelligence surfaces use isLive and show appropriate badges"
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit passed, build succeeded"
+    }
+  },
+  "overall": "PASS"
+}

@@ -1,0 +1,10 @@
+{
+  "skill": "strategy-simulator",
+  "scenario_name": "Split-Screen Monetization Validation",
+  "scenario_type": "nrr",
+  "time_horizon_months": 12,
+  "recommendation": "Commit architectural move to react-resizable-panels due to projected AI Credit Burn spike under 'Drag-to-Action' usage patterns.",
+  "confidence": "high",
+  "variants_modeled": 3,
+  "timestamp": "2026-03-12T11:21:05Z"
+}

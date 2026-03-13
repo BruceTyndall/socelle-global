@@ -1,0 +1,41 @@
+{
+  "wo_id": "SITE-ONBOARD-01",
+  "timestamp": "2026-03-13T22:00:00.000Z",
+  "skills_run": ["seo-audit", "live-demo-detector", "cta-validator", "hub-shell-detector", "onboarding-flow-tester"],
+  "results": {
+    "seo-audit": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "OnboardFunnel.tsx has Helmet with title 'Onboarding — Socelle Professional Intelligence' and meta description. Route /onboard is public."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Signal Match step (step 3) displays DEMO badge (text-signal-warn bg-signal-warn/10). No fake-live metrics; match list is static and labeled DEMO."
+    },
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Identity: primary CTA 'Continue'. Shadow: primary CTA per question advances. Signal Match: 'Continue to access'. Gate: 'Request access'→/request-access, 'Skip to Intelligence'→/intelligence, 'View plans'→/plans. No dead ends."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "OnboardFunnel has forms, buttons, useState, sessionStorage persistence, multi-step flow. Classified as LIVE (interactive funnel; no DB required per WO scope)."
+    },
+    "onboarding-flow-tester": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "4-step funnel at /onboard: Identity Scan → Shadow Audit → Signal Match → Gate. Progress in sessionStorage (socelle_onboard). Request access and /intelligence exits wired."
+    }
+  },
+  "evidence": {
+    "routes_tested": ["/onboard"],
+    "tsc_exit_code": 0,
+    "build_exit_code": 0,
+    "steps_implemented": ["Identity Scan", "Shadow Audit", "Signal Match", "Gate"],
+    "storage_key": "socelle_onboard",
+    "storage_type": "sessionStorage"
+  },
+  "overall": "PASS"
+}

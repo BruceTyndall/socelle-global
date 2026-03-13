@@ -1,0 +1,28 @@
+{
+  "wo_id": "SALES-AUTOFILL-01",
+  "timestamp": "2026-03-12T13:05:00Z",
+  "skills_run": ["agent-sales", "hub-shell-detector", "live-demo-detector", "build-gate"],
+  "results": {
+    "agent-sales": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Linked Proposal builder auto-fill to triggering signal context."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Verified 0 shells."
+    },
+    "live-demo-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "All components labeled LIVE."
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "tsc=0 errors, build successful."
+    }
+  },
+  "overall": "PASS"
+}

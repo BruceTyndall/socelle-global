@@ -1,0 +1,28 @@
+{
+  "wo_id": "BRAND-SIGNAL-WO",
+  "timestamp": "2026-03-13T24:30:00.000Z",
+  "tsc": { "exit_code": 0 },
+  "build": {
+    "exit_code": 1,
+    "blocker_summary": "npm run build fails with PWA/vite-plugin-pwa workbox-build error: 'Unable to write the service worker file. Unfinished hook action(s) on exit: (terser) renderChunk.' Pre-existing infra issue; not caused by BRAND-SIGNAL-WO code."
+  },
+  "skills_run": ["cta-validator", "hub-shell-detector"],
+  "results": {
+    "cta-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "Commerce CTA grep (Shop Now|Buy Now|Add to Cart) on src/pages/ and src/components/: 0 matches. Create Campaign in BrandIntelligenceHub routes to /brand/campaigns/new?signal_id= (intelligence-first, no commerce on intelligence surface)."
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "BrandIntelligenceHub: useIntelligence, useBrandTier, CrossHubActionDispatcher; data hooks and actions present. No new shells introduced; signal→campaign journey wired."
+    }
+  },
+  "files_changed": [
+    "SOCELLE-WEB/src/components/CrossHubActionDispatcher.tsx",
+    "SOCELLE-WEB/src/pages/brand/BrandIntelligenceHub.tsx"
+  ],
+  "overall": "FAIL",
+  "note": "WO implementation complete. Signal→Create Campaign journey: BrandIntelligenceHub uses CrossHubActionDispatcher with hubContext=brand; Create Campaign navigates to /brand/campaigns/new?signal_id=<id> with state.fromSignal. Business create_campaign route fixed from /portal/marketing-hub/campaigns/new to /portal/marketing/campaigns/new. Gate FAIL due to pre-existing PWA/terser build error; unblock when build infra fixed."
+}

@@ -1,0 +1,173 @@
+{
+  "wo_id": "CMS-POWER-01",
+  "timestamp": "2026-03-14T06:00:00Z",
+  "tsc": { "exit_code": 0 },
+  "build": { "exit_code": 0 },
+  "skills_run": [
+    "authoring-core-schema-validator",
+    "schema-db-suite",
+    "hub-shell-detector",
+    "live-demo-detector",
+    "cta-validator",
+    "route-mapper",
+    "accessibility-checker"
+  ],
+  "blocker_summary": "Skills were not executed (only approximated). Cannot certify PASS per GOVERNANCE.",
+  "results": {
+    "authoring-core-schema-validator": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    },
+    "schema-db-suite": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    },
+    "hub-shell-detector": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    },
+    "live-demo-detector": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    },
+    "cta-validator": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    },
+    "route-mapper": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    },
+    "accessibility-checker": {
+      "status": "FAIL",
+      "failures": [
+        "Skill not actually executed; only approximate checks were performed."
+      ],
+      "evidence": "NOT RUN"
+    }
+  },
+  "files_changed": [
+    "supabase/migrations/20260313000034_story_drafts.sql",
+    "supabase/migrations/20260313000037_cms_publish_draft_rpc.sql",
+    "supabase/migrations/20260313000041_story_drafts_suggested_products.sql",
+    "supabase/functions/feeds-to-drafts/index.ts",
+    "supabase/functions/generate-briefs/index.ts",
+    "src/pages/admin/cms/AdminStoryDrafts.tsx",
+    "docs/qa/authoring_core_schema_validator_results.txt",
+    "docs/qa/schema_db_suite_migration_count.txt",
+    "docs/qa/schema_db_suite_type_count.txt",
+    "docs/qa/hub_shell_detector_todo_count.txt",
+    "docs/qa/live_demo_detector_isLive_count.txt",
+    "docs/qa/cta_validator_shop_cta_count.txt",
+    "docs/qa/route_mapper_path_count.txt",
+    "docs/qa/accessibility_checker_count.txt",
+    "docs/qa/verify_CMS-POWER-01_2026-03-14T06-00-00-000Z.json",
+    "docs/build_tracker_v2.md"
+  ],
+  "usability_checks": {
+    "no_dead_ends": {
+      "status": "PASS",
+      "evidence": "Editorial workflow paths from feeds-to-drafts and generate-briefs into AdminStoryDrafts and on to published content have clear navigation and do not strand editors on dead-end screens."
+    },
+    "loading_empty_error_states": {
+      "status": "PASS",
+      "evidence": "AdminStoryDrafts implements loading skeletons, an EmptyDrafts component per status tab, and error/retry UI for failed loads."
+    },
+    "cta_hierarchy_ok": {
+      "status": "PASS",
+      "evidence": "Primary CTAs on AdminStoryDrafts are workflow actions (Approve, Reject, Publish); no mis-prioritized commerce or navigation CTAs appear on the editorial queue."
+    },
+    "demo_live_labeling_ok": {
+      "status": "PASS",
+      "evidence": "Editorial surfaces show only LIVE story_drafts sourced from feeds and AI briefs; there are no mis-labeled DEMO elements in the CMS editorial rail."
+    },
+    "provenance_visible_or_linked": {
+      "status": "PASS",
+      "evidence": "AdminStoryDrafts shows feed name and source URL for each draft; generate-briefs annotates SOCELLE Intelligence as source_name so editors can see editorial provenance."
+    },
+    "a11y_smoke_ok": {
+      "status": "PASS",
+      "evidence": "AdminStoryDrafts uses semantic headings, accessible buttons, and visible focus for key actions; no obvious keyboard or labeling regressions were introduced."
+    },
+    "specialist_inputs": {
+      "AGENT_17_dataset_integrity": [
+        {
+          "id": "AG17-1",
+          "description": "Story drafts must accurately reflect upstream rss_items and market_signals for editorial reliability.",
+          "table_or_view": "public.story_drafts, public.rss_items, public.market_signals",
+          "query_or_function": "feeds-to-drafts edge function and generate-briefs edge function insert paths",
+          "hook_or_module": "supabase/functions/feeds-to-drafts/index.ts, supabase/functions/generate-briefs/index.ts"
+        },
+        {
+          "id": "AG17-2",
+          "description": "Editorial queue integrity depends on story_drafts.status and reviewed_at/reviewed_by fields being correctly set during workflow transitions.",
+          "table_or_view": "public.story_drafts(status, reviewed_at, reviewed_by)",
+          "query_or_function": "update mutations in AdminStoryDrafts.tsx",
+          "hook_or_module": "src/pages/admin/cms/AdminStoryDrafts.tsx"
+        },
+        {
+          "id": "AG17-3",
+          "description": "Publish RPC must create or update cms_posts consistently when drafts are approved and published.",
+          "table_or_view": "public.cms_posts, public.story_drafts",
+          "query_or_function": "publish_story_draft RPC in 20260313000037_cms_publish_draft_rpc.sql",
+          "hook_or_module": "supabase/migrations/20260313000037_cms_publish_draft_rpc.sql"
+        },
+        {
+          "id": "AG17-4",
+          "description": "Suggested products on story_drafts must map to real products for monetization surfaces.",
+          "table_or_view": "public.story_drafts(suggested_products), public.products",
+          "query_or_function": "product id lookup in generate-briefs function",
+          "hook_or_module": "supabase/functions/generate-briefs/index.ts"
+        }
+      ],
+      "FE_template_auditor": [
+        {
+          "id": "FE-1",
+          "description": "AdminStoryDrafts should use shared EmptyState patterns for empty queues.",
+          "layouts_or_components": "EmptyDrafts within src/pages/admin/cms/AdminStoryDrafts.tsx",
+          "safe_deviation": "Localized copy explaining editorial queue behavior; keep Pearl Mineral tokens and spacing scale."
+        },
+        {
+          "id": "FE-2",
+          "description": "Loading skeletons in AdminStoryDrafts need to respect existing Skeleton/StatCard visual language.",
+          "layouts_or_components": "DraftSkeleton in AdminStoryDrafts.tsx",
+          "safe_deviation": "List-shaped skeletons are acceptable; keep neutral graphite overlays and animation."
+        }
+      ],
+      "Journey_QA_specialist": [
+        {
+          "id": "JOURNEY-CMS-1",
+          "route": "/admin/cms/story-drafts",
+          "component_or_page": "src/pages/admin/cms/AdminStoryDrafts.tsx",
+          "issue_or_risk": "Editors must be able to navigate from the drafts queue back to other CMS admin hubs and published content views without dead ends."
+        },
+        {
+          "id": "JOURNEY-CMS-2",
+          "route": "cron → feeds-to-drafts → AdminStoryDrafts",
+          "component_or_page": "Edge functions and admin CMS hub",
+          "issue_or_risk": "Signals and RSS items promoted into story_drafts should appear predictably in the queue, with clear status changes as editors take action."
+        }
+      ]
+    }
+  },
+  "overall": "FAIL"
+}
+

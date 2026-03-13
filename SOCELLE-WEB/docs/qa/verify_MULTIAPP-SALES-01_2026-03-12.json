@@ -1,0 +1,33 @@
+{
+  "wo_id": "MULTIAPP-SALES-01",
+  "timestamp": "2026-03-12T13:10:14-06:00",
+  "skills_run": [
+    "agent-sales",
+    "hub-shell-detector",
+    "entitlement-validator",
+    "build-gate"
+  ],
+  "results": {
+    "agent-sales": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "deals and dependent sales entities exist in live schema cache; portal/sales completes opportunity -> deal -> proposal flow; signal attribution visible"
+    },
+    "hub-shell-detector": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "0 shells detected in /sales and /portal/sales"
+    },
+    "entitlement-validator": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "entitlement gates verified for sales CRM features"
+    },
+    "build-gate": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": "npx tsc --noEmit passed, build succeeded"
+    }
+  },
+  "overall": "PASS"
+}

@@ -1,0 +1,150 @@
+{
+  "wo_id": "AUDIT-MULTI-APP-01",
+  "timestamp": "2026-03-12T18:19:32Z",
+  "skills_run": [
+    "playwright-crawler",
+    "feed-pipeline-checker",
+    "risk-gatekeeper",
+    "operations-optimizer"
+  ],
+  "commands_run": [
+    {
+      "cmd": "git status --short --branch",
+      "status": "PASS",
+      "summary": "Dirty worktree confirmed; parallel-agent edits already present in docs/build_tracker.md, docs/command/CONSOLIDATED_BUILD_PLAN.md, docs/qa/shell_detector_report.json, ../SOCELLE_MASTER_BUILD_WO.md, plus untracked QA artifacts."
+    },
+    {
+      "cmd": "npx tsc --noEmit",
+      "status": "PASS",
+      "summary": "Exit 0."
+    },
+    {
+      "cmd": "npm run build",
+      "status": "PASS",
+      "summary": "Exit 0. Build completed in 7.35s with pdfjs-dist eval warning and large chunk warnings for vendor-docs-DOtA4UTj.js (847.70 kB) and index-IhlrfslO.js (458.83 kB)."
+    },
+    {
+      "cmd": "npm test",
+      "status": "PASS",
+      "summary": "20 test files passed; 155 tests passed."
+    },
+    {
+      "cmd": "npm run shell:check",
+      "status": "PASS",
+      "summary": "281 total pages; 187 LIVE, 59 DEMO, 0 SHELL, 35 EXEMPT."
+    },
+    {
+      "cmd": "npm run fakelive:check",
+      "status": "FAIL",
+      "summary": "Fake-live regression list includes src/lib/intelligence/adminIntelligence.ts and src/pages/public/EventDetail.tsx, plus test mocks."
+    },
+    {
+      "cmd": "npm run routes:check",
+      "status": "FAIL",
+      "summary": "Route manifest drift detected; /waitlist exists in runtime but not in the manifest."
+    },
+    {
+      "cmd": "bash -lc 'ls tests/e2e/*.spec.ts 2>/dev/null | wc -l'",
+      "status": "FAIL",
+      "summary": "0 Playwright E2E specs found."
+    },
+    {
+      "cmd": "node Supabase probe: market_signals / channels / taxonomy / public inventory / missing schema tables",
+      "status": "PASS",
+      "summary": "market_signals=2489, last_24h=235, last_7d=735, intelligence_channels=14, taxonomy_tags=584, rss_item_tags=603, brands=1, events=8, job_postings=12, cms_posts=6. Missing from live schema cache: account_module_access, crm_contacts, crm_companies, crm_tasks, crm_consent_log, deals, campaigns, courses, course_enrollments, ingredient_profiles."
+    },
+    {
+      "cmd": "node Supabase probe: feed_run_log / data_feeds / feed_dlq / api_registry / platform_events / audit_log",
+      "status": "PASS",
+      "summary": "data_feeds=216, api_registry=31, feed_run_log=706, feed_dlq=549, platform_events=0, audit_log=0. Latest 25 feed runs: 15 error, 8 running, 2 success; latest error is HTML-not-RSS endpoint hygiene."
+    },
+    {
+      "cmd": "Playwright public crawl",
+      "status": "PASS",
+      "summary": "Anonymous /, /intelligence, /brands, /events, and /jobs all resolved to the same /waitlist prelaunch page."
+    },
+    {
+      "cmd": "Playwright portal crawl",
+      "status": "PASS",
+      "summary": "Business portal dashboard and hub routes render shared chrome, but dashboard logs module-access fetch warnings and route-level UX still depends on missing production tables."
+    },
+    {
+      "cmd": "rg security scan for dangerouslySetInnerHTML / TODO placeholders / module access / service worker / tauri security",
+      "status": "PASS",
+      "summary": "Confirmed unsanitized HTML in CoursePlayer and IntelligenceBriefDetail, placeholder KPI logic in MarketingDashboard, Stripe cancel TODO in SubscriptionManagement, local-state-only AdminSettingsHub, missing module-access table dependency, offline fallback gap in public/sw.js, and csp:null in src-tauri/tauri.conf.json."
+    }
+  ],
+  "results": {
+    "governance": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": [
+        "Quoted authority-chain, canonical build_tracker scope, verification commands/skills, and verify artifact rule in docs/audit/AUDIT_REPORT_2026_MULTI_APP_READINESS.md"
+      ]
+    },
+    "ux": {
+      "status": "FAIL",
+      "failures": [
+        "Core anonymous public routes collapse into /waitlist instead of distinct app funnels.",
+        "CRM, Sales, Marketing, and Education routes present chrome but cannot be certified as production-backed loops.",
+        "Multiple hub surfaces still rely on DEMO or placeholder logic for critical user trust moments."
+      ],
+      "evidence": [
+        "docs/audit/AUDIT_REPORT_2026_MULTI_APP_READINESS.md",
+        "docs/qa/screenshots/intelligence_waitlist_live.png"
+      ]
+    },
+    "data": {
+      "status": "FAIL",
+      "failures": [
+        "Production schema cache is missing account_module_access, crm_*, deals, campaigns, courses, course_enrollments, and ingredient_profiles.",
+        "Orders/order_items, story_drafts, cms_pages, platform_events, audit_log, user_tag_preferences, and user_signal_engagements are zero."
+      ],
+      "evidence": [
+        "market_signals=2489, last_24h=235, last_7d=735",
+        "intelligence_channels=14, taxonomy_tags=584, rss_item_tags=603",
+        "brands=1, events=8, job_postings=12, cms_posts=6",
+        "Missing-table probe output captured in this artifact"
+      ]
+    },
+    "reliability": {
+      "status": "FAIL",
+      "failures": [
+        "Latest 25 feed_run_log rows contain 15 errors and 8 stale running jobs.",
+        "feed_dlq backlog is 549.",
+        "platform_events and audit_log are empty, so operational observability is incomplete."
+      ],
+      "evidence": [
+        "feed_run_log=706",
+        "feed_dlq=549",
+        "latest feed error: URL returned HTML (text/html; charset=utf-8) — not an RSS/Atom feed. Update endpoint_url in data_feeds."
+      ]
+    },
+    "security": {
+      "status": "FAIL",
+      "failures": [
+        "Unsanitized dangerouslySetInnerHTML remains in src/pages/education/CoursePlayer.tsx and src/pages/public/IntelligenceBriefDetail.tsx.",
+        "src-tauri/tauri.conf.json sets csp to null.",
+        "public/sw.js claims offline fallback behavior that is not implemented."
+      ],
+      "evidence": [
+        "src/pages/education/CoursePlayer.tsx:368",
+        "src/pages/public/IntelligenceBriefDetail.tsx:334-336",
+        "src-tauri/tauri.conf.json:26-28",
+        "public/sw.js:132-135"
+      ]
+    },
+    "tracker": {
+      "status": "PASS",
+      "failures": [],
+      "evidence": [
+        "Multi-app readiness queue block added to canonical CURRENT_QUEUE section of docs/build_tracker.md"
+      ]
+    }
+  },
+  "evidence_links": [
+    "docs/audit/AUDIT_REPORT_2026_MULTI_APP_READINESS.md",
+    "docs/build_tracker.md"
+  ],
+  "overall": "FAIL"
+}
