@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import type { ComponentType, SVGProps } from 'react';
 import {
   Activity,
-  ArrowRight,
   BriefcaseBusiness,
   Gem,
   Globe2,
   GraduationCap,
   Layers3,
-  Lock,
   Megaphone,
   ShieldCheck,
   Sparkles,
@@ -23,8 +21,6 @@ interface IntelligenceChannelRailProps {
   subtitle: string;
   channels: IntelligenceChannel[];
   loading?: boolean;
-  lockedCtaHref: string;
-  lockedCtaLabel: string;
   onOpenSignal?: (signal: IntelligenceSignal) => void;
   signalHrefBuilder?: (signal: IntelligenceSignal) => string;
 }
@@ -81,8 +77,6 @@ export default function IntelligenceChannelRail({
   subtitle,
   channels,
   loading = false,
-  lockedCtaHref,
-  lockedCtaLabel,
   onOpenSignal,
   signalHrefBuilder,
 }: IntelligenceChannelRailProps) {
@@ -149,12 +143,6 @@ export default function IntelligenceChannelRail({
                     <span className="rounded-pill border border-graphite/10 bg-background px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-graphite/55">
                       {channel.audience === 'brand' ? 'Brand' : channel.audience === 'provider' ? 'Provider' : 'Cross-market'}
                     </span>
-                    {channel.is_locked && (
-                      <span className="inline-flex items-center gap-1 rounded-pill border border-signal-warn/20 bg-signal-warn/8 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-signal-warn">
-                        <Lock className="h-3 w-3" />
-                        Paid
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -228,15 +216,6 @@ export default function IntelligenceChannelRail({
           <div className="mt-6">
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] uppercase tracking-[0.18em] text-graphite/42">Signals shaping this channel</p>
-              {selectedChannel.is_locked && (
-                <Link
-                  to={lockedCtaHref}
-                  className="inline-flex items-center gap-2 rounded-pill border border-signal-warn/20 bg-signal-warn/8 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-signal-warn"
-                >
-                  {lockedCtaLabel}
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              )}
             </div>
 
             <div className="mt-3 space-y-3">

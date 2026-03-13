@@ -25,11 +25,10 @@ import { trackSignalClicked } from '../../lib/analytics/funnelEvents';
 import IntelligenceChannelRail from '../../components/intelligence/IntelligenceChannelRail';
 import { SignalDetailPanel } from '../../components/intelligence/SignalDetailPanel';
 import type { IntelligenceChannel, IntelligenceSignal } from '../../lib/intelligence/types';
-import { TierGate, CreditGate } from '../../components/gates';
+import { CreditGate } from '../../components/gates';
 import ApiStatusRibbon from '../../components/intelligence/ApiStatusRibbon';
 import IntelligenceDashboardSkeleton from '../../components/intelligence/IntelligenceDashboardSkeleton';
 import SignalErrorState from '../../components/intelligence/SignalErrorState';
-import { useTier } from '../../hooks/useTier';
 import { useAuth } from '../../lib/auth';
 
 // ── Cloud Modules (10) ──────────────────────────────────────────────
@@ -104,19 +103,17 @@ const BEAUTY_REGULATORY_PATTERN = /\b(fda|ftc|mocra|laser|device|cosmetic|aesthe
 // ── Main Component ──────────────────────────────────────────────────
 
 export default function IntelligenceHub() {
-  const { tier, isLoading: tierLoading } = useTier();
   const { businessId, brandId } = useAuth();
-  const signalLimit = tier === 'free' ? 80 : 220;
-  const { signals, loading, isLive } = useIntelligence({ limit: signalLimit });
+  const { signals, loading, isLive } = useIntelligence({ limit: 220 });
   const { signals: timelineSignals, loading: timelineLoading } = useIntelligence({
     limit: 15,
     timeline: true,
   });
   const { channels: intelligenceChannels, loading: channelLoading } = useIntelligenceChannels({
     audience: brandId ? 'brand' : 'provider',
-    viewerTier: tier === 'free' ? 'free' : 'paid',
-    includeLocked: true,
-    limit: tier === 'free' ? 6 : 8,
+    viewerTier: 'paid',
+    includeLocked: false,
+    limit: 8,
     signals,
   });
 
@@ -142,7 +139,7 @@ export default function IntelligenceHub() {
   }, []);
 
   // ── Loading state ───────────────────────────────────────────────
-  if (loading || tierLoading) {
+  if (loading) {
     return (
       <>
         <Helmet>
@@ -239,8 +236,6 @@ export default function IntelligenceHub() {
               timelineLoading={timelineLoading}
               channels={intelligenceChannels}
               channelLoading={channelLoading}
-              channelLockedCtaHref={tier === 'free' ? '/plans' : '/portal/intelligence'}
-              channelLockedCtaLabel={tier === 'free' ? 'Compare paid plans' : 'Open channel detail'}
               onSelectSignal={handleSelectSignal}
             />
           )}
@@ -250,35 +245,27 @@ export default function IntelligenceHub() {
           )}
 
           {activeTab === 'categories' && (
-            <TierGate requiredTier="starter" contextMessage="Category Intelligence requires a Starter plan or above.">
-              <CategoryIntelligence
-                signals={signals}
-                loading={loading}
-                onSelectSignal={handleSelectSignal}
-              />
-            </TierGate>
+            <CategoryIntelligence
+              signals={signals}
+              loading={loading}
+              onSelectSignal={handleSelectSignal}
+            />
           )}
 
           {activeTab === 'competitive' && (
-            <TierGate requiredTier="starter" contextMessage="Competitive Benchmarking requires a Starter plan or above.">
-              <CompetitiveTab signals={signals} loading={loading} />
-            </TierGate>
+            <CompetitiveTab signals={signals} loading={loading} />
           )}
 
           {activeTab === 'local' && (
-            <TierGate requiredTier="pro" contextMessage="Local Market View requires a Pro plan or above.">
-              <LocalMarketView
-                signals={signals}
-                loading={loading}
-                onSelectSignal={handleSelectSignal}
-              />
-            </TierGate>
+            <LocalMarketView
+              signals={signals}
+              loading={loading}
+              onSelectSignal={handleSelectSignal}
+            />
           )}
 
           {activeTab === 'provenance' && (
-            <TierGate requiredTier="starter" contextMessage="Confidence and Provenance data requires a Starter plan or above.">
-              <ConfidenceProvenance signal={selectedSignal} loading={loading} />
-            </TierGate>
+            <ConfidenceProvenance signal={selectedSignal} loading={loading} />
           )}
         </div>
       </div>
@@ -310,52 +297,40 @@ export default function IntelligenceHub() {
         </div>
       </div>
 
-      {/* ── AI Tool Modals (tier + credit gated) ────────────────── */}
+      {/* ── AI Tool Modals (credit gated only — no tier gate) ───── */}
       {activeAITool === 'explain' && (
-        <TierGate requiredTier="starter" contextMessage="Explain Signal requires a Starter plan or above.">
-          <CreditGate cost={5}>
-            <ExplainSignal
-              signalId={selectedSignal?.id ?? ''}
-              signalTitle={selectedSignal?.title}
-              onClose={handleCloseAITool}
-            />
-          </CreditGate>
-        </TierGate>
+        <CreditGate cost={5}>
+          <ExplainSignal
+            signalId={selectedSignal?.id ?? ''}
+            signalTitle={selectedSignal?.title}
+            onClose={handleCloseAITool}
+          />
+        </CreditGate>
       )}
       {activeAITool === 'search' && (
-        <TierGate requiredTier="starter" contextMessage="Signal Search requires a Starter plan or above.">
-          <CreditGate cost={2}>
-            <SignalSearch onClose={handleCloseAITool} />
-          </CreditGate>
-        </TierGate>
+        <CreditGate cost={2}>
+          <SignalSearch onClose={handleCloseAITool} />
+        </CreditGate>
       )}
       {activeAITool === 'brief' && (
-        <TierGate requiredTier="pro" contextMessage="Brief Generator requires a Pro plan or above.">
-          <CreditGate cost={25}>
-            <BriefGenerator onClose={handleCloseAITool} />
-          </CreditGate>
-        </TierGate>
+        <CreditGate cost={25}>
+          <BriefGenerator onClose={handleCloseAITool} />
+        </CreditGate>
       )}
       {activeAITool === 'plan' && (
-        <TierGate requiredTier="pro" contextMessage="Action Plan Generator requires a Pro plan or above.">
-          <CreditGate cost={30}>
-            <ActionPlanGenerator onClose={handleCloseAITool} />
-          </CreditGate>
-        </TierGate>
+        <CreditGate cost={30}>
+          <ActionPlanGenerator onClose={handleCloseAITool} />
+        </CreditGate>
       )}
       {activeAITool === 'rnd' && (
-        <TierGate requiredTier="pro" contextMessage="R&D Scout requires a Pro plan or above.">
-          <CreditGate cost={40}>
-            <RnDScout onClose={handleCloseAITool} />
-          </CreditGate>
-        </TierGate>
+        <CreditGate cost={40}>
+          <RnDScout onClose={handleCloseAITool} />
+        </CreditGate>
       )}
       {activeAITool === 'mocra' && (
-        <TierGate requiredTier="pro" contextMessage="MoCRA Checker requires a Pro plan or above.">
-          <CreditGate cost={20}>
-            <MoCRAChecker onClose={handleCloseAITool} />
-          </CreditGate>
-        </TierGate>
+        <CreditGate cost={20}>
+          <MoCRAChecker onClose={handleCloseAITool} />
+        </CreditGate>
       )}
 
       {/* ── Signal Detail Slide-out ────────────────────────────── */}
@@ -406,8 +381,6 @@ function OverviewTab({
   timelineLoading,
   channels,
   channelLoading,
-  channelLockedCtaHref,
-  channelLockedCtaLabel,
   onSelectSignal,
 }: {
   signals: IntelligenceSignal[];
@@ -416,8 +389,6 @@ function OverviewTab({
   timelineLoading: boolean;
   channels: IntelligenceChannel[];
   channelLoading: boolean;
-  channelLockedCtaHref: string;
-  channelLockedCtaLabel: string;
   onSelectSignal: (signal: IntelligenceSignal) => void;
 }) {
   const displaySignals = useMemo(() => {
@@ -481,8 +452,6 @@ function OverviewTab({
         subtitle="Live channels that blend service, claim, and market behavior so the hub feels broader than a simple signal list."
         channels={channels}
         loading={channelLoading}
-        lockedCtaHref={channelLockedCtaHref}
-        lockedCtaLabel={channelLockedCtaLabel}
         onOpenSignal={onSelectSignal}
       />
 
