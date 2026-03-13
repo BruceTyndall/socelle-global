@@ -135,7 +135,7 @@ export default function PortalSidebar() {
 
   const navSections: NavSection[] = [
     {
-      label: 'Intelligence & Discovery',
+      label: 'Insight & Discovery',
       items: [
         { path: '/portal/intelligence', label: 'Intelligence Cloud', icon: Database },
         { path: '/portal/cms', label: 'CMS & Publishing', icon: FileText },
@@ -146,19 +146,19 @@ export default function PortalSidebar() {
       items: [
         {
           path: '/portal/professionals',
-          label: 'Professionals Hub',
+          label: 'Pro Hub',
           icon: User,
           moduleKey: 'MODULE_PROFESSIONALS',
         },
         {
           path: '/portal/brands',
-          label: 'Brands Hub',
+          label: 'Brand Hub',
           icon: Building,
           moduleKey: 'MODULE_BRANDS',
         },
         {
           path: '/portal/jobs',
-          label: 'Jobs Board',
+          label: 'Jobs & Talent',
           icon: Briefcase,
           moduleKey: 'MODULE_JOBS',
         },
@@ -173,21 +173,21 @@ export default function PortalSidebar() {
       ],
     },
     {
-      label: 'Commerce & Retention',
+      label: 'Commerce & Loyalty',
       items: [
         { path: '/portal/shop', label: 'B2B Commerce', icon: ShoppingCart },
-        { path: '/portal/education', label: 'Education', icon: GraduationCap },
-        { path: '/portal/affiliates', label: 'Affiliate Tracking', icon: Link2 },
+        { path: '/portal/education', label: 'Education & Protocols', icon: GraduationCap },
+        { path: '/portal/affiliates', label: 'Affiliate & Rewards', icon: Link2 },
       ],
     },
     {
-      label: 'Platform Infrastructure',
+      label: 'Platform & Admin',
       items: [
         { path: '/portal/studio', label: 'Authoring Studio', icon: Layout },
         { path: '/portal/credits', label: 'Credit Economy', icon: Coins },
         {
           path: '/admin',
-          label: 'Admin Control',
+          label: 'Admin Console',
           icon: Shield,
           adminOnly: true,
         },
